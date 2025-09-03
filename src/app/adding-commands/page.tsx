@@ -11,7 +11,7 @@ export default function AddingCommands() {
     >
       {/* Introduction */}
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
-        <h2 className="text-2xl font-bold mb-4">Command-Based Programming</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Command-Based Programming</h2>
         <p className="text-[var(--muted-foreground)] mb-4">
           Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks and can be triggered
           by user input, sensors, or automated sequences.
@@ -25,7 +25,7 @@ export default function AddingCommands() {
 
       {/* Command Examples */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-[var(--foreground)]">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Command Structure & Examples
         </h2>
 
@@ -120,7 +120,7 @@ public class RobotContainer {
 
       {/* Before/After Implementation */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-[var(--foreground)]">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Workshop Implementation: Adding Commands to Arm
         </h2>
 
