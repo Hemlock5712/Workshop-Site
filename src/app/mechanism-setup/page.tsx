@@ -9,14 +9,12 @@ export default function MechanismSetup() {
       nextPage={{ href: "/pid-control", title: "PID Control" }}
     >
       {/* Introduction */}
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-[var(--border)]">
-          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
-          Verifying Your Mechanism Setup
-        </h2>
+        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+          <h2 className="text-2xl font-bold mb-4">Verifying Your Mechanism Setup</h2>
           <p className="text-[var(--muted-foreground)] mb-4">
-          Before implementing advanced control algorithms, we need to verify that motors and encoders are working correctly. 
-          This ensures proper direction, zeroing, and basic functionality.
-        </p>
+            Before implementing advanced control algorithms, we need to verify that motors and encoders are working correctly.
+            This ensures proper direction, zeroing, and basic functionality.
+          </p>
         <div className="bg-focus-100 dark:bg-focus-900/30 p-4 rounded-lg">
           <p className="text-focus-800 dark:text-focus-300 font-medium">
             🔍 Key Concept: Always verify hardware setup before adding control algorithms - this prevents debugging control issues when the problem is hardware configuration
@@ -71,11 +69,9 @@ export default function MechanismSetup() {
           <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 p-6 rounded-lg">
-              <h4 className="font-semibold text-learn-900 dark:text-learn-300 mb-3">Positive Voltage Test</h4>
-              <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
-                Apply +6V to your motor and observe movement direction.
-              </p>
+            <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">
+              <h4 className="font-semibold mb-3">Positive Voltage Test</h4>
+              <p className="text-sm mb-3">Apply +6V to your motor and observe movement direction.</p>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                 <p className="text-xs text-[var(--muted-foreground)]">
                   <strong>Expected:</strong> Positive voltage should move the mechanism in the &quot;positive&quot; direction (counter-clockwise for arms, out for extensions, and up for elevators).
@@ -83,11 +79,9 @@ export default function MechanismSetup() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 p-6 rounded-lg">
-              <h4 className="font-semibold text-focus-900 dark:text-focus-300 mb-3">Encoder Consistency</h4>
-              <p className="text-focus-800 dark:text-focus-300 text-sm mb-3">
-                Verify encoder readings match motor movement.
-              </p>
+            <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">
+              <h4 className="font-semibold mb-3">Encoder Consistency</h4>
+              <p className="text-sm mb-3">Verify encoder readings match motor movement.</p>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                 <p className="text-xs text-[var(--muted-foreground)]">
                   <strong>Expected:</strong> Positive motor voltage → positive encoder change, negative motor voltage → negative encoder change.
@@ -98,16 +92,16 @@ export default function MechanismSetup() {
         </div>
 
         {/* Zero Encoder Setup */}
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 border border-[var(--border)] rounded-lg p-6">
-          <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">🎯 Zero Encoder Position</h3>
-          
+        <div className="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-lg p-6">
+          <h3 className="text-xl font-bold mb-4">🎯 Zero Encoder Position</h3>
+
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <p className="text-concept-800 dark:text-concept-300 mb-4">
+              <p className="mb-4">
                 Set your mechanism to the zero position before running any control algorithms. For Arm mechanisms,
                 zero should be straight parallel with the ground, facing the 3 o&apos;clock position.
               </p>
-              
+
               <div className="bg-concept-100 dark:bg-concept-900/30 p-4 rounded-lg">
                 <h4 className="font-semibold text-concept-900 dark:text-concept-300 mb-2">Zero Position Setup:</h4>
                 <ul className="text-concept-800 dark:text-concept-300 space-y-1 text-sm">
