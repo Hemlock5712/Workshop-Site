@@ -7,6 +7,19 @@ export default function ProjectSetup() {
       previousPage={{ href: "/hardware", title: "Hardware Setup" }}
       nextPage={{ href: "/command-framework", title: "Command Framework" }}
     >
+      {/* Introduction */}
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-2xl font-bold mb-4">Project Setup - Launching Your Codebase</h2>
+        <p className="text-[var(--muted-foreground)] mb-4">
+          Step-by-step guide to generating a new WPILib project using the Command framework template.
+        </p>
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
+            🎯 Key Concept: Starting with the right template ensures organized commands and subsystems.
+          </p>
+        </div>
+      </div>
+
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Creating a New WPILib Project</h2>
         <p className="text-slate-600 dark:text-slate-300 mb-6">Follow these step-by-step instructions to create a new FRC robot project using the Command Robot Skeleton (Advanced) template.</p>

@@ -8,6 +8,18 @@ export default function Hardware() {
       previousPage={{ href: "/prerequisites", title: "Prerequisites" }}
       nextPage={{ href: "/project-setup", title: "Project Setup" }}
     >
+      {/* Introduction */}
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-2xl font-bold mb-4">Hardware Setup - Building the Foundation</h2>
+        <p className="text-[var(--muted-foreground)] mb-4">
+          Overview of the motors, sensors, and controllers you&apos;ll connect for this workshop.
+        </p>
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
+            🎯 Key Concept: Solid hardware configuration enables precise and reliable robot control.
+          </p>
+        </div>
+      </div>
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
