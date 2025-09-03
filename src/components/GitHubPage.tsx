@@ -35,7 +35,6 @@ export default function GitHubPage({
   const [error, setError] = useState<string | null>(null);
   const [fileInfo, setFileInfo] = useState<{
     size?: number;
-    content: string;
   } | null>(null);
 
   useEffect(() => {
@@ -52,7 +51,9 @@ export default function GitHubPage({
         }
 
         const data = await response.json();
-        setFileInfo(data);
+
+        // Store only necessary metadata to avoid keeping full content
+        setFileInfo({ size: data.size });
 
         // Decode base64 content
         const content = atob(data.content);
