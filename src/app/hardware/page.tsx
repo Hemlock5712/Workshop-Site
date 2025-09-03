@@ -128,7 +128,7 @@ export default function Hardware() {
             <div className="flex-1">
               <div className="bg-primary-100 dark:bg-primary-900/20 p-6 rounded-lg">
                 <p className="text-xl font-medium text-primary-900 dark:text-primary-300">
-                  ARM Position Control
+                  Arm Position Control
                 </p>
                 <p className="text-primary-700 dark:text-primary-300">
                   We&apos;ll be programming an arm mechanism to demonstrate

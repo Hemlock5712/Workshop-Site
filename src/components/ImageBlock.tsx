@@ -33,12 +33,12 @@ export default function ImageBlock({
   return (
     <figure className={`my-8 ${className}`}>
       {title && (
-        <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
+        <h4 className="text-lg font-semibold text-[var(--foreground)] mb-3">
           {title}
         </h4>
       )}
 
-      <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+      <div className="card overflow-hidden">
         <Image
           src={src}
           alt={alt}
@@ -51,7 +51,7 @@ export default function ImageBlock({
       </div>
 
       {caption && (
-        <figcaption className="text-sm text-gray-600 dark:text-gray-300 mt-3 text-center italic">
+        <figcaption className="text-sm text-[var(--muted-foreground)] mt-3 text-center italic">
           {caption}
         </figcaption>
       )}

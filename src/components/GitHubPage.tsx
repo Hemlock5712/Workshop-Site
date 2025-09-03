@@ -70,9 +70,9 @@ export default function GitHubPage({
   if (loading) {
     return (
       <div className={`${className}`}>
-        <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 text-center">
+        <div className="card p-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">Loading file...</p>
+          <p className="text-[var(--muted-foreground)]">Loading file...</p>
         </div>
       </div>
     );
@@ -147,21 +147,21 @@ export default function GitHubPage({
     <div className={`${className}`}>
       {title && (
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
             {title}
           </h3>
           {description && (
-            <p className="text-gray-600 dark:text-gray-300">{description}</p>
+            <p className="text-[var(--muted-foreground)]">{description}</p>
           )}
         </div>
       )}
 
       {/* File Header */}
-      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm mb-6 overflow-hidden">
-        <div className="border-b border-gray-200 dark:border-gray-800 p-4">
+      <div className="card mb-6 overflow-hidden">
+        <div className="border-b border-[var(--border)] p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <span className="font-mono text-lg font-medium text-slate-900 dark:text-slate-100">
+              <span className="font-mono text-lg font-medium text-[var(--foreground)]">
                 {filename}
               </span>
               <span className="px-2 py-1 bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 rounded text-xs font-medium">
@@ -169,20 +169,20 @@ export default function GitHubPage({
               </span>
             </div>
 
-            <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
               {fileInfo?.size && <span>{formatFileSize(fileInfo.size)}</span>}
               <a
                 href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-200 px-3 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium"
+                className="bg-[var(--muted)] text-[var(--foreground)] px-3 py-1 rounded hover:bg-[var(--border)] transition-colors text-sm font-medium"
               >
                 View on GitHub →
               </a>
             </div>
           </div>
 
-          <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <div className="mt-2 text-sm text-[var(--muted-foreground)]">
             {repository} / {filePath.replace(filename, "").replace(/\/$/, "")}
           </div>
         </div>
@@ -200,11 +200,11 @@ export default function GitHubPage({
       </div>
 
       {/* GitHub Context */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-6">
-        <h5 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-900/20 dark:to-concept-900/20 rounded-lg p-6">
+        <h5 className="font-semibold text-[var(--foreground)] mb-3">
           📁 Live from GitHub
         </h5>
-        <p className="text-gray-700 dark:text-gray-300 text-sm">
+        <p className="text-[var(--muted-foreground)] text-sm">
           This file is displayed directly from the GitHub repository. Click
           &quot;View on GitHub&quot; to see the file in its repository context,
           view history, blame information, and make edits.

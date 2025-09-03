@@ -5,14 +5,14 @@ import Image from "next/image";
 export default function Programming() {
   return (
     <PageTemplate
-      title="Programming ARM"
+      title="Programming Arm"
       previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
       nextPage={undefined}
     >
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Programming ARM</h2>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Programming Arm</h2>
         <p className="text-slate-600 dark:text-slate-300 mb-6">
-          In this section, we&apos;ll program common FRC mechanisms starting with our ARM subsystem.
+          In this section, we&apos;ll program common FRC mechanisms starting with our Arm subsystem.
           We&apos;ll build upon this initial implementation throughout the workshop.
         </p>
 
@@ -20,7 +20,7 @@ export default function Programming() {
           <h3 className="font-semibold text-learn-700 dark:text-learn-300 mb-2">What You&apos;ll Learn:</h3>
           <ul className="list-disc list-inside text-green-800 dark:text-green-300 space-y-1">
             {/* <li>Setting up subsystems for Arm and Flywheel</li> */}
-            <li>Setting up ARM subsystem</li>
+            <li>Setting up Arm subsystem</li>
             <li>Creating motor and sensor configurations</li>
             <li>Implementing control methods</li>
             <li>Command creation and deployment</li>
@@ -68,7 +68,7 @@ export default function Programming() {
       </section>
 
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Initial ARM Subsystem</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Initial Arm Subsystem</h2>
 
         <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
           <h3 className="font-semibold text-primary-700 dark:text-primary-300 mb-2">📋 Starting Point</h3>
@@ -90,7 +90,7 @@ export default function Programming() {
           repository="Hemlock5712/Workshop-Code"
           filePath="src/main/java/frc/robot/subsystems/Arm.java"
           branch="1-Subsystem"
-          title="Initial ARM Subsystem Implementation"
+          title="Initial Arm Subsystem Implementation"
           description="This is our starting point for the workshop. We&apos;ll progressively enhance this code throughout the learning process."
         />
 
@@ -121,7 +121,7 @@ export default function Programming() {
             🎯 Step 1: Basic Subsystem
           </h3>
           <p className="text-primary-800 dark:text-primary-300 mb-4">
-            Our first step creates a foundational ARM subsystem with basic motor control and sensor feedback.
+            Our first step creates a foundational Arm subsystem with basic motor control and sensor feedback.
           </p>
           
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-4">
@@ -156,7 +156,7 @@ export default function Programming() {
             🎮 Step 2: Commands Integration
           </h3>
           <p className="text-green-800 dark:text-green-300 mb-4">
-            Now we add command-based control, allowing user input to control our ARM mechanism.
+            Now we add command-based control, allowing user input to control our Arm mechanism.
           </p>
           
           <div className="grid md:grid-cols-2 gap-4 mb-4">

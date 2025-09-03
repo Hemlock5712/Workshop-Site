@@ -13,8 +13,8 @@ Thank you for your interest in contributing to the Gray Matter Coding Workshop w
 
 1. **Fork and clone the repository**
    ```bash
-   git clone https://github.com/yourusername/gray-matter-workshop.git
-   cd gray-matter-workshop
+   git clone https://github.com/yourusername/Workshop-Site.git
+   cd Workshop-Site
    ```
 
 2. **Install dependencies**
