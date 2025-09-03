@@ -31,7 +31,7 @@ export default function AddingCommands() {
 
           {/* Inline Command Examples */}
           <div className="card p-6">
-          <h3 className="text-xl font-bold text-concept-600 mb-4">🎮 Inline Command Methods</h3>
+          <h3 className="text-xl font-bold text-primary-600 mb-4">🎮 Inline Command Methods</h3>
           <CodeBlock
             language="java"
             title="Subsystem Command Methods"
@@ -163,7 +163,7 @@ public class RobotContainer {
 
           {/* RobotContainer Implementation */}
           <div className="card p-6">
-          <h3 className="text-xl font-bold text-practice-600 mb-4">🤖 RobotContainer Implementation</h3>
+          <h3 className="text-xl font-bold text-primary-600 mb-4">🤖 RobotContainer Implementation</h3>
           <CodeBlock
             language="java"
             title="Complete RobotContainer.java"

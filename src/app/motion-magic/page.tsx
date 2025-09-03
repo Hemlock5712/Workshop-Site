@@ -105,7 +105,7 @@ export default function MotionMagic() {
         </h2>
 
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motion Magic Configuration Example</h3>
+          <h3 className="text-xl font-bold text-primary-600 mb-4">🔧 Motion Magic Configuration Example</h3>
           <CodeBlock
             language="java"
             title="Motion Magic Setup in Subsystem Constructor"

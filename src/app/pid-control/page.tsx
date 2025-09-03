@@ -135,7 +135,7 @@ export default function PIDControl() {
         </h2>
 
           <div className="card p-6">
-          <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 PID Configuration Example</h3>
+          <h3 className="text-xl font-bold text-primary-600 mb-4">🔧 PID Configuration Example</h3>
           <CodeBlock
             language="java"
             title="PID Setup in Subsystem Constructor"
