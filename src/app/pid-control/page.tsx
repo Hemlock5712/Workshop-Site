@@ -31,7 +31,7 @@ export default function PIDControl() {
 
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-red-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🔴 P - Proportional</h3>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">P - Proportional</h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per unit of error in the system&quot;
             </p>
@@ -45,7 +45,7 @@ export default function PIDControl() {
           </div>
 
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🟡 I - Integral</h3>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">I - Integral</h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per unit of error for every second of that error&quot;
             </p>
@@ -59,7 +59,7 @@ export default function PIDControl() {
           </div>
 
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🔵 D - Derivative</h3>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">D - Derivative</h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per change in error over time&quot;
             </p>
