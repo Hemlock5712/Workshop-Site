@@ -10,11 +10,11 @@ export default function PIDControl() {
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-red-50 to-yellow-50 dark:from-red-950/30 dark:to-yellow-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+        <div className="bg-gradient-to-r from-red-50 to-yellow-50 dark:from-red-950/30 dark:to-yellow-950/30 rounded-lg p-8 border border-[var(--border)]">
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
           PID Control - Precise Position Control
         </h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--muted-foreground)] mb-4">
           PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
           feedback-driven position control. Essential for mechanisms that need to hit specific targets.
         </p>
@@ -27,7 +27,7 @@ export default function PIDControl() {
 
       {/* PID Theory */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-3xl font-bold text-[var(--foreground)]">
           Understanding PID Components
         </h2>
 
@@ -37,7 +37,7 @@ export default function PIDControl() {
             <p className="text-red-800 dark:text-red-300 mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per unit of error in the system&quot;
             </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded mb-3">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
               <code className="text-xs">Error = Target - Current</code><br/>
               <code className="text-xs">P_Output = kP × Error</code>
             </div>
@@ -51,7 +51,7 @@ export default function PIDControl() {
             <p className="text-focus-800 dark:text-focus-300 mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per unit of error for every second of that error&quot;
             </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded mb-3">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
               <code className="text-xs">Accumulated_Error += Error × dt</code><br/>
               <code className="text-xs">I_Output = kI × Accumulated_Error</code>
             </div>
@@ -65,7 +65,7 @@ export default function PIDControl() {
             <p className="text-primary-800 dark:text-primary-300 mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per change in error over time&quot;
             </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded mb-3">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
               <code className="text-xs">Error_Rate = (Error - Last_Error) / dt</code><br/>
               <code className="text-xs">D_Output = kD × Error_Rate</code>
             </div>
@@ -83,25 +83,25 @@ export default function PIDControl() {
           </p>
           
           <div className="grid md:grid-cols-4 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
               <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kS - Static</h4>
               <p className="text-sm text-concept-600 dark:text-concept-400">
                 Constant output to overcome friction and get the mechanism moving.
               </p>
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
               <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kG - Gravity</h4>
               <p className="text-sm text-concept-600 dark:text-concept-400">
                 Compensates for gravitational forces acting on the mechanism.
               </p>
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
               <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kV - Velocity</h4>
               <p className="text-sm text-concept-600 dark:text-concept-400">
                 Output applied per target velocity to maintain smooth motion.
               </p>
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
               <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kA - Acceleration</h4>
               <p className="text-sm text-concept-600 dark:text-concept-400">
                 Output applied per target acceleration for responsive movement.
@@ -132,11 +132,11 @@ export default function PIDControl() {
 
       {/* Code Implementation */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          <h2 className="text-3xl font-bold text-[var(--foreground)]">
           PID Implementation in Code
         </h2>
 
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <div className="card p-6">
           <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 PID Configuration Example</h3>
           <CodeBlock
             language="java"
@@ -173,8 +173,8 @@ public void setTargetPosition(double positionRotations) {
         </div>
 
         {/* Before/After Implementation */}
-        <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="card p-6">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
             🔄 Before → After: PR #3 Implementation
           </h3>
           

@@ -9,11 +9,11 @@ export default function MechanismSetup() {
       nextPage={{ href: "/pid-control", title: "PID Control" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-focus-50 to-focus-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+        <div className="bg-gradient-to-r from-focus-50 to-focus-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-lg p-8 border border-[var(--border)]">
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
           Verifying Your Mechanism Setup
         </h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--muted-foreground)] mb-4">
           Before implementing advanced control algorithms, we need to verify that motors and encoders are working correctly. 
           This ensures proper direction, zeroing, and basic functionality.
         </p>
@@ -26,18 +26,18 @@ export default function MechanismSetup() {
 
       {/* Encoder Verification */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          <h2 className="text-3xl font-bold text-[var(--foreground)]">
           Encoder Direction and Zeroing
         </h2>
 
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+        <div className="card p-8">
+          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
             Verifying Encoder Setup
           </h3>
 
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div className="col-span-2">
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
+                <p className="text-[var(--muted-foreground)] mb-4">
                 You&apos;ll need to make sure your encoder is configured correctly. With the device facing you like the following image, 
                 ensure that the encoder position is going up as you rotate the arm counterclockwise.
               </p>
@@ -67,7 +67,7 @@ export default function MechanismSetup() {
         </div>
 
         {/* Motor Direction Verification */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <div className="card p-8">
           <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
@@ -76,8 +76,8 @@ export default function MechanismSetup() {
               <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
                 Apply +6V to your motor and observe movement direction.
               </p>
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded border">
-                <p className="text-xs text-slate-700 dark:text-slate-300">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
+                <p className="text-xs text-[var(--muted-foreground)]">
                   <strong>Expected:</strong> Positive voltage should move the mechanism in the &quot;positive&quot; direction (counter-clockwise for arms, out for extensions, and up for elevators).
                 </p>
               </div>
@@ -88,8 +88,8 @@ export default function MechanismSetup() {
               <p className="text-focus-800 dark:text-focus-300 text-sm mb-3">
                 Verify encoder readings match motor movement.
               </p>
-              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded border">
-                <p className="text-xs text-slate-700 dark:text-slate-300">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
+                <p className="text-xs text-[var(--muted-foreground)]">
                   <strong>Expected:</strong> Positive motor voltage → positive encoder change, negative motor voltage → negative encoder change.
                 </p>
               </div>

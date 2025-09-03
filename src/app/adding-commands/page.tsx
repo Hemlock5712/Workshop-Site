@@ -10,11 +10,11 @@ export default function AddingCommands() {
       nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-concept-50 to-practice-50 dark:from-concept-950/30 dark:to-practice-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+      <div className="bg-gradient-to-r from-concept-50 to-practice-50 dark:from-concept-950/30 dark:to-practice-950/30 rounded-lg p-8 border border-[var(--border)]">
+          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
           Command-Based Programming
         </h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--muted-foreground)] mb-4">
           Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks 
           and can be triggered by user input, sensors, or automated sequences.
         </p>
@@ -27,12 +27,12 @@ export default function AddingCommands() {
 
       {/* Command Examples */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-3xl font-bold text-[var(--foreground)]">
           Command Structure & Examples
         </h2>
 
-        {/* Inline Command Examples */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          {/* Inline Command Examples */}
+          <div className="card p-6">
           <h3 className="text-xl font-bold text-concept-600 mb-4">🎮 Inline Command Methods</h3>
           <CodeBlock
             language="java"
@@ -55,8 +55,8 @@ public Command stopArm() {
           />
         </div>
 
-        {/* Trigger Examples */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          {/* Trigger Examples */}
+          <div className="card p-6">
           <h3 className="text-xl font-bold text-primary-600 mb-4">🎯 Trigger Examples - Binding Input to Commands</h3>
           <CodeBlock
             language="java"
@@ -93,7 +93,7 @@ public class RobotContainer {
             <p className="text-concept-800 dark:text-concept-300 text-sm mb-3">
               Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
             </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded text-xs">
               <code>setDefaultCommand(stopCommand());</code>
             </div>
           </div>
@@ -103,7 +103,7 @@ public class RobotContainer {
             <p className="text-primary-800 dark:text-primary-300 text-sm mb-3">
               Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).
             </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded text-xs">
               <code>controller.a().whileTrue(command);</code>
             </div>
           </div>
@@ -113,7 +113,7 @@ public class RobotContainer {
             <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
               Motor configuration code should be wrapped properly to fit in configuration sections.
             </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
+              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded text-xs">
               <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>
             </div>
           </div>
@@ -122,12 +122,12 @@ public class RobotContainer {
 
       {/* Before/After Implementation */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-3xl font-bold text-[var(--foreground)]">
           Workshop Implementation: Adding Commands to Arm
         </h2>
 
-        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="card p-6">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
             🔄 Before → After: Implementation
           </h3>
           
@@ -163,8 +163,8 @@ public class RobotContainer {
           focusFile="Arm.java" 
         />
 
-        {/* RobotContainer Implementation */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          {/* RobotContainer Implementation */}
+          <div className="card p-6">
           <h3 className="text-xl font-bold text-practice-600 mb-4">🤖 RobotContainer Implementation</h3>
           <CodeBlock
             language="java"

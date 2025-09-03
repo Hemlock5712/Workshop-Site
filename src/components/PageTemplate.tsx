@@ -35,17 +35,17 @@ export default function PageTemplate({
       )}
 
       <div className="flex flex-col gap-8 prose prose-lg max-w-none dark:prose-invert">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 className="text-4xl font-bold text-[var(--foreground)]">
           {title}
         </h1>
 
         {children}
 
-        <div className="flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-800">
+        <div className="flex justify-between items-center pt-8 border-t border-[var(--border)]">
           {previousPage ? (
             <Link
               href={previousPage.href}
-              className="text-gray-600 hover:text-gray-800 font-medium dark:text-gray-300 dark:hover:text-gray-100"
+              className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] font-medium"
             >
               ← Previous: {previousPage.title}
             </Link>

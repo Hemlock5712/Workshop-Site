@@ -30,13 +30,31 @@ export default function ThemePicker() {
 
     return (
         <div className="flex items-center gap-2 align-self-end justify-self-center">
-            <button onClick={() => setTheme("light")} className={clsx("cursor-pointer text-gray-500", theme === "light" && "text-yellow-500")}>
+            <button
+                onClick={() => setTheme("light")}
+                className={clsx(
+                    "cursor-pointer text-[var(--muted-foreground)]",
+                    theme === "light" && "text-[var(--primary)]"
+                )}
+            >
                 <SunIcon />
             </button>
-            <button onClick={() => setTheme("system")} className={clsx("cursor-pointer text-gray-500", theme === "system" && "text-yellow-500")}>
+            <button
+                onClick={() => setTheme("system")}
+                className={clsx(
+                    "cursor-pointer text-[var(--muted-foreground)]",
+                    theme === "system" && "text-[var(--primary)]"
+                )}
+            >
                 <SunMoonIcon />
             </button>
-            <button onClick={() => setTheme("dark")} className={clsx("cursor-pointer text-gray-500", theme === "dark" && "text-yellow-500")}>
+            <button
+                onClick={() => setTheme("dark")}
+                className={clsx(
+                    "cursor-pointer text-[var(--muted-foreground)]",
+                    theme === "dark" && "text-[var(--primary)]"
+                )}
+            >
                 <MoonIcon />
             </button>
         </div>
