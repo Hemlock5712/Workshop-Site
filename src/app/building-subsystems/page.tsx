@@ -37,8 +37,7 @@ export default function BuildingSubsystems() {
           <CodeBlock
             language="java"
             title="ExampleSubsystem.java"
-          >
-{`package frc.robot.subsystems;
+            code={`package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -90,7 +89,7 @@ public class ExampleSubsystem extends SubsystemBase {
         return motor.getPosition().getValueAsDouble();
     }
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Key Concepts Explanation */}

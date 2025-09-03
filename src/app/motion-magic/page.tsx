@@ -109,8 +109,7 @@ export default function MotionMagic() {
           <CodeBlock
             language="java"
             title="Motion Magic Setup in Subsystem Constructor"
-          >
-{`// In your subsystem constructor
+            code={`// In your subsystem constructor
 public ArmSubsystem() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     
@@ -150,7 +149,7 @@ public boolean atSetpoint() {
     // Consider at setpoint when position error is small AND velocity is low
     return error < 0.05 && velocity < 0.1;
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Before/After Implementation */}

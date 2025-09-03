@@ -36,8 +36,7 @@ export default function UsefulFunctions() {
           <CodeBlock
             language="java"
             title="Position and Safety Limits"
-          >
-{`// Safety limit checking
+            code={`// Safety limit checking
 public boolean isAtUpperLimit() {
     return getPosition() >= UPPER_LIMIT_ROTATIONS;
 }
@@ -74,7 +73,7 @@ public void emergencyStop() {
     motor.setControl(new NeutralOut());
     System.err.println("EMERGENCY STOP: ARM subsystem halted!");
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Diagnostic Functions */}
@@ -83,8 +82,7 @@ public void emergencyStop() {
           <CodeBlock
             language="java"
             title="System Health and Diagnostics"
-          >
-{`// Motor health diagnostics
+            code={`// Motor health diagnostics
 public boolean isMotorHealthy() {
     double current = motor.getSupplyCurrent().getValueAsDouble();
     double temperature = motor.getDeviceTemp().getValueAsDouble();
@@ -118,7 +116,7 @@ public boolean isMotorConnected() {
     StatusSignal<Double> positionSignal = motor.getPosition();
     return positionSignal.getStatus() == StatusCode.OK;
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Convenience Functions */}
@@ -127,8 +125,7 @@ public boolean isMotorConnected() {
           <CodeBlock
             language="java"
             title="Useful Helper Methods"
-          >
-{`// Preset positions for common arm angles
+            code={`// Preset positions for common arm angles
 public void moveToStowPosition() {
     setTargetPosition(STOW_POSITION_ROTATIONS);
 }
@@ -176,7 +173,7 @@ public void calibrateToKnownPosition(double knownPositionRotations) {
     motor.setPosition(knownPositionRotations);
     System.out.println("Arm calibrated to: " + knownPositionRotations + " rotations");
 }`}
-          </CodeBlock>
+          />
         </div>
       </section>
 
@@ -191,8 +188,7 @@ public void calibrateToKnownPosition(double knownPositionRotations) {
           <CodeBlock
             language="java"
             title="Commands Using Utility Functions"
-          >
-{`// Command to move to preset positions
+            code={`// Command to move to preset positions
 public static Command moveToStow(ArmSubsystem arm) {
     return new InstantCommand(() -> arm.moveToStowPosition(), arm)
         .andThen(new WaitUntilCommand(() -> arm.atSetpoint()))
@@ -234,7 +230,7 @@ public static Command joystickControlWithLimits(ArmSubsystem arm, DoubleSupplier
         arm.setVoltageWithLimits(voltage);
     }, arm).withName("Joystick Control with Limits");
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* RobotContainer Integration */}
@@ -243,8 +239,7 @@ public static Command joystickControlWithLimits(ArmSubsystem arm, DoubleSupplier
           <CodeBlock
             language="java"
             title="RobotContainer with Utility Functions"
-          >
-{`private void configureBindings() {
+            code={`private void configureBindings() {
     // Basic movement with safety limits
     controller.leftBumper().whileTrue(
         ArmCommands.joystickControlWithLimits(armSubsystem, () -> controller.getLeftY())
@@ -275,7 +270,7 @@ public static Command joystickControlWithLimits(ArmSubsystem arm, DoubleSupplier
         }, armSubsystem).withName("Arm Safety Monitor")
     );
 }`}
-          </CodeBlock>
+          />
         </div>
       </section>
 

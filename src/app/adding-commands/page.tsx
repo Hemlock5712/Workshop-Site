@@ -37,8 +37,7 @@ export default function AddingCommands() {
           <CodeBlock
             language="java"
             title="ExampleCommand.java"
-          >
-{`package frc.robot.commands;
+            code={`package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -81,7 +80,7 @@ public class ExampleCommand extends Command {
         return false; // Runs until interrupted
     }
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Instant Command Example */}
@@ -90,8 +89,7 @@ public class ExampleCommand extends Command {
           <CodeBlock
             language="java"
             title="Quick Actions with InstantCommand"
-          >
-{`// For simple, one-time actions
+            code={`// For simple, one-time actions
 public static Command stopArm(ExampleSubsystem subsystem) {
     return new InstantCommand(
         () -> subsystem.stop(), // Action to perform
@@ -106,7 +104,7 @@ public static Command setArmVoltage(ExampleSubsystem subsystem, double voltage) 
         subsystem
     );
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Trigger Examples */}
@@ -115,8 +113,7 @@ public static Command setArmVoltage(ExampleSubsystem subsystem, double voltage) 
           <CodeBlock
             language="java"
             title="RobotContainer.java - configureBindings()"
-          >
-{`package frc.robot;
+            code={`package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -157,7 +154,7 @@ public class RobotContainer {
         );
     }
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Key Concepts */}

@@ -141,8 +141,7 @@ export default function PIDControl() {
           <CodeBlock
             language="java"
             title="PID Setup in Subsystem Constructor"
-          >
-{`// In your subsystem constructor
+            code={`// In your subsystem constructor
 public ArmSubsystem() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     
@@ -174,7 +173,7 @@ public boolean atSetpoint() {
     double error = Math.abs(targetPosition - getPosition());
     return error < 0.05; // 0.05 rotations tolerance
 }`}
-          </CodeBlock>
+          />
         </div>
 
         {/* Before/After Implementation */}
