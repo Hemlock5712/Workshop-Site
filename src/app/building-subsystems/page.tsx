@@ -5,9 +5,9 @@ import CodeBlock from "@/components/CodeBlock";
 export default function BuildingSubsystems() {
   return (
     <PageTemplate
-      title="Building Subsystems (PR #1)"
+      title="Subsystems"
       previousPage={{ href: "/project-setup", title: "Project Setup" }}
-      nextPage={{ href: "/adding-commands", title: "Adding Commands (PR #2)" }}
+      nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
@@ -57,8 +57,6 @@ public class ExampleSubsystem extends SubsystemBase {
         TalonFXConfiguration config = new TalonFXConfiguration();
         
         // Configure motor settings
-        config.CurrentLimits.SupplyCurrentLimit = 40.0;
-        config.CurrentLimits.SupplyCurrentLimitEnable = true;
         
         motor.getConfigurator().apply(config);
         motor.setNeutralMode(NeutralModeValue.Brake);
@@ -135,7 +133,7 @@ public class ExampleSubsystem extends SubsystemBase {
 
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            🔄 Before → After: PR #1 Implementation
+            🔄 Before → After: Implementation
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
@@ -150,7 +148,7 @@ public class ExampleSubsystem extends SubsystemBase {
             </div>
 
             <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After (PR #1)</h4>
+              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
               <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
                 <li>• Complete ARM subsystem class</li>
                 <li>• TalonFX motor (ID: 31) configured</li>
@@ -180,7 +178,6 @@ public class ExampleSubsystem extends SubsystemBase {
                 <li>• <strong>TalonFX Motor:</strong> Main drive motor with integrated controller</li>
                 <li>• <strong>CANCoder:</strong> Absolute position feedback sensor</li>
                 <li>• <strong>Remote Sensor:</strong> CANCoder connected as remote feedback</li>
-                <li>• <strong>Current Limits:</strong> 40A supply current limit for protection</li>
               </ul>
             </div>
             
@@ -189,7 +186,6 @@ public class ExampleSubsystem extends SubsystemBase {
               <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
                 <li>• <strong>setVoltage():</strong> Direct voltage control for basic movement</li>
                 <li>• <strong>stop():</strong> Safe motor stop with neutral output</li>
-                <li>• <strong>getPosition():</strong> Current arm angle from encoder</li>
                 <li>• <strong>periodic():</strong> Dashboard telemetry updates</li>
               </ul>
             </div>
@@ -198,7 +194,7 @@ public class ExampleSubsystem extends SubsystemBase {
           <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
             <p className="text-indigo-800 dark:text-indigo-300 text-sm">
               <strong>💡 Next Step:</strong> This subsystem is ready for command integration! 
-              In PR #2, we&apos;ll add commands to control this ARM subsystem through user input.
+              Next, we&apos;ll add commands to control this ARM subsystem through user input.
             </p>
           </div>
         </div>

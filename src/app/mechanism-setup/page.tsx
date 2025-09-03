@@ -48,7 +48,6 @@ export default function MechanismSetup() {
                   <li>• Counterclockwise rotation → Position increases</li>
                   <li>• Clockwise rotation → Position decreases</li>
                   <li>• Position values should be smooth and consistent</li>
-                  <li>• No sudden jumps or erratic readings</li>
                 </ul>
               </div>
             </div>
@@ -98,37 +97,37 @@ export default function MechanismSetup() {
           </div>
         </div>
 
-        {/* Troubleshooting */}
-        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-red-700 dark:text-red-300 mb-4">🚨 Common Issues & Solutions</h3>
+        {/* Zero Encoder Setup */}
+        <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">🎯 Zero Encoder Position</h3>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">Encoder Reading Wrong Direction:</h4>
-              <ul className="text-red-700 dark:text-red-300 space-y-1 text-sm list-disc list-inside">
-                <li>Check encoder wiring connections</li>
-                <li>Verify encoder is reading from correct motor</li>
-                <li>Consider inverting encoder in software if needed</li>
-                <li>Ensure encoder is mechanically coupled correctly</li>
-              </ul>
+              <p className="text-purple-800 dark:text-purple-300 mb-4">
+                Set your mechanism to the zero position before running any control algorithms. For ARM mechanisms, 
+                zero should be straight parallel with the ground, facing the 3 o&apos;clock position.
+              </p>
+              
+              <div className="bg-purple-100 dark:bg-purple-900/30 p-4 rounded-lg">
+                <h4 className="font-semibold text-purple-900 dark:text-purple-300 mb-2">Zero Position Setup:</h4>
+                <ul className="text-purple-800 dark:text-purple-300 space-y-1 text-sm">
+                  <li>• Position ARM parallel to ground</li>
+                  <li>• ARM should point to 3 o&apos;clock position</li>
+                  <li>• Reset encoder to 0.0 at this position</li>
+                  <li>• Verify position reading stays consistent</li>
+                </ul>
+              </div>
             </div>
-            
-            <div>
-              <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">Motor Moving Wrong Direction:</h4>
-              <ul className="text-red-700 dark:text-red-300 space-y-1 text-sm list-disc list-inside">
-                <li>Check motor wiring (swap +/- if needed)</li>
-                <li>Verify correct motor controller configuration</li>
-                <li>Use motor inversion in software if wiring is correct</li>
-                <li>Check CAN ID matches configuration</li>
-              </ul>
+
+            <div className="flex w-full justify-center">
+              <div className="w-full h-48 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Placeholder: Zero Position Image</p>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 p-4 rounded mt-4">
-            <p className="text-red-800 dark:text-red-300 text-sm">
-              <strong>💡 Pro Tip:</strong> Always test basic motor movement and encoder reading before implementing any control algorithms. 
-              This saves hours of debugging later when you can&apos;t tell if the issue is your control code or hardware setup.
-            </p>
+          <div className="w-full h-64 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Placeholder: Zero Encoder Setup Video</p>
           </div>
         </div>
 

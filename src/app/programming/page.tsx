@@ -5,12 +5,12 @@ import Image from "next/image";
 export default function Programming() {
   return (
     <PageTemplate
-      title="Programming ARM and Flywheel"
+      title="Programming ARM"
       previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
       nextPage={{ href: "/tuning", title: "Tuning" }}
     >
       <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Programming ARM and Flywheel</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Programming ARM</h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           In this section, we&apos;ll program common FRC mechanisms starting with our ARM subsystem.
           We&apos;ll build upon this initial implementation throughout the workshop.
@@ -19,7 +19,8 @@ export default function Programming() {
         <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg mb-6">
           <h3 className="font-semibold text-green-900 dark:text-green-300 mb-2">What You&apos;ll Learn:</h3>
           <ul className="list-disc list-inside text-green-800 dark:text-green-300 space-y-1">
-            <li>Setting up subsystems for Arm and Flywheel</li>
+            {/* <li>Setting up subsystems for Arm and Flywheel</li> */}
+            <li>Setting up ARM subsystem</li>
             <li>Creating motor and sensor configurations</li>
             <li>Implementing control methods</li>
             <li>Command creation and deployment</li>

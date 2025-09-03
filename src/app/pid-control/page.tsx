@@ -168,11 +168,7 @@ public void setTargetPosition(double positionRotations) {
     motor.setControl(positionRequest.withPosition(positionRotations));
 }
 
-// Check if at target (within tolerance)
-public boolean atSetpoint() {
-    double error = Math.abs(targetPosition - getPosition());
-    return error < 0.05; // 0.05 rotations tolerance
-}`}
+`}
           />
         </div>
 
@@ -225,7 +221,6 @@ public boolean atSetpoint() {
                 <li>• <strong>PositionVoltage:</strong> Replaces VoltageOut for closed-loop control</li>
                 <li>• <strong>Slot0 Config:</strong> PID and feedforward gains configuration</li>
                 <li>• <strong>Target Setting:</strong> setTargetPosition() method for precise control</li>
-                <li>• <strong>Tolerance Check:</strong> atSetpoint() determines if target reached</li>
               </ul>
             </div>
             
@@ -248,31 +243,6 @@ public boolean atSetpoint() {
           </div>
         </div>
 
-        {/* Tuning Tips */}
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-4">🛠️ PID Tuning Process</h3>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">General Approach:</h4>
-              <ol className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 list-decimal list-inside">
-                <li>Start with all gains at zero</li>
-                <li>Increase kP until oscillation begins</li>
-                <li>Add kD to reduce oscillation</li>
-                <li>Add kI only if steady-state error persists</li>
-                <li>Tune feedforward gains (kS, kG, kV, kA)</li>
-              </ol>
-            </div>
-            <div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">ARM-Specific Notes:</h4>
-              <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 list-disc list-inside">
-                <li>kG crucial for counteracting gravity</li>
-                <li>Higher kP needed for quick response</li>
-                <li>kD prevents overshoot on position changes</li>
-                <li>Test across full range of motion</li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </section>
     </PageTemplate>
   );

@@ -122,7 +122,7 @@ const workshop1Items = [
   },
   {
     href: "/building-subsystems",
-    label: "Building Subsystems",
+    label: "Subsystems",
     icon: (
       <svg
         className="w-5 h-5"
@@ -141,7 +141,7 @@ const workshop1Items = [
   },
   {
     href: "/adding-commands",
-    label: "Adding Commands",
+    label: "Commands",
     icon: (
       <svg
         className="w-5 h-5"

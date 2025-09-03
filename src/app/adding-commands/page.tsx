@@ -5,8 +5,8 @@ import CodeBlock from "@/components/CodeBlock";
 export default function AddingCommands() {
   return (
     <PageTemplate
-      title="Adding Commands (PR #2)"
-      previousPage={{ href: "/building-subsystems", title: "Building Subsystems (PR #1)" }}
+      title="Commands"
+      previousPage={{ href: "/building-subsystems", title: "Subsystems" }}
       nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
@@ -51,9 +51,7 @@ public Command stopArm() {
     return runOnce(() -> stop());
 }
 
-public Command resetEncoder() {
-    return runOnce(() -> motor.setPosition(0.0));
-}`}
+`}
           />
         </div>
 
@@ -87,11 +85,8 @@ public class RobotContainer {
         // ⚡ ONE-SHOT TRIGGERS - Run once when pressed
         controller.x().onTrue(armSubsystem.stopArm());
         
-        // 🔄 RESET ENCODER - Run once when pressed
-        controller.y().onTrue(armSubsystem.resetEncoder());
         
-        // 🔂 DEFAULT COMMAND - Stop arm when no input
-        armSubsystem.setDefaultCommand(armSubsystem.stopArm());
+        // Default command is set in the subsystem constructor
     }
 }`}
           />
@@ -100,12 +95,12 @@ public class RobotContainer {
         {/* Key Concepts */}
         <div className="grid md:grid-cols-3 gap-6">
           <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-6 border border-purple-200 dark:border-purple-900">
-            <h4 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3">🔒 Requirements</h4>
+            <h4 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3">🏠 Default Commands</h4>
             <p className="text-purple-800 dark:text-purple-300 text-sm mb-3">
-              Commands must &quot;require&quot; their subsystems. This prevents conflicts and ensures only one command controls a subsystem.
+              Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
             </p>
             <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
-              <code>addRequirements(subsystem);</code>
+              <code>setDefaultCommand(stopCommand());</code>
             </div>
           </div>
 
@@ -120,12 +115,12 @@ public class RobotContainer {
           </div>
 
           <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border border-green-200 dark:border-green-900">
-            <h4 className="text-lg font-bold text-green-700 dark:text-green-300 mb-3">🔂 Default Commands</h4>
+            <h4 className="text-lg font-bold text-green-700 dark:text-green-300 mb-3">🚀 Motor Configuration</h4>
             <p className="text-green-800 dark:text-green-300 text-sm mb-3">
-              Default commands run when no other command is using the subsystem. Perfect for idle behavior.
+              Motor configuration code should be wrapped properly to fit in configuration sections.
             </p>
             <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
-              <code>subsystem.setDefaultCommand(cmd);</code>
+              <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>
             </div>
           </div>
         </div>
@@ -139,12 +134,12 @@ public class RobotContainer {
 
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            🔄 Before → After: PR #2 Implementation
+            🔄 Before → After: Implementation
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before (PR #1)</h4>
+              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before</h4>
               <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
                 <li>• ARM subsystem with basic voltage control</li>
                 <li>• No user input integration</li>
@@ -154,7 +149,7 @@ public class RobotContainer {
             </div>
 
             <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After (PR #2)</h4>
+              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
               <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
                 <li>• Enhanced ARM subsystem methods</li>
                 <li>• Xbox controller integration</li>
@@ -174,6 +169,43 @@ public class RobotContainer {
           focusFile="Arm.java" 
         />
 
+        {/* RobotContainer Implementation */}
+        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
+          <h3 className="text-xl font-bold text-orange-600 mb-4">🤖 RobotContainer Implementation</h3>
+          <CodeBlock
+            language="java"
+            title="Complete RobotContainer.java"
+            code={`package frc.robot;
+
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Arm;
+
+public class RobotContainer {
+    // Controllers
+    private final CommandXboxController controller = new CommandXboxController(0);
+    
+    // Subsystems
+    private final Arm armSubsystem = new Arm();
+    
+    public RobotContainer() {
+        configureBindings();
+    }
+    
+    private void configureBindings() {
+        // Button bindings for ARM control
+        controller.a().whileTrue(armSubsystem.moveUp());
+        controller.b().whileTrue(armSubsystem.moveDown());
+        controller.x().onTrue(armSubsystem.stopArm());
+    }
+    
+    // Return subsystem for autonomous commands if needed
+    public Arm getArmSubsystem() {
+        return armSubsystem;
+    }
+}`}
+          />
+        </div>
+
         <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">🔍 Code Walkthrough</h3>
           
@@ -183,8 +215,6 @@ public class RobotContainer {
               <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
                 <li>• <strong>moveUp():</strong> Positive voltage for upward movement</li>
                 <li>• <strong>moveDown():</strong> Negative voltage for downward movement</li>
-                <li>• <strong>getPosition():</strong> Current arm angle from CANCoder</li>
-                <li>• <strong>atSetpoint():</strong> Check if arm is at target position</li>
               </ul>
             </div>
             
@@ -194,7 +224,6 @@ public class RobotContainer {
                 <li>• <strong>RobotContainer:</strong> Xbox controller instantiation</li>
                 <li>• <strong>Button Bindings:</strong> A/B buttons control arm direction</li>
                 <li>• <strong>Default Command:</strong> Stop arm when no input</li>
-                <li>• <strong>Requirements:</strong> Commands properly require ARM subsystem</li>
               </ul>
             </div>
           </div>
@@ -202,7 +231,7 @@ public class RobotContainer {
           <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
             <p className="text-indigo-800 dark:text-indigo-300 text-sm">
               <strong>💡 Next Step:</strong> Our ARM now responds to user input! 
-              In PR #3, we&apos;ll replace voltage control with precise PID position control for accurate movement.
+              Next, we&apos;ll verify mechanism setup before implementing precise PID position control.
             </p>
           </div>
         </div>

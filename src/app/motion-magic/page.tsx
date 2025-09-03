@@ -5,8 +5,8 @@ import CodeBlock from "@/components/CodeBlock";
 export default function MotionMagic() {
   return (
     <PageTemplate
-      title="Motion Magic (PR #4)"
-      previousPage={{ href: "/pid-control", title: "PID Control (PR #3)" }}
+      title="Motion Magic"
+      previousPage={{ href: "/pid-control", title: "PID Control" }}
       nextPage={{ href: "/programming", title: "Programming" }}
     >
       {/* Introduction */}
@@ -142,25 +142,19 @@ public void setTargetPosition(double positionRotations) {
     motor.setControl(motionMagicRequest.withPosition(positionRotations));
 }
 
-// Check if motion profile is complete
-public boolean atSetpoint() {
-    double error = Math.abs(targetPosition - getPosition());
-    double velocity = Math.abs(getVelocity());
-    // Consider at setpoint when position error is small AND velocity is low
-    return error < 0.05 && velocity < 0.1;
-}`}
+`}
           />
         </div>
 
         {/* Before/After Implementation */}
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
           <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            🔄 Before → After: PR #4 Implementation
+            🔄 Before → After: Implementation
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before (PR #3)</h4>
+              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before</h4>
               <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
                 <li>• PID position control with PositionVoltage</li>
                 <li>• Instant acceleration to target</li>
@@ -171,7 +165,7 @@ public boolean atSetpoint() {
             </div>
 
             <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After (PR #4)</h4>
+              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
               <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
                 <li>• Motion Magic profiled motion with MotionMagicVoltage</li>
                 <li>• Smooth acceleration and deceleration curves</li>
@@ -219,7 +213,7 @@ public boolean atSetpoint() {
           <div className="bg-teal-50 dark:bg-teal-950/30 p-4 rounded mt-4">
             <p className="text-teal-800 dark:text-teal-300 text-sm">
               <strong>💡 Next Step:</strong> Motion Magic gives us professional-grade motion control! 
-              In PR #5, we&apos;ll add useful utility functions for common robot operations and helper methods.
+              Next, we&apos;ll explore tuning methods to get optimal performance from our control algorithms.
             </p>
           </div>
         </div>
@@ -249,29 +243,40 @@ public boolean atSetpoint() {
           </div>
         </div>
 
-        {/* Tuning Tips */}
+        {/* Motion Magic Tuning Steps */}
         <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">🛠️ Motion Magic Tuning Tips</h3>
+          <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">⚙️ Motion Magic Tuning Steps</h3>
+          
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Parameter Guidelines:</h4>
-              <ol className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-decimal list-inside">
-                <li>Start with conservative cruise velocity (1-3 rot/s)</li>
-                <li>Set acceleration to 3-5x cruise velocity</li>
-                <li>Set jerk to 10x acceleration as starting point</li>
-                <li>Use same PID gains from position control</li>
-                <li>Test across full range of motion</li>
-              </ol>
-            </div>
-            <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Common Issues:</h4>
-              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1 list-disc list-inside">
-                <li>Too high velocity → oscillation at target</li>
-                <li>Too low acceleration → slow, sluggish motion</li>
-                <li>Poor PID tuning → profile tracking errors</li>
-                <li>Insufficient kV → velocity lag during cruise</li>
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">1. Find Maximum Velocity:</h4>
+              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-disc list-inside">
+                <li>Plot velocity <strong>without Motion Magic</strong></li>
+                <li>Move mechanism the maximum distance it will travel</li>
+                <li>Record the maximum velocity it reaches</li>
+                <li>Store this value in your code as a constant</li>
+                <li><code className="bg-white dark:bg-gray-800 px-1 rounded">MAX_VELOCITY = 8.5; // rps from plot</code></li>
               </ul>
             </div>
+            <div>
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">2. Set Motion Magic Parameters:</h4>
+              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-disc list-inside">
+                <li><strong>Cruise Velocity:</strong> Use 80% of max velocity</li>
+                <li><code className="bg-white dark:bg-gray-800 px-1 rounded">cruiseVel = MAX_VELOCITY * 0.8</code></li>
+                <li><strong>Acceleration:</strong> Use 4x cruise velocity for smooth motion</li>
+                <li><strong>Acceleration:</strong> Use 10x cruise velocity for quicker motion</li>
+                <li><code className="bg-white dark:bg-gray-800 px-1 rounded">acceleration = cruiseVel * 4.0</code></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
+            <h4 className="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">💡 Why This Method Works:</h4>
+            <p className="text-indigo-700 dark:text-indigo-300 text-sm">
+              By measuring actual mechanism performance first, you set realistic motion limits that prevent 
+              oscillation and ensure smooth, achievable motion profiles. The 80% cruise velocity provides 
+              headroom for control corrections while maintaining good performance.
+            </p>
           </div>
         </div>
       </section>
