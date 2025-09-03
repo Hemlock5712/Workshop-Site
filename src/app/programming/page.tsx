@@ -1,6 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import GitHubPage from "@/components/GitHubPage";
-import Image from "next/image";
+import ImageBlock from "@/components/ImageBlock";
 
 export default function Programming() {
   return (
@@ -270,7 +270,13 @@ export default function Programming() {
           <p className="col-span-2">You&apos;ll want to make sure your motor is spinning in the expected direction. If the motor is getting positive voltage, it should be spinning counterclockwise. You can check this through tuner, with the device facing your like the following picture.</p>
 
           <div className="flex w-full">
-            <Image src="/images/mechanisms/arm.jpg" alt="Arm" width={300} height={200} className="rounded-lg" />
+            <ImageBlock
+              src="/images/mechanisms/arm.jpg"
+              alt="Arm"
+              width={300}
+              height={200}
+              className="my-0 rounded-lg"
+            />
           </div>
         </div>
 
