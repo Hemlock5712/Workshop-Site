@@ -15,9 +15,9 @@ export default function MechanismSetup() {
             Before implementing advanced control algorithms, we need to verify that motors and encoders are working correctly.
             This ensures proper direction, zeroing, and basic functionality.
           </p>
-        <div className="bg-focus-100 dark:bg-focus-900/30 p-4 rounded-lg">
-          <p className="text-focus-800 dark:text-focus-300 font-medium">
-            🔍 Key Concept: Always verify hardware setup before adding control algorithms - this prevents debugging control issues when the problem is hardware configuration
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
+            🎯 Key Concept: Always verify hardware setup before adding control algorithms - this prevents debugging control issues when the problem is hardware configuration
           </p>
         </div>
       </div>

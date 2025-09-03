@@ -16,8 +16,8 @@ export default function PIDControl() {
           PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
           feedback-driven position control. Essential for mechanisms that need to hit specific targets.
         </p>
-        <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-red-500">
-          <p className="text-[var(--foreground)] font-medium">
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
             🎯 Key Concept: PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions
           </p>
         </div>

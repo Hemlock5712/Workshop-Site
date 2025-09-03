@@ -16,8 +16,8 @@ export default function BuildingSubsystems() {
           Subsystems are the foundation of command-based programming. They represent physical hardware components and provide
           methods to control them safely and effectively.
         </p>
-        <div className="bg-primary-100 dark:bg-primary-900/30 p-4 rounded-lg">
-          <p className="text-primary-800 dark:text-primary-300 font-medium">
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
             🎯 Key Concept: One subsystem per mechanism - each subsystem manages its own hardware and state
           </p>
         </div>
