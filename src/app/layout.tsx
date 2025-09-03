@@ -31,7 +31,7 @@ export default function RootLayout({
       >
         <div className="flex h-screen">
           <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-transparent">
+          <main className="flex-1 overflow-y-auto bg-[var(--card)] text-[var(--card-foreground)]">
             {children}
           </main>
         </div>
