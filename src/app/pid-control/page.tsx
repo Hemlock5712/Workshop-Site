@@ -80,32 +80,32 @@ export default function PIDControl() {
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
           </p>
           
-          <div className="grid md:grid-cols-4 gap-4">
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">kS - Static</h4>
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Constant output to overcome friction and get the mechanism moving.
-              </p>
+            <div className="grid md:grid-cols-4 gap-4">
+              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
+                <h4 className="font-bold mb-2">kS - Static</h4>
+                <p className="text-sm">
+                  Constant output to overcome friction and get the mechanism moving.
+                </p>
+              </div>
+              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
+                <h4 className="font-bold mb-2">kG - Gravity</h4>
+                <p className="text-sm">
+                  Compensates for gravitational forces acting on the mechanism.
+                </p>
+              </div>
+              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
+                <h4 className="font-bold mb-2">kV - Velocity</h4>
+                <p className="text-sm">
+                  Output applied per target velocity to maintain smooth motion.
+                </p>
+              </div>
+              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
+                <h4 className="font-bold mb-2">kA - Acceleration</h4>
+                <p className="text-sm">
+                  Output applied per target acceleration for responsive movement.
+                </p>
+              </div>
             </div>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">kG - Gravity</h4>
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Compensates for gravitational forces acting on the mechanism.
-              </p>
-            </div>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">kV - Velocity</h4>
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Output applied per target velocity to maintain smooth motion.
-              </p>
-            </div>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">kA - Acceleration</h4>
-              <p className="text-sm text-[var(--muted-foreground)]">
-                Output applied per target acceleration for responsive movement.
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Documentation Link */}
