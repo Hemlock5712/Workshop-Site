@@ -8,7 +8,7 @@ export default function ProjectSetup() {
       nextPage={{ href: "/command-framework", title: "Command Framework" }}
     >
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Creating a New WPILib Project</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">Creating a New WPILib Project</h2>
         <p className="text-slate-600 dark:text-slate-300 mb-6">Follow these step-by-step instructions to create a new FRC robot project using the Command Robot Skeleton (Advanced) template.</p>
 
         <div className="space-y-4">

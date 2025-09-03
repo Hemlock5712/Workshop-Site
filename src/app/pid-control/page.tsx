@@ -11,7 +11,7 @@ export default function PIDControl() {
     >
       {/* Introduction */}
         <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
-          <h2 className="text-2xl font-bold mb-4">PID Control - Precise Position Control</h2>
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">PID Control - Precise Position Control</h2>
           <p className="text-[var(--muted-foreground)] mb-4">
           PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
           feedback-driven position control. Essential for mechanisms that need to hit specific targets.
@@ -25,7 +25,7 @@ export default function PIDControl() {
 
       {/* PID Theory */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-[var(--foreground)]">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Understanding PID Components
         </h2>
 
@@ -130,7 +130,7 @@ export default function PIDControl() {
 
       {/* Code Implementation */}
       <section className="flex flex-col gap-8">
-          <h2 className="text-3xl font-bold text-[var(--foreground)]">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           PID Implementation in Code
         </h2>
 
