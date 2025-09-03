@@ -136,7 +136,7 @@ export default function GitHubPR({
             {error || "PR not found"}
           </p>
           <p className="text-red-600 dark:text-red-400 text-sm mt-2">
-            Repository: {repository}, PR #{pullRequestNumber}
+            Repository: {repository}
           </p>
         </div>
       </div>

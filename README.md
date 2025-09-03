@@ -22,13 +22,13 @@ The workshop includes live code examples from the companion repository:
 **[Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)**
 
 ### Implementation Progression
-The workshop follows a structured 5-step progression through pull requests:
+The workshop follows a structured 5-step progression:
 
-1. **PR #1: Creating a Subsystem** - Basic motor control and sensor integration
-2. **PR #2: Adding Commands** - Command-based architecture and user input
-3. **PR #3: PID Control** - Precise position control with feedback loops
-4. **PR #4: Using Motion Magic** - Smooth profiled movements with acceleration control
-5. **PR #5: Useful Subsystem Functions** - Safety features, utilities, and diagnostics
+1. **Step 1: Creating a Subsystem** - Basic motor control and sensor integration
+2. **Step 2: Adding Commands** - Command-based architecture and user input
+3. **Step 3: PID Control** - Precise position control with feedback loops
+4. **Step 4: Using Motion Magic** - Smooth profiled movements with acceleration control
+5. **Step 5: Useful Subsystem Functions** - Safety features, utilities, and diagnostics
 
 Each step builds upon the previous implementation, showing real-world development practices.
 

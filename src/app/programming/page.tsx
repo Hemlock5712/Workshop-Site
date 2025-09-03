@@ -153,7 +153,7 @@ export default function Programming() {
 
         <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">
-            🎮 Step 2: Commands Integration (PR #2)
+            🎮 Step 2: Commands Integration
           </h3>
           <p className="text-green-800 dark:text-green-300 mb-4">
             Now we add command-based control, allowing user input to control our Arm mechanism.
@@ -197,7 +197,7 @@ export default function Programming() {
 
         <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">
-            🎯 Step 3: PID Control (PR #3)
+            🎯 Step 3: PID Control
           </h3>
           <p className="text-purple-800 dark:text-purple-300 mb-4">
             Replace voltage control with precise PID position control for accurate, repeatable movements.
