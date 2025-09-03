@@ -200,10 +200,8 @@ export default function GitHubPage({
       </div>
 
       {/* GitHub Context */}
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-6">
-        <h5 className="font-semibold text-[var(--foreground)] mb-3">
-          📁 Live from GitHub
-        </h5>
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
+        <h5 className="font-semibold mb-3">📁 Live from GitHub</h5>
         <p className="text-[var(--muted-foreground)] text-sm">
           This file is displayed directly from the GitHub repository. Click
           &quot;View on GitHub&quot; to see the file in its repository context,

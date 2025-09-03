@@ -10,14 +10,12 @@ export default function PIDControl() {
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
       {/* Introduction */}
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-[var(--border)]">
-          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
-          PID Control - Precise Position Control
-        </h2>
+        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+          <h2 className="text-2xl font-bold mb-4">PID Control - Precise Position Control</h2>
           <p className="text-[var(--muted-foreground)] mb-4">
-          PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
-          feedback-driven position control. Essential for mechanisms that need to hit specific targets.
-        </p>
+            PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven
+            position control. Essential for mechanisms that need to hit specific targets.
+          </p>
         <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-lg">
           <p className="text-red-800 dark:text-red-300 font-medium">
             🎯 Key Concept: PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions

@@ -10,13 +10,11 @@ export default function AddingCommands() {
       nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-[var(--border)]">
-          <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
-          Command-Based Programming
-        </h2>
-          <p className="text-[var(--muted-foreground)] mb-4">
-          Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks 
-          and can be triggered by user input, sensors, or automated sequences.
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-2xl font-bold mb-4">Command-Based Programming</h2>
+        <p className="text-[var(--muted-foreground)] mb-4">
+          Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks and can be triggered
+          by user input, sensors, or automated sequences.
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
