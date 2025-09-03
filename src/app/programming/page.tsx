@@ -7,6 +7,7 @@ export default function Programming() {
     <PageTemplate
       title="Programming Arm"
       previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
+      nextPage={{ href: "/", title: "Home" }}
     >
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Programming Arm</h2>
