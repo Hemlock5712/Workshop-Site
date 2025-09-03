@@ -182,7 +182,7 @@ export default function Programming() {
 
           <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded">
             <p className="text-purple-800 dark:text-purple-300 text-sm">
-              <strong>Key Learning:</strong> Commands separate "what to do" from "how to do it." 
+              <strong>Key Learning:</strong> Commands separate &quot;what to do&quot; from &quot;how to do it.&quot; 
               This makes code modular, testable, and easy to modify for different control schemes.
             </p>
           </div>
@@ -231,7 +231,7 @@ export default function Programming() {
               <li>• <strong>PositionVoltage:</strong> Replace VoltageOut with PID control request</li>
               <li>• <strong>PID Constants:</strong> kP, kI, kD values for tuning</li>
               <li>• <strong>Target Positions:</strong> Set precise angle targets</li>
-              <li>• <strong>Tolerance:</strong> Define "close enough" for position checking</li>
+              <li>• <strong>Tolerance:</strong> Define &quot;close enough&quot; for position checking</li>
             </ul>
           </div>
 

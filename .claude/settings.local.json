@@ -5,7 +5,8 @@
       "WebFetch(domain:store.ctr-electronics.com)",
       "WebFetch(domain:store.ctr-electronics.com)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(npm run type-check:*)"
     ],
     "deny": [],
     "ask": []

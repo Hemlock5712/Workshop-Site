@@ -41,9 +41,9 @@ export default function ProjectSetup() {
               3
             </span>
             <div>
-              <p className="font-medium">Select "Create a New Project"</p>
+              <p className="font-medium">Select &quot;Create a New Project&quot;</p>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                From the WPILib menu, choose the "Create a new project" option.
+                From the WPILib menu, choose the &quot;Create a new project&quot; option.
               </p>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function ProjectSetup() {
               4
             </span>
             <div>
-              <p className="font-medium">Select "Select a project type (Example or Template)"</p>
+              <p className="font-medium">Select &quot;Select a project type (Example or Template)&quot;</p>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 Choose Template → Java → <strong>Command Robot Skeleton (Advanced)</strong>
               </p>
@@ -65,7 +65,7 @@ export default function ProjectSetup() {
               5
             </span>
             <div>
-              <p className="font-medium">Base folder select "Downloads"</p>
+              <p className="font-medium">Base folder select &quot;Downloads&quot;</p>
               <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded p-3 mt-2">
                 <p className="text-red-800 dark:text-red-300 text-sm">
                   ⚠️ <strong>Warning:</strong> OneDrive locations are not supported and will cause project creation to fail.
@@ -79,9 +79,9 @@ export default function ProjectSetup() {
               6
             </span>
             <div>
-              <p className="font-medium">Project Name "Workshop"</p>
+              <p className="font-medium">Project Name &quot;Workshop&quot;</p>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Enter "Workshop" as your project name.
+                Enter &quot;Workshop&quot; as your project name.
               </p>
             </div>
           </div>
@@ -103,7 +103,7 @@ export default function ProjectSetup() {
               8
             </span>
             <div>
-              <p className="font-medium">Check "Enable Desktop Support"</p>
+              <p className="font-medium">Check &quot;Enable Desktop Support&quot;</p>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
                 This allows you to test your robot code on your computer without a robot.
               </p>
@@ -117,7 +117,7 @@ export default function ProjectSetup() {
             <div>
               <p className="font-medium">Generate Project</p>
               <p className="text-gray-600 dark:text-gray-300 text-sm">
-                Click "Generate Project" and then open the new project when prompted.
+                Click &quot;Generate Project&quot; and then open the new project when prompted.
               </p>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function ProjectSetup() {
 
       <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
         <p className="text-green-800 dark:text-green-300">
-          ✅ <strong>Next Steps:</strong> After creating your project, you'll learn about the Command Framework in the next section. Your project will be ready for implementing subsystems and commands!
+          ✅ <strong>Next Steps:</strong> After creating your project, you&apos;ll learn about the Command Framework in the next section. Your project will be ready for implementing subsystems and commands!
         </p>
       </div>
     </PageTemplate>
