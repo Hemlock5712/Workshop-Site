@@ -9,7 +9,7 @@ export default function MechanismSetup() {
       nextPage={{ href: "/pid-control", title: "PID Control" }}
     >
       {/* Introduction */}
-        <div className="bg-gradient-to-r from-focus-50 to-focus-100 dark:from-primary-900/30 dark:to-primary-800/30 rounded-lg p-8 border border-[var(--border)]">
+        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-[var(--border)]">
           <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
           Verifying Your Mechanism Setup
         </h2>
@@ -71,7 +71,7 @@ export default function MechanismSetup() {
           <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-learn-50 dark:bg-learn-950/30 p-6 rounded-lg">
+            <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 p-6 rounded-lg">
               <h4 className="font-semibold text-learn-900 dark:text-learn-300 mb-3">Positive Voltage Test</h4>
               <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
                 Apply +6V to your motor and observe movement direction.
@@ -83,7 +83,7 @@ export default function MechanismSetup() {
               </div>
             </div>
 
-            <div className="bg-focus-50 dark:bg-focus-950/30 p-6 rounded-lg">
+            <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 p-6 rounded-lg">
               <h4 className="font-semibold text-focus-900 dark:text-focus-300 mb-3">Encoder Consistency</h4>
               <p className="text-focus-800 dark:text-focus-300 text-sm mb-3">
                 Verify encoder readings match motor movement.
@@ -98,7 +98,7 @@ export default function MechanismSetup() {
         </div>
 
         {/* Zero Encoder Setup */}
-        <div className="bg-concept-50 dark:bg-concept-950/30 border border-concept-200 dark:border-concept-900 rounded-lg p-6">
+        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 border border-[var(--border)] rounded-lg p-6">
           <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">🎯 Zero Encoder Position</h3>
           
           <div className="grid md:grid-cols-2 gap-6 mb-6">
