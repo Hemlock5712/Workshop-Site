@@ -10,7 +10,7 @@ export default function MotionMagic() {
       nextPage={{ href: "/programming", title: "Programming" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Motion Magic - Profiled Motion Control
         </h2>
