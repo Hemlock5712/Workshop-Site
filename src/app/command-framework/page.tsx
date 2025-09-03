@@ -9,7 +9,7 @@ export default function CommandFramework() {
     >
       <div className="grid md:grid-cols-3 gap-6">
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-concept-600 mb-3">Triggers</h3>
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Triggers</h3>
           <p className="text-slate-600 dark:text-slate-300 mb-3">Use BooleanSuppliers (True or False)</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Link inputs to commands (e.g., press button to drive forward, or use sensor to run Command automatically).
@@ -18,7 +18,7 @@ export default function CommandFramework() {
         </div>
 
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-concept-600 mb-3">Subsystems</h3>
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Subsystems</h3>
           <p className="text-slate-600 dark:text-slate-300 mb-3">Hardware components and control logic</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             (e.g., Drivetrain, Arm, or Flywheel). Motors and sensors are instantiated.
@@ -27,7 +27,7 @@ export default function CommandFramework() {
         </div>
 
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-concept-600 mb-3">Commands</h3>
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Commands</h3>
           <p className="text-slate-600 dark:text-slate-300 mb-3">Use Runnables (void functions)</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">
             Encapsulate robot actions (e.g., DriveForwardCommand, ShootBallCommand).
@@ -46,13 +46,13 @@ export default function CommandFramework() {
         
         <div className="grid md:grid-cols-1 gap-6">
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-            <h3 className="text-xl font-bold text-concept-600 mb-4">🚀 Implementation Sequence</h3>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🚀 Implementation Sequence</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/30 rounded-lg">
                 <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
                 <div>
                   <h4 className="font-bold text-primary-700 dark:text-primary-300">Building Subsystems</h4>
-                  <p className="text-concept-600 dark:text-concept-400 text-sm">Hardware instantiation, motor configuration, and basic control methods</p>
+                  <p className="text-[var(--foreground)] text-sm">Hardware instantiation, motor configuration, and basic control methods</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">
@@ -69,10 +69,10 @@ export default function CommandFramework() {
                   <p className="text-red-600 dark:text-red-400 text-sm">Precise position control with feedback and tuning</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+              <div className="flex items-center gap-4 p-4 bg-[var(--muted)] dark:bg-[var(--muted)]/30 rounded-lg">
                 <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
                 <div>
-                  <h4 className="font-bold text-purple-700 dark:text-purple-300">Motion Magic</h4>
+                  <h4 className="font-bold text-[var(--foreground)]">Motion Magic</h4>
                   <p className="text-purple-600 dark:text-purple-400 text-sm">Smooth profiled motion with acceleration control</p>
                 </div>
               </div>
