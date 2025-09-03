@@ -7,9 +7,9 @@ export default function ProjectSetup() {
       previousPage={{ href: "/hardware", title: "Hardware Setup" }}
       nextPage={{ href: "/command-framework", title: "Command Framework" }}
     >
-      <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Creating a New WPILib Project</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">Follow these step-by-step instructions to create a new FRC robot project using the Command Robot Skeleton (Advanced) template.</p>
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Creating a New WPILib Project</h2>
+        <p className="text-slate-600 dark:text-slate-300 mb-6">Follow these step-by-step instructions to create a new FRC robot project using the Command Robot Skeleton (Advanced) template.</p>
 
         <div className="space-y-4">
           <div className="flex items-start space-x-3">
@@ -18,7 +18,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Open VSCode</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Launch Visual Studio Code with the WPILib extension installed.
               </p>
             </div>
@@ -30,7 +30,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Select the WPILib Logo in Top Right Corner</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Click on the WPILib logo/icon in the top right corner of VSCode.
               </p>
             </div>
@@ -42,7 +42,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Select &quot;Create a New Project&quot;</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 From the WPILib menu, choose the &quot;Create a new project&quot; option.
               </p>
             </div>
@@ -54,7 +54,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Select &quot;Select a project type (Example or Template)&quot;</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Choose Template → Java → <strong>Command Robot Skeleton (Advanced)</strong>
               </p>
             </div>
@@ -80,7 +80,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Project Name &quot;Workshop&quot;</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Enter &quot;Workshop&quot; as your project name.
               </p>
             </div>
@@ -92,7 +92,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Team Number</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Enter your FRC team number. This is required for deploying code to your robot.
               </p>
             </div>
@@ -104,7 +104,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Check &quot;Enable Desktop Support&quot;</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 This allows you to test your robot code on your computer without a robot.
               </p>
             </div>
@@ -116,7 +116,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Generate Project</p>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Click &quot;Generate Project&quot; and then open the new project when prompted.
               </p>
             </div>

@@ -10,11 +10,11 @@ export default function BuildingSubsystems() {
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Understanding Subsystems
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
+        <p className="text-slate-600 dark:text-slate-300 mb-4">
           Subsystems are the foundation of command-based programming. They represent physical hardware components 
           and provide methods to control them safely and effectively.
         </p>
@@ -27,13 +27,13 @@ export default function BuildingSubsystems() {
 
       {/* Code Examples */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Subsystem Structure & Code Examples
         </h2>
 
         {/* Subsystem Example */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-green-600 mb-4">📦 Basic Subsystem Structure</h3>
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h3 className="text-xl font-bold text-learn-600 mb-4">📦 Basic Subsystem Structure</h3>
           <CodeBlock
             language="java"
             title="ExampleSubsystem.java"
@@ -97,7 +97,7 @@ public class ExampleSubsystem extends SubsystemBase {
             <p className="text-blue-800 dark:text-blue-300 text-sm mb-3">
               Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
             </p>
-            <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
+            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
               <code>private final TalonFX motor = new TalonFX(1);</code>
             </div>
           </div>
@@ -107,7 +107,7 @@ public class ExampleSubsystem extends SubsystemBase {
             <p className="text-green-800 dark:text-green-300 text-sm mb-3">
               Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
             </p>
-            <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
+            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
               <code>motor.getConfigurator().apply(config);</code>
             </div>
           </div>
@@ -117,7 +117,7 @@ public class ExampleSubsystem extends SubsystemBase {
             <p className="text-purple-800 dark:text-purple-300 text-sm mb-3">
               Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
             </p>
-            <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
+            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
               <code>SmartDashboard.putNumber(&quot;Value&quot;, sensor.get());</code>
             </div>
           </div>
@@ -127,12 +127,12 @@ public class ExampleSubsystem extends SubsystemBase {
 
       {/* Before/After Implementation */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Workshop Implementation: ARM Subsystem
         </h2>
 
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             🔄 Before → After: Implementation
           </h3>
           
@@ -167,7 +167,7 @@ public class ExampleSubsystem extends SubsystemBase {
         />
 
         <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4">🔍 Code Walkthrough</h3>
+          <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>

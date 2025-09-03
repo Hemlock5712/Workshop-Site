@@ -79,7 +79,6 @@ export default function Home() {
               accurate movements for game piece manipulation.
             </p>
           </div>
-          {/* Flywheel Section - Commented out for ARM-focused workshop
           <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800">
             <div className="mb-4">
               <Image
@@ -99,7 +98,6 @@ export default function Home() {
               real-time adjustments for accuracy across varying distances.
             </p>
           </div>
-          */}
         </div>
       </div>
 

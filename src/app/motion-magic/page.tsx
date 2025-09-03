@@ -10,16 +10,16 @@ export default function MotionMagic() {
       nextPage={{ href: "/programming", title: "Programming" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Motion Magic - Profiled Motion Control
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
+        <p className="text-slate-600 dark:text-slate-300 mb-4">
           Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles. 
           This prevents jerky movements and reduces mechanical stress while maintaining precise positioning.
         </p>
-        <div className="bg-purple-100 dark:bg-purple-900/30 p-4 rounded-lg">
-          <p className="text-purple-800 dark:text-purple-300 font-medium">
+        <div className="bg-concept-100 dark:bg-concept-900/30 p-4 rounded-lg">
+          <p className="text-concept-800 dark:text-concept-300 font-medium">
             🚀 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration
           </p>
         </div>
@@ -27,50 +27,50 @@ export default function MotionMagic() {
 
       {/* Motion Magic Theory */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Understanding Motion Magic Profiles
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-6 border border-purple-200 dark:border-purple-900">
-            <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">📈 Trapezoidal Profile</h3>
-            <p className="text-purple-800 dark:text-purple-300 mb-4 text-sm">
+          <div className="bg-concept-50 dark:bg-concept-950/30 rounded-lg p-6 border border-concept-200 dark:border-concept-900">
+            <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">📈 Trapezoidal Profile</h3>
+            <p className="text-concept-800 dark:text-concept-300 mb-4 text-sm">
               Motion Magic creates a trapezoidal velocity profile with three phases:
             </p>
             <div className="space-y-2">
-              <div className="bg-white dark:bg-gray-900 p-3 rounded">
-                <strong className="text-purple-700 dark:text-purple-300">1. Acceleration:</strong>
-                <span className="text-purple-600 dark:text-purple-400 text-sm"> Ramp up to cruise velocity</span>
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
+                <strong className="text-concept-700 dark:text-concept-300">1. Acceleration:</strong>
+                <span className="text-concept-600 dark:text-concept-400 text-sm"> Ramp up to cruise velocity</span>
               </div>
-              <div className="bg-white dark:bg-gray-900 p-3 rounded">
-                <strong className="text-purple-700 dark:text-purple-300">2. Cruise:</strong>
-                <span className="text-purple-600 dark:text-purple-400 text-sm"> Maintain constant max velocity</span>
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
+                <strong className="text-concept-700 dark:text-concept-300">2. Cruise:</strong>
+                <span className="text-concept-600 dark:text-concept-400 text-sm"> Maintain constant max velocity</span>
               </div>
-              <div className="bg-white dark:bg-gray-900 p-3 rounded">
-                <strong className="text-purple-700 dark:text-purple-300">3. Deceleration:</strong>
-                <span className="text-purple-600 dark:text-purple-400 text-sm"> Smoothly brake to target</span>
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
+                <strong className="text-concept-700 dark:text-concept-300">3. Deceleration:</strong>
+                <span className="text-concept-600 dark:text-concept-400 text-sm"> Smoothly brake to target</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
-            <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">⚙️ Key Parameters</h3>
+          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
+            <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">⚙️ Key Parameters</h3>
             <div className="space-y-3">
-              <div className="bg-white dark:bg-gray-900 p-3 rounded">
-                <h4 className="font-bold text-blue-700 dark:text-blue-300">Motion Magic Cruise Velocity</h4>
-                <p className="text-blue-600 dark:text-blue-400 text-sm">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
+                <h4 className="font-bold text-primary-700 dark:text-primary-300">Motion Magic Cruise Velocity</h4>
+                <p className="text-primary-600 dark:text-primary-400 text-sm">
                   Maximum velocity during cruise phase (rotations/second)
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-900 p-3 rounded">
-                <h4 className="font-bold text-blue-700 dark:text-blue-300">Motion Magic Acceleration</h4>
-                <p className="text-blue-600 dark:text-blue-400 text-sm">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
+                <h4 className="font-bold text-primary-700 dark:text-primary-300">Motion Magic Acceleration</h4>
+                <p className="text-primary-600 dark:text-primary-400 text-sm">
                   Rate of acceleration/deceleration (rotations/second²)
                 </p>
               </div>
-              <div className="bg-white dark:bg-gray-900 p-3 rounded">
-                <h4 className="font-bold text-blue-700 dark:text-blue-300">Motion Magic Jerk</h4>
-                <p className="text-blue-600 dark:text-blue-400 text-sm">
+              <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
+                <h4 className="font-bold text-primary-700 dark:text-primary-300">Motion Magic Jerk</h4>
+                <p className="text-primary-600 dark:text-primary-400 text-sm">
                   Rate of change of acceleration (rotations/second³)
                 </p>
               </div>
@@ -80,7 +80,7 @@ export default function MotionMagic() {
 
         {/* Documentation Link */}
         <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-indigo-700 dark:text-indigo-300 mb-4">📚 Official Motion Magic Documentation</h3>
+          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">📚 Official Motion Magic Documentation</h3>
           <p className="text-indigo-800 dark:text-indigo-300 mb-4">
             For complete Motion Magic reference, configuration examples, and advanced tuning techniques:
           </p>
@@ -100,12 +100,12 @@ export default function MotionMagic() {
 
       {/* Code Implementation */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Motion Magic Implementation in Code
         </h2>
 
-        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-green-600 mb-4">🔧 Motion Magic Configuration Example</h3>
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motion Magic Configuration Example</h3>
           <CodeBlock
             language="java"
             title="Motion Magic Setup in Subsystem Constructor"
@@ -147,8 +147,8 @@ public void setTargetPosition(double positionRotations) {
         </div>
 
         {/* Before/After Implementation */}
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             🔄 Before → After: Implementation
           </h3>
           
@@ -164,9 +164,9 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
 
-            <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
-              <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
+            <div className="bg-learn-50 dark:bg-learn-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
+              <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
+              <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
                 <li>• Motion Magic profiled motion with MotionMagicVoltage</li>
                 <li>• Smooth acceleration and deceleration curves</li>
                 <li>• Reduced mechanical stress and wear</li>
@@ -186,7 +186,7 @@ public void setTargetPosition(double positionRotations) {
         />
 
         <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-orange-900 dark:text-orange-300 mb-4">🔍 Code Walkthrough</h3>
+          <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
@@ -220,11 +220,11 @@ public void setTargetPosition(double positionRotations) {
 
         {/* Motion Magic vs PID Comparison */}
         <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-4">⚖️ Motion Magic vs Basic PID</h3>
+          <h3 className="text-xl font-bold text-focus-700 dark:text-focus-300 mb-4">⚖️ Motion Magic vs Basic PID</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">When to Use Basic PID:</h4>
-              <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 list-disc list-inside">
+              <ul className="text-sm text-focus-700 dark:text-focus-300 space-y-1 list-disc list-inside">
                 <li>Simple positioning tasks</li>
                 <li>Continuous control (like maintaining angle)</li>
                 <li>When speed of response is critical</li>
@@ -233,7 +233,7 @@ public void setTargetPosition(double positionRotations) {
             </div>
             <div>
               <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">When to Use Motion Magic:</h4>
-              <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1 list-disc list-inside">
+              <ul className="text-sm text-focus-700 dark:text-focus-300 space-y-1 list-disc list-inside">
                 <li>Large, heavy mechanisms (arms, elevators)</li>
                 <li>When smooth motion is important</li>
                 <li>Preventing mechanical stress</li>
@@ -244,35 +244,35 @@ public void setTargetPosition(double positionRotations) {
         </div>
 
         {/* Motion Magic Tuning Steps */}
-        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">⚙️ Motion Magic Tuning Steps</h3>
+        <div className="bg-primary-50 dark:bg-primary-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">⚙️ Motion Magic Tuning Steps</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">1. Find Maximum Velocity:</h4>
-              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-disc list-inside">
+              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">1. Find Maximum Velocity:</h4>
+              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-2 list-disc list-inside">
                 <li>Plot velocity <strong>without Motion Magic</strong></li>
                 <li>Move mechanism the maximum distance it will travel</li>
                 <li>Record the maximum velocity it reaches</li>
                 <li>Store this value in your code as a constant</li>
-                <li><code className="bg-white dark:bg-gray-800 px-1 rounded">MAX_VELOCITY = 8.5; // rps from plot</code></li>
+                <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">MAX_VELOCITY = 8.5; // rps from plot</code></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">2. Set Motion Magic Parameters:</h4>
-              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-2 list-disc list-inside">
+              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">2. Set Motion Magic Parameters:</h4>
+              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-2 list-disc list-inside">
                 <li><strong>Cruise Velocity:</strong> Use 80% of max velocity</li>
-                <li><code className="bg-white dark:bg-gray-800 px-1 rounded">cruiseVel = MAX_VELOCITY * 0.8</code></li>
+                <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">cruiseVel = MAX_VELOCITY * 0.8</code></li>
                 <li><strong>Acceleration:</strong> Use 4x cruise velocity for smooth motion</li>
                 <li><strong>Acceleration:</strong> Use 10x cruise velocity for quicker motion</li>
-                <li><code className="bg-white dark:bg-gray-800 px-1 rounded">acceleration = cruiseVel * 4.0</code></li>
+                <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">acceleration = cruiseVel * 4.0</code></li>
               </ul>
             </div>
           </div>
 
           <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
             <h4 className="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">💡 Why This Method Works:</h4>
-            <p className="text-indigo-700 dark:text-indigo-300 text-sm">
+            <p className="text-primary-700 dark:text-primary-300 text-sm">
               By measuring actual mechanism performance first, you set realistic motion limits that prevent 
               oscillation and ensure smooth, achievable motion profiles. The 80% cruise velocity provides 
               headroom for control corrections while maintaining good performance.

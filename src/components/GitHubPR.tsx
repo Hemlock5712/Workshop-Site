@@ -235,7 +235,7 @@ export default function GitHubPR({
     <div className={`my-8 ${className}`}>
       {title && (
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
             {title}
           </h3>
           {description && (
@@ -270,7 +270,7 @@ export default function GitHubPR({
                 </span>
               </div>
 
-              <h4 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+              <h4 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
                 {pr.title}
               </h4>
 
@@ -304,7 +304,7 @@ export default function GitHubPR({
         {/* GitHub Diff View */}
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h5 className="font-semibold text-gray-900 dark:text-gray-100">
+            <h5 className="font-semibold text-slate-900 dark:text-slate-100">
               {focusFile ? "ARM.java Changes" : "Files Changed"}
             </h5>
             <div className="flex items-center space-x-4 text-sm">
@@ -327,7 +327,7 @@ export default function GitHubPR({
             >
               <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <span className="font-mono text-sm font-medium text-gray-900 dark:text-gray-100">
+                  <span className="font-mono text-sm font-medium text-slate-900 dark:text-slate-100">
                     {file.filename}
                   </span>
                   <span
@@ -367,7 +367,7 @@ export default function GitHubPR({
 
       {/* Workshop Context */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-6">
-        <h5 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+        <h5 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
           🎓 Workshop Learning
         </h5>
         <p className="text-gray-700 dark:text-gray-300 text-sm">

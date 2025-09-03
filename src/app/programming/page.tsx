@@ -9,15 +9,15 @@ export default function Programming() {
       previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
       nextPage={undefined}
     >
-      <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Programming ARM</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Programming ARM</h2>
+        <p className="text-slate-600 dark:text-slate-300 mb-6">
           In this section, we&apos;ll program common FRC mechanisms starting with our ARM subsystem.
           We&apos;ll build upon this initial implementation throughout the workshop.
         </p>
 
         <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg mb-6">
-          <h3 className="font-semibold text-green-900 dark:text-green-300 mb-2">What You&apos;ll Learn:</h3>
+          <h3 className="font-semibold text-learn-700 dark:text-learn-300 mb-2">What You&apos;ll Learn:</h3>
           <ul className="list-disc list-inside text-green-800 dark:text-green-300 space-y-1">
             {/* <li>Setting up subsystems for Arm and Flywheel</li> */}
             <li>Setting up ARM subsystem</li>
@@ -30,17 +30,17 @@ export default function Programming() {
       </div>
 
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Workshop Development Approach</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workshop Development Approach</h2>
 
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-4">🔄 Iterative Development</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">🔄 Iterative Development</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 We&apos;ll start with basic motor control and progressively add advanced features.
                 Each step builds upon the previous implementation.
               </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• Start with voltage control</li>
                 <li>• Add position feedback</li>
                 <li>• Implement PID control</li>
@@ -50,12 +50,12 @@ export default function Programming() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-purple-700 dark:text-purple-300 mb-4">🎯 Real-World Focus</h3>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
+              <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">🎯 Real-World Focus</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Each modification addresses real competition challenges and follows
                 FRC best practices used by successful teams.
               </p>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• Competition-tested patterns</li>
                 <li>• Robust error handling</li>
                 <li>• Performance optimization</li>
@@ -68,10 +68,10 @@ export default function Programming() {
       </section>
 
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Initial ARM Subsystem</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Initial ARM Subsystem</h2>
 
         <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">📋 Starting Point</h3>
+          <h3 className="font-semibold text-primary-700 dark:text-primary-300 mb-2">📋 Starting Point</h3>
           <p className="text-blue-800 dark:text-blue-300">
             This is our initial Arm implementation. Throughout the workshop, we&apos;ll enhance this code by adding:
             PID control, feedforward, position control, safety limits, and more sophisticated commands.
@@ -95,9 +95,9 @@ export default function Programming() {
         />
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-800">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">🔧 Key Components</h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">🔧 Key Components</h4>
+            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-2">
               <li><strong>TalonFX (ID: 31):</strong> Main motor controller</li>
               <li><strong>CANCoder (ID: 22):</strong> Position feedback sensor</li>
               <li><strong>VoltageOut:</strong> Control mode for direct voltage output</li>
@@ -105,9 +105,9 @@ export default function Programming() {
             </ul>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-800">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">🎯 Current Capabilities</h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-2">
+          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">🎯 Current Capabilities</h4>
+            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-2">
               <li><strong>setVoltage():</strong> Apply raw voltage to motor</li>
               <li><strong>stop():</strong> Stop motor movement</li>
               <li><strong>Remote Encoder:</strong> CANCoder feedback configured</li>
@@ -117,16 +117,16 @@ export default function Programming() {
         </div>
 
         <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4">
+          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">
             🎯 Step 1: Basic Subsystem (PR #1)
           </h3>
           <p className="text-blue-800 dark:text-blue-300 mb-4">
             Our first step creates a foundational ARM subsystem with basic motor control and sensor feedback.
           </p>
           
-          <div className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-4">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Implementation Details:</h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Implementation Details:</h4>
+            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
               <li>• <strong>TalonFX Motor:</strong> Configured with device ID 31</li>
               <li>• <strong>CANCoder Sensor:</strong> Remote feedback sensor (ID 22)</li>
               <li>• <strong>Voltage Control:</strong> Direct voltage output for basic movement</li>
@@ -152,7 +152,7 @@ export default function Programming() {
         />
 
         <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">
+          <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">
             🎮 Step 2: Commands Integration (PR #2)
           </h3>
           <p className="text-green-800 dark:text-green-300 mb-4">
@@ -160,9 +160,9 @@ export default function Programming() {
           </p>
           
           <div className="grid md:grid-cols-2 gap-4 mb-4">
-            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">New Subsystem Methods:</h4>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">New Subsystem Methods:</h4>
+              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• <strong>moveUp():</strong> Move arm upward</li>
                 <li>• <strong>moveDown():</strong> Move arm downward</li>
                 <li>• <strong>getPosition():</strong> Get current angle</li>
@@ -170,9 +170,9 @@ export default function Programming() {
               </ul>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Command Integration:</h4>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">Command Integration:</h4>
+              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• <strong>RobotContainer:</strong> Binds controls to commands</li>
                 <li>• <strong>Controller Input:</strong> Joystick triggers arm movement</li>
                 <li>• <strong>Default Command:</strong> Stops arm when no input</li>
@@ -191,12 +191,12 @@ export default function Programming() {
       </section>
 
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Step 3: Precise Control with PID
         </h2>
 
         <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-purple-900 dark:text-purple-300 mb-4">
+          <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">
             🎯 Step 3: PID Control (PR #3)
           </h3>
           <p className="text-purple-800 dark:text-purple-300 mb-4">
@@ -204,31 +204,31 @@ export default function Programming() {
           </p>
           
           <div className="grid md:grid-cols-3 gap-4 mb-4">
-            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
               <h4 className="font-semibold text-red-600 mb-2">P - Proportional</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
                 Responds to current error. Larger error = stronger correction.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
               <h4 className="font-semibold text-yellow-600 mb-2">I - Integral</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
                 Eliminates steady-state error by accumulating past errors.
               </p>
             </div>
 
-            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
               <h4 className="font-semibold text-blue-600 mb-2">D - Derivative</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+              <p className="text-sm text-slate-600 dark:text-slate-300">
                 Reduces overshoot by predicting future error trends.
               </p>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-4">
-            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">PID Implementation Changes:</h4>
-            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 mb-4">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">PID Implementation Changes:</h4>
+            <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
               <li>• <strong>PositionVoltage:</strong> Replace VoltageOut with PID control request</li>
               <li>• <strong>PID Constants:</strong> kP, kI, kD values for tuning</li>
               <li>• <strong>Target Positions:</strong> Set precise angle targets</li>
@@ -245,8 +245,8 @@ export default function Programming() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-8 bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+      <section className="flex flex-col gap-8 bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Running with Hardware Sim
         </h2>
 
@@ -262,8 +262,8 @@ export default function Programming() {
         />
       </section>
 
-      <section className="flex flex-col gap-8 bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+      <section className="flex flex-col gap-8 bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Verifying Motor Setup
         </h2>
 
@@ -285,14 +285,14 @@ export default function Programming() {
       </section>
 
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Workshop Progression</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workshop Progression</h2>
 
         <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg p-6">
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">🚀 What We&apos;ll Build Next</h3>
+          <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">🚀 What We&apos;ll Build Next</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-medium text-purple-700 dark:text-purple-300 mb-2">Enhanced Control</h4>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <h4 className="font-medium text-concept-700 dark:text-concept-300 mb-2">Enhanced Control</h4>
+              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• Position-based control</li>
                 <li>• PID feedback loops</li>
                 <li>• Feedforward compensation</li>
@@ -300,8 +300,8 @@ export default function Programming() {
               </ul>
             </div>
             <div>
-              <h4 className="font-medium text-blue-700 dark:text-blue-300 mb-2">Advanced Features</h4>
-              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <h4 className="font-medium text-primary-700 dark:text-primary-300 mb-2">Advanced Features</h4>
+              <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• Safety limits and bounds</li>
                 <li>• Encoder calibration</li>
                 <li>• Dashboard integration</li>

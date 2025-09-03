@@ -147,7 +147,7 @@ export default function GitHubPage({
     <div className={`${className}`}>
       {title && (
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
             {title}
           </h3>
           {description && (
@@ -161,7 +161,7 @@ export default function GitHubPage({
         <div className="border-b border-gray-200 dark:border-gray-800 p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <span className="font-mono text-lg font-medium text-gray-900 dark:text-gray-100">
+              <span className="font-mono text-lg font-medium text-slate-900 dark:text-slate-100">
                 {filename}
               </span>
               <span className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium">
@@ -201,7 +201,7 @@ export default function GitHubPage({
 
       {/* GitHub Context */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-6">
-        <h5 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">
+        <h5 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
           📁 Live from GitHub
         </h5>
         <p className="text-gray-700 dark:text-gray-300 text-sm">

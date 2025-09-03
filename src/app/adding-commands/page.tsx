@@ -10,16 +10,16 @@ export default function AddingCommands() {
       nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Command-Based Programming
         </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">
+        <p className="text-slate-600 dark:text-slate-300 mb-4">
           Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks 
           and can be triggered by user input, sensors, or automated sequences.
         </p>
-        <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded-lg">
-          <p className="text-green-800 dark:text-green-300 font-medium">
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
             🎯 Key Concept: Commands coordinate subsystem actions while ensuring only one command uses a subsystem at a time
           </p>
         </div>
@@ -27,13 +27,13 @@ export default function AddingCommands() {
 
       {/* Command Examples */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Command Structure & Examples
         </h2>
 
         {/* Inline Command Examples */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-purple-600 mb-4">🎮 Inline Command Methods</h3>
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h3 className="text-xl font-bold text-concept-600 mb-4">🎮 Inline Command Methods</h3>
           <CodeBlock
             language="java"
             title="Subsystem Command Methods"
@@ -56,8 +56,8 @@ public Command stopArm() {
         </div>
 
         {/* Trigger Examples */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-blue-600 mb-4">🎯 Trigger Examples - Binding Input to Commands</h3>
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h3 className="text-xl font-bold text-primary-600 mb-4">🎯 Trigger Examples - Binding Input to Commands</h3>
           <CodeBlock
             language="java"
             title="RobotContainer.java - configureBindings()"
@@ -93,27 +93,27 @@ public class RobotContainer {
             <p className="text-purple-800 dark:text-purple-300 text-sm mb-3">
               Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
             </p>
-            <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
+            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
               <code>setDefaultCommand(stopCommand());</code>
             </div>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
-            <h4 className="text-lg font-bold text-blue-700 dark:text-blue-300 mb-3">🎮 Trigger Types</h4>
-            <p className="text-blue-800 dark:text-blue-300 text-sm mb-3">
+          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
+            <h4 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-3">🎮 Trigger Types</h4>
+            <p className="text-primary-800 dark:text-primary-300 text-sm mb-3">
               Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).
             </p>
-            <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
+            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
               <code>controller.a().whileTrue(command);</code>
             </div>
           </div>
 
-          <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border border-green-200 dark:border-green-900">
-            <h4 className="text-lg font-bold text-green-700 dark:text-green-300 mb-3">🚀 Motor Configuration</h4>
-            <p className="text-green-800 dark:text-green-300 text-sm mb-3">
+          <div className="bg-learn-50 dark:bg-learn-950/30 rounded-lg p-6 border border-learn-200 dark:border-learn-900">
+            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🚀 Motor Configuration</h4>
+            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
               Motor configuration code should be wrapped properly to fit in configuration sections.
             </p>
-            <div className="bg-white dark:bg-gray-900 p-3 rounded text-xs">
+            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
               <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>
             </div>
           </div>
@@ -122,12 +122,12 @@ public class RobotContainer {
 
       {/* Before/After Implementation */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Workshop Implementation: Adding Commands to ARM
         </h2>
 
-        <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             🔄 Before → After: Implementation
           </h3>
           
@@ -142,9 +142,9 @@ public class RobotContainer {
               </ul>
             </div>
 
-            <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
-              <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
+            <div className="bg-learn-50 dark:bg-learn-950/30 p-4 rounded-lg border border-learn-200 dark:border-learn-900">
+              <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
+              <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
                 <li>• Enhanced ARM subsystem methods</li>
                 <li>• Xbox controller integration</li>
                 <li>• Commands for moveUp(), moveDown()</li>
@@ -164,8 +164,8 @@ public class RobotContainer {
         />
 
         {/* RobotContainer Implementation */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-orange-600 mb-4">🤖 RobotContainer Implementation</h3>
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h3 className="text-xl font-bold text-practice-600 mb-4">🤖 RobotContainer Implementation</h3>
           <CodeBlock
             language="java"
             title="Complete RobotContainer.java"
@@ -194,21 +194,21 @@ public class RobotContainer {
           />
         </div>
 
-        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">🔍 Code Walkthrough</h3>
+        <div className="bg-learn-50 dark:bg-learn-950/30 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">New Subsystem Methods:</h4>
-              <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">New Subsystem Methods:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>moveUp():</strong> Positive voltage for upward movement</li>
                 <li>• <strong>moveDown():</strong> Negative voltage for downward movement</li>
               </ul>
             </div>
             
             <div>
-              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Command Integration:</h4>
-              <ul className="text-sm text-green-700 dark:text-green-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Command Integration:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>RobotContainer:</strong> Xbox controller instantiation</li>
                 <li>• <strong>Button Bindings:</strong> A/B buttons control arm direction</li>
                 <li>• <strong>Default Command:</strong> Stop arm when no input</li>
