@@ -12,7 +12,7 @@ This website transforms the FRC programming workshop content into an interactive
 - **Hardware Setup** - CTRE motors, CANivore, and device configuration  
 - **Project Setup** - Creating and organizing WPILib projects
 - **Command Framework** - Understanding triggers, subsystems, and commands
-- **Programming** - ARM and Flywheel mechanism implementation with progressive development
+- **Programming** - Arm and Flywheel mechanism implementation with progressive development
 - **Control Systems** - PID and Feedforward control theory
 - **Tuning** - Real-world mechanism tuning with Phoenix Tuner X
 
@@ -63,7 +63,7 @@ src/
 │   ├── hardware/          # Hardware setup guide
 │   ├── project-setup/     # Project creation & organization
 │   ├── command-framework/ # Command-based programming
-│   ├── programming/       # ARM & Flywheel implementation
+│   ├── programming/       # Arm & Flywheel implementation
 │   ├── control-systems/   # PID & Feedforward theory
 │   └── tuning/           # Mechanism tuning guide
 └── components/            # Reusable React components

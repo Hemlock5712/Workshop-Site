@@ -65,7 +65,7 @@ Workshop Content:
     ├── /hardware (CTRE hardware setup)
     ├── /project-setup (WPILib project creation)
     ├── /command-framework (Triggers, subsystems, commands)
-    ├── /programming (ARM & Flywheel implementation)
+    ├── /programming (Arm & Flywheel implementation)
     ├── /control-systems (PID & Feedforward theory)
 ```
 
@@ -108,7 +108,7 @@ Workshop Content:
 ### Video Tutorial Integration (feat/video-tutorials)
 - **YouTube Embeddings**: Added educational videos throughout workshop pages
   - Hardware setup videos for CTRE device configuration
-  - Programming implementation tutorials for ARM and Flywheel mechanisms
+  - Programming implementation tutorials for Arm and Flywheel mechanisms
   - Project setup walkthrough videos
   - Tuning demonstration videos
 - **Enhanced GitHub Components**: Created `GithubPageWithPR.tsx` with tabbed interface

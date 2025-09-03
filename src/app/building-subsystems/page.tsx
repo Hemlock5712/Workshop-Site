@@ -128,7 +128,7 @@ public class ExampleSubsystem extends SubsystemBase {
       {/* Before/After Implementation */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation: ARM Subsystem
+          Workshop Implementation: Arm Subsystem
         </h2>
 
         <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
@@ -149,7 +149,7 @@ public class ExampleSubsystem extends SubsystemBase {
             <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
               <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
               <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
-                <li>• Complete ARM subsystem class</li>
+                <li>• Complete Arm subsystem class</li>
                 <li>• TalonFX motor (ID: 31) configured</li>
                 <li>• CANCoder sensor (ID: 22) integrated</li>
                 <li>• Basic voltage control methods</li>
@@ -192,7 +192,7 @@ public class ExampleSubsystem extends SubsystemBase {
           <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
             <p className="text-indigo-800 dark:text-indigo-300 text-sm">
               <strong>💡 Next Step:</strong> This subsystem is ready for command integration! 
-              Next, we&apos;ll add commands to control this ARM subsystem through user input.
+              Next, we&apos;ll add commands to control this Arm subsystem through user input.
             </p>
           </div>
         </div>

@@ -104,15 +104,15 @@ export default function MechanismSetup() {
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
               <p className="text-concept-800 dark:text-concept-300 mb-4">
-                Set your mechanism to the zero position before running any control algorithms. For ARM mechanisms, 
+                Set your mechanism to the zero position before running any control algorithms. For Arm mechanisms,
                 zero should be straight parallel with the ground, facing the 3 o&apos;clock position.
               </p>
               
               <div className="bg-concept-100 dark:bg-concept-900/30 p-4 rounded-lg">
                 <h4 className="font-semibold text-concept-900 dark:text-concept-300 mb-2">Zero Position Setup:</h4>
                 <ul className="text-concept-800 dark:text-concept-300 space-y-1 text-sm">
-                  <li>• Position ARM parallel to ground</li>
-                  <li>• ARM should point to 3 o&apos;clock position</li>
+                  <li>• Position Arm parallel to ground</li>
+                  <li>• Arm should point to 3 o&apos;clock position</li>
                   <li>• Reset encoder to 0.0 at this position</li>
                   <li>• Verify position reading stays consistent</li>
                 </ul>
