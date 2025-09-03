@@ -125,18 +125,18 @@ export default function MechanismSetup() {
           </div>
         </div>
 
-        {/* Next Steps */}
+          {/* Next Step */}
         <div className="bg-[var(--muted)] border border-[var(--border)] rounded-lg p-6">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">✅ Ready for Control</h3>
           <p className="text-[var(--muted-foreground)] mb-4">
             Once your mechanism moves in the correct direction and encoders provide accurate feedback, you&apos;re ready to implement advanced control algorithms.
           </p>
-          <div className="bg-[var(--muted)] p-4 rounded">
-            <p className="text-[var(--muted-foreground)] text-sm">
-              <strong>🚀 Next Step:</strong> With verified hardware setup, we can now implement PID control for precise positioning.
-              The control algorithm will use the encoder feedback to automatically reach target positions.
-            </p>
-          </div>
+            <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
+              <p className="text-indigo-800 dark:text-indigo-300 text-sm">
+                <strong>💡 Next Step:</strong> With verified hardware setup, we can now implement PID control for precise positioning.
+                The control algorithm will use the encoder feedback to automatically reach target positions.
+              </p>
+            </div>
         </div>
       </section>
     </PageTemplate>

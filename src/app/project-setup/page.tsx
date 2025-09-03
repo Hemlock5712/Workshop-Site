@@ -132,9 +132,9 @@ export default function ProjectSetup() {
         className="w-full h-full aspect-video rounded-lg"
       />
 
-      <div className="bg-practice-100 dark:bg-practice-900/20 border border-practice-200 dark:border-practice-800 rounded-lg p-6">
-        <p className="text-practice-800 dark:text-practice-200">
-          ✅ <strong>Next Steps:</strong> After creating your project, you&apos;ll learn about the Command Framework in the next section. Your project will be ready for implementing subsystems and commands!
+      <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
+        <p className="text-indigo-800 dark:text-indigo-300 text-sm">
+          <strong>💡 Next Step:</strong> After creating your project, you&apos;ll learn about the Command Framework in the next section. Your project will be ready for implementing subsystems and commands!
         </p>
       </div>
     </PageTemplate>
