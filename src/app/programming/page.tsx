@@ -10,7 +10,7 @@ export default function Programming() {
       nextPage={{ href: "/", title: "Home" }}
     >
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">Programming Arm</h2>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Programming Arm</h2>
         <p className="text-slate-600 dark:text-slate-300 mb-6">
           In this section, we&apos;ll program common FRC mechanisms starting with our Arm subsystem.
           We&apos;ll build upon this initial implementation throughout the workshop.

@@ -10,7 +10,7 @@ export default function MechanismSetup() {
     >
       {/* Introduction */}
         <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
-          <h2 className="text-2xl font-bold mb-4">Verifying Your Mechanism Setup</h2>
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Verifying Your Mechanism Setup</h2>
           <p className="text-[var(--muted-foreground)] mb-4">
             Before implementing advanced control algorithms, we need to verify that motors and encoders are working correctly.
             This ensures proper direction, zeroing, and basic functionality.
@@ -24,7 +24,7 @@ export default function MechanismSetup() {
 
       {/* Encoder Verification */}
       <section className="flex flex-col gap-8">
-          <h2 className="text-3xl font-bold text-[var(--foreground)]">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Encoder Direction and Zeroing
         </h2>
 

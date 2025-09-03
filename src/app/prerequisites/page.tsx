@@ -6,7 +6,7 @@ export default function Prerequisites() {
       <div className="grid gap-6">
         {/* Software Requirements */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h2 className="text-2xl font-bold text-primary-600 mb-4">📋 Software Requirements</h2>
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">📋 Software Requirements</h2>
 
           <div className="space-y-6">
             <div className="border-l-4 border-primary-200 dark:border-primary-900 pl-4">
