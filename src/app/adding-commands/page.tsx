@@ -98,7 +98,7 @@ public class RobotContainer {
             </div>
           </div>
 
-          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
+          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-primary-200 dark:border-primary-900">
             <h4 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-3">🎮 Trigger Types</h4>
             <p className="text-primary-800 dark:text-primary-300 text-sm mb-3">
               Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).

@@ -48,11 +48,11 @@ export default function CommandFramework() {
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
             <h3 className="text-xl font-bold text-concept-600 mb-4">🚀 Implementation Sequence</h3>
             <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
-                <div className="bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+              <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/30 rounded-lg">
+                <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
                 <div>
-                  <h4 className="font-bold text-blue-700 dark:text-blue-300">Building Subsystems</h4>
-                  <p className="text-concept-600 dark:text-blue-400 text-sm">Hardware instantiation, motor configuration, and basic control methods</p>
+                  <h4 className="font-bold text-primary-700 dark:text-primary-300">Building Subsystems</h4>
+                  <p className="text-concept-600 dark:text-concept-400 text-sm">Hardware instantiation, motor configuration, and basic control methods</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">

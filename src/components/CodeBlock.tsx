@@ -83,7 +83,7 @@ export default function CodeBlock({
                 </span>
               )}
               {language && (
-                <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded font-medium">
+                <span className="text-xs bg-primary-600 text-white px-2 py-1 rounded font-medium">
                   {language.toUpperCase()}
                 </span>
               )}

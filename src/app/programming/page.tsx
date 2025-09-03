@@ -70,9 +70,9 @@ export default function Programming() {
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Initial ARM Subsystem</h2>
 
-        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+        <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
           <h3 className="font-semibold text-primary-700 dark:text-primary-300 mb-2">📋 Starting Point</h3>
-          <p className="text-blue-800 dark:text-blue-300">
+          <p className="text-primary-800 dark:text-primary-300">
             This is our initial Arm implementation. Throughout the workshop, we&apos;ll enhance this code by adding:
             PID control, feedforward, position control, safety limits, and more sophisticated commands.
           </p>
@@ -116,11 +116,11 @@ export default function Programming() {
           </div>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+        <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">
             🎯 Step 1: Basic Subsystem (PR #1)
           </h3>
-          <p className="text-blue-800 dark:text-blue-300 mb-4">
+          <p className="text-primary-800 dark:text-primary-300 mb-4">
             Our first step creates a foundational ARM subsystem with basic motor control and sensor feedback.
           </p>
           
@@ -219,7 +219,7 @@ export default function Programming() {
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-600 mb-2">D - Derivative</h4>
+              <h4 className="font-semibold text-primary-600 mb-2">D - Derivative</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Reduces overshoot by predicting future error trends.
               </p>

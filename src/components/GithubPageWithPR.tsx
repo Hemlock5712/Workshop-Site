@@ -23,7 +23,7 @@ export default function GithubPageWithPR({ repository, filePath, branch, pullReq
           <button
             onClick={() => setActiveTab("ide")}
             className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === "ide"
-              ? "border-blue-600 text-blue-600"
+              ? "border-primary-600 text-primary-600"
               : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               }`}
           >
@@ -32,7 +32,7 @@ export default function GithubPageWithPR({ repository, filePath, branch, pullReq
           <button
             onClick={() => setActiveTab("diff")}
             className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === "diff"
-              ? "border-blue-600 text-blue-600"
+              ? "border-primary-600 text-primary-600"
               : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               }`}
           >

@@ -4,9 +4,9 @@ import Link from "next/link";
 export default function Introduction() {
   return (
     <PageTemplate title="Gray Matter Coding Workshop" previousPage={{ href: "/", title: "Home" }} nextPage={{ href: "/prerequisites", title: "Prerequisites" }}>
-      <div className="bg-blue-50 dark:bg-blue-950/30 border-l-4 border-blue-400 dark:border-blue-900 p-6">
-        <p className="text-lg font-medium text-blue-900 dark:text-blue-300 mb-2">Quick Note</p>
-        <p className="text-blue-800 dark:text-blue-300">
+      <div className="bg-primary-50 dark:bg-primary-950/30 border-l-4 border-primary-400 dark:border-primary-900 p-6">
+        <p className="text-lg font-medium text-primary-900 dark:text-primary-300 mb-2">Quick Note</p>
+        <p className="text-primary-800 dark:text-primary-300">
           All underlined text and images of code or products will have built-in links to resources
         </p>
       </div>

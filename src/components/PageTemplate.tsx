@@ -27,7 +27,7 @@ export default function PageTemplate({
         <div className="mb-8">
           <Link
             href={previousPage.href}
-            className="text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-primary-600 hover:text-primary-800 font-medium dark:text-primary-400 dark:hover:text-primary-300"
           >
             ← Back to {previousPage.title}
           </Link>
@@ -56,7 +56,7 @@ export default function PageTemplate({
           {nextPage && (
             <Link
               href={nextPage.href}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              className="bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
             >
               Next: {nextPage.title} →
             </Link>

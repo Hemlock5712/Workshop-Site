@@ -87,9 +87,9 @@ export default function Prerequisites() {
         </div>
       </div>
 
-      <div className="bg-blue-50 dark:bg-blue-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6 mb-8">
+      <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6 mb-8">
         <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-2">Ready to Start?</h3>
-        <p className="text-blue-800 dark:text-blue-300">
+        <p className="text-primary-800 dark:text-primary-300">
           Make sure you have all the prerequisites installed before proceeding to the hardware setup section.
         </p>
       </div>

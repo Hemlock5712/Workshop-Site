@@ -18,8 +18,8 @@ export default function BuildingSubsystems() {
           Subsystems are the foundation of command-based programming. They represent physical hardware components 
           and provide methods to control them safely and effectively.
         </p>
-        <div className="bg-blue-100 dark:bg-blue-900/30 p-4 rounded-lg">
-          <p className="text-blue-800 dark:text-blue-300 font-medium">
+        <div className="bg-primary-100 dark:bg-primary-900/30 p-4 rounded-lg">
+          <p className="text-primary-800 dark:text-primary-300 font-medium">
             🎯 Key Concept: One subsystem per mechanism - each subsystem manages its own hardware and state
           </p>
         </div>
@@ -92,9 +92,9 @@ public class ExampleSubsystem extends SubsystemBase {
 
         {/* Key Concepts Explanation */}
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
-            <h4 className="text-lg font-bold text-blue-700 dark:text-blue-300 mb-3">🔧 Hardware Instantiation</h4>
-            <p className="text-blue-800 dark:text-blue-300 text-sm mb-3">
+          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-primary-200 dark:border-primary-900">
+            <h4 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-3">🔧 Hardware Instantiation</h4>
+            <p className="text-primary-800 dark:text-primary-300 text-sm mb-3">
               Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
@@ -166,13 +166,13 @@ public class ExampleSubsystem extends SubsystemBase {
           focusFile="Arm.java" 
         />
 
-        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+        <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Hardware Setup:</h4>
-              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">Hardware Setup:</h4>
+              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-1">
                 <li>• <strong>TalonFX Motor:</strong> Main drive motor with integrated controller</li>
                 <li>• <strong>CANCoder:</strong> Absolute position feedback sensor</li>
                 <li>• <strong>Remote Sensor:</strong> CANCoder connected as remote feedback</li>
@@ -180,8 +180,8 @@ public class ExampleSubsystem extends SubsystemBase {
             </div>
             
             <div>
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Key Methods:</h4>
-              <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">Key Methods:</h4>
+              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-1">
                 <li>• <strong>setVoltage():</strong> Direct voltage control for basic movement</li>
                 <li>• <strong>stop():</strong> Safe motor stop with neutral output</li>
                 <li>• <strong>periodic():</strong> Understand that periodic runs every robot loop</li>

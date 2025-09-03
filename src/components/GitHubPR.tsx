@@ -172,7 +172,7 @@ export default function GitHubPR({
             return (
               <div
                 key={index}
-                className="bg-blue-50 text-blue-700 dark:bg-blue-950/30 dark:text-blue-300 px-4 py-1 border-b border-gray-200 dark:border-gray-800"
+                className="bg-primary-50 text-primary-700 dark:bg-primary-950/30 dark:text-primary-300 px-4 py-1 border-b border-gray-200 dark:border-gray-800"
               >
                 {line}
               </div>
@@ -294,7 +294,7 @@ export default function GitHubPR({
               href={pr.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
             >
               View on GitHub →
             </a>
@@ -336,7 +336,7 @@ export default function GitHubPR({
                         ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                         : file.status === "removed"
                         ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                        : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+                        : "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
                     }`}
                   >
                     {file.status}

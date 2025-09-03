@@ -28,7 +28,7 @@ export default function Hardware() {
                 href="https://store.ctr-electronics.com/products/kraken-x60"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-600 hover:text-primary-800 underline dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
                 Kraken X60 Brushless Motor Powered by Talon FX™
               </a>
@@ -37,8 +37,8 @@ export default function Hardware() {
               High-performance brushless motor with integrated Talon FX™ controller. 
               Delivers 1,108W peak power with built-in encoder and advanced control modes.
             </p>
-            <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
+            <div className="bg-primary-50 dark:bg-primary-950/30 p-3 rounded-lg">
+              <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> 7.09Nm stall torque, 87% max efficiency,
                 SplineXS shaft, CAN communication, PID, FeedForward, and Motion Magic control modes.
               </p>
@@ -58,7 +58,7 @@ export default function Hardware() {
                 href="https://store.ctr-electronics.com/products/cancoder"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-600 hover:text-primary-800 underline dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
                 CANCoder® – CAN Bus Magnetic Encoder
               </a>
@@ -67,8 +67,8 @@ export default function Hardware() {
               Rotary magnetic encoder that provides absolute position over CAN bus. 
               Perfect for swerve modules, arms, and any mechanism requiring precise angular feedback.
             </p>
-            <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded-lg">
-              <p className="text-sm text-green-800 dark:text-green-300">
+            <div className="bg-primary-50 dark:bg-primary-950/30 p-3 rounded-lg">
+              <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> 360° absolute position, magnetic sensing,
                 supports CAN FD and CAN 2.0, no calibration needed, 6-16V supply voltage.
               </p>
@@ -88,7 +88,7 @@ export default function Hardware() {
                 href="https://store.ctr-electronics.com/canivore/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-600 hover:text-primary-800 underline dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
                 CANivore™ – CAN FD Bus Expansion
               </a>
@@ -97,8 +97,8 @@ export default function Hardware() {
               USB-to-CAN FD interface that adds new CAN FD network to PC or roboRIO.
               Enables precise control of CTRE devices with Phoenix Pro and hardware-attached simulation.
             </p>
-            <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded-lg">
-              <p className="text-sm text-purple-800 dark:text-purple-300">
+            <div className="bg-primary-50 dark:bg-primary-950/30 p-3 rounded-lg">
+              <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> CAN FD technology (2X-8X better bus utilization),
                 wireless configuration, ESP32 integration, multi-color status LEDs, USB Type-C support.
               </p>
@@ -126,11 +126,11 @@ export default function Hardware() {
               />
             </div>
             <div className="flex-1">
-              <div className="bg-blue-50 dark:bg-blue-950/30 p-6 rounded-lg">
-                <p className="text-xl font-medium text-blue-900 dark:text-blue-300">
+              <div className="bg-primary-50 dark:bg-primary-950/30 p-6 rounded-lg">
+                <p className="text-xl font-medium text-primary-900 dark:text-primary-300">
                   ARM Position Control
                 </p>
-                <p className="text-blue-700 dark:text-blue-300">
+                <p className="text-primary-700 dark:text-primary-300">
                   We&apos;ll be programming an arm mechanism to demonstrate
                   motor control and positioning. Learn PID tuning, encoder feedback,
                   and motion profiling for precise positioning control.
@@ -152,7 +152,7 @@ export default function Hardware() {
           </h3>
           <div className="grid md:grid-cols-4 gap-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-primary-600 dark:text-blue-400 mb-2">Full PID Control</h4>
+              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">Full PID Control</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Complete PID implementation with kP, kI, kD, and advanced filtering options that other vendors don&apos;t provide.
               </p>
@@ -186,7 +186,7 @@ export default function Hardware() {
               <div className="grid md:grid-cols-2 gap-4">
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -194,7 +194,7 @@ export default function Hardware() {
                 </a>
                 <a
                   href="https://v6.docs.ctr-electronics.com/"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -202,7 +202,7 @@ export default function Hardware() {
                 </a>
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -210,7 +210,7 @@ export default function Hardware() {
                 </a>
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -264,7 +264,7 @@ export default function Hardware() {
                   If you have issues connecting to your robot,
                   <a
                     href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
-                    className="text-primary-600 underline hover:no-underline dark:text-blue-400 ml-1"
+                    className="text-primary-600 underline hover:no-underline dark:text-primary-400 ml-1"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -329,8 +329,8 @@ export default function Hardware() {
           </div>
         </div>
 
-        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-4">
+        <div className="bg-primary-50 dark:bg-primary-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+          <h4 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-4">
             🎨 Card Colors
           </h4>
           <p className="text-blue-800 dark:text-blue-300 mb-4">
@@ -387,7 +387,7 @@ export default function Hardware() {
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
                         <span className="inline-block w-4 h-4 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-blue-700 dark:text-blue-400">Blue</strong>
+                        <strong className="text-blue-700 dark:text-primary-400">Blue</strong>
                       </div>
                     </td>
                     <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Failed to retrieve list of available firmware.</td>

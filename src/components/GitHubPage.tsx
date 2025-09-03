@@ -164,7 +164,7 @@ export default function GitHubPage({
               <span className="font-mono text-lg font-medium text-slate-900 dark:text-slate-100">
                 {filename}
               </span>
-              <span className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 rounded text-xs font-medium">
+              <span className="px-2 py-1 bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 rounded text-xs font-medium">
                 {language.toUpperCase()}
               </span>
             </div>
