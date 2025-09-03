@@ -10,7 +10,7 @@ export default function PIDControl() {
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
       {/* Introduction */}
-        <div className="bg-gradient-to-r from-red-50 to-yellow-50 dark:from-red-950/30 dark:to-yellow-950/30 rounded-lg p-8 border border-[var(--border)]">
+        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-[var(--border)]">
           <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
           PID Control - Precise Position Control
         </h2>
