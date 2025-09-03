@@ -6,7 +6,7 @@ export default function PIDControl() {
   return (
     <PageTemplate
       title="PID Control (PR #3)"
-      previousPage={{ href: "/adding-commands", title: "Adding Commands (PR #2)" }}
+      previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
       nextPage={{ href: "/motion-magic", title: "Motion Magic (PR #4)" }}
     >
       {/* Introduction */}

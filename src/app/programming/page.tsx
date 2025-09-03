@@ -6,7 +6,7 @@ export default function Programming() {
   return (
     <PageTemplate
       title="Programming ARM and Flywheel"
-      previousPage={{ href: "/useful-functions", title: "Useful Functions (PR #5)" }}
+      previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
       nextPage={{ href: "/tuning", title: "Tuning" }}
     >
       <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">

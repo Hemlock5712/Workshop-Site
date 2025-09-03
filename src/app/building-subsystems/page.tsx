@@ -125,24 +125,6 @@ public class ExampleSubsystem extends SubsystemBase {
           </div>
         </div>
 
-        {/* Command Pattern Intro */}
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-4">🎮 Commands vs Direct Control</h3>
-          <p className="text-yellow-800 dark:text-yellow-300 mb-4">
-            Notice we don&apos;t call subsystem methods directly from periodic() or other places. Instead, we use Commands 
-            to coordinate actions and ensure only one command uses a subsystem at a time.
-          </p>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded">
-              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">❌ Don&apos;t Do This</h4>
-              <code className="text-xs">subsystem.setVoltage(5.0); // Direct call</code>
-            </div>
-            <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ Do This Instead</h4>
-              <code className="text-xs">new MoveCommand(subsystem).schedule(); // Command</code>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* Before/After Implementation */}

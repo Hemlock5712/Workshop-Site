@@ -7,7 +7,7 @@ export default function MotionMagic() {
     <PageTemplate
       title="Motion Magic (PR #4)"
       previousPage={{ href: "/pid-control", title: "PID Control (PR #3)" }}
-      nextPage={{ href: "/useful-functions", title: "Useful Functions (PR #5)" }}
+      nextPage={{ href: "/programming", title: "Programming" }}
     >
       {/* Introduction */}
       <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">

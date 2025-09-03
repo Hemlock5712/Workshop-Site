@@ -7,7 +7,7 @@ export default function AddingCommands() {
     <PageTemplate
       title="Adding Commands (PR #2)"
       previousPage={{ href: "/building-subsystems", title: "Building Subsystems (PR #1)" }}
-      nextPage={{ href: "/pid-control", title: "PID Control (PR #3)" }}
+      nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
       <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
@@ -31,78 +31,28 @@ export default function AddingCommands() {
           Command Structure & Examples
         </h2>
 
-        {/* Basic Command Example */}
+        {/* Inline Command Examples */}
         <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-purple-600 mb-4">🎮 Basic Command Structure</h3>
+          <h3 className="text-xl font-bold text-purple-600 mb-4">🎮 Inline Command Methods</h3>
           <CodeBlock
             language="java"
-            title="ExampleCommand.java"
-            code={`package frc.robot.commands;
+            title="Subsystem Command Methods"
+            code={`// In your ARM subsystem - add these command methods:
 
-import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ExampleSubsystem;
-
-public class ExampleCommand extends Command {
-    private final ExampleSubsystem subsystem;
-    
-    public ExampleCommand(ExampleSubsystem subsystem) {
-        this.subsystem = subsystem;
-        // 🔒 REQUIREMENT: This command requires the subsystem
-        addRequirements(subsystem);
-    }
-    
-    // Called when the command is initially scheduled
-    @Override
-    public void initialize() {
-        System.out.println("ExampleCommand started");
-    }
-    
-    // Called every 20ms while the command is scheduled
-    @Override
-    public void execute() {
-        subsystem.setVoltage(5.0); // Move at 5 volts
-    }
-    
-    // Called when the command ends
-    @Override
-    public void end(boolean interrupted) {
-        subsystem.stop(); // Stop the motor
-        if (interrupted) {
-            System.out.println("ExampleCommand interrupted");
-        } else {
-            System.out.println("ExampleCommand finished");
-        }
-    }
-    
-    // Returns true when the command should end
-    @Override
-    public boolean isFinished() {
-        return false; // Runs until interrupted
-    }
-}`}
-          />
-        </div>
-
-        {/* Instant Command Example */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg p-6 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h3 className="text-xl font-bold text-orange-600 mb-4">⚡ Instant Command Example</h3>
-          <CodeBlock
-            language="java"
-            title="Quick Actions with InstantCommand"
-            code={`// For simple, one-time actions
-public static Command stopArm(ExampleSubsystem subsystem) {
-    return new InstantCommand(
-        () -> subsystem.stop(), // Action to perform
-        subsystem               // Required subsystem
-    );
+public Command moveUp() {
+    return startEnd(() -> setVoltage(6), () -> stop());
 }
 
-// Using lambda syntax for concise commands
-public static Command setArmVoltage(ExampleSubsystem subsystem, double voltage) {
-    return new RunCommand(
-        () -> subsystem.setVoltage(voltage), // Continuous action
-        subsystem
-    );
+public Command moveDown() {
+    return startEnd(() -> setVoltage(-6), () -> stop());
+}
+
+public Command stopArm() {
+    return runOnce(() -> stop());
+}
+
+public Command resetEncoder() {
+    return runOnce(() -> motor.setPosition(0.0));
 }`}
           />
         </div>
@@ -116,13 +66,12 @@ public static Command setArmVoltage(ExampleSubsystem subsystem, double voltage) 
             code={`package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.Arm;
 
 public class RobotContainer {
     // Hardware - controllers and subsystems
     private final CommandXboxController controller = new CommandXboxController(0);
-    private final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
+    private final Arm armSubsystem = new Arm();
     
     public RobotContainer() {
         configureBindings();
@@ -130,28 +79,19 @@ public class RobotContainer {
     
     private void configureBindings() {
         // 🎮 BUTTON TRIGGERS - Run command while button is held
-        controller.a().whileTrue(
-            new ExampleCommand(exampleSubsystem)
-        );
+        controller.a().whileTrue(armSubsystem.moveUp());
         
-        // 🔄 TOGGLE TRIGGERS - Start command on press, stop on press again  
-        controller.b().toggleOnTrue(
-            new RunCommand(() -> exampleSubsystem.setVoltage(3.0), exampleSubsystem)
-        );
+        // 🔄 BUTTON TRIGGERS - Run command while button is held
+        controller.b().whileTrue(armSubsystem.moveDown());
         
         // ⚡ ONE-SHOT TRIGGERS - Run once when pressed
-        controller.x().onTrue(
-            new InstantCommand(() -> exampleSubsystem.stop(), exampleSubsystem)
-        );
+        controller.x().onTrue(armSubsystem.stopArm());
         
-        // 🚀 CONDITIONAL TRIGGERS - Only if condition is true
-        controller.y().and(() -> exampleSubsystem.getPosition() > 45.0)
-                      .onTrue(new InstantCommand(() -> System.out.println("Arm is high!")));
-                      
-        // 🔂 DEFAULT COMMAND - Runs when no other commands are using subsystem
-        exampleSubsystem.setDefaultCommand(
-            new RunCommand(() -> exampleSubsystem.setVoltage(0), exampleSubsystem)
-        );
+        // 🔄 RESET ENCODER - Run once when pressed
+        controller.y().onTrue(armSubsystem.resetEncoder());
+        
+        // 🔂 DEFAULT COMMAND - Stop arm when no input
+        armSubsystem.setDefaultCommand(armSubsystem.stopArm());
     }
 }`}
           />
@@ -267,40 +207,6 @@ public class RobotContainer {
           </div>
         </div>
 
-        {/* Command Lifecycle */}
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-yellow-700 dark:text-yellow-300 mb-4">🔄 Command Lifecycle</h3>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="bg-blue-100 dark:bg-blue-900/50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                <span className="text-blue-700 dark:text-blue-300 font-bold">1</span>
-              </div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200">initialize()</h4>
-              <p className="text-xs text-yellow-700 dark:text-yellow-300">Called once when command starts</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 dark:bg-green-900/50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                <span className="text-green-700 dark:text-green-300 font-bold">2</span>
-              </div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200">execute()</h4>
-              <p className="text-xs text-yellow-700 dark:text-yellow-300">Called every 20ms while running</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-orange-100 dark:bg-orange-900/50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                <span className="text-orange-700 dark:text-orange-300 font-bold">3</span>
-              </div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200">isFinished()</h4>
-              <p className="text-xs text-yellow-700 dark:text-yellow-300">Checked each cycle to see if done</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-red-100 dark:bg-red-900/50 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-2">
-                <span className="text-red-700 dark:text-red-300 font-bold">4</span>
-              </div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200">end()</h4>
-              <p className="text-xs text-yellow-700 dark:text-yellow-300">Cleanup when command finishes</p>
-            </div>
-          </div>
-        </div>
       </section>
     </PageTemplate>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import PageTemplate from "@/components/PageTemplate";
-import Image from "next/image";
 import GithubPageWithPR from "@/components/GithubPageWithPR";
 
 export default function Tuning() {
@@ -58,27 +57,6 @@ export default function Tuning() {
           Code Evolution: From Basic to Advanced
         </h2>
 
-        <article className="flex flex-col gap-8 bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Verifying Encoder Setup
-          </h2>
-
-          <div className="grid grid-cols-3 gap-4">
-            <p className="col-span-2">You&apos;ll need to make sure your encoder is configured correctly. With the device facing you like the following image, ensure that the encoder position is going up as you rotate the arm counterclockwise.</p>
-
-            <div className="flex w-full">
-              <Image src="/images/mechanisms/arm.jpg" alt="Arm" width={300} height={200} className="rounded-lg" />
-            </div>
-          </div>
-
-          <iframe
-            src="https://www.youtube.com/embed/zJgSQKrz8yE"
-            title="Encoder Setup"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full aspect-video rounded-lg"
-          />
-        </article>
 
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
