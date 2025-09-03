@@ -59,7 +59,7 @@ export default function CommandFramework() {
                 <div className="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
                 <div>
                   <h4 className="font-bold text-green-700 dark:text-green-300">Adding Commands</h4>
-                  <p className="text-concept-600 dark:text-green-400 text-sm">Command structure, lifecycle, and controller integration</p>
+                  <p className="text-green-600 dark:text-green-400 text-sm">Command structure, lifecycle, and controller integration</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-red-50 dark:bg-red-950/30 rounded-lg">
@@ -73,7 +73,7 @@ export default function CommandFramework() {
                 <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
                 <div>
                   <h4 className="font-bold text-purple-700 dark:text-purple-300">Motion Magic</h4>
-                  <p className="text-concept-600 dark:text-purple-400 text-sm">Smooth profiled motion with acceleration control</p>
+                  <p className="text-purple-600 dark:text-purple-400 text-sm">Smooth profiled motion with acceleration control</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-teal-50 dark:bg-teal-950/30 rounded-lg">

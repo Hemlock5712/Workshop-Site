@@ -120,14 +120,14 @@ export default function MechanismSetup() {
             </div>
 
             <div className="flex w-full justify-center">
-              <div className="w-full h-48 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center">
-                <p className="text-slate-500 dark:text-slate-400 text-sm">Placeholder: Zero Position Image</p>
+              <div className="w-full h-48 bg-concept-100 dark:bg-concept-900/50 rounded-lg flex items-center justify-center border border-concept-200 dark:border-concept-800">
+                <p className="text-concept-600 dark:text-concept-400 text-sm">Placeholder: Zero Position Image</p>
               </div>
             </div>
           </div>
 
-          <div className="w-full h-64 bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center">
-            <p className="text-slate-500 dark:text-slate-400 text-sm">Placeholder: Zero Encoder Setup Video</p>
+          <div className="w-full h-64 bg-concept-100 dark:bg-concept-900/50 rounded-lg flex items-center justify-center border border-concept-200 dark:border-concept-800">
+            <p className="text-concept-600 dark:text-concept-400 text-sm">Placeholder: Zero Encoder Setup Video</p>
           </div>
         </div>
 
