@@ -70,10 +70,10 @@ export default function CommandFramework() {
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-[var(--muted)] dark:bg-[var(--muted)]/30 rounded-lg">
-                <div className="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+                <div className="bg-[var(--muted)] text-[var(--foreground)] rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
                 <div>
                   <h4 className="font-bold text-[var(--foreground)]">Motion Magic</h4>
-                  <p className="text-purple-600 dark:text-purple-400 text-sm">Smooth profiled motion with acceleration control</p>
+                  <p className="text-[var(--foreground)] text-sm">Smooth profiled motion with acceleration control</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-teal-50 dark:bg-teal-950/30 rounded-lg">

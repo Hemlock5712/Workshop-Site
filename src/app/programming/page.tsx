@@ -181,7 +181,7 @@ export default function Programming() {
             </div>
           </div>
 
-          <div className="bg-[var(--muted)] p-3 rounded border-l-4 border-purple-500">
+          <div className="bg-[var(--muted)] p-3 rounded border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] text-sm">
               <strong>Key Learning:</strong> Commands separate &quot;what to do&quot; from &quot;how to do it.&quot;
               This makes code modular, testable, and easy to modify for different control schemes.
@@ -195,7 +195,7 @@ export default function Programming() {
           Step 3: Precise Control with PID
         </h2>
 
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
             🎯 Step 3: PID Control
           </h3>

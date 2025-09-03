@@ -74,7 +74,7 @@ export default function PIDControl() {
         </div>
 
         {/* Feedforward Components */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚡ Feedforward Gains</h3>
           <p className="text-[var(--foreground)] mb-4">
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
@@ -109,7 +109,7 @@ export default function PIDControl() {
         </div>
 
         {/* Documentation Link */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Complete PID Tuning Guide</h3>
           <p className="text-[var(--foreground)] mb-4">
             For detailed PID tuning instructions, step-by-step processes, and mechanism-specific guidance:

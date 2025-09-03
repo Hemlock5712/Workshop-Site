@@ -102,8 +102,8 @@ export default function Home() {
       </div>
 
       {/* Team Introduction */}
-      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 p-8 rounded-lg">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
+      <div className="bg-[var(--card)] text-[var(--foreground)] p-8 rounded-lg">
+        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6 text-center">
           Meet the Team
         </h2>
         <div className="flex justify-center space-x-8 flex-wrap gap-4">
