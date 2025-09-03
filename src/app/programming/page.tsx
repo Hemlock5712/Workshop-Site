@@ -32,7 +32,7 @@ export default function Programming() {
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workshop Development Approach</h2>
 
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">🔄 Iterative Development</h3>
@@ -287,7 +287,7 @@ export default function Programming() {
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workshop Progression</h2>
 
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 rounded-lg p-6">
+        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-6">
           <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">🚀 What We&apos;ll Build Next</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
