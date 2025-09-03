@@ -250,13 +250,13 @@ export default function Sidebar() {
       {/* Sidebar toggle button - always visible */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed top-4 z-50 p-2 bg-slate-50 dark:bg-slate-800 rounded-md shadow-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300 ${
+        className={`fixed top-4 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
           isOpen ? "left-60" : "left-4"
         }`}
         title={isOpen ? "Close sidebar" : "Open sidebar"}
       >
         <svg
-          className="w-5 h-5 text-slate-600 dark:text-slate-300"
+          className="w-5 h-5 text-[var(--muted-foreground)]"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -281,18 +281,18 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-white shadow-lg border-r z-40 transform transition-all duration-300 ease-in-out ${
+        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-40 transform transition-all duration-300 ease-in-out ${
           isOpen
             ? "translate-x-0 w-64"
             : "-translate-x-full md:translate-x-0 md:w-16"
-        } dark:bg-slate-900 dark:border-slate-800`}
+        }`}
       >
         <div className={`p-4 flex-grow ${isOpen ? "px-6" : "px-2"}`}>
           {/* Logo/Title */}
           <div className="mb-8 flex items-center justify-center">
             <Link
               href="/"
-              className={`flex items-center space-x-3 font-bold text-slate-800 dark:text-slate-100 transition-all duration-300 ${
+              className={`flex items-center space-x-3 font-bold text-[var(--card-foreground)] transition-all duration-300 ${
                 isOpen ? "text-xl" : "text-sm"
               }`}
               title="Gray Matter Workshop"
@@ -336,7 +336,7 @@ export default function Sidebar() {
                     } ${
                       isActive
                         ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-slate-100 dark:hover:bg-slate-800"
+                        : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
                     }`}
                     onClick={() => {
                       // Only close on mobile
@@ -351,7 +351,7 @@ export default function Sidebar() {
 
                   {/* Tooltip for collapsed state */}
                   {!isOpen && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-slate-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 dark:bg-slate-200 dark:text-slate-900">
+                    <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                       {item.label}
                     </div>
                   )}
@@ -362,10 +362,10 @@ export default function Sidebar() {
             {/* Workshop #1 Section */}
             {isOpen && (
               <div className="pt-4">
-                <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
+                <div className="border-t border-[var(--border)] pt-4">
                   <button
                     onClick={() => setIsWorkshop1Open(!isWorkshop1Open)}
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors dark:text-slate-200 dark:hover:text-white dark:hover:bg-slate-800"
+                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
                   >
                     <div className="flex items-center space-x-2">
                       <svg
@@ -415,7 +415,7 @@ export default function Sidebar() {
                           className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
                             isActive
                               ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-slate-100 dark:hover:bg-slate-800"
+                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
                           }`}
                           onClick={() => {
                             // Only close on mobile
@@ -437,7 +437,7 @@ export default function Sidebar() {
             {/* Workshop #1 collapsed view */}
             {!isOpen && (
               <div className="relative group">
-                <div className="flex items-center justify-center px-3 py-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800">
+                <div className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -454,7 +454,7 @@ export default function Sidebar() {
                 </div>
 
                 {/* Tooltip for collapsed workshop */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-slate-900 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50 dark:bg-slate-200 dark:text-slate-900">
+                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                   Workshop #1
                 </div>
               </div>
