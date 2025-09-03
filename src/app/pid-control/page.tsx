@@ -74,34 +74,34 @@ export default function PIDControl() {
         </div>
 
         {/* Feedforward Components */}
-        <div className="bg-concept-50 dark:bg-concept-950/30 border border-concept-200 dark:border-concept-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">⚡ Feedforward Gains</h3>
-          <p className="text-concept-800 dark:text-concept-300 mb-4">
+        <div className="card p-6">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚡ Feedforward Gains</h3>
+          <p className="text-[var(--foreground)] mb-4">
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
           </p>
           
           <div className="grid md:grid-cols-4 gap-4">
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kS - Static</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kS - Static</h4>
+              <p className="text-sm text-[var(--foreground)]">
                 Constant output to overcome friction and get the mechanism moving.
               </p>
             </div>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kG - Gravity</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kG - Gravity</h4>
+              <p className="text-sm text-[var(--foreground)]">
                 Compensates for gravitational forces acting on the mechanism.
               </p>
             </div>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kV - Velocity</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kV - Velocity</h4>
+              <p className="text-sm text-[var(--foreground)]">
                 Output applied per target velocity to maintain smooth motion.
               </p>
             </div>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kA - Acceleration</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kA - Acceleration</h4>
+              <p className="text-sm text-[var(--foreground)]">
                 Output applied per target acceleration for responsive movement.
               </p>
             </div>
