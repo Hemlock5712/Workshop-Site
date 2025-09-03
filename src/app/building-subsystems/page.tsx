@@ -6,7 +6,7 @@ export default function BuildingSubsystems() {
   return (
     <PageTemplate
       title="Subsystems"
-      previousPage={{ href: "/project-setup", title: "Project Setup" }}
+      previousPage={{ href: "/command-framework", title: "Command Framework" }}
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
