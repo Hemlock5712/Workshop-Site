@@ -72,7 +72,7 @@ Workshop Content:
 ### Asset Management
 - **Images**: Stored in `public/images/` with organized subdirectories
 - **Optimization**: All images use Next.js Image component
-- **Structure**: `presentors/`, `mechanisms/`, `hardware/` folders
+- **Structure**: `presenters/`, `mechanisms/`, `hardware/` folders
 
 ### Development Patterns
 - **File Naming**: kebab-case for routes, PascalCase for components
