@@ -7,7 +7,7 @@ export default function PIDControl() {
     <PageTemplate
       title="PID Control (PR #3)"
       previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
-      nextPage={{ href: "/motion-magic", title: "Motion Magic (PR #4)" }}
+      nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
       {/* Introduction */}
       <div className="bg-gradient-to-r from-red-50 to-yellow-50 dark:from-red-950/30 dark:to-yellow-950/30 rounded-lg p-8 border border-gray-200 dark:border-gray-800">
@@ -238,7 +238,7 @@ public void setTargetPosition(double positionRotations) {
           <div className="bg-teal-50 dark:bg-teal-950/30 p-4 rounded mt-4">
             <p className="text-teal-800 dark:text-teal-300 text-sm">
               <strong>💡 Next Step:</strong> PID gives us precise control! 
-              In PR #4, we&apos;ll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.
+              In the next section, we&apos;ll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.
             </p>
           </div>
         </div>

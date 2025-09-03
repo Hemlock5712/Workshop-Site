@@ -67,7 +67,6 @@ Workshop Content:
     ├── /command-framework (Triggers, subsystems, commands)
     ├── /programming (ARM & Flywheel implementation)
     ├── /control-systems (PID & Feedforward theory)
-    └── /tuning (Phoenix Tuner X)
 ```
 
 ### Asset Management

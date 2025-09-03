@@ -143,7 +143,6 @@ public class ExampleSubsystem extends SubsystemBase {
                 <li>• Basic WPILib project structure</li>
                 <li>• No hardware integration</li>
                 <li>• No subsystem implementation</li>
-                <li>• Robot.java with empty methods</li>
               </ul>
             </div>
 
@@ -154,7 +153,6 @@ public class ExampleSubsystem extends SubsystemBase {
                 <li>• TalonFX motor (ID: 31) configured</li>
                 <li>• CANCoder sensor (ID: 22) integrated</li>
                 <li>• Basic voltage control methods</li>
-                <li>• Telemetry and monitoring setup</li>
               </ul>
             </div>
           </div>
@@ -186,7 +184,7 @@ public class ExampleSubsystem extends SubsystemBase {
               <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
                 <li>• <strong>setVoltage():</strong> Direct voltage control for basic movement</li>
                 <li>• <strong>stop():</strong> Safe motor stop with neutral output</li>
-                <li>• <strong>periodic():</strong> Dashboard telemetry updates</li>
+                <li>• <strong>periodic():</strong> Understand that periodic runs every robot loop</li>
               </ul>
             </div>
           </div>

@@ -80,13 +80,7 @@ public class RobotContainer {
         controller.a().whileTrue(armSubsystem.moveUp());
         
         // 🔄 BUTTON TRIGGERS - Run command while button is held
-        controller.b().whileTrue(armSubsystem.moveDown());
-        
-        // ⚡ ONE-SHOT TRIGGERS - Run once when pressed
-        controller.x().onTrue(armSubsystem.stopArm());
-        
-        
-        // Default command is set in the subsystem constructor
+        controller.b().whileTrue(armSubsystem.moveDown());     
     }
 }`}
           />
@@ -192,15 +186,9 @@ public class RobotContainer {
     }
     
     private void configureBindings() {
-        // Button bindings for ARM control
+        // Button bindings for Arm control
         controller.a().whileTrue(armSubsystem.moveUp());
         controller.b().whileTrue(armSubsystem.moveDown());
-        controller.x().onTrue(armSubsystem.stopArm());
-    }
-    
-    // Return subsystem for autonomous commands if needed
-    public Arm getArmSubsystem() {
-        return armSubsystem;
     }
 }`}
           />

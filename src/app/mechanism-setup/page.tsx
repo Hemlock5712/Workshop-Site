@@ -78,7 +78,7 @@ export default function MechanismSetup() {
               </p>
               <div className="bg-white dark:bg-gray-900 p-3 rounded border">
                 <p className="text-xs text-gray-700 dark:text-gray-300">
-                  <strong>Expected:</strong> Positive voltage should move the mechanism in the &quot;positive&quot; direction (typically up for arms, out for extensions).
+                  <strong>Expected:</strong> Positive voltage should move the mechanism in the &quot;positive&quot; direction (counter-clockwise for arms, out for extensions, and up for elevators).
                 </p>
               </div>
             </div>
