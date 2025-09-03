@@ -233,12 +233,12 @@ public void setTargetPosition(double positionRotations) {
             </div>
           </div>
 
-          <div className="bg-teal-50 dark:bg-teal-950/30 p-4 rounded mt-4">
-            <p className="text-teal-800 dark:text-teal-300 text-sm">
-              <strong>💡 Next Step:</strong> PID gives us precise control! 
-              In the next section, we&apos;ll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.
-            </p>
-          </div>
+            <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
+              <p className="text-indigo-800 dark:text-indigo-300 text-sm">
+                <strong>💡 Next Step:</strong> PID gives us precise control!
+                In the next section, we&apos;ll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.
+              </p>
+            </div>
         </div>
 
       </section>

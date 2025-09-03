@@ -210,12 +210,12 @@ public void setTargetPosition(double positionRotations) {
             </div>
           </div>
 
-          <div className="bg-teal-50 dark:bg-teal-950/30 p-4 rounded mt-4">
-            <p className="text-teal-800 dark:text-teal-300 text-sm">
-              <strong>💡 Next Step:</strong> Motion Magic gives us professional-grade motion control! 
-              Next, we&apos;ll explore tuning methods to get optimal performance from our control algorithms.
-            </p>
-          </div>
+            <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
+              <p className="text-indigo-800 dark:text-indigo-300 text-sm">
+                <strong>💡 Next Step:</strong> Motion Magic gives us professional-grade motion control!
+                Next, we&apos;ll explore tuning methods to get optimal performance from our control algorithms.
+              </p>
+            </div>
         </div>
 
         {/* Motion Magic vs PID Comparison */}
