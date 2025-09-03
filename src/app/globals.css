@@ -110,3 +110,18 @@
 }
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+@layer components {
+  .before-block {
+    @apply bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300;
+  }
+  .before-title {
+    @apply font-bold text-red-700 dark:text-red-300 mb-2;
+  }
+  .after-block {
+    @apply bg-learn-50 dark:bg-learn-900/20 p-4 rounded-lg border border-learn-200 dark:border-learn-900 text-learn-800 dark:text-learn-300;
+  }
+  .after-title {
+    @apply font-bold text-learn-700 dark:text-learn-300 mb-2;
+  }
+}

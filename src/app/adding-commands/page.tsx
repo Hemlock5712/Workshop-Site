@@ -130,9 +130,9 @@ public class RobotContainer {
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before</h4>
-              <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
+            <div className="before-block">
+              <h4 className="before-title">📋 Before</h4>
+              <ul className="text-sm space-y-1">
                 <li>• Arm subsystem with basic voltage control</li>
                 <li>• No user input integration</li>
                 <li>• No commands to coordinate actions</li>
@@ -140,9 +140,9 @@ public class RobotContainer {
               </ul>
             </div>
 
-            <div className="bg-learn-100 dark:bg-learn-900/20 p-4 rounded-lg border border-learn-200 dark:border-learn-900">
-              <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
-              <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
+            <div className="after-block">
+              <h4 className="after-title">✅ After</h4>
+              <ul className="text-sm space-y-1">
                 <li>• Enhanced Arm subsystem methods</li>
                 <li>• Xbox controller integration</li>
                 <li>• Commands for moveUp(), moveDown()</li>

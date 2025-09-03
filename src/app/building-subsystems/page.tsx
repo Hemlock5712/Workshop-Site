@@ -135,18 +135,18 @@ public class ExampleSubsystem extends SubsystemBase {
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before (Empty Project)</h4>
-              <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
+            <div className="before-block">
+              <h4 className="before-title">📋 Before (Empty Project)</h4>
+              <ul className="text-sm space-y-1">
                 <li>• Basic WPILib project structure</li>
                 <li>• No hardware integration</li>
                 <li>• No subsystem implementation</li>
               </ul>
             </div>
 
-            <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-green-700 dark:text-green-300 mb-2">✅ After</h4>
-              <ul className="text-sm text-green-800 dark:text-green-300 space-y-1">
+            <div className="after-block">
+              <h4 className="after-title">✅ After</h4>
+              <ul className="text-sm space-y-1">
                 <li>• Complete Arm subsystem class</li>
                 <li>• TalonFX motor (ID: 31) configured</li>
                 <li>• CANCoder sensor (ID: 22) integrated</li>
