@@ -18,9 +18,9 @@ export default function MotionMagic() {
           Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles.
           This prevents jerky movements and reduces mechanical stress while maintaining precise positioning.
         </p>
-        <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-[var(--border)]">
-          <p className="text-[var(--foreground)] font-medium">
-            🚀 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
+            🎯 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration
           </p>
         </div>
       </div>
