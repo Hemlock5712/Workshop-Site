@@ -8,7 +8,7 @@ export default function Tuning() {
   return (
     <PageTemplate
       title="Tuning Real Mechanisms"
-      previousPage={{ href: "/control-systems", title: "Control Systems" }}
+      previousPage={{ href: "/programming", title: "Programming" }}
     >
       <div className="bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">

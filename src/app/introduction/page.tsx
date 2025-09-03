@@ -103,15 +103,6 @@ export default function Introduction() {
                 </div>
               </Link>
 
-              <Link
-                href="/control-systems"
-                className="block p-3 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-700 dark:group-hover:text-blue-300">Control Systems</span>
-                  <span className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-300">→</span>
-                </div>
-              </Link>
 
               <Link
                 href="/tuning"
