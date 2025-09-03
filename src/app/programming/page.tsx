@@ -35,7 +35,7 @@ export default function Programming() {
         <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">🔄 Iterative Development</h3>
+              <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🔄 Iterative Development</h3>
               <p className="text-slate-600 dark:text-slate-300 mb-4">
                 We&apos;ll start with basic motor control and progressively add advanced features.
                 Each step builds upon the previous implementation.
@@ -50,7 +50,7 @@ export default function Programming() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">🎯 Real-World Focus</h3>
+              <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🎯 Real-World Focus</h3>
               <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Each modification addresses real competition challenges and follows
                 FRC best practices used by successful teams.
@@ -70,9 +70,9 @@ export default function Programming() {
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Initial Arm Subsystem</h2>
 
-        <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
-          <h3 className="font-semibold text-primary-700 dark:text-primary-300 mb-2">📋 Starting Point</h3>
-          <p className="text-primary-800 dark:text-primary-300">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+          <h3 className="font-semibold text-[var(--foreground)] mb-2">📋 Starting Point</h3>
+          <p className="text-[var(--foreground)]">
             This is our initial Arm implementation. Throughout the workshop, we&apos;ll enhance this code by adding:
             PID control, feedforward, position control, safety limits, and more sophisticated commands.
           </p>
@@ -116,11 +116,11 @@ export default function Programming() {
           </div>
         </div>
 
-        <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
             🎯 Step 1: Basic Subsystem
           </h3>
-          <p className="text-primary-800 dark:text-primary-300 mb-4">
+          <p className="text-[var(--foreground)] mb-4">
             Our first step creates a foundational Arm subsystem with basic motor control and sensor feedback.
           </p>
           
@@ -181,9 +181,9 @@ export default function Programming() {
             </div>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded">
-            <p className="text-purple-800 dark:text-purple-300 text-sm">
-              <strong>Key Learning:</strong> Commands separate &quot;what to do&quot; from &quot;how to do it.&quot; 
+          <div className="bg-[var(--muted)] p-3 rounded border-l-4 border-purple-500">
+            <p className="text-[var(--foreground)] text-sm">
+              <strong>Key Learning:</strong> Commands separate &quot;what to do&quot; from &quot;how to do it.&quot;
               This makes code modular, testable, and easy to modify for different control schemes.
             </p>
           </div>
@@ -195,31 +195,31 @@ export default function Programming() {
           Step 3: Precise Control with PID
         </h2>
 
-        <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
             🎯 Step 3: PID Control
           </h3>
-          <p className="text-purple-800 dark:text-purple-300 mb-4">
+          <p className="text-[var(--foreground)] mb-4">
             Replace voltage control with precise PID position control for accurate, repeatable movements.
           </p>
           
           <div className="grid md:grid-cols-3 gap-4 mb-4">
-            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
-              <h4 className="font-semibold text-red-600 mb-2">P - Proportional</h4>
+            <div className="bg-[var(--muted)] rounded-lg p-4 border-l-4 border-red-500">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">🔴 P - Proportional</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Responds to current error. Larger error = stronger correction.
               </p>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-600 mb-2">I - Integral</h4>
+            <div className="bg-[var(--muted)] rounded-lg p-4 border-l-4 border-yellow-500">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">🟡 I - Integral</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Eliminates steady-state error by accumulating past errors.
               </p>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
-              <h4 className="font-semibold text-primary-600 mb-2">D - Derivative</h4>
+            <div className="bg-[var(--muted)] rounded-lg p-4 border-l-4 border-blue-500">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">🔵 D - Derivative</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Reduces overshoot by predicting future error trends.
               </p>
@@ -238,7 +238,7 @@ export default function Programming() {
 
           <div className="bg-orange-50 dark:bg-orange-950/30 p-3 rounded">
             <p className="text-orange-800 dark:text-orange-300 text-sm">
-              <strong>Key Learning:</strong> PID control transforms imprecise voltage commands into 
+              <strong>Key Learning:</strong> PID control transforms imprecise voltage commands into
               accurate position control. This is essential for mechanisms that need to hit specific targets.
             </p>
           </div>
@@ -291,7 +291,7 @@ export default function Programming() {
           <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">🚀 What We&apos;ll Build Next</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-medium text-concept-700 dark:text-concept-300 mb-2">Enhanced Control</h4>
+              <h4 className="font-medium text-[var(--foreground)] mb-2">Enhanced Control</h4>
               <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• Position-based control</li>
                 <li>• PID feedback loops</li>
@@ -300,7 +300,7 @@ export default function Programming() {
               </ul>
             </div>
             <div>
-              <h4 className="font-medium text-primary-700 dark:text-primary-300 mb-2">Advanced Features</h4>
+              <h4 className="font-medium text-[var(--foreground)] mb-2">Advanced Features</h4>
               <ul className="text-sm text-slate-600 dark:text-slate-300 space-y-1">
                 <li>• Safety limits and bounds</li>
                 <li>• Encoder calibration</li>

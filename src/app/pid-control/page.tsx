@@ -18,8 +18,8 @@ export default function PIDControl() {
           PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
           feedback-driven position control. Essential for mechanisms that need to hit specific targets.
         </p>
-        <div className="bg-red-100 dark:bg-red-900/30 p-4 rounded-lg">
-          <p className="text-red-800 dark:text-red-300 font-medium">
+        <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-red-500">
+          <p className="text-[var(--foreground)] font-medium">
             🎯 Key Concept: PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions
           </p>
         </div>
@@ -32,78 +32,78 @@ export default function PIDControl() {
         </h2>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-red-50 dark:bg-red-950/30 rounded-lg p-6 border border-red-200 dark:border-red-900">
-            <h3 className="text-xl font-bold text-focus-700 dark:text-focus-300 mb-4">🔴 P - Proportional</h3>
-            <p className="text-red-800 dark:text-red-300 mb-4 text-sm">
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-red-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🔴 P - Proportional</h3>
+            <p className="text-[var(--foreground)] mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per unit of error in the system&quot;
             </p>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
               <code className="text-xs">Error = Target - Current</code><br/>
               <code className="text-xs">P_Output = kP × Error</code>
             </div>
-            <p className="text-focus-700 dark:text-focus-300 text-sm">
+            <p className="text-[var(--foreground)] text-sm">
               <strong>Behavior:</strong> Larger error = stronger correction. Provides immediate response but may cause oscillation.
             </p>
           </div>
 
-          <div className="bg-focus-50 dark:bg-focus-950/30 rounded-lg p-6 border border-focus-200 dark:border-focus-900">
-            <h3 className="text-xl font-bold text-focus-700 dark:text-focus-300 mb-4">🟡 I - Integral</h3>
-            <p className="text-focus-800 dark:text-focus-300 mb-4 text-sm">
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🟡 I - Integral</h3>
+            <p className="text-[var(--foreground)] mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per unit of error for every second of that error&quot;
             </p>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
               <code className="text-xs">Accumulated_Error += Error × dt</code><br/>
               <code className="text-xs">I_Output = kI × Accumulated_Error</code>
             </div>
-            <p className="text-focus-700 dark:text-focus-300 text-sm">
+            <p className="text-[var(--foreground)] text-sm">
               <strong>Behavior:</strong> Eliminates steady-state error by accumulating past errors over time.
             </p>
           </div>
 
-          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
-            <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">🔵 D - Derivative</h3>
-            <p className="text-primary-800 dark:text-primary-300 mb-4 text-sm">
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🔵 D - Derivative</h3>
+            <p className="text-[var(--foreground)] mb-4 text-sm">
               <strong>Definition:</strong> &quot;The amount of output to apply per change in error over time&quot;
             </p>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
               <code className="text-xs">Error_Rate = (Error - Last_Error) / dt</code><br/>
               <code className="text-xs">D_Output = kD × Error_Rate</code>
             </div>
-            <p className="text-primary-700 dark:text-primary-300 text-sm">
+            <p className="text-[var(--foreground)] text-sm">
               <strong>Behavior:</strong> Reduces overshoot by predicting future error trends and dampening response.
             </p>
           </div>
         </div>
 
         {/* Feedforward Components */}
-        <div className="bg-concept-50 dark:bg-concept-950/30 border border-concept-200 dark:border-concept-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">⚡ Feedforward Gains</h3>
-          <p className="text-concept-800 dark:text-concept-300 mb-4">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚡ Feedforward Gains</h3>
+          <p className="text-[var(--foreground)] mb-4">
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
           </p>
           
           <div className="grid md:grid-cols-4 gap-4">
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kS - Static</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kS - Static</h4>
+              <p className="text-sm text-[var(--muted-foreground)]">
                 Constant output to overcome friction and get the mechanism moving.
               </p>
             </div>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kG - Gravity</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kG - Gravity</h4>
+              <p className="text-sm text-[var(--muted-foreground)]">
                 Compensates for gravitational forces acting on the mechanism.
               </p>
             </div>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kV - Velocity</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kV - Velocity</h4>
+              <p className="text-sm text-[var(--muted-foreground)]">
                 Output applied per target velocity to maintain smooth motion.
               </p>
             </div>
               <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded">
-              <h4 className="font-bold text-concept-700 dark:text-concept-300 mb-2">kA - Acceleration</h4>
-              <p className="text-sm text-concept-600 dark:text-concept-400">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">kA - Acceleration</h4>
+              <p className="text-sm text-[var(--muted-foreground)]">
                 Output applied per target acceleration for responsive movement.
               </p>
             </div>
@@ -111,9 +111,9 @@ export default function PIDControl() {
         </div>
 
         {/* Documentation Link */}
-        <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">📚 Complete PID Tuning Guide</h3>
-          <p className="text-indigo-800 dark:text-indigo-300 mb-4">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Complete PID Tuning Guide</h3>
+          <p className="text-[var(--foreground)] mb-4">
             For detailed PID tuning instructions, step-by-step processes, and mechanism-specific guidance:
           </p>
           <a 
@@ -179,9 +179,9 @@ public void setTargetPosition(double positionRotations) {
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-focus-700 dark:text-focus-300 mb-2">📋 Before</h4>
-              <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
+            <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-red-500">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">📋 Before</h4>
+              <ul className="text-sm text-[var(--foreground)] space-y-1">
                 <li>• Commands control Arm with voltage</li>
                 <li>• No position feedback control</li>
                 <li>• Imprecise, inconsistent movement</li>

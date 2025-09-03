@@ -18,8 +18,8 @@ export default function MotionMagic() {
           Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles. 
           This prevents jerky movements and reduces mechanical stress while maintaining precise positioning.
         </p>
-        <div className="bg-concept-100 dark:bg-concept-900/30 p-4 rounded-lg">
-          <p className="text-concept-800 dark:text-concept-300 font-medium">
+        <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-purple-500">
+          <p className="text-[var(--foreground)] font-medium">
             🚀 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration
           </p>
         </div>
@@ -32,45 +32,45 @@ export default function MotionMagic() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-concept-50 dark:bg-concept-950/30 rounded-lg p-6 border border-concept-200 dark:border-concept-900">
-            <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">📈 Trapezoidal Profile</h3>
-            <p className="text-concept-800 dark:text-concept-300 mb-4 text-sm">
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📈 Trapezoidal Profile</h3>
+            <p className="text-[var(--foreground)] mb-4 text-sm">
               Motion Magic creates a trapezoidal velocity profile with three phases:
             </p>
             <div className="space-y-2">
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                <strong className="text-concept-700 dark:text-concept-300">1. Acceleration:</strong>
-                <span className="text-concept-600 dark:text-concept-400 text-sm"> Ramp up to cruise velocity</span>
+                <strong className="text-[var(--foreground)]">1. Acceleration:</strong>
+                <span className="text-[var(--muted-foreground)] text-sm"> Ramp up to cruise velocity</span>
               </div>
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                <strong className="text-concept-700 dark:text-concept-300">2. Cruise:</strong>
-                <span className="text-concept-600 dark:text-concept-400 text-sm"> Maintain constant max velocity</span>
+                <strong className="text-[var(--foreground)]">2. Cruise:</strong>
+                <span className="text-[var(--muted-foreground)] text-sm"> Maintain constant max velocity</span>
               </div>
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                <strong className="text-concept-700 dark:text-concept-300">3. Deceleration:</strong>
-                <span className="text-concept-600 dark:text-concept-400 text-sm"> Smoothly brake to target</span>
+                <strong className="text-[var(--foreground)]">3. Deceleration:</strong>
+                <span className="text-[var(--muted-foreground)] text-sm"> Smoothly brake to target</span>
               </div>
             </div>
           </div>
 
-          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-blue-200 dark:border-blue-900">
-            <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">⚙️ Key Parameters</h3>
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚙️ Key Parameters</h3>
             <div className="space-y-3">
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                <h4 className="font-bold text-primary-700 dark:text-primary-300">Motion Magic Cruise Velocity</h4>
-                <p className="text-primary-600 dark:text-primary-400 text-sm">
+                <h4 className="font-bold text-[var(--foreground)]">Motion Magic Cruise Velocity</h4>
+                <p className="text-[var(--muted-foreground)] text-sm">
                   Maximum velocity during cruise phase (rotations/second)
                 </p>
               </div>
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                <h4 className="font-bold text-primary-700 dark:text-primary-300">Motion Magic Acceleration</h4>
-                <p className="text-primary-600 dark:text-primary-400 text-sm">
+                <h4 className="font-bold text-[var(--foreground)]">Motion Magic Acceleration</h4>
+                <p className="text-[var(--muted-foreground)] text-sm">
                   Rate of acceleration/deceleration (rotations/second²)
                 </p>
               </div>
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
-                <h4 className="font-bold text-primary-700 dark:text-primary-300">Motion Magic Jerk</h4>
-                <p className="text-primary-600 dark:text-primary-400 text-sm">
+                <h4 className="font-bold text-[var(--foreground)]">Motion Magic Jerk</h4>
+                <p className="text-[var(--muted-foreground)] text-sm">
                   Rate of change of acceleration (rotations/second³)
                 </p>
               </div>
@@ -79,9 +79,9 @@ export default function MotionMagic() {
         </div>
 
         {/* Documentation Link */}
-        <div className="bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">📚 Official Motion Magic Documentation</h3>
-          <p className="text-indigo-800 dark:text-indigo-300 mb-4">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Official Motion Magic Documentation</h3>
+          <p className="text-[var(--foreground)] mb-4">
             For complete Motion Magic reference, configuration examples, and advanced tuning techniques:
           </p>
           <a 
@@ -153,9 +153,9 @@ public void setTargetPosition(double positionRotations) {
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before</h4>
-              <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
+            <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-red-500">
+              <h4 className="font-bold text-[var(--foreground)] mb-2">📋 Before</h4>
+              <ul className="text-sm text-[var(--foreground)] space-y-1">
                 <li>• PID position control with PositionVoltage</li>
                 <li>• Instant acceleration to target</li>
                 <li>• Potential mechanical stress from jerky movements</li>
@@ -219,12 +219,12 @@ public void setTargetPosition(double positionRotations) {
         </div>
 
         {/* Motion Magic vs PID Comparison */}
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-focus-700 dark:text-focus-300 mb-4">⚖️ Motion Magic vs Basic PID</h3>
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚖️ Motion Magic vs Basic PID</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">When to Use Basic PID:</h4>
-              <ul className="text-sm text-focus-700 dark:text-focus-300 space-y-1 list-disc list-inside">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">When to Use Basic PID:</h4>
+              <ul className="text-sm text-[var(--foreground)] space-y-1 list-disc list-inside">
                 <li>Simple positioning tasks</li>
                 <li>Continuous control (like maintaining angle)</li>
                 <li>When speed of response is critical</li>
@@ -232,8 +232,8 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2">When to Use Motion Magic:</h4>
-              <ul className="text-sm text-focus-700 dark:text-focus-300 space-y-1 list-disc list-inside">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">When to Use Motion Magic:</h4>
+              <ul className="text-sm text-[var(--foreground)] space-y-1 list-disc list-inside">
                 <li>Large, heavy mechanisms (arms, elevators)</li>
                 <li>When smooth motion is important</li>
                 <li>Preventing mechanical stress</li>
@@ -244,13 +244,13 @@ public void setTargetPosition(double positionRotations) {
         </div>
 
         {/* Motion Magic Tuning Steps */}
-        <div className="bg-primary-50 dark:bg-primary-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">⚙️ Motion Magic Tuning Steps</h3>
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚙️ Motion Magic Tuning Steps</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">1. Find Maximum Velocity:</h4>
-              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-2 list-disc list-inside">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">1. Find Maximum Velocity:</h4>
+              <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                 <li>Plot velocity <strong>without Motion Magic</strong></li>
                 <li>Move mechanism the maximum distance it will travel</li>
                 <li>Record the maximum velocity it reaches</li>
@@ -259,8 +259,8 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">2. Set Motion Magic Parameters:</h4>
-              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-2 list-disc list-inside">
+              <h4 className="font-semibold text-[var(--foreground)] mb-2">2. Set Motion Magic Parameters:</h4>
+              <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                 <li><strong>Cruise Velocity:</strong> Use 80% of max velocity</li>
                 <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">cruiseVel = MAX_VELOCITY * 0.8</code></li>
                 <li><strong>Acceleration:</strong> Use 4x cruise velocity for smooth motion</li>
@@ -270,11 +270,11 @@ public void setTargetPosition(double positionRotations) {
             </div>
           </div>
 
-          <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-            <h4 className="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">💡 Why This Method Works:</h4>
-            <p className="text-primary-700 dark:text-primary-300 text-sm">
-              By measuring actual mechanism performance first, you set realistic motion limits that prevent 
-              oscillation and ensure smooth, achievable motion profiles. The 80% cruise velocity provides 
+          <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-purple-500">
+            <h4 className="font-semibold text-[var(--foreground)] mb-2">💡 Why This Method Works:</h4>
+            <p className="text-[var(--foreground)] text-sm">
+              By measuring actual mechanism performance first, you set realistic motion limits that prevent
+              oscillation and ensure smooth, achievable motion profiles. The 80% cruise velocity provides
               headroom for control corrections while maintaining good performance.
             </p>
           </div>
