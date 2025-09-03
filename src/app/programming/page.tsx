@@ -115,6 +115,33 @@ export default function Programming() {
           </div>
         </div>
 
+        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4">
+            🎯 Step 1: Basic Subsystem (PR #1)
+          </h3>
+          <p className="text-blue-800 dark:text-blue-300 mb-4">
+            Our first step creates a foundational ARM subsystem with basic motor control and sensor feedback.
+          </p>
+          
+          <div className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-4">
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Implementation Details:</h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <li>• <strong>TalonFX Motor:</strong> Configured with device ID 31</li>
+              <li>• <strong>CANCoder Sensor:</strong> Remote feedback sensor (ID 22)</li>
+              <li>• <strong>Voltage Control:</strong> Direct voltage output for basic movement</li>
+              <li>• <strong>Brake Mode:</strong> Holds position when motor is stopped</li>
+              <li>• <strong>Basic Methods:</strong> setVoltage() and stop() for control</li>
+            </ul>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded">
+            <p className="text-green-800 dark:text-green-300 text-sm">
+              <strong>Key Learning:</strong> This establishes the foundation - hardware configuration, 
+              basic control, and sensor integration. Every subsystem needs these core elements.
+            </p>
+          </div>
+        </div>
+
         <iframe
           src="https://www.youtube.com/embed/ykvIJx-4RhU"
           title="Subsystem with Commands"
@@ -122,6 +149,99 @@ export default function Programming() {
           allowFullScreen
           className="w-full h-full aspect-video rounded-lg"
         />
+
+        <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">
+            🎮 Step 2: Commands Integration (PR #2)
+          </h3>
+          <p className="text-green-800 dark:text-green-300 mb-4">
+            Now we add command-based control, allowing user input to control our ARM mechanism.
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">New Subsystem Methods:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• <strong>moveUp():</strong> Move arm upward</li>
+                <li>• <strong>moveDown():</strong> Move arm downward</li>
+                <li>• <strong>getPosition():</strong> Get current angle</li>
+                <li>• <strong>atSetpoint():</strong> Check if at target</li>
+              </ul>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Command Integration:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• <strong>RobotContainer:</strong> Binds controls to commands</li>
+                <li>• <strong>Controller Input:</strong> Joystick triggers arm movement</li>
+                <li>• <strong>Default Command:</strong> Stops arm when no input</li>
+                <li>• <strong>Safety:</strong> Commands require the arm subsystem</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded">
+            <p className="text-purple-800 dark:text-purple-300 text-sm">
+              <strong>Key Learning:</strong> Commands separate "what to do" from "how to do it." 
+              This makes code modular, testable, and easy to modify for different control schemes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          Step 3: Precise Control with PID
+        </h2>
+
+        <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-purple-900 dark:text-purple-300 mb-4">
+            🎯 Step 3: PID Control (PR #3)
+          </h3>
+          <p className="text-purple-800 dark:text-purple-300 mb-4">
+            Replace voltage control with precise PID position control for accurate, repeatable movements.
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-red-600 mb-2">P - Proportional</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Responds to current error. Larger error = stronger correction.
+              </p>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-yellow-600 mb-2">I - Integral</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Eliminates steady-state error by accumulating past errors.
+              </p>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-600 mb-2">D - Derivative</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                Reduces overshoot by predicting future error trends.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-4">
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">PID Implementation Changes:</h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+              <li>• <strong>PositionVoltage:</strong> Replace VoltageOut with PID control request</li>
+              <li>• <strong>PID Constants:</strong> kP, kI, kD values for tuning</li>
+              <li>• <strong>Target Positions:</strong> Set precise angle targets</li>
+              <li>• <strong>Tolerance:</strong> Define "close enough" for position checking</li>
+            </ul>
+          </div>
+
+          <div className="bg-orange-50 dark:bg-orange-950/30 p-3 rounded">
+            <p className="text-orange-800 dark:text-orange-300 text-sm">
+              <strong>Key Learning:</strong> PID control transforms imprecise voltage commands into 
+              accurate position control. This is essential for mechanisms that need to hit specific targets.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="flex flex-col gap-8 bg-white dark:bg-gray-900 rounded-lg p-8 shadow-lg border border-gray-200 dark:border-gray-800">

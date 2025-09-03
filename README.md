@@ -1,5 +1,7 @@
 # Gray Matter Coding Workshop #1 Website
 
+🌐 **Live Site: [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)**
+
 A responsive website built with Next.js and Tailwind CSS that converts the Gray Matter Coding Workshop #1 Canva presentation into an accessible markdown-based learning platform.
 
 ## 🎯 About
@@ -10,9 +12,25 @@ This website transforms the FRC programming workshop content into an interactive
 - **Hardware Setup** - CTRE motors, CANivore, and device configuration  
 - **Project Setup** - Creating and organizing WPILib projects
 - **Command Framework** - Understanding triggers, subsystems, and commands
-- **Programming** - ARM and Flywheel mechanism implementation
+- **Programming** - ARM and Flywheel mechanism implementation with progressive development
 - **Control Systems** - PID and Feedforward control theory
 - **Tuning** - Real-world mechanism tuning with Phoenix Tuner X
+
+## 🔗 Workshop Code Repository
+
+The workshop includes live code examples from the companion repository:
+**[Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)**
+
+### Implementation Progression
+The workshop follows a structured 5-step progression through pull requests:
+
+1. **PR #1: Creating a Subsystem** - Basic motor control and sensor integration
+2. **PR #2: Adding Commands** - Command-based architecture and user input
+3. **PR #3: PID Control** - Precise position control with feedback loops
+4. **PR #4: Using Motion Magic** - Smooth profiled movements with acceleration control
+5. **PR #5: Useful Subsystem Functions** - Safety features, utilities, and diagnostics
+
+Each step builds upon the previous implementation, showing real-world development practices.
 
 ## 🚀 Getting Started
 
@@ -54,6 +72,7 @@ src/
     ├── CodeBlock.tsx      # IDE-style syntax highlighted code
     ├── GitHubPR.tsx       # Live GitHub pull request display
     ├── GitHubPage.tsx     # Live GitHub file display
+    ├── GithubPageWithPR.tsx # Tabbed GitHub file and PR diff view
     └── ImageBlock.tsx     # Optimized image display
 ```
 
@@ -78,15 +97,23 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 
 ### Status Badges
 
-Add these to your forked repository:
+[![CI/CD Pipeline](https://github.com/Hemlock5712/Workshop-Site/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/Hemlock5712/Workshop-Site/actions)
+[![Deploy with Vercel](https://vercel.com/button)](https://ctre-workshop-site.vercel.app)
 
-```markdown
-![CI/CD Pipeline](https://github.com/yourusername/gray-matter-workshop/workflows/CI/CD%20Pipeline/badge.svg)
-```
+## 🌐 Live Deployment
 
-## 🌐 Deploy on Vercel
+**🚀 Live Site:** [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)
 
-### Automatic Deployment (Recommended)
+### Automatic Deployment
+
+This project is automatically deployed to Vercel:
+- **Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)
+- **Production Branch:** `master`
+- **Auto-deploy:** Every push to `master` triggers a new deployment
+- **Preview Deployments:** Pull requests create preview deployments
+- **Quality Gates:** GitHub Actions ensure code quality before deployment
+
+### Deploy Your Own
 
 1. **Fork this repository** to your GitHub account
 2. **Connect to Vercel:**
@@ -94,11 +121,6 @@ Add these to your forked repository:
    - Sign in with GitHub
    - Import your forked repository
    - Deploy automatically
-
-3. **Automatic Updates:**
-   - Every push to `main` triggers a new deployment
-   - Pull requests create preview deployments
-   - GitHub Actions ensure code quality before deployment
 
 ### Manual Deployment
 
@@ -126,6 +148,9 @@ The workshop content is organized into themed pages that can be easily extended:
 - **Interactive Navigation** - Smooth transitions between sections
 - **Progress Tracking** - Clear next/previous navigation
 - **Code-Friendly** - Optimized for technical content display
+- **Live Code Integration** - Real GitHub repository embedding with PR progression
+- **Video Tutorials** - YouTube integration for visual learning
+- **Interactive Components** - Tabbed interfaces combining code views and PR diffs
 
 ## 🔧 Customization
 
@@ -146,12 +171,14 @@ The site includes:
 
 ## 🤝 Contributing
 
-This project was generated from Canva presentation content. To extend or modify:
+This project transforms FRC programming workshop content into an interactive learning platform. To contribute:
 
-1. Fork the repository
+1. Fork the repository: [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)
 2. Create a feature branch
 3. Make your changes
 4. Submit a pull request
+
+All contributions help improve the FRC programming education experience!
 
 ## 📄 License
 

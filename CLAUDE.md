@@ -5,6 +5,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 15, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
 
+**Live Site:** [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)  
+**Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)  
+**Workshop Code:** [https://github.com/Hemlock5712/Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)
+
 ## Development Commands
 
 ### Essential Commands
@@ -79,6 +83,8 @@ Workshop Content:
 - **Navigation**: Client-side routing with active state management
 - **Video Integration**: YouTube embeds for educational content
 - **Code Learning**: Tabbed interfaces combining final code with development process
+- **GitHub Integration**: Live embedding of Workshop-Code repository with PR progression
+- **Progressive Learning**: 5-step implementation approach following real development workflow
 
 ### Important Implementation Notes
 - Theme system uses document-level attribute manipulation
@@ -88,6 +94,17 @@ Workshop Content:
 - Build process includes comprehensive testing (lint + type-check + build)
 
 ## Recent Development History
+
+### Workshop-Code Integration & Implementation Steps (Latest)
+- **Repository Integration**: Connected site to Workshop-Code repository for live code examples
+- **5-Step Learning Progression**: Implemented structured approach following PR workflow:
+  1. **Basic Subsystem (PR #1)**: Motor control and sensor integration
+  2. **Commands Integration (PR #2)**: Command-based architecture and user input
+  3. **PID Control (PR #3)**: Precise position control with feedback loops
+  4. **Motion Magic (PR #4)**: Smooth profiled movements with acceleration control
+  5. **Useful Functions (PR #5)**: Safety features, utilities, and diagnostics
+- **Educational Enhancement**: Added detailed explanations, visual learning aids, and practical implementation details
+- **Real-World Context**: Each step explains both technical implementation and competition relevance
 
 ### Video Tutorial Integration (feat/video-tutorials)
 - **YouTube Embeddings**: Added educational videos throughout workshop pages

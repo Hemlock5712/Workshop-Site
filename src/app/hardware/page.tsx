@@ -24,17 +24,23 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-              Kraken Motor
+              <a 
+                href="https://store.ctr-electronics.com/products/kraken-x60"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                Kraken X60 Brushless Motor Powered by Talon FX™
+              </a>
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-3">
-              CTRE Motor. Comes with a built-in motor controller called
-              TalonFX.
+              High-performance brushless motor with integrated Talon FX™ controller. 
+              Delivers 1,108W peak power with built-in encoder and advanced control modes.
             </p>
             <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg">
               <p className="text-sm text-blue-800 dark:text-blue-300">
-                <strong>Key Features:</strong> High torque, integrated
-                controller, CAN communication, advanced control modes
-                including PID, FeedForward, and Motion Magic.
+                <strong>Key Features:</strong> 7.09Nm stall torque, 87% max efficiency,
+                SplineXS shaft, CAN communication, PID, FeedForward, and Motion Magic control modes.
               </p>
             </div>
           </div>
@@ -48,17 +54,23 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-              CANCoder
+              <a 
+                href="https://store.ctr-electronics.com/products/cancoder"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                CANCoder® – CAN Bus Magnetic Encoder
+              </a>
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-3">
-              Absolute encoder. Gets the angle of a mechanism. Useful in
-              things like swerve modules and arms.
+              Rotary magnetic encoder that provides absolute position over CAN bus. 
+              Perfect for swerve modules, arms, and any mechanism requiring precise angular feedback.
             </p>
             <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded-lg">
               <p className="text-sm text-green-800 dark:text-green-300">
-                <strong>Key Features:</strong> 360° absolute position,
-                magnetic sensing, no calibration needed on startup, CAN bus
-                communication.
+                <strong>Key Features:</strong> 360° absolute position, magnetic sensing,
+                supports CAN FD and CAN 2.0, no calibration needed, 6-16V supply voltage.
               </p>
             </div>
           </div>
@@ -72,18 +84,23 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-              CANivore
+              <a 
+                href="https://store.ctr-electronics.com/canivore/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                CANivore™ – CAN FD Bus Expansion
+              </a>
             </h3>
             <p className="text-gray-600 dark:text-gray-300 mb-3">
-              USB-to-CAN FD device that adds a secondary CAN FD bus to the roboRIO.
-              Enables hardware-attached simulation and direct control of CTRE devices
-              during development.
+              USB-to-CAN FD interface that adds new CAN FD network to PC or roboRIO.
+              Enables precise control of CTRE devices with Phoenix Pro and hardware-attached simulation.
             </p>
             <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded-lg">
               <p className="text-sm text-purple-800 dark:text-purple-300">
-                <strong>Key Features:</strong> 1000Hz update rate (vs 50Hz roboRIO),
-                CAN FD technology for improved bandwidth, hardware-attached simulation support,
-                direct USB connection for development.
+                <strong>Key Features:</strong> CAN FD technology (2X-8X better bus utilization),
+                wireless configuration, ESP32 integration, multi-color status LEDs, USB Type-C support.
               </p>
             </div>
           </div>
@@ -236,8 +253,8 @@ export default function Hardware() {
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                1
+              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                ✓
               </span>
               <div>
                 <p className="font-medium">
@@ -258,8 +275,8 @@ export default function Hardware() {
             </div>
 
             <div className="flex items-start space-x-3">
-              <span className="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                2
+              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+                ✓
               </span>
               <div>
                 <p className="font-medium">

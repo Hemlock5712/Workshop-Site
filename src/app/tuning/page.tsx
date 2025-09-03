@@ -91,6 +91,89 @@ export default function Tuning() {
           </p>
         </div>
 
+        <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900 rounded-lg p-6 mb-6">
+          <h3 className="text-xl font-bold text-orange-900 dark:text-orange-300 mb-4">
+            🚀 Step 4: Motion Magic (PR #4)
+          </h3>
+          <p className="text-orange-800 dark:text-orange-300 mb-4">
+            Upgrade from basic PID to Motion Magic for smooth, profiled movements with controlled acceleration and velocity.
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Motion Magic Benefits:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• <strong>Smooth Acceleration:</strong> No jerky movements</li>
+                <li>• <strong>Velocity Limits:</strong> Controlled maximum speed</li>
+                <li>• <strong>Predictable Motion:</strong> Consistent timing</li>
+                <li>• <strong>Reduced Wear:</strong> Gentler on mechanisms</li>
+              </ul>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Implementation Changes:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• <strong>MotionMagicVoltage:</strong> Replace PositionVoltage</li>
+                <li>• <strong>Cruise Velocity:</strong> Max speed setting</li>
+                <li>• <strong>Acceleration:</strong> Rate of speed change</li>
+                <li>• <strong>Jerk:</strong> Rate of acceleration change</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-indigo-50 dark:bg-indigo-950/30 p-3 rounded">
+            <p className="text-indigo-800 dark:text-indigo-300 text-sm">
+              <strong>Key Learning:</strong> Motion Magic creates professional-quality movement profiles. 
+              This is what separates amateur robots from championship-level performance.
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-900 rounded-lg p-6 mb-6">
+          <h3 className="text-xl font-bold text-teal-900 dark:text-teal-300 mb-4">
+            🔧 Step 5: Useful Subsystem Functions (PR #5)
+          </h3>
+          <p className="text-teal-800 dark:text-teal-300 mb-4">
+            Add practical utility functions that make the subsystem easier to use and more robust in competition.
+          </p>
+          
+          <div className="grid md:grid-cols-3 gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Safety Features:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• Soft limits</li>
+                <li>• Emergency stops</li>
+                <li>• Position bounds</li>
+              </ul>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Utility Methods:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• Position presets</li>
+                <li>• Calibration routines</li>
+                <li>• Status reporting</li>
+              </ul>
+            </div>
+
+            <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Diagnostics:</h4>
+              <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                <li>• Health monitoring</li>
+                <li>• Performance metrics</li>
+                <li>• Error detection</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="bg-cyan-50 dark:bg-cyan-950/30 p-3 rounded">
+            <p className="text-cyan-800 dark:text-cyan-300 text-sm">
+              <strong>Key Learning:</strong> These utility functions transform a basic subsystem into a 
+              competition-ready component with safety, reliability, and ease of use.
+            </p>
+          </div>
+        </div>
+
         <GithubPageWithPR repository="Hemlock5712/Workshop-Code" filePath="src/main/java/frc/robot/subsystems/Arm.java" branch="3-PID" pullRequestNumber={3} focusFile="Arm.java" />
       </section>
     </PageTemplate>
