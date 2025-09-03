@@ -1,5 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
-import Image from "next/image";
+import ImageBlock from "@/components/ImageBlock";
 
 export default function MechanismSetup() {
   return (
@@ -51,7 +51,13 @@ export default function MechanismSetup() {
             </div>
 
             <div className="flex w-full justify-center">
-              <Image src="/images/mechanisms/arm.jpg" alt="Arm mechanism for encoder verification" width={300} height={200} className="rounded-lg" />
+              <ImageBlock
+                src="/images/mechanisms/arm.jpg"
+                alt="Arm mechanism for encoder verification"
+                width={300}
+                height={200}
+                className="rounded-lg"
+              />
             </div>
           </div>
 
