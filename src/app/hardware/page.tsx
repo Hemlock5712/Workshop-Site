@@ -146,7 +146,7 @@ export default function Hardware() {
           Why We Choose CTRE Hardware
         </h2>
 
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
             🎯 CTRE&apos;s Unique Advantages
           </h3>
@@ -158,7 +158,7 @@ export default function Hardware() {
               </p>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-purple-600 dark:text-purple-400 mb-2">FeedForward (FF)</h4>
+              <h4 className="font-bold text-[var(--foreground)] mb-2">FeedForward (FF)</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Built-in feedforward control for gravity compensation and velocity control that competitors lack.
               </p>
