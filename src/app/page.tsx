@@ -6,10 +6,10 @@ export default function Home() {
     <div className="max-w-6xl mx-auto px-4 py-12 flex flex-col gap-8">
       {/* Hero Section */}
       <div className="text-center flex flex-col gap-8">
-        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-slate-100">
           Gray Matter Coding Workshop
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+        <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
           Learn FRC&apos;s best programming practices to build a robot good
           enough to win events. Master code architecture, subsystems, PID
           tuning, libraries, and more!
@@ -17,13 +17,13 @@ export default function Home() {
         <div className="flex gap-4 justify-center flex-wrap">
           <Link
             href="/introduction"
-            className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+            className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
           >
             Start Workshop
           </Link>
           <Link
             href="/prerequisites"
-            className="border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 px-8 py-3 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            className="border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-8 py-3 rounded-lg font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
           >
             Prerequisites
           </Link>
@@ -32,19 +32,19 @@ export default function Home() {
 
       {/* Workshop Overview */}
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 text-center">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             Target Audience
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-slate-600 dark:text-slate-300 mb-6">
             This workshop is designed for FRC Teams using Java and CTRE
             Hardware.
           </p>
 
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
             What You&apos;ll Learn
           </h3>
-          <ul className="space-y-2 text-gray-600 dark:text-gray-300 text-left max-w-md mx-auto">
+          <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-left max-w-md mx-auto">
             <li>• Code architecture and best practices</li>
             <li>• Subsystems structure and organization</li>
             <li>• PID tuning techniques</li>
@@ -56,11 +56,11 @@ export default function Home() {
 
       {/* Mechanisms Section */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8 text-center">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">
           Mechanisms We&apos;ll Program
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
+          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800">
             <div className="mb-4">
               <Image
                 src="/images/mechanisms/arm.jpg"
@@ -70,17 +70,17 @@ export default function Home() {
                 className="w-full h-48 object-cover rounded-lg"
               />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               Robot Arm
             </h3>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-slate-600 dark:text-slate-300">
               Learn to program a robot arm with precise positioning control.
               Master PID tuning, encoder feedback, and motion profiling to achieve smooth,
               accurate movements for game piece manipulation.
             </p>
           </div>
           {/* Flywheel Section - Commented out for ARM-focused workshop
-          <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg border border-gray-200 dark:border-gray-800">
+          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800">
             <div className="mb-4">
               <Image
                 src="/images/mechanisms/flywheel.png"
@@ -90,10 +90,10 @@ export default function Home() {
                 className="w-full h-48 object-cover rounded-lg"
               />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               Flywheel Shooter
             </h3>
-            <p className="text-gray-600 dark:text-gray-300">
+            <p className="text-slate-600 dark:text-slate-300">
               Program a high-speed flywheel shooter system for consistent game piece
               launching. Explore velocity control, feedforward calculations, and
               real-time adjustments for accuracy across varying distances.
@@ -104,8 +104,8 @@ export default function Home() {
       </div>
 
       {/* Team Introduction */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 p-8 rounded-lg">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6 text-center">
+      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 p-8 rounded-lg">
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
           Meet the Team
         </h2>
         <div className="flex justify-center space-x-8 flex-wrap gap-4">

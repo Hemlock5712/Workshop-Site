@@ -3,6 +3,76 @@
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  
+  /* Educational Brand Colors - Based on #0D233F (Deep Academic Blue) */
+  --color-primary-50: #f2f6fa;
+  --color-primary-100: #e3ecf4;
+  --color-primary-200: #c1d4e7;
+  --color-primary-300: #9fbcd9;
+  --color-primary-400: #7da4cb;
+  --color-primary-500: #5b8cbe;
+  --color-primary-600: #4a73a0;
+  --color-primary-700: #385a80;
+  --color-primary-800: #264060;
+  --color-primary-900: #0d233f;
+  --color-primary-950: #081829;
+
+  /* Educational Neutral Colors - Professional but Approachable */
+  --color-slate-50: #fafbfc;
+  --color-slate-100: #f5f7fa;
+  --color-slate-200: #ebeef3;
+  --color-slate-300: #dde2e8;
+  --color-slate-400: #a5b3c1;
+  --color-slate-500: #6b7d8f;
+  --color-slate-600: #4a5765;
+  --color-slate-700: #343d49;
+  --color-slate-800: #1e242b;
+  --color-slate-900: #151a1f;
+
+  /* Learning Theme Colors - Friendly and Engaging */
+  --color-learn-50: #f0f8f4;   /* Success/Complete - Soft mint */
+  --color-learn-100: #dcf2e6;
+  --color-learn-200: #b8e5ce;
+  --color-learn-300: #85d4a8;
+  --color-learn-400: #4fc17f;
+  --color-learn-500: #22a45c;
+  --color-learn-600: #1a8549;
+  --color-learn-700: #16693b;
+  --color-learn-800: #145531;
+  --color-learn-900: #124529;
+
+  --color-focus-50: #fef9e7;   /* Attention/Important - Warm amber */
+  --color-focus-100: #fef2c7;
+  --color-focus-200: #fde38a;
+  --color-focus-300: #fcd34d;
+  --color-focus-400: #fbbf24;
+  --color-focus-500: #f59e0b;
+  --color-focus-600: #d97706;
+  --color-focus-700: #b45309;
+  --color-focus-800: #92400e;
+  --color-focus-900: #78350f;
+
+  --color-concept-50: #f4f3ff;  /* Key Concepts - Gentle purple */
+  --color-concept-100: #ede9fe;
+  --color-concept-200: #ddd6fe;
+  --color-concept-300: #c4b5fd;
+  --color-concept-400: #a78bfa;
+  --color-concept-500: #8b5cf6;
+  --color-concept-600: #7c3aed;
+  --color-concept-700: #6d28d9;
+  --color-concept-800: #5b21b6;
+  --color-concept-900: #4c1d95;
+
+  --color-practice-50: #f0fdfa;  /* Hands-on/Practice - Fresh teal */
+  --color-practice-100: #ccfbf1;
+  --color-practice-200: #99f6e4;
+  --color-practice-300: #5eead4;
+  --color-practice-400: #2dd4bf;
+  --color-practice-500: #14b8a6;
+  --color-practice-600: #0d9488;
+  --color-practice-700: #0f766e;
+  --color-practice-800: #115e59;
+  --color-practice-900: #134e4a;
 }
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
