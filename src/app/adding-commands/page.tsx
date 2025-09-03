@@ -1,4 +1,4 @@
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 
@@ -155,7 +155,7 @@ public class RobotContainer {
           </div>
         </div>
 
-        <GithubPageWithPR 
+        <GitHubPageWithPR 
           repository="Hemlock5712/Workshop-Code" 
           filePath="src/main/java/frc/robot/subsystems/Arm.java" 
           branch="2-Commands" 

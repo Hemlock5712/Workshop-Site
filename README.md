@@ -72,7 +72,7 @@ src/
     ├── CodeBlock.tsx      # IDE-style syntax highlighted code
     ├── GitHubPR.tsx       # Live GitHub pull request display
     ├── GitHubPage.tsx     # Live GitHub file display
-    ├── GithubPageWithPR.tsx # Tabbed GitHub file and PR diff view
+    ├── GitHubPageWithPR.tsx # Tabbed GitHub file and PR diff view
     └── ImageBlock.tsx     # Optimized image display
 ```
 

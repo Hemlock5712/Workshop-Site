@@ -52,7 +52,7 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 - **`src/components/CodeBlock.tsx`**: Syntax-highlighted code display
 - **`src/components/GitHubPR.tsx`**: Live GitHub pull request embedding
 - **`src/components/GitHubPage.tsx`**: Live GitHub file display
-- **`src/components/GithubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
+- **`src/components/GitHubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
 - **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
 
 ### Route Organization
@@ -111,7 +111,7 @@ Workshop Content:
   - Programming implementation tutorials for ARM and Flywheel mechanisms
   - Project setup walkthrough videos
   - Tuning demonstration videos
-- **Enhanced GitHub Components**: Created `GithubPageWithPR.tsx` with tabbed interface
+- **Enhanced GitHub Components**: Created `GitHubPageWithPR.tsx` with tabbed interface
   - "Final Implementation" tab showing complete code
   - "GitHub Changes" tab showing PR diffs
   - Improved code learning experience with before/after views

@@ -4,7 +4,7 @@ import { useState } from "react";
 import GitHubPage from "./GitHubPage";
 import GitHubPR from "./GitHubPR";
 
-interface GithubPageWithPRProps {
+interface GitHubPageWithPRProps {
   repository: string;
   filePath: string;
   branch?: string;
@@ -12,7 +12,7 @@ interface GithubPageWithPRProps {
   focusFile: string;
 }
 
-export default function GithubPageWithPR({ repository, filePath, branch, pullRequestNumber, focusFile }: GithubPageWithPRProps) {
+export default function GitHubPageWithPR({ repository, filePath, branch, pullRequestNumber, focusFile }: GitHubPageWithPRProps) {
 
   const [activeTab, setActiveTab] = useState<"ide" | "diff">("ide");
 
