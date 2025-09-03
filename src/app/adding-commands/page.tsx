@@ -37,7 +37,7 @@ export default function AddingCommands() {
           <CodeBlock
             language="java"
             title="Subsystem Command Methods"
-            code={`// In your ARM subsystem - add these command methods:
+            code={`// In your Arm subsystem - add these command methods:
 
 public Command moveUp() {
     return startEnd(() -> setVoltage(6), () -> stop());
@@ -123,7 +123,7 @@ public class RobotContainer {
       {/* Before/After Implementation */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation: Adding Commands to ARM
+          Workshop Implementation: Adding Commands to Arm
         </h2>
 
         <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
@@ -135,7 +135,7 @@ public class RobotContainer {
             <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
               <h4 className="font-bold text-red-700 dark:text-red-300 mb-2">📋 Before</h4>
               <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
-                <li>• ARM subsystem with basic voltage control</li>
+                <li>• Arm subsystem with basic voltage control</li>
                 <li>• No user input integration</li>
                 <li>• No commands to coordinate actions</li>
                 <li>• Manual method calls only</li>
@@ -145,7 +145,7 @@ public class RobotContainer {
             <div className="bg-learn-100 dark:bg-learn-900/20 p-4 rounded-lg border border-learn-200 dark:border-learn-900">
               <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
               <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
-                <li>• Enhanced ARM subsystem methods</li>
+                <li>• Enhanced Arm subsystem methods</li>
                 <li>• Xbox controller integration</li>
                 <li>• Commands for moveUp(), moveDown()</li>
                 <li>• RobotContainer with proper binding</li>
@@ -218,7 +218,7 @@ public class RobotContainer {
 
           <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
             <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-              <strong>💡 Next Step:</strong> Our ARM now responds to user input! 
+              <strong>💡 Next Step:</strong> Our Arm now responds to user input!
               Next, we&apos;ll verify mechanism setup before implementing precise PID position control.
             </p>
           </div>

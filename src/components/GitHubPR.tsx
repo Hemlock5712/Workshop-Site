@@ -305,7 +305,7 @@ export default function GitHubPR({
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h5 className="font-semibold text-slate-900 dark:text-slate-100">
-              {focusFile ? "ARM.java Changes" : "Files Changed"}
+              {focusFile ? "Arm.java Changes" : "Files Changed"}
             </h5>
             <div className="flex items-center space-x-4 text-sm">
               <span className="flex items-center text-green-600 dark:text-green-400">

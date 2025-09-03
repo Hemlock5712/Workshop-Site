@@ -182,7 +182,7 @@ public void setTargetPosition(double positionRotations) {
             <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
               <h4 className="font-bold text-focus-700 dark:text-focus-300 mb-2">📋 Before (PR #2)</h4>
               <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
-                <li>• Commands control ARM with voltage</li>
+                <li>• Commands control Arm with voltage</li>
                 <li>• No position feedback control</li>
                 <li>• Imprecise, inconsistent movement</li>
                 <li>• No automatic target reaching</li>
@@ -230,7 +230,7 @@ public void setTargetPosition(double positionRotations) {
                 <li>• <strong>kP = 24.0:</strong> Strong proportional response</li>
                 <li>• <strong>kD = 0.1:</strong> Small derivative for damping</li>
                 <li>• <strong>kS = 0.25:</strong> Static friction compensation</li>
-                <li>• <strong>kG = 0.12:</strong> Gravity feedforward for ARM</li>
+                <li>• <strong>kG = 0.12:</strong> Gravity feedforward for Arm</li>
               </ul>
             </div>
           </div>
