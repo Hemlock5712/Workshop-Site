@@ -32,7 +32,7 @@ export default function Programming() {
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workshop Development Approach</h2>
 
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <div className="bg-[var(--muted)] rounded-lg p-8 border border-[var(--border)]">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">🔄 Iterative Development</h3>
@@ -181,8 +181,8 @@ export default function Programming() {
             </div>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded">
-            <p className="text-purple-800 dark:text-purple-300 text-sm">
+            <div className="bg-[var(--muted)] p-3 rounded">
+              <p className="text-[var(--foreground)] text-sm">
               <strong>Key Learning:</strong> Commands separate &quot;what to do&quot; from &quot;how to do it.&quot; 
               This makes code modular, testable, and easy to modify for different control schemes.
             </p>
@@ -195,11 +195,11 @@ export default function Programming() {
           Step 3: Precise Control with PID
         </h2>
 
-        <div className="bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 rounded-lg p-6">
+        <div className="bg-[var(--muted)] border border-[var(--border)] rounded-lg p-6">
           <h3 className="text-xl font-bold text-concept-700 dark:text-concept-300 mb-4">
             🎯 Step 3: PID Control
           </h3>
-          <p className="text-purple-800 dark:text-purple-300 mb-4">
+          <p className="text-[var(--foreground)] mb-4">
             Replace voltage control with precise PID position control for accurate, repeatable movements.
           </p>
           
@@ -287,7 +287,7 @@ export default function Programming() {
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Workshop Progression</h2>
 
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-6">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border border-[var(--border)]">
           <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">🚀 What We&apos;ll Build Next</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div>
