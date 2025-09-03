@@ -1,5 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
-import GitHubPage from "@/components/GitHubPage";
+import GithubPageWithPR from "@/components/GithubPageWithPR";
 import Image from "next/image";
 
 export default function Programming() {
@@ -85,12 +85,21 @@ export default function Programming() {
           className="w-full h-full aspect-video rounded-lg"
         />
 
-        <GitHubPage
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
+            Initial Arm Subsystem Implementation
+          </h3>
+          <p className="text-[var(--muted-foreground)]">
+            This is our starting point for the workshop. We&apos;ll progressively enhance this code throughout the learning process.
+          </p>
+        </div>
+
+        <GithubPageWithPR
           repository="Hemlock5712/Workshop-Code"
           filePath="src/main/java/frc/robot/subsystems/Arm.java"
           branch="1-Subsystem"
-          title="Initial Arm Subsystem Implementation"
-          description="This is our starting point for the workshop. We&apos;ll progressively enhance this code throughout the learning process."
+          pullRequestNumber={1}
+          focusFile="Arm.java"
         />
 
         <div className="grid md:grid-cols-2 gap-6">
