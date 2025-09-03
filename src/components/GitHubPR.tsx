@@ -136,7 +136,7 @@ export default function GitHubPR({
             {error || "PR not found"}
           </p>
           <p className="text-red-600 dark:text-red-400 text-sm mt-2">
-            Repository: {repository}, PR #{pullRequestNumber}
+            Repository: {repository}
           </p>
         </div>
       </div>
@@ -264,9 +264,6 @@ export default function GitHubPR({
                     : pr.state === "closed"
                     ? "❌ Closed"
                     : "🔄 Open"}
-                </span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
-                  #{pr.number}
                 </span>
               </div>
 

@@ -5,7 +5,7 @@ import CodeBlock from "@/components/CodeBlock";
 export default function PIDControl() {
   return (
     <PageTemplate
-      title="PID Control (PR #3)"
+      title="PID Control"
       previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
@@ -175,12 +175,12 @@ public void setTargetPosition(double positionRotations) {
         {/* Before/After Implementation */}
         <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6">
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            🔄 Before → After: PR #3 Implementation
+            🔄 Before → After: PID Control Implementation
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900">
-              <h4 className="font-bold text-focus-700 dark:text-focus-300 mb-2">📋 Before (PR #2)</h4>
+              <h4 className="font-bold text-focus-700 dark:text-focus-300 mb-2">📋 Before</h4>
               <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
                 <li>• Commands control ARM with voltage</li>
                 <li>• No position feedback control</li>
@@ -191,7 +191,7 @@ public void setTargetPosition(double positionRotations) {
             </div>
 
             <div className="bg-learn-50 dark:bg-learn-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After (PR #3)</h4>
+              <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
               <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
                 <li>• PID position control with PositionVoltage</li>
                 <li>• Automatic target position reaching</li>

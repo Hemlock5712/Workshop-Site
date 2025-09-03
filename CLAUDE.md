@@ -96,12 +96,12 @@ Workshop Content:
 
 ### Workshop-Code Integration & Implementation Steps (Latest)
 - **Repository Integration**: Connected site to Workshop-Code repository for live code examples
-- **5-Step Learning Progression**: Implemented structured approach following PR workflow:
-  1. **Basic Subsystem (PR #1)**: Motor control and sensor integration
-  2. **Commands Integration (PR #2)**: Command-based architecture and user input
-  3. **PID Control (PR #3)**: Precise position control with feedback loops
-  4. **Motion Magic (PR #4)**: Smooth profiled movements with acceleration control
-  5. **Useful Functions (PR #5)**: Safety features, utilities, and diagnostics
+- **5-Step Learning Progression**: Implemented structured approach following development workflow:
+  1. **Basic Subsystem**: Motor control and sensor integration
+  2. **Commands Integration**: Command-based architecture and user input
+  3. **PID Control**: Precise position control with feedback loops
+  4. **Motion Magic**: Smooth profiled movements with acceleration control
+  5. **Useful Functions**: Safety features, utilities, and diagnostics
 - **Educational Enhancement**: Added detailed explanations, visual learning aids, and practical implementation details
 - **Real-World Context**: Each step explains both technical implementation and competition relevance
 
