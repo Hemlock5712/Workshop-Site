@@ -111,7 +111,7 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-practice-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               ✓
             </span>
             <div>
@@ -132,8 +132,8 @@ export default function ProjectSetup() {
         className="w-full h-full aspect-video rounded-lg"
       />
 
-      <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 rounded-lg p-6">
-        <p className="text-green-800 dark:text-green-300">
+      <div className="bg-practice-100 dark:bg-practice-900/20 border border-practice-200 dark:border-practice-800 rounded-lg p-6">
+        <p className="text-practice-800 dark:text-practice-200">
           ✅ <strong>Next Steps:</strong> After creating your project, you&apos;ll learn about the Command Framework in the next section. Your project will be ready for implementing subsystems and commands!
         </p>
       </div>

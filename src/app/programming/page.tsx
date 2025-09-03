@@ -118,7 +118,7 @@ export default function Programming() {
 
         <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-primary-700 dark:text-primary-300 mb-4">
-            🎯 Step 1: Basic Subsystem (PR #1)
+            🎯 Step 1: Basic Subsystem
           </h3>
           <p className="text-primary-800 dark:text-primary-300 mb-4">
             Our first step creates a foundational ARM subsystem with basic motor control and sensor feedback.

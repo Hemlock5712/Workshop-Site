@@ -92,9 +92,9 @@ public class ExampleSubsystem extends SubsystemBase {
 
         {/* Key Concepts Explanation */}
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-primary-200 dark:border-primary-900">
-            <h4 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-3">🔧 Hardware Instantiation</h4>
-            <p className="text-primary-800 dark:text-primary-300 text-sm mb-3">
+          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
+            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🔧 Hardware Instantiation</h4>
+            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
               Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
@@ -102,9 +102,9 @@ public class ExampleSubsystem extends SubsystemBase {
             </div>
           </div>
 
-          <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border border-green-200 dark:border-green-900">
-            <h4 className="text-lg font-bold text-green-700 dark:text-green-300 mb-3">⚙️ Configuration Location</h4>
-            <p className="text-green-800 dark:text-green-300 text-sm mb-3">
+          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
+            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">⚙️ Configuration Location</h4>
+            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
               Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
@@ -112,9 +112,9 @@ public class ExampleSubsystem extends SubsystemBase {
             </div>
           </div>
 
-          <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-6 border border-purple-200 dark:border-purple-900">
-            <h4 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3">🔄 Periodic Method</h4>
-            <p className="text-purple-800 dark:text-purple-300 text-sm mb-3">
+          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
+            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🔄 Periodic Method</h4>
+            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
               Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">

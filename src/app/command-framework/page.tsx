@@ -5,7 +5,7 @@ export default function CommandFramework() {
     <PageTemplate
       title="Command-Based Framework"
       previousPage={{ href: "/project-setup", title: "Project Setup" }}
-      nextPage={{ href: "/building-subsystems", title: "Building Subsystems (PR #1)" }}
+      nextPage={{ href: "/building-subsystems", title: "Building Subsystems" }}
     >
       <div className="grid md:grid-cols-3 gap-6">
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">

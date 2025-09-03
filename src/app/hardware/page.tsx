@@ -37,7 +37,7 @@ export default function Hardware() {
               High-performance brushless motor with integrated Talon FX™ controller. 
               Delivers 1,108W peak power with built-in encoder and advanced control modes.
             </p>
-            <div className="bg-primary-50 dark:bg-primary-950/30 p-3 rounded-lg">
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> 7.09Nm stall torque, 87% max efficiency,
                 SplineXS shaft, CAN communication, PID, FeedForward, and Motion Magic control modes.
@@ -67,7 +67,7 @@ export default function Hardware() {
               Rotary magnetic encoder that provides absolute position over CAN bus. 
               Perfect for swerve modules, arms, and any mechanism requiring precise angular feedback.
             </p>
-            <div className="bg-primary-50 dark:bg-primary-950/30 p-3 rounded-lg">
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> 360° absolute position, magnetic sensing,
                 supports CAN FD and CAN 2.0, no calibration needed, 6-16V supply voltage.
@@ -97,7 +97,7 @@ export default function Hardware() {
               USB-to-CAN FD interface that adds new CAN FD network to PC or roboRIO.
               Enables precise control of CTRE devices with Phoenix Pro and hardware-attached simulation.
             </p>
-            <div className="bg-primary-50 dark:bg-primary-950/30 p-3 rounded-lg">
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> CAN FD technology (2X-8X better bus utilization),
                 wireless configuration, ESP32 integration, multi-color status LEDs, USB Type-C support.
@@ -126,7 +126,7 @@ export default function Hardware() {
               />
             </div>
             <div className="flex-1">
-              <div className="bg-primary-50 dark:bg-primary-950/30 p-6 rounded-lg">
+              <div className="bg-primary-100 dark:bg-primary-900/20 p-6 rounded-lg">
                 <p className="text-xl font-medium text-primary-900 dark:text-primary-300">
                   ARM Position Control
                 </p>
@@ -329,7 +329,7 @@ export default function Hardware() {
           </div>
         </div>
 
-        <div className="bg-primary-50 dark:bg-primary-950/30 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+        <div className="bg-primary-100 dark:bg-primary-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
           <h4 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-4">
             🎨 Card Colors
           </h4>

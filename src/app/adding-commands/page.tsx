@@ -10,7 +10,7 @@ export default function AddingCommands() {
       nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+      <div className="bg-gradient-to-r from-concept-50 to-practice-50 dark:from-concept-950/30 dark:to-practice-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Command-Based Programming
         </h2>
@@ -88,9 +88,9 @@ public class RobotContainer {
 
         {/* Key Concepts */}
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-6 border border-purple-200 dark:border-purple-900">
-            <h4 className="text-lg font-bold text-purple-700 dark:text-purple-300 mb-3">🏠 Default Commands</h4>
-            <p className="text-purple-800 dark:text-purple-300 text-sm mb-3">
+          <div className="bg-concept-100 dark:bg-concept-900/20 rounded-lg p-6 border border-concept-200 dark:border-concept-800">
+            <h4 className="text-lg font-bold text-concept-700 dark:text-concept-300 mb-3">🏠 Default Commands</h4>
+            <p className="text-concept-800 dark:text-concept-300 text-sm mb-3">
               Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
@@ -108,7 +108,7 @@ public class RobotContainer {
             </div>
           </div>
 
-          <div className="bg-learn-50 dark:bg-learn-950/30 rounded-lg p-6 border border-learn-200 dark:border-learn-900">
+          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-900">
             <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🚀 Motor Configuration</h4>
             <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
               Motor configuration code should be wrapped properly to fit in configuration sections.
@@ -142,7 +142,7 @@ public class RobotContainer {
               </ul>
             </div>
 
-            <div className="bg-learn-50 dark:bg-learn-950/30 p-4 rounded-lg border border-learn-200 dark:border-learn-900">
+            <div className="bg-learn-100 dark:bg-learn-900/20 p-4 rounded-lg border border-learn-200 dark:border-learn-900">
               <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
               <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
                 <li>• Enhanced ARM subsystem methods</li>
@@ -194,7 +194,7 @@ public class RobotContainer {
           />
         </div>
 
-        <div className="bg-learn-50 dark:bg-learn-950/30 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
+        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
           <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
