@@ -359,8 +359,8 @@ export default function Hardware() {
                   <tr className="border-b border-slate-100 dark:border-slate-800">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-purple-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-purple-700 dark:text-purple-400">Purple</strong>
+                        <span className="inline-block w-4 h-4 bg-[var(--muted)] rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-[var(--foreground)]">Purple</strong>
                       </div>
                     </td>
                     <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Device has an unexpected/beta firmware version.</td>
@@ -428,17 +428,17 @@ export default function Hardware() {
           Let&apos;s Run Some Motors!
         </h2>
 
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
+        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+          <h3 className="text-xl font-semibold text-[var(--foreground)] mb-4">
             Testing Motor Movement
           </h3>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              <h4 className="font-semibold text-[var(--foreground)] mb-3">
                 Quick Test Steps:
               </h4>
-              <ol className="list-decimal list-inside space-y-2 text-slate-700 dark:text-slate-300">
+              <ol className="list-decimal list-inside space-y-2 text-[var(--foreground)]">
                 <li>Open up your motor in Phoenix Tuner</li>
                 <li>
                   Click <strong>Config</strong>
@@ -457,7 +457,7 @@ export default function Hardware() {
               </ol>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-[var(--border)]">
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 ⚡ Safety First
               </h4>

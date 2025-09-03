@@ -10,15 +10,15 @@ export default function MotionMagic() {
       nextPage={{ href: "/programming", title: "Programming" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-4">
           Motion Magic - Profiled Motion Control
         </h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-4">
-          Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles. 
+        <p className="text-[var(--foreground)] mb-4">
+          Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles.
           This prevents jerky movements and reduces mechanical stress while maintaining precise positioning.
         </p>
-        <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-purple-500">
+        <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-[var(--border)]">
           <p className="text-[var(--foreground)] font-medium">
             🚀 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration
           </p>
@@ -32,7 +32,7 @@ export default function MotionMagic() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📈 Trapezoidal Profile</h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
               Motion Magic creates a trapezoidal velocity profile with three phases:
@@ -79,7 +79,7 @@ export default function MotionMagic() {
         </div>
 
         {/* Documentation Link */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-purple-500">
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Official Motion Magic Documentation</h3>
           <p className="text-[var(--foreground)] mb-4">
             For complete Motion Magic reference, configuration examples, and advanced tuning techniques:
@@ -270,7 +270,7 @@ public void setTargetPosition(double positionRotations) {
             </div>
           </div>
 
-          <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-purple-500">
+          <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-[var(--border)]">
             <h4 className="font-semibold text-[var(--foreground)] mb-2">💡 Why This Method Works:</h4>
             <p className="text-[var(--foreground)] text-sm">
               By measuring actual mechanism performance first, you set realistic motion limits that prevent

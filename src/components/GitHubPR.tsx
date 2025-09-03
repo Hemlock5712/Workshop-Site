@@ -253,7 +253,7 @@ export default function GitHubPR({
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${
                     pr.state === "merged"
-                      ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+                      ? "bg-[var(--muted)] text-[var(--foreground)]"
                       : pr.state === "closed"
                       ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
                       : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
@@ -366,7 +366,7 @@ export default function GitHubPR({
       </div>
 
       {/* Workshop Context */}
-        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-6">
+        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
         <h5 className="font-semibold text-[var(--foreground)] mb-3">
           🎓 Workshop Learning
         </h5>
