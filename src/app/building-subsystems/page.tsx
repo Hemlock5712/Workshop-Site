@@ -10,7 +10,7 @@ export default function BuildingSubsystems() {
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Understanding Subsystems
         </h2>
