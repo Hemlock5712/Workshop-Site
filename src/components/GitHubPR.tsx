@@ -115,9 +115,9 @@ export default function GitHubPR({
   if (loading) {
     return (
       <div className={`my-8 ${className}`}>
-        <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 p-8 text-center">
+        <div className="card p-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-[var(--muted-foreground)]">
             Loading pull request...
           </p>
         </div>
@@ -160,7 +160,7 @@ export default function GitHubPR({
     const hunkHeaderRegex = /^@@\s+-(\d+)(?:,\d+)?\s+\+(\d+)(?:,\d+)?\s+@@/;
 
     return (
-      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded font-mono text-sm overflow-x-auto">
+      <div className="card font-mono text-sm overflow-x-auto">
         {lines.map((line, index) => {
           // Handle hunk headers
           if (line.startsWith("@@")) {
@@ -172,7 +172,7 @@ export default function GitHubPR({
             return (
               <div
                 key={index}
-                className="bg-primary-50 text-primary-700 dark:bg-primary-950/30 dark:text-primary-300 px-4 py-1 border-b border-gray-200 dark:border-gray-800"
+                className="bg-primary-50 text-primary-700 dark:bg-primary-950/30 dark:text-primary-300 px-4 py-1 border-b border-[var(--border)]"
               >
                 {line}
               </div>
@@ -201,8 +201,8 @@ export default function GitHubPR({
             oldLineNum++;
             lineNumbers = `${oldLineNum}    `;
           } else if (lineType === " ") {
-            bgClass = "bg-white dark:bg-gray-900";
-            textClass = "text-gray-700 dark:text-gray-300";
+            bgClass = "bg-[var(--card)]";
+            textClass = "text-[var(--foreground)]";
             prefix = " ";
             oldLineNum++;
             newLineNum++;
@@ -215,9 +215,9 @@ export default function GitHubPR({
           return (
             <div
               key={index}
-              className={`flex ${bgClass} border-b border-gray-100 dark:border-gray-800`}
+              className={`flex ${bgClass} border-b border-[var(--border)]`}
             >
-              <div className="text-gray-400 dark:text-gray-500 text-xs px-2 py-1 w-16 text-right bg-gray-50 dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 select-none">
+              <div className="text-[var(--muted-foreground)] text-xs px-2 py-1 w-16 text-right bg-[var(--muted)] border-r border-[var(--border)] select-none">
                 {lineNumbers}
               </div>
               <div className={`flex-1 px-2 py-1 ${textClass}`}>
@@ -235,18 +235,18 @@ export default function GitHubPR({
     <div className={`my-8 ${className}`}>
       {title && (
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
             {title}
           </h3>
           {description && (
-            <p className="text-gray-600 dark:text-gray-300">{description}</p>
+            <p className="text-[var(--muted-foreground)]">{description}</p>
           )}
         </div>
       )}
 
       {/* PR Header */}
-      <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm mb-6">
-        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+      <div className="card mb-6">
+        <div className="p-6 border-b border-[var(--border)]">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
@@ -265,16 +265,16 @@ export default function GitHubPR({
                     ? "❌ Closed"
                     : "🔄 Open"}
                 </span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
+                <span className="text-[var(--muted-foreground)] text-sm">
                   #{pr.number}
                 </span>
               </div>
 
-              <h4 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              <h4 className="text-xl font-semibold text-[var(--foreground)] mb-3">
                 {pr.title}
               </h4>
 
-              <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
                 <div className="flex items-center space-x-2">
                   <Image
                     src={pr.user.avatar_url}
@@ -304,7 +304,7 @@ export default function GitHubPR({
         {/* GitHub Diff View */}
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h5 className="font-semibold text-slate-900 dark:text-slate-100">
+            <h5 className="font-semibold text-[var(--foreground)]">
               {focusFile ? "ARM.java Changes" : "Files Changed"}
             </h5>
             <div className="flex items-center space-x-4 text-sm">
@@ -323,11 +323,11 @@ export default function GitHubPR({
           {files.map((file, index) => (
             <div
               key={index}
-              className="border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden"
+              className="border border-[var(--border)] rounded-lg overflow-hidden"
             >
-              <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <div className="bg-[var(--muted)] px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <span className="font-mono text-sm font-medium text-slate-900 dark:text-slate-100">
+                  <span className="font-mono text-sm font-medium text-[var(--foreground)]">
                     {file.filename}
                   </span>
                   <span
@@ -366,11 +366,11 @@ export default function GitHubPR({
       </div>
 
       {/* Workshop Context */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg p-6">
-        <h5 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+      <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-900/20 dark:to-concept-900/20 rounded-lg p-6">
+        <h5 className="font-semibold text-[var(--foreground)] mb-3">
           🎓 Workshop Learning
         </h5>
-        <p className="text-gray-700 dark:text-gray-300 text-sm">
+        <p className="text-[var(--muted-foreground)] text-sm">
           This pull request demonstrates real-world development practices.
           Students can explore the actual code changes, commit history, and
           review comments that led to the implementation improvements. Click

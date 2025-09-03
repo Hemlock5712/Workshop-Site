@@ -75,4 +75,38 @@
   --color-practice-900: #134e4a;
 }
 
+:root {
+  color-scheme: light;
+  --background: var(--color-slate-50);
+  --foreground: var(--color-slate-900);
+  --muted: var(--color-slate-100);
+  --muted-foreground: var(--color-slate-600);
+  --card: #ffffff;
+  --card-foreground: var(--color-slate-900);
+  --border: var(--color-slate-200);
+  --primary: var(--color-primary-700);
+  --primary-foreground: #ffffff;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: var(--color-slate-900);
+  --foreground: var(--color-slate-50);
+  --muted: var(--color-slate-800);
+  --muted-foreground: var(--color-slate-300);
+  --card: var(--color-slate-800);
+  --card-foreground: var(--color-slate-50);
+  --border: var(--color-slate-700);
+  --primary: var(--color-primary-300);
+  --primary-foreground: var(--color-slate-900);
+}
+
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+}
+
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

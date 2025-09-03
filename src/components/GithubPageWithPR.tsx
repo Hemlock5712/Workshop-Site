@@ -12,19 +12,20 @@ interface GithubPageWithPRProps {
   focusFile: string;
 }
 
+
 export default function GithubPageWithPR({ repository, filePath, branch, pullRequestNumber, focusFile }: GithubPageWithPRProps) {
 
   const [activeTab, setActiveTab] = useState<"ide" | "diff">("ide");
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm">
-      <div className="border-b border-gray-200 dark:border-gray-800">
+    <div className="card">
+      <div className="border-b border-[var(--border)]">
         <div className="flex">
           <button
             onClick={() => setActiveTab("ide")}
             className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === "ide"
               ? "border-primary-600 text-primary-600"
-              : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
           >
             💻 Final Implementation
@@ -33,7 +34,7 @@ export default function GithubPageWithPR({ repository, filePath, branch, pullReq
             onClick={() => setActiveTab("diff")}
             className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === "diff"
               ? "border-primary-600 text-primary-600"
-              : "border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
           >
             🔄 GitHub Changes
@@ -62,5 +63,5 @@ export default function GithubPageWithPR({ repository, filePath, branch, pullReq
         )}
       </div>
     </div>
-  );
-}
+    );
+  }
