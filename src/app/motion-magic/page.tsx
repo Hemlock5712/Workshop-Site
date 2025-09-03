@@ -153,9 +153,9 @@ public void setTargetPosition(double positionRotations) {
           </h3>
           
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-[var(--muted)] p-4 rounded-lg border-l-4 border-red-500">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">📋 Before</h4>
-              <ul className="text-sm text-[var(--foreground)] space-y-1">
+            <div className="before-block">
+              <h4 className="before-title">📋 Before</h4>
+              <ul className="text-sm space-y-1">
                 <li>• PID position control with PositionVoltage</li>
                 <li>• Instant acceleration to target</li>
                 <li>• Potential mechanical stress from jerky movements</li>
@@ -164,9 +164,9 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
 
-            <div className="bg-learn-50 dark:bg-learn-950/30 p-4 rounded-lg border border-green-200 dark:border-green-900">
-              <h4 className="font-bold text-learn-700 dark:text-learn-300 mb-2">✅ After</h4>
-              <ul className="text-sm text-learn-800 dark:text-learn-300 space-y-1">
+            <div className="after-block">
+              <h4 className="after-title">✅ After</h4>
+              <ul className="text-sm space-y-1">
                 <li>• Motion Magic profiled motion with MotionMagicVoltage</li>
                 <li>• Smooth acceleration and deceleration curves</li>
                 <li>• Reduced mechanical stress and wear</li>
