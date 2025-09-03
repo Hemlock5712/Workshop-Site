@@ -29,7 +29,7 @@ export default function Introduction() {
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Our Goal</h2>
-        <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
+        <div className="bg-gradient-to-r from-primary-50 to-concept-50 dark:from-primary-950/30 dark:to-concept-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <p className="text-lg text-slate-700 dark:text-slate-300">
             Cover code architecture, subsystems structure, PID tuning, libraries, odometry, vision, and more!
           </p>
