@@ -1,118 +1,109 @@
-# Gray Matter Workshop - Development Documentation
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
-FRC Programming Workshop website built with Next.js, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning.
+Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 15, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
 
-## Recent Changes & Implementations
+## Development Commands
 
-### Session: 2025-08-19 - Presenter Images, Dark Mode Toggle & CTRE Documentation
+### Essential Commands
+- **Development server**: `npm run dev` (with Turbopack for faster builds)
+- **Production build**: `npm run build`
+- **Production server**: `npm start`
+- **Linting**: `npm run lint` (ESLint with Next.js config)
+- **Type checking**: `npm run type-check` (TypeScript compiler check)
+- **Full test suite**: `npm test` (runs lint + type-check + build)
 
-#### 1. Added Presenter Images to Homepage
-**Location**: `src/app/page.tsx:62-99`
-- **What**: Replaced colored circle placeholders with actual presenter photos
-- **Images Used**:
-  - Josh Bacon: `/images/presentors/joshPhoto.jpg`
-  - Alex Haltom: `/images/presentors/alexPhoto.jpg` 
-  - Joe Lockwood: `/images/presentors/joePhoto.jpg`
-- **Implementation**: Used Next.js Image component with 64x64px circular display
+### Development Workflow
+1. Run `npm run dev` for development with hot reload
+2. Before committing, run `npm test` to ensure code quality
+3. Use `npm run type-check` for TypeScript validation
+4. Use `npm run lint` for code style consistency
 
-#### 2. Added Mechanisms Section to Homepage
-**Location**: `src/app/page.tsx:57-102`
-- **What**: New "Mechanisms We'll Program" section showcasing workshop content
-- **Mechanisms**:
-  - Robot Arm (`/images/mechanisms/arm.jpg`) - Multi-jointed arm with PID control
-  - Flywheel Shooter (`/images/mechanisms/flywheel.png`) - High-speed shooter system
-- **Layout**: Responsive grid (side-by-side on desktop, stacked on mobile)
+## Code Architecture
 
-#### 3. Implemented Dark/Light Mode Toggle
-**Files Created/Modified**:
+### Application Structure
+- **Framework**: Next.js 15 with App Router (`src/app/` directory)
+- **Styling**: Tailwind CSS 4 with dark mode support
+- **State Management**: Zustand for theme state
+- **Type Safety**: TypeScript with strict configuration
+- **Icons**: Lucide React icons
+- **Syntax Highlighting**: React Syntax Highlighter
 
-**New File**: `src/components/ThemeProvider.tsx`
-- **Purpose**: React context for theme management
-- **Features**: 
-  - Three modes: light, dark, system (auto)
-  - localStorage persistence
-  - System preference detection
-  - Real-time theme switching
+### Key Components Architecture
 
-**Modified**: `src/app/layout.tsx:5,33-40`
-- **Change**: Added ThemeProvider wrapper around app content
-- **Import**: Added ThemeProvider import
+#### Layout & Navigation
+- **`src/app/layout.tsx`**: Root layout with theme setup, font configuration, and sidebar integration
+- **`src/components/Sidebar.tsx`**: Collapsible navigation with workshop organization, tooltips, and responsive design
+- **`src/components/PageTemplate.tsx`**: Consistent page wrapper with prev/next navigation and prose styling
 
-**Modified**: `src/components/Sidebar.tsx:6,213,435-514`
-- **Change**: Added theme toggle section at bottom of sidebar
-- **Features**:
-  - Expanded view: Three-button toggle with icons
-  - Collapsed view: Single cycling button
-  - Tooltips and visual feedback
-  - Matches existing sidebar styling
-
-## Project Structure
-
-### Key Components
-- `src/app/page.tsx` - Main homepage with hero, overview, mechanisms, and team sections
-- `src/components/Sidebar.tsx` - Navigation sidebar with collapsible sections and theme toggle
-- `src/components/ThemeProvider.tsx` - Theme management context provider
-- `src/app/layout.tsx` - Root layout with theme provider wrapper
-
-### Image Assets
-```
-public/images/
-├── presentors/
-│   ├── joshPhoto.jpg
-│   ├── alexPhoto.jpg
-│   └── joePhoto.jpg
-├── mechanisms/
-│   ├── arm.jpg
-│   └── flywheel.png
-└── hardware/
-    ├── Kracken60x.png
-    ├── CANivore.png
-    └── Encoder.png
-```
-
-### Theme System
-- **Technology**: Tailwind CSS with `dark:` classes
-- **Implementation**: CSS class toggle on document root
-- **Storage**: localStorage for persistence
+#### Theme System
+- **`src/components/ThemePicker.tsx`**: Theme toggle component with Zustand state management
+- **Implementation**: Uses `data-theme` attribute and localStorage persistence
 - **Modes**: light, dark, system (follows OS preference)
+- **Integration**: Tailwind CSS `dark:` classes throughout the app
 
-## Development Notes
+#### Content Components
+- **`src/components/CodeBlock.tsx`**: Syntax-highlighted code display
+- **`src/components/GitHubPR.tsx`**: Live GitHub pull request embedding
+- **`src/components/GitHubPage.tsx`**: Live GitHub file display
+- **`src/components/GithubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
+- **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
 
-### Dark Mode Implementation
-- Uses existing Tailwind dark mode classes throughout the app
-- No breaking changes to existing styling
-- Maintains system preference detection
-- Graceful fallback to light mode
-
-### Image Optimization
-- All images use Next.js Image component for optimization
-- Proper alt text for accessibility
-- Responsive sizing with object-cover for consistent display
-
-### Navigation Structure
+### Route Organization
 ```
-Main Navigation:
-├── Home (/)
-├── Introduction (/introduction)
-└── Prerequisites (/prerequisites)
-
-Workshop #1 (Collapsible):
-├── Hardware Setup (/hardware)
-├── Project Setup (/project-setup)
-├── Command Framework (/command-framework)
-├── Programming (/programming)
-├── Control Systems (/control-systems)
-└── Tuning (/tuning)
+Workshop Content:
+├── / (Homepage with team, mechanisms, overview)
+├── /introduction (Workshop introduction)
+├── /prerequisites (Required software & hardware)
+└── Workshop #1 (Collapsible section):
+    ├── /hardware (CTRE hardware setup)
+    ├── /project-setup (WPILib project creation)
+    ├── /command-framework (Triggers, subsystems, commands)
+    ├── /programming (ARM & Flywheel implementation)
+    ├── /control-systems (PID & Feedforward theory)
+    └── /tuning (Phoenix Tuner X)
 ```
 
-## Commands & Scripts
-- **Development**: `npm run dev` (assumed)
-- **Build**: `npm run build` (assumed)
-- **Lint**: `npm run lint` (check for linting commands if needed)
+### Asset Management
+- **Images**: Stored in `public/images/` with organized subdirectories
+- **Optimization**: All images use Next.js Image component
+- **Structure**: `presentors/`, `mechanisms/`, `hardware/` folders
 
-## Future Considerations
-- Consider adding more workshop sections as content expands
-- May need to implement search functionality as content grows
-- Workshop progress tracking could be valuable for users
-- Consider adding animations for theme transitions
+### Development Patterns
+- **File Naming**: kebab-case for routes, PascalCase for components
+- **Import Alias**: `@/*` maps to `src/*`
+- **Component Structure**: Functional components with TypeScript interfaces
+- **Styling**: Tailwind utility classes with dark mode variants
+- **Navigation**: Client-side routing with active state management
+- **Video Integration**: YouTube embeds for educational content
+- **Code Learning**: Tabbed interfaces combining final code with development process
+
+### Important Implementation Notes
+- Theme system uses document-level attribute manipulation
+- Sidebar state management handles responsive behavior and tooltips
+- All workshop pages should use PageTemplate for consistency
+- Navigation items are defined as static arrays in Sidebar component
+- Build process includes comprehensive testing (lint + type-check + build)
+
+## Recent Development History
+
+### Video Tutorial Integration (feat/video-tutorials)
+- **YouTube Embeddings**: Added educational videos throughout workshop pages
+  - Hardware setup videos for CTRE device configuration
+  - Programming implementation tutorials for ARM and Flywheel mechanisms
+  - Project setup walkthrough videos
+  - Tuning demonstration videos
+- **Enhanced GitHub Components**: Created `GithubPageWithPR.tsx` with tabbed interface
+  - "Final Implementation" tab showing complete code
+  - "GitHub Changes" tab showing PR diffs
+  - Improved code learning experience with before/after views
+- **Content Restructuring**: Updated workshop pages with multimedia learning approach
+- **CI/CD Improvements**: Enhanced GitHub Actions workflow
+
+### Theme System Implementation (2025-08-19)
+- **Homepage Enhancement**: Added presenter photos and mechanisms showcase
+- **Dark Mode System**: Implemented with Zustand state management and Tailwind CSS
+- **Navigation**: Collapsible sidebar with workshop organization and theme toggle
+- **Component Architecture**: Modular design with PageTemplate for consistency
