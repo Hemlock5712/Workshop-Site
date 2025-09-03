@@ -164,22 +164,22 @@ public class ExampleSubsystem extends SubsystemBase {
           focusFile="Arm.java" 
         />
 
-        <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
+        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">Hardware Setup:</h4>
-              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Hardware Setup:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>TalonFX Motor:</strong> Main drive motor with integrated controller</li>
                 <li>• <strong>CANCoder:</strong> Absolute position feedback sensor</li>
                 <li>• <strong>Remote Sensor:</strong> CANCoder connected as remote feedback</li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold text-primary-800 dark:text-primary-200 mb-2">Key Methods:</h4>
-              <ul className="text-sm text-primary-700 dark:text-primary-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Key Methods:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>setVoltage():</strong> Direct voltage control for basic movement</li>
                 <li>• <strong>stop():</strong> Safe motor stop with neutral output</li>
                 <li>• <strong>periodic():</strong> Understand that periodic runs every robot loop</li>

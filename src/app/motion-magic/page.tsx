@@ -185,23 +185,23 @@ public void setTargetPosition(double positionRotations) {
           focusFile="Arm.java" 
         />
 
-        <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
+        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">Motion Magic Parameters:</h4>
-              <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Motion Magic Parameters:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>Cruise Velocity (2.0):</strong> Maximum speed during motion</li>
                 <li>• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed</li>
                 <li>• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes</li>
                 <li>• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control</li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">Enhanced Features:</h4>
-              <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Enhanced Features:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>Setpoint Detection:</strong> Checks both position AND velocity</li>
                 <li>• <strong>Smooth Motion:</strong> Eliminates jerky arm movements</li>
                 <li>• <strong>Mechanical Safety:</strong> Reduces stress on gearboxes</li>

@@ -209,22 +209,22 @@ public void setTargetPosition(double positionRotations) {
           focusFile="Arm.java" 
         />
 
-        <div className="bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-700 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
+        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
+          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">PID Implementation:</h4>
-              <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">PID Implementation:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>PositionVoltage:</strong> Replaces VoltageOut for closed-loop control</li>
                 <li>• <strong>Slot0 Config:</strong> PID and feedforward gains configuration</li>
                 <li>• <strong>Target Setting:</strong> setTargetPosition() method for precise control</li>
               </ul>
             </div>
-            
+
             <div>
-              <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">Gain Values Used:</h4>
-              <ul className="text-sm text-orange-700 dark:text-orange-300 space-y-1">
+              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Gain Values Used:</h4>
+              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
                 <li>• <strong>kP = 24.0:</strong> Strong proportional response</li>
                 <li>• <strong>kD = 0.1:</strong> Small derivative for damping</li>
                 <li>• <strong>kS = 0.25:</strong> Static friction compensation</li>
