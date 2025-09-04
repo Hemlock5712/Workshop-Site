@@ -34,6 +34,11 @@ Each step builds upon the previous implementation, showing real-world developmen
 
 ## 🚀 Getting Started
 
+### Requirements
+
+- Node.js 20+
+- Optional: [Bun](https://bun.sh/) v1+ (`bun install` / `bun dev`)
+
 First, run the development server:
 
 ```bash
@@ -42,14 +47,22 @@ npm run dev
 yarn dev
 # or
 pnpm dev
+# or
+bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Development Commands
+
+- `npm run dev` – start the local development server
+- `npm test` – lint, type-check, and build the project
+
 ## 🛠 Tech Stack
 
-- **Framework:** Next.js 15 with App Router
-- **Styling:** Tailwind CSS
+- **Framework:** Next.js 15.4.6 with App Router
+- **UI Library:** React 19.1.0
+- **Styling:** Tailwind CSS 4
 - **Language:** TypeScript
 - **Deployment:** Vercel
 
