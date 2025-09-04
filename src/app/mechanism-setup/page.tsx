@@ -5,7 +5,7 @@ export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Mechanism Setup"
-      previousPage={{ href: "/adding-commands", title: "Adding Commands" }}
+      previousPage={{ href: "/running-program", title: "Running Program" }}
       nextPage={{ href: "/pid-control", title: "PID Control" }}
     >
       {/* Introduction */}
@@ -61,18 +61,49 @@ export default function MechanismSetup() {
             </div>
           </div>
 
-          <iframe
-            src="https://www.youtube.com/embed/zJgSQKrz8yE"
-            title="Encoder Setup and Verification"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full aspect-video rounded-lg"
-          />
+        <iframe
+          src="https://www.youtube.com/embed/zJgSQKrz8yE"
+          title="Encoder Setup and Verification"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full aspect-video rounded-lg"
+        />
+      </div>
+
+      {/* Motor Setup Verification */}
+      <div className="card p-8">
+        <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
+          Verifying Motor Setup
+        </h3>
+
+        <div className="grid grid-cols-3 gap-6 mb-8">
+          <p className="col-span-2 text-[var(--muted-foreground)]">
+            You&apos;ll want to make sure your motor is spinning in the expected direction. If the motor is getting positive voltage, it should be spinning counterclockwise. You can check this through tuner, with the device facing you like the following picture.
+          </p>
+
+          <div className="flex w-full justify-center">
+            <ImageBlock
+              src="/images/mechanisms/arm.jpg"
+              alt="Arm"
+              width={300}
+              height={200}
+              className="rounded-lg"
+            />
+          </div>
         </div>
 
-        {/* Motor Direction Verification */}
-        <div className="card p-8">
-          <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h3>
+        <iframe
+          src="https://www.youtube.com/embed/iQqR1Wxptzg"
+          title="Motor Testing"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full aspect-video rounded-lg"
+        />
+      </div>
+
+      {/* Motor Direction Verification */}
+      <div className="card p-8">
+        <h3 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h3>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">

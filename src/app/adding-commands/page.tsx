@@ -7,7 +7,7 @@ export default function AddingCommands() {
     <PageTemplate
       title="Commands"
       previousPage={{ href: "/building-subsystems", title: "Subsystems" }}
-      nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
+      nextPage={{ href: "/running-program", title: "Running Program" }}
     >
       {/* Introduction */}
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
