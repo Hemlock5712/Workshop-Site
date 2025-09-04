@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, master]
+    branches: [master]
   pull_request:
     branches: [main, master]
 
@@ -43,11 +43,11 @@ jobs:
     name: Deployment Check
     runs-on: ubuntu-latest
     needs: test
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Deployment Status
         run: |
           echo "🚀 Ready for deployment!"
-          echo "Vercel will automatically deploy this build when pushed to main/master"
+          echo "Vercel will automatically deploy this build when pushed to master"
           echo "Visit your Vercel dashboard to monitor deployment status"
