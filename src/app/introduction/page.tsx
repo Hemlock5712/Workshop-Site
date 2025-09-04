@@ -143,16 +143,6 @@ export default function Introduction() {
                 </div>
               </Link>
 
-              <Link
-                href="/programming"
-                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">Programming</span>
-                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">→</span>
-                </div>
-              </Link>
-
 
             </div>
 

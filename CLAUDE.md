@@ -70,7 +70,6 @@ Workshop Content:
     ├── /hardware (CTRE hardware setup)
     ├── /project-setup (WPILib project creation)
     ├── /command-framework (Triggers, subsystems, commands)
-    ├── /programming (Arm & Flywheel implementation)
     ├── /control-systems (PID & Feedforward theory)
 ```
 

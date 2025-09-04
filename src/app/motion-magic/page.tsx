@@ -7,7 +7,6 @@ export default function MotionMagic() {
     <PageTemplate
       title="Motion Magic"
       previousPage={{ href: "/pid-control", title: "PID Control" }}
-      nextPage={{ href: "/programming", title: "Programming" }}
     >
       {/* Introduction */}
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
