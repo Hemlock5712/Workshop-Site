@@ -134,7 +134,7 @@ const workshop1Items = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+          d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25A2.25 2.25 0 018.25 10.5H6A2.25 2.25 0 013.75 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
         />
       </svg>
     ),
@@ -216,8 +216,15 @@ const workshop1Items = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.974a1 1 0 00.95.69h4.178c.969 0 1.371 1.24.588 1.81l-3.385 2.46a1 1 0 00-.364 1.118l1.286 3.974c.3.921-.755 1.688-1.54 1.118l-3.385-2.46a1 1 0 00-1.176 0l-3.385 2.46c-.785.57-1.84-.197-1.54-1.118l1.286-3.974a1 1 0 00-.364-1.118L2.045 9.401c-.783-.57-.38-1.81.588-1.81h4.178a1 1 0 00.95-.69l1.286-3.974z"
+          d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"
         />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m14 7 3 3" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 6v4" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14v4" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 2v2" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8H3" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 16h-4" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3H9" />
       </svg>
     ),
   },
