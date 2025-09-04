@@ -110,7 +110,7 @@ export default function Home() {
           <div className="text-center">
             <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2">
               <Image
-                src="/images/presentors/joshPhoto.jpg"
+                src="/images/presenters/joshPhoto.jpg"
                 alt="Josh Bacon"
                 width={64}
                 height={64}
@@ -122,7 +122,7 @@ export default function Home() {
           <div className="text-center">
             <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2">
               <Image
-                src="/images/presentors/alexPhoto.jpg"
+                src="/images/presenters/alexPhoto.jpg"
                 alt="Alex Haltom"
                 width={64}
                 height={64}
@@ -134,7 +134,7 @@ export default function Home() {
           <div className="text-center">
             <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2">
               <Image
-                src="/images/presentors/joePhoto.jpg"
+                src="/images/presenters/joePhoto.jpg"
                 alt="Joe Lockwood"
                 width={64}
                 height={64}
