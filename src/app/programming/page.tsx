@@ -260,7 +260,7 @@ export default function Programming() {
         </h2>
 
         <p>WPILib provides a powerful tool called Hardware Simulation. This allows you to run your code in the simulator, while also running motors that are connected to the CANivore.</p>
-        <p>This prevents the need to run a full RoboRIO for testing, while still allowing you to test your code on real hardware.</p>
+        <p>This prevents the need to run a full roboRIO for testing, while still allowing you to test your code on real hardware.</p>
 
         <iframe
           src="https://www.youtube.com/embed/xsR7m6ToUFE"

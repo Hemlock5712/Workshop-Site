@@ -29,7 +29,7 @@ export default function Hardware() {
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
             <ImageBlock
-              src="/images/hardware/Kracken60x.png"
+              src="/images/hardware/Kraken60x.png"
               alt="Kraken Motor"
               width={250}
               height={200}
@@ -52,7 +52,7 @@ export default function Hardware() {
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
                 <strong>Key Features:</strong> 7.09Nm stall torque, 87% max efficiency,
-                SplineXS shaft, CAN communication, PID, FeedForward, and Motion Magic control modes.
+                SplineXS shaft, CAN communication, PID, Feedforward, and Motion Magic control modes.
               </p>
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function Hardware() {
               </p>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">FeedForward (FF)</h4>
+              <h4 className="font-bold text-[var(--foreground)] mb-2">Feedforward (FF)</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Built-in feedforward control for gravity compensation and velocity control that competitors lack.
               </p>

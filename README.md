@@ -176,7 +176,8 @@ This project transforms FRC programming workshop content into an interactive lea
 1. Fork the repository: [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)
 2. Create a feature branch
 3. Make your changes
-4. Submit a pull request
+4. Run tests and spell check: `npm test && npm run spell`
+5. Submit a pull request
 
 All contributions help improve the FRC programming education experience!
 
