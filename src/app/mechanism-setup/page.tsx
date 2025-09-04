@@ -5,7 +5,7 @@ export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Mechanism Setup"
-      previousPage={{ href: "/adding-commands", title: "Adding Commands" }}
+      previousPage={{ href: "/running-program", title: "Running Program" }}
       nextPage={{ href: "/pid-control", title: "PID Control" }}
     >
       {/* Introduction */}

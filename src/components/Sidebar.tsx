@@ -159,6 +159,25 @@ const workshop1Items = [
     ),
   },
   {
+    href: "/running-program",
+    label: "Running Program",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M14.752 11.168l-5.197-3.031A1 1 0 008 9.031v5.938a1 1 0 001.555.832l5.197-3.031a1 1 0 000-1.664z"
+        />
+      </svg>
+    ),
+  },
+  {
     href: "/mechanism-setup",
     label: "Mechanism Setup",
     icon: (
