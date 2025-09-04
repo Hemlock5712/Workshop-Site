@@ -20,7 +20,7 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Install WPILib VS Code and National Instruments Game Tool (includes Driver Station and RoboRIO imaging).
+                Install WPILib VS Code and National Instruments Game Tool (includes Driver Station and roboRIO imaging).
               </p>
             </div>
 

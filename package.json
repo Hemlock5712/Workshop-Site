@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "npm run lint && npm run type-check && npm run build"
+    "test": "npm run lint && npm run type-check && npm run build",
+    "spell": "cspell \"src/**/*.{ts,tsx}\" *.md"
   },
   "dependencies": {
     "@types/react-syntax-highlighter": "^15.5.13",
@@ -26,6 +27,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cspell": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "tailwindcss": "^4",
