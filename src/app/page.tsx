@@ -33,7 +33,7 @@ export default function Home() {
       {/* Workshop Overview */}
       <div className="max-w-2xl mx-auto">
         <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 text-center">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
             Target Audience
           </h2>
           <p className="text-slate-600 dark:text-slate-300 mb-6">
@@ -56,7 +56,7 @@ export default function Home() {
 
       {/* Mechanisms Section */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">
           Mechanisms We&apos;ll Program
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
@@ -103,7 +103,7 @@ export default function Home() {
 
       {/* Team Introduction */}
       <div className="bg-[var(--card)] text-[var(--foreground)] p-8 rounded-lg">
-        <h2 className="text-2xl font-bold text-[var(--foreground)] mb-6 text-center">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
           Meet the Team
         </h2>
         <div className="flex justify-center space-x-8 flex-wrap gap-4">
