@@ -12,9 +12,13 @@ interface GithubPageWithPRProps {
   focusFile: string;
 }
 
-
-export default function GithubPageWithPR({ repository, filePath, branch, pullRequestNumber, focusFile }: GithubPageWithPRProps) {
-
+export default function GithubPageWithPR({
+  repository,
+  filePath,
+  branch,
+  pullRequestNumber,
+  focusFile,
+}: GithubPageWithPRProps) {
   const [activeTab, setActiveTab] = useState<"ide" | "diff">("ide");
 
   return (
@@ -23,19 +27,21 @@ export default function GithubPageWithPR({ repository, filePath, branch, pullReq
         <div className="flex">
           <button
             onClick={() => setActiveTab("ide")}
-            className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === "ide"
-              ? "border-primary-600 text-primary-600"
-              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              }`}
+            className={`px-6 py-3 text-sm font-medium border-b-2 ${
+              activeTab === "ide"
+                ? "border-primary-600 text-primary-600"
+                : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            }`}
           >
             💻 Final Implementation
           </button>
           <button
             onClick={() => setActiveTab("diff")}
-            className={`px-6 py-3 text-sm font-medium border-b-2 ${activeTab === "diff"
-              ? "border-primary-600 text-primary-600"
-              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              }`}
+            className={`px-6 py-3 text-sm font-medium border-b-2 ${
+              activeTab === "diff"
+                ? "border-primary-600 text-primary-600"
+                : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+            }`}
           >
             🔄 GitHub Changes
           </button>
@@ -63,5 +69,5 @@ export default function GithubPageWithPR({ repository, filePath, branch, pullReq
         )}
       </div>
     </div>
-    );
-  }
+  );
+}
