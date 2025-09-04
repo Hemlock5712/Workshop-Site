@@ -11,6 +11,8 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 
 ## Development Commands
 
+Requires Node.js 20+ (Bun v1+ supported).
+
 ### Essential Commands
 - **Development server**: `npm run dev` (with Turbopack for faster builds)
 - **Production build**: `npm run build`
@@ -18,6 +20,8 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 - **Linting**: `npm run lint` (ESLint with Next.js config)
 - **Type checking**: `npm run type-check` (TypeScript compiler check)
 - **Full test suite**: `npm test` (runs lint + type-check + build)
+
+Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 
 ### Development Workflow
 1. Run `npm run dev` for development with hot reload
@@ -28,7 +32,8 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 ## Code Architecture
 
 ### Application Structure
-- **Framework**: Next.js 15 with App Router (`src/app/` directory)
+- **Framework**: Next.js 15.4.6 with App Router (`src/app/` directory)
+- **UI Library**: React 19.1.0
 - **Styling**: Tailwind CSS 4 with dark mode support
 - **State Management**: Zustand for theme state
 - **Type Safety**: TypeScript with strict configuration
