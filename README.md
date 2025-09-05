@@ -1,8 +1,8 @@
-# Gray Matter Coding Workshop #1 Website
+# Gray Matter Coding Workshop Website
 
 🌐 **Live Site: [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)**
 
-A responsive website built with Next.js and Tailwind CSS that converts the Gray Matter Coding Workshop #1 Canva presentation into an accessible markdown-based learning platform.
+A responsive website built with Next.js and Tailwind CSS that converts the Gray Matter Coding Workshop Canva presentation into an accessible markdown-based learning platform.
 
 ## 🎯 About
 
