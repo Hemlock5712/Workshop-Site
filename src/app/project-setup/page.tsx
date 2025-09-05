@@ -5,7 +5,7 @@ export default function ProjectSetup() {
     <PageTemplate
       title="Project Setup"
       previousPage={{ href: "/hardware", title: "Hardware Setup" }}
-      nextPage={{ href: "/command-framework", title: "Command Framework" }}
+      nextPage={{ href: "/command-framework", title: "Command-Based Framework" }}
     >
       {/* Introduction */}
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
@@ -147,7 +147,7 @@ export default function ProjectSetup() {
 
       <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
         <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-          <strong>💡 Next Step:</strong> After creating your project, you&apos;ll learn about the Command Framework in the next section. Your project will be ready for implementing subsystems and commands!
+          <strong>💡 Next Step:</strong> After creating your project, you&apos;ll learn about the Command-Based Framework in the next section. Your project will be ready for implementing subsystems and commands!
         </p>
       </div>
     </PageTemplate>

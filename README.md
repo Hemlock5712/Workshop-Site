@@ -11,7 +11,7 @@ This website transforms the FRC programming workshop content into an interactive
 - **Introduction & Prerequisites** - Getting started with FRC programming
 - **Hardware Setup** - CTRE motors, CANivore, and device configuration  
 - **Project Setup** - Creating and organizing WPILib projects
-- **Command Framework** - Understanding triggers, subsystems, and commands
+- **Command-Based Framework** - Understanding triggers, subsystems, and commands
 - **Control Systems** - PID and Feedforward control theory
 - **Tuning** - Real-world mechanism tuning with Phoenix Tuner X
 

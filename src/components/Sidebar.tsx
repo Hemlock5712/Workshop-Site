@@ -121,6 +121,25 @@ const workshop1Items = [
     ),
   },
   {
+    href: "/command-framework",
+    label: "Command-Based Framework",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 4.5V2.25M15 4.5V2.25M9 21.75V19.5M15 21.75V19.5M4.5 9H2.25M4.5 15H2.25M21.75 9H19.5M21.75 15H19.5M7.5 7.5h9v9h-9v-9z"
+        />
+      </svg>
+    ),
+  },
+  {
     href: "/building-subsystems",
     label: "Subsystems",
     icon: (
