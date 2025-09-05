@@ -36,8 +36,8 @@ export default function MechanismSetup() {
           <div className="grid grid-cols-3 gap-6 mb-8">
             <div className="col-span-2">
                 <p className="text-[var(--muted-foreground)] mb-4">
-                You&apos;ll need to make sure your encoder is configured correctly. With the device facing you like the following image, 
-                ensure that the encoder position is going up as you rotate the arm counterclockwise.
+                You&apos;ll need to make sure your encoder is configured correctly. With the device facing you, as shown in the following picture, please make sure that  
+                the encoder position increases as you rotate the arm counterclockwise.
               </p>
               
               <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
@@ -78,7 +78,7 @@ export default function MechanismSetup() {
 
         <div className="grid grid-cols-3 gap-6 mb-8">
           <p className="col-span-2 text-[var(--muted-foreground)]">
-            You&apos;ll want to make sure your motor is spinning in the expected direction. If the motor is getting positive voltage, it should be spinning counterclockwise. You can check this through tuner, with the device facing you like the following picture.
+            You&apos;ll want to make sure your motor is spinning in the expected direction. If the motor is getting positive voltage, it should be spinning counterclockwise. You can check this through tuner, with the device facing you as in the following picture.
           </p>
 
           <div className="flex w-full justify-center">
