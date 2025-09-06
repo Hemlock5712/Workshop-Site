@@ -12,35 +12,34 @@ export default function Introduction() {
       </div>
 
       <section className="flex flex-col gap-8">
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">🎯 Why are we here?</h2>
-          
-          <div className="space-y-6">
-            <div className="border-l-4 border-primary-200 dark:border-primary-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                Learn FRC&apos;s Best Programming Practices
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Master industry-standard coding patterns, command-based architecture, and proven development workflows that successful FRC teams use.
-              </p>
-            </div>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">🚀 Why are we here?</h2>
+        
+        <div className="space-y-6">
+          <div className="border-l-4 border-orange-200 dark:border-orange-900 pl-4">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              Learn FRC&apos;s Best Programming Practices
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mt-2">
+              Master industry-standard coding patterns, command-based architecture, and proven development workflows that successful FRC teams use.
+            </p>
+          </div>
 
-            <div className="border-l-4 border-learn-200 dark:border-learn-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                Build Competition-Winning Robots
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Develop reliable, maintainable code that performs under pressure and helps your team succeed at regional and world championships.
-              </p>
-            </div>
+          <div className="border-l-4 border-green-200 dark:border-green-900 pl-4">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+              Build Competition-Winning Robots
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mt-2">
+              Develop reliable, maintainable code that performs under pressure and helps your team succeed at regional and world championships.
+            </p>
           </div>
         </div>
       </section>
 
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Target Audience & Goals</h2>
-        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)] space-y-6">
-          <div>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">🎯 Target Audience & Goals</h2>
+        
+        <div className="space-y-6">
+          <div className="border-l-4 border-purple-200 dark:border-purple-900 pl-4">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
               Who This Workshop Is For
             </h3>
@@ -49,7 +48,7 @@ export default function Introduction() {
             </p>
           </div>
           
-          <div>
+          <div className="border-l-4 border-blue-200 dark:border-blue-900 pl-4">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
               What You&apos;ll Learn
             </h3>
@@ -69,11 +68,11 @@ export default function Introduction() {
             </div>
           </div>
           
-          <div>
+          <div className="border-l-4 border-amber-200 dark:border-amber-900 pl-4">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
               Our Mission
             </h3>
-            <p className="text-lg text-[var(--foreground)]">
+            <p className="text-lg text-slate-600 dark:text-slate-300">
               This site was put together by Team 5712 and help from others as a resource to help cover introduction to advanced materials and to give a clear learning and implementation plan.
               The goal is to learn code architecture, command base programming, PID tuning, libraries, odometry, vision, and more!
             </p>

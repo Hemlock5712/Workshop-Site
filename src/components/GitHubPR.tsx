@@ -275,16 +275,6 @@ export default function GitHubPR({
               </h4>
 
               <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
-                <div className="flex items-center space-x-2">
-                  <Image
-                    src={pr.user.avatar_url}
-                    alt={pr.user.login}
-                    width={24}
-                    height={24}
-                    className="w-6 h-6 rounded-full"
-                  />
-                  <span>{pr.user.login}</span>
-                </div>
                 <span>created {formatDate(pr.created_at)}</span>
                 {pr.merged_at && <span>merged {formatDate(pr.merged_at)}</span>}
               </div>

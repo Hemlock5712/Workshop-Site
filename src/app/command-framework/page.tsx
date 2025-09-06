@@ -48,39 +48,39 @@ export default function CommandFramework() {
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🚀 Implementation Sequence</h3>
             <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/30 rounded-lg">
-                <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+              <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
+                <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
                 <div>
                   <h4 className="font-bold text-primary-700 dark:text-primary-300">Building Subsystems</h4>
-                  <p className="text-[var(--foreground)] text-sm">Hardware instantiation, motor configuration, and basic control methods</p>
+                  <p className="text-primary-600 dark:text-primary-400 text-sm">Hardware instantiation, motor configuration, and basic control methods</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-950/30 rounded-lg">
-                <div className="bg-green-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+              <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
                 <div>
-                  <h4 className="font-bold text-green-700 dark:text-green-300">Adding Commands</h4>
-                  <p className="text-green-600 dark:text-green-400 text-sm">Command structure, lifecycle, and controller integration</p>
+                  <h4 className="font-bold text-primary-800 dark:text-primary-200">Adding Commands</h4>
+                  <p className="text-primary-700 dark:text-primary-300 text-sm">Command structure, lifecycle, and controller integration</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-red-50 dark:bg-red-950/30 rounded-lg">
-                <div className="bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+              <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
+                <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
                 <div>
-                  <h4 className="font-bold text-red-700 dark:text-red-300">PID Control</h4>
-                  <p className="text-red-600 dark:text-red-400 text-sm">Precise position control with feedback and tuning</p>
+                  <h4 className="font-bold text-primary-900 dark:text-primary-100">PID Control</h4>
+                  <p className="text-primary-800 dark:text-primary-200 text-sm">Precise position control with feedback and tuning</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-[var(--muted)] dark:bg-[var(--muted)]/30 rounded-lg">
-                <div className="bg-[var(--muted)] text-[var(--foreground)] rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
+              <div className="flex items-center gap-4 p-4 bg-primary-300 dark:bg-primary-700/50 rounded-lg">
+                <div className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
                 <div>
-                  <h4 className="font-bold text-[var(--foreground)]">Motion Magic</h4>
-                  <p className="text-[var(--foreground)] text-sm">Smooth profiled motion with acceleration control</p>
+                  <h4 className="font-bold text-primary-950 dark:text-white">Motion Magic</h4>
+                  <p className="text-primary-900 dark:text-primary-100 text-sm">Smooth profiled motion with acceleration control</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-teal-50 dark:bg-teal-950/30 rounded-lg">
-                <div className="bg-teal-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
+              <div className="flex items-center gap-4 p-4 bg-primary-400 dark:bg-primary-600/60 rounded-lg">
+                <div className="bg-primary-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
                 <div>
-                  <h4 className="font-bold text-teal-700 dark:text-teal-300">Useful Functions</h4>
-                  <p className="text-teal-600 dark:text-teal-400 text-sm">Safety features, diagnostics, and utility functions</p>
+                  <h4 className="font-bold text-slate-900 dark:text-white">Useful Functions</h4>
+                  <p className="text-slate-800 dark:text-slate-100 text-sm">Safety features, diagnostics, and utility functions</p>
                 </div>
               </div>
             </div>
