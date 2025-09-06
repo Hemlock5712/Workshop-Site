@@ -29,7 +29,7 @@ export default function Hardware() {
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
             <ImageBlock
-              src="/images/hardware/Kraken60x.png"
+              src="/images/hardware/Kraken44x.png"
               alt="Kraken Motor"
               width={250}
               height={200}
@@ -37,22 +37,22 @@ export default function Hardware() {
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               <a 
-                href="https://store.ctr-electronics.com/products/kraken-x60"
+                href="https://store.ctr-electronics.com/products/kraken-x44"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
-                Kraken X60 Brushless Motor Powered by Talon FX™
+                Kraken X44 Brushless Motor Powered by Talon FX™
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
-              High-performance brushless motor with integrated Talon FX™ controller. 
-              Delivers 1,108W peak power with built-in encoder and advanced control modes.
+              Compact brushless motor with integrated Talon FX™ controller. 
+              Delivers 823W peak power, designed as drop-in replacement for Kraken X60.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
-                <strong>Key Features:</strong> 7.09Nm stall torque, 87% max efficiency,
-                SplineXS shaft, CAN communication, PID, Feedforward, and Motion Magic control modes.
+                <strong>Key Features:</strong> 4.05Nm stall torque, 85% max efficiency, 125.5 RPS max speed,
+                SplineXS shaft, FOC commutation, 1kHz PID control, compact 44mm design.
               </p>
             </div>
           </div>
@@ -72,17 +72,17 @@ export default function Hardware() {
                 rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
-                CANCoder® – CAN Bus Magnetic Encoder
+                WCP ThroughBore Encoder – CAN Bus Position Sensor
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
-              Rotary magnetic encoder that provides absolute position over CAN bus. 
-              Perfect for swerve modules, arms, and any mechanism requiring precise angular feedback.
+              Through bore rotary sensor using innovative off-axis magnet technology. 
+              Eliminates mechanical coupling for precise shaft position measurement.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
-                <strong>Key Features:</strong> 360° absolute position, magnetic sensing,
-                supports CAN FD and CAN 2.0, no calibration needed, 6-16V supply voltage.
+                <strong>Key Features:</strong> 1/2" hex shaft compatible, through bore design,
+                absolute/relative position, CAN bus connectivity, versatile mounting options.
               </p>
             </div>
           </div>
