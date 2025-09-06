@@ -17,36 +17,17 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Workshop Overview */}
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-slate-50 dark:bg-slate-900 p-8 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800 text-center">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Target Audience
-          </h2>
-          <p className="text-slate-600 dark:text-slate-300 mb-6">
-            This workshop is designed for FRC Teams using Java and CTRE
-            Hardware.
-          </p>
-
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-            What You&apos;ll Learn
-          </h3>
-          <ul className="space-y-2 text-slate-600 dark:text-slate-300 text-left max-w-md mx-auto">
-            <li>• Code architecture and best practices</li>
-            <li>• Subsystems structure and organization</li>
-            <li>• PID tuning techniques</li>
-            <li>• Libraries and framework usage</li>
-            <li>• Hardware integration</li>
-          </ul>
-        </div>
-        <div className="flex gap-4 justify-center flex-wrap mt-6">
-          <Link
-            href="/introduction"
-            className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-          >
-            Start Workshop
-          </Link>
-        </div>
+      {/* Get Started Section */}
+      <div className="max-w-lg mx-auto text-center">
+        <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
+          Ready to build competition-winning robot code?
+        </p>
+        <Link
+          href="/introduction"
+          className="inline-block bg-primary-600 text-white px-12 py-5 rounded-xl text-2xl font-bold hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+        >
+          Start Workshop
+        </Link>
       </div>
 
       {/* Mechanisms Section */}
@@ -106,18 +87,33 @@ export default function Home() {
             Special thanks to:
           </p>
           
-          <div className="space-y-4">
-            <div className="flex flex-col items-center space-y-3">
-              <p className="text-lg text-slate-600 dark:text-slate-300">
-                <span className="font-semibold">CTR Electronics</span> - our Co-sponsors
-              </p>
-              <div className="w-64 h-32 overflow-hidden rounded-2xl">
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-items-center">
+              <div className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
                 <Image
-                  src="/images/ctre-logo.jpg"
+                  src="/images/sponsers/ctre-logo.jpg"
                   alt="CTR Electronics Logo"
-                  width={256}
-                  height={128}
-                  className="w-full h-full object-contain"
+                  width={192}
+                  height={96}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+              <div className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+                <Image
+                  src="/images/sponsers/MichAuto Logo 600x600.png"
+                  alt="MichAuto Logo"
+                  width={192}
+                  height={96}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </div>
+              <div className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-4 shadow-sm">
+                <Image
+                  src="/images/sponsers/OFME-Logo.png"
+                  alt="Michigan Office of Future Mobility and Electrification Logo"
+                  width={192}
+                  height={96}
+                  className="max-w-full max-h-full object-contain"
                 />
               </div>
             </div>
@@ -134,14 +130,6 @@ export default function Home() {
               </p>
             </div>
             
-            <div className="space-y-1">
-              <p className="text-slate-600 dark:text-slate-300">
-                The Lockwood STEM Center
-              </p>
-              <p className="text-slate-600 dark:text-slate-300">
-                MichAuto and the Office of Future Mobility and Electrification for funding High Tech Talent Workshops
-              </p>
-            </div>
           </div>
         </div>
       </div>
