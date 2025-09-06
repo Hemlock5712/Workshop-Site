@@ -113,19 +113,30 @@ export default function Home() {
           </p>
           
           <div className="space-y-4">
-            <p className="text-lg text-slate-600 dark:text-slate-300">
-              <span className="font-semibold">CTR Electronics</span> - our Co-sponsors
-            </p>
+            <div className="flex flex-col items-center space-y-3">
+              <p className="text-lg text-slate-600 dark:text-slate-300">
+                <span className="font-semibold">CTR Electronics</span> - our Co-sponsors
+              </p>
+              <div className="w-32 h-16">
+                <Image
+                  src="/images/ctre-logo.jpg"
+                  alt="CTR Electronics Logo"
+                  width={128}
+                  height={64}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
             
             <div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 The Team:
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Joe Lockwood, Josh Bacon, Chris Bale, Alex Haltom of team 5712
+                Joe Lockwood, Josh Bacon, Chris Bale, Alex Haltom of Team 5712
               </p>
               <p className="text-slate-600 dark:text-slate-300">
-                Ethan Shannon and team 5216
+                Ethan Shannon and Team 5216
               </p>
             </div>
             
