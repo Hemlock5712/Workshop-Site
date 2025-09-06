@@ -552,16 +552,26 @@ export default function Sidebar() {
             })}
 
             {/* Mechanism CAD Item */}
-            {isOpen && (
-              <div className="pt-2">
-                <Link
-                  href="/mechanism-cad"
-                  className={`flex items-center space-x-3 px-4 py-2 rounded-md text-sm transition-colors ${
-                    pathname === "/mechanism-cad"
-                      ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                      : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                  }`}
-                >
+            <div className="pt-2 relative group">
+              <Link
+                href="/mechanism-cad"
+                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                  isOpen
+                    ? "px-4 py-3 space-x-3"
+                    : "px-3 py-3 justify-center"
+                } ${
+                  pathname === "/mechanism-cad"
+                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
+                }`}
+                onClick={() => {
+                  // Only close on mobile
+                  if (window.innerWidth < 768) {
+                    setIsOpen(false);
+                  }
+                }}
+              >
+                <span className="flex-shrink-0">
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -575,10 +585,17 @@ export default function Sidebar() {
                       d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                     />
                   </svg>
-                  <span>Mechanism CAD</span>
-                </Link>
-              </div>
-            )}
+                </span>
+                {isOpen && <span className="truncate">Mechanism CAD</span>}
+              </Link>
+
+              {/* Tooltip for collapsed state */}
+              {!isOpen && (
+                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  Mechanism CAD
+                </div>
+              )}
+            </div>
 
             {/* Workshop #1 Section */}
             {isOpen && (
