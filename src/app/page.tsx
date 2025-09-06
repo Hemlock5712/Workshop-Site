@@ -7,27 +7,13 @@ export default function Home() {
       {/* Hero Section */}
       <div className="text-center flex flex-col gap-8">
         <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-slate-100">
-          Gray Matter Coding Workshop
+          Hemlock Gray Matter - Team 5712 - Coding Workshop
         </h1>
         <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
           Learn FRC&apos;s best programming practices to build a robot good
           enough to win events. Master code architecture, subsystems, PID
           tuning, libraries, and more!
         </p>
-        <div className="flex gap-4 justify-center flex-wrap">
-          <Link
-            href="/introduction"
-            className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-          >
-            Start Workshop
-          </Link>
-          <Link
-            href="/prerequisites"
-            className="border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-8 py-3 rounded-lg font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-          >
-            Prerequisites
-          </Link>
-        </div>
       </div>
 
       {/* Workshop Overview */}
@@ -51,6 +37,20 @@ export default function Home() {
             <li>• Libraries and framework usage</li>
             <li>• Hardware integration</li>
           </ul>
+        </div>
+        <div className="flex gap-4 justify-center flex-wrap mt-6">
+          <Link
+            href="/introduction"
+            className="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+          >
+            Start Workshop
+          </Link>
+          <Link
+            href="/prerequisites"
+            className="border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-8 py-3 rounded-lg font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+          >
+            Prerequisites
+          </Link>
         </div>
       </div>
 
@@ -101,47 +101,41 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Team Introduction */}
+      {/* Sponsors Section */}
       <div className="bg-[var(--card)] text-[var(--foreground)] p-8 rounded-lg">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
-          Meet the Team
+          Sponsors
         </h2>
-        <div className="flex justify-center space-x-8 flex-wrap gap-4">
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2">
-              <Image
-                src="/images/presenters/joshPhoto.jpg"
-                alt="Josh Bacon"
-                width={64}
-                height={64}
-                className="w-full h-full object-cover"
-              />
+        <div className="text-center space-y-6">
+          <p className="text-xl text-slate-700 dark:text-slate-300 font-semibold">
+            Special thanks to:
+          </p>
+          
+          <div className="space-y-4">
+            <p className="text-lg text-slate-600 dark:text-slate-300">
+              <span className="font-semibold">CTR Electronics</span> - our Co-sponsors
+            </p>
+            
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                The Team:
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Joe Lockwood, Josh Bacon, Chris Bale, Alex Haltom of team 5712
+              </p>
+              <p className="text-slate-600 dark:text-slate-300">
+                Ethan Shannon and team 5216
+              </p>
             </div>
-            <p className="font-semibold">Josh Bacon</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2">
-              <Image
-                src="/images/presenters/alexPhoto.jpg"
-                alt="Alex Haltom"
-                width={64}
-                height={64}
-                className="w-full h-full object-cover"
-              />
+            
+            <div className="space-y-1">
+              <p className="text-slate-600 dark:text-slate-300">
+                The Lockwood STEM Center
+              </p>
+              <p className="text-slate-600 dark:text-slate-300">
+                MichAuto and the Office of Future Mobility and Electrification for funding High Tech Talent Workshops
+              </p>
             </div>
-            <p className="font-semibold">Alex Haltom</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2">
-              <Image
-                src="/images/presenters/joePhoto.jpg"
-                alt="Joe Lockwood"
-                width={64}
-                height={64}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p className="font-semibold">Joe Lockwood</p>
           </div>
         </div>
       </div>
