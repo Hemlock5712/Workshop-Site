@@ -31,16 +31,8 @@ export default function Introduction() {
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Our Goal</h2>
         <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
           <p className="text-lg text-[var(--foreground)]">
-            Cover code architecture, subsystems structure, PID tuning, libraries, odometry, vision, and more!
-          </p>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Target Audience</h2>
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 rounded-lg p-8 border border-yellow-200 dark:border-yellow-900">
-          <p className="text-lg text-slate-700 dark:text-slate-300">
-            <strong>FRC Teams using Java and CTRE Hardware</strong>
+            This site was put together by Team 5712 and help from others as a resource to help cover introduction to advanced materials and to give a clear learning and implementation plan.
+            The goal is to learn code architecture, command base programming, PID tuning, libraries, odometry, vision, and more!
           </p>
         </div>
       </section>
@@ -174,21 +166,36 @@ export default function Introduction() {
             </div>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6">
-              Advanced topics including vision, autonomous, path planning, and competition strategy.
+              Advanced topics including swerve drive, vision systems, path planning, and data logging.
             </p>
 
             <div className="space-y-3 mb-6">
               <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                <span className="font-medium text-slate-500 dark:text-slate-400">Vision & AprilTags</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Creating a Swerve Drive Project</span>
               </div>
+
               <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                <span className="font-medium text-slate-500 dark:text-slate-400">Autonomous Programming</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Adding PathPlanner</span>
               </div>
+
               <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                <span className="font-medium text-slate-500 dark:text-slate-400">Path Planning</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Vision Options</span>
               </div>
+
               <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                <span className="font-medium text-slate-500 dark:text-slate-400">Competition Strategy</span>
+                <span className="font-medium text-slate-500 dark:text-slate-400">Implementing Vision</span>
+              </div>
+
+              <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <span className="font-medium text-slate-500 dark:text-slate-400">Logging Options</span>
+              </div>
+
+              <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <span className="font-medium text-slate-500 dark:text-slate-400">Implementing Logging</span>
+              </div>
+
+              <div className="p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                <span className="font-medium text-slate-500 dark:text-slate-400">Vision-Based Shooting</span>
               </div>
             </div>
 

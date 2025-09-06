@@ -2,7 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 
 export default function Prerequisites() {
   return (
-    <PageTemplate title="Prerequisites" previousPage={{ href: "/introduction", title: "Introduction" }} nextPage={{ href: "/hardware", title: "Hardware Setup" }}>
+    <PageTemplate title="Prerequisites" previousPage={{ href: "/introduction", title: "Introduction" }} nextPage={{ href: "/mechanism-cad", title: "Mechanism CAD" }}>
       <div className="grid gap-6">
         {/* Software Requirements */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">

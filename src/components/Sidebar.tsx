@@ -269,6 +269,152 @@ const workshop1Items = [
 ];
 
 /**
+ * Workshop #2 navigation items
+ * These appear in a collapsible section under Workshop #1
+ */
+const workshop2Items = [
+  {
+    href: "/swerve-drive-project",
+    label: "Creating a Swerve Drive Project",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/pathplanner",
+    label: "Adding PathPlanner",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/vision-options",
+    label: "Vision Options",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/vision-implementation",
+    label: "Implementing Vision",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/logging-options",
+    label: "Logging Options",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/logging-implementation",
+    label: "Implementing Logging",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/vision-shooting",
+    label: "Vision-Based Shooting",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+        />
+      </svg>
+    ),
+  },
+];
+
+/**
  * Collapsible sidebar navigation component
  * Features:
  * - Responsive design (overlay on mobile, fixed on desktop)
@@ -279,7 +425,8 @@ const workshop1Items = [
  */
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true); // Default open on desktop
-  const [isWorkshop1Open, setIsWorkshop1Open] = useState(true); // Workshop 1 sections open by default
+  const [isWorkshop1Open, setIsWorkshop1Open] = useState(false); // Workshop 1 sections closed by default
+  const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
   const pathname = usePathname();
 
   return (
@@ -332,7 +479,7 @@ export default function Sidebar() {
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
       >
-        <div className={`p-4 flex-grow ${isOpen ? "px-6" : "px-2"}`}>
+        <div className={`p-4 flex-grow overflow-y-auto ${isOpen ? "px-6" : "px-2"}`}>
           {/* Logo/Title */}
           <div className="mb-8 flex items-center justify-center">
             <Link
@@ -403,6 +550,35 @@ export default function Sidebar() {
                 </div>
               );
             })}
+
+            {/* Mechanism CAD Item */}
+            {isOpen && (
+              <div className="pt-2">
+                <Link
+                  href="/mechanism-cad"
+                  className={`flex items-center space-x-3 px-4 py-2 rounded-md text-sm transition-colors ${
+                    pathname === "/mechanism-cad"
+                      ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                      : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
+                  }`}
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                    />
+                  </svg>
+                  <span>Mechanism CAD</span>
+                </Link>
+              </div>
+            )}
 
             {/* Workshop #1 Section */}
             {isOpen && (
@@ -501,6 +677,107 @@ export default function Sidebar() {
                 {/* Tooltip for collapsed workshop */}
                 <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                   Workshop #1
+                </div>
+              </div>
+            )}
+
+            {/* Workshop #2 Section */}
+            {isOpen && (
+              <div className="pt-4">
+                <div className="border-t border-[var(--border)] pt-4">
+                  <button
+                    onClick={() => setIsWorkshop2Open(!isWorkshop2Open)}
+                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
+                      </svg>
+                      <span>Workshop #2</span>
+                    </div>
+                    <svg
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isWorkshop2Open ? "rotate-90" : ""
+                      }`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Workshop #2 Items */}
+                  <div
+                    className={`mt-2 space-y-1 transition-all duration-300 ${
+                      isWorkshop2Open ? "block" : "hidden"
+                    }`}
+                  >
+                    {workshop2Items.map((item) => {
+                      const isActive = pathname === item.href;
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
+                            isActive
+                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
+                          }`}
+                          onClick={() => {
+                            // Only close on mobile
+                            if (window.innerWidth < 768) {
+                              setIsOpen(false);
+                            }
+                          }}
+                        >
+                          <span className="flex-shrink-0">{item.icon}</span>
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Workshop #2 collapsed view */}
+            {!isOpen && (
+              <div className="relative group">
+                <div className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                </div>
+
+                {/* Tooltip for collapsed workshop */}
+                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                  Workshop #2
                 </div>
               </div>
             )}

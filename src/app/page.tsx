@@ -46,12 +46,6 @@ export default function Home() {
           >
             Start Workshop
           </Link>
-          <Link
-            href="/prerequisites"
-            className="border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 px-8 py-3 rounded-lg font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
-          >
-            Prerequisites
-          </Link>
         </div>
       </div>
 
@@ -117,12 +111,12 @@ export default function Home() {
               <p className="text-lg text-slate-600 dark:text-slate-300">
                 <span className="font-semibold">CTR Electronics</span> - our Co-sponsors
               </p>
-              <div className="w-32 h-16 bg-slate-800 rounded-lg p-2 shadow-sm">
+              <div className="w-64 h-32 overflow-hidden rounded-2xl">
                 <Image
                   src="/images/ctre-logo.jpg"
                   alt="CTR Electronics Logo"
-                  width={128}
-                  height={64}
+                  width={256}
+                  height={128}
                   className="w-full h-full object-contain"
                 />
               </div>

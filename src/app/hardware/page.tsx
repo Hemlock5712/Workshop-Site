@@ -5,7 +5,7 @@ export default function Hardware() {
   return (
     <PageTemplate
       title="Hardware Setup"
-      previousPage={{ href: "/prerequisites", title: "Prerequisites" }}
+      previousPage={{ href: "/mechanism-cad", title: "Mechanism CAD" }}
       nextPage={{ href: "/project-setup", title: "Project Setup" }}
     >
       {/* Introduction */}
