@@ -6,8 +6,9 @@ export default function Home() {
     <div className="max-w-6xl mx-auto px-4 py-12 flex flex-col gap-8">
       {/* Hero Section */}
       <div className="text-center flex flex-col gap-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100">
-          Hemlock&apos;s Gray Matter - Team 5712 - Coding Workshop
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 text-center">
+          <div>Hemlock&apos;s Gray Matter - Team 5712</div>
+          <div>Coding Workshop</div>
         </h1>
         <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
           Learn FRC&apos;s best programming practices to build a robot good
