@@ -2,7 +2,7 @@
 
 import PageTemplate from "@/components/PageTemplate";
 import Link from "next/link";
-import STLViewer from "@/components/STLViewer";
+import ModelViewer from "@/components/ModelViewer";
 
 export default function MechanismCAD() {
 
@@ -18,12 +18,12 @@ export default function MechanismCAD() {
           Mechanism CAD
         </h2>
         <p className="text-[var(--muted-foreground)] mb-4">
-          Before diving into programming, we first need a physical mechanism. Provided below are STL files so you can 3D print 
-          the major parts of the mechanism that would normally cost several hundred dollars.
+          Before diving into programming, we first need a physical mechanism. Provided below are 3D models so you can explore 
+          the mechanism design that we&apos;ll be programming in this workshop.
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: STL files for mechanisms you can build.
+            🎯 Key Concept: Interactive 3D model of the HTTI Arm-Shooter mechanism.
           </p>
         </div>
       </div>
@@ -37,8 +37,8 @@ export default function MechanismCAD() {
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-4xl">
-              <STLViewer 
-                url="/cad/Xenomorph_Duck.stl"
+              <ModelViewer 
+                url="/cad/HTTI Arm-Shooter Mechanism v1.gltf"
                 width={800}
                 height={600}
                 className="w-full shadow-lg"
@@ -47,7 +47,7 @@ export default function MechanismCAD() {
             
             <div className="text-center space-y-4">
               <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                Workshop Mechanism Model
+                HTTI Arm-Shooter Mechanism
               </h3>
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
                 This 3D model represents the mechanism you&apos;ll be programming in this workshop. 
@@ -56,8 +56,8 @@ export default function MechanismCAD() {
               
               {/* Download Button */}
               <Link
-                href="/cad/Xenomorph_Duck.stl"
-                download="Xenomorph_Duck.stl"
+                href="/cad/HTTI Mechanism v1 - Shooter Mode.stl"
+                download="HTTI Mechanism v1 - Shooter Mode.stl"
                 className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-md"
               >
                 <svg 
