@@ -81,7 +81,7 @@ export default function Hardware() {
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
-                <strong>Key Features:</strong> 1/2" hex shaft compatible, through bore design,
+                <strong>Key Features:</strong> 1/2&quot; hex shaft compatible, through bore design,
                 absolute/relative position, CAN bus connectivity, versatile mounting options.
               </p>
             </div>
