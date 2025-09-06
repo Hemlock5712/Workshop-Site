@@ -117,7 +117,7 @@ export default function Home() {
               <p className="text-lg text-slate-600 dark:text-slate-300">
                 <span className="font-semibold">CTR Electronics</span> - our Co-sponsors
               </p>
-              <div className="w-32 h-16">
+              <div className="w-32 h-16 bg-slate-800 rounded-lg p-2 shadow-sm">
                 <Image
                   src="/images/ctre-logo.jpg"
                   alt="CTR Electronics Logo"
