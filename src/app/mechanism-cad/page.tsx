@@ -56,7 +56,7 @@ export default function MechanismCAD() {
               
               {/* Download Button */}
               <Link
-                href="/cad/HTTI Mechanism v1 - Shooter Mode.stl"
+                href="https://github.com/Hemlock5712/Workshop-Site/raw/refs/heads/master/public/cad/HTTI%20Mechanism%20v1%20-%20Shooter%20Mode.stl?download="
                 download="HTTI Mechanism v1 - Shooter Mode.stl"
                 className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-md"
               >
