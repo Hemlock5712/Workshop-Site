@@ -10,7 +10,7 @@ export default function PIDControl() {
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
       {/* Introduction */}
-        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">PID Control - Precise Position Control</h2>
           <p className="text-[var(--muted-foreground)] mb-4">
           PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
