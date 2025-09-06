@@ -67,7 +67,7 @@ export default function Hardware() {
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
               <a 
-                href="https://store.ctr-electronics.com/products/cancoder"
+                href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
