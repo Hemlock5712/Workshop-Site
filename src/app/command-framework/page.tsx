@@ -7,6 +7,19 @@ export default function CommandFramework() {
       previousPage={{ href: "/project-setup", title: "Project Setup" }}
       nextPage={{ href: "/building-subsystems", title: "Building Subsystems" }}
     >
+      {/* Introduction */}
+      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Command-Based Framework - Core Programming Concepts</h2>
+        <p className="text-[var(--muted-foreground)] mb-4">
+          The Command-Based Framework organizes robot code into three key components: Triggers (inputs), Subsystems (hardware), and Commands (actions). This structure provides clean separation of concerns and reliable robot behavior.
+        </p>
+        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
+          <p className="text-learn-800 dark:text-learn-300 font-medium">
+            🎯 Key Concept: Command-based programming is the foramt in which you will write your code.
+          </p>
+        </div>
+      </div>
+
       <div className="grid md:grid-cols-3 gap-6">
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Triggers</h3>
@@ -85,6 +98,25 @@ export default function CommandFramework() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Documentation Link */}
+        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Official WPILib Command-Based Documentation</h3>
+          <p className="text-[var(--foreground)] mb-4">
+            For comprehensive Command-Based Framework reference, advanced patterns, and complete API documentation:
+          </p>
+          <a 
+            href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+          >
+            📖 WPILib Command-Based Programming Guide
+            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
         </div>
       </section>
     </PageTemplate>

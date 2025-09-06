@@ -85,7 +85,7 @@ export default function Home() {
         <div className="text-center space-y-6">
           
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center justify-items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
               <a 
                 href="https://store.ctr-electronics.com/" 
                 target="_blank" 
@@ -123,6 +123,20 @@ export default function Home() {
                 <Image
                   src="/images/sponsers/OFME-Logo.png"
                   alt="Michigan Office of Future Mobility and Electrification Logo"
+                  width={220}
+                  height={120}
+                  className="max-w-full max-h-full object-contain"
+                />
+              </a>
+              <a 
+                href="https://lockwoodstemcenter.hemlockps.com/home" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              >
+                <Image
+                  src="/images/sponsers/lockwood-stem-center-logo.png"
+                  alt="Lockwood STEM Center Logo"
                   width={220}
                   height={120}
                   className="max-w-full max-h-full object-contain"

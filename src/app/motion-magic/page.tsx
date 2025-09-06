@@ -20,7 +20,7 @@ export default function MotionMagic() {
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration
+            🎯 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration.
           </p>
         </div>
       </div>

@@ -18,7 +18,7 @@ export default function PIDControl() {
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions
+            🎯 Key Concept: PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions.
           </p>
         </div>
       </div>

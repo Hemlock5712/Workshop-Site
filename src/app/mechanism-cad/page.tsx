@@ -13,13 +13,13 @@ export default function MechanismCAD() {
       nextPage={{ href: "/hardware", title: "Hardware Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-          Mechanism CAD
+          Mechanism CAD - 3D Model Exploration
         </h2>
         <p className="text-[var(--muted-foreground)] mb-4">
-          Before diving into programming, we first need a physical mechanism. Provided below are 3D models so you can explore 
-          the mechanism design that we&apos;ll be programming in this workshop.
+          Before diving into programming, we first need a physical mechanism. If you do not have a previous robot or mechanism
+          below are 3D models of mechanisms you can build affortably.
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">

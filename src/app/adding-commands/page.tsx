@@ -10,15 +10,15 @@ export default function AddingCommands() {
       nextPage={{ href: "/running-program", title: "Running Program" }}
     >
       {/* Introduction */}
-      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Command-Based Programming</h2>
+      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Commands - Coordinating Robot Actions</h2>
         <p className="text-[var(--muted-foreground)] mb-4">
           Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks and can be triggered
           by user input, sensors, or automated sequences.
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Commands coordinate subsystem actions while ensuring only one command uses a subsystem at a time
+            🎯 Key Concept: Commands tell subsystems what action to run.
           </p>
         </div>
       </div>

@@ -10,15 +10,15 @@ export default function BuildingSubsystems() {
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
-      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Understanding Subsystems</h2>
+      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Subsystems - Understanding the Foundation</h2>
         <p className="mb-4">
           Subsystems are the foundation of command-based programming. They represent physical hardware components and provide
           methods to control them safely and effectively.
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: One subsystem per mechanism - each subsystem manages its own hardware and state
+            🎯 Key Concept: One subsystem per mechanism. Each subsystem manages its own hardware and state.
           </p>
         </div>
       </div>
