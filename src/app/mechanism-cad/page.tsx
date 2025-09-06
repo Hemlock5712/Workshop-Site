@@ -38,7 +38,7 @@ export default function MechanismCAD() {
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-4xl">
               <ModelViewer 
-                url="/cad/HTTI Arm-Shooter Mechanism v1.gltf"
+                url="/cad/HTTI Mechanism v1 - Shooter Mode.gltf"
                 width={800}
                 height={600}
                 className="w-full shadow-lg"
