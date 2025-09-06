@@ -371,8 +371,8 @@ export default function Hardware() {
                   <tr className="border-b border-slate-100 dark:border-slate-800">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-[var(--muted)] rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-[var(--foreground)]">Purple</strong>
+                        <span className="inline-block w-4 h-4 bg-concept-500 rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-concept-700 dark:text-concept-400">Purple</strong>
                       </div>
                     </td>
                     <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Device has an unexpected/beta firmware version.</td>
