@@ -18,7 +18,7 @@ export default function Introduction() {
           <div className="space-y-6">
             <div className="border-l-4 border-primary-200 dark:border-primary-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                Learn FRC's Best Programming Practices
+                Learn FRC&apos;s Best Programming Practices
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Master industry-standard coding patterns, command-based architecture, and proven development workflows that successful FRC teams use.
@@ -51,7 +51,7 @@ export default function Introduction() {
           
           <div>
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              What You'll Learn
+              What You&apos;ll Learn
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               <ul className="space-y-2 text-slate-600 dark:text-slate-300">
