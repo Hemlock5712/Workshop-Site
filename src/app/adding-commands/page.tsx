@@ -30,8 +30,9 @@ export default function AddingCommands() {
         </h2>
 
           {/* Inline Command Examples */}
-          <div className="card p-6">
-          <h3 className="text-xl font-bold text-primary-600 mb-4">🎮 Inline Command Methods</h3>
+          <details className="card p-6">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">🎮 Inline Command Methods Example</summary>
+          <div className="mt-4">
           <CodeBlock
             language="java"
             title="Subsystem Command Methods"
@@ -51,11 +52,13 @@ public Command stopArm() {
 
 `}
           />
-        </div>
+          </div>
+        </details>
 
           {/* Trigger Examples */}
-          <div className="card p-6">
-          <h3 className="text-xl font-bold text-primary-600 mb-4">🎯 Trigger Examples - Binding Input to Commands</h3>
+          <details className="card p-6">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">🎯 Trigger Examples - Binding Input to Commands</summary>
+          <div className="mt-4">
           <CodeBlock
             language="java"
             title="RobotContainer.java - configureBindings()"
@@ -82,7 +85,8 @@ public class RobotContainer {
     }
 }`}
           />
-        </div>
+          </div>
+        </details>
 
         {/* Key Concepts */}
         <div className="grid md:grid-cols-3 gap-6">

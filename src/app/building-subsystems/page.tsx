@@ -30,8 +30,11 @@ export default function BuildingSubsystems() {
         </h2>
 
         {/* Subsystem Example */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-primary-600 mb-4">📦 Basic Subsystem Structure</h3>
+        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+            📦 Basic Subsystem Example
+          </summary>
+          <div className="mt-4">
           <CodeBlock
             language="java"
             title="ExampleSubsystem.java"
@@ -55,12 +58,12 @@ public class ExampleSubsystem extends SubsystemBase {
         TalonFXConfiguration config = new TalonFXConfiguration();
         
         // Configure motor settings
-        
+        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         motor.getConfigurator().apply(config);
-        motor.setNeutralMode(NeutralModeValue.Brake);
     }
     
-    // 🔄 PERIODIC() RUNS EVERY 20ms - for telemetry/monitoring
+    // 🔄 PERIODIC() RUNS EVERY 20ms - for telemetry/monitoring. 
+    // This we can leave blank as we can use TunerX.
     @Override
     public void periodic() {
         // Update dashboard with current values
@@ -78,7 +81,7 @@ public class ExampleSubsystem extends SubsystemBase {
     }
     
     public void stop() {
-        motor.setControl(new NeutralOut());
+        motor.stopMotor();
     }
     
     public double getPosition() {
@@ -86,7 +89,8 @@ public class ExampleSubsystem extends SubsystemBase {
     }
 }`}
           />
-        </div>
+          </div>
+        </details>
 
         {/* Key Concepts Explanation */}
         <div className="grid md:grid-cols-3 gap-6">
@@ -96,7 +100,7 @@ public class ExampleSubsystem extends SubsystemBase {
               Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-              <code>private final TalonFX motor = new TalonFX(1);</code>
+              <code>TalonFX motor = new TalonFX(1);</code>
             </div>
           </div>
 
@@ -106,7 +110,7 @@ public class ExampleSubsystem extends SubsystemBase {
               Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-              <code>motor.getConfigurator().apply(config);</code>
+              <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>
             </div>
           </div>
 
@@ -116,7 +120,7 @@ public class ExampleSubsystem extends SubsystemBase {
               Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
             </p>
             <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-              <code>SmartDashboard.putNumber(&quot;Value&quot;, sensor.get());</code>
+              <code>SmartDashboard.putNumber(<br/>&nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());</code>
             </div>
           </div>
         </div>
