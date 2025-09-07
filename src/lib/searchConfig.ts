@@ -15,6 +15,30 @@ export interface SearchResult {
   };
 }
 
+// Generic interface for MiniSearch results (contains id, score, and all stored fields)
+interface MiniSearchRawResult {
+  id: string;
+  score: number;
+  match?: {
+    [key: string]: string[];
+  };
+  [key: string]: unknown; // Allow any additional stored fields
+}
+
+export const mapMiniSearchResults = (results: MiniSearchRawResult[]): SearchResult[] => {
+  return results.map((result: MiniSearchRawResult) => ({
+    id: result.id,
+    title: result.title as string,
+    description: result.description as string,
+    content: result.content as string,
+    url: result.url as string,
+    category: result.category as string,
+    tags: result.tags as string[],
+    score: result.score,
+    match: result.match
+  }));
+};
+
 export const createSearchInstance = () => {
   const miniSearch = new MiniSearch({
     fields: ['title', 'description', 'content', 'tags', 'category'],

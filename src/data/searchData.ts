@@ -110,24 +110,22 @@ export const searchData: SearchItem[] = [
     "id": "logging-implementation",
     "title": "Implementing Logging",
     "description": "Setting up and implementing comprehensive logging systems for robot data collection.",
-    "content": "Coming Soon This workshop content is currently being developed. Implementing Logging /logging-options Logging Options /vision-shooting Vision-Based Shooting flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Implementing Logging /logging-options Logging Options /vision-shooting Vision-Based Shooting",
     "url": "/logging-implementation",
     "category": "Workshop 2",
     "tags": [
-      "logging-implementation",
-      "workshop"
+      "logging-implementation"
     ]
   },
   {
     "id": "logging-options",
     "title": "Logging Options",
     "description": "Data logging options for robot debugging, analysis, and performance monitoring.",
-    "content": "Coming Soon This workshop content is currently being developed. Logging Options /vision-implementation Implementing Vision /logging-implementation Implementing Logging flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Logging Options /vision-implementation Implementing Vision /logging-implementation Implementing Logging",
     "url": "/logging-options",
     "category": "Workshop 2",
     "tags": [
-      "logging-options",
-      "workshop"
+      "logging-options"
     ]
   },
   {
@@ -199,12 +197,11 @@ export const searchData: SearchItem[] = [
     "id": "pathplanner",
     "title": "Adding PathPlanner",
     "description": "Integrating PathPlanner for autonomous path planning and trajectory following.",
-    "content": "Coming Soon This workshop content is currently being developed. Adding PathPlanner /swerve-drive-project Creating a Swerve Drive Project /vision-options Vision Options flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Adding PathPlanner /swerve-drive-project Creating a Swerve Drive Project /vision-options Vision Options",
     "url": "/pathplanner",
     "category": "Workshop 2",
     "tags": [
-      "pathplanner",
-      "workshop"
+      "pathplanner"
     ]
   },
   {
@@ -279,65 +276,55 @@ export const searchData: SearchItem[] = [
     "id": "search",
     "title": "search",
     "description": "",
-    "content": "0) preview = \"...\" + preview; if (contextEnd Search Results Searching for: Searching... No search query Use the search bar above to find workshop content No results found Try: Different keywords (e.g., \"PID\", \"motor\", \"subsystem\") More general terms Checking for typos 0 && ( Search Tips Keywords to try: • \"PID control\" - Control theory • \"subsystem\" - Code architecture • \"motor\" - Hardware setup Advanced search: • Use quotes for exact phrases • Try related terms • Check different categories use client Workshop 1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 Workshop 2 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300 Getting Started bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 Resources bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 title bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded content ... max-w-4xl mx-auto mb-8 text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2 text-slate-600 dark:text-slate-300 bg-[var(--muted)] px-2 py-1 rounded font-mono text-sm flex items-center justify-center py-12 animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 ml-2 text-slate-600 dark:text-slate-300 text-center py-12 mx-auto h-12 w-12 text-slate-400 dark:text-slate-500 mb-4 none currentColor 0 0 24 24 round m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z text-xl font-medium text-slate-900 dark:text-slate-100 mb-2 text-slate-600 dark:text-slate-300 M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z text-slate-600 dark:text-slate-300 mb-4 text-sm text-slate-500 dark:text-slate-400 list-disc list-inside mt-2 space-y-1 space-y-6 bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow flex items-start justify-between mb-3 group flex-1 text-xl font-semibold text-primary-600 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 mb-2 leading-tight text-slate-600 dark:text-slate-300 mb-4 leading-relaxed flex items-center justify-between flex flex-wrap gap-2 px-2 py-1 text-xs bg-[var(--muted)] text-[var(--muted-foreground)] rounded-full text-xs text-slate-500 dark:text-slate-400 mt-12 bg-[var(--muted)] rounded-lg p-6 font-semibold text-[var(--foreground)] mb-3 grid md:grid-cols-2 gap-4 text-sm text-[var(--muted-foreground)] font-medium mb-1 space-y-1",
+    "content": "Search Results Loading search... max-w-4xl mx-auto mb-8 text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center justify-center py-12 animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 ml-2 text-slate-600 dark:text-slate-300",
     "url": "/search",
     "category": "General",
     "tags": [
-      "search",
-      "workshop",
-      "pid",
-      "motor",
-      "subsystem",
-      "control",
-      "hardware"
+      "search"
     ]
   },
   {
     "id": "swerve-drive-project",
     "title": "Creating a Swerve Drive Project",
     "description": "Advanced workshop on implementing swerve drive systems for omnidirectional robot movement.",
-    "content": "Coming Soon This workshop content is currently being developed. Creating a Swerve Drive Project /motion-magic Motion Magic /pathplanner Adding PathPlanner flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Creating a Swerve Drive Project /motion-magic Motion Magic /pathplanner Adding PathPlanner",
     "url": "/swerve-drive-project",
     "category": "Workshop 2",
     "tags": [
-      "swerve-drive-project",
-      "workshop"
+      "swerve-drive-project"
     ]
   },
   {
     "id": "vision-implementation",
     "title": "Implementing Vision",
     "description": "Practical implementation of vision systems in robot code for target detection and tracking.",
-    "content": "Coming Soon This workshop content is currently being developed. Implementing Vision /vision-options Vision Options /logging-options Logging Options flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Implementing Vision /vision-options Vision Options /logging-options Logging Options",
     "url": "/vision-implementation",
     "category": "Workshop 2",
     "tags": [
-      "vision-implementation",
-      "workshop"
+      "vision-implementation"
     ]
   },
   {
     "id": "vision-options",
     "title": "Vision Options",
     "description": "Overview of computer vision options for FRC robots including cameras and vision processing.",
-    "content": "Coming Soon This workshop content is currently being developed. Vision Options /pathplanner Adding PathPlanner /vision-implementation Implementing Vision flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Vision Options /pathplanner Adding PathPlanner /vision-implementation Implementing Vision",
     "url": "/vision-options",
     "category": "Workshop 2",
     "tags": [
-      "vision-options",
-      "workshop"
+      "vision-options"
     ]
   },
   {
     "id": "vision-shooting",
     "title": "Vision-Based Shooting",
     "description": "Advanced application combining vision systems with shooting mechanisms for accurate targeting.",
-    "content": "Coming Soon This workshop content is currently being developed. Vision-Based Shooting /logging-implementation Implementing Logging flex items-center justify-center min-h-96 text-center text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-xl text-slate-600 dark:text-slate-400",
+    "content": "Vision-Based Shooting /logging-implementation Implementing Logging",
     "url": "/vision-shooting",
     "category": "Workshop 2",
     "tags": [
-      "vision-shooting",
-      "workshop"
+      "vision-shooting"
     ]
   }
 ];

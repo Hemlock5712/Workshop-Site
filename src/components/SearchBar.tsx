@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createSearchInstance, SearchResult } from "@/lib/searchConfig";
+import { createSearchInstance, SearchResult, mapMiniSearchResults } from "@/lib/searchConfig";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -13,22 +13,12 @@ export default function SearchBar() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const searchRef2 = useRef(createSearchInstance());
+  const searchInstanceRef = useRef(createSearchInstance());
 
   useEffect(() => {
     if (query.trim().length > 1) {
-      const searchResults = searchRef2.current.search(query);
-      const mappedResults: SearchResult[] = searchResults.map((result: any) => ({
-        id: result.id,
-        title: result.title,
-        description: result.description,
-        content: result.content,
-        url: result.url,
-        category: result.category,
-        tags: result.tags,
-        score: result.score,
-        match: result.match
-      }));
+      const searchResults = searchInstanceRef.current.search(query);
+      const mappedResults = mapMiniSearchResults(searchResults);
       setResults(mappedResults.slice(0, 8));
       setIsOpen(true);
       setSelectedIndex(-1);
@@ -254,7 +244,7 @@ export default function SearchBar() {
               </div>
               <span>Powered by MiniSearch</span>
             </div>
-            {searchRef2.current.search(query).length > 8 && (
+            {searchInstanceRef.current.search(query).length > 8 && (
               <button
                 onClick={() => {
                   router.push(`/search?q=${encodeURIComponent(query.trim())}`);
@@ -265,7 +255,7 @@ export default function SearchBar() {
                 }}
                 className="w-full text-center text-xs text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 py-1"
               >
-                View all {searchRef2.current.search(query).length} results →
+                View all {searchInstanceRef.current.search(query).length} results →
               </button>
             )}
           </div>

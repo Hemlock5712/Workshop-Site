@@ -424,14 +424,12 @@ const workshop2Items = [
  */
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true); // Default open
-  const [isManuallyToggled, setIsManuallyToggled] = useState(false); // Track manual toggle state
   const [isWorkshop1Open, setIsWorkshop1Open] = useState(false); // Workshop 1 sections closed by default
   const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
   const pathname = usePathname();
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
-    setIsManuallyToggled(true);
   };
 
 
