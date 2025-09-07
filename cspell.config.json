@@ -21,6 +21,21 @@
     "RoboRIO",
     "setpoint",
     "Setpoint",
-    "Haltom"
+    "Haltom",
+    "pathplanner",
+    "PathPlanner",
+    "minisearch",
+    "MiniSearch",
+    "HTTI",
+    "gltf",
+    "GLTF",
+    "drei",
+    "OFME",
+    "Xenomorph",
+    "noopener",
+    "noreferrer",
+    "Hemlock",
+    "TalonFX",
+    "couldn"
   ]
 }

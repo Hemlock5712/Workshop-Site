@@ -137,7 +137,6 @@ Workshop Content:
   - Uses `@react-three/fiber` and `@react-three/drei` for 3D rendering
   - Proper loading states and error handling
   - Interactive orbit controls for pan, zoom, rotate
-  - Displays 96MB Xenomorph_Duck.stl mechanism model
 - **Navigation Improvements**: Enhanced sidebar organization and user experience
   - Moved Mechanism CAD to appear before Workshop sections for logical flow
   - Updated Mechanism CAD icon to 3D cube design
