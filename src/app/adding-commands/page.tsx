@@ -1,4 +1,5 @@
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import MechanismTabs from "@/components/MechanismTabs";
+import GitHubPage from "@/components/GitHubPage";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 
@@ -10,7 +11,7 @@ export default function AddingCommands() {
       nextPage={{ href: "/running-program", title: "Running Program" }}
     >
       {/* Introduction */}
-      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Commands - Coordinating Robot Actions</h2>
         <p className="text-[var(--muted-foreground)] mb-4">
           Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks and can be triggered
@@ -122,110 +123,94 @@ public class RobotContainer {
         </div>
       </section>
 
-      {/* Before/After Implementation */}
+      {/* Mechanism Implementation Tabs */}
+      <MechanismTabs
+        sectionTitle="Workshop Implementation"
+        armContent={{
+          beforeItems: [
+            "• Arm subsystem with basic voltage control",
+            "• No user input integration",
+            "• No commands to coordinate actions",
+            "• Manual method calls only"
+          ],
+          afterItems: [
+            "• Enhanced Arm subsystem methods",
+            "• Xbox controller integration", 
+            "• Commands for moveUp(), moveDown()",
+            "• RobotContainer with proper binding",
+            "• Default command for safety"
+          ],
+          repository: "Hemlock5712/Workshop-Code",
+          filePath: "src/main/java/frc/robot/subsystems/Arm.java",
+          branch: "2-Commands",
+          pullRequestNumber: 2,
+          focusFile: "Arm.java",
+          walkthrough: {
+            leftTitle: "New Subsystem Methods",
+            leftItems: [
+              "• <strong>moveUp():</strong> Positive voltage for upward movement",
+              "• <strong>moveDown():</strong> Negative voltage for downward movement"
+            ],
+            rightTitle: "Command Integration",
+            rightItems: [
+              "• <strong>RobotContainer:</strong> Xbox controller instantiation",
+              "• <strong>Button Bindings:</strong> A/B buttons control arm direction", 
+              "• <strong>Default Command:</strong> Stop arm when no input"
+            ]
+          },
+          nextStepText: "Our Arm now responds to user input! Next, we'll verify mechanism setup before implementing precise PID position control."
+        }}
+        flywheelContent={{
+          beforeItems: [
+            "• Flywheel subsystem with basic voltage control",
+            "• No user input integration",
+            "• No commands to coordinate actions", 
+            "• Manual method calls only"
+          ],
+          afterItems: [
+            "• Enhanced Flywheel subsystem methods",
+            "• Xbox controller integration",
+            "• Commands for runSlow(), runFast()",
+            "• RobotContainer with proper binding",
+            "• Default command for safety"
+          ],
+          repository: "Hemlock5712/Workshop-Code",
+          filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
+          branch: "2-Commands", 
+          pullRequestNumber: 2,
+          focusFile: "Flywheel.java",
+          walkthrough: {
+            leftTitle: "New Subsystem Methods",
+            leftItems: [
+              "• <strong>runSlow():</strong> Low voltage (3V) for testing",
+              "• <strong>runFast():</strong> High voltage (6V) for shooting"
+            ],
+            rightTitle: "Command Integration", 
+            rightItems: [
+              "• <strong>RobotContainer:</strong> Xbox controller instantiation",
+              "• <strong>Button Bindings:</strong> X/Y buttons control flywheel speed",
+              "• <strong>Default Command:</strong> Stop flywheel when no input"
+            ]
+          },
+          nextStepText: "Our Flywheel now responds to user input! Next, we'll verify mechanism setup before implementing precise velocity PID control."
+        }}
+      />
+
+      {/* RobotContainer Implementation from GitHub */}
       <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation: Adding Commands to Arm
-        </h2>
-
-          <div className="card p-6">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-            🔄 Before → After: Implementation
-          </h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="before-block">
-              <h4 className="before-title">📋 Before</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Arm subsystem with basic voltage control</li>
-                <li>• No user input integration</li>
-                <li>• No commands to coordinate actions</li>
-                <li>• Manual method calls only</li>
-              </ul>
-            </div>
-
-            <div className="after-block">
-              <h4 className="after-title">✅ After</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Enhanced Arm subsystem methods</li>
-                <li>• Xbox controller integration</li>
-                <li>• Commands for moveUp(), moveDown()</li>
-                <li>• RobotContainer with proper binding</li>
-                <li>• Default command for safety</li>
-              </ul>
-            </div>
+        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+            🤖 RobotContainer Implementation
+          </summary>
+          <div className="mt-4">
+            <GitHubPage
+              repository="Hemlock5712/Workshop-Code"
+              filePath="src/main/java/frc/robot/RobotContainer.java"
+              branch="2-Commands"
+              className="m-0"
+            />
           </div>
-        </div>
-
-        <GithubPageWithPR 
-          repository="Hemlock5712/Workshop-Code" 
-          filePath="src/main/java/frc/robot/subsystems/Arm.java" 
-          branch="2-Commands" 
-          pullRequestNumber={2} 
-          focusFile="Arm.java" 
-        />
-
-          {/* RobotContainer Implementation */}
-          <div className="card p-6">
-          <h3 className="text-xl font-bold text-primary-600 mb-4">🤖 RobotContainer Implementation</h3>
-          <CodeBlock
-            language="java"
-            title="Complete RobotContainer.java"
-            code={`package frc.robot;
-
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Arm;
-
-public class RobotContainer {
-    // Controllers
-    private final CommandXboxController controller = new CommandXboxController(0);
-    
-    // Subsystems
-    private final Arm armSubsystem = new Arm();
-    
-    public RobotContainer() {
-        configureBindings();
-    }
-    
-    private void configureBindings() {
-        // Button bindings for Arm control
-        controller.a().whileTrue(armSubsystem.moveUp());
-        controller.b().whileTrue(armSubsystem.moveDown());
-    }
-}`}
-          />
-        </div>
-
-        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">New Subsystem Methods:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>moveUp():</strong> Positive voltage for upward movement</li>
-                <li>• <strong>moveDown():</strong> Negative voltage for downward movement</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Command Integration:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>RobotContainer:</strong> Xbox controller instantiation</li>
-                <li>• <strong>Button Bindings:</strong> A/B buttons control arm direction</li>
-                <li>• <strong>Default Command:</strong> Stop arm when no input</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-            <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-              <strong>💡 Next Step:</strong> Our Arm now responds to user input!
-              Next, we&apos;ll verify mechanism setup before implementing precise PID position control.
-            </p>
-          </div>
-        </div>
-
+        </details>
       </section>
     </PageTemplate>
   );

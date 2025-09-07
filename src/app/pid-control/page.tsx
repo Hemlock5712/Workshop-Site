@@ -1,4 +1,4 @@
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 
@@ -10,7 +10,7 @@ export default function PIDControl() {
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
       {/* Introduction */}
-        <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+        <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">PID Control - Precise Position Control</h2>
           <p className="text-[var(--muted-foreground)] mb-4">
           PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, 
@@ -134,8 +134,11 @@ export default function PIDControl() {
           PID Implementation in Code
         </h2>
 
-          <div className="card p-6">
-          <h3 className="text-xl font-bold text-primary-600 mb-4">🔧 PID Configuration Example</h3>
+        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+            🔧 PID Configuration Example
+          </summary>
+          <div className="mt-4">
           <CodeBlock
             language="java"
             title="PID Setup in Subsystem Constructor"
@@ -168,78 +171,87 @@ public void setTargetPosition(double positionRotations) {
 
 `}
           />
-        </div>
-
-        {/* Before/After Implementation */}
-        <div className="card p-6">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-            🔄 Before → After: PID Control Implementation
-          </h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="before-block">
-              <h4 className="before-title">📋 Before</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Commands control Arm with voltage</li>
-                <li>• No position feedback control</li>
-                <li>• Imprecise, inconsistent movement</li>
-                <li>• No automatic target reaching</li>
-                <li>• Manual voltage adjustment needed</li>
-              </ul>
-            </div>
-
-            <div className="after-block">
-              <h4 className="after-title">✅ After</h4>
-              <ul className="text-sm space-y-1">
-                <li>• PID position control with PositionVoltage</li>
-                <li>• Automatic target position reaching</li>
-                <li>• Precise, repeatable movements</li>
-                <li>• Feedforward compensation for gravity</li>
-                <li>• Tolerance checking for &quot;at target&quot;</li>
-              </ul>
-            </div>
           </div>
-        </div>
+        </details>
 
-        <GithubPageWithPR 
-          repository="Hemlock5712/Workshop-Code" 
-          filePath="src/main/java/frc/robot/subsystems/Arm.java" 
-          branch="3-PID" 
-          pullRequestNumber={3} 
-          focusFile="Arm.java" 
+        {/* Mechanism Implementation Tabs */}
+        <MechanismTabs
+          sectionTitle="Workshop Implementation: PID Control"
+          armContent={{
+            beforeItems: [
+              "• Commands control Arm with voltage",
+              "• No position feedback control",
+              "• Imprecise, inconsistent movement",
+              "• No automatic target reaching",
+              "• Manual voltage adjustment needed"
+            ],
+            afterItems: [
+              "• PID position control with PositionVoltage",
+              "• Automatic target position reaching",
+              "• Precise, repeatable movements",
+              "• Feedforward compensation for gravity",
+              "• Tolerance checking for \"at target\""
+            ],
+            repository: "Hemlock5712/Workshop-Code",
+            filePath: "src/main/java/frc/robot/subsystems/Arm.java",
+            branch: "3-PID",
+            pullRequestNumber: 3,
+            focusFile: "Arm.java",
+            walkthrough: {
+              leftTitle: "PID Implementation",
+              leftItems: [
+                "• <strong>PositionVoltage:</strong> Replaces VoltageOut for closed-loop control",
+                "• <strong>Slot0 Config:</strong> PID and feedforward gains configuration",
+                "• <strong>Target Setting:</strong> setTargetPosition() method for precise control"
+              ],
+              rightTitle: "Gain Values Used",
+              rightItems: [
+                "• <strong>kP = 24.0:</strong> Strong proportional response",
+                "• <strong>kD = 0.1:</strong> Small derivative for damping",
+                "• <strong>kS = 0.25:</strong> Static friction compensation",
+                "• <strong>kG = 0.12:</strong> Gravity feedforward for Arm"
+              ]
+            },
+            nextStepText: "PID gives us precise position control! In the next section, we'll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration."
+          }}
+          flywheelContent={{
+            beforeItems: [
+              "• Commands control Flywheel with voltage",
+              "• No velocity feedback control",
+              "• Inconsistent speed control",
+              "• No automatic velocity targeting", 
+              "• Manual voltage adjustment needed"
+            ],
+            afterItems: [
+              "• PID velocity control with VelocityVoltage",
+              "• Automatic target velocity reaching",
+              "• Consistent, repeatable speeds",
+              "• Feedforward compensation for friction",
+              "• Velocity tolerance checking for \"at target\""
+            ],
+            repository: "Hemlock5712/Workshop-Code",
+            filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
+            branch: "3-PID",
+            pullRequestNumber: 3,
+            focusFile: "Flywheel.java",
+            walkthrough: {
+              leftTitle: "PID Implementation",
+              leftItems: [
+                "• <strong>VelocityVoltage:</strong> Replaces VoltageOut for closed-loop velocity control",
+                "• <strong>Slot0 Config:</strong> PID and feedforward gains configuration for velocity",
+                "• <strong>Target Setting:</strong> setTargetVelocity() method for precise speed control"
+              ],
+              rightTitle: "Gain Values Used",
+              rightItems: [
+                "• <strong>kP:</strong> Proportional response for velocity error",
+                "• <strong>kI:</strong> Integral gain to eliminate steady-state velocity error",
+                "• <strong>kS:</strong> Static friction compensation for startup",
+                "• <strong>kV:</strong> Velocity feedforward for smooth operation"
+              ]
+            },
+            nextStepText: "PID gives us precise velocity control! In the next section, we'll upgrade to Motion Magic for smooth, profiled velocity changes with controlled acceleration."
+          }}
         />
-
-        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">PID Implementation:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>PositionVoltage:</strong> Replaces VoltageOut for closed-loop control</li>
-                <li>• <strong>Slot0 Config:</strong> PID and feedforward gains configuration</li>
-                <li>• <strong>Target Setting:</strong> setTargetPosition() method for precise control</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Gain Values Used:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>kP = 24.0:</strong> Strong proportional response</li>
-                <li>• <strong>kD = 0.1:</strong> Small derivative for damping</li>
-                <li>• <strong>kS = 0.25:</strong> Static friction compensation</li>
-                <li>• <strong>kG = 0.12:</strong> Gravity feedforward for Arm</li>
-              </ul>
-            </div>
-          </div>
-
-            <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-              <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-                <strong>💡 Next Step:</strong> PID gives us precise control!
-                In the next section, we&apos;ll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.
-              </p>
-            </div>
-        </div>
 
       </section>
     </PageTemplate>

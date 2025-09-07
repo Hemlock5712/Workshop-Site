@@ -94,8 +94,7 @@ export default function GitHubPR({
         const filteredFiles = focusFile
           ? filesData.filter(
               (file: GitHubFile) =>
-                file.filename.includes(focusFile) ||
-                file.filename.endsWith("Arm.java")
+                file.filename.includes(focusFile)
             )
           : filesData;
         setFiles(filteredFiles);
@@ -294,7 +293,7 @@ export default function GitHubPR({
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h5 className="font-semibold text-[var(--foreground)]">
-              {focusFile ? "Arm.java Changes" : "Files Changed"}
+              {focusFile ? `${focusFile} Changes` : "Files Changed"}
             </h5>
             <div className="flex items-center space-x-4 text-sm">
               <span className="flex items-center text-green-600 dark:text-green-400">

@@ -30,52 +30,6 @@ export default function Home() {
         </Link>
       </div>
 
-      {/* Mechanisms Section */}
-      <div>
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8 text-center">
-          Mechanisms We&apos;ll Program
-        </h2>
-        <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800">
-            <div className="mb-4">
-              <Image
-                src="/images/mechanisms/arm.jpg"
-                alt="Robot Arm Mechanism"
-                width={400}
-                height={300}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              Robot Arm
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300">
-              Learn to program a robot arm with precise positioning control.
-              Master PID tuning, encoder feedback, and motion profiling to achieve smooth,
-              accurate movements for game piece manipulation.
-            </p>
-          </div>
-          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg shadow-lg border border-slate-200 dark:border-slate-800">
-            <div className="mb-4">
-              <Image
-                src="/images/mechanisms/flywheel.png"
-                alt="Flywheel Mechanism"
-                width={400}
-                height={300}
-                className="w-full h-48 object-cover rounded-lg"
-              />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              Flywheel Shooter
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300">
-              Program a high-speed flywheel shooter system for consistent game piece
-              launching. Explore velocity control, feedforward calculations, and
-              real-time adjustments for accuracy across varying distances.
-            </p>
-          </div>
-        </div>
-      </div>
 
       {/* Special Thanks Section */}
       <div className="bg-[var(--card)] text-[var(--foreground)] p-8 rounded-lg">

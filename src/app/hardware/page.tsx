@@ -9,7 +9,7 @@ export default function Hardware() {
       nextPage={{ href: "/project-setup", title: "Project Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Hardware Setup - Building the Foundation</h2>
         <p className="text-[var(--muted-foreground)] mb-4">
           Overview of the motors, sensors, and controllers you&apos;ll connect for this workshop.
@@ -239,11 +239,11 @@ export default function Hardware() {
           Connecting to Your Device
         </h2>
 
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 rounded-lg p-6">
+        <div className="bg-focus-100 dark:bg-focus-900/20 border border-focus-200 dark:border-focus-800 rounded-lg p-6">
           <h3 className="text-lg font-semibold text-focus-700 dark:text-focus-300 mb-3">
             ⚠️ Important Setup Steps
           </h3>
-          <ol className="list-decimal list-inside space-y-2 text-yellow-800 dark:text-yellow-300">
+          <ol className="list-decimal list-inside space-y-2 text-focus-800 dark:text-focus-300">
             <li>Plug the computer into CANivore</li>
             <li>Make sure the &quot;CANivore USB&quot; is checked</li>
             <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>

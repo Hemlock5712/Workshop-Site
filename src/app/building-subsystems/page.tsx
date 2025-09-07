@@ -1,4 +1,4 @@
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 
@@ -10,7 +10,7 @@ export default function BuildingSubsystems() {
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
-      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Subsystems - Understanding the Foundation</h2>
         <p className="mb-4">
           Subsystems are the foundation of command-based programming. They represent physical hardware components and provide
@@ -127,78 +127,76 @@ public class ExampleSubsystem extends SubsystemBase {
 
       </section>
 
-      {/* Before/After Implementation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation: Arm Subsystem
-        </h2>
-
-        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            🔄 Before → After: Implementation
-          </h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="before-block">
-              <h4 className="before-title">📋 Before (Empty Project)</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Basic WPILib project structure</li>
-                <li>• No hardware integration</li>
-                <li>• No subsystem implementation</li>
-              </ul>
-            </div>
-
-            <div className="after-block">
-              <h4 className="after-title">✅ After</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Complete Arm subsystem class</li>
-                <li>• TalonFX motor (ID: 31) configured</li>
-                <li>• CANCoder sensor (ID: 22) integrated</li>
-                <li>• Basic voltage control methods</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <GithubPageWithPR 
-          repository="Hemlock5712/Workshop-Code" 
-          filePath="src/main/java/frc/robot/subsystems/Arm.java" 
-          branch="1-Subsystem" 
-          pullRequestNumber={1} 
-          focusFile="Arm.java" 
-        />
-
-        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Hardware Setup:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>TalonFX Motor:</strong> Main drive motor with integrated controller</li>
-                <li>• <strong>CANCoder:</strong> Absolute position feedback sensor</li>
-                <li>• <strong>Remote Sensor:</strong> CANCoder connected as remote feedback</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Key Methods:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>setVoltage():</strong> Direct voltage control for basic movement</li>
-                <li>• <strong>stop():</strong> Safe motor stop with neutral output</li>
-                <li>• <strong>periodic():</strong> Understand that periodic runs every robot loop</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-            <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-              <strong>💡 Next Step:</strong> This subsystem is ready for command integration! 
-              Next, we&apos;ll add commands to control this Arm subsystem through user input.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Mechanism Implementation Tabs */}
+      <MechanismTabs
+        sectionTitle="Workshop Implementation"
+        armContent={{
+          beforeItems: [
+            "• Basic WPILib project structure",
+            "• No hardware integration", 
+            "• No subsystem implementation"
+          ],
+          afterItems: [
+            "• Complete Arm subsystem class",
+            "• TalonFX motor (ID: 31) configured",
+            "• CANCoder sensor (ID: 22) integrated", 
+            "• Basic voltage control methods"
+          ],
+          repository: "Hemlock5712/Workshop-Code",
+          filePath: "src/main/java/frc/robot/subsystems/Arm.java",
+          branch: "1-Subsystem",
+          pullRequestNumber: 1,
+          focusFile: "Arm.java",
+          walkthrough: {
+            leftTitle: "Hardware Setup",
+            leftItems: [
+              "• <strong>TalonFX Motor:</strong> Main drive motor with integrated controller",
+              "• <strong>CANCoder:</strong> Absolute position feedback sensor",
+              "• <strong>Remote Sensor:</strong> CANCoder connected as remote feedback"
+            ],
+            rightTitle: "Key Methods", 
+            rightItems: [
+              "• <strong>setVoltage():</strong> Direct voltage control for basic movement",
+              "• <strong>stop():</strong> Safe motor stop with neutral output",
+              "• <strong>periodic():</strong> Understand that periodic runs every robot loop"
+            ]
+          },
+          nextStepText: "This subsystem is ready for command integration! Next, we'll add commands to control this Arm subsystem through user input."
+        }}
+        flywheelContent={{
+          beforeItems: [
+            "• Basic WPILib project structure",
+            "• No hardware integration",
+            "• No subsystem implementation"
+          ],
+          afterItems: [
+            "• Complete Flywheel subsystem class", 
+            "• Dual TalonFX motors (IDs: 21, 22) configured",
+            "• Leader/follower motor setup",
+            "• Basic voltage control methods"
+          ],
+          repository: "Hemlock5712/Workshop-Code",
+          filePath: "src/main/java/frc/robot/subsystems/Flywheel.java", 
+          branch: "1-Subsystem",
+          pullRequestNumber: 1,
+          focusFile: "Flywheel.java",
+          walkthrough: {
+            leftTitle: "Hardware Setup",
+            leftItems: [
+              "• <strong>Leader Motor:</strong> TalonFX controlling the flywheel mechanism",
+              "• <strong>Follower Motor:</strong> Second TalonFX following the leader",
+              "• <strong>CANivore Bus:</strong> High-speed CAN bus for motor communication"
+            ],
+            rightTitle: "Key Methods",
+            rightItems: [
+              "• <strong>setVoltage():</strong> Direct voltage control for flywheel speed",
+              "• <strong>stop():</strong> Safe motor stop with neutral output", 
+              "• <strong>periodic():</strong> Understand that periodic runs every robot loop"
+            ]
+          },
+          nextStepText: "This flywheel subsystem is ready for command integration! Next, we'll add commands to control this Flywheel subsystem through user input."
+        }}
+      />
     </PageTemplate>
   );
 }

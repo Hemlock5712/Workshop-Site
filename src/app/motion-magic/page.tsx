@@ -1,4 +1,4 @@
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 
@@ -10,7 +10,7 @@ export default function MotionMagic() {
       nextPage={{ href: "/", title: "Home" }}
     >
       {/* Introduction */}
-      <div className="bg-primary-50 dark:bg-primary-950/30 text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
+      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Motion Magic - Profiled Motion Control
         </h2>
@@ -104,8 +104,11 @@ export default function MotionMagic() {
           Motion Magic Implementation in Code
         </h2>
 
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-primary-600 mb-4">🔧 Motion Magic Configuration Example</h3>
+        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+            🔧 Motion Magic Configuration Example
+          </summary>
+          <div className="mt-4">
           <CodeBlock
             language="java"
             title="Motion Magic Setup in Subsystem Constructor"
@@ -144,83 +147,96 @@ public void setTargetPosition(double positionRotations) {
 
 `}
           />
-        </div>
-
-        {/* Before/After Implementation */}
-        <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            🔄 Before → After: Implementation
-          </h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="before-block">
-              <h4 className="before-title">📋 Before</h4>
-              <ul className="text-sm space-y-1">
-                <li>• PID position control with PositionVoltage</li>
-                <li>• Instant acceleration to target</li>
-                <li>• Potential mechanical stress from jerky movements</li>
-                <li>• No velocity planning or profiling</li>
-                <li>• Abrupt start/stop motions</li>
-              </ul>
-            </div>
-
-            <div className="after-block">
-              <h4 className="after-title">✅ After</h4>
-              <ul className="text-sm space-y-1">
-                <li>• Motion Magic profiled motion with MotionMagicVoltage</li>
-                <li>• Smooth acceleration and deceleration curves</li>
-                <li>• Reduced mechanical stress and wear</li>
-                <li>• Configurable cruise velocity and acceleration</li>
-                <li>• Professional, smooth motion profiles</li>
-              </ul>
-            </div>
           </div>
-        </div>
+        </details>
 
-        <GithubPageWithPR 
-          repository="Hemlock5712/Workshop-Code" 
-          filePath="src/main/java/frc/robot/subsystems/Arm.java" 
-          branch="4-MotionMagic" 
-          pullRequestNumber={4} 
-          focusFile="Arm.java" 
+        {/* Mechanism Implementation Tabs */}
+        <MechanismTabs
+          sectionTitle="Workshop Implementation: Motion Magic"
+          armContent={{
+            beforeItems: [
+              "• PID position control with PositionVoltage",
+              "• Instant acceleration to target",
+              "• Potential mechanical stress from jerky movements",
+              "• No velocity planning or profiling",
+              "• Abrupt start/stop motions"
+            ],
+            afterItems: [
+              "• Motion Magic profiled motion with MotionMagicVoltage",
+              "• Smooth acceleration and deceleration curves",
+              "• Reduced mechanical stress and wear",
+              "• Configurable cruise velocity and acceleration",
+              "• Professional, smooth motion profiles"
+            ],
+            repository: "Hemlock5712/Workshop-Code",
+            filePath: "src/main/java/frc/robot/subsystems/Arm.java",
+            branch: "4-MotionMagic",
+            pullRequestNumber: 4,
+            focusFile: "Arm.java",
+            walkthrough: {
+              leftTitle: "Motion Magic Parameters",
+              leftItems: [
+                "• <strong>Cruise Velocity (2.0):</strong> Maximum speed during motion",
+                "• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed",
+                "• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes",
+                "• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control"
+              ],
+              rightTitle: "Enhanced Features",
+              rightItems: [
+                "• <strong>Setpoint Detection:</strong> Checks both position AND velocity",
+                "• <strong>Smooth Motion:</strong> Eliminates jerky arm movements",
+                "• <strong>Mechanical Safety:</strong> Reduces stress on gearboxes",
+                "• <strong>Predictable Timing:</strong> Known motion duration"
+              ]
+            },
+            nextStepText: "Motion Magic gives us professional-grade position control! Next, we'll explore tuning methods to get optimal performance from our control algorithms."
+          }}
+          flywheelContent={{
+            beforeItems: [
+              "• PID velocity control with VelocityVoltage",
+              "• Instant acceleration to target speed",
+              "• Potential mechanical stress from sudden velocity changes",
+              "• No velocity planning or profiling",
+              "• Abrupt start/stop motions"
+            ],
+            afterItems: [
+              "• Motion Magic profiled velocity with MotionMagicVelocity",
+              "• Smooth acceleration and deceleration curves",
+              "• Reduced mechanical stress and wear",
+              "• Configurable acceleration and jerk for velocity changes",
+              "• Professional, smooth velocity transitions"
+            ],
+            repository: "Hemlock5712/Workshop-Code",
+            filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
+            branch: "4-MotionMagic",
+            pullRequestNumber: 4,
+            focusFile: "Flywheel.java",
+            walkthrough: {
+              leftTitle: "Motion Magic Parameters",
+              leftItems: [
+                "• <strong>Acceleration:</strong> How quickly to reach target velocity",
+                "• <strong>Jerk:</strong> Smoothness of acceleration changes",
+                "• <strong>MotionMagicVelocity:</strong> Replaces VelocityVoltage for profiled control",
+                "• <strong>Velocity Targeting:</strong> Precise speed control with smooth ramping"
+              ],
+              rightTitle: "Enhanced Features",
+              rightItems: [
+                "• <strong>Setpoint Detection:</strong> Checks both velocity AND acceleration",
+                "• <strong>Smooth Motion:</strong> Eliminates sudden flywheel speed changes",
+                "• <strong>Mechanical Safety:</strong> Reduces stress on motors and mechanisms",
+                "• <strong>Predictable Timing:</strong> Known velocity change duration"
+              ]
+            },
+            nextStepText: "Motion Magic gives us professional-grade velocity control! Next, we'll explore tuning methods to get optimal performance from our flywheel control algorithms."
+          }}
         />
 
-        <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
-          <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
-          
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Motion Magic Parameters:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>Cruise Velocity (2.0):</strong> Maximum speed during motion</li>
-                <li>• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed</li>
-                <li>• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes</li>
-                <li>• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">Enhanced Features:</h4>
-              <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                <li>• <strong>Setpoint Detection:</strong> Checks both position AND velocity</li>
-                <li>• <strong>Smooth Motion:</strong> Eliminates jerky arm movements</li>
-                <li>• <strong>Mechanical Safety:</strong> Reduces stress on gearboxes</li>
-                <li>• <strong>Predictable Timing:</strong> Known motion duration</li>
-              </ul>
-            </div>
-          </div>
-
-            <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-              <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-                <strong>💡 Next Step:</strong> Motion Magic gives us professional-grade motion control!
-                Next, we&apos;ll explore tuning methods to get optimal performance from our control algorithms.
-              </p>
-            </div>
-        </div>
-
         {/* Motion Magic vs PID Comparison */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚖️ Motion Magic vs Basic PID</h3>
+        <details className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
+          <summary className="text-xl font-bold text-[var(--foreground)] mb-4 cursor-pointer hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]">
+            ⚖️ Motion Magic vs Basic PID
+          </summary>
+          <div className="mt-4">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-[var(--foreground)] mb-2">When to Use Basic PID:</h4>
@@ -241,11 +257,15 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
           </div>
-        </div>
+          </div>
+        </details>
 
         {/* Motion Magic Tuning Steps */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚙️ Motion Magic Tuning Steps</h3>
+        <details className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+          <summary className="text-xl font-bold text-[var(--foreground)] mb-4 cursor-pointer hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]">
+            ⚙️ Motion Magic Tuning Steps
+          </summary>
+          <div className="mt-4">
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
@@ -278,7 +298,8 @@ public void setTargetPosition(double positionRotations) {
               headroom for control corrections while maintaining good performance.
             </p>
           </div>
-        </div>
+          </div>
+        </details>
       </section>
     </PageTemplate>
   );
