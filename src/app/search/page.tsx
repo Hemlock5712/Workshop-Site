@@ -18,7 +18,18 @@ export default function SearchPage() {
     setIsLoading(true);
     if (query.trim()) {
       const searchResults = searchRef.current.search(query.trim());
-      setResults(searchResults);
+      const mappedResults: SearchResult[] = searchResults.map((result: any) => ({
+        id: result.id,
+        title: result.title,
+        description: result.description,
+        content: result.content,
+        url: result.url,
+        category: result.category,
+        tags: result.tags,
+        score: result.score,
+        match: result.match
+      }));
+      setResults(mappedResults);
     } else {
       setResults([]);
     }
@@ -68,7 +79,7 @@ export default function SearchPage() {
   };
 
   return (
-    <PageTemplate title="Search Results" showNavigation={false}>
+    <PageTemplate title="Search Results">
       <div className="max-w-4xl mx-auto">
         {/* Search Header */}
         <div className="mb-8">

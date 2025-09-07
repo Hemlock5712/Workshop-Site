@@ -18,7 +18,18 @@ export default function SearchBar() {
   useEffect(() => {
     if (query.trim().length > 1) {
       const searchResults = searchRef2.current.search(query);
-      setResults(searchResults.slice(0, 8));
+      const mappedResults: SearchResult[] = searchResults.map((result: any) => ({
+        id: result.id,
+        title: result.title,
+        description: result.description,
+        content: result.content,
+        url: result.url,
+        category: result.category,
+        tags: result.tags,
+        score: result.score,
+        match: result.match
+      }));
+      setResults(mappedResults.slice(0, 8));
       setIsOpen(true);
       setSelectedIndex(-1);
     } else {

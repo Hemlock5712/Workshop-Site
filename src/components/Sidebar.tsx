@@ -434,22 +434,6 @@ export default function Sidebar() {
     setIsManuallyToggled(true);
   };
 
-  const handleMouseEnter = () => {
-    if (!isOpen) {
-      setIsOpen(true);
-      setIsManuallyToggled(false);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (!isManuallyToggled) {
-      // Only close on hover if not manually toggled to stay open
-      return;
-    } else if (isManuallyToggled && !isOpen) {
-      // Keep closed if manually closed
-      return;
-    }
-  };
 
   return (
     <>
@@ -461,28 +445,28 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar toggle button - only visible when open */}
-      {isOpen && (
-        <button
-          onClick={handleToggle}
-          className="fixed top-20 left-60 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300"
-          title="Close sidebar"
+      {/* Sidebar toggle button - always visible */}
+      <button
+        onClick={handleToggle}
+        className={`fixed top-20 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
+          isOpen ? "left-60" : "left-20"
+        }`}
+        title={isOpen ? "Close sidebar" : "Open sidebar"}
+      >
+        <svg
+          className="w-5 h-5 text-[var(--muted-foreground)]"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
         >
-          <svg
-            className="w-5 h-5 text-[var(--muted-foreground)]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-            />
-          </svg>
-        </button>
-      )}
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d={isOpen ? "M11 19l-7-7 7-7m8 14l-7-7 7-7" : "M13 5l7 7-7 7M5 5l7 7-7 7"}
+          />
+        </svg>
+      </button>
 
       {/* Sidebar */}
       <div
@@ -491,8 +475,6 @@ export default function Sidebar() {
             ? "translate-x-0 w-64"
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
         <div className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}>
 
