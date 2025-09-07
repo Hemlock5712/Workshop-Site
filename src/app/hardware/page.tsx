@@ -119,39 +119,6 @@ export default function Hardware() {
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Mechanism Overview
-        </h2>
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-            What We&apos;re Programming
-          </h3>
-          <div className="flex flex-col md:flex-row items-center gap-6">
-            <div className="flex-1">
-              <ImageBlock
-                src="/images/mechanisms/arm.jpg"
-                alt="Robot Arm Mechanism"
-                width={400}
-                height={300}
-                className="w-full rounded-lg shadow-lg"
-              />
-            </div>
-            <div className="flex-1">
-              <div className="bg-primary-100 dark:bg-primary-900/20 p-6 rounded-lg">
-                <p className="text-xl font-medium text-primary-900 dark:text-primary-300">
-                  Arm Position Control
-                </p>
-                <p className="text-primary-700 dark:text-primary-300">
-                  We&apos;ll be programming an arm mechanism to demonstrate
-                  motor control and positioning. Learn PID tuning, encoder feedback,
-                  and motion profiling for precise positioning control.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">

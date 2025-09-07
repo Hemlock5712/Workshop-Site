@@ -30,6 +30,60 @@ export default function Home() {
         </Link>
       </div>
 
+      {/* What We're Programming Section */}
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6 text-center">
+          What We&apos;re Programming
+        </h2>
+        <p className="text-slate-600 dark:text-slate-300 text-center mb-8 max-w-3xl mx-auto">
+          Learn to control real FRC mechanisms through hands-on programming. Master motor control, 
+          PID tuning, encoder feedback, and motion profiling with these competition-proven designs.
+        </p>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-md border border-slate-200 dark:border-slate-700">
+            <div className="mb-4">
+              <Image
+                src="/images/mechanisms/arm.jpg"
+                alt="Robot Arm Mechanism"
+                width={400}
+                height={300}
+                className="w-full h-48 object-cover rounded-lg shadow-sm"
+              />
+            </div>
+            <div className="bg-primary-100 dark:bg-primary-900/20 p-4 rounded-lg">
+              <h3 className="text-xl font-semibold text-primary-900 dark:text-primary-300 mb-2">
+                Arm Position Control
+              </h3>
+              <p className="text-primary-700 dark:text-primary-300 text-sm">
+                Program precise arm positioning using PID control, encoder feedback, 
+                and Motion Magic for smooth, controlled movements to scoring positions.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-md border border-slate-200 dark:border-slate-700">
+            <div className="mb-4">
+              <Image
+                src="/images/mechanisms/flywheel.png"
+                alt="Flywheel Mechanism"
+                width={400}
+                height={300}
+                className="w-full h-48 object-cover rounded-lg shadow-sm"
+              />
+            </div>
+            <div className="bg-green-100 dark:bg-green-900/20 p-4 rounded-lg">
+              <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-2">
+                Flywheel Velocity Control
+              </h3>
+              <p className="text-green-700 dark:text-green-300 text-sm">
+                Master velocity control for consistent shooting performance using 
+                feedforward control and velocity PID for rapid spin-up and accuracy.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Special Thanks Section */}
       <div className="bg-[var(--card)] text-[var(--foreground)] p-8 rounded-lg">
@@ -47,7 +101,7 @@ export default function Home() {
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
-                  src="/images/sponsers/ctre-logo.jpg"
+                  src="/images/sponsors/ctre-logo.jpg"
                   alt="CTR Electronics Logo"
                   width={220}
                   height={120}
@@ -61,7 +115,7 @@ export default function Home() {
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
-                  src="/images/sponsers/MichAuto Logo 600x600.png"
+                  src="/images/sponsors/MichAuto Logo 600x600.png"
                   alt="MichAuto Logo"
                   width={220}
                   height={120}
@@ -75,7 +129,7 @@ export default function Home() {
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
-                  src="/images/sponsers/OFME-Logo.png"
+                  src="/images/sponsors/OFME-Logo.png"
                   alt="Michigan Office of Future Mobility and Electrification Logo"
                   width={220}
                   height={120}
@@ -89,7 +143,7 @@ export default function Home() {
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
-                  src="/images/sponsers/lockwood-stem-center-logo.png"
+                  src="/images/sponsors/lockwood-stem-center-logo.png"
                   alt="Lockwood STEM Center Logo"
                   width={220}
                   height={120}

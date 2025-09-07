@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Development Server Rules
+**NEVER run development servers automatically** - The user will start/stop servers manually. Do not use commands like:
+- `npm run dev`
+- `npm start` 
+- `bun dev`
+- Any server-starting commands
+
+The user will handle server management themselves.
+
 ## Project Overview
 Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 15, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
 
@@ -14,9 +23,9 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 Requires Node.js 20+ (Bun v1+ supported).
 
 ### Essential Commands
-- **Development server**: `npm run dev` (with Turbopack for faster builds)
+- **Development server**: `npm run dev` (with Turbopack for faster builds) - **USER RUNS MANUALLY**
 - **Production build**: `npm run build`
-- **Production server**: `npm start`
+- **Production server**: `npm start` - **USER RUNS MANUALLY**
 - **Linting**: `npm run lint` (ESLint with Next.js config)
 - **Type checking**: `npm run type-check` (TypeScript compiler check)
 - **Full test suite**: `npm test` (runs lint + type-check + build)
@@ -24,7 +33,7 @@ Requires Node.js 20+ (Bun v1+ supported).
 Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 
 ### Development Workflow
-1. Run `npm run dev` for development with hot reload
+1. **User runs** `npm run dev` for development with hot reload
 2. Before committing, run `npm test` to ensure code quality
 3. Use `npm run type-check` for TypeScript validation
 4. Use `npm run lint` for code style consistency
@@ -39,13 +48,20 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 - **Type Safety**: TypeScript with strict configuration
 - **Icons**: Lucide React icons
 - **Syntax Highlighting**: React Syntax Highlighter
+- **Search**: Fuse.js for fuzzy search functionality
 
 ### Key Components Architecture
 
 #### Layout & Navigation
-- **`src/app/layout.tsx`**: Root layout with theme setup, font configuration, and sidebar integration
+- **`src/app/layout.tsx`**: Root layout with theme setup, font configuration, sidebar integration, and search bar
 - **`src/components/Sidebar.tsx`**: Collapsible navigation with workshop organization, tooltips, and responsive design
 - **`src/components/PageTemplate.tsx`**: Consistent page wrapper with prev/next navigation and prose styling
+- **`src/components/SearchBar.tsx`**: Fuzzy search component with Fuse.js integration
+
+#### Search System
+- **`src/data/searchData.ts`**: Comprehensive search index of all workshop content
+- **Search Features**: Fuzzy search, keyboard navigation, category filtering, match highlighting
+- **Integration**: Search bar positioned in top right corner of header
 
 #### Theme System
 - **`src/components/ThemePicker.tsx`**: Theme toggle component with Zustand state management
@@ -96,10 +112,27 @@ Workshop Content:
 - All workshop pages should use PageTemplate for consistency
 - Navigation items are defined as static arrays in Sidebar component
 - Build process includes comprehensive testing (lint + type-check + build)
+- Search system provides fuzzy search across all workshop content
 
 ## Recent Development History
 
-### 3D STL Viewer & UI Improvements (Latest)
+### Search Functionality Implementation (Latest)
+- **Fuse.js Integration**: Added comprehensive search functionality using Fuse.js library
+  - Fuzzy search across titles, descriptions, content, tags, and categories
+  - Keyboard navigation support (arrow keys, enter, escape)
+  - Match highlighting and relevance scoring
+  - Category-based result organization and color coding
+- **Search Data Index**: Created comprehensive search index (`src/data/searchData.ts`)
+  - Indexed all workshop pages with detailed metadata
+  - Categorized content (Workshop 1, Workshop 2, Getting Started, Resources)
+  - Rich tagging system for improved search accuracy
+- **UI Integration**: Search bar positioned in top right corner of header
+  - Responsive design with dropdown results overlay
+  - Visual match highlighting and relevance indicators
+  - Category badges and tag display in results
+  - Keyboard shortcuts help text
+
+### 3D STL Viewer & UI Improvements
 - **React 19 Compatible STL Viewer**: Replaced incompatible `react-stl-viewer` with custom React Three Fiber implementation
   - Uses `@react-three/fiber` and `@react-three/drei` for 3D rendering
   - Proper loading states and error handling
@@ -142,3 +175,7 @@ Workshop Content:
 - **Dark Mode System**: Implemented with Zustand state management and Tailwind CSS
 - **Navigation**: Collapsible sidebar with workshop organization and theme toggle
 - **Component Architecture**: Modular design with PageTemplate for consistency
+
+# important-instruction-reminders
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+**NEVER run servers or development servers** - The user handles server management manually.

@@ -19,7 +19,7 @@ export default function MechanismCAD() {
         </h2>
         <p className="text-[var(--muted-foreground)] mb-4">
           Before diving into programming, we first need a physical mechanism. If you do not have a previous robot or mechanism
-          below are 3D models of mechanisms you can build affortably.
+          below are 3D models of mechanisms you can build affordably.
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">

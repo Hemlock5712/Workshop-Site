@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Image from "next/image";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
+import SearchBar from "@/components/SearchBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +31,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
       >
-        <div className="flex h-screen">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto bg-[var(--card)] text-[var(--card-foreground)]">
-            {children}
-          </main>
+        <div className="flex flex-col h-screen">
+          <header className="flex-shrink-0 bg-[var(--card)] border-b border-[var(--border)] px-6 py-4 flex justify-between items-center z-50">
+            <div className="flex items-center space-x-3">
+              <Image
+                src="/images/gray-matter-logo.jpg"
+                alt="Gray Matter Logo"
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-lg"
+              />
+              <span className="font-bold text-lg text-[var(--card-foreground)]">Gray Matter Workshop</span>
+            </div>
+            <SearchBar />
+          </header>
+          <div className="flex flex-1 overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto bg-[var(--card)] text-[var(--card-foreground)]">
+              {children}
+            </main>
+          </div>
         </div>
       </body>
     </html>

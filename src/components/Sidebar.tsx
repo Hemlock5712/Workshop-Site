@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import ThemePicker from "./ThemePicker";
@@ -424,10 +423,33 @@ const workshop2Items = [
  * - Active state highlighting based on current route
  */
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true); // Default open on desktop
+  const [isOpen, setIsOpen] = useState(true); // Default open
+  const [isManuallyToggled, setIsManuallyToggled] = useState(false); // Track manual toggle state
   const [isWorkshop1Open, setIsWorkshop1Open] = useState(false); // Workshop 1 sections closed by default
   const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
   const pathname = usePathname();
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    setIsManuallyToggled(true);
+  };
+
+  const handleMouseEnter = () => {
+    if (!isOpen) {
+      setIsOpen(true);
+      setIsManuallyToggled(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isManuallyToggled) {
+      // Only close on hover if not manually toggled to stay open
+      return;
+    } else if (isManuallyToggled && !isOpen) {
+      // Keep closed if manually closed
+      return;
+    }
+  };
 
   return (
     <>
@@ -439,37 +461,28 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar toggle button - always visible */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed top-4 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
-          isOpen ? "left-60" : "left-4"
-        }`}
-        title={isOpen ? "Close sidebar" : "Open sidebar"}
-      >
-        <svg
-          className="w-5 h-5 text-[var(--muted-foreground)]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
+      {/* Sidebar toggle button - only visible when open */}
+      {isOpen && (
+        <button
+          onClick={handleToggle}
+          className="fixed top-20 left-60 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300"
+          title="Close sidebar"
         >
-          {isOpen ? (
+          <svg
+            className="w-5 h-5 text-[var(--muted-foreground)]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
               d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
             />
-          ) : (
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
-            />
-          )}
-        </svg>
-      </button>
+          </svg>
+        </button>
+      )}
 
       {/* Sidebar */}
       <div
@@ -478,39 +491,10 @@ export default function Sidebar() {
             ? "translate-x-0 w-64"
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <div className={`p-4 flex-grow overflow-y-auto ${isOpen ? "px-6" : "px-2"}`}>
-          {/* Logo/Title */}
-          <div className="mb-8 flex items-center justify-center">
-            <Link
-              href="/"
-              className={`flex items-center space-x-3 font-bold text-[var(--card-foreground)] transition-all duration-300 ${
-                isOpen ? "text-xl" : "text-sm"
-              }`}
-              title="Gray Matter Workshop"
-            >
-              {isOpen ? (
-                <>
-                  <Image
-                    src="/images/gray-matter-logo.jpg"
-                    alt="Gray Matter Logo"
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 rounded-lg"
-                  />
-                  <span>Gray Matter Workshop</span>
-                </>
-              ) : (
-                <Image
-                  src="/images/gray-matter-logo.jpg"
-                  alt="Gray Matter Logo"
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 rounded-lg"
-                />
-              )}
-            </Link>
-          </div>
+        <div className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}>
 
           {/* Navigation */}
           <nav className="space-y-2">
@@ -530,12 +514,6 @@ export default function Sidebar() {
                         ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
                         : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
                     }`}
-                    onClick={() => {
-                      // Only close on mobile
-                      if (window.innerWidth < 768) {
-                        setIsOpen(false);
-                      }
-                    }}
                   >
                     <span className="flex-shrink-0">{item.icon}</span>
                     {isOpen && <span className="truncate">{item.label}</span>}
