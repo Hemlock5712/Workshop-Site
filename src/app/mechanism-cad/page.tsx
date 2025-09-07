@@ -23,7 +23,7 @@ export default function MechanismCAD() {
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Interactive 3D model of the HTTI Arm-Shooter mechanism.
+            🎯 Key Concept: Interactive 3D model of the Flywheel mechanism.
           </p>
         </div>
       </div>
@@ -47,7 +47,7 @@ export default function MechanismCAD() {
             
             <div className="text-center space-y-4">
               <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                HTTI Arm-Shooter Mechanism
+                Flywheel Mechanism
               </h3>
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
                 This 3D model represents the mechanism you&apos;ll be programming in this workshop. 
