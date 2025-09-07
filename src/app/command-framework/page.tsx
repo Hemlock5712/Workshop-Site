@@ -15,7 +15,7 @@ export default function CommandFramework() {
         </p>
         <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
           <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Command-based programming is the foramt in which you will write your code.
+            🎯 Key Concept: Command-based programming is the format in which you will write your code.
           </p>
         </div>
       </div>
