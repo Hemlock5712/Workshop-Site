@@ -1,11 +1,12 @@
 import PageTemplate from "@/components/PageTemplate";
+import ContentCard from "@/components/ContentCard";
 
 export default function Prerequisites() {
   return (
     <PageTemplate title="Prerequisites" previousPage={{ href: "/introduction", title: "Introduction" }} nextPage={{ href: "/mechanism-cad", title: "Mechanism CAD" }}>
       <div className="grid gap-6">
         {/* Software Requirements */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+        <ContentCard>
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">📋 Software Requirements</h2>
 
           <div className="space-y-6">
@@ -84,7 +85,7 @@ export default function Prerequisites() {
               </p>
             </div>
           </div>
-        </div>
+        </ContentCard>
       </div>
 
       <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6 mb-8">

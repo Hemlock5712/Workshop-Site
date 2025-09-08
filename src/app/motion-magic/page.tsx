@@ -3,7 +3,6 @@ import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CollapsibleSection from "@/components/CollapsibleSection";
-
 import DocumentationButton from "@/components/DocumentationButton";
 
 export default function MotionMagic() {
