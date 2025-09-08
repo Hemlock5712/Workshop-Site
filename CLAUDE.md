@@ -114,67 +114,27 @@ Workshop Content:
 - Build process includes comprehensive testing (lint + type-check + build)
 - Search system provides fuzzy search across all workshop content
 
-## Recent Development History
+## Visual Development
 
-### Search Functionality Implementation (Latest)
-- **Fuse.js Integration**: Added comprehensive search functionality using Fuse.js library
-  - Fuzzy search across titles, descriptions, content, tags, and categories
-  - Keyboard navigation support (arrow keys, enter, escape)
-  - Match highlighting and relevance scoring
-  - Category-based result organization and color coding
-- **Search Data Index**: Created comprehensive search index (`src/data/searchData.ts`)
-  - Indexed all workshop pages with detailed metadata
-  - Categorized content (Workshop 1, Workshop 2, Getting Started, Resources)
-  - Rich tagging system for improved search accuracy
-- **UI Integration**: Search bar positioned in top right corner of header
-  - Responsive design with dropdown results overlay
-  - Visual match highlighting and relevance indicators
-  - Category badges and tag display in results
-  - Keyboard shortcuts help text
+### Design Principles
+- Comprehensive design checklist in `/context/design-principles.md`
+- Brand style guide in `/context/style-guide.md`
+- When making visual (front-end, UI/UX) changes, always refer to these files for guidance
 
-### 3D STL Viewer & UI Improvements
-- **React 19 Compatible STL Viewer**: Replaced incompatible `react-stl-viewer` with custom React Three Fiber implementation
-  - Uses `@react-three/fiber` and `@react-three/drei` for 3D rendering
-  - Proper loading states and error handling
-  - Interactive orbit controls for pan, zoom, rotate
-- **Navigation Improvements**: Enhanced sidebar organization and user experience
-  - Moved Mechanism CAD to appear before Workshop sections for logical flow
-  - Updated Mechanism CAD icon to 3D cube design
-  - Fixed active state highlighting to match other navigation items
-  - Workshop sections now collapsed by default for cleaner initial view
-- **Content Cleanup**: Removed Target Audience section from introduction, updated Workshop #2 content, removed Prerequisites button from homepage
-- **Code Quality**: All ESLint, TypeScript, and spell check validations passing
+### Quick Visual Check
+IMMEDIATELY after implementing any front-end change:
+1. **Identify what changed** - Review the modified components/pages
+2. **Navigate to affected pages** - Use `mcp__playwright__browser_navigate` to visit each changed view
+3. **Verify design compliance** - Compare against `/context/design-principles.md` and `/context/style-guide.md` 
+4. **Validate feature implementation** - Ensure the change fulfills the user's specific request
+5. **Check acceptance criteria** - Review any provided context files or requirements
+6. **Capture evidence** - Take full page screenshot at desktop viewport (1440px) of each changed view
+7. **Check for errors** - Run `mcp__playwright__browser_console_messages`
 
-### Workshop-Code Integration & Implementation Steps
-- **Repository Integration**: Connected site to Workshop-Code repository for live code examples
-- **5-Step Learning Progression**: Implemented structured approach following development workflow:
-  1. **Basic Subsystem**: Motor control and sensor integration
-  2. **Commands Integration**: Command-based architecture and user input
-  3. **PID Control**: Precise position control with feedback loops
-  4. **Motion Magic**: Smooth profiled movements with acceleration control
-  5. **Useful Functions**: Safety features, utilities, and diagnostics
-- **Educational Enhancement**: Added detailed explanations, visual learning aids, and practical implementation details
-- **Real-World Context**: Each step explains both technical implementation and competition relevance
+This verification ensures changes meet design standards and user requirements.
 
-### Video Tutorial Integration (feat/video-tutorials)
-- **YouTube Embeddings**: Added educational videos throughout workshop pages
-  - Hardware setup videos for CTRE device configuration
-  - Programming implementation tutorials for Arm and Flywheel mechanisms
-  - Project setup walkthrough videos
-  - Tuning demonstration videos
-- **Enhanced GitHub Components**: Created `GithubPageWithPR.tsx` with tabbed interface
-  - "Final Implementation" tab showing complete code
-  - "GitHub Changes" tab showing PR diffs
-  - Improved code learning experience with before/after views
-- **Content Restructuring**: Updated workshop pages with multimedia learning approach
-- **CI/CD Improvements**: Enhanced GitHub Actions workflow
-
-### Theme System Implementation (2025-08-19)
-- **Homepage Enhancement**: Added presenter photos and mechanisms showcase
-- **Dark Mode System**: Implemented with Zustand state management and Tailwind CSS
-- **Navigation**: Collapsible sidebar with workshop organization and theme toggle
-- **Component Architecture**: Modular design with PageTemplate for consistency
-
-# important-instruction-reminders
-NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
-**NEVER run servers or development servers** - The user handles server management manually.
+### Comprehensive Design Review
+Invoke the `@agent-design-review` subagent for thorough design validation when:
+- Completing significant UI/UX features
+- Before finalizing PRs with visual changes
+- Needing comprehensive accessibility and responsiveness testing

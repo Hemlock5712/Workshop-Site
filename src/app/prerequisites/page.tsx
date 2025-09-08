@@ -9,13 +9,13 @@ export default function Prerequisites() {
           <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">📋 Software Requirements</h2>
 
           <div className="space-y-6">
-            <div className="border-l-4 border-primary-200 dark:border-primary-900 pl-4">
+            <div className="border-l-4 border-purple-200 dark:border-purple-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 <a href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html"
-                  className="text-primary-600 underline hover:no-underline dark:text-primary-400" target="_blank" rel="noopener noreferrer">
+                  className="text-purple-600 underline hover:no-underline dark:text-purple-400" target="_blank" rel="noopener noreferrer">
                   WPILib
                 </a> & <a href="https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html#553883"
-                  className="text-primary-600 underline hover:no-underline dark:text-primary-400" target="_blank" rel="noopener noreferrer">
+                  className="text-purple-600 underline hover:no-underline dark:text-purple-400" target="_blank" rel="noopener noreferrer">
                   Game Tools
                 </a>
               </h3>
@@ -24,10 +24,10 @@ export default function Prerequisites() {
               </p>
             </div>
 
-            <div className="border-l-4 border-learn-200 dark:border-learn-900 pl-4">
+            <div className="border-l-4 border-blue-200 dark:border-blue-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 <a href="https://apps.microsoft.com/detail/9NVV4PWDW27Z"
-                  className="text-learn-600 underline hover:no-underline dark:text-learn-400" target="_blank" rel="noopener noreferrer">
+                  className="text-blue-600 underline hover:no-underline dark:text-blue-400" target="_blank" rel="noopener noreferrer">
                   Phoenix Tuner X
                 </a>
               </h3>
@@ -36,10 +36,10 @@ export default function Prerequisites() {
               </p>
             </div>
 
-            <div className="border-l-4 border-concept-200 dark:border-concept-900 pl-4">
+            <div className="border-l-4 border-green-200 dark:border-green-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 <a href="https://git-scm.com/downloads"
-                  className="text-concept-600 underline hover:no-underline dark:text-concept-400" target="_blank" rel="noopener noreferrer">
+                  className="text-green-600 underline hover:no-underline dark:text-green-400" target="_blank" rel="noopener noreferrer">
                   Git
                 </a>
               </h3>

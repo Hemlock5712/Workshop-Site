@@ -1,5 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
+import KeyConceptSection from "@/components/KeyConceptSection";
 
 export default function Hardware() {
   return (
@@ -9,17 +10,11 @@ export default function Hardware() {
       nextPage={{ href: "/project-setup", title: "Project Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Hardware Setup - Building the Foundation</h2>
-        <p className="text-[var(--muted-foreground)] mb-4">
-          Overview of the motors, sensors, and controllers you&apos;ll connect for this workshop.
-        </p>
-        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
-          <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Solid hardware configuration enables precise and reliable robot control.
-          </p>
-        </div>
-      </div>
+      <KeyConceptSection
+        title="Hardware Setup - Building the Foundation"
+        description="Overview of the motors, sensors, and controllers you'll connect for this workshop."
+        concept="Solid hardware configuration enables precise and reliable robot control."
+      />
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
@@ -206,11 +201,11 @@ export default function Hardware() {
           Connecting to Your Device
         </h2>
 
-        <div className="bg-focus-100 dark:bg-focus-900/20 border border-focus-200 dark:border-focus-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-focus-700 dark:text-focus-300 mb-3">
+        <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-300 mb-3">
             ⚠️ Important Setup Steps
           </h3>
-          <ol className="list-decimal list-inside space-y-2 text-focus-800 dark:text-focus-300">
+          <ol className="list-decimal list-inside space-y-2 text-yellow-800 dark:text-yellow-300">
             <li>Plug the computer into CANivore</li>
             <li>Make sure the &quot;CANivore USB&quot; is checked</li>
             <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
@@ -338,8 +333,8 @@ export default function Hardware() {
                   <tr className="border-b border-slate-100 dark:border-slate-800">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-concept-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-concept-700 dark:text-concept-400">Purple</strong>
+                        <span className="inline-block w-4 h-4 bg-purple-500 rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-purple-700 dark:text-purple-400">Purple</strong>
                       </div>
                     </td>
                     <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Device has an unexpected/beta firmware version.</td>

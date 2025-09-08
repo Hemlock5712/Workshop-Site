@@ -4,6 +4,7 @@ import PageTemplate from "@/components/PageTemplate";
 import Link from "next/link";
 import ModelViewer from "@/components/ModelViewer";
 import BillOfMaterials from "@/components/BillOfMaterials";
+import KeyConceptSection from "@/components/KeyConceptSection";
 import { armBOMData } from "@/data/armBOM";
 
 export default function MechanismCAD() {
@@ -15,20 +16,11 @@ export default function MechanismCAD() {
       nextPage={{ href: "/hardware", title: "Hardware Setup" }}
     >
       {/* Introduction */}
-      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-          Mechanism CAD - 3D Model Exploration
-        </h2>
-        <p className="text-[var(--muted-foreground)] mb-4">
-          Before diving into programming, we first need a physical mechanism. If you do not have a previous robot or mechanism
-          below are 3D models of mechanisms you can build affordably.
-        </p>
-        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
-          <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Interactive 3D model of the Flywheel mechanism.
-          </p>
-        </div>
-      </div>
+      <KeyConceptSection
+        title="Mechanism CAD - 3D Model Exploration"
+        description="Before diving into programming, we first need a physical mechanism. If you do not have a previous robot or mechanism below are 3D models of mechanisms you can build affordably."
+        concept="Interactive 3D model of the Flywheel mechanism."
+      />
 
       {/* 3D Model Viewer Section */}
       <section className="flex flex-col gap-8">

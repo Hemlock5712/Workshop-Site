@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import KeyConceptSection from "@/components/KeyConceptSection";
 
 export default function ProjectSetup() {
   return (
@@ -8,17 +9,11 @@ export default function ProjectSetup() {
       nextPage={{ href: "/command-framework", title: "Command-Based Framework" }}
     >
       {/* Introduction */}
-      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Project Setup - Launching Your Codebase</h2>
-        <p className="text-[var(--muted-foreground)] mb-4">
-          Step-by-step guide to generating a new WPILib project using the Command framework template.
-        </p>
-        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
-          <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Starting with the right template ensures organized commands and subsystems.
-          </p>
-        </div>
-      </div>
+      <KeyConceptSection
+        title="Project Setup - Launching Your Codebase"
+        description="Step-by-step guide to generating a new WPILib project using the Command framework template."
+        concept="Starting with the right template ensures organized commands and subsystems."
+      />
 
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">Creating a New WPILib Project</h2>

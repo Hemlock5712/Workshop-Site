@@ -1,6 +1,7 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
+import KeyConceptSection from "@/components/KeyConceptSection";
 
 export default function MotionMagic() {
   return (
@@ -10,20 +11,11 @@ export default function MotionMagic() {
       nextPage={{ href: "/", title: "Home" }}
     >
       {/* Introduction */}
-      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-          Motion Magic - Profiled Motion Control
-        </h2>
-        <p className="text-[var(--foreground)] mb-4">
-          Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles.
-          This prevents jerky movements and reduces mechanical stress while maintaining precise positioning.
-        </p>
-        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
-          <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration.
-          </p>
-        </div>
-      </div>
+      <KeyConceptSection
+        title="Motion Magic - Profiled Motion Control"
+        description="Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles. This prevents jerky movements and reduces mechanical stress while maintaining precise positioning."
+        concept="Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration."
+      />
 
       {/* Motion Magic Theory */}
       <section className="flex flex-col gap-8">

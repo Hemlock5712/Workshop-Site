@@ -1,6 +1,7 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
+import KeyConceptSection from "@/components/KeyConceptSection";
 
 export default function BuildingSubsystems() {
   return (
@@ -10,18 +11,11 @@ export default function BuildingSubsystems() {
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
-      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Subsystems - Understanding the Foundation</h2>
-        <p className="mb-4">
-          Subsystems are the foundation of command-based programming. They represent physical hardware components and provide
-          methods to control them safely and effectively.
-        </p>
-        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
-          <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: One subsystem per mechanism. Each subsystem manages its own hardware and state.
-          </p>
-        </div>
-      </div>
+      <KeyConceptSection
+        title="Subsystems - Understanding the Foundation"
+        description="Subsystems are the foundation of command-based programming. They represent physical hardware components and provide methods to control them safely and effectively."
+        concept="One subsystem per mechanism. Each subsystem manages its own hardware and state."
+      />
 
       {/* Code Examples */}
       <section className="flex flex-col gap-8">

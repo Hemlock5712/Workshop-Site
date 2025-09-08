@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme inline {
+@theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   
@@ -29,51 +29,47 @@
   --color-slate-800: #1e242b;
   --color-slate-900: #151a1f;
 
-  /* Learning Theme Colors - Friendly and Engaging */
-  --color-learn-50: #f0f8f4;   /* Success/Complete - Soft mint */
-  --color-learn-100: #dcf2e6;
-  --color-learn-200: #b8e5ce;
-  --color-learn-300: #85d4a8;
-  --color-learn-400: #4fc17f;
-  --color-learn-500: #22a45c;
-  --color-learn-600: #1a8549;
-  --color-learn-700: #16693b;
-  --color-learn-800: #145531;
-  --color-learn-900: #124529;
+  /* Blue Color Scale - For Key Concept containers */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
+  --color-blue-950: #172554;
 
-  --color-focus-50: #fef9e7;   /* Attention/Important - Warm amber */
-  --color-focus-100: #fef2c7;
-  --color-focus-200: #fde38a;
-  --color-focus-300: #fcd34d;
-  --color-focus-400: #fbbf24;
-  --color-focus-500: #f59e0b;
-  --color-focus-600: #d97706;
-  --color-focus-700: #b45309;
-  --color-focus-800: #92400e;
-  --color-focus-900: #78350f;
+  /* Green Color Scale - For Key Concept boxes */
+  --color-green-50: #f0fdf4;
+  --color-green-100: #dcfce7;
+  --color-green-200: #bbf7d0;
+  --color-green-300: #86efac;
+  --color-green-400: #4ade80;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-green-900: #14532d;
+  --color-green-950: #052e16;
 
-  --color-concept-50: #f4f3ff;  /* Key Concepts - Gentle purple */
-  --color-concept-100: #ede9fe;
-  --color-concept-200: #ddd6fe;
-  --color-concept-300: #c4b5fd;
-  --color-concept-400: #a78bfa;
-  --color-concept-500: #8b5cf6;
-  --color-concept-600: #7c3aed;
-  --color-concept-700: #6d28d9;
-  --color-concept-800: #5b21b6;
-  --color-concept-900: #4c1d95;
-
-  --color-practice-50: #f0fdfa;  /* Hands-on/Practice - Fresh teal */
-  --color-practice-100: #ccfbf1;
-  --color-practice-200: #99f6e4;
-  --color-practice-300: #5eead4;
-  --color-practice-400: #2dd4bf;
-  --color-practice-500: #14b8a6;
-  --color-practice-600: #0d9488;
-  --color-practice-700: #0f766e;
-  --color-practice-800: #115e59;
-  --color-practice-900: #134e4a;
+  /* Yellow Color Scale - For Key Concept containers */
+  --color-yellow-50: #fefce8;
+  --color-yellow-100: #fef3c7;
+  --color-yellow-200: #fde68a;
+  --color-yellow-300: #fcd34d;
+  --color-yellow-400: #fbbf24;
+  --color-yellow-500: #f59e0b;
+  --color-yellow-600: #d97706;
+  --color-yellow-700: #b45309;
+  --color-yellow-800: #92400e;
+  --color-yellow-900: #78350f;
+  --color-yellow-950: #451a03;
 }
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
 :root {
   color-scheme: light;
@@ -109,8 +105,6 @@
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
 }
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 @layer components {
   .before-block {
     @apply bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300;
@@ -119,9 +113,9 @@
     @apply font-bold text-red-700 dark:text-red-300 mb-2;
   }
   .after-block {
-    @apply bg-learn-50 dark:bg-learn-900/20 p-4 rounded-lg border border-learn-200 dark:border-learn-900 text-learn-800 dark:text-learn-300;
+    @apply bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-200 dark:border-primary-900 text-primary-800 dark:text-primary-300;
   }
   .after-title {
-    @apply font-bold text-learn-700 dark:text-learn-300 mb-2;
+    @apply font-bold text-primary-700 dark:text-primary-300 mb-2;
   }
 }

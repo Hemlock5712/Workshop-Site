@@ -2,6 +2,7 @@ import MechanismTabs from "@/components/MechanismTabs";
 import GitHubPage from "@/components/GitHubPage";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
+import KeyConceptSection from "@/components/KeyConceptSection";
 
 export default function AddingCommands() {
   return (
@@ -11,18 +12,11 @@ export default function AddingCommands() {
       nextPage={{ href: "/running-program", title: "Running Program" }}
     >
       {/* Introduction */}
-      <div className="bg-focus-50 dark:bg-focus-900/20 text-[var(--foreground)] rounded-lg p-8 border border-focus-200 dark:border-focus-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">Commands - Coordinating Robot Actions</h2>
-        <p className="text-[var(--muted-foreground)] mb-4">
-          Commands are the &quot;actions&quot; that your robot performs. They use subsystems to accomplish tasks and can be triggered
-          by user input, sensors, or automated sequences.
-        </p>
-        <div className="bg-learn-100 dark:bg-learn-900/30 p-4 rounded-lg">
-          <p className="text-learn-800 dark:text-learn-300 font-medium">
-            🎯 Key Concept: Commands tell subsystems what action to run.
-          </p>
-        </div>
-      </div>
+      <KeyConceptSection
+        title="Commands - Coordinating Robot Actions"
+        description="Commands are the actions that your robot performs. They use subsystems to accomplish tasks and can be triggered by user input, sensors, or automated sequences."
+        concept="Commands tell subsystems what action to run."
+      />
 
       {/* Command Examples */}
       <section className="flex flex-col gap-8">
