@@ -1,7 +1,7 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import GitHubPage from "@/components/GitHubPage";
 import PageTemplate from "@/components/PageTemplate";
-import ConceptBox from "@/components/ConceptBox";
+import FeatureGrid from "@/components/FeatureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 
@@ -85,28 +85,32 @@ public class RobotContainer {
         </details>
 
         {/* Key Concepts */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <ConceptBox
-            title="🏠 Default Commands"
-            code={<code>setDefaultCommand(stopCommand());</code>}
-          >
-            Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
-          </ConceptBox>
-
-          <ConceptBox
-            title="🎮 Trigger Types"
-            code={<code>controller.a().whileTrue(command);</code>}
-          >
-            Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).
-          </ConceptBox>
-
-          <ConceptBox
-            title="🚀 Motor Configuration"
-            code={<code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>}
-          >
-            Motor configuration code should be wrapped properly to fit in configuration sections.
-          </ConceptBox>
-        </div>
+        <FeatureGrid
+          columns={3}
+          items={[
+            {
+              title: "🏠 Default Commands",
+              code: <code>setDefaultCommand(stopCommand());</code>,
+              content: (
+                <>Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.</>
+              ),
+            },
+            {
+              title: "🎮 Trigger Types",
+              code: <code>controller.a().whileTrue(command);</code>,
+              content: (
+                <>Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).</>
+              ),
+            },
+            {
+              title: "🚀 Motor Configuration",
+              code: <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>,
+              content: (
+                <>Motor configuration code should be wrapped properly to fit in configuration sections.</>
+              ),
+            },
+          ]}
+        />
       </section>
 
       {/* Mechanism Implementation Tabs */}

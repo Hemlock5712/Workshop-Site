@@ -1,6 +1,6 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
-import ConceptBox from "@/components/ConceptBox";
+import FeatureGrid from "@/components/FeatureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 
@@ -88,25 +88,38 @@ public class ExampleSubsystem extends SubsystemBase {
         </details>
 
         {/* Key Concepts Explanation */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <ConceptBox title="🔧 Hardware Instantiation" code={<code>TalonFX motor = new TalonFX(1);</code>}>
-            Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
-          </ConceptBox>
-
-          <ConceptBox
-            title="⚙️ Configuration Location"
-            code={<code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>}
-          >
-            Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
-          </ConceptBox>
-
-          <ConceptBox
-            title="🔄 Periodic Method"
-            code={<code>SmartDashboard.putNumber(<br/>&nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());</code>}
-          >
-            Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
-          </ConceptBox>
-        </div>
+        <FeatureGrid
+          columns={3}
+          items={[
+            {
+              title: "🔧 Hardware Instantiation",
+              code: <code>TalonFX motor = new TalonFX(1);</code>,
+              content: (
+                <>
+                  Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
+                </>
+              ),
+            },
+            {
+              title: "⚙️ Configuration Location",
+              code: <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>,
+              content: (
+                <>
+                  Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
+                </>
+              ),
+            },
+            {
+              title: "🔄 Periodic Method",
+              code: <code>SmartDashboard.putNumber(<br/>&nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());</code>,
+              content: (
+                <>
+                  Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
+                </>
+              ),
+            },
+          ]}
+        />
 
       </section>
 

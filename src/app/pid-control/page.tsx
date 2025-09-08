@@ -2,7 +2,7 @@ import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
-import ConceptBox from "@/components/ConceptBox";
+import FeatureGrid from "@/components/FeatureGrid";
 
 export default function PIDControl() {
   return (
@@ -24,49 +24,68 @@ export default function PIDControl() {
           Understanding PID Components
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-red-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">P - Proportional</h3>
-            <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply per unit of error in the system&quot;
-            </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Error = Target - Current</code><br/>
-              <code className="text-xs">P_Output = kP × Error</code>
-            </div>
-            <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Larger error = stronger correction. Provides immediate response but may cause oscillation.
-            </p>
-          </div>
-
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">I - Integral</h3>
-            <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply per unit of error for every second of that error&quot;
-            </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Accumulated_Error += Error × dt</code><br/>
-              <code className="text-xs">I_Output = kI × Accumulated_Error</code>
-            </div>
-            <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Eliminates steady-state error by accumulating past errors over time.
-            </p>
-          </div>
-
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">D - Derivative</h3>
-            <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply per change in error over time&quot;
-            </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Error_Rate = (Error - Last_Error) / dt</code><br/>
-              <code className="text-xs">D_Output = kD × Error_Rate</code>
-            </div>
-            <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Reduces overshoot by predicting future error trends and dampening response.
-            </p>
-          </div>
-        </div>
+        <FeatureGrid
+          columns={3}
+          items={[
+            {
+              title: "P - Proportional",
+              borderColorClass: "border-red-500",
+              content: (
+                <>
+                  <p className="text-[var(--foreground)] mb-4 text-sm">
+                    <strong>Definition:</strong> &quot;The amount of output to apply per unit of error in the system&quot;
+                  </p>
+                  <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
+                    <code className="text-xs">Error = Target - Current</code>
+                    <br />
+                    <code className="text-xs">P_Output = kP × Error</code>
+                  </div>
+                  <p className="text-[var(--foreground)] text-sm">
+                    <strong>Behavior:</strong> Larger error = stronger correction. Provides immediate response but may cause oscillation.
+                  </p>
+                </>
+              ),
+            },
+            {
+              title: "I - Integral",
+              borderColorClass: "border-yellow-500",
+              content: (
+                <>
+                  <p className="text-[var(--foreground)] mb-4 text-sm">
+                    <strong>Definition:</strong> &quot;The amount of output to apply per unit of error for every second of that error&quot;
+                  </p>
+                  <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
+                    <code className="text-xs">Accumulated_Error += Error × dt</code>
+                    <br />
+                    <code className="text-xs">I_Output = kI × Accumulated_Error</code>
+                  </div>
+                  <p className="text-[var(--foreground)] text-sm">
+                    <strong>Behavior:</strong> Eliminates steady-state error by accumulating past errors over time.
+                  </p>
+                </>
+              ),
+            },
+            {
+              title: "D - Derivative",
+              borderColorClass: "border-blue-500",
+              content: (
+                <>
+                  <p className="text-[var(--foreground)] mb-4 text-sm">
+                    <strong>Definition:</strong> &quot;The amount of output to apply per change in error over time&quot;
+                  </p>
+                  <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
+                    <code className="text-xs">Error_Rate = (Error - Last_Error) / dt</code>
+                    <br />
+                    <code className="text-xs">D_Output = kD × Error_Rate</code>
+                  </div>
+                  <p className="text-[var(--foreground)] text-sm">
+                    <strong>Behavior:</strong> Reduces overshoot by predicting future error trends and dampening response.
+                  </p>
+                </>
+              ),
+            },
+          ]}
+        />
 
         {/* Feedforward Components */}
         <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
@@ -75,20 +94,35 @@ export default function PIDControl() {
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
           </p>
           
-            <div className="grid md:grid-cols-4 gap-4">
-              <ConceptBox title="kS - Static">
-                Constant output to overcome friction and get the mechanism moving.
-              </ConceptBox>
-              <ConceptBox title="kG - Gravity">
-                Compensates for gravitational forces acting on the mechanism.
-              </ConceptBox>
-              <ConceptBox title="kV - Velocity">
-                Output applied per target velocity to maintain smooth motion.
-              </ConceptBox>
-              <ConceptBox title="kA - Acceleration">
-                Output applied per target acceleration for responsive movement.
-              </ConceptBox>
-            </div>
+            <FeatureGrid
+              columns={4}
+              items={[
+                {
+                  title: "kS - Static",
+                  content: <>
+                    Constant output to overcome friction and get the mechanism moving.
+                  </>,
+                },
+                {
+                  title: "kG - Gravity",
+                  content: <>
+                    Compensates for gravitational forces acting on the mechanism.
+                  </>,
+                },
+                {
+                  title: "kV - Velocity",
+                  content: <>
+                    Output applied per target velocity to maintain smooth motion.
+                  </>,
+                },
+                {
+                  title: "kA - Acceleration",
+                  content: <>
+                    Output applied per target acceleration for responsive movement.
+                  </>,
+                },
+              ]}
+            />
         </div>
 
         {/* Documentation Link */}

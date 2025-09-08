@@ -5,6 +5,7 @@ interface ConceptBoxProps {
   subtitle?: ReactNode;
   children: ReactNode;
   code?: ReactNode;
+  borderColorClass?: string;
 }
 
 export default function ConceptBox({
@@ -12,9 +13,14 @@ export default function ConceptBox({
   subtitle,
   children,
   code,
+  borderColorClass,
 }: ConceptBoxProps) {
   return (
-    <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
+    <div
+      className={`bg-[var(--muted)] rounded-lg p-6 border-l-4 ${
+        borderColorClass ?? "border-[var(--border)]"
+      }`}
+    >
       <h4 className="text-lg font-bold text-[var(--foreground)] mb-3">{title}</h4>
       {subtitle && (
         <p className="text-[var(--foreground)] text-sm font-semibold mb-3">{subtitle}</p>

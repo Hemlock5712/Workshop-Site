@@ -1,6 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
-import ConceptBox from "@/components/ConceptBox";
+import FeatureGrid from "@/components/FeatureGrid";
 
 export default function CommandFramework() {
   return (
@@ -16,28 +16,38 @@ export default function CommandFramework() {
         concept="Command-based programming is the format in which you will write your code."
       />
 
-      <div className="grid md:grid-cols-3 gap-6">
-        <ConceptBox
-          title="Triggers"
-          subtitle={<strong>Use BooleanSuppliers (True or False)</strong>}
-        >
-          Link inputs to commands (e.g., press button to drive forward, or use sensor to run Command automatically). All buttons/triggers on a game controller are considered &quot;Triggers&quot;.
-        </ConceptBox>
-
-        <ConceptBox
-          title="Subsystems"
-          subtitle={<strong>Hardware components and control logic</strong>}
-        >
-          (e.g., Drivetrain, Arm, or Flywheel). Motors and sensors are instantiated. Methods to pull data from sensors within the subsystem are defined.
-        </ConceptBox>
-
-        <ConceptBox
-          title="Commands"
-          subtitle={<strong>Use Runnables (void functions)</strong>}
-        >
-          Encapsulate robot actions (e.g., DriveForwardCommand, ShootBallCommand).
-        </ConceptBox>
-      </div>
+      <FeatureGrid
+        columns={3}
+        items={[
+          {
+            title: "Triggers",
+            subtitle: <strong>Use BooleanSuppliers (True or False)</strong>,
+            content: (
+              <>
+                Link inputs to commands (e.g., press button to drive forward, or use sensor to run Command automatically). All
+                buttons/triggers on a game controller are considered &quot;Triggers&quot;.
+              </>
+            ),
+          },
+          {
+            title: "Subsystems",
+            subtitle: <strong>Hardware components and control logic</strong>,
+            content: (
+              <>
+                (e.g., Drivetrain, Arm, or Flywheel). Motors and sensors are instantiated. Methods to pull data from sensors within
+                the subsystem are defined.
+              </>
+            ),
+          },
+          {
+            title: "Commands",
+            subtitle: <strong>Use Runnables (void functions)</strong>,
+            content: (
+              <>Encapsulate robot actions (e.g., DriveForwardCommand, ShootBallCommand).</>
+            ),
+          },
+        ]}
+      />
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
