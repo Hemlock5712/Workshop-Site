@@ -2,6 +2,7 @@ import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import DocumentationButton from "@/components/DocumentationButton";
 
 export default function MotionMagic() {
   return (
@@ -76,17 +77,11 @@ export default function MotionMagic() {
           <p className="text-[var(--foreground)] mb-4">
             For complete Motion Magic reference, configuration examples, and advanced tuning techniques:
           </p>
-          <a 
+          <DocumentationButton
             href="https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/device-specific/talonfx/motion-magic.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-          >
-            📖 CTRE Motion Magic API Reference
-            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+            title="CTRE Motion Magic API Reference"
+            icon="📖"
+          />
         </div>
       </section>
 
