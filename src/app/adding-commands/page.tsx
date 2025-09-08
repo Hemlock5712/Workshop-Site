@@ -1,6 +1,7 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import GitHubPage from "@/components/GitHubPage";
 import PageTemplate from "@/components/PageTemplate";
+import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 
@@ -105,15 +106,12 @@ public class RobotContainer {
             </div>
           </div>
 
-          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-900">
-            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🚀 Motor Configuration</h4>
-            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
-              Motor configuration code should be wrapped properly to fit in configuration sections.
-            </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded text-xs">
-              <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>
-            </div>
-          </div>
+          <ConceptBox
+            title="🚀 Motor Configuration"
+            code={<code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>}
+          >
+            Motor configuration code should be wrapped properly to fit in configuration sections.
+          </ConceptBox>
         </div>
       </section>
 

@@ -1,5 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import ConceptBox from "@/components/ConceptBox";
 
 export default function CommandFramework() {
   return (
@@ -16,31 +17,17 @@ export default function CommandFramework() {
       />
 
       <div className="grid md:grid-cols-3 gap-6">
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Triggers</h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-3">Use BooleanSuppliers (True or False)</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Link inputs to commands (e.g., press button to drive forward, or use sensor to run Command automatically).
-            All buttons/triggers on a game controller are considered &quot;Triggers&quot;.
-          </p>
-        </div>
+        <ConceptBox title="Triggers" subtitle="Use BooleanSuppliers (True or False)">
+          Link inputs to commands (e.g., press button to drive forward, or use sensor to run Command automatically). All buttons/triggers on a game controller are considered &quot;Triggers&quot;.
+        </ConceptBox>
 
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Subsystems</h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-3">Hardware components and control logic</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            (e.g., Drivetrain, Arm, or Flywheel). Motors and sensors are instantiated.
-            Methods to pull data from sensors within the subsystem are defined.
-          </p>
-        </div>
+        <ConceptBox title="Subsystems" subtitle="Hardware components and control logic">
+          (e.g., Drivetrain, Arm, or Flywheel). Motors and sensors are instantiated. Methods to pull data from sensors within the subsystem are defined.
+        </ConceptBox>
 
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-3">Commands</h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-3">Use Runnables (void functions)</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Encapsulate robot actions (e.g., DriveForwardCommand, ShootBallCommand).
-          </p>
-        </div>
+        <ConceptBox title="Commands" subtitle="Use Runnables (void functions)">
+          Encapsulate robot actions (e.g., DriveForwardCommand, ShootBallCommand).
+        </ConceptBox>
       </div>
 
       <section className="flex flex-col gap-8">
