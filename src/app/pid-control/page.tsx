@@ -2,6 +2,7 @@ import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import ConceptBox from "@/components/ConceptBox";
 
 export default function PIDControl() {
   return (
@@ -75,30 +76,18 @@ export default function PIDControl() {
           </p>
           
             <div className="grid md:grid-cols-4 gap-4">
-              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
-                <h4 className="font-bold mb-2">kS - Static</h4>
-                <p className="text-sm">
-                  Constant output to overcome friction and get the mechanism moving.
-                </p>
-              </div>
-              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
-                <h4 className="font-bold mb-2">kG - Gravity</h4>
-                <p className="text-sm">
-                  Compensates for gravitational forces acting on the mechanism.
-                </p>
-              </div>
-              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
-                <h4 className="font-bold mb-2">kV - Velocity</h4>
-                <p className="text-sm">
-                  Output applied per target velocity to maintain smooth motion.
-                </p>
-              </div>
-              <div className="bg-focus-100 dark:bg-focus-900/20 p-4 rounded text-[var(--foreground)]">
-                <h4 className="font-bold mb-2">kA - Acceleration</h4>
-                <p className="text-sm">
-                  Output applied per target acceleration for responsive movement.
-                </p>
-              </div>
+              <ConceptBox title="kS - Static">
+                Constant output to overcome friction and get the mechanism moving.
+              </ConceptBox>
+              <ConceptBox title="kG - Gravity">
+                Compensates for gravitational forces acting on the mechanism.
+              </ConceptBox>
+              <ConceptBox title="kV - Velocity">
+                Output applied per target velocity to maintain smooth motion.
+              </ConceptBox>
+              <ConceptBox title="kA - Acceleration">
+                Output applied per target acceleration for responsive movement.
+              </ConceptBox>
             </div>
         </div>
 

@@ -14,14 +14,12 @@ export default function ConceptBox({
   code,
 }: ConceptBoxProps) {
   return (
-    <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
-      <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">{title}</h4>
+    <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
+      <h4 className="text-lg font-bold text-[var(--foreground)] mb-3">{title}</h4>
       {subtitle && (
-        <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">{subtitle}</p>
+        <p className="text-[var(--foreground)] text-sm font-semibold mb-3">{subtitle}</p>
       )}
-      <div className="text-learn-800 dark:text-learn-300 text-sm mb-3">
-        {children}
-      </div>
+      <div className="text-[var(--foreground)] text-sm mb-3">{children}</div>
       {code && (
         <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">{code}</div>
       )}
