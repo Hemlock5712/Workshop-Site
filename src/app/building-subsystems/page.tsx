@@ -107,34 +107,6 @@ public class ExampleSubsystem extends SubsystemBase {
 
       </section>
 
-      {/* Follower Motor Caution */}
-      <AlertBox
-        variant="warning"
-        icon={
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"
-            />
-          </svg>
-        }
-        title="Caution: Physical Hardware vs Code Example"
-      >
-        <p className="mb-3">
-          The flywheel device built in this workshop does <strong>not</strong> have a physical follower motor. However, the following code examples include a follower motor setup to demonstrate best practices for multi-motor subsystems.
-        </p>
-        <AlertBox variant="warning" title="Note" className="mt-3">
-          If implementing on actual hardware, you would either remove the follower motor code or add a second physical motor to your flywheel mechanism.
-        </AlertBox>
-      </AlertBox>
-
       {/* Mechanism Implementation Tabs */}
       <MechanismTabs
         sectionTitle="Workshop Implementation"
@@ -198,11 +170,40 @@ public class ExampleSubsystem extends SubsystemBase {
             rightTitle: "Key Methods",
             rightItems: [
               "• <strong>setVoltage():</strong> Direct voltage control for flywheel speed",
-              "• <strong>stop():</strong> Safe motor stop with neutral output", 
+              "• <strong>stop():</strong> Safe motor stop with neutral output",
               "• <strong>periodic():</strong> Understand that periodic runs every robot loop"
             ]
           },
-          nextStepText: "This flywheel subsystem is ready for command integration! Next, we'll add commands to control this Flywheel subsystem through user input."
+          nextStepText:
+            "This flywheel subsystem is ready for command integration! Next, we'll add commands to control this Flywheel subsystem through user input.",
+          caution: (
+            <AlertBox
+              variant="warning"
+              icon={
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              }
+              title="Caution: Physical Hardware vs Code Example"
+            >
+              <p className="mb-3">
+                The flywheel device built in this workshop does <strong>not</strong> have a physical follower motor. However, the following code examples include a follower motor setup to demonstrate best practices for multi-motor subsystems.
+              </p>
+              <AlertBox variant="warning" title="Note" className="mt-3">
+                If implementing on actual hardware, you would either remove the follower motor code or add a second physical motor to your flywheel mechanism.
+              </AlertBox>
+            </AlertBox>
+          )
         }}
       />
     </PageTemplate>

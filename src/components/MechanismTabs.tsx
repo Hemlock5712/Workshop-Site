@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import GithubPageWithPR from "./GithubPageWithPR";
 import CodeWalkthrough from "./CodeWalkthrough";
 import ComparisonTable from "./ComparisonTable";
@@ -20,6 +20,7 @@ interface MechanismContent {
     rightItems: string[];
   };
   nextStepText: string;
+  caution?: ReactNode;
 }
 
 interface MechanismTabsProps {
@@ -72,6 +73,9 @@ export default function MechanismTabs({
 
         {/* Tab Content */}
         <div className="p-6">
+          {currentContent.caution && (
+            <div className="mb-6">{currentContent.caution}</div>
+          )}
           {/* Before/After Implementation */}
           <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6 mb-6">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
