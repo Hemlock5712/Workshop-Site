@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
+import AlertBox from "@/components/AlertBox";
 
 export default function Hardware() {
   return (
@@ -202,18 +203,15 @@ export default function Hardware() {
           Connecting to Your Device
         </h2>
 
-        <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-300 mb-3">
-            ⚠️ Important Setup Steps
-          </h3>
-          <ol className="list-decimal list-inside space-y-2 text-yellow-800 dark:text-yellow-300">
+        <AlertBox variant="warning" title="⚠️ Important Setup Steps">
+          <ol className="list-decimal list-inside space-y-2">
             <li>Plug the computer into CANivore</li>
             <li>Make sure the &quot;CANivore USB&quot; is checked</li>
             <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
             <li>Your CANivore should now appear in Phoenix Tuner</li>
             <li>For this workshop, please name your CANivore: &quot;canivore&quot;</li>
           </ol>
-        </div>
+        </AlertBox>
       </section>
 
       <section className="flex flex-col gap-8">
@@ -304,11 +302,8 @@ export default function Hardware() {
           </ContentCard>
         </div>
 
-        <div className="bg-primary-100 dark:bg-primary-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-4">
-            🎨 Card Colors
-          </h4>
-          <p className="text-[var(--foreground)] mb-3">
+        <AlertBox variant="info" title="🎨 Card Colors">
+          <p className="mb-3">
             The color of the device cards is helpful as a visual indicator of device state. The meaning of the card color is also shown as text underneath the device title.
           </p>
 
@@ -372,12 +367,10 @@ export default function Hardware() {
             </div>
           </div>
 
-          <div className="mt-4 p-3 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
-            <p className="text-blue-800 dark:text-blue-300 text-sm">
-              <strong>💡 Tip:</strong> Always update all motors to the same firmware version for consistency and use batch update to save time when updating multiple devices.
-            </p>
-          </div>
-        </div>
+          <AlertBox variant="tip" title="💡 Tip" className="mt-4">
+            Always update all motors to the same firmware version for consistency and use batch update to save time when updating multiple devices.
+          </AlertBox>
+        </AlertBox>
       </section>
 
       <section className="flex flex-col gap-8">
