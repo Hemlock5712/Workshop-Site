@@ -5,6 +5,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import ContentCard from "@/components/ContentCard";
 
 export default function MechanismSetup() {
   const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
@@ -136,7 +137,7 @@ export default function MechanismSetup() {
                   </div>
 
                   {/* Implementation Sequence */}
-                  <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+                  <ContentCard>
                     <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">🔧 Implementation Sequence</h4>
                     
                     <div className="space-y-4">
@@ -164,7 +165,7 @@ export default function MechanismSetup() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </ContentCard>
 
                   <iframe
                     src="https://www.youtube.com/embed/zJgSQKrz8yE"

@@ -4,6 +4,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import ContentCard from "@/components/ContentCard";
 
 export default function AddingCommands() {
   return (
@@ -184,19 +185,21 @@ public class RobotContainer {
 
       {/* RobotContainer Implementation from GitHub */}
       <section className="flex flex-col gap-8">
-        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-            🤖 RobotContainer Implementation
-          </summary>
-          <div className="mt-4">
-            <GitHubPage
-              repository="Hemlock5712/Workshop-Code"
-              filePath="src/main/java/frc/robot/RobotContainer.java"
-              branch="2-Commands"
-              className="m-0"
-            />
-          </div>
-        </details>
+        <ContentCard>
+          <details>
+            <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+              🤖 RobotContainer Implementation
+            </summary>
+            <div className="mt-4">
+              <GitHubPage
+                repository="Hemlock5712/Workshop-Code"
+                filePath="src/main/java/frc/robot/RobotContainer.java"
+                branch="2-Commands"
+                className="m-0"
+              />
+            </div>
+          </details>
+        </ContentCard>
       </section>
     </PageTemplate>
   );

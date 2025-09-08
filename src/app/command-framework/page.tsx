@@ -1,6 +1,7 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import ContentCard from "@/components/ContentCard";
 
 export default function CommandFramework() {
   return (
@@ -49,7 +50,7 @@ export default function CommandFramework() {
         </p>
         
         <div className="grid md:grid-cols-1 gap-6">
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <ContentCard>
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🚀 Implementation Sequence</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
@@ -88,7 +89,7 @@ export default function CommandFramework() {
                 </div>
               </div>
             </div>
-          </div>
+          </ContentCard>
         </div>
 
         {/* Documentation Link */}
