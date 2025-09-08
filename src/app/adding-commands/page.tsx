@@ -86,25 +86,19 @@ public class RobotContainer {
 
         {/* Key Concepts */}
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-concept-100 dark:bg-concept-900/20 rounded-lg p-6 border border-concept-200 dark:border-concept-800">
-            <h4 className="text-lg font-bold text-concept-700 dark:text-concept-300 mb-3">🏠 Default Commands</h4>
-            <p className="text-concept-800 dark:text-concept-300 text-sm mb-3">
-              Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
-            </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded text-xs">
-              <code>setDefaultCommand(stopCommand());</code>
-            </div>
-          </div>
+          <ConceptBox
+            title="🏠 Default Commands"
+            code={<code>setDefaultCommand(stopCommand());</code>}
+          >
+            Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
+          </ConceptBox>
 
-          <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-6 border border-primary-200 dark:border-primary-900">
-            <h4 className="text-lg font-bold text-primary-700 dark:text-primary-300 mb-3">🎮 Trigger Types</h4>
-            <p className="text-primary-800 dark:text-primary-300 text-sm mb-3">
-              Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).
-            </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded text-xs">
-              <code>controller.a().whileTrue(command);</code>
-            </div>
-          </div>
+          <ConceptBox
+            title="🎮 Trigger Types"
+            code={<code>controller.a().whileTrue(command);</code>}
+          >
+            Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).
+          </ConceptBox>
 
           <ConceptBox
             title="🚀 Motor Configuration"

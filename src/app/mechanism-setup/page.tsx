@@ -4,6 +4,7 @@ import { useState } from "react";
 import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import ConceptBox from "@/components/ConceptBox";
 
 export default function MechanismSetup() {
   const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
@@ -207,25 +208,27 @@ export default function MechanismSetup() {
                     <h4 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h4>
                       
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">
-                        <h5 className="font-semibold mb-3">Positive Voltage Test</h5>
-                        <p className="text-sm mb-3">Apply +6V to your motor and observe movement direction.</p>
+                      <ConceptBox
+                        title="Positive Voltage Test"
+                        subtitle="Apply +6V to your motor and observe movement direction."
+                      >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
                             <strong>Expected:</strong> Positive voltage should move the mechanism in the &quot;positive&quot; direction (counter-clockwise for arms).
                           </p>
                         </div>
-                      </div>
+                      </ConceptBox>
 
-                      <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">
-                        <h5 className="font-semibold mb-3">Encoder Consistency</h5>
-                        <p className="text-sm mb-3">Verify encoder readings match motor movement.</p>
+                      <ConceptBox
+                        title="Encoder Consistency"
+                        subtitle="Verify encoder readings match motor movement."
+                      >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
                             <strong>Expected:</strong> Positive motor voltage → positive encoder change, negative motor voltage → negative encoder change.
                           </p>
                         </div>
-                      </div>
+                      </ConceptBox>
                     </div>
                   </div>
                 </div>
@@ -277,25 +280,27 @@ export default function MechanismSetup() {
                     <h4 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h4>
                       
                     <div className="grid md:grid-cols-2 gap-6">
-                      <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">
-                        <h5 className="font-semibold mb-3">Positive Voltage Test</h5>
-                        <p className="text-sm mb-3">Apply +6V to your flywheel and observe rotation.</p>
+                      <ConceptBox
+                        title="Positive Voltage Test"
+                        subtitle="Apply +6V to your flywheel and observe rotation."
+                      >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
                             <strong>Expected:</strong> Both motors should rotate smoothly in the same direction with consistent speed.
                           </p>
                         </div>
-                      </div>
+                      </ConceptBox>
 
-                      <div className="bg-[var(--card)] text-[var(--foreground)] p-6 rounded-lg">
-                        <h5 className="font-semibold mb-3">Leader-Follower Check</h5>
-                        <p className="text-sm mb-3">Verify follower motor tracks leader motor exactly.</p>
+                      <ConceptBox
+                        title="Leader-Follower Check"
+                        subtitle="Verify follower motor tracks leader motor exactly."
+                      >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
                             <strong>Expected:</strong> Follower motor should mirror leader motor movements with minimal lag.
                           </p>
                         </div>
-                      </div>
+                      </ConceptBox>
                     </div>
                   </div>
                 </div>
