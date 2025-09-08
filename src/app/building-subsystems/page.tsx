@@ -1,5 +1,6 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
+import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 
@@ -88,35 +89,23 @@ public class ExampleSubsystem extends SubsystemBase {
 
         {/* Key Concepts Explanation */}
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
-            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🔧 Hardware Instantiation</h4>
-            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
-              Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-              <code>TalonFX motor = new TalonFX(1);</code>
-            </div>
-          </div>
+          <ConceptBox title="🔧 Hardware Instantiation" code={<code>TalonFX motor = new TalonFX(1);</code>}>
+            Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
+          </ConceptBox>
 
-          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
-            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">⚙️ Configuration Location</h4>
-            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
-              Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-              <code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>
-            </div>
-          </div>
+          <ConceptBox
+            title="⚙️ Configuration Location"
+            code={<code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>}
+          >
+            Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
+          </ConceptBox>
 
-          <div className="bg-learn-100 dark:bg-learn-900/20 rounded-lg p-6 border border-learn-200 dark:border-learn-800">
-            <h4 className="text-lg font-bold text-learn-700 dark:text-learn-300 mb-3">🔄 Periodic Method</h4>
-            <p className="text-learn-800 dark:text-learn-300 text-sm mb-3">
-              Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-              <code>SmartDashboard.putNumber(<br/>&nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());</code>
-            </div>
-          </div>
+          <ConceptBox
+            title="🔄 Periodic Method"
+            code={<code>SmartDashboard.putNumber(<br/>&nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());</code>}
+          >
+            Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
+          </ConceptBox>
         </div>
 
       </section>
