@@ -2,6 +2,7 @@ import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import CollapsibleSection from "@/components/CollapsibleSection";
 
 export default function MotionMagic() {
   return (
@@ -96,38 +97,34 @@ export default function MotionMagic() {
           Motion Magic Implementation in Code
         </h2>
 
-        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-            🔧 Motion Magic Configuration Example
-          </summary>
-          <div className="mt-4">
+        <CollapsibleSection title="🔧 Motion Magic Configuration Example">
           <CodeBlock
             language="java"
             title="Motion Magic Setup in Subsystem Constructor"
             code={`// In your subsystem constructor
 public ArmSubsystem() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     // PID Configuration (same as before)
     Slot0Configs slot0 = config.Slot0;
     slot0.kP = 24.0;    // Proportional gain
-    slot0.kI = 0.0;     // Integral gain  
+    slot0.kI = 0.0;     // Integral gain
     slot0.kD = 0.1;     // Derivative gain
-    
+
     // Feedforward gains
     slot0.kS = 0.25;    // Static friction compensation
     slot0.kG = 0.12;    // Gravity compensation
     slot0.kV = 0.12;    // Velocity feedforward
     slot0.kA = 0.01;    // Acceleration feedforward
-    
+
     // Motion Magic Configuration
     MotionMagicConfigs motionMagic = config.MotionMagic;
     motionMagic.MotionMagicCruiseVelocity = 2.0;    // 2 rot/s max velocity
     motionMagic.MotionMagicAcceleration = 8.0;      // 8 rot/s² acceleration
     motionMagic.MotionMagicJerk = 80.0;             // 80 rot/s³ jerk limit
-    
+
     motor.getConfigurator().apply(config);
-    
+
     // Create Motion Magic control request
     motionMagicRequest = new MotionMagicVoltage(0).withSlot(0);
 }
@@ -139,8 +136,7 @@ public void setTargetPosition(double positionRotations) {
 
 `}
           />
-          </div>
-        </details>
+        </CollapsibleSection>
 
         {/* Mechanism Implementation Tabs */}
         <MechanismTabs
@@ -224,11 +220,7 @@ public void setTargetPosition(double positionRotations) {
         />
 
         {/* Motion Magic vs PID Comparison */}
-        <details className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
-          <summary className="text-xl font-bold text-[var(--foreground)] mb-4 cursor-pointer hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]">
-            ⚖️ Motion Magic vs Basic PID
-          </summary>
-          <div className="mt-4">
+        <CollapsibleSection title="⚖️ Motion Magic vs Basic PID" variant="warning">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-[var(--foreground)] mb-2">When to Use Basic PID:</h4>
@@ -249,16 +241,10 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
           </div>
-          </div>
-        </details>
+        </CollapsibleSection>
 
         {/* Motion Magic Tuning Steps */}
-        <details className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
-          <summary className="text-xl font-bold text-[var(--foreground)] mb-4 cursor-pointer hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]">
-            ⚙️ Motion Magic Tuning Steps
-          </summary>
-          <div className="mt-4">
-          
+        <CollapsibleSection title="⚙️ Motion Magic Tuning Steps" variant="info">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-[var(--foreground)] mb-2">1. Find Maximum Velocity:</h4>
@@ -290,8 +276,7 @@ public void setTargetPosition(double positionRotations) {
               headroom for control corrections while maintaining good performance.
             </p>
           </div>
-          </div>
-        </details>
+        </CollapsibleSection>
       </section>
     </PageTemplate>
   );
