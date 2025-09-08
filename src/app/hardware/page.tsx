@@ -308,7 +308,7 @@ export default function Hardware() {
           <h4 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-4">
             🎨 Card Colors
           </h4>
-          <p className="text-blue-800 dark:text-blue-300 mb-4">
+          <p className="text-[var(--foreground)] mb-3">
             The color of the device cards is helpful as a visual indicator of device state. The meaning of the card color is also shown as text underneath the device title.
           </p>
 
@@ -403,8 +403,8 @@ export default function Hardware() {
           Let&apos;s Run Some Motors!
         </h2>
 
-        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-8 border border-[var(--border)]">
-          <h3 className="text-xl font-semibold text-[var(--foreground)] mb-4">
+        <div className="bg-primary-100 dark:bg-primary-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-4">
             Testing Motor Movement
           </h3>
 
