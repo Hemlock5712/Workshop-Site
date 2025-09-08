@@ -4,6 +4,9 @@ import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CollapsibleSection from "@/components/CollapsibleSection";
 
+import ComparisonTable from "@/components/ComparisonTable";
+import DocumentationButton from "@/components/DocumentationButton";
+
 export default function MotionMagic() {
   return (
     <PageTemplate
@@ -77,17 +80,11 @@ export default function MotionMagic() {
           <p className="text-[var(--foreground)] mb-4">
             For complete Motion Magic reference, configuration examples, and advanced tuning techniques:
           </p>
-          <a 
+          <DocumentationButton
             href="https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/device-specific/talonfx/motion-magic.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-          >
-            📖 CTRE Motion Magic API Reference
-            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+            title="CTRE Motion Magic API Reference"
+            icon="📖"
+          />
         </div>
       </section>
 
@@ -267,6 +264,67 @@ public void setTargetPosition(double positionRotations) {
               </ul>
             </div>
           </div>
+        <details className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
+          <summary className="text-xl font-bold text-[var(--foreground)] mb-4 cursor-pointer hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]">
+            ⚖️ Motion Magic vs Basic PID
+          </summary>
+          <div className="mt-4">
+            <ComparisonTable
+              leftTitle="When to Use Basic PID:"
+              leftItems={[
+                "Simple positioning tasks",
+                "Continuous control (like maintaining angle)",
+                "When speed of response is critical",
+                "Mechanisms with very low inertia",
+              ]}
+              rightTitle="When to Use Motion Magic:"
+              rightItems={[
+                "Large, heavy mechanisms (arms, elevators)",
+                "When smooth motion is important",
+                "Preventing mechanical stress",
+                "Predictable motion timing needed",
+              ]}
+              leftBlockClassName="text-[var(--foreground)]"
+              rightBlockClassName="text-[var(--foreground)]"
+              leftTitleClassName="font-semibold text-[var(--foreground)] mb-2"
+              rightTitleClassName="font-semibold text-[var(--foreground)] mb-2"
+              leftListClassName="list-disc list-inside"
+              rightListClassName="list-disc list-inside"
+            />
+          </div>
+        </details>
+
+        {/* Motion Magic Tuning Steps */}
+        <details className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
+          <summary className="text-xl font-bold text-[var(--foreground)] mb-4 cursor-pointer hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]">
+            ⚙️ Motion Magic Tuning Steps
+          </summary>
+          <div className="mt-4">
+
+            <ComparisonTable
+              leftTitle="1. Find Maximum Velocity:"
+              leftItems={[
+                `Plot velocity <strong>without Motion Magic</strong>`,
+                `Move mechanism the maximum distance it will travel`,
+                `Record the maximum velocity it reaches`,
+                `Store this value in your code as a constant`,
+                `<code class=\"bg-slate-50 dark:bg-slate-800 px-1 rounded\">MAX_VELOCITY = 8.5; // rps from plot</code>`,
+              ]}
+              rightTitle="2. Set Motion Magic Parameters:"
+              rightItems={[
+                `<strong>Cruise Velocity:</strong> Use 80% of max velocity`,
+                `<code class=\"bg-slate-50 dark:bg-slate-800 px-1 rounded\">cruiseVel = MAX_VELOCITY * 0.8</code>`,
+                `<strong>Acceleration:</strong> Use 4x cruise velocity for smooth motion`,
+                `<strong>Acceleration:</strong> Use 10x cruise velocity for quicker motion`,
+                `<code class=\"bg-slate-50 dark:bg-slate-800 px-1 rounded\">acceleration = cruiseVel * 4.0</code>`,
+              ]}
+              leftBlockClassName="text-[var(--foreground)]"
+              rightBlockClassName="text-[var(--foreground)]"
+              leftTitleClassName="font-semibold text-[var(--foreground)] mb-2"
+              rightTitleClassName="font-semibold text-[var(--foreground)] mb-2"
+              leftListClassName="list-disc list-inside space-y-2"
+              rightListClassName="list-disc list-inside space-y-2"
+            />
 
           <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-[var(--border)]">
             <h4 className="font-semibold text-[var(--foreground)] mb-2">💡 Why This Method Works:</h4>
