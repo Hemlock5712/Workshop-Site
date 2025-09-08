@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createSearchInstance, SearchResult, mapMiniSearchResults } from "@/lib/searchConfig";
+import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -14,6 +15,23 @@ export default function SearchBar() {
   const router = useRouter();
 
   const searchInstanceRef = useRef(createSearchInstance());
+
+  // Handle keyboard navigation with search focus/close
+  const handleSearchFocus = () => {
+    inputRef.current?.focus();
+  };
+
+  const handleSearchClose = () => {
+    setIsOpen(false);
+    setSelectedIndex(-1);
+    setQuery("");
+    inputRef.current?.blur();
+  };
+
+  useKeyboardNavigation({
+    onSearchFocus: handleSearchFocus,
+    onSearchClose: handleSearchClose,
+  });
 
   useEffect(() => {
     if (query.trim().length > 1) {

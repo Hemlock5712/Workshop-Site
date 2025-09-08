@@ -4,6 +4,9 @@ import Image from "next/image";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
+import KeyboardNavigationProvider from "@/components/KeyboardNavigationProvider";
+import KeyboardShortcutsHelp from "@/components/KeyboardShortcutsHelp";
+import AutoFocusMain from "@/components/AutoFocusMain";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +35,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
       >
         <div className="flex flex-col h-screen">
+          <KeyboardNavigationProvider />
+          <AutoFocusMain />
           <header className="flex-shrink-0 bg-[var(--card)] border-b border-[var(--border)] px-6 py-4 flex justify-between items-center z-50">
             <div className="flex items-center space-x-3">
               <Image
@@ -47,10 +52,14 @@ export default function RootLayout({
           </header>
           <div className="flex flex-1 overflow-hidden">
             <Sidebar />
-            <main className="flex-1 overflow-y-auto bg-[var(--card)] text-[var(--card-foreground)]">
+            <main 
+              className="flex-1 overflow-y-auto bg-[var(--card)] text-[var(--card-foreground)] focus:outline-none"
+              tabIndex={0}
+            >
               {children}
             </main>
           </div>
+          <KeyboardShortcutsHelp />
         </div>
       </body>
     </html>
