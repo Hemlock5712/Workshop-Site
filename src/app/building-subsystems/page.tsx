@@ -3,7 +3,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
-import ContentCard from "@/components/ContentCard";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import AlertBox from "@/components/AlertBox";
 
 export default function BuildingSubsystems() {
@@ -27,13 +27,8 @@ export default function BuildingSubsystems() {
         </h2>
 
         {/* Subsystem Example */}
-        <ContentCard>
-          <details>
-            <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-              📦 Basic Subsystem Example
-            </summary>
-            <div className="mt-4">
-            <CodeBlock
+        <CollapsibleSection title="📦 Basic Subsystem Example">
+          <CodeBlock
             language="java"
             title="ExampleSubsystem.java"
             code={`package frc.robot.subsystems;
@@ -47,49 +42,47 @@ import com.ctre.phoenix6.controls.VoltageOut;
 public class ExampleSubsystem extends SubsystemBase {
     // 🔧 MOTORS GO HERE - Hardware instantiation
     private final TalonFX motor = new TalonFX(1); // Device ID 1
-    
+
     // Control requests
     private final VoltageOut voltageOut = new VoltageOut(0);
 
     // 🔧 MOTOR CONFIGURATIONS GO IN CONSTRUCTOR
     public ExampleSubsystem() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        
+
         // Configure motor settings
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         motor.getConfigurator().apply(config);
     }
-    
-    // 🔄 PERIODIC() RUNS EVERY 20ms - for telemetry/monitoring. 
+
+    // 🔄 PERIODIC() RUNS EVERY 20ms - for telemetry/monitoring.
     // This we can leave blank as we can use TunerX.
     @Override
     public void periodic() {
         // Update dashboard with current values
-        SmartDashboard.putNumber("Motor Position", 
+        SmartDashboard.putNumber("Motor Position",
             motor.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Motor Velocity", 
+        SmartDashboard.putNumber("Motor Velocity",
             motor.getVelocity().getValueAsDouble());
-        SmartDashboard.putNumber("Motor Current", 
+        SmartDashboard.putNumber("Motor Current",
             motor.getSupplyCurrent().getValueAsDouble());
     }
-    
+
     // Control methods
     public void setVoltage(double volts) {
         motor.setControl(voltageOut.withOutput(volts));
     }
-    
+
     public void stop() {
         motor.stopMotor();
     }
-    
+
     public double getPosition() {
         return motor.getPosition().getValueAsDouble();
     }
 }`}
-            />
-            </div>
-          </details>
-        </ContentCard>
+          />
+        </CollapsibleSection>
 
         {/* Key Concepts Explanation */}
         <div className="grid md:grid-cols-3 gap-6">

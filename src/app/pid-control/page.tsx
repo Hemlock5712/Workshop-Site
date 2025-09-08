@@ -3,7 +3,7 @@ import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
-import ContentCard from "@/components/ContentCard";
+import CollapsibleSection from "@/components/CollapsibleSection";
 import AlertBox from "@/components/AlertBox";
 import DocumentationButton from "@/components/DocumentationButton";
 
@@ -112,33 +112,28 @@ export default function PIDControl() {
           PID Implementation in Code
         </h2>
 
-        <ContentCard>
-          <details>
-            <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-              🔧 PID Configuration Example
-            </summary>
-            <div className="mt-4">
-            <CodeBlock
+        <CollapsibleSection title="🔧 PID Configuration Example">
+          <CodeBlock
             language="java"
             title="PID Setup in Subsystem Constructor"
             code={`// In your subsystem constructor
 public ArmSubsystem() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     // PID Configuration for Slot 0
     Slot0Configs slot0 = config.Slot0;
     slot0.kP = 24.0;    // Proportional gain
-    slot0.kI = 0.0;     // Integral gain  
+    slot0.kI = 0.0;     // Integral gain
     slot0.kD = 0.1;     // Derivative gain
-    
+
     // Feedforward gains
     slot0.kS = 0.25;    // Static friction compensation
     slot0.kG = 0.12;    // Gravity compensation
     slot0.kV = 0.12;    // Velocity feedforward
     slot0.kA = 0.01;    // Acceleration feedforward
-    
+
     motor.getConfigurator().apply(config);
-    
+
     // Create PID control request
     positionRequest = new PositionVoltage(0).withSlot(0);
 }
@@ -149,10 +144,8 @@ public void setTargetPosition(double positionRotations) {
 }
 
 `}
-            />
-            </div>
-          </details>
-        </ContentCard>
+          />
+        </CollapsibleSection>
 
         {/* Mechanism Implementation Tabs */}
         <MechanismTabs
