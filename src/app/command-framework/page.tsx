@@ -1,6 +1,7 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import CodeBlock from "@/components/CodeBlock";
 
 export default function CommandFramework() {
   return (
@@ -88,6 +89,90 @@ export default function CommandFramework() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Advanced Command Patterns
+        </h2>
+        <div className="space-y-8">
+          <div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Complex Command Groups</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">Combine sequences and parallel actions to coordinate subsystems.</p>
+            <CodeBlock
+              code={`// Run intake and raise arm simultaneously after driving
+new SequentialCommandGroup(
+  new DriveDistance(2.0, drivetrain),
+  new ParallelCommandGroup(
+    new RaiseArm(arm),
+    new RunIntake(intake).withTimeout(2)
+  )
+);`}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Composition Strategies</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">Use fluent helpers to assemble commands from smaller pieces.</p>
+            <CodeBlock
+              code={`Command shootAndDrive =
+  shooter.spinUp()
+    .andThen(intake.feed())
+    .andThen(drivetrain.driveForward(1.0));`}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Common Pitfalls</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">Always declare subsystem requirements to avoid unexpected conflicts.</p>
+            <CodeBlock
+              code={`public class BadCommand extends CommandBase {
+  private final Drivetrain drive;
+  public BadCommand(Drivetrain drive) {
+    this.drive = drive;
+    // Missing: addRequirements(drive);
+  }
+}`}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Advanced Triggers</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">Create triggers from sensor conditions or button combinations.</p>
+            <CodeBlock
+              code={`Trigger armReady = new Trigger(
+  () -> arm.atPosition() && shooter.atSpeed());
+armReady.onTrue(new FireCommand(shooter, arm));`}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Scheduling & Interruption</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">Schedule commands programmatically and handle interruptions gracefully.</p>
+            <CodeBlock
+              code={`// Schedule during autonomous
+CommandScheduler.getInstance()
+  .schedule(new BalanceAuto(drive));
+
+// Interrupt when limit switch hit
+new RaiseClimber(climber)
+  .until(climber::isAtTop);`}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Real-World Scenario</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4">Combine patterns to build robust autonomous routines.</p>
+            <CodeBlock
+              code={`Command auto =
+  new ParallelDeadlineGroup(
+    new DriveDistance(3, drive),
+    new SequentialCommandGroup(
+      new SpinUpFlywheel(shooter),
+      new FeedShooter(intake, shooter)
+    )
+  );`}
+            />
           </div>
         </div>
 
