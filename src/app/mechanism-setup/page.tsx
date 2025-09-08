@@ -70,32 +70,38 @@ export default function MechanismSetup() {
                     1️⃣ Encoder Direction
                   </h3>
 
-                  <div className="grid grid-cols-3 gap-6 mb-8">
-                    <div className="col-span-2">
+                  <div className="grid grid-cols-2 gap-6 mb-6">
+                    <div>
                       <p className="text-[var(--muted-foreground)] mb-4">
                         You&apos;ll need to make sure your encoder is configured correctly. With the device facing you, as shown in the following picture, please make sure that  
                         the encoder position increases as you rotate the arm counterclockwise.
                       </p>
-                      
-                      <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
-                        <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">Expected Behavior:</h4>
-                        <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
-                          <li>• Counterclockwise rotation → Position increases</li>
-                          <li>• Clockwise rotation → Position decreases</li>
-                          <li>• Position values should be smooth and consistent</li>
-                        </ul>
-                      </div>
                     </div>
+                    
+                    <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
+                      <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">Expected Behavior:</h4>
+                      <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
+                        <li>• Counterclockwise rotation → Position increases</li>
+                        <li>• Clockwise rotation → Position decreases</li>
+                      </ul>
+                    </div>
+                  </div>
 
-                    <div className="flex w-full justify-center">
-                      <ImageBlock
-                        src="/images/mechanisms/arm.jpg"
-                        alt="Arm mechanism for encoder verification"
-                        width={300}
-                        height={200}
-                        className="rounded-lg"
-                      />
-                    </div>
+                  <div className="flex flex-row gap-8 justify-center items-center mb-8">
+                    <ImageBlock
+                      src="/images/setup/unit_circle_degrees_rotations_decimal.png"
+                      alt="Unit circle showing counterclockwise rotation direction"
+                      width={300}
+                      height={300}
+                      className="rounded-lg"
+                    />
+                    <ImageBlock
+                      src="/images/setup/counter-clockwise.png"
+                      alt="Counterclockwise rotation direction"
+                      width={300}
+                      height={225}
+                      className="rounded-lg"
+                    />
                   </div>
 
                   <iframe
@@ -103,48 +109,46 @@ export default function MechanismSetup() {
                     title="Encoder Setup and Verification"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
-                    className="w-full aspect-video rounded-lg"
+                    className="w-full aspect-video rounded-lg mb-8"
                   />
-                </div>
 
-                {/* Step 2: Zero Encoder Position */}
-                <div className="bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] rounded-lg p-6">
-                  <h3 className="text-xl font-bold mb-4">2️⃣ 🎯 Zero Encoder Position</h3>
-
-                  <div className="grid md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <p className="mb-4">
-                        Set your mechanism to the zero position before running any control algorithms. For Arm mechanisms,
-                        zero should be straight parallel with the ground, facing the 3 o&apos;clock position.
-                      </p>
-
-                      <div className="bg-concept-100 dark:bg-concept-900/30 p-4 rounded-lg">
-                        <h4 className="font-semibold text-concept-900 dark:text-concept-300 mb-2">Zero Position Setup:</h4>
-                        <ul className="text-concept-800 dark:text-concept-300 space-y-1 text-sm">
-                          <li>• Position Arm parallel to ground</li>
-                          <li>• Arm should point to 3 o&apos;clock position</li>
-                          <li>• Reset encoder to 0.0 at this position</li>
-                          <li>• Verify position reading stays consistent</li>
-                        </ul>
+                  {/* Implementation Sequence */}
+                  <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+                    <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">🔧 Implementation Sequence</h4>
+                    
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
+                        <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                        <div>
+                          <h4 className="font-bold text-primary-700 dark:text-primary-300">Rotate Counter-Clockwise</h4>
+                          <p className="text-primary-600 dark:text-primary-400 text-sm">Manually rotate the mechanism counter-clockwise and observe if the encoder position increases.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                        <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                        <div>
+                          <h4 className="font-bold text-primary-800 dark:text-primary-200">Fix Direction if Needed</h4>
+                          <p className="text-primary-700 dark:text-primary-300 text-sm">If position goes down instead of up, go to &quot;Info&quot; → &quot;Sensor Direction&quot; → press &quot;Apply&quot; button to invert the encoder direction.</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
+                        <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                        <div>
+                          <h4 className="font-bold text-primary-900 dark:text-primary-100">Zero the Encoder</h4>
+                          <p className="text-primary-800 dark:text-primary-200 text-sm">Put arm to zero position, then in TunerX go to &quot;Info&quot; → press &quot;0 encoder&quot; button → press &quot;Apply&quot; button.</p>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex w-full justify-center">
-                      <div className="w-full h-48 bg-concept-100 dark:bg-concept-900/50 rounded-lg flex items-center justify-center border border-concept-200 dark:border-concept-800">
-                        <p className="text-concept-600 dark:text-concept-400 text-sm">Placeholder: Zero Position Image</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="w-full h-64 bg-concept-100 dark:bg-concept-900/50 rounded-lg flex items-center justify-center border border-concept-200 dark:border-concept-800">
-                    <p className="text-concept-600 dark:text-concept-400 text-sm">Placeholder: Zero Encoder Setup Video</p>
                   </div>
                 </div>
 
-                {/* Step 3: Verifying Motor Setup */}
+                {/* Step 2: Verifying Motor Setup */}
                 <div className="card p-8">
                   <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    3️⃣ Verifying Motor Setup
+                    2️⃣ Verifying Motor Setup
                   </h3>
 
                   <div className="grid grid-cols-3 gap-6 mb-8">

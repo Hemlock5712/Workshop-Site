@@ -47,7 +47,7 @@ export default function Hardware() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               Compact brushless motor with integrated Talon FX™ controller. 
-              Delivers 823W peak power, designed as drop-in replacement for Kraken X60.
+              Delivers 823W peak power.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">

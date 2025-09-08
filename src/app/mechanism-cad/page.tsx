@@ -3,6 +3,8 @@
 import PageTemplate from "@/components/PageTemplate";
 import Link from "next/link";
 import ModelViewer from "@/components/ModelViewer";
+import BillOfMaterials from "@/components/BillOfMaterials";
+import { armBOMData } from "@/data/armBOM";
 
 export default function MechanismCAD() {
 
@@ -31,9 +33,10 @@ export default function MechanismCAD() {
       {/* 3D Model Viewer Section */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Interactive 3D Model
+          Interactive 3D Models
         </h2>
         
+        {/* Flywheel Mechanism */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-4xl">
@@ -77,6 +80,52 @@ export default function MechanismCAD() {
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Arm Mechanism - Coming Soon */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col items-center gap-6">
+            <div className="w-full max-w-4xl h-96 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600">
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 mx-auto bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
+                  <svg 
+                    className="w-8 h-8 text-slate-500 dark:text-slate-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+                    />
+                  </svg>
+                </div>
+                <h4 className="text-xl font-semibold text-slate-600 dark:text-slate-300">
+                  Coming Soon
+                </h4>
+                <p className="text-slate-500 dark:text-slate-400">
+                  Interactive 3D model coming soon
+                </p>
+              </div>
+            </div>
+            
+            <div className="text-center space-y-4">
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+                Arm Mechanism
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
+                An Arm mechanism for Workshop programming. This arm mechanism demonstrates 
+                precise positioning and control concepts that are essential in FRC robotics.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Arm Bill of Materials */}
+        <div className="mt-8">
+          <BillOfMaterials items={armBOMData} title="Arm Mechanism" />
         </div>
       </section>
 
