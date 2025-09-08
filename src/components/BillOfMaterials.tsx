@@ -183,13 +183,14 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
             </div>
             <div className="text-center">
               <div className="text-sm text-slate-600 dark:text-slate-400">
-                With 3D Print Free + CTRE Recycled
+                With 3D Print $5 + CTRE Recycled
               </div>
               <div className="text-xl font-bold text-green-600 dark:text-green-400">
                 ${(originalTotalCost - items.reduce((sum, item) => {
-                  if ((item.is3DPrinted || isCTREPart(item))) return sum + (item.pricePerUnit * item.quantity);
+                  if (item.is3DPrinted) return sum + (item.pricePerUnit * item.quantity);
+                  if (isCTREPart(item)) return sum + (item.pricePerUnit * item.quantity);
                   return sum;
-                }, 0)).toFixed(2)}
+                }, 0) + 5).toFixed(2)}
               </div>
             </div>
           </div>
