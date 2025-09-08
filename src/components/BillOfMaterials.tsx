@@ -32,17 +32,128 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
   const [free3DPrinting, setFree3DPrinting] = useState(false);
   const [recycleCTRE, setRecycleCTRE] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [ownedItems, setOwnedItems] = useState<Set<number>>(new Set());
 
   const isCTREPart = (item: BOMItem) => {
     const ctreParts = ['Kraken', 'CANivore', 'CANCoder', 'CANcoder', 'TalonFX'];
     return ctreParts.some(part => item.partDescription.includes(part));
   };
 
-  const getEffectivePrice = useCallback((item: BOMItem) => {
+  const getEffectivePrice = useCallback((item: BOMItem, index: number) => {
+    if (ownedItems.has(index)) return 0;
     if (free3DPrinting && item.is3DPrinted) return 0;
     if (recycleCTRE && isCTREPart(item)) return 0;
     return item.pricePerUnit;
-  }, [free3DPrinting, recycleCTRE]);
+  }, [free3DPrinting, recycleCTRE, ownedItems]);
+
+  const handleOwnedToggle = (index: number) => {
+    const newOwnedItems = new Set(ownedItems);
+    if (newOwnedItems.has(index)) {
+      newOwnedItems.delete(index);
+    } else {
+      newOwnedItems.add(index);
+    }
+    setOwnedItems(newOwnedItems);
+  };
+
+  const handle3DPrintingToggle = (checked: boolean) => {
+    setFree3DPrinting(checked);
+    if (checked) {
+      const newOwnedItems = new Set(ownedItems);
+      items.forEach((item, index) => {
+        if (item.is3DPrinted) {
+          newOwnedItems.add(index);
+        }
+      });
+      setOwnedItems(newOwnedItems);
+    } else {
+      const newOwnedItems = new Set(ownedItems);
+      items.forEach((item, index) => {
+        if (item.is3DPrinted) {
+          newOwnedItems.delete(index);
+        }
+      });
+      setOwnedItems(newOwnedItems);
+    }
+  };
+
+  const handleCTRERecyclingToggle = (checked: boolean) => {
+    setRecycleCTRE(checked);
+    if (checked) {
+      const newOwnedItems = new Set(ownedItems);
+      items.forEach((item, index) => {
+        if (isCTREPart(item)) {
+          newOwnedItems.add(index);
+        }
+      });
+      setOwnedItems(newOwnedItems);
+    } else {
+      const newOwnedItems = new Set(ownedItems);
+      items.forEach((item, index) => {
+        if (isCTREPart(item)) {
+          newOwnedItems.delete(index);
+        }
+      });
+      setOwnedItems(newOwnedItems);
+    }
+  };
+
+  const printNeededItems = () => {
+    const neededItems = items.filter((item, index) => !ownedItems.has(index));
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Bill of Materials - ${title}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; font-weight: bold; }
+            .total { font-weight: bold; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <h1>Bill of Materials - ${title}</h1>
+          <p>Items needed to purchase:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Part Description</th>
+                <th>Quantity</th>
+                <th>Vendor</th>
+                <th>Part Number</th>
+                <th>Price Per Unit</th>
+                <th>Total Price</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${neededItems.map(item => `
+                <tr>
+                  <td>${item.partDescription}</td>
+                  <td>${item.quantity}</td>
+                  <td>${item.vendor}</td>
+                  <td>${item.partNumber || 'N/A'}</td>
+                  <td>$${item.pricePerUnit.toFixed(2)}</td>
+                  <td>$${(item.pricePerUnit * item.quantity).toFixed(2)}</td>
+                  <td>${item.notes}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          <div class="total">
+            Total Cost: $${neededItems.reduce((sum, item) => sum + (item.pricePerUnit * item.quantity), 0).toFixed(2)}
+          </div>
+        </body>
+      </html>
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow?.document.write(printContent);
+    printWindow?.document.close();
+    printWindow?.print();
+  };
 
   const filteredAndSortedItems = useMemo(() => {
     const filtered = items.filter(item => {
@@ -76,8 +187,8 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
           bValue = b.vendor.toLowerCase();
           break;
         case 'pricePerUnit':
-          aValue = getEffectivePrice(a);
-          bValue = getEffectivePrice(b);
+          aValue = getEffectivePrice(a, items.indexOf(a));
+          bValue = getEffectivePrice(b, items.indexOf(b));
           break;
         case 'quantity':
           aValue = a.quantity;
@@ -108,7 +219,7 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
     }
   };
 
-  const totalCost = filteredAndSortedItems.reduce((sum, item) => sum + (getEffectivePrice(item) * item.quantity), 0);
+  const totalCost = filteredAndSortedItems.reduce((sum, item) => sum + (getEffectivePrice(item, items.indexOf(item)) * item.quantity), 0);
   const originalTotalCost = items.reduce((sum, item) => sum + (item.pricePerUnit * item.quantity), 0);
   const savings = originalTotalCost - totalCost;
 
@@ -243,29 +354,38 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
             </div>
 
             {/* Cost Options Row */}
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-6 items-center">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={free3DPrinting}
-                  onChange={(e) => setFree3DPrinting(e.target.checked)}
+                  onChange={(e) => handle3DPrintingToggle(e.target.checked)}
                   className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
                 />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
-                  3D Printing is Free
+                  3D Print for $5 Total
                 </span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={recycleCTRE}
-                  onChange={(e) => setRecycleCTRE(e.target.checked)}
+                  onChange={(e) => handleCTRERecyclingToggle(e.target.checked)}
                   className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
                 />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
                   Recycle CTRE Parts (Kraken, CANivore, CANCoder)
                 </span>
               </label>
+              <button
+                onClick={printNeededItems}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print Needed Items
+              </button>
             </div>
           </div>
 
@@ -299,6 +419,9 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-slate-100 dark:bg-slate-800">
+                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    Own
+                  </th>
                   <th 
                     className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
                     onClick={() => handleSort('partDescription')}
@@ -357,7 +480,8 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
               </thead>
               <tbody>
                 {filteredAndSortedItems.map((item, index) => {
-                  const effectivePrice = getEffectivePrice(item);
+                  const itemIndex = items.indexOf(item);
+                  const effectivePrice = getEffectivePrice(item, itemIndex);
                   const isDiscounted = effectivePrice < item.pricePerUnit;
                   
                   return (
@@ -365,6 +489,14 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                       key={index}
                       className={`${index % 2 === 0 ? 'bg-white dark:bg-slate-950' : 'bg-slate-50 dark:bg-slate-900'} hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
                     >
+                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center">
+                        <input
+                          type="checkbox"
+                          checked={ownedItems.has(itemIndex)}
+                          onChange={() => handleOwnedToggle(itemIndex)}
+                          className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+                        />
+                      </td>
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
                         <div className="flex items-center justify-center gap-2">
                           {item.partDescription}
