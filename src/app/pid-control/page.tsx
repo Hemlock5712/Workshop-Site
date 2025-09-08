@@ -3,6 +3,7 @@ import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import ContentCard from "@/components/ContentCard";
 import AlertBox from "@/components/AlertBox";
 import DocumentationButton from "@/components/DocumentationButton";
 
@@ -111,12 +112,13 @@ export default function PIDControl() {
           PID Implementation in Code
         </h2>
 
-        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-            🔧 PID Configuration Example
-          </summary>
-          <div className="mt-4">
-          <CodeBlock
+        <ContentCard>
+          <details>
+            <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+              🔧 PID Configuration Example
+            </summary>
+            <div className="mt-4">
+            <CodeBlock
             language="java"
             title="PID Setup in Subsystem Constructor"
             code={`// In your subsystem constructor
@@ -147,9 +149,10 @@ public void setTargetPosition(double positionRotations) {
 }
 
 `}
-          />
-          </div>
-        </details>
+            />
+            </div>
+          </details>
+        </ContentCard>
 
         {/* Mechanism Implementation Tabs */}
         <MechanismTabs
