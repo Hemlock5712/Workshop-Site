@@ -1,5 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function ProjectSetup() {
   return (
@@ -145,6 +146,15 @@ export default function ProjectSetup() {
           <strong>💡 Next Step:</strong> After creating your project, you&apos;ll learn about the Command-Based Framework in the next section. Your project will be ready for implementing subsystems and commands!
         </p>
       </div>
+      <WorkshopFooter
+        next={{
+          href: "/command-framework",
+          title: "Command-Based Framework",
+          description:
+            "Discover how the command-based framework organizes robot code.",
+        }}
+        relatedLinks={[{ href: "/hardware", label: "Hardware Setup" }]}
+      />
     </PageTemplate>
   );
 }

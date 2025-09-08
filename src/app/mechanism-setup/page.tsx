@@ -5,6 +5,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function MechanismSetup() {
   const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
@@ -323,6 +324,15 @@ export default function MechanismSetup() {
           </p>
         </div>
       </div>
+      <WorkshopFooter
+        next={{
+          href: "/pid-control",
+          title: "PID Control",
+          description:
+            "Learn the fundamentals of PID control for precise motion.",
+        }}
+        relatedLinks={[{ href: "/running-program", label: "Running Program" }]}
+      />
     </PageTemplate>
   );
 }

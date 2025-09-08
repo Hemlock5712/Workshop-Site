@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function Hardware() {
   return (
@@ -453,6 +454,15 @@ export default function Hardware() {
           className="w-full h-full aspect-video rounded-lg"
         />
       </section>
+      <WorkshopFooter
+        next={{
+          href: "/project-setup",
+          title: "Project Setup",
+          description:
+            "Set up your WPILib project and install dependencies.",
+        }}
+        relatedLinks={[{ href: "/mechanism-cad", label: "Mechanism CAD" }]}
+      />
     </PageTemplate>
   );
 }

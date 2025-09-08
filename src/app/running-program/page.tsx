@@ -1,5 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function RunningProgram() {
   return (
@@ -49,6 +50,15 @@ export default function RunningProgram() {
           className="w-full h-full aspect-video rounded-lg"
         />
       </section>
+      <WorkshopFooter
+        next={{
+          href: "/mechanism-setup",
+          title: "Mechanism Setup",
+          description:
+            "Prepare mechanisms for integration with the robot code.",
+        }}
+        relatedLinks={[{ href: "/adding-commands", label: "Commands" }]}
+      />
     </PageTemplate>
   );
 }

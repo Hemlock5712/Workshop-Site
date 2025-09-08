@@ -2,6 +2,7 @@ import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function MotionMagic() {
   return (
@@ -293,6 +294,15 @@ public void setTargetPosition(double positionRotations) {
           </div>
         </details>
       </section>
+      <WorkshopFooter
+        next={{
+          href: "/",
+          title: "Home",
+          description:
+            "Return to the home page to explore additional resources and workshops.",
+        }}
+        relatedLinks={[{ href: "/pid-control", label: "PID Control" }]}
+      />
     </PageTemplate>
   );
 }

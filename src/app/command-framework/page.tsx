@@ -1,6 +1,7 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function CommandFramework() {
   return (
@@ -110,6 +111,15 @@ export default function CommandFramework() {
           </a>
         </div>
       </section>
-    </PageTemplate>
-  );
-}
+        <WorkshopFooter
+          next={{
+            href: "/building-subsystems",
+            title: "Building Subsystems",
+            description:
+              "Build subsystems to structure robot hardware control.",
+          }}
+          relatedLinks={[{ href: "/project-setup", label: "Project Setup" }]}
+        />
+      </PageTemplate>
+    );
+  }

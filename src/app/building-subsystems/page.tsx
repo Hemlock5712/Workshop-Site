@@ -3,6 +3,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function BuildingSubsystems() {
   return (
@@ -200,6 +201,18 @@ public class ExampleSubsystem extends SubsystemBase {
           },
           nextStepText: "This flywheel subsystem is ready for command integration! Next, we'll add commands to control this Flywheel subsystem through user input."
         }}
+      />
+      <WorkshopFooter
+        next={{
+          href: "/adding-commands",
+          title: "Commands",
+          description:
+            "Add commands to interact with your subsystems.",
+        }}
+        relatedLinks={[{
+          href: "/command-framework",
+          label: "Command-Based Framework",
+        }]}
       />
     </PageTemplate>
   );

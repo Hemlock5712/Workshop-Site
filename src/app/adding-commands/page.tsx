@@ -4,6 +4,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import WorkshopFooter from "@/components/WorkshopFooter";
 
 export default function AddingCommands() {
   return (
@@ -198,6 +199,14 @@ public class RobotContainer {
           </div>
         </details>
       </section>
+      <WorkshopFooter
+        next={{
+          href: "/running-program",
+          title: "Running Program",
+          description: "Run the project on your robot to test behavior.",
+        }}
+        relatedLinks={[{ href: "/building-subsystems", label: "Subsystems" }]}
+      />
     </PageTemplate>
   );
 }
