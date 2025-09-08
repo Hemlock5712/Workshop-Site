@@ -102,7 +102,7 @@ export default function PIDControl() {
             title="CTRE Manual PID Tuning Guide"
             icon="📖"
           />
-        </div>
+        </AlertBox>
       </section>
 
       {/* Code Implementation */}
