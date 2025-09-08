@@ -4,6 +4,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ModelViewer from "@/components/ModelViewer";
 import BillOfMaterials from "@/components/BillOfMaterials";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import AlertBox from "@/components/AlertBox";
 import { armBOMData } from "@/data/armBOM";
 
 export default function MechanismCAD() {
@@ -124,10 +125,7 @@ export default function MechanismCAD() {
         </div>
 
         {/* File Format Guide */}
-        <div className="bg-blue-100 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-          <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">
-            📋 File Format Guide
-          </h4>
+        <AlertBox variant="info" title="📋 File Format Guide">
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div>
               <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">STL Files</h5>
@@ -142,7 +140,7 @@ export default function MechanismCAD() {
               </p>
             </div>
           </div>
-        </div>
+        </AlertBox>
 
         {/* Arm Bill of Materials */}
         <div className="mt-8">
