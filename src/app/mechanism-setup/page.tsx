@@ -85,6 +85,21 @@ export default function MechanismSetup() {
           <div className="p-6">
             {activeTab === "arm" ? (
               <div className="flex flex-col gap-8">
+                {/* Encoder Replacement Warning - Top Level */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                  <div className="flex items-start gap-4">
+                    <svg className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <h4 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2">📝 Important Note: Encoder Replacement</h4>
+                      <p className="text-blue-700 dark:text-blue-300">
+                        If you replace your encoder with a new one, you will need to <strong>repeat these setup steps</strong> to ensure proper direction and zero position configuration.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Step 1: Encoder Direction */}
                 <div className="card p-8">
                   <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
@@ -125,14 +140,6 @@ export default function MechanismSetup() {
                     />
                   </div>
 
-                  <iframe
-                    src="https://www.youtube.com/embed/zJgSQKrz8yE"
-                    title="Encoder Setup and Verification"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full aspect-video rounded-lg mb-8"
-                  />
-
                   {/* Implementation Sequence */}
                   <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
                     <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">🔧 Implementation Sequence</h4>
@@ -162,8 +169,15 @@ export default function MechanismSetup() {
                         </div>
                       </div>
                     </div>
-
                   </div>
+
+                  <iframe
+                    src="https://www.youtube.com/embed/zJgSQKrz8yE"
+                    title="Encoder Setup and Verification"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full aspect-video rounded-lg"
+                  />
                 </div>
 
                 {/* Step 2: Verifying Motor Setup */}
@@ -172,20 +186,18 @@ export default function MechanismSetup() {
                     2️⃣ Verifying Motor Setup
                   </h3>
 
-                  <div className="grid grid-cols-3 gap-6 mb-8">
-                    <p className="col-span-2 text-[var(--muted-foreground)]">
+                  <div className="grid grid-cols-2 gap-6 mb-8 items-start">
+                    <p className="text-[var(--muted-foreground)]">
                       You&apos;ll want to make sure your motor is spinning in the expected direction. If the motor is getting positive voltage, it should be spinning counterclockwise. You can check this through tuner, with the device facing you as in the following picture.
                     </p>
 
-                    <div className="flex w-full justify-center">
-                      <ImageBlock
-                        src="/images/mechanisms/arm.jpg"
-                        alt="Arm"
-                        width={300}
-                        height={200}
-                        className="rounded-lg"
-                      />
-                    </div>
+                    <ImageBlock
+                      src="/images/setup/counter-clockwise.png"
+                      alt="Counterclockwise rotation direction for motor verification"
+                      width={250}
+                      height={188}
+                      className="rounded-lg -mt-0"
+                    />
                   </div>
 
                   <iframe
