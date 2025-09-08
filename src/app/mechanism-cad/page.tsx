@@ -1,7 +1,6 @@
 "use client";
 
 import PageTemplate from "@/components/PageTemplate";
-import Link from "next/link";
 import ModelViewer from "@/components/ModelViewer";
 import BillOfMaterials from "@/components/BillOfMaterials";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -33,7 +32,7 @@ export default function MechanismCAD() {
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-4xl">
               <ModelViewer 
-                url="/cad/HTTI Mechanism v1 - Shooter Mode.gltf"
+                url="/cad/HTTI Mechanism v2 - Shooter Mode.gltf"
                 width={800}
                 height={600}
                 className="w-full shadow-lg"
@@ -49,58 +48,43 @@ export default function MechanismCAD() {
                 Use your mouse to orbit around the model, zoom in/out, and examine the design from different angles.
               </p>
               
-              {/* Download Button */}
-              <Link
-                href="https://github.com/Hemlock5712/Workshop-Site/raw/refs/heads/master/public/cad/HTTI%20Mechanism%20v1%20-%20Shooter%20Mode.stl?download="
-                download="HTTI Mechanism v1 - Shooter Mode.stl"
-                className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors shadow-md"
-              >
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
+              {/* Download Buttons */}
+              <div className="flex gap-3">
+                <a
+                  href="/cad/HTTI Mechanism v2 - Shooter Mode.stl"
+                  download
+                  className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-                  />
-                </svg>
-                Download STL File
-              </Link>
+                  📦 Download STL
+                </a>
+                <a
+                  href="/cad/HTTI Mechanism v2 - Shooter Mode.stp"
+                  download
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors"
+                >
+                  🔧 Download STP
+                </a>
+              </div>
+              <button
+                disabled
+                className="bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-4 py-2 rounded-lg text-center font-medium cursor-not-allowed mt-2"
+              >
+                🖨️ Bambu Files - Coming Soon
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Arm Mechanism - Coming Soon */}
+        {/* Arm Mechanism */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
           <div className="flex flex-col items-center gap-6">
-            <div className="w-full max-w-4xl h-96 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center">
-                  <svg 
-                    className="w-8 h-8 text-slate-500 dark:text-slate-400" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
-                    />
-                  </svg>
-                </div>
-                <h4 className="text-xl font-semibold text-slate-600 dark:text-slate-300">
-                  Coming Soon
-                </h4>
-                <p className="text-slate-500 dark:text-slate-400">
-                  Interactive 3D model coming soon
-                </p>
-              </div>
+            <div className="w-full max-w-4xl">
+              <ModelViewer 
+                url="/cad/HTTI Mechanism v2 - Arm Mode.gltf"
+                width={800}
+                height={600}
+                className="w-full shadow-lg"
+              />
             </div>
             
             <div className="text-center space-y-4">
@@ -110,6 +94,51 @@ export default function MechanismCAD() {
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
                 An Arm mechanism for Workshop programming. This arm mechanism demonstrates 
                 precise positioning and control concepts that are essential in FRC robotics.
+              </p>
+              
+              {/* Download Buttons */}
+              <div className="flex gap-3">
+                <a
+                  href="/cad/HTTI Mechanism v2 - Arm Mode.stl"
+                  download
+                  className="flex-1 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors"
+                >
+                  📦 Download STL
+                </a>
+                <a
+                  href="/cad/HTTI Mechanism v2 - Arm Mode.stp"
+                  download
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors"
+                >
+                  🔧 Download STP
+                </a>
+              </div>
+              <button
+                disabled
+                className="bg-slate-300 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-4 py-2 rounded-lg text-center font-medium cursor-not-allowed mt-2"
+              >
+                🖨️ Bambu Files - Coming Soon
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* File Format Guide */}
+        <div className="bg-blue-100 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <h4 className="text-lg font-semibold text-blue-900 dark:text-blue-300 mb-3">
+            📋 File Format Guide
+          </h4>
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">STL Files</h5>
+              <p className="text-blue-700 dark:text-blue-300">
+                Standard format for 3D printing. Compatible with most slicers including PrusaSlicer, Cura, and Bambu Studio.
+              </p>
+            </div>
+            <div>
+              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">STP Files</h5>
+              <p className="text-blue-700 dark:text-blue-300">
+                CAD format for editing and modification. Opens in Fusion 360, SolidWorks, and other CAD software.
               </p>
             </div>
           </div>

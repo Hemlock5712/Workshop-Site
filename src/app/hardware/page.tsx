@@ -1,6 +1,7 @@
 import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import ContentCard from "@/components/ContentCard";
 
 export default function Hardware() {
   return (
@@ -22,7 +23,7 @@ export default function Hardware() {
         </h2>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <ContentCard>
             <ImageBlock
               src="/images/hardware/Kraken44x.png"
               alt="Kraken Motor"
@@ -50,9 +51,9 @@ export default function Hardware() {
                 SplineXS shaft, FOC commutation, 1kHz PID control, compact 44mm design.
               </p>
             </div>
-          </div>
+          </ContentCard>
 
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <ContentCard>
             <ImageBlock
               src="/images/hardware/Encoder.png"
               alt="CANCoder"
@@ -80,9 +81,9 @@ export default function Hardware() {
                 absolute/relative position, CAN bus connectivity, versatile mounting options.
               </p>
             </div>
-          </div>
+          </ContentCard>
 
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <ContentCard>
             <ImageBlock
               src="/images/hardware/CANivore.png"
               alt="CANivore"
@@ -110,7 +111,7 @@ export default function Hardware() {
                 wireless configuration, ESP32 integration, multi-color status LEDs, USB Type-C support.
               </p>
             </div>
-          </div>
+          </ContentCard>
         </div>
       </section>
 
@@ -220,7 +221,7 @@ export default function Hardware() {
           Updating Your CTRE Products
         </h2>
 
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <ContentCard className="p-8">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
             Using Phoenix Tuner
           </h3>
@@ -275,7 +276,7 @@ export default function Hardware() {
               </div>
             </div>
           </div>
-        </div>
+        </ContentCard>
       </section>
 
       <section className="flex flex-col gap-8">
@@ -284,7 +285,7 @@ export default function Hardware() {
         </h2>
 
         <div>
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800 mx-auto flex flex-col gap-4">
+          <ContentCard className="mx-auto flex flex-col gap-4">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
               📱 How to Update Motors
             </h3>
@@ -300,7 +301,7 @@ export default function Hardware() {
             <p className="text-slate-600 dark:text-slate-300 text-sm">
               Use Phoenix Tuner to update your motor firmware. Select devices and use the batch update feature to ensure all motors are running the latest firmware version.
             </p>
-          </div>
+          </ContentCard>
         </div>
 
         <div className="bg-primary-100 dark:bg-primary-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-6">

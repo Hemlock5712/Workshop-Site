@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import GithubPageWithPR from "./GithubPageWithPR";
+import CodeWalkthrough from "./CodeWalkthrough";
 
 interface MechanismContent {
   beforeItems: string[];
@@ -109,35 +110,17 @@ export default function MechanismTabs({
           </div>
 
           {/* Code Walkthrough */}
-          <div className="bg-learn-100 dark:bg-learn-900/20 border border-learn-200 dark:border-learn-900 rounded-lg p-6">
-            <h3 className="text-xl font-bold text-learn-900 dark:text-learn-300 mb-4">🔍 Code Walkthrough</h3>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">{currentContent.walkthrough.leftTitle}:</h4>
-                <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                  {currentContent.walkthrough.leftItems.map((item, index) => (
-                    <li key={index} dangerouslySetInnerHTML={{ __html: item }} />
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="font-semibold text-learn-800 dark:text-learn-200 mb-2">{currentContent.walkthrough.rightTitle}:</h4>
-                <ul className="text-sm text-learn-700 dark:text-learn-300 space-y-1">
-                  {currentContent.walkthrough.rightItems.map((item, index) => (
-                    <li key={index} dangerouslySetInnerHTML={{ __html: item }} />
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-              <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-                <strong>💡 Next Step:</strong> {currentContent.nextStepText}
-              </p>
-            </div>
-          </div>
+          <CodeWalkthrough 
+            leftSection={{
+              title: currentContent.walkthrough.leftTitle,
+              items: currentContent.walkthrough.leftItems
+            }}
+            rightSection={{
+              title: currentContent.walkthrough.rightTitle,
+              items: currentContent.walkthrough.rightItems
+            }}
+            nextStepText={currentContent.nextStepText}
+          />
         </div>
       </div>
     </section>
