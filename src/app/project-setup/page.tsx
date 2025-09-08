@@ -1,5 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
+import AlertBox from "@/components/AlertBox";
 
 export default function ProjectSetup() {
   return (
@@ -74,11 +75,9 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">Base folder select &quot;Downloads&quot;</p>
-              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded p-3 mt-2">
-                <p className="text-red-800 dark:text-red-300 text-sm">
-                  ⚠️ <strong>Warning:</strong> OneDrive locations are not supported and will cause project creation to fail.
-                </p>
-              </div>
+              <AlertBox variant="warning" title="⚠️ Warning" className="mt-2">
+                OneDrive locations are not supported and will cause project creation to fail.
+              </AlertBox>
             </div>
           </div>
 
@@ -140,11 +139,9 @@ export default function ProjectSetup() {
         className="w-full h-full aspect-video rounded-lg"
       />
 
-      <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-        <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-          <strong>💡 Next Step:</strong> After creating your project, you&apos;ll learn about the Command-Based Framework in the next section. Your project will be ready for implementing subsystems and commands!
-        </p>
-      </div>
+      <AlertBox variant="tip" title="💡 Next Step" className="mt-4">
+        After creating your project, you&apos;ll learn about the Command-Based Framework in the next section. Your project will be ready for implementing subsystems and commands!
+      </AlertBox>
     </PageTemplate>
   );
 }
