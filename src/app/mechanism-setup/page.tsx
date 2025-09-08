@@ -27,6 +27,27 @@ export default function MechanismSetup() {
         </div>
       </div>
 
+      {/* CANivore USB Warning */}
+      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
+        <div className="flex items-start gap-3">
+          <svg className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          </svg>
+          <div>
+            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">⚠️ Warning: Stop Code Before Hardware Setup</h3>
+            <p className="text-red-700 dark:text-red-300 mb-3">
+              Before performing hardware setup tasks, <strong>stop any running code</strong> and turn <strong>ON</strong> the &quot;CANivore USB&quot; setting in TunerX. 
+              This ensures proper communication with physical hardware during testing and configuration.
+            </p>
+            <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded border border-red-200 dark:border-red-700">
+              <p className="text-red-800 dark:text-red-200 text-sm">
+                <strong>Steps:</strong> Stop any running robot code → Open TunerX → Go to CANivore settings → Enable &quot;CANivore USB&quot;
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Mechanism-Specific Setup Steps */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
@@ -221,9 +242,7 @@ export default function MechanismSetup() {
                         <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">Expected Behavior:</h4>
                         <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
                           <li>• Leader and follower motors spin together</li>
-                          <li>• Positive voltage → consistent rotation direction</li>
-                          <li>• No unusual noise or vibration</li>
-                          <li>• Smooth acceleration and deceleration</li>
+                          <li>• Positive voltage → Shooting</li>
                         </ul>
                       </div>
                     </div>
