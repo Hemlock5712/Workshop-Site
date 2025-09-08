@@ -81,6 +81,54 @@ export default function Introduction() {
       </section>
 
       <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">🧠 Workshop Expectations</h2>
+
+        <div className="space-y-6">
+          <div className="border-l-4 border-teal-200 dark:border-teal-900 pl-4">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              Prerequisites
+            </h3>
+            <ul className="list-disc ml-4 text-slate-600 dark:text-slate-300 space-y-1">
+              <li>Basic Java programming</li>
+              <li>Familiarity with WPILib and command-based concepts</li>
+              <li>Experience wiring and configuring CTRE hardware</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-sky-200 dark:border-sky-900 pl-4">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              Learning Path & Success Criteria
+            </h3>
+            <p className="text-lg text-slate-600 dark:text-slate-300 mb-4">
+              Follow each section in order and check the success criteria to confirm your understanding.
+              Completing every section earns you a certificate and digital badge.
+            </p>
+            <ul className="space-y-2 text-slate-600 dark:text-slate-300">
+              <li><strong>Hardware Setup:</strong> Rio communicates with all devices.</li>
+              <li><strong>Project Setup:</strong> Command-based project builds without errors.</li>
+              <li><strong>Command-Based Framework:</strong> A sample command executes on the robot.</li>
+              <li><strong>Building Subsystems:</strong> Subsystem methods control hardware as expected.</li>
+              <li><strong>Adding Commands:</strong> Commands bind to joystick buttons successfully.</li>
+              <li><strong>Running Program:</strong> Code deploys and driver station shows no faults.</li>
+              <li><strong>Mechanism Setup:</strong> Mechanism responds to manual commands.</li>
+              <li><strong>PID Control:</strong> Mechanism reaches setpoint smoothly.</li>
+              <li><strong>Motion Magic:</strong> Motion profile completes within tolerance.</li>
+            </ul>
+          </div>
+
+          <div className="border-l-4 border-indigo-200 dark:border-indigo-900 pl-4">
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              Completion Rewards
+            </h3>
+            <p className="text-lg text-slate-600 dark:text-slate-300">
+              Finish the full learning path to receive a shareable certificate and badge that
+              recognizes your achievement and can be added to team portfolios.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">Choose Your Workshop</h2>
 
         <div className="grid md:grid-cols-2 gap-8">
