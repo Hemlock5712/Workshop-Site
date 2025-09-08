@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
+import StepList from "@/components/StepList";
 
 export default function Hardware() {
   return (
@@ -206,13 +207,17 @@ export default function Hardware() {
           <h3 className="text-lg font-semibold text-yellow-700 dark:text-yellow-300 mb-3">
             ⚠️ Important Setup Steps
           </h3>
-          <ol className="list-decimal list-inside space-y-2 text-yellow-800 dark:text-yellow-300">
-            <li>Plug the computer into CANivore</li>
-            <li>Make sure the &quot;CANivore USB&quot; is checked</li>
-            <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
-            <li>Your CANivore should now appear in Phoenix Tuner</li>
-            <li>For this workshop, please name your CANivore: &quot;canivore&quot;</li>
-          </ol>
+          <StepList
+            variant="numbered"
+            className="text-yellow-800 dark:text-yellow-300"
+            steps={[
+              "Plug the computer into CANivore",
+              "Make sure the \"CANivore USB\" is checked",
+              "Change \"Team # or IP\" to \"localhost\"",
+              "Your CANivore should now appear in Phoenix Tuner",
+              "For this workshop, please name your CANivore: \"canivore\"",
+            ]}
+          />
         </div>
       </section>
 
@@ -226,56 +231,47 @@ export default function Hardware() {
             Using Phoenix Tuner
           </h3>
 
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                ✓
-              </span>
-              <div>
-                <p className="font-medium">
-                  Open Phoenix Tuner and connect to your robot
-                </p>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">
-                  If you have issues connecting to your robot,
-                  <a
-                    href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
-                    className="text-primary-600 underline hover:no-underline dark:text-primary-400 ml-1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    view this guide
-                  </a>
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                ✓
-              </span>
-              <div>
-                <p className="font-medium">
-                  Batch update all products of the same model
-                </p>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">
-                  Select one of the devices and then click the batch update
-                  icons
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                ✓
-              </span>
-              <div>
-                <p className="font-medium">Verify Updates</p>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">
-                  The device cards will be green if the firmware is the latest
-                </p>
-              </div>
-            </div>
-          </div>
+          <StepList
+            variant="checkmark"
+            steps={[
+              (
+                <div key="connect">
+                  <p className="font-medium">
+                    Open Phoenix Tuner and connect to your robot
+                  </p>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm">
+                    If you have issues connecting to your robot,
+                    <a
+                      href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
+                      className="text-primary-600 underline hover:no-underline dark:text-primary-400 ml-1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      view this guide
+                    </a>
+                  </p>
+                </div>
+              ),
+              (
+                <div key="batch">
+                  <p className="font-medium">
+                    Batch update all products of the same model
+                  </p>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm">
+                    Select one of the devices and then click the batch update icons
+                  </p>
+                </div>
+              ),
+              (
+                <div key="verify">
+                  <p className="font-medium">Verify Updates</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-sm">
+                    The device cards will be green if the firmware is the latest
+                  </p>
+                </div>
+              ),
+            ]}
+          />
         </ContentCard>
       </section>
 
@@ -413,23 +409,35 @@ export default function Hardware() {
               <h4 className="font-semibold text-[var(--foreground)] mb-3">
                 Quick Test Steps:
               </h4>
-              <ol className="list-decimal list-inside space-y-2 text-[var(--foreground)]">
-                <li>Open up your motor in Phoenix Tuner</li>
-                <li>
-                  Click <strong>Config</strong>
-                </li>
-                <li>Click the three dots</li>
-                <li>
-                  Click <strong>Factory Default</strong>
-                </li>
-                <li>
-                  Set the drop-down to <strong>Voltage Out</strong>
-                </li>
-                <li>
-                  Click <strong>DISABLED</strong> to enable
-                </li>
-                <li>Apply voltage to test the motor</li>
-              </ol>
+              <StepList
+                variant="numbered"
+                className="text-[var(--foreground)]"
+                steps={[
+                  "Open up your motor in Phoenix Tuner",
+                  (
+                    <span key="config">
+                      Click <strong>Config</strong>
+                    </span>
+                  ),
+                  "Click the three dots",
+                  (
+                    <span key="factory">
+                      Click <strong>Factory Default</strong>
+                    </span>
+                  ),
+                  (
+                    <span key="voltage">
+                      Set the drop-down to <strong>Voltage Out</strong>
+                    </span>
+                  ),
+                  (
+                    <span key="enable">
+                      Click <strong>DISABLED</strong> to enable
+                    </span>
+                  ),
+                  "Apply voltage to test the motor",
+                ]}
+              />
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-[var(--border)]">

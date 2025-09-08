@@ -5,6 +5,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import StepList from "@/components/StepList";
 
 export default function MechanismSetup() {
   const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
@@ -139,31 +140,51 @@ export default function MechanismSetup() {
                   <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
                     <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">🔧 Implementation Sequence</h4>
                     
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
-                        <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
-                        <div>
-                          <h4 className="font-bold text-primary-700 dark:text-primary-300">Rotate Counter-Clockwise</h4>
-                          <p className="text-primary-600 dark:text-primary-400 text-sm">Manually rotate the mechanism counter-clockwise and observe if the encoder position increases.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                        <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
-                        <div>
-                          <h4 className="font-bold text-primary-800 dark:text-primary-200">Fix Direction if Needed</h4>
-                          <p className="text-primary-700 dark:text-primary-300 text-sm">If position goes down instead of up, go to &quot;Info&quot; → &quot;Sensor Direction&quot; → press &quot;Apply&quot; button to invert the encoder direction.</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
-                        <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
-                        <div>
-                          <h4 className="font-bold text-primary-900 dark:text-primary-100">Zero the Encoder</h4>
-                          <p className="text-primary-800 dark:text-primary-200 text-sm">Put arm to zero position, then in TunerX go to &quot;Info&quot; → press &quot;0 encoder&quot; button → press &quot;Apply&quot; button.</p>
-                        </div>
-                      </div>
-                    </div>
+                    <StepList
+                      variant="numbered"
+                      className="space-y-4"
+                      steps={[
+                        (
+                          <div
+                            key="rotate"
+                            className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg"
+                          >
+                            <div>
+                              <h4 className="font-bold text-primary-700 dark:text-primary-300">Rotate Counter-Clockwise</h4>
+                              <p className="text-primary-600 dark:text-primary-400 text-sm">
+                                Manually rotate the mechanism counter-clockwise and observe if the encoder position increases.
+                              </p>
+                            </div>
+                          </div>
+                        ),
+                        (
+                          <div
+                            key="fix-direction"
+                            className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg"
+                          >
+                            <div>
+                              <h4 className="font-bold text-primary-800 dark:text-primary-200">Fix Direction if Needed</h4>
+                              <p className="text-primary-700 dark:text-primary-300 text-sm">
+                                If position goes down instead of up, go to &quot;Info&quot; → &quot;Sensor Direction&quot; → press &quot;Apply&quot; button to invert the encoder direction.
+                              </p>
+                            </div>
+                          </div>
+                        ),
+                        (
+                          <div
+                            key="zero"
+                            className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg"
+                          >
+                            <div>
+                              <h4 className="font-bold text-primary-900 dark:text-primary-100">Zero the Encoder</h4>
+                              <p className="text-primary-800 dark:text-primary-200 text-sm">
+                                Put arm to zero position, then in TunerX go to &quot;Info&quot; → press &quot;0 encoder&quot; button → press &quot;Apply&quot; button.
+                              </p>
+                            </div>
+                          </div>
+                        ),
+                      ]}
+                    />
                   </div>
 
                   <iframe
