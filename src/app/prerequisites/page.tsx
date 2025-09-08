@@ -85,6 +85,71 @@ export default function Prerequisites() {
             </div>
           </div>
         </div>
+
+        {/* Hardware Requirements */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">🖥️ Hardware Requirements</h2>
+          <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+            <li>Laptop or desktop with Windows 10+ or macOS 12+, at least 8GB RAM and 10GB free storage</li>
+            <li>Stable internet connection for downloads and updates</li>
+            <li>Access to a roboRIO, radio, and power supply for hardware testing</li>
+          </ul>
+        </div>
+
+        {/* Installation Troubleshooting */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">⚙️ Installation Troubleshooting</h2>
+          <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+            <li>Run installers as administrator to avoid permission issues</li>
+            <li>Disable antivirus or firewall temporarily if downloads fail</li>
+            <li>
+              Verify Java is on your PATH by running <code className="bg-slate-200 dark:bg-slate-800 px-1 rounded">java -version</code>
+            </li>
+            <li>
+              If WPILib crashes, run <code className="bg-slate-200 dark:bg-slate-800 px-1 rounded">WPILibDoctor</code> for diagnostics
+            </li>
+          </ul>
+        </div>
+
+        {/* Team Setup Tips */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">🤝 Team Setup Tips</h2>
+          <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+            <li>Create a shared Git repository and protect the main branch</li>
+            <li>Hold short stand-up meetings to coordinate tasks</li>
+            <li>Encourage pair programming to help new members learn quickly</li>
+          </ul>
+        </div>
+
+        {/* Skill Prerequisites */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">📚 Skill Prerequisites</h2>
+          <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+            <li>Basic Java programming and command line familiarity</li>
+            <li>Understanding of robot components like motors and sensors</li>
+            <li>Willingness to learn and experiment</li>
+          </ul>
+        </div>
+
+        {/* Time Estimates */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">⏱️ Time Estimates</h2>
+          <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+            <li>Software installation: 1–2 hours depending on download speeds</li>
+            <li>Initial hardware setup: about 2 hours</li>
+            <li>Team onboarding and practice: 1 hour</li>
+          </ul>
+        </div>
+
+        {/* Common Issues */}
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">🐞 Common Issues</h2>
+          <ul className="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+            <li>Driver Station cannot see the roboRIO—check network cables and IP settings</li>
+            <li>Build failures due to missing vendor libraries—rerun vendor dependency installer</li>
+            <li>Outdated firmware—update motor controllers and roboRIO before testing</li>
+          </ul>
+        </div>
       </div>
 
       <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6 mb-8">
