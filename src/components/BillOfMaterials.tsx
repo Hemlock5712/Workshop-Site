@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import ExternalLink from "@/components/ExternalLink";
 
 export interface BOMItem {
   partDescription: string;
@@ -529,17 +530,15 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                         </div>
                       </td>
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
-                        <a 
-                          href={item.productLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
+                        <ExternalLink
+                          href={item.productLink}
                           className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline"
                         >
                           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
                           View
-                        </a>
+                        </ExternalLink>
                       </td>
                       <td className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-xs text-slate-700 dark:text-slate-300 w-48">
                         <div className="break-words" title={item.notes}>
@@ -553,17 +552,15 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                               Yes
                             </span>
                             {item.printedModelLink && (
-                              <a 
-                                href={item.printedModelLink} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
+                              <ExternalLink
+                                href={item.printedModelLink}
                                 className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                                 title="3D Model Link"
                               >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
                                 </svg>
-                              </a>
+                              </ExternalLink>
                             )}
                           </div>
                         ) : (

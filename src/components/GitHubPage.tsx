@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ExternalLink from "@/components/ExternalLink";
 import CodeBlock from "./CodeBlock";
 
 /**
@@ -172,14 +173,12 @@ export default function GitHubPage({
 
             <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
               {fileInfo?.size && <span>{formatFileSize(fileInfo.size)}</span>}
-              <a
+              <ExternalLink
                 href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="bg-[var(--muted)] text-[var(--foreground)] px-3 py-1 rounded hover:bg-[var(--border)] transition-colors text-sm font-medium"
               >
                 View on GitHub →
-              </a>
+              </ExternalLink>
             </div>
           </div>
 

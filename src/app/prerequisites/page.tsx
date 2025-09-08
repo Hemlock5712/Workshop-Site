@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import ExternalLink from "@/components/ExternalLink";
 
 export default function Prerequisites() {
   return (
@@ -11,13 +12,13 @@ export default function Prerequisites() {
           <div className="space-y-6">
             <div className="border-l-4 border-purple-200 dark:border-purple-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html"
-                  className="text-purple-600 underline hover:no-underline dark:text-purple-400" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html"
+                  className="text-purple-600 underline hover:no-underline dark:text-purple-400">
                   WPILib
-                </a> & <a href="https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html#553883"
-                  className="text-purple-600 underline hover:no-underline dark:text-purple-400" target="_blank" rel="noopener noreferrer">
+                </ExternalLink> & <ExternalLink href="https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html#553883"
+                  className="text-purple-600 underline hover:no-underline dark:text-purple-400">
                   Game Tools
-                </a>
+                </ExternalLink>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Install WPILib VS Code and National Instruments Game Tool (includes Driver Station and roboRIO imaging).
@@ -26,10 +27,10 @@ export default function Prerequisites() {
 
             <div className="border-l-4 border-blue-200 dark:border-blue-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a href="https://apps.microsoft.com/detail/9NVV4PWDW27Z"
-                  className="text-blue-600 underline hover:no-underline dark:text-blue-400" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://apps.microsoft.com/detail/9NVV4PWDW27Z"
+                  className="text-blue-600 underline hover:no-underline dark:text-blue-400">
                   Phoenix Tuner X
-                </a>
+                </ExternalLink>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Essential for configuring and tuning TalonFX and other CTRE hardware.
@@ -38,10 +39,10 @@ export default function Prerequisites() {
 
             <div className="border-l-4 border-green-200 dark:border-green-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a href="https://git-scm.com/downloads"
-                  className="text-green-600 underline hover:no-underline dark:text-green-400" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://git-scm.com/downloads"
+                  className="text-green-600 underline hover:no-underline dark:text-green-400">
                   Git
-                </a>
+                </ExternalLink>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Use Git for version control. Summarize changes clearly (e.g., &apos;Add drivetrain PID tuning logic&apos;).
@@ -50,10 +51,10 @@ export default function Prerequisites() {
 
             <div className="border-l-4 border-orange-200 dark:border-orange-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a href="https://github.com/mjansen4857/pathplanner/releases"
-                  className="text-orange-600 underline hover:no-underline dark:text-orange-400" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://github.com/mjansen4857/pathplanner/releases"
+                  className="text-orange-600 underline hover:no-underline dark:text-orange-400">
                   PathPlanner
-                </a>
+                </ExternalLink>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Allows you to draw paths for your swerve drive to follow.
@@ -62,10 +63,10 @@ export default function Prerequisites() {
 
             <div className="border-l-4 border-red-200 dark:border-red-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a href="https://github.com/Gold872/elastic-dashboard"
-                  className="text-red-600 underline hover:no-underline dark:text-red-400" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://github.com/Gold872/elastic-dashboard"
+                  className="text-red-600 underline hover:no-underline dark:text-red-400">
                   Elastic Dashboard
-                </a>
+                </ExternalLink>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Drivers use a dashboard to easily view the robot and key items, such as selecting autonomous routines or viewing motor errors.
@@ -74,10 +75,10 @@ export default function Prerequisites() {
 
             <div className="border-l-4 border-yellow-200 dark:border-yellow-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a href="https://www.codecademy.com/learn/learn-java"
-                  className="text-yellow-600 underline hover:no-underline dark:text-yellow-400" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://www.codecademy.com/learn/learn-java"
+                  className="text-yellow-600 underline hover:no-underline dark:text-yellow-400">
                   Java Knowledge
-                </a>
+                </ExternalLink>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Ideally, some basic knowledge of Java coding (optional but recommended).

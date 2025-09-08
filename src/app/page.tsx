@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import ExternalLink from "@/components/ExternalLink";
 
 export default function Home() {
   return (
@@ -94,10 +95,8 @@ export default function Home() {
           
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
-              <a 
-                href="https://store.ctr-electronics.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <ExternalLink
+                href="https://store.ctr-electronics.com/"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
@@ -107,11 +106,9 @@ export default function Home() {
                   height={120}
                   className="max-w-full max-h-full object-contain"
                 />
-              </a>
-              <a 
-                href="https://michauto.org/" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              </ExternalLink>
+              <ExternalLink
+                href="https://michauto.org/"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
@@ -121,11 +118,9 @@ export default function Home() {
                   height={120}
                   className="max-w-full max-h-full object-contain"
                 />
-              </a>
-              <a 
-                href="https://www.michiganbusiness.org/ofme/" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              </ExternalLink>
+              <ExternalLink
+                href="https://www.michiganbusiness.org/ofme/"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
@@ -135,11 +130,9 @@ export default function Home() {
                   height={120}
                   className="max-w-full max-h-full object-contain"
                 />
-              </a>
-              <a 
-                href="https://lockwoodstemcenter.hemlockps.com/home" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              </ExternalLink>
+              <ExternalLink
+                href="https://lockwoodstemcenter.hemlockps.com/home"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
@@ -149,7 +142,7 @@ export default function Home() {
                   height={120}
                   className="max-w-full max-h-full object-contain"
                 />
-              </a>
+              </ExternalLink>
             </div>
             
             <div>

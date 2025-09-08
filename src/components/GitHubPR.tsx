@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import ExternalLink from "@/components/ExternalLink";
 
 /**
  * GitHub API response types for pull request data
@@ -278,14 +279,12 @@ export default function GitHubPR({
               </div>
             </div>
 
-            <a
+            <ExternalLink
               href={pr.html_url}
-              target="_blank"
-              rel="noopener noreferrer"
               className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium"
             >
               View on GitHub →
-            </a>
+            </ExternalLink>
           </div>
         </div>
 

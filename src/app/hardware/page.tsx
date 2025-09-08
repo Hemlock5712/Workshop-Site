@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
+import ExternalLink from "@/components/ExternalLink";
 
 export default function Hardware() {
   return (
@@ -32,14 +33,12 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              <a 
+              <ExternalLink
                 href="https://store.ctr-electronics.com/products/kraken-x44"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
                 Kraken X44 Brushless Motor Powered by Talon FX™
-              </a>
+              </ExternalLink>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               Compact brushless motor with integrated Talon FX™ controller. 
@@ -62,14 +61,12 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              <a 
+              <ExternalLink
                 href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
                 WCP ThroughBore Encoder – CAN Bus Position Sensor
-              </a>
+              </ExternalLink>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               Through bore rotary sensor using innovative off-axis magnet technology. 
@@ -92,14 +89,12 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              <a 
+              <ExternalLink
                 href="https://store.ctr-electronics.com/canivore/"
-                target="_blank"
-                rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
                 CANivore™ – CAN FD Bus Expansion
-              </a>
+              </ExternalLink>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               USB-to-CAN FD interface that adds new CAN FD network to PC or roboRIO.
@@ -159,38 +154,30 @@ export default function Hardware() {
             </h4>
             <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800">
               <div className="grid md:grid-cols-2 gap-4">
-                <a
+                <ExternalLink
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html"
                   className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   → CANivore Introduction
-                </a>
-                <a
+                </ExternalLink>
+                <ExternalLink
                   href="https://v6.docs.ctr-electronics.com/"
                   className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   → Phoenix 6 Documentation
-                </a>
-                <a
+                </ExternalLink>
+                <ExternalLink
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/"
                   className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   → Phoenix 6 API Reference
-                </a>
-                <a
+                </ExternalLink>
+                <ExternalLink
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
                   className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   → Phoenix Tuner X Documentation
-                </a>
+                </ExternalLink>
               </div>
             </div>
           </div>
@@ -237,14 +224,12 @@ export default function Hardware() {
                 </p>
                 <p className="text-slate-600 dark:text-slate-300 text-sm">
                   If you have issues connecting to your robot,
-                  <a
+                  <ExternalLink
                     href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
                     className="text-primary-600 underline hover:no-underline dark:text-primary-400 ml-1"
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     view this guide
-                  </a>
+                  </ExternalLink>
                 </p>
               </div>
             </div>
