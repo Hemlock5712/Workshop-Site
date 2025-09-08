@@ -3,6 +3,7 @@ import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import AlertBox from "@/components/AlertBox";
 import DocumentationButton from "@/components/DocumentationButton";
 
 export default function PIDControl() {
@@ -70,32 +71,30 @@ export default function PIDControl() {
         </div>
 
         {/* Feedforward Components */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚡ Feedforward Gains</h3>
-          <p className="text-[var(--foreground)] mb-4">
+        <AlertBox variant="info" title="⚡ Feedforward Gains">
+          <p className="mb-4">
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
           </p>
-          
-            <div className="grid md:grid-cols-4 gap-4">
-              <ConceptBox title="kS - Static">
-                Constant output to overcome friction and get the mechanism moving.
-              </ConceptBox>
-              <ConceptBox title="kG - Gravity">
-                Compensates for gravitational forces acting on the mechanism.
-              </ConceptBox>
-              <ConceptBox title="kV - Velocity">
-                Output applied per target velocity to maintain smooth motion.
-              </ConceptBox>
-              <ConceptBox title="kA - Acceleration">
-                Output applied per target acceleration for responsive movement.
-              </ConceptBox>
-            </div>
-        </div>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            <ConceptBox title="kS - Static">
+              Constant output to overcome friction and get the mechanism moving.
+            </ConceptBox>
+            <ConceptBox title="kG - Gravity">
+              Compensates for gravitational forces acting on the mechanism.
+            </ConceptBox>
+            <ConceptBox title="kV - Velocity">
+              Output applied per target velocity to maintain smooth motion.
+            </ConceptBox>
+            <ConceptBox title="kA - Acceleration">
+              Output applied per target acceleration for responsive movement.
+            </ConceptBox>
+          </div>
+        </AlertBox>
 
         {/* Documentation Link */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Complete PID Tuning Guide</h3>
-          <p className="text-[var(--foreground)] mb-4">
+        <AlertBox variant="info" title="📚 Complete PID Tuning Guide">
+          <p className="mb-4">
             For detailed PID tuning instructions, step-by-step processes, and mechanism-specific guidance:
           </p>
           <DocumentationButton
