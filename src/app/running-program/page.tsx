@@ -27,7 +27,7 @@ export default function RunningProgram() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
           </svg>
           <div>
-            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">⚠️ Important: CANivore USB Setting</h3>
+            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">Important: CANivore USB Setting</h3>
             <p className="text-red-700 dark:text-red-300 mb-3">
               Before running Hardware Simulation code, you <strong>must</strong> turn <strong>OFF</strong> the &quot;CANivore USB&quot; setting in TunerX. 
               This prevents conflicts between the simulation environment and physical hardware communication.
