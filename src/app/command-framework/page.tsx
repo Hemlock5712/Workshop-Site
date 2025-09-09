@@ -65,25 +65,32 @@ export default function CommandFramework() {
                 <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
                 <div>
                   <h4 className="font-bold text-primary-800 dark:text-primary-200">Adding Commands</h4>
-                  <p className="text-primary-700 dark:text-primary-300 text-sm">Command structure, lifecycle, and controller integration</p>
+                  <p className="text-primary-700 dark:text-primary-300 text-sm">Command structure and creation methods</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
                 <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
                 <div>
-                  <h4 className="font-bold text-primary-900 dark:text-primary-100">PID Control</h4>
-                  <p className="text-primary-800 dark:text-primary-200 text-sm">Precise position control with feedback and tuning</p>
+                  <h4 className="font-bold text-primary-900 dark:text-primary-100">Triggers</h4>
+                  <p className="text-primary-800 dark:text-primary-200 text-sm">User input binding and advanced command patterns</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-primary-300 dark:bg-primary-700/50 rounded-lg">
                 <div className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
                 <div>
-                  <h4 className="font-bold text-primary-950 dark:text-white">Motion Magic</h4>
-                  <p className="text-primary-900 dark:text-primary-100 text-sm">Smooth profiled motion with acceleration control</p>
+                  <h4 className="font-bold text-primary-950 dark:text-white">PID Control</h4>
+                  <p className="text-primary-900 dark:text-primary-100 text-sm">Precise position control with feedback and tuning</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-primary-400 dark:bg-primary-600/60 rounded-lg">
                 <div className="bg-primary-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white">Motion Magic</h4>
+                  <p className="text-slate-800 dark:text-slate-100 text-sm">Smooth profiled motion with acceleration control</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 p-4 bg-primary-500 dark:bg-primary-500/70 rounded-lg">
+                <div className="bg-slate-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">6</div>
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white">Useful Functions</h4>
                   <p className="text-slate-800 dark:text-slate-100 text-sm">Safety features, diagnostics, and utility functions</p>
@@ -93,89 +100,6 @@ export default function CommandFramework() {
           </ContentCard>
         </div>
 
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Advanced Command Patterns
-        </h2>
-        <div className="space-y-8">
-          <div>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Complex Command Groups</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">Combine sequences and parallel actions to coordinate subsystems.</p>
-            <CodeBlock
-              code={`// Run intake and raise arm simultaneously after driving
-new SequentialCommandGroup(
-  new DriveDistance(2.0, drivetrain),
-  new ParallelCommandGroup(
-    new RaiseArm(arm),
-    new RunIntake(intake).withTimeout(2)
-  )
-);`}
-            />
-          </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Composition Strategies</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">Use fluent helpers to assemble commands from smaller pieces.</p>
-            <CodeBlock
-              code={`Command shootAndDrive =
-  shooter.spinUp()
-    .andThen(intake.feed())
-    .andThen(drivetrain.driveForward(1.0));`}
-            />
-          </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Common Pitfalls</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">Always declare subsystem requirements to avoid unexpected conflicts.</p>
-            <CodeBlock
-              code={`public class BadCommand extends CommandBase {
-  private final Drivetrain drive;
-  public BadCommand(Drivetrain drive) {
-    this.drive = drive;
-    // Missing: addRequirements(drive);
-  }
-}`}
-            />
-          </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Advanced Triggers</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">Create triggers from sensor conditions or button combinations.</p>
-            <CodeBlock
-              code={`Trigger armReady = new Trigger(
-  () -> arm.atPosition() && shooter.atSpeed());
-armReady.onTrue(new FireCommand(shooter, arm));`}
-            />
-          </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Scheduling & Interruption</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">Schedule commands programmatically and handle interruptions gracefully.</p>
-            <CodeBlock
-              code={`// Schedule during autonomous
-CommandScheduler.getInstance()
-  .schedule(new BalanceAuto(drive));
-
-// Interrupt when limit switch hit
-new RaiseClimber(climber)
-  .until(climber::isAtTop);`}
-            />
-          </div>
-
-          <div>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">Real-World Scenario</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">Combine patterns to build robust autonomous routines.</p>
-            <CodeBlock
-              code={`Command auto =
-  new ParallelDeadlineGroup(
-    new DriveDistance(3, drive),
-    new SequentialCommandGroup(
-      new SpinUpFlywheel(shooter),
-      new FeedShooter(intake, shooter)
-    )
-  );`}
-            />
-          </div>
-        </div>
 
         {/* Documentation Link */}
         <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">

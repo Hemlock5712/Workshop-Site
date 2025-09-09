@@ -1,17 +1,15 @@
 import MechanismTabs from "@/components/MechanismTabs";
-import GitHubPage from "@/components/GitHubPage";
 import PageTemplate from "@/components/PageTemplate";
 import ConceptBox from "@/components/ConceptBox";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
-import ContentCard from "@/components/ContentCard";
 
 export default function AddingCommands() {
   return (
     <PageTemplate
       title="Commands"
       previousPage={{ href: "/building-subsystems", title: "Subsystems" }}
-      nextPage={{ href: "/running-program", title: "Running Program" }}
+      nextPage={{ href: "/triggers", title: "Triggers" }}
     >
       {/* Introduction */}
       <KeyConceptSection
@@ -52,60 +50,28 @@ public Command stopArm() {
           </div>
         </details>
 
-          {/* Trigger Examples */}
-          <details className="card p-6">
-          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">🎯 Trigger Examples - Binding Input to Commands</summary>
-          <div className="mt-4">
-          <CodeBlock
-            language="java"
-            title="RobotContainer.java - configureBindings()"
-            code={`package frc.robot;
-
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Arm;
-
-public class RobotContainer {
-    // Hardware - controllers and subsystems
-    private final CommandXboxController controller = new CommandXboxController(0);
-    private final Arm armSubsystem = new Arm();
-    
-    public RobotContainer() {
-        configureBindings();
-    }
-    
-    private void configureBindings() {
-        // 🎮 BUTTON TRIGGERS - Run command while button is held
-        controller.a().whileTrue(armSubsystem.moveUp());
-        
-        // 🔄 BUTTON TRIGGERS - Run command while button is held
-        controller.b().whileTrue(armSubsystem.moveDown());     
-    }
-}`}
-          />
-          </div>
-        </details>
 
         {/* Key Concepts */}
         <div className="grid md:grid-cols-3 gap-6">
           <ConceptBox
-            title="🏠 Default Commands"
-            code={<code>setDefaultCommand(stopCommand());</code>}
+            title="⚡ Command Methods"
+            code={<code>return startEnd(() -&gt; action, () -&gt; stop);</code>}
           >
-            Default commands run when no other command is using the subsystem. They are set in the subsystem constructor.
+            Create commands using factory methods like startEnd(), runOnce(), and run() for different behaviors.
           </ConceptBox>
 
           <ConceptBox
-            title="🎮 Trigger Types"
-            code={<code>controller.a().whileTrue(command);</code>}
+            title="🔗 Command Requirements"
+            code={<code>addRequirements(subsystem);</code>}
           >
-            Different trigger types for different behaviors: onTrue (once), whileTrue (continuous), toggleOnTrue (toggle).
+            Commands must declare which subsystems they use to prevent conflicts and ensure proper scheduling.
           </ConceptBox>
 
           <ConceptBox
-            title="🚀 Motor Configuration"
-            code={<code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>}
+            title="🔄 Command Lifecycle"
+            code={<code>initialize() → execute() → end()</code>}
           >
-            Motor configuration code should be wrapped properly to fit in configuration sections.
+            Commands have a clear lifecycle: start, run continuously, then clean up when finished.
           </ConceptBox>
         </div>
       </section>
@@ -122,10 +88,8 @@ public class RobotContainer {
           ],
           afterItems: [
             "• Enhanced Arm subsystem methods",
-            "• Xbox controller integration", 
             "• Commands for moveUp(), moveDown()",
-            "• RobotContainer with proper binding",
-            "• Default command for safety"
+            "• Ready for user input integration"
           ],
           repository: "Hemlock5712/Workshop-Code",
           filePath: "src/main/java/frc/robot/subsystems/Arm.java",
@@ -138,14 +102,14 @@ public class RobotContainer {
               "• <strong>moveUp():</strong> Positive voltage for upward movement",
               "• <strong>moveDown():</strong> Negative voltage for downward movement"
             ],
-            rightTitle: "Command Integration",
+            rightTitle: "Command Benefits",
             rightItems: [
-              "• <strong>RobotContainer:</strong> Xbox controller instantiation",
-              "• <strong>Button Bindings:</strong> A/B buttons control arm direction", 
-              "• <strong>Default Command:</strong> Stop arm when no input"
+              "• <strong>Encapsulation:</strong> Actions wrapped in reusable commands",
+              "• <strong>Safety:</strong> Automatic stop when command ends",
+              "• <strong>Flexibility:</strong> Ready for trigger integration"
             ]
           },
-          nextStepText: "Our Arm now responds to user input! Next, we'll verify mechanism setup before implementing precise PID position control."
+          nextStepText: "Enhanced Arm subsystem with command methods! Next, we'll learn about Triggers to bind user input before verifying mechanism setup."
         }}
         flywheelContent={{
           beforeItems: [
@@ -156,10 +120,8 @@ public class RobotContainer {
           ],
           afterItems: [
             "• Enhanced Flywheel subsystem methods",
-            "• Xbox controller integration",
             "• Commands for runSlow(), runFast()",
-            "• RobotContainer with proper binding",
-            "• Default command for safety"
+            "• Ready for user input integration"
           ],
           repository: "Hemlock5712/Workshop-Code",
           filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
@@ -172,35 +134,17 @@ public class RobotContainer {
               "• <strong>runSlow():</strong> Low voltage (3V) for testing",
               "• <strong>runFast():</strong> High voltage (6V) for shooting"
             ],
-            rightTitle: "Command Integration", 
+            rightTitle: "Command Benefits", 
             rightItems: [
-              "• <strong>RobotContainer:</strong> Xbox controller instantiation",
-              "• <strong>Button Bindings:</strong> X/Y buttons control flywheel speed",
-              "• <strong>Default Command:</strong> Stop flywheel when no input"
+              "• <strong>Encapsulation:</strong> Actions wrapped in reusable commands",
+              "• <strong>Safety:</strong> Automatic stop when command ends",
+              "• <strong>Flexibility:</strong> Ready for trigger integration"
             ]
           },
-          nextStepText: "Our Flywheel now responds to user input! Next, we'll verify mechanism setup before implementing precise velocity PID control."
+          nextStepText: "Enhanced Flywheel subsystem with command methods! Next, we'll learn about Triggers to bind user input before verifying mechanism setup."
         }}
       />
 
-      {/* RobotContainer Implementation from GitHub */}
-      <section className="flex flex-col gap-8">
-        <ContentCard>
-          <details>
-            <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-              🤖 RobotContainer Implementation
-            </summary>
-            <div className="mt-4">
-              <GitHubPage
-                repository="Hemlock5712/Workshop-Code"
-                filePath="src/main/java/frc/robot/RobotContainer.java"
-                branch="2-Commands"
-                className="m-0"
-              />
-            </div>
-          </details>
-        </ContentCard>
-      </section>
     </PageTemplate>
   );
 }

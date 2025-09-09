@@ -177,6 +177,39 @@ const workshop1Items = [
     ),
   },
   {
+    href: "/triggers",
+    label: "Triggers",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2M4 8v8a2 2 0 002 2h12a2 2 0 002-2V8M4 8h16"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M7 12h2m6 0h2"
+        />
+        <circle cx="8" cy="8" r="1" fill="currentColor" />
+        <circle cx="16" cy="8" r="1" fill="currentColor" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M6 4L5 2M18 4l1-2"
+        />
+      </svg>
+    ),
+  },
+  {
     href: "/running-program",
     label: "Running Program",
     icon: (
