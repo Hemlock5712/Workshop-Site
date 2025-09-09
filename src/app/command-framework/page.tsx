@@ -65,25 +65,32 @@ export default function CommandFramework() {
                 <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
                 <div>
                   <h4 className="font-bold text-primary-800 dark:text-primary-200">Adding Commands</h4>
-                  <p className="text-primary-700 dark:text-primary-300 text-sm">Command structure, lifecycle, and controller integration</p>
+                  <p className="text-primary-700 dark:text-primary-300 text-sm">Command structure and creation methods</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
                 <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
                 <div>
-                  <h4 className="font-bold text-primary-900 dark:text-primary-100">PID Control</h4>
-                  <p className="text-primary-800 dark:text-primary-200 text-sm">Precise position control with feedback and tuning</p>
+                  <h4 className="font-bold text-primary-900 dark:text-primary-100">Triggers</h4>
+                  <p className="text-primary-800 dark:text-primary-200 text-sm">User input binding and advanced command patterns</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-primary-300 dark:bg-primary-700/50 rounded-lg">
                 <div className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</div>
                 <div>
-                  <h4 className="font-bold text-primary-950 dark:text-white">Motion Magic</h4>
-                  <p className="text-primary-900 dark:text-primary-100 text-sm">Smooth profiled motion with acceleration control</p>
+                  <h4 className="font-bold text-primary-950 dark:text-white">PID Control</h4>
+                  <p className="text-primary-900 dark:text-primary-100 text-sm">Precise position control with feedback and tuning</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 p-4 bg-primary-400 dark:bg-primary-600/60 rounded-lg">
                 <div className="bg-primary-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</div>
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white">Motion Magic</h4>
+                  <p className="text-slate-800 dark:text-slate-100 text-sm">Smooth profiled motion with acceleration control</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4 p-4 bg-primary-500 dark:bg-primary-500/70 rounded-lg">
+                <div className="bg-slate-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">6</div>
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white">Useful Functions</h4>
                   <p className="text-slate-800 dark:text-slate-100 text-sm">Safety features, diagnostics, and utility functions</p>
@@ -92,6 +99,7 @@ export default function CommandFramework() {
             </div>
           </ContentCard>
         </div>
+
 
         {/* Documentation Link */}
         <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">

@@ -6,7 +6,7 @@ export default function RunningProgram() {
   return (
     <PageTemplate
       title="Running Program"
-      previousPage={{ href: "/adding-commands", title: "Commands" }}
+      previousPage={{ href: "/triggers", title: "Triggers" }}
       nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
     >
       {/* Introduction */}
