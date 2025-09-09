@@ -6,6 +6,7 @@ import BillOfMaterials from "@/components/BillOfMaterials";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import AlertBox from "@/components/AlertBox";
 import { armBOMData } from "@/data/armBOM";
+import { shooterBOMData } from "@/data/shooterBOM";
 
 export default function MechanismCAD() {
 
@@ -145,6 +146,11 @@ export default function MechanismCAD() {
         {/* Arm Bill of Materials */}
         <div className="mt-8">
           <BillOfMaterials items={armBOMData} title="Arm Mechanism" />
+        </div>
+
+        {/* Shooter Bill of Materials */}
+        <div className="mt-8">
+          <BillOfMaterials items={shooterBOMData} title="Shooter Mechanism" />
         </div>
       </section>
 

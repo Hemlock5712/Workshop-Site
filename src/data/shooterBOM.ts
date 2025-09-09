@@ -1,19 +1,19 @@
 import { BOMItem } from '@/components/BillOfMaterials';
 
-export const armBOMData: BOMItem[] = [
+export const shooterBOMData: BOMItem[] = [
   {
     partDescription: '10-32 x 0.375" Socket Head Cap Screw',
     quantity: 12,
     vendor: 'McMaster-Carr',
-    partNumber: '98164A177',
+    partNumber: '91306A277',
     pricePerUnit: 0.18,
-    productLink: 'https://www.mcmaster.com/98164A177/',
+    productLink: 'https://www.mcmaster.com/91306A277/',
     notes: 'Socket head cap screws for assembly',
     is3DPrinted: false
   },
   {
     partDescription: '10-32 x 1.5" Socket Head Cap Screw',
-    quantity: 10,
+    quantity: 8,
     vendor: 'McMaster-Carr',
     partNumber: '91306A277',
     pricePerUnit: 0.28,
@@ -22,13 +22,23 @@ export const armBOMData: BOMItem[] = [
     is3DPrinted: false
   },
   {
-    partDescription: '1" x 2" x 0.0625" Aluminum Tube Cap',
-    quantity: 7,
+    partDescription: '10-32 x 0.75" Socket Head Cap Screw',
+    quantity: 6,
+    vendor: 'McMaster-Carr',
+    partNumber: '97763A341',
+    pricePerUnit: 0.22,
+    productLink: 'https://www.mcmaster.com/97763A341/',
+    notes: 'Socket head cap screws for assembly',
+    is3DPrinted: false
+  },
+  {
+    partDescription: '1in x 2in x 0.06" Cap',
+    quantity: 5,
     vendor: 'Custom',
     partNumber: 'N/A',
     pricePerUnit: 0.00,
     productLink: 'https://github.com/Hemlock5712/Workshop-Code',
-    notes: '3D printed tube cap - files available in workshop repository',
+    notes: '3D printed cap - files available in workshop repository',
     is3DPrinted: true
   },
   {
@@ -42,13 +52,13 @@ export const armBOMData: BOMItem[] = [
     is3DPrinted: true
   },
   {
-    partDescription: '2"x1"x.125" Aluminum Tube Plug (#10-32 Tapped)',
-    quantity: 3,
-    vendor: 'West Coast Products',
-    partNumber: 'WCP-0374',
-    pricePerUnit: 6.99,
-    productLink: 'https://wcproducts.com/products/tube-plugs',
-    notes: 'Tube plugs for 2x1 aluminum tubing with tapped holes',
+    partDescription: '10-32 x 1.25" Socket Head Cap Screw',
+    quantity: 4,
+    vendor: 'McMaster-Carr',
+    partNumber: '98164A178',
+    pricePerUnit: 0.24,
+    productLink: 'https://www.mcmaster.com/98164A178/',
+    notes: 'Socket head cap screws for assembly',
     is3DPrinted: false
   },
   {
@@ -58,38 +68,38 @@ export const armBOMData: BOMItem[] = [
     partNumber: 'WCP-0799',
     pricePerUnit: 6.99,
     productLink: 'https://wcproducts.com/products/tube-plugs',
-    notes: 'Additional tube plugs for assembly',
+    notes: 'Tube plugs for 2x1 aluminum tubing',
     is3DPrinted: false
   },
   {
     partDescription: '0.500" ID x 1.125" OD x 0.313" WD (Flanged Bearing)',
     quantity: 3,
     vendor: 'West Coast Products',
-    partNumber: 'WCP-0781',
+    partNumber: 'WCP-0783',
     pricePerUnit: 1.99,
     productLink: 'https://wcproducts.com/products/ball-bearings',
     notes: 'Flanged bearings for rotating assemblies',
     is3DPrinted: false
   },
   {
-    partDescription: '10-32 Nylock Nut',
-    quantity: 2,
-    vendor: 'McMaster-Carr',
-    partNumber: '91831A411',
-    pricePerUnit: 0.12,
-    productLink: 'https://www.mcmaster.com/91831A411/',
-    notes: 'Nylock nuts for secure fastening',
+    partDescription: '13.75mm (1/2" Rounded Hex) ID x 1.125" OD x 0.313" WD (Flanged Bearing)',
+    quantity: 3,
+    vendor: 'West Coast Products',
+    partNumber: 'WCP-0781',
+    pricePerUnit: 2.99,
+    productLink: 'https://wcproducts.com/products/ball-bearings',
+    notes: 'Hex bore flanged bearings for hex shafts',
     is3DPrinted: false
   },
   {
-    partDescription: '58t Aluminum Spur Gear - 0.5" Hex Bore',
+    partDescription: '.500" OD x .159" ID Rounded Hex Stock (36")',
     quantity: 2,
     vendor: 'West Coast Products',
-    partNumber: 'WCP-0719',
-    pricePerUnit: 16.99,
-    productLink: 'https://wcproducts.com/products/steel-hex-bore-gears',
-    notes: '58 tooth aluminum spur gear with hex bore - can be 3D printed as alternative',
-    is3DPrinted: true
+    partNumber: 'WCP-0710',
+    pricePerUnit: 24.99,
+    productLink: 'https://wcproducts.com/products/shaft-stock',
+    notes: 'Hex shaft stock - can be cut to needed lengths',
+    is3DPrinted: false
   },
   {
     partDescription: '10-32 x 2.5" Socket Head Cap Screw',
@@ -102,13 +112,13 @@ export const armBOMData: BOMItem[] = [
     is3DPrinted: false
   },
   {
-    partDescription: '13.75mm (1/2" Rounded Hex) ID x 1.125" OD x 0.313" WD (Flanged Bearing)',
+    partDescription: 'Kraken X44, X60, or Falcon 500',
     quantity: 2,
     vendor: 'West Coast Products',
-    partNumber: 'WCP-0783',
-    pricePerUnit: 2.99,
-    productLink: 'https://wcproducts.com/products/ball-bearings',
-    notes: 'Hex bore flanged bearings for hex shafts',
+    partNumber: 'WCP-0940',
+    pricePerUnit: 217.99,
+    productLink: 'https://wcproducts.com/products/kraken',
+    notes: 'CTRE-Compatible motor - Kraken X44, X60, or Falcon 500',
     is3DPrinted: false
   },
   {
@@ -118,7 +128,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: 'WCP-0225-002',
     pricePerUnit: 69.99,
     productLink: 'https://wcproducts.com/collections/gearboxes/products/wcp-single-speed-gearbox',
-    notes: 'Single speed gearbox for arm mechanism - can be 3D printed as alternative',
+    notes: 'Single speed gearbox for shooter mechanism - can be 3D printed as alternative',
     is3DPrinted: true
   },
   {
@@ -128,7 +138,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: 'WCP-0225-004',
     pricePerUnit: 69.99,
     productLink: 'https://wcproducts.com/collections/gearboxes/products/wcp-single-speed-gearbox',
-    notes: 'Alternative single speed gearbox ratio - can be 3D printed as alternative',
+    notes: 'Single speed gearbox for shooter mechanism - can be 3D printed as alternative',
     is3DPrinted: true
   },
   {
@@ -138,7 +148,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: 'WCP-0225-006',
     pricePerUnit: 69.99,
     productLink: 'https://wcproducts.com/collections/gearboxes/products/wcp-single-speed-gearbox',
-    notes: 'Alternative single speed gearbox ratio - can be 3D printed as alternative',
+    notes: 'Single speed gearbox for shooter mechanism - can be 3D printed as alternative',
     is3DPrinted: true
   },
   {
@@ -148,17 +158,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: 'WCP-0914',
     pricePerUnit: 24.99,
     productLink: 'https://wcproducts.com/products/shaft-stock',
-    notes: 'Hex shaft stock - can be cut to needed lengths',
-    is3DPrinted: false
-  },
-  {
-    partDescription: 'WCP ThroughBore Powered by CANCoder (1/2" Hex)',
-    quantity: 1,
-    vendor: 'West Coast Products',
-    partNumber: 'WCP-1655',
-    pricePerUnit: 89.99,
-    productLink: 'https://wcproducts.com/products/wcp-sensors',
-    notes: 'Through-bore encoder for position feedback - CTRE CANCoder based',
+    notes: 'Additional hex shaft stock for extended applications',
     is3DPrinted: false
   },
   {
@@ -222,23 +222,33 @@ export const armBOMData: BOMItem[] = [
     is3DPrinted: true
   },
   {
-    partDescription: '9" WCP 1x2x0.0625" Rectangle Punched Tubing - 2" Pattern w/ Hole',
+    partDescription: '38t Aluminum Spur Gear - 0.5" Hex Bore',
     quantity: 1,
     vendor: 'West Coast Products',
-    partNumber: 'WCP-0921',
-    pricePerUnit: 15.99,
-    productLink: 'https://wcproducts.com/products/aluminum-tubing',
-    notes: 'Punched rectangular tubing with additional hole pattern',
-    is3DPrinted: false
+    partNumber: 'WCP-0719',
+    pricePerUnit: 14.99,
+    productLink: 'https://wcproducts.com/products/steel-hex-bore-gears',
+    notes: '38 tooth aluminum spur gear with hex bore - can be 3D printed as alternative',
+    is3DPrinted: true
   },
   {
-    partDescription: '18t Aluminum Spur Gear - 0.5" Hex Bore',
+    partDescription: 'Shooter Hood Inside Short v2',
     quantity: 1,
-    vendor: 'West Coast Products',
-    partNumber: 'WCP-0700',
-    pricePerUnit: 12.99,
-    productLink: 'https://wcproducts.com/products/steel-hex-bore-gears',
-    notes: '18 tooth aluminum spur gear with hex bore - can be 3D printed as alternative',
+    vendor: 'Custom',
+    partNumber: 'N/A',
+    pricePerUnit: 0.00,
+    productLink: 'https://github.com/Hemlock5712/Workshop-Code',
+    notes: '3D printed shooter hood component - files in workshop repository',
+    is3DPrinted: true
+  },
+  {
+    partDescription: 'Shooter Hood Outside Short v2',
+    quantity: 1,
+    vendor: 'Custom',
+    partNumber: 'N/A',
+    pricePerUnit: 0.00,
+    productLink: 'https://github.com/Hemlock5712/Workshop-Code',
+    notes: '3D printed shooter hood component - files in workshop repository',
     is3DPrinted: true
   },
   {
@@ -262,13 +272,53 @@ export const armBOMData: BOMItem[] = [
     is3DPrinted: true
   },
   {
-    partDescription: 'CTRE-Compatible Motor (Kraken x44, x60, Falcon 500)',
+    partDescription: 'WCP ThroughBore Powered by CANCoder (1/2" Hex)',
     quantity: 1,
     vendor: 'West Coast Products',
-    partNumber: 'WCP-0940',
-    pricePerUnit: 217.99,
-    productLink: 'https://wcproducts.com/products/kraken',
-    notes: 'CTRE-Compatible motor - Kraken X44, X60, or Falcon 500',
+    partNumber: 'WCP-1655',
+    pricePerUnit: 89.99,
+    productLink: 'https://wcproducts.com/products/wcp-sensors',
+    notes: 'Through-bore encoder for position feedback - CTRE CANCoder based',
+    is3DPrinted: false
+  },
+  {
+    partDescription: 'Tennis Ball',
+    quantity: 1,
+    vendor: 'Various',
+    partNumber: 'N/A',
+    pricePerUnit: 3.00,
+    productLink: 'https://www.amazon.com/s?k=tennis+balls',
+    notes: 'Standard tennis ball for testing shooter mechanism',
+    is3DPrinted: false
+  },
+  {
+    partDescription: '4" Compliant Wheel',
+    quantity: 1,
+    vendor: 'AndyMark',
+    partNumber: 'am-2647',
+    pricePerUnit: 29.99,
+    productLink: 'https://andymark.com/products/4-in-compliant-wheel',
+    notes: 'Compliant wheel for ball handling and shooting',
+    is3DPrinted: false
+  },
+  {
+    partDescription: '58t Aluminum Spur Gear - 0.5" Hex Bore',
+    quantity: 1,
+    vendor: 'West Coast Products',
+    partNumber: 'WCP-0374',
+    pricePerUnit: 16.99,
+    productLink: 'https://wcproducts.com/products/steel-hex-bore-gears',
+    notes: '58 tooth aluminum spur gear with hex bore - can be 3D printed as alternative',
+    is3DPrinted: true
+  },
+  {
+    partDescription: '10-32 x 0.5" Socket Head Cap Screw',
+    quantity: 25,
+    vendor: 'McMaster-Carr',
+    partNumber: '98164A178',
+    pricePerUnit: 0.20,
+    productLink: 'https://www.mcmaster.com/98164A178/',
+    notes: 'Additional socket head cap screws for general assembly',
     is3DPrinted: false
   }
 ];
