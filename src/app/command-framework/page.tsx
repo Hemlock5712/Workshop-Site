@@ -1,7 +1,8 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
-import CodeBlock from "@/components/CodeBlock";
+import ContentCard from "@/components/ContentCard";
+import DocumentationButton from "@/components/DocumentationButton";
 
 export default function CommandFramework() {
   return (
@@ -50,7 +51,7 @@ export default function CommandFramework() {
         </p>
         
         <div className="grid md:grid-cols-1 gap-6">
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
+          <ContentCard>
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">🚀 Implementation Sequence</h3>
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
@@ -89,7 +90,7 @@ export default function CommandFramework() {
                 </div>
               </div>
             </div>
-          </div>
+          </ContentCard>
         </div>
 
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
@@ -182,17 +183,11 @@ new RaiseClimber(climber)
           <p className="text-[var(--foreground)] mb-4">
             For comprehensive Command-Based Framework reference, advanced patterns, and complete API documentation:
           </p>
-          <a 
+          <DocumentationButton
             href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-          >
-            📖 WPILib Command-Based Programming Guide
-            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
+            title="WPILib Command-Based Programming Guide"
+            icon="📖"
+          />
         </div>
       </section>
     </PageTemplate>

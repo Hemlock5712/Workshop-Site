@@ -3,6 +3,9 @@ import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ConceptBox from "@/components/ConceptBox";
+import CollapsibleSection from "@/components/CollapsibleSection";
+import AlertBox from "@/components/AlertBox";
+import DocumentationButton from "@/components/DocumentationButton";
 
 export default function PIDControl() {
   return (
@@ -69,46 +72,38 @@ export default function PIDControl() {
         </div>
 
         {/* Feedforward Components */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">⚡ Feedforward Gains</h3>
-          <p className="text-[var(--foreground)] mb-4">
+        <AlertBox variant="info" title="⚡ Feedforward Gains">
+          <p className="mb-4">
             Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
           </p>
-          
-            <div className="grid md:grid-cols-4 gap-4">
-              <ConceptBox title="kS - Static">
-                Constant output to overcome friction and get the mechanism moving.
-              </ConceptBox>
-              <ConceptBox title="kG - Gravity">
-                Compensates for gravitational forces acting on the mechanism.
-              </ConceptBox>
-              <ConceptBox title="kV - Velocity">
-                Output applied per target velocity to maintain smooth motion.
-              </ConceptBox>
-              <ConceptBox title="kA - Acceleration">
-                Output applied per target acceleration for responsive movement.
-              </ConceptBox>
-            </div>
-        </div>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            <ConceptBox title="kS - Static">
+              Constant output to overcome friction and get the mechanism moving.
+            </ConceptBox>
+            <ConceptBox title="kG - Gravity">
+              Compensates for gravitational forces acting on the mechanism.
+            </ConceptBox>
+            <ConceptBox title="kV - Velocity">
+              Output applied per target velocity to maintain smooth motion.
+            </ConceptBox>
+            <ConceptBox title="kA - Acceleration">
+              Output applied per target acceleration for responsive movement.
+            </ConceptBox>
+          </div>
+        </AlertBox>
 
         {/* Documentation Link */}
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">📚 Complete PID Tuning Guide</h3>
-          <p className="text-[var(--foreground)] mb-4">
+        <AlertBox variant="info" title="📚 Complete PID Tuning Guide">
+          <p className="mb-4">
             For detailed PID tuning instructions, step-by-step processes, and mechanism-specific guidance:
           </p>
-          <a 
+          <DocumentationButton
             href="https://phoenixpro-documentation--161.org.readthedocs.build/en/161/docs/application-notes/manual-pid-tuning.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
-          >
-            📖 CTRE Manual PID Tuning Guide
-            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          </a>
-        </div>
+            title="CTRE Manual PID Tuning Guide"
+            icon="📖"
+          />
+        </AlertBox>
       </section>
 
       {/* Code Implementation */}
@@ -117,32 +112,28 @@ export default function PIDControl() {
           PID Implementation in Code
         </h2>
 
-        <details className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-800">
-          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
-            🔧 PID Configuration Example
-          </summary>
-          <div className="mt-4">
+        <CollapsibleSection title="🔧 PID Configuration Example">
           <CodeBlock
             language="java"
             title="PID Setup in Subsystem Constructor"
             code={`// In your subsystem constructor
 public ArmSubsystem() {
     TalonFXConfiguration config = new TalonFXConfiguration();
-    
+
     // PID Configuration for Slot 0
     Slot0Configs slot0 = config.Slot0;
     slot0.kP = 24.0;    // Proportional gain
-    slot0.kI = 0.0;     // Integral gain  
+    slot0.kI = 0.0;     // Integral gain
     slot0.kD = 0.1;     // Derivative gain
-    
+
     // Feedforward gains
     slot0.kS = 0.25;    // Static friction compensation
     slot0.kG = 0.12;    // Gravity compensation
     slot0.kV = 0.12;    // Velocity feedforward
     slot0.kA = 0.01;    // Acceleration feedforward
-    
+
     motor.getConfigurator().apply(config);
-    
+
     // Create PID control request
     positionRequest = new PositionVoltage(0).withSlot(0);
 }
@@ -154,8 +145,7 @@ public void setTargetPosition(double positionRotations) {
 
 `}
           />
-          </div>
-        </details>
+        </CollapsibleSection>
 
         {/* Mechanism Implementation Tabs */}
         <MechanismTabs

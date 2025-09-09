@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import GithubPageWithPR from "./GithubPageWithPR";
 import CodeWalkthrough from "./CodeWalkthrough";
+import ComparisonTable from "./ComparisonTable";
 
 interface MechanismContent {
   beforeItems: string[];
@@ -19,6 +20,7 @@ interface MechanismContent {
     rightItems: string[];
   };
   nextStepText: string;
+  caution?: ReactNode;
 }
 
 interface MechanismTabsProps {
@@ -71,31 +73,24 @@ export default function MechanismTabs({
 
         {/* Tab Content */}
         <div className="p-6">
+          {currentContent.caution && (
+            <div className="mb-6">{currentContent.caution}</div>
+          )}
           {/* Before/After Implementation */}
           <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6 mb-6">
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
               🔄 Before → After: Implementation
             </h3>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="before-block">
-                <h4 className="before-title">📋 Before</h4>
-                <ul className="text-sm space-y-1">
-                  {currentContent.beforeItems.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="after-block">
-                <h4 className="after-title">✅ After</h4>
-                <ul className="text-sm space-y-1">
-                  {currentContent.afterItems.map((item, index) => (
-                    <li key={index}>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            <ComparisonTable
+              leftTitle="📋 Before"
+              leftItems={currentContent.beforeItems}
+              rightTitle="✅ After"
+              rightItems={currentContent.afterItems}
+              leftBlockClassName="before-block"
+              rightBlockClassName="after-block"
+              leftTitleClassName="before-title"
+              rightTitleClassName="after-title"
+            />
           </div>
 
           {/* GitHub Component */}
