@@ -28,45 +28,67 @@ export default function PIDControl() {
         </h2>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-red-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">P - Proportional</h3>
+          <div className="bg-[var(--muted)] dark:bg-slate-700/20 rounded-lg p-6 border-l-4 border-red-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
+              P - Proportional
+            </h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply per unit of error in the system&quot;
+              <strong>Definition:</strong> &quot;The amount of output to apply
+              per unit of error in the system&quot;
             </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Error = Target - Current</code><br/>
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
+              <code className="text-xs">Error = Target - Current</code>
+              <br />
               <code className="text-xs">P_Output = kP × Error</code>
             </div>
             <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Larger error = stronger correction. Provides immediate response but may cause oscillation.
+              <strong>Behavior:</strong> Larger error = stronger correction.
+              Provides immediate response but may cause oscillation.
             </p>
           </div>
 
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-yellow-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">I - Integral</h3>
+          <div className="bg-[var(--muted)] dark:bg-slate-700/20 rounded-lg p-6 border-l-4 border-yellow-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
+              I - Integral
+            </h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply per unit of error for every second of that error&quot;
+              <strong>Definition:</strong> &quot;The amount of output to apply
+              per unit of error for every second of that error&quot;
             </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Accumulated_Error += Error × dt</code><br/>
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
+              <code className="text-xs">Accumulated_Error += Error × dt</code>
+              <br />
               <code className="text-xs">I_Output = kI × Accumulated_Error</code>
             </div>
+            <p className="text-[var(--foreground)] text-sm mb-3">
+              <strong>Behavior:</strong> Eliminates steady-state error by
+              accumulating past errors over time.
+            </p>
             <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Eliminates steady-state error by accumulating past errors over time.
+              <strong>Note:</strong> The integral term can lead to "windup,"
+              which may make your mechanism unstable. In most FRC applications,
+              you can leave the integral term at zero.
             </p>
           </div>
 
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">D - Derivative</h3>
+          <div className="bg-[var(--muted)] dark:bg-slate-700/20 rounded-lg p-6 border-l-4 border-blue-500">
+            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
+              D - Derivative
+            </h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply per change in error over time&quot;
+              <strong>Definition:</strong> &quot;The amount of output to apply
+              per change in error over time&quot;
             </p>
-              <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Error_Rate = (Error - Last_Error) / dt</code><br/>
+            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
+              <code className="text-xs">
+                Error_Rate = (Error - Last_Error) / dt
+              </code>
+              <br />
               <code className="text-xs">D_Output = kD × Error_Rate</code>
             </div>
             <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Reduces overshoot by predicting future error trends and dampening response.
+              <strong>Behavior:</strong> Reduces overshoot by predicting future
+              error trends and dampening response.
             </p>
           </div>
         </div>
@@ -74,20 +96,24 @@ export default function PIDControl() {
         {/* Feedforward Components */}
         <AlertBox variant="info" title="⚡ Feedforward Gains">
           <p className="mb-4">
-            Feedforward gains help the system by predicting the required output based on the target, rather than reacting to error.
+            Feedforward gains help the system by predicting the required output
+            based on the target, rather than reacting to error.
           </p>
 
           <div className="grid md:grid-cols-4 gap-4">
-            <ConceptBox title="kS - Static">
+            <ConceptBox title="kS - Static" uses="Always">
               Constant output to overcome friction and get the mechanism moving.
             </ConceptBox>
-            <ConceptBox title="kG - Gravity">
+            <ConceptBox title="kG - Gravity" uses="Arms/Elevators">
               Compensates for gravitational forces acting on the mechanism.
             </ConceptBox>
-            <ConceptBox title="kV - Velocity">
+            <ConceptBox title="kV - Velocity" uses="Flywheels/Intakes">
               Output applied per target velocity to maintain smooth motion.
             </ConceptBox>
-            <ConceptBox title="kA - Acceleration">
+            <ConceptBox
+              title="kA - Acceleration"
+              uses="High Inertia Mechanisms"
+            >
               Output applied per target acceleration for responsive movement.
             </ConceptBox>
           </div>
@@ -96,7 +122,8 @@ export default function PIDControl() {
         {/* Documentation Link */}
         <AlertBox variant="info" title="📚 Complete PID Tuning Guide">
           <p className="mb-4">
-            For detailed PID tuning instructions, step-by-step processes, and mechanism-specific guidance:
+            For detailed PID tuning instructions, step-by-step processes, and
+            mechanism-specific guidance:
           </p>
           <DocumentationButton
             href="https://phoenixpro-documentation--161.org.readthedocs.build/en/161/docs/application-notes/manual-pid-tuning.html"
@@ -108,7 +135,7 @@ export default function PIDControl() {
 
       {/* Code Implementation */}
       <section className="flex flex-col gap-8">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           PID Implementation in Code
         </h2>
 
@@ -156,14 +183,14 @@ public void setTargetPosition(double positionRotations) {
               "• No position feedback control",
               "• Imprecise, inconsistent movement",
               "• No automatic target reaching",
-              "• Manual voltage adjustment needed"
+              "• Manual voltage adjustment needed",
             ],
             afterItems: [
               "• PID position control with PositionVoltage",
               "• Automatic target position reaching",
               "• Precise, repeatable movements",
               "• Feedforward compensation for gravity",
-              "• Tolerance checking for \"at target\""
+              '• Tolerance checking for "at target"',
             ],
             repository: "Hemlock5712/Workshop-Code",
             filePath: "src/main/java/frc/robot/subsystems/Arm.java",
@@ -175,32 +202,33 @@ public void setTargetPosition(double positionRotations) {
               leftItems: [
                 "• <strong>PositionVoltage:</strong> Replaces VoltageOut for closed-loop control",
                 "• <strong>Slot0 Config:</strong> PID and feedforward gains configuration",
-                "• <strong>Target Setting:</strong> setTargetPosition() method for precise control"
+                "• <strong>Target Setting:</strong> setTargetPosition() method for precise control",
               ],
               rightTitle: "Gain Values Used",
               rightItems: [
                 "• <strong>kP = 24.0:</strong> Strong proportional response",
                 "• <strong>kD = 0.1:</strong> Small derivative for damping",
                 "• <strong>kS = 0.25:</strong> Static friction compensation",
-                "• <strong>kG = 0.12:</strong> Gravity feedforward for Arm"
-              ]
+                "• <strong>kG = 0.12:</strong> Gravity feedforward for Arm",
+              ],
             },
-            nextStepText: "PID gives us precise position control! In the next section, we'll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration."
+            nextStepText:
+              "PID gives us precise position control! In the next section, we'll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.",
           }}
           flywheelContent={{
             beforeItems: [
               "• Commands control Flywheel with voltage",
               "• No velocity feedback control",
               "• Inconsistent speed control",
-              "• No automatic velocity targeting", 
-              "• Manual voltage adjustment needed"
+              "• No automatic velocity targeting",
+              "• Manual voltage adjustment needed",
             ],
             afterItems: [
               "• PID velocity control with VelocityVoltage",
               "• Automatic target velocity reaching",
               "• Consistent, repeatable speeds",
               "• Feedforward compensation for friction",
-              "• Velocity tolerance checking for \"at target\""
+              '• Velocity tolerance checking for "at target"',
             ],
             repository: "Hemlock5712/Workshop-Code",
             filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
@@ -212,20 +240,20 @@ public void setTargetPosition(double positionRotations) {
               leftItems: [
                 "• <strong>VelocityVoltage:</strong> Replaces VoltageOut for closed-loop velocity control",
                 "• <strong>Slot0 Config:</strong> PID and feedforward gains configuration for velocity",
-                "• <strong>Target Setting:</strong> setTargetVelocity() method for precise speed control"
+                "• <strong>Target Setting:</strong> setTargetVelocity() method for precise speed control",
               ],
               rightTitle: "Gain Values Used",
               rightItems: [
                 "• <strong>kP:</strong> Proportional response for velocity error",
                 "• <strong>kI:</strong> Integral gain to eliminate steady-state velocity error",
                 "• <strong>kS:</strong> Static friction compensation for startup",
-                "• <strong>kV:</strong> Velocity feedforward for smooth operation"
-              ]
+                "• <strong>kV:</strong> Velocity feedforward for smooth operation",
+              ],
             },
-            nextStepText: "PID gives us precise velocity control! In the next section, we'll upgrade to Motion Magic for smooth, profiled velocity changes with controlled acceleration."
+            nextStepText:
+              "PID gives us precise velocity control! In the next section, we'll upgrade to Motion Magic for smooth, profiled velocity changes with controlled acceleration.",
           }}
         />
-
       </section>
     </PageTemplate>
   );

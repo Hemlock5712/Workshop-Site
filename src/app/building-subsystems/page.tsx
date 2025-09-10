@@ -10,13 +10,16 @@ export default function BuildingSubsystems() {
   return (
     <PageTemplate
       title="Subsystems"
-      previousPage={{ href: "/command-framework", title: "Command-Based Framework" }}
+      previousPage={{
+        href: "/command-framework",
+        title: "Command-Based Framework",
+      }}
       nextPage={{ href: "/adding-commands", title: "Commands" }}
     >
       {/* Introduction */}
       <KeyConceptSection
         title="Subsystems - Understanding the Foundation"
-        description="Subsystems are the foundation of command-based programming. They represent physical hardware components and provide methods to control them safely and effectively."
+        description="Subsystems form the building blocks of command-based programming. Each subsystem models a physical part of the robot and provides safe, organized methods to control it. Subsystems can vary in scope—from a single motor to an entire mechanism—depending on how you choose to structure your code."
         concept="One subsystem per mechanism. Each subsystem manages its own hardware and state."
       />
 
@@ -86,25 +89,42 @@ public class ExampleSubsystem extends SubsystemBase {
 
         {/* Key Concepts Explanation */}
         <div className="grid md:grid-cols-3 gap-6">
-          <ConceptBox title="🔧 Hardware Instantiation" code={<code>TalonFX motor = new TalonFX(1);</code>}>
-            Motors, sensors, and other hardware objects are declared as private fields at the top of the class.
+          <ConceptBox
+            title="🔧 Hardware Instantiation"
+            code={<code>TalonFX motor = new TalonFX(1);</code>}
+          >
+            Motors, sensors, and other hardware objects are declared as private
+            fields at the top of the class.
           </ConceptBox>
 
           <ConceptBox
             title="⚙️ Configuration Location"
-            code={<code>motor.getConfigurator()<br/>&nbsp;&nbsp;&nbsp;&nbsp;.apply(config);</code>}
+            code={
+              <code>
+                motor.getConfigurator()
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;.apply(config);
+              </code>
+            }
           >
-            Motor configurations, current limits, and mode settings go in the constructor to run once at startup.
+            Motor configurations, current limits, and mode settings go in the
+            constructor to run once at startup.
           </ConceptBox>
 
           <ConceptBox
             title="🔄 Periodic Method"
-            code={<code>SmartDashboard.putNumber(<br/>&nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());</code>}
+            code={
+              <code>
+                SmartDashboard.putNumber(
+                <br />
+                &nbsp;&nbsp;&nbsp;&nbsp;&quot;Value&quot;, sensor.get());
+              </code>
+            }
           >
-            Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating dashboard values - not for control!
+            Runs every 20ms (50Hz). Use for telemetry, monitoring, and updating
+            dashboard values - not for control!
           </ConceptBox>
         </div>
-
       </section>
 
       {/* Mechanism Implementation Tabs */}
@@ -113,14 +133,14 @@ public class ExampleSubsystem extends SubsystemBase {
         armContent={{
           beforeItems: [
             "• Basic WPILib project structure",
-            "• No hardware integration", 
-            "• No subsystem implementation"
+            "• No hardware integration",
+            "• No subsystem implementation",
           ],
           afterItems: [
             "• Complete Arm subsystem class",
             "• TalonFX motor (ID: 31) configured",
-            "• CANCoder sensor (ID: 22) integrated", 
-            "• Basic voltage control methods"
+            "• CANcoder sensor (ID: 22) integrated",
+            "• Basic voltage control methods",
           ],
           repository: "Hemlock5712/Workshop-Code",
           filePath: "src/main/java/frc/robot/subsystems/Arm.java",
@@ -131,32 +151,33 @@ public class ExampleSubsystem extends SubsystemBase {
             leftTitle: "Hardware Setup",
             leftItems: [
               "• <strong>TalonFX Motor:</strong> Main drive motor with integrated controller",
-              "• <strong>CANCoder:</strong> Absolute position feedback sensor",
-              "• <strong>Remote Sensor:</strong> CANCoder connected as remote feedback"
+              "• <strong>CANcoder:</strong> Absolute position feedback sensor",
+              "• <strong>Remote Sensor:</strong> CANcoder connected as remote feedback",
             ],
-            rightTitle: "Key Methods", 
+            rightTitle: "Key Methods",
             rightItems: [
               "• <strong>setVoltage():</strong> Direct voltage control for basic movement",
               "• <strong>stop():</strong> Safe motor stop with neutral output",
-              "• <strong>periodic():</strong> Understand that periodic runs every robot loop"
-            ]
+              "• <strong>periodic():</strong> Understand that periodic runs every robot loop",
+            ],
           },
-          nextStepText: "This subsystem is ready for command integration! Next, we'll add commands to control this Arm subsystem through user input."
+          nextStepText:
+            "This subsystem is ready for command integration! Next, we'll add commands to control this Arm subsystem through user input.",
         }}
         flywheelContent={{
           beforeItems: [
             "• Basic WPILib project structure",
             "• No hardware integration",
-            "• No subsystem implementation"
+            "• No subsystem implementation",
           ],
           afterItems: [
-            "• Complete Flywheel subsystem class", 
+            "• Complete Flywheel subsystem class",
             "• Dual TalonFX motors (IDs: 21, 22) configured",
             "• Leader/follower motor setup",
-            "• Basic voltage control methods"
+            "• Basic voltage control methods",
           ],
           repository: "Hemlock5712/Workshop-Code",
-          filePath: "src/main/java/frc/robot/subsystems/Flywheel.java", 
+          filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
           branch: "1-Subsystem",
           pullRequestNumber: 1,
           focusFile: "Flywheel.java",
@@ -165,14 +186,14 @@ public class ExampleSubsystem extends SubsystemBase {
             leftItems: [
               "• <strong>Leader Motor:</strong> TalonFX controlling the flywheel mechanism",
               "• <strong>Follower Motor:</strong> Second TalonFX following the leader",
-              "• <strong>CANivore Bus:</strong> High-speed CAN bus for motor communication"
+              "• <strong>CANivore Bus:</strong> High-speed CAN bus for motor communication",
             ],
             rightTitle: "Key Methods",
             rightItems: [
               "• <strong>setVoltage():</strong> Direct voltage control for flywheel speed",
               "• <strong>stop():</strong> Safe motor stop with neutral output",
-              "• <strong>periodic():</strong> Understand that periodic runs every robot loop"
-            ]
+              "• <strong>periodic():</strong> Understand that periodic runs every robot loop",
+            ],
           },
           nextStepText:
             "This flywheel subsystem is ready for command integration! Next, we'll add commands to control this Flywheel subsystem through user input.",
@@ -197,13 +218,18 @@ public class ExampleSubsystem extends SubsystemBase {
               title="Caution: Physical Hardware vs Code Example"
             >
               <p className="mb-3">
-                The flywheel device built in this workshop does <strong>not</strong> have a physical follower motor. However, the following code examples include a follower motor setup to demonstrate best practices for multi-motor subsystems.
+                The flywheel device built in this workshop does{" "}
+                <strong>not</strong> have a physical follower motor. However,
+                the following code examples include a follower motor setup to
+                demonstrate best practices for multi-motor subsystems.
               </p>
               <AlertBox variant="warning" title="Note" className="mt-3">
-                If implementing on actual hardware, you would either remove the follower motor code or add a second physical motor to your flywheel mechanism.
+                If implementing on actual hardware, you would either remove the
+                follower motor code or add a second physical motor to your
+                flywheel mechanism.
               </AlertBox>
             </AlertBox>
-          )
+          ),
         }}
       />
     </PageTemplate>
