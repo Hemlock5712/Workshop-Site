@@ -65,9 +65,9 @@ export default function PIDControl() {
               accumulating past errors over time.
             </p>
             <p className="text-[var(--foreground)] text-sm">
-              <strong>Note:</strong> The integral term can lead to "windup,"
-              which may make your mechanism unstable. In most FRC applications,
-              you can leave the integral term at zero.
+              <strong>Note:</strong> The integral term can lead to
+              &quot;windup,&quot; which may make your mechanism unstable. In
+              most FRC applications, you can leave the integral term at zero.
             </p>
           </div>
 
