@@ -33,7 +33,7 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              <a 
+              <a
                 href="https://store.ctr-electronics.com/products/kraken-x44"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -43,13 +43,14 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
-              Compact brushless motor with integrated Talon FX™ controller. 
+              Compact brushless motor with integrated Talon FX™ controller.
               Delivers 823W peak power.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
-                <strong>Key Features:</strong> 4.05Nm stall torque, 85% max efficiency, 125.5 RPS max speed,
-                SplineXS shaft, FOC commutation, 1kHz PID control, compact 44mm design.
+                <strong>Key Features:</strong> 4.05Nm stall torque, 85% max
+                efficiency, 125.5 RPS max speed, SplineXS shaft, FOC
+                commutation, 1kHz PID control, compact 44mm design.
               </p>
             </div>
           </ContentCard>
@@ -57,13 +58,13 @@ export default function Hardware() {
           <ContentCard>
             <ImageBlock
               src="/images/hardware/Encoder.png"
-              alt="CANCoder"
+              alt="CANcoder"
               width={250}
               height={200}
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              <a 
+              <a
                 href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -73,13 +74,15 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
-              Through bore rotary sensor using innovative off-axis magnet technology. 
-              Eliminates mechanical coupling for precise shaft position measurement.
+              Through bore rotary sensor using innovative off-axis magnet
+              technology. Eliminates mechanical coupling for precise shaft
+              position measurement.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
-                <strong>Key Features:</strong> 1/2&quot; hex shaft compatible, through bore design,
-                absolute/relative position, CAN bus connectivity, versatile mounting options.
+                <strong>Key Features:</strong> 1/2&quot; hex shaft compatible,
+                through bore design, absolute/relative position, CAN bus
+                connectivity, versatile mounting options.
               </p>
             </div>
           </ContentCard>
@@ -93,7 +96,7 @@ export default function Hardware() {
               className="mb-4"
             />
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
-              <a 
+              <a
                 href="https://store.ctr-electronics.com/canivore/"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -103,19 +106,20 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
-              USB-to-CAN FD interface that adds new CAN FD network to PC or roboRIO.
-              Enables precise control of CTRE devices with Phoenix Pro and hardware-attached simulation.
+              USB-to-CAN FD interface that adds new CAN FD network to PC or
+              roboRIO. Enables precise control of CTRE devices with Phoenix Pro
+              and hardware-attached simulation.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300">
-                <strong>Key Features:</strong> CAN FD technology (2X-8X better bus utilization),
-                wireless configuration, ESP32 integration, multi-color status LEDs, USB Type-C support.
+                <strong>Key Features:</strong> CAN FD technology (2X-8X better
+                bus utilization), wireless configuration, ESP32 integration,
+                multi-color status LEDs, USB Type-C support.
               </p>
             </div>
           </ContentCard>
         </div>
       </section>
-
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
@@ -128,27 +132,39 @@ export default function Hardware() {
           </h3>
           <div className="grid md:grid-cols-4 gap-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">Full PID Control</h4>
+              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">
+                Full PID Control
+              </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Complete PID implementation with kP, kI, kD, and advanced filtering options that other vendors don&apos;t provide.
+                Complete PID implementation with kP, kI, kD, and advanced
+                filtering options that other vendors don&apos;t provide.
               </p>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">Feedforward (FF)</h4>
+              <h4 className="font-bold text-[var(--foreground)] mb-2">
+                Feedforward (FF)
+              </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Built-in feedforward control for gravity compensation and velocity control that competitors lack.
+                Built-in feedforward control for gravity compensation and
+                velocity control that competitors lack.
               </p>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-green-600 dark:text-green-400 mb-2">Motion Profiling</h4>
+              <h4 className="font-bold text-green-600 dark:text-green-400 mb-2">
+                Motion Profiling
+              </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Advanced Motion Magic and motion profiling capabilities for smooth, controlled movements.
+                Advanced Motion Magic and motion profiling capabilities for
+                smooth, controlled movements.
               </p>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-orange-600 dark:text-orange-400 mb-2">Rotations Units</h4>
+              <h4 className="font-bold text-orange-600 dark:text-orange-400 mb-2">
+                Rotations Units
+              </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Motor positions measured in intuitive rotations instead of confusing encoder ticks or radians.
+                Motor positions measured in intuitive rotations instead of
+                confusing encoder ticks or radians.
               </p>
             </div>
           </div>
@@ -209,7 +225,9 @@ export default function Hardware() {
             <li>Make sure the &quot;CANivore USB&quot; is checked</li>
             <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
             <li>Your CANivore should now appear in Phoenix Tuner</li>
-            <li>For this workshop, please name your CANivore: &quot;canivore&quot;</li>
+            <li>
+              For this workshop, please name your CANivore: &quot;canivore&quot;
+            </li>
           </ol>
         </AlertBox>
       </section>
@@ -297,14 +315,18 @@ export default function Hardware() {
             />
 
             <p className="text-slate-600 dark:text-slate-300 text-sm">
-              Use Phoenix Tuner to update your motor firmware. Select devices and use the batch update feature to ensure all motors are running the latest firmware version.
+              Use Phoenix Tuner to update your motor firmware. Select devices
+              and use the batch update feature to ensure all motors are running
+              the latest firmware version.
             </p>
           </ContentCard>
         </div>
 
         <AlertBox variant="info" title="🎨 Card Colors">
           <p className="mb-3">
-            The color of the device cards is helpful as a visual indicator of device state. The meaning of the card color is also shown as text underneath the device title.
+            The color of the device cards is helpful as a visual indicator of
+            device state. The meaning of the card color is also shown as text
+            underneath the device title.
           </p>
 
           <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
@@ -312,8 +334,12 @@ export default function Hardware() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-700">
-                    <th className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100 w-32">Color</th>
-                    <th className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100">Description</th>
+                    <th className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100 w-32">
+                      Color
+                    </th>
+                    <th className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100">
+                      Description
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
@@ -321,46 +347,66 @@ export default function Hardware() {
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
                         <span className="inline-block w-4 h-4 bg-green-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-green-700 dark:text-green-400">Green</strong>
+                        <strong className="text-green-700 dark:text-green-400">
+                          Green
+                        </strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Device has latest firmware.</td>
+                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                      Device has latest firmware.
+                    </td>
                   </tr>
                   <tr className="border-b border-slate-100 dark:border-slate-800">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
                         <span className="inline-block w-4 h-4 bg-purple-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-purple-700 dark:text-purple-400">Purple</strong>
+                        <strong className="text-purple-700 dark:text-purple-400">
+                          Purple
+                        </strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Device has an unexpected/beta firmware version.</td>
+                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                      Device has an unexpected/beta firmware version.
+                    </td>
                   </tr>
                   <tr className="border-b border-slate-100 dark:border-slate-800">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
                         <span className="inline-block w-4 h-4 bg-yellow-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-yellow-700 dark:text-yellow-400">Yellow</strong>
+                        <strong className="text-yellow-700 dark:text-yellow-400">
+                          Yellow
+                        </strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">A new firmware version is available.</td>
+                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                      A new firmware version is available.
+                    </td>
                   </tr>
                   <tr className="border-b border-slate-100 dark:border-slate-800">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
                         <span className="inline-block w-4 h-4 bg-red-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-red-700 dark:text-red-400">Red</strong>
+                        <strong className="text-red-700 dark:text-red-400">
+                          Red
+                        </strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Device has a duplicate ID.</td>
+                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                      Device has a duplicate ID.
+                    </td>
                   </tr>
                   <tr>
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
                         <span className="inline-block w-4 h-4 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-blue-700 dark:text-primary-400">Blue</strong>
+                        <strong className="text-blue-700 dark:text-primary-400">
+                          Blue
+                        </strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">Failed to retrieve list of available firmware.</td>
+                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                      Failed to retrieve list of available firmware.
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -368,7 +414,9 @@ export default function Hardware() {
           </div>
 
           <AlertBox variant="tip" title="💡 Tip" className="mt-4">
-            Always update all motors to the same firmware version for consistency and use batch update to save time when updating multiple devices.
+            Always update all motors to the same firmware version for
+            consistency and use batch update to save time when updating multiple
+            devices.
           </AlertBox>
         </AlertBox>
       </section>
@@ -379,7 +427,8 @@ export default function Hardware() {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          If you are having issues connecting to your CANivore or other devices, make sure to update your CANivore firmware.
+          If you are having issues connecting to your CANivore or other devices,
+          make sure to update your CANivore firmware.
         </p>
 
         <iframe
@@ -431,8 +480,7 @@ export default function Hardware() {
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 Always start with low voltage values when testing motors. Make
-                sure your mechanism can move freely and won&apos;t cause
-                damage.
+                sure your mechanism can move freely and won&apos;t cause damage.
               </p>
             </div>
           </div>

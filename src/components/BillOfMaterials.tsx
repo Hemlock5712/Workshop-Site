@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import ContentCard from './ContentCard';
+"use client";
+import React, { useState, useMemo, useCallback } from "react";
+import ContentCard from "./ContentCard";
 
 export interface BOMItem {
   partDescription: string;
@@ -18,34 +19,45 @@ interface BillOfMaterialsProps {
   title: string;
 }
 
-type SortField = 'partDescription' | 'vendor' | 'pricePerUnit' | 'quantity' | 'partNumber';
-type SortDirection = 'asc' | 'desc';
-type FilterType = 'all' | '3d-printed' | 'purchased';
-type PrintFilter = 'all' | 'yes' | 'no';
+type SortField =
+  | "partDescription"
+  | "vendor"
+  | "pricePerUnit"
+  | "quantity"
+  | "partNumber";
+type SortDirection = "asc" | "desc";
+type FilterType = "all" | "3d-printed" | "purchased";
+type PrintFilter = "all" | "yes" | "no";
 
-export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) {
-  const [sortField, setSortField] = useState<SortField>('partDescription');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-  const [filter, setFilter] = useState<FilterType>('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [vendorFilter, setVendorFilter] = useState('all');
-  const [printFilter, setPrintFilter] = useState<PrintFilter>('all');
+export default function BillOfMaterials({
+  items,
+  title,
+}: BillOfMaterialsProps) {
+  const [sortField, setSortField] = useState<SortField>("partDescription");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [filter, setFilter] = useState<FilterType>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [vendorFilter, setVendorFilter] = useState("all");
+  const [printFilter, setPrintFilter] = useState<PrintFilter>("all");
   const [free3DPrinting, setFree3DPrinting] = useState(false);
   const [recycleCTRE, setRecycleCTRE] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [ownedItems, setOwnedItems] = useState<Set<number>>(new Set());
 
   const isCTREPart = (item: BOMItem) => {
-    const ctreParts = ['Kraken', 'CANivore', 'CANCoder', 'CANcoder', 'TalonFX'];
-    return ctreParts.some(part => item.partDescription.includes(part));
+    const ctreParts = ["Kraken", "CANivore", "CANcoder", "TalonFX"];
+    return ctreParts.some((part) => item.partDescription.includes(part));
   };
 
-  const getEffectivePrice = useCallback((item: BOMItem, index: number) => {
-    if (ownedItems.has(index)) return 0;
-    if (free3DPrinting && item.is3DPrinted) return 0;
-    if (recycleCTRE && isCTREPart(item)) return 0;
-    return item.pricePerUnit;
-  }, [free3DPrinting, recycleCTRE, ownedItems]);
+  const getEffectivePrice = useCallback(
+    (item: BOMItem, index: number) => {
+      if (ownedItems.has(index)) return 0;
+      if (free3DPrinting && item.is3DPrinted) return 0;
+      if (recycleCTRE && isCTREPart(item)) return 0;
+      return item.pricePerUnit;
+    },
+    [free3DPrinting, recycleCTRE, ownedItems]
+  );
 
   const handleOwnedToggle = (index: number) => {
     const newOwnedItems = new Set(ownedItems);
@@ -99,7 +111,6 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
     }
   };
 
-
   const printNeededItems = () => {
     const neededItems = items.filter((item, index) => !ownedItems.has(index));
     const printContent = `
@@ -131,125 +142,182 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
               </tr>
             </thead>
             <tbody>
-              ${neededItems.map(item => `
+              ${neededItems
+                .map(
+                  (item) => `
                 <tr>
                   <td>${item.partDescription}</td>
                   <td>${item.quantity}</td>
                   <td>${item.vendor}</td>
-                  <td>${item.partNumber || 'N/A'}</td>
+                  <td>${item.partNumber || "N/A"}</td>
                   <td>$${item.pricePerUnit.toFixed(2)}</td>
                   <td>$${(item.pricePerUnit * item.quantity).toFixed(2)}</td>
                   <td>${item.notes}</td>
                 </tr>
-              `).join('')}
+              `
+                )
+                .join("")}
             </tbody>
           </table>
           <div class="total">
-            Total Cost: $${neededItems.reduce((sum, item) => sum + (item.pricePerUnit * item.quantity), 0).toFixed(2)}
+            Total Cost: $${neededItems
+              .reduce((sum, item) => sum + item.pricePerUnit * item.quantity, 0)
+              .toFixed(2)}
           </div>
         </body>
       </html>
     `;
-    
-    const printWindow = window.open('', '_blank');
+
+    const printWindow = window.open("", "_blank");
     printWindow?.document.write(printContent);
     printWindow?.document.close();
     printWindow?.print();
   };
 
   const filteredAndSortedItems = useMemo(() => {
-    const filtered = items.filter(item => {
-      if (filter === '3d-printed' && !item.is3DPrinted) return false;
-      if (filter === 'purchased' && item.is3DPrinted) return false;
-      
-      if (printFilter === 'yes' && !item.is3DPrinted) return false;
-      if (printFilter === 'no' && item.is3DPrinted) return false;
-      
-      if (searchTerm && !item.partDescription.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !item.vendor.toLowerCase().includes(searchTerm.toLowerCase()) &&
-          !item.partNumber?.toLowerCase().includes(searchTerm.toLowerCase())) {
+    const filtered = items.filter((item) => {
+      if (filter === "3d-printed" && !item.is3DPrinted) return false;
+      if (filter === "purchased" && item.is3DPrinted) return false;
+
+      if (printFilter === "yes" && !item.is3DPrinted) return false;
+      if (printFilter === "no" && item.is3DPrinted) return false;
+
+      if (
+        searchTerm &&
+        !item.partDescription
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) &&
+        !item.vendor.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !((item.partNumber ?? "").toLowerCase().includes(searchTerm.toLowerCase()))
+      ) {
         return false;
       }
-      
-      if (vendorFilter !== 'all' && item.vendor !== vendorFilter) return false;
-      
+
+      if (vendorFilter !== "all" && item.vendor !== vendorFilter) return false;
+
       return true;
     });
 
     filtered.sort((a, b) => {
       let aValue: string | number, bValue: string | number;
-      
+
       switch (sortField) {
-        case 'partDescription':
+        case "partDescription":
           aValue = a.partDescription.toLowerCase();
           bValue = b.partDescription.toLowerCase();
           break;
-        case 'vendor':
+        case "vendor":
           aValue = a.vendor.toLowerCase();
           bValue = b.vendor.toLowerCase();
           break;
-        case 'pricePerUnit':
+        case "pricePerUnit":
           aValue = getEffectivePrice(a, items.indexOf(a));
           bValue = getEffectivePrice(b, items.indexOf(b));
           break;
-        case 'quantity':
+        case "quantity":
           aValue = a.quantity;
           bValue = b.quantity;
           break;
-        case 'partNumber':
-          aValue = (a.partNumber || 'zzzz').toLowerCase(); // Put N/A items at the end
-          bValue = (b.partNumber || 'zzzz').toLowerCase();
+        case "partNumber":
+          aValue = (a.partNumber || "zzzz").toLowerCase(); // Put N/A items at the end
+          bValue = (b.partNumber || "zzzz").toLowerCase();
           break;
         default:
           return 0;
       }
-      
-      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+
+      if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
 
     return filtered;
-  }, [items, sortField, sortDirection, filter, searchTerm, vendorFilter, printFilter, getEffectivePrice]);
+  }, [
+    items,
+    sortField,
+    sortDirection,
+    filter,
+    searchTerm,
+    vendorFilter,
+    printFilter,
+    getEffectivePrice,
+  ]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
-  const totalCost = filteredAndSortedItems.reduce((sum, item) => sum + (getEffectivePrice(item, items.indexOf(item)) * item.quantity), 0);
-  const originalTotalCost = items.reduce((sum, item) => sum + (item.pricePerUnit * item.quantity), 0);
+  const totalCost = filteredAndSortedItems.reduce(
+    (sum, item) =>
+      sum + getEffectivePrice(item, items.indexOf(item)) * item.quantity,
+    0
+  );
+  const originalTotalCost = items.reduce(
+    (sum, item) => sum + item.pricePerUnit * item.quantity,
+    0
+  );
   const savings = originalTotalCost - totalCost;
 
   const vendors = useMemo(() => {
-    const uniqueVendors = Array.from(new Set(items.map(item => item.vendor)));
+    const uniqueVendors = Array.from(new Set(items.map((item) => item.vendor)));
     return uniqueVendors.sort();
   }, [items]);
 
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) {
       return (
-        <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+        <svg
+          className="w-4 h-4 text-slate-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+          />
         </svg>
       );
     }
-    return sortDirection === 'asc' ? (
-      <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+    return sortDirection === "asc" ? (
+      <svg
+        className="w-4 h-4 text-primary-600"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+        />
       </svg>
     ) : (
-      <svg className="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+      <svg
+        className="w-4 h-4 text-primary-600"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+        />
       </svg>
     );
   };
 
-    return (
+  return (
     <ContentCard>
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
@@ -260,14 +328,21 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
             onClick={() => setIsExpanded(!isExpanded)}
             className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
           >
-            {isExpanded ? 'Hide Details' : 'Show Details'}
-            <svg 
-              className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-              fill="none" 
-              stroke="currentColor" 
+            {isExpanded ? "Hide Details" : "Show Details"}
+            <svg
+              className={`w-4 h-4 transition-transform ${
+                isExpanded ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
@@ -275,7 +350,10 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
         {/* Cost-Saving Tip - Always Visible */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
           <p className="text-blue-800 dark:text-blue-300 font-medium">
-            💡 <strong>Cost-Saving Tip:</strong> Many parts listed below can likely be built from scrap material or parts you already own from previous projects, significantly reducing the actual cost of this mechanism.
+            💡 <strong>Cost-Saving Tip:</strong> Many parts listed below can
+            likely be built from scrap material or parts you already own from
+            previous projects, significantly reducing the actual cost of this
+            mechanism.
           </p>
         </div>
 
@@ -283,13 +361,17 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
         <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-sm text-slate-600 dark:text-slate-400">Total Items</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">
+                Total Items
+              </div>
               <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
                 {items.length}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-slate-600 dark:text-slate-400">Full Price</div>
+              <div className="text-sm text-slate-600 dark:text-slate-400">
+                Full Price
+              </div>
               <div className="text-xl font-bold text-primary-600 dark:text-primary-400">
                 ${originalTotalCost.toFixed(2)}
               </div>
@@ -299,11 +381,18 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                 With 3D Print $5 + CTRE Recycled
               </div>
               <div className="text-xl font-bold text-green-600 dark:text-green-400">
-                ${(originalTotalCost - items.reduce((sum, item) => {
-                  if (item.is3DPrinted) return sum + (item.pricePerUnit * item.quantity);
-                  if (isCTREPart(item)) return sum + (item.pricePerUnit * item.quantity);
-                  return sum;
-                }, 0) + 5).toFixed(2)}
+                $
+                {(
+                  originalTotalCost -
+                  items.reduce((sum, item) => {
+                    if (item.is3DPrinted)
+                      return sum + item.pricePerUnit * item.quantity;
+                    if (isCTREPart(item))
+                      return sum + item.pricePerUnit * item.quantity;
+                    return sum;
+                  }, 0) +
+                  5
+                ).toFixed(2)}
               </div>
             </div>
           </div>
@@ -340,8 +429,10 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                 className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="all">All Vendors</option>
-                {vendors.map(vendor => (
-                  <option key={vendor} value={vendor}>{vendor}</option>
+                {vendors.map((vendor) => (
+                  <option key={vendor} value={vendor}>
+                    {vendor}
+                  </option>
                 ))}
               </select>
               <select
@@ -376,15 +467,25 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                   className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
                 />
                 <span className="text-sm text-slate-700 dark:text-slate-300">
-                  Recycle CTRE Parts (Kraken, CANivore, CANCoder)
+                  Recycle CTRE Parts (Kraken, CANivore, CANcoder)
                 </span>
               </label>
               <button
                 onClick={printNeededItems}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
               >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                <svg
+                  className="w-4 h-4 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                  />
                 </svg>
                 Print Needed Items
               </button>
@@ -395,20 +496,26 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
           <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-sm text-slate-600 dark:text-slate-400">Showing Items</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">
+                  Showing Items
+                </div>
                 <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
                   {filteredAndSortedItems.length} / {items.length}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-sm text-slate-600 dark:text-slate-400">Current Cost</div>
+                <div className="text-sm text-slate-600 dark:text-slate-400">
+                  Current Cost
+                </div>
                 <div className="text-xl font-bold text-primary-600 dark:text-primary-400">
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
               {savings > 0 && (
                 <div className="text-center">
-                  <div className="text-sm text-slate-600 dark:text-slate-400">Savings</div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400">
+                    Savings
+                  </div>
                   <div className="text-xl font-bold text-green-600 dark:text-green-400">
                     -${savings.toFixed(2)}
                   </div>
@@ -417,7 +524,6 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
             </div>
           </div>
 
-
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -425,45 +531,45 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                   <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
                     Own
                   </th>
-                  <th 
+                  <th
                     className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort('partDescription')}
+                    onClick={() => handleSort("partDescription")}
                   >
                     <div className="flex items-center justify-center gap-2">
                       Part Description
                       <SortIcon field="partDescription" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort('quantity')}
+                    onClick={() => handleSort("quantity")}
                   >
                     <div className="flex items-center justify-center gap-2">
                       Qty
                       <SortIcon field="quantity" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort('vendor')}
+                    onClick={() => handleSort("vendor")}
                   >
                     <div className="flex items-center justify-center gap-2">
                       Vendor
                       <SortIcon field="vendor" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort('partNumber')}
+                    onClick={() => handleSort("partNumber")}
                   >
                     <div className="flex items-center justify-center gap-2">
                       Part #
                       <SortIcon field="partNumber" />
                     </div>
                   </th>
-                  <th 
+                  <th
                     className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort('pricePerUnit')}
+                    onClick={() => handleSort("pricePerUnit")}
                   >
                     <div className="flex items-center justify-center gap-2">
                       Price
@@ -486,11 +592,15 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                   const itemIndex = items.indexOf(item);
                   const effectivePrice = getEffectivePrice(item, itemIndex);
                   const isDiscounted = effectivePrice < item.pricePerUnit;
-                  
+
                   return (
-                    <tr 
+                    <tr
                       key={index}
-                      className={`${index % 2 === 0 ? 'bg-white dark:bg-slate-950' : 'bg-slate-50 dark:bg-slate-900'} hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
+                      className={`${
+                        index % 2 === 0
+                          ? "bg-white dark:bg-slate-950"
+                          : "bg-slate-50 dark:bg-slate-900"
+                      } hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
                     >
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center">
                         <input
@@ -517,11 +627,17 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                         {item.vendor}
                       </td>
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 font-mono text-center">
-                        {item.partNumber || 'N/A'}
+                        {item.partNumber || "N/A"}
                       </td>
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
                         <div className="flex flex-col items-center">
-                          <span className={isDiscounted ? 'text-green-600 dark:text-green-400 font-semibold' : ''}>
+                          <span
+                            className={
+                              isDiscounted
+                                ? "text-green-600 dark:text-green-400 font-semibold"
+                                : ""
+                            }
+                          >
                             ${effectivePrice.toFixed(2)}
                           </span>
                           {isDiscounted && (
@@ -532,19 +648,29 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                         </div>
                       </td>
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
-                        {item.vendor === 'Custom' ? (
+                        {item.vendor === "Custom" ? (
                           <span className="text-slate-500 dark:text-slate-400 text-xs">
                             Files in Repository
                           </span>
                         ) : (
-                          <a 
-                            href={item.productLink} 
-                            target="_blank" 
+                          <a
+                            href={item.productLink}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline"
                           >
-                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            <svg
+                              className="w-4 h-4 mr-1"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              />
                             </svg>
                             View
                           </a>
@@ -562,15 +688,25 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
                               Yes
                             </span>
                             {item.printedModelLink && (
-                              <a 
-                                href={item.printedModelLink} 
-                                target="_blank" 
+                              <a
+                                href={item.printedModelLink}
+                                target="_blank"
                                 rel="noopener noreferrer"
                                 className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
                                 title="3D Model Link"
                               >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                  />
                                 </svg>
                               </a>
                             )}
@@ -590,10 +726,13 @@ export default function BillOfMaterials({ items, title }: BillOfMaterialsProps) 
 
           <div className="mt-4 text-sm text-slate-600 dark:text-slate-400">
             <p className="mb-2">
-              <strong>Note:</strong> Prices are estimates and may vary. Please check vendor websites for current pricing and availability.
+              <strong>Note:</strong> Prices are estimates and may vary. Please
+              check vendor websites for current pricing and availability.
             </p>
             <p>
-              <strong>3D Printed Parts:</strong> Parts marked as 3D printed can be manufactured with a standard FDM printer using PLA or PETG material.
+              <strong>3D Printed Parts:</strong> Parts marked as 3D printed can
+              be manufactured with a standard FDM printer using PLA or PETG
+              material.
             </p>
           </div>
         </div>
