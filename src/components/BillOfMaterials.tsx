@@ -187,7 +187,7 @@ export default function BillOfMaterials({
           .toLowerCase()
           .includes(searchTerm.toLowerCase()) &&
         !item.vendor.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        !item.partNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+        !((item.partNumber ?? "").toLowerCase().includes(searchTerm.toLowerCase()))
       ) {
         return false;
       }
