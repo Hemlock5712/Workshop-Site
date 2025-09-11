@@ -160,9 +160,6 @@ public ArmSubsystem() {
     slot0.kA = 0.01;    // Acceleration feedforward
 
     motor.getConfigurator().apply(config);
-
-    // Create PID control request
-    positionRequest = new PositionVoltage(0).withSlot(0);
 }
 
 // Method to set target position

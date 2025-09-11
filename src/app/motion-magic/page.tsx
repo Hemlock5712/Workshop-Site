@@ -119,9 +119,6 @@ public ArmSubsystem() {
     motionMagic.MotionMagicJerk = 80.0;             // 80 rot/s³ jerk limit
 
     motor.getConfigurator().apply(config);
-
-    // Create Motion Magic control request
-    motionMagicRequest = new MotionMagicVoltage(0).withSlot(0);
 }
 
 // Method to set target position with Motion Magic
