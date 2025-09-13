@@ -9,7 +9,6 @@ import { armBOMData } from "@/data/armBOM";
 import { shooterBOMData } from "@/data/shooterBOM";
 
 export default function MechanismCAD() {
-
   return (
     <PageTemplate
       title="Mechanism CAD"
@@ -28,28 +27,30 @@ export default function MechanismCAD() {
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Interactive 3D Models
         </h2>
-        
+
         {/* Flywheel Mechanism */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-4xl">
-              <ModelViewer 
+              <ModelViewer
                 url="/cad/HTTI Mechanism v2 - Shooter Mode.gltf"
                 width={800}
                 height={600}
                 className="w-full shadow-lg"
               />
             </div>
-            
+
             <div className="text-center space-y-4">
               <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                 Flywheel Mechanism
               </h3>
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
-                This 3D model represents the mechanism you&apos;ll be programming in this workshop. 
-                Use your mouse to orbit around the model, zoom in/out, and examine the design from different angles.
+                This 3D model represents the mechanism you&apos;ll be
+                programming in this workshop. Use your mouse to orbit around the
+                model, zoom in/out, and examine the design from different
+                angles.
               </p>
-              
+
               {/* Download Buttons */}
               <div className="flex gap-3">
                 <a
@@ -81,23 +82,24 @@ export default function MechanismCAD() {
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
           <div className="flex flex-col items-center gap-6">
             <div className="w-full max-w-4xl">
-              <ModelViewer 
+              <ModelViewer
                 url="/cad/HTTI Mechanism v2 - Arm Mode.gltf"
                 width={800}
                 height={600}
                 className="w-full shadow-lg"
               />
             </div>
-            
+
             <div className="text-center space-y-4">
               <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                 Arm Mechanism
               </h3>
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
-                An Arm mechanism for Workshop programming. This arm mechanism demonstrates 
-                precise positioning and control concepts that are essential in FRC robotics.
+                An Arm mechanism for Workshop programming. This arm mechanism
+                demonstrates precise positioning and control concepts that are
+                essential in FRC robotics.
               </p>
-              
+
               {/* Download Buttons */}
               <div className="flex gap-3">
                 <a
@@ -129,15 +131,21 @@ export default function MechanismCAD() {
         <AlertBox variant="info" title="📋 File Format Guide">
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div>
-              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">STL Files</h5>
+              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">
+                STL Files
+              </h5>
               <p className="text-blue-700 dark:text-blue-300">
-                Standard format for 3D printing. Compatible with most slicers including PrusaSlicer, Cura, and Bambu Studio.
+                Standard format for 3D printing. Compatible with most slicers
+                including PrusaSlicer, Cura, and Bambu Studio.
               </p>
             </div>
             <div>
-              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">STP Files</h5>
+              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">
+                STP Files
+              </h5>
               <p className="text-blue-700 dark:text-blue-300">
-                CAD format for editing and modification. Opens in Fusion 360, SolidWorks, and other CAD software.
+                CAD format for editing and modification. Opens in Fusion 360,
+                SolidWorks, and other CAD software.
               </p>
             </div>
           </div>
@@ -154,7 +162,6 @@ export default function MechanismCAD() {
         </div>
       </section>
 
-
       {/* Next Steps */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
@@ -165,17 +172,17 @@ export default function MechanismCAD() {
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">
               <div className="flex items-center justify-center w-12 h-12 bg-primary-100 dark:bg-primary-900/50 rounded-lg">
-                <svg 
-                  className="w-6 h-6 text-primary-600 dark:text-primary-400" 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className="w-6 h-6 text-primary-600 dark:text-primary-400"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M13 10V3L4 14h7v7l9-11h-7z" 
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
               </div>
@@ -185,9 +192,10 @@ export default function MechanismCAD() {
                 Ready for Programming!!!
               </h3>
               <p className="text-primary-800 dark:text-primary-300">
-                Now that you have a mechanism, you&apos;re ready to move on to connecting 
-                and configuring the code to make this work. We&apos;ll cover motors, sensors, 
-                and controllers needed to bring this CAD model to life.
+                Now that you have a mechanism, you&apos;re ready to move on to
+                connecting and configuring the code to make this work.
+                We&apos;ll cover motors, sensors, and controllers needed to
+                bring this CAD model to life.
               </p>
             </div>
           </div>

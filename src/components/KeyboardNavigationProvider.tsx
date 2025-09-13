@@ -10,7 +10,7 @@ export default function KeyboardNavigationProvider() {
   // Initialize keyboard navigation without search handling
   // (Search handling is done in SearchBar component)
   useKeyboardNavigation();
-  
+
   // This component doesn't render anything visible
   return null;
 }

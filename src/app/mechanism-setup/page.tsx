@@ -26,18 +26,35 @@ export default function MechanismSetup() {
       {/* CANivore USB Warning */}
       <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
         <div className="flex items-start gap-3">
-          <svg className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+          <svg
+            className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"
+            />
           </svg>
           <div>
-            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">Warning: Stop Code Before Hardware Setup</h3>
+            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">
+              Warning: Stop Code Before Hardware Setup
+            </h3>
             <p className="text-red-700 dark:text-red-300 mb-3">
-              Before performing hardware setup tasks, <strong>stop any running code</strong> and turn <strong>ON</strong> the &quot;CANivore USB&quot; setting in TunerX. 
-              This ensures proper communication with physical hardware during testing and configuration.
+              Before performing hardware setup tasks,{" "}
+              <strong>stop any running code</strong> and turn{" "}
+              <strong>ON</strong> the &quot;CANivore USB&quot; setting in
+              TunerX. This ensures proper communication with physical hardware
+              during testing and configuration.
             </p>
             <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded border border-red-200 dark:border-red-700">
               <p className="text-red-800 dark:text-red-200 text-sm">
-                <strong>Steps:</strong> Stop any running robot code → Open TunerX → Go to CANivore settings → Enable &quot;CANivore USB&quot;
+                <strong>Steps:</strong> Stop any running robot code → Open
+                TunerX → Go to CANivore settings → Enable &quot;CANivore
+                USB&quot;
               </p>
             </div>
           </div>
@@ -84,13 +101,27 @@ export default function MechanismSetup() {
                 {/* Encoder Replacement Warning - Top Level */}
                 <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
                   <div className="flex items-start gap-4">
-                    <svg className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                     <div>
-                      <h4 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2">📝 Important Note: Encoder Replacement</h4>
+                      <h4 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2">
+                        📝 Important Note: Encoder Replacement
+                      </h4>
                       <p className="text-blue-700 dark:text-blue-300">
-                        If you replace your encoder with a new one, you will need to <strong>repeat these setup steps</strong> to ensure proper direction and zero position configuration.
+                        If you replace your encoder with a new one, you will
+                        need to <strong>repeat these setup steps</strong> to
+                        ensure proper direction and zero position configuration.
                       </p>
                     </div>
                   </div>
@@ -105,15 +136,22 @@ export default function MechanismSetup() {
                   <div className="grid grid-cols-2 gap-6 mb-6">
                     <div>
                       <p className="text-[var(--muted-foreground)] mb-4">
-                        You&apos;ll need to make sure your encoder is configured correctly. With the device facing you, as shown in the following picture, please make sure that  
-                        the encoder position increases as you rotate the arm counterclockwise.
+                        You&apos;ll need to make sure your encoder is configured
+                        correctly. With the device facing you, as shown in the
+                        following picture, please make sure that the encoder
+                        position increases as you rotate the arm
+                        counterclockwise.
                       </p>
                     </div>
-                    
+
                     <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
-                      <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">Expected Behavior:</h4>
+                      <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
+                        Expected Behavior:
+                      </h4>
                       <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
-                        <li>• Counterclockwise rotation → Position increases</li>
+                        <li>
+                          • Counterclockwise rotation → Position increases
+                        </li>
                         <li>• Clockwise rotation → Position decreases</li>
                       </ul>
                     </div>
@@ -138,30 +176,56 @@ export default function MechanismSetup() {
 
                   {/* Implementation Sequence */}
                   <ContentCard>
-                    <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">🔧 Implementation Sequence</h4>
-                    
+                    <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">
+                      🔧 Implementation Sequence
+                    </h4>
+
                     <div className="space-y-4">
                       <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
-                        <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</div>
+                        <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                          1
+                        </div>
                         <div>
-                          <h4 className="font-bold text-primary-700 dark:text-primary-300">Rotate Counter-Clockwise</h4>
-                          <p className="text-primary-600 dark:text-primary-400 text-sm">Manually rotate the mechanism counter-clockwise and observe if the encoder position increases.</p>
+                          <h4 className="font-bold text-primary-700 dark:text-primary-300">
+                            Rotate Counter-Clockwise
+                          </h4>
+                          <p className="text-primary-600 dark:text-primary-400 text-sm">
+                            Manually rotate the mechanism counter-clockwise and
+                            observe if the encoder position increases.
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                        <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</div>
+                        <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                          2
+                        </div>
                         <div>
-                          <h4 className="font-bold text-primary-800 dark:text-primary-200">Fix Direction if Needed</h4>
-                          <p className="text-primary-700 dark:text-primary-300 text-sm">If position goes down instead of up, go to &quot;Info&quot; → &quot;Sensor Direction&quot; → press &quot;Apply&quot; button to invert the encoder direction.</p>
+                          <h4 className="font-bold text-primary-800 dark:text-primary-200">
+                            Fix Direction if Needed
+                          </h4>
+                          <p className="text-primary-700 dark:text-primary-300 text-sm">
+                            If position goes down instead of up, go to
+                            &quot;Info&quot; → &quot;Sensor Direction&quot; →
+                            press &quot;Apply&quot; button to invert the encoder
+                            direction.
+                          </p>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
-                        <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</div>
+                        <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                          3
+                        </div>
                         <div>
-                          <h4 className="font-bold text-primary-900 dark:text-primary-100">Zero the Encoder</h4>
-                          <p className="text-primary-800 dark:text-primary-200 text-sm">Put arm to zero position, then in TunerX go to &quot;Info&quot; → press &quot;0 encoder&quot; button → press &quot;Apply&quot; button.</p>
+                          <h4 className="font-bold text-primary-900 dark:text-primary-100">
+                            Zero the Encoder
+                          </h4>
+                          <p className="text-primary-800 dark:text-primary-200 text-sm">
+                            Put arm to zero position, then in TunerX go to
+                            &quot;Info&quot; → press &quot;0 encoder&quot;
+                            button → press &quot;Apply&quot; button.
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -184,7 +248,11 @@ export default function MechanismSetup() {
 
                   <div className="grid grid-cols-2 gap-6 mb-8 items-start">
                     <p className="text-[var(--muted-foreground)]">
-                      You&apos;ll want to make sure your motor is spinning in the expected direction. If the motor is getting positive voltage, it should be spinning counterclockwise. You can check this through tuner, with the device facing you as in the following picture.
+                      You&apos;ll want to make sure your motor is spinning in
+                      the expected direction. If the motor is getting positive
+                      voltage, it should be spinning counterclockwise. You can
+                      check this through tuner, with the device facing you as in
+                      the following picture.
                     </p>
 
                     <ImageBlock
@@ -206,8 +274,10 @@ export default function MechanismSetup() {
 
                   {/* Motor Direction Verification */}
                   <div className="mt-8">
-                    <h4 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h4>
-                      
+                    <h4 className="text-xl font-bold text-learn-600 mb-4">
+                      🔧 Motor Direction Verification
+                    </h4>
+
                     <div className="grid md:grid-cols-2 gap-6">
                       <ConceptBox
                         title="Positive Voltage Test"
@@ -215,7 +285,9 @@ export default function MechanismSetup() {
                       >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Positive voltage should move the mechanism in the &quot;positive&quot; direction (counter-clockwise for arms).
+                            <strong>Expected:</strong> Positive voltage should
+                            move the mechanism in the &quot;positive&quot;
+                            direction (counter-clockwise for arms).
                           </p>
                         </div>
                       </ConceptBox>
@@ -226,7 +298,9 @@ export default function MechanismSetup() {
                       >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Positive motor voltage → positive encoder change, negative motor voltage → negative encoder change.
+                            <strong>Expected:</strong> Positive motor voltage →
+                            positive encoder change, negative motor voltage →
+                            negative encoder change.
                           </p>
                         </div>
                       </ConceptBox>
@@ -245,11 +319,17 @@ export default function MechanismSetup() {
                   <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="col-span-2">
                       <p className="text-[var(--muted-foreground)] mb-4">
-                        You&apos;ll want to make sure your flywheel motors are spinning in the expected direction. If the motor is getting positive voltage, both motors should spin in the same direction (leader-follower setup). You can check this through tuner.
+                        You&apos;ll want to make sure your flywheel motors are
+                        spinning in the expected direction. If the motor is
+                        getting positive voltage, both motors should spin in the
+                        same direction (leader-follower setup). You can check
+                        this through tuner.
                       </p>
-                      
+
                       <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
-                        <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">Expected Behavior:</h4>
+                        <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
+                          Expected Behavior:
+                        </h4>
                         <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
                           <li>• Leader and follower motors spin together</li>
                           <li>• Positive voltage → Shooting</li>
@@ -278,8 +358,10 @@ export default function MechanismSetup() {
 
                   {/* Motor Direction Verification */}
                   <div className="mt-8">
-                    <h4 className="text-xl font-bold text-learn-600 mb-4">🔧 Motor Direction Verification</h4>
-                      
+                    <h4 className="text-xl font-bold text-learn-600 mb-4">
+                      🔧 Motor Direction Verification
+                    </h4>
+
                     <div className="grid md:grid-cols-2 gap-6">
                       <ConceptBox
                         title="Positive Voltage Test"
@@ -287,7 +369,9 @@ export default function MechanismSetup() {
                       >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Both motors should rotate smoothly in the same direction with consistent speed.
+                            <strong>Expected:</strong> Both motors should rotate
+                            smoothly in the same direction with consistent
+                            speed.
                           </p>
                         </div>
                       </ConceptBox>
@@ -298,7 +382,8 @@ export default function MechanismSetup() {
                       >
                         <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
                           <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Follower motor should mirror leader motor movements with minimal lag.
+                            <strong>Expected:</strong> Follower motor should
+                            mirror leader motor movements with minimal lag.
                           </p>
                         </div>
                       </ConceptBox>
@@ -313,14 +398,20 @@ export default function MechanismSetup() {
 
       {/* Next Step */}
       <div className="bg-[var(--muted)] border border-[var(--border)] rounded-lg p-6">
-        <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">✅ Ready for Control</h3>
+        <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
+          ✅ Ready for Control
+        </h3>
         <p className="text-[var(--muted-foreground)] mb-4">
-          Once your mechanism moves in the correct direction and provides accurate feedback (encoder for arms, motor consistency for flywheels), you&apos;re ready to implement advanced control algorithms.
+          Once your mechanism moves in the correct direction and provides
+          accurate feedback (encoder for arms, motor consistency for flywheels),
+          you&apos;re ready to implement advanced control algorithms.
         </p>
         <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
           <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-            <strong>💡 Next Step:</strong> With verified hardware setup, we can now implement PID control for precise mechanism control.
-            The control algorithm will use sensor feedback to automatically reach target positions or velocities.
+            <strong>💡 Next Step:</strong> With verified hardware setup, we can
+            now implement PID control for precise mechanism control. The control
+            algorithm will use sensor feedback to automatically reach target
+            positions or velocities.
           </p>
         </div>
       </div>

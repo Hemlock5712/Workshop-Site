@@ -3,7 +3,7 @@
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   /* Educational Brand Colors - Based on #0D233F (Deep Academic Blue) */
   --color-primary-50: #f2f6fa;
   --color-primary-100: #e3ecf4;
@@ -102,7 +102,9 @@
   color: var(--card-foreground);
   border: 1px solid var(--border);
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px 0 rgb(0 0 0 / 0.06);
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px 0 rgb(0 0 0 / 0.06);
 }
 
 @layer components {

@@ -6,7 +6,11 @@ interface DocumentationButtonProps {
   icon: ReactNode;
 }
 
-export default function DocumentationButton({ href, title, icon }: DocumentationButtonProps) {
+export default function DocumentationButton({
+  href,
+  title,
+  icon,
+}: DocumentationButtonProps) {
   return (
     <a
       href={href}
@@ -16,7 +20,12 @@ export default function DocumentationButton({ href, title, icon }: Documentation
     >
       {icon && <span className="mr-2">{icon}</span>}
       {title}
-      <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg
+        className="ml-2 w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -27,4 +36,3 @@ export default function DocumentationButton({ href, title, icon }: Documentation
     </a>
   );
 }
-

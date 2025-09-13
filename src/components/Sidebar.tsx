@@ -288,13 +288,48 @@ const workshop1Items = [
           strokeWidth={2}
           d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"
         />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m14 7 3 3" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 6v4" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14v4" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 2v2" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8H3" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 16h-4" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3H9" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="m14 7 3 3"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M5 6v4"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M19 14v4"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M10 2v2"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M7 8H3"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 16h-4"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11 3H9"
+        />
       </svg>
     ),
   },
@@ -465,7 +500,6 @@ export default function Sidebar() {
     setIsOpen(!isOpen);
   };
 
-
   return (
     <>
       {/* Overlay for mobile */}
@@ -494,7 +528,11 @@ export default function Sidebar() {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d={isOpen ? "M11 19l-7-7 7-7m8 14l-7-7 7-7" : "M13 5l7 7-7 7M5 5l7 7-7 7"}
+            d={
+              isOpen
+                ? "M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                : "M13 5l7 7-7 7M5 5l7 7-7 7"
+            }
           />
         </svg>
       </button>
@@ -507,8 +545,9 @@ export default function Sidebar() {
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
       >
-        <div className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}>
-
+        <div
+          className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}
+        >
           {/* Navigation */}
           <nav className="space-y-2">
             {/* Main Navigation Items */}
@@ -547,9 +586,7 @@ export default function Sidebar() {
               <Link
                 href="/mechanism-cad"
                 className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen
-                    ? "px-4 py-3 space-x-3"
-                    : "px-3 py-3 justify-center"
+                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
                 } ${
                   pathname === "/mechanism-cad"
                     ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
@@ -789,7 +826,6 @@ export default function Sidebar() {
                 </div>
               </div>
             )}
-
           </nav>
         </div>
         <div className="p-4">

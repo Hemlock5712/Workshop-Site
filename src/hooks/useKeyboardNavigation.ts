@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 // Define the page sequence for navigation
 const PAGE_SEQUENCE = [
-  '/',
-  '/introduction',
-  '/prerequisites',
-  '/hardware',
-  '/project-setup', 
-  '/command-framework',
-  '/building-subsystems',
-  '/adding-commands',
-  '/running-program',
-  '/mechanism-setup',
-  '/pid-control',
-  '/motion-magic'
+  "/",
+  "/introduction",
+  "/prerequisites",
+  "/hardware",
+  "/project-setup",
+  "/command-framework",
+  "/building-subsystems",
+  "/adding-commands",
+  "/running-program",
+  "/mechanism-setup",
+  "/pid-control",
+  "/motion-magic",
 ];
 
 // Define search bar focus function type
@@ -27,9 +27,9 @@ interface UseKeyboardNavigationProps {
   onSearchClose?: () => void;
 }
 
-export function useKeyboardNavigation({ 
-  onSearchFocus, 
-  onSearchClose 
+export function useKeyboardNavigation({
+  onSearchFocus,
+  onSearchClose,
 }: UseKeyboardNavigationProps = {}) {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,12 +39,12 @@ export function useKeyboardNavigation({
       // Don't trigger shortcuts when typing in inputs, textareas, or contenteditable elements
       const target = event.target as HTMLElement;
       if (
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.contentEditable === 'true'
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.contentEditable === "true"
       ) {
         // Exception: Allow Escape key to work even in inputs
-        if (event.key === 'Escape') {
+        if (event.key === "Escape") {
           target.blur(); // Remove focus from input
           onSearchClose?.();
         }
@@ -54,7 +54,7 @@ export function useKeyboardNavigation({
       const currentIndex = PAGE_SEQUENCE.indexOf(pathname);
 
       switch (event.key) {
-        case 'ArrowLeft':
+        case "ArrowLeft":
           // Only prevent default if we can actually navigate
           if (currentIndex > 0) {
             event.preventDefault();
@@ -63,7 +63,7 @@ export function useKeyboardNavigation({
           }
           break;
 
-        case 'ArrowRight':
+        case "ArrowRight":
           // Only prevent default if we can actually navigate
           if (currentIndex >= 0 && currentIndex < PAGE_SEQUENCE.length - 1) {
             event.preventDefault();
@@ -72,22 +72,22 @@ export function useKeyboardNavigation({
           }
           break;
 
-        case '/':
+        case "/":
           event.preventDefault();
           onSearchFocus?.();
           break;
 
-        case 'Escape':
+        case "Escape":
           event.preventDefault();
           onSearchClose?.();
           break;
 
-        case 'Home':
+        case "Home":
           event.preventDefault();
-          router.push('/');
+          router.push("/");
           break;
 
-        case 'End':
+        case "End":
           event.preventDefault();
           const lastPage = PAGE_SEQUENCE[PAGE_SEQUENCE.length - 1];
           router.push(lastPage);
@@ -95,16 +95,16 @@ export function useKeyboardNavigation({
       }
 
       // Handle Ctrl+K for search
-      if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
         event.preventDefault();
         onSearchFocus?.();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [router, pathname, onSearchFocus, onSearchClose]);
 

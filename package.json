@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run generate-search && next build",
+    "build": "pnpm run generate-search && next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "npm run lint && npm run type-check && npm run build",
+    "test": "pnpm run lint && pnpm run type-check && pnpm run build",
     "spell": "cspell \"src/**/*.{ts,tsx}\" *.md",
-    "generate-search": "node scripts/generate-search-data.js"
+    "generate-search": "node scripts/generate-search-data.js",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "dependencies": {
     "@react-three/drei": "^10.7.4",
@@ -38,6 +40,7 @@
     "cspell": "^9.2.1",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

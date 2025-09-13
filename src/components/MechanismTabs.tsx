@@ -32,7 +32,7 @@ interface MechanismTabsProps {
 export default function MechanismTabs({
   armContent,
   flywheelContent,
-  sectionTitle
+  sectionTitle,
 }: MechanismTabsProps) {
   const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
 
@@ -95,7 +95,7 @@ export default function MechanismTabs({
 
           {/* GitHub Component */}
           <div className="mb-6">
-            <GithubPageWithPR 
+            <GithubPageWithPR
               repository={currentContent.repository}
               filePath={currentContent.filePath}
               branch={currentContent.branch}
@@ -105,14 +105,14 @@ export default function MechanismTabs({
           </div>
 
           {/* Code Walkthrough */}
-          <CodeWalkthrough 
+          <CodeWalkthrough
             leftSection={{
               title: currentContent.walkthrough.leftTitle,
-              items: currentContent.walkthrough.leftItems
+              items: currentContent.walkthrough.leftItems,
             }}
             rightSection={{
               title: currentContent.walkthrough.rightTitle,
-              items: currentContent.walkthrough.rightItems
+              items: currentContent.walkthrough.rightItems,
             }}
             nextStepText={currentContent.nextStepText}
           />

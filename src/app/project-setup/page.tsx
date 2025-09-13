@@ -7,7 +7,10 @@ export default function ProjectSetup() {
     <PageTemplate
       title="Project Setup"
       previousPage={{ href: "/hardware", title: "Hardware Setup" }}
-      nextPage={{ href: "/command-framework", title: "Command-Based Framework" }}
+      nextPage={{
+        href: "/command-framework",
+        title: "Command-Based Framework",
+      }}
     >
       {/* Introduction */}
       <KeyConceptSection
@@ -17,8 +20,13 @@ export default function ProjectSetup() {
       />
 
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">Creating a New WPILib Project</h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-6">Follow these step-by-step instructions to create a new FRC robot project using the Command Robot Skeleton (Advanced) template.</p>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+          Creating a New WPILib Project
+        </h2>
+        <p className="text-slate-600 dark:text-slate-300 mb-6">
+          Follow these step-by-step instructions to create a new FRC robot
+          project using the Command Robot Skeleton (Advanced) template.
+        </p>
 
         <div className="space-y-4">
           <div className="flex items-start space-x-3">
@@ -38,7 +46,9 @@ export default function ProjectSetup() {
               2
             </span>
             <div>
-              <p className="font-medium">Select the WPILib Logo in Top Right Corner</p>
+              <p className="font-medium">
+                Select the WPILib Logo in Top Right Corner
+              </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Click on the WPILib logo/icon in the top right corner of VSCode.
               </p>
@@ -50,9 +60,12 @@ export default function ProjectSetup() {
               3
             </span>
             <div>
-              <p className="font-medium">Select &quot;Create a New Project&quot;</p>
+              <p className="font-medium">
+                Select &quot;Create a New Project&quot;
+              </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
-                From the WPILib menu, choose the &quot;Create a new project&quot; option.
+                From the WPILib menu, choose the &quot;Create a new
+                project&quot; option.
               </p>
             </div>
           </div>
@@ -62,9 +75,12 @@ export default function ProjectSetup() {
               4
             </span>
             <div>
-              <p className="font-medium">Select &quot;Select a project type (Example or Template)&quot;</p>
+              <p className="font-medium">
+                Select &quot;Select a project type (Example or Template)&quot;
+              </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
-                Choose Template → Java → <strong>Command Robot Skeleton (Advanced)</strong>
+                Choose Template → Java →{" "}
+                <strong>Command Robot Skeleton (Advanced)</strong>
               </p>
             </div>
           </div>
@@ -74,9 +90,12 @@ export default function ProjectSetup() {
               5
             </span>
             <div>
-              <p className="font-medium">Base folder select &quot;Downloads&quot;</p>
+              <p className="font-medium">
+                Base folder select &quot;Downloads&quot;
+              </p>
               <AlertBox variant="warning" title="⚠️ Warning" className="mt-2">
-                OneDrive locations are not supported and will cause project creation to fail.
+                OneDrive locations are not supported and will cause project
+                creation to fail.
               </AlertBox>
             </div>
           </div>
@@ -100,7 +119,8 @@ export default function ProjectSetup() {
             <div>
               <p className="font-medium">Team Number</p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
-                Enter your FRC team number. This is required for deploying code to your robot.
+                Enter your FRC team number. This is required for deploying code
+                to your robot.
               </p>
             </div>
           </div>
@@ -110,9 +130,12 @@ export default function ProjectSetup() {
               8
             </span>
             <div>
-              <p className="font-medium">Check &quot;Enable Desktop Support&quot;</p>
+              <p className="font-medium">
+                Check &quot;Enable Desktop Support&quot;
+              </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
-                This allows you to test your robot code on your computer without a robot.
+                This allows you to test your robot code on your computer without
+                a robot.
               </p>
             </div>
           </div>
@@ -124,7 +147,8 @@ export default function ProjectSetup() {
             <div>
               <p className="font-medium">Generate Project</p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
-                Click &quot;Generate Project&quot; and then open the new project when prompted.
+                Click &quot;Generate Project&quot; and then open the new project
+                when prompted.
               </p>
             </div>
           </div>
@@ -140,7 +164,9 @@ export default function ProjectSetup() {
       />
 
       <AlertBox variant="tip" title="💡 Next Step" className="mt-4">
-        After creating your project, you&apos;ll learn about the Command-Based Framework in the next section. Your project will be ready for implementing subsystems and commands!
+        After creating your project, you&apos;ll learn about the Command-Based
+        Framework in the next section. Your project will be ready for
+        implementing subsystems and commands!
       </AlertBox>
     </PageTemplate>
   );

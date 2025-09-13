@@ -12,7 +12,9 @@ function SearchFallback() {
       </div>
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-        <span className="ml-2 text-slate-600 dark:text-slate-300">Loading search...</span>
+        <span className="ml-2 text-slate-600 dark:text-slate-300">
+          Loading search...
+        </span>
       </div>
     </div>
   );

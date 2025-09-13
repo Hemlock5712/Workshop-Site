@@ -92,9 +92,8 @@ export default function GitHubPR({
 
         // Filter to focus file if specified
         const filteredFiles = focusFile
-          ? filesData.filter(
-              (file: GitHubFile) =>
-                file.filename.includes(focusFile)
+          ? filesData.filter((file: GitHubFile) =>
+              file.filename.includes(focusFile)
             )
           : filesData;
         setFiles(filteredFiles);
@@ -253,15 +252,15 @@ export default function GitHubPR({
                     pr.state === "merged"
                       ? "bg-[var(--muted)] text-[var(--foreground)]"
                       : pr.state === "closed"
-                      ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                      : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                        ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                        : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                   }`}
                 >
                   {pr.state === "merged"
                     ? "🔀 Merged"
                     : pr.state === "closed"
-                    ? "❌ Closed"
-                    : "🔄 Open"}
+                      ? "❌ Closed"
+                      : "🔄 Open"}
                 </span>
                 <span className="text-[var(--muted-foreground)] text-sm">
                   #{pr.number}
@@ -323,8 +322,8 @@ export default function GitHubPR({
                       file.status === "added"
                         ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                         : file.status === "removed"
-                        ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                        : "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
+                          ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+                          : "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
                     }`}
                   >
                     {file.status}
@@ -354,7 +353,7 @@ export default function GitHubPR({
       </div>
 
       {/* Workshop Context */}
-        <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
         <h5 className="font-semibold text-[var(--foreground)] mb-3">
           🎓 Workshop Learning
         </h5>

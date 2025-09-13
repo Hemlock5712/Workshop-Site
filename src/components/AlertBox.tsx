@@ -11,24 +11,29 @@ interface AlertBoxProps {
   className?: string;
 }
 
-const variantStyles: Record<AlertVariant, { container: string; text: string }> = {
-  warning: {
-    container: "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
-    text: "text-yellow-800 dark:text-yellow-300",
-  },
-  info: {
-    container: "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
-    text: "text-blue-800 dark:text-blue-200",
-  },
-  success: {
-    container: "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800",
-    text: "text-green-800 dark:text-green-200",
-  },
-  tip: {
-    container: "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800",
-    text: "text-indigo-800 dark:text-indigo-300",
-  },
-};
+const variantStyles: Record<AlertVariant, { container: string; text: string }> =
+  {
+    warning: {
+      container:
+        "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
+      text: "text-yellow-800 dark:text-yellow-300",
+    },
+    info: {
+      container:
+        "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
+      text: "text-blue-800 dark:text-blue-200",
+    },
+    success: {
+      container:
+        "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800",
+      text: "text-green-800 dark:text-green-200",
+    },
+    tip: {
+      container:
+        "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800",
+      text: "text-indigo-800 dark:text-indigo-300",
+    },
+  };
 
 export default function AlertBox({
   variant,

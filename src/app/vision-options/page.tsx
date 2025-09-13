@@ -5,7 +5,10 @@ export default function VisionOptions() {
     <ComingSoonPage
       title="Vision Options"
       previousPage={{ href: "/pathplanner", title: "Adding PathPlanner" }}
-      nextPage={{ href: "/vision-implementation", title: "Implementing Vision" }}
+      nextPage={{
+        href: "/vision-implementation",
+        title: "Implementing Vision",
+      }}
     />
   );
 }

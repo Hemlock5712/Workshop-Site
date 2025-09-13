@@ -2,7 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { createSearchInstance, SearchResult, mapMiniSearchResults } from "@/lib/searchConfig";
+import {
+  createSearchInstance,
+  SearchResult,
+  mapMiniSearchResults,
+} from "@/lib/searchConfig";
 import { useKeyboardNavigation } from "@/hooks/useKeyboardNavigation";
 
 export default function SearchBar() {
@@ -49,7 +53,10 @@ export default function SearchBar() {
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
         setSelectedIndex(-1);
       }
@@ -67,11 +74,11 @@ export default function SearchBar() {
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setSelectedIndex(prev => (prev < results.length - 1 ? prev + 1 : 0));
+        setSelectedIndex((prev) => (prev < results.length - 1 ? prev + 1 : 0));
         break;
       case "ArrowUp":
         e.preventDefault();
-        setSelectedIndex(prev => (prev > 0 ? prev - 1 : results.length - 1));
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : results.length - 1));
         break;
       case "Enter":
         e.preventDefault();
@@ -120,8 +127,14 @@ export default function SearchBar() {
   const highlightMatch = (text: string, queryTerm: string) => {
     if (!queryTerm.trim()) return text;
 
-    const regex = new RegExp(`(${queryTerm.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$1</mark>');
+    const regex = new RegExp(
+      `(${queryTerm.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi"
+    );
+    return text.replace(
+      regex,
+      '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$1</mark>'
+    );
   };
 
   return (
@@ -196,10 +209,12 @@ export default function SearchBar() {
                 <h3
                   className="font-medium text-[var(--foreground)] text-sm"
                   dangerouslySetInnerHTML={{
-                    __html: highlightMatch(result.title, query)
+                    __html: highlightMatch(result.title, query),
                   }}
                 />
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(result.category)}`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(result.category)}`}
+                >
                   {result.category}
                 </span>
               </div>
@@ -223,7 +238,7 @@ export default function SearchBar() {
               </div>
             </button>
           ))}
-          
+
           {query.trim().length > 1 && results.length === 0 && (
             <div className="p-4 text-center text-[var(--muted-foreground)]">
               <svg
@@ -240,23 +255,33 @@ export default function SearchBar() {
                 />
               </svg>
               <p>No results found for &quot;{query}&quot;</p>
-              <p className="text-xs mt-1">Try different keywords or browse the navigation</p>
+              <p className="text-xs mt-1">
+                Try different keywords or browse the navigation
+              </p>
             </div>
           )}
-          
+
           <div className="p-3 bg-[var(--muted)] border-t border-[var(--border)]">
             <div className="flex items-center justify-between text-xs text-[var(--muted-foreground)] mb-2">
               <div className="flex items-center space-x-4">
                 <span className="flex items-center">
-                  <kbd className="px-1.5 py-0.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded">↑↓</kbd>
+                  <kbd className="px-1.5 py-0.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded">
+                    ↑↓
+                  </kbd>
                   <span className="ml-1">Navigate</span>
                 </span>
                 <span className="flex items-center">
-                  <kbd className="px-1.5 py-0.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded">Enter</kbd>
-                  <span className="ml-1">{selectedIndex >= 0 ? "Select" : "View all"}</span>
+                  <kbd className="px-1.5 py-0.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded">
+                    Enter
+                  </kbd>
+                  <span className="ml-1">
+                    {selectedIndex >= 0 ? "Select" : "View all"}
+                  </span>
                 </span>
                 <span className="flex items-center">
-                  <kbd className="px-1.5 py-0.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded">Esc</kbd>
+                  <kbd className="px-1.5 py-0.5 text-xs bg-[var(--card)] border border-[var(--border)] rounded">
+                    Esc
+                  </kbd>
                   <span className="ml-1">Close</span>
                 </span>
               </div>
@@ -273,7 +298,8 @@ export default function SearchBar() {
                 }}
                 className="w-full text-center text-xs text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 py-1"
               >
-                View all {searchInstanceRef.current.search(query).length} results →
+                View all {searchInstanceRef.current.search(query).length}{" "}
+                results →
               </button>
             )}
           </div>

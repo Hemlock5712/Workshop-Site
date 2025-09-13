@@ -36,10 +36,11 @@ export default function Home() {
           What We&apos;re Programming
         </h2>
         <p className="text-slate-600 dark:text-slate-300 text-center mb-8 max-w-3xl mx-auto">
-          Learn to control real FRC mechanisms through hands-on programming. Master motor control, 
-          PID tuning, encoder feedback, and motion profiling with these competition-proven designs.
+          Learn to control real FRC mechanisms through hands-on programming.
+          Master motor control, PID tuning, encoder feedback, and motion
+          profiling with these competition-proven designs.
         </p>
-        
+
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-md border border-slate-200 dark:border-slate-700">
             <div className="mb-4">
@@ -56,8 +57,9 @@ export default function Home() {
                 Arm Position Control
               </h3>
               <p className="text-primary-700 dark:text-primary-300 text-sm">
-                Program precise arm positioning using PID control, encoder feedback, 
-                and Motion Magic for smooth, controlled movements to scoring positions.
+                Program precise arm positioning using PID control, encoder
+                feedback, and Motion Magic for smooth, controlled movements to
+                scoring positions.
               </p>
             </div>
           </div>
@@ -77,8 +79,9 @@ export default function Home() {
                 Flywheel Velocity Control
               </h3>
               <p className="text-green-700 dark:text-green-300 text-sm">
-                Master velocity control for consistent shooting performance using 
-                feedforward control and velocity PID for rapid spin-up and accuracy.
+                Master velocity control for consistent shooting performance
+                using feedforward control and velocity PID for rapid spin-up and
+                accuracy.
               </p>
             </div>
           </div>
@@ -91,12 +94,11 @@ export default function Home() {
           Special thanks to:
         </h2>
         <div className="text-center space-y-6">
-          
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
-              <a 
-                href="https://store.ctr-electronics.com/" 
-                target="_blank" 
+              <a
+                href="https://store.ctr-electronics.com/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
@@ -108,9 +110,9 @@ export default function Home() {
                   className="max-w-full max-h-full object-contain"
                 />
               </a>
-              <a 
-                href="https://michauto.org/" 
-                target="_blank" 
+              <a
+                href="https://michauto.org/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
@@ -122,9 +124,9 @@ export default function Home() {
                   className="max-w-full max-h-full object-contain"
                 />
               </a>
-              <a 
-                href="https://www.michiganbusiness.org/ofme/" 
-                target="_blank" 
+              <a
+                href="https://www.michiganbusiness.org/ofme/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
@@ -136,9 +138,9 @@ export default function Home() {
                   className="max-w-full max-h-full object-contain"
                 />
               </a>
-              <a 
-                href="https://lockwoodstemcenter.hemlockps.com/home" 
-                target="_blank" 
+              <a
+                href="https://lockwoodstemcenter.hemlockps.com/home"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
@@ -151,7 +153,7 @@ export default function Home() {
                 />
               </a>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
                 The Team:
@@ -163,7 +165,6 @@ export default function Home() {
                 Ethan Shannon and Team 5216
               </p>
             </div>
-            
           </div>
         </div>
       </div>

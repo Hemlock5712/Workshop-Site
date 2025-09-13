@@ -7,7 +7,12 @@ interface ComingSoonPageProps {
   nextPage?: { href: string; title: string };
 }
 
-export default function ComingSoonPage({ title, description, previousPage, nextPage }: ComingSoonPageProps) {
+export default function ComingSoonPage({
+  title,
+  description,
+  previousPage,
+  nextPage,
+}: ComingSoonPageProps) {
   return (
     <PageTemplate title={title} previousPage={previousPage} nextPage={nextPage}>
       <div className="text-center py-12">
@@ -26,18 +31,21 @@ export default function ComingSoonPage({ title, description, previousPage, nextP
             />
           </svg>
         </div>
-        
+
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
           Coming Soon
         </h2>
-        
+
         <p className="text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-          {description || `The ${title} content is currently being developed and will be available soon.`}
+          {description ||
+            `The ${title} content is currently being developed and will be available soon.`}
         </p>
-        
+
         <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-6 max-w-2xl mx-auto">
           <p className="text-blue-700 dark:text-blue-300 text-sm">
-            💡 <strong>In the meantime:</strong> Check out Workshop #1 content or explore the mechanism CAD files to get started with the fundamentals.
+            💡 <strong>In the meantime:</strong> Check out Workshop #1 content
+            or explore the mechanism CAD files to get started with the
+            fundamentals.
           </p>
         </div>
       </div>

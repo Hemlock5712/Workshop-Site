@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 /**
  * Professional IDE-style code block component
@@ -24,14 +24,14 @@ interface CodeBlockProps {
   hideControls?: boolean;
 }
 
-export default function CodeBlock({ 
-  code, 
-  title, 
-  filename, 
-  language = 'java',
-  className = '',
+export default function CodeBlock({
+  code,
+  title,
+  filename,
+  language = "java",
+  className = "",
   showLineNumbers = true,
-  hideControls = false
+  hideControls = false,
 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
 
@@ -41,7 +41,7 @@ export default function CodeBlock({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy code:', err);
+      console.error("Failed to copy code:", err);
     }
   };
 
@@ -50,21 +50,25 @@ export default function CodeBlock({
     ...vscDarkPlus,
     'pre[class*="language-"]': {
       ...vscDarkPlus['pre[class*="language-"]'],
-      background: '#1e1e1e',
-      fontSize: '14px',
-      lineHeight: '1.5',
-      fontFamily: "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace"
+      background: "#1e1e1e",
+      fontSize: "14px",
+      lineHeight: "1.5",
+      fontFamily:
+        "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
     },
     'code[class*="language-"]': {
       ...vscDarkPlus['code[class*="language-"]'],
-      background: '#1e1e1e',
-      fontSize: '14px',
-      fontFamily: "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace"
-    }
+      background: "#1e1e1e",
+      fontSize: "14px",
+      fontFamily:
+        "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+    },
   };
 
   return (
-    <div className={`bg-[#1e1e1e] rounded-lg overflow-hidden shadow-lg border border-gray-700 ${className}`}>
+    <div
+      className={`bg-[#1e1e1e] rounded-lg overflow-hidden shadow-lg border border-gray-700 ${className}`}
+    >
       {(title || filename) && (
         <div className="bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex justify-between items-center">
           <div className="flex items-center space-x-3">
@@ -76,7 +80,9 @@ export default function CodeBlock({
               </div>
             )}
             <div className="flex items-center space-x-2">
-              {title && <span className="text-gray-200 font-medium">{title}</span>}
+              {title && (
+                <span className="text-gray-200 font-medium">{title}</span>
+              )}
               {filename && (
                 <span className="text-gray-400 text-sm font-mono bg-gray-700 px-2 py-1 rounded">
                   {filename}
@@ -106,7 +112,7 @@ export default function CodeBlock({
           </button>
         </div>
       )}
-      
+
       <div className="relative">
         <SyntaxHighlighter
           language={language}
@@ -114,32 +120,33 @@ export default function CodeBlock({
           showLineNumbers={showLineNumbers}
           customStyle={{
             margin: 0,
-            padding: '1rem',
-            background: '#1e1e1e',
-            fontSize: '14px',
-            lineHeight: '1.5',
-            fontFamily: "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace"
+            padding: "1rem",
+            background: "#1e1e1e",
+            fontSize: "14px",
+            lineHeight: "1.5",
+            fontFamily:
+              "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
           }}
           lineNumberStyle={{
-            color: '#6a9955',
-            paddingRight: '1rem',
-            paddingLeft: '0.5rem',
-            userSelect: 'none',
-            fontSize: '13px'
+            color: "#6a9955",
+            paddingRight: "1rem",
+            paddingLeft: "0.5rem",
+            userSelect: "none",
+            fontSize: "13px",
           }}
           wrapLines={true}
           wrapLongLines={true}
         >
           {code}
         </SyntaxHighlighter>
-        
+
         {!title && !filename && (
           <button
             onClick={copyToClipboard}
             className="absolute top-3 right-3 text-gray-400 hover:text-gray-200 transition-colors px-2 py-1 rounded bg-gray-800 bg-opacity-90 text-xs font-medium"
             title="Copy code"
           >
-            {copied ? '✓' : '📋'}
+            {copied ? "✓" : "📋"}
           </button>
         )}
       </div>

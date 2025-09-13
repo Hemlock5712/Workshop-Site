@@ -24,14 +24,16 @@ export default function AddingCommands() {
           Command Structure & Examples
         </h2>
 
-          {/* Inline Command Examples */}
-          <details className="card p-6">
-          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">🎮 Inline Command Methods Example</summary>
+        {/* Inline Command Examples */}
+        <details className="card p-6">
+          <summary className="text-xl font-bold text-primary-600 mb-4 cursor-pointer hover:text-primary-700 dark:hover:text-primary-300">
+            🎮 Inline Command Methods Example
+          </summary>
           <div className="mt-4">
-          <CodeBlock
-            language="java"
-            title="Subsystem Command Methods"
-            code={`// In your Arm subsystem - add these command methods:
+            <CodeBlock
+              language="java"
+              title="Subsystem Command Methods"
+              code={`// In your Arm subsystem - add these command methods:
 
 public Command moveUp() {
     return startEnd(() -> setVoltage(6), () -> stop());
@@ -46,10 +48,9 @@ public Command stopArm() {
 }
 
 `}
-          />
+            />
           </div>
         </details>
-
 
         {/* Key Concepts */}
         <div className="grid md:grid-cols-3 gap-6">
@@ -57,21 +58,24 @@ public Command stopArm() {
             title="⚡ Command Methods"
             code={<code>return startEnd(() -&gt; action, () -&gt; stop);</code>}
           >
-            Create commands using factory methods like startEnd(), runOnce(), and run() for different behaviors.
+            Create commands using factory methods like startEnd(), runOnce(),
+            and run() for different behaviors.
           </ConceptBox>
 
           <ConceptBox
             title="🔗 Command Requirements"
             code={<code>addRequirements(subsystem);</code>}
           >
-            Commands must declare which subsystems they use to prevent conflicts and ensure proper scheduling.
+            Commands must declare which subsystems they use to prevent conflicts
+            and ensure proper scheduling.
           </ConceptBox>
 
           <ConceptBox
             title="🔄 Command Lifecycle"
             code={<code>initialize() → execute() → end()</code>}
           >
-            Commands have a clear lifecycle: start, run continuously, then clean up when finished.
+            Commands have a clear lifecycle: start, run continuously, then clean
+            up when finished.
           </ConceptBox>
         </div>
       </section>
@@ -84,12 +88,12 @@ public Command stopArm() {
             "• Arm subsystem with basic voltage control",
             "• No user input integration",
             "• No commands to coordinate actions",
-            "• Manual method calls only"
+            "• Manual method calls only",
           ],
           afterItems: [
             "• Enhanced Arm subsystem methods",
             "• Commands for moveUp(), moveDown()",
-            "• Ready for user input integration"
+            "• Ready for user input integration",
           ],
           repository: "Hemlock5712/Workshop-Code",
           filePath: "src/main/java/frc/robot/subsystems/Arm.java",
@@ -100,51 +104,52 @@ public Command stopArm() {
             leftTitle: "New Subsystem Methods",
             leftItems: [
               "• <strong>moveUp():</strong> Positive voltage for upward movement",
-              "• <strong>moveDown():</strong> Negative voltage for downward movement"
+              "• <strong>moveDown():</strong> Negative voltage for downward movement",
             ],
             rightTitle: "Command Benefits",
             rightItems: [
               "• <strong>Encapsulation:</strong> Actions wrapped in reusable commands",
               "• <strong>Safety:</strong> Automatic stop when command ends",
-              "• <strong>Flexibility:</strong> Ready for trigger integration"
-            ]
+              "• <strong>Flexibility:</strong> Ready for trigger integration",
+            ],
           },
-          nextStepText: "Enhanced Arm subsystem with command methods! Next, we'll learn about Triggers to bind user input before verifying mechanism setup."
+          nextStepText:
+            "Enhanced Arm subsystem with command methods! Next, we'll learn about Triggers to bind user input before verifying mechanism setup.",
         }}
         flywheelContent={{
           beforeItems: [
             "• Flywheel subsystem with basic voltage control",
             "• No user input integration",
-            "• No commands to coordinate actions", 
-            "• Manual method calls only"
+            "• No commands to coordinate actions",
+            "• Manual method calls only",
           ],
           afterItems: [
             "• Enhanced Flywheel subsystem methods",
             "• Commands for runSlow(), runFast()",
-            "• Ready for user input integration"
+            "• Ready for user input integration",
           ],
           repository: "Hemlock5712/Workshop-Code",
           filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
-          branch: "2-Commands", 
+          branch: "2-Commands",
           pullRequestNumber: 2,
           focusFile: "Flywheel.java",
           walkthrough: {
             leftTitle: "New Subsystem Methods",
             leftItems: [
               "• <strong>runSlow():</strong> Low voltage (3V) for testing",
-              "• <strong>runFast():</strong> High voltage (6V) for shooting"
+              "• <strong>runFast():</strong> High voltage (6V) for shooting",
             ],
-            rightTitle: "Command Benefits", 
+            rightTitle: "Command Benefits",
             rightItems: [
               "• <strong>Encapsulation:</strong> Actions wrapped in reusable commands",
               "• <strong>Safety:</strong> Automatic stop when command ends",
-              "• <strong>Flexibility:</strong> Ready for trigger integration"
-            ]
+              "• <strong>Flexibility:</strong> Ready for trigger integration",
+            ],
           },
-          nextStepText: "Enhanced Flywheel subsystem with command methods! Next, we'll learn about Triggers to bind user input before verifying mechanism setup."
+          nextStepText:
+            "Enhanced Flywheel subsystem with command methods! Next, we'll learn about Triggers to bind user input before verifying mechanism setup.",
         }}
       />
-
     </PageTemplate>
   );
 }

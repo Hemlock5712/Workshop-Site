@@ -12,46 +12,46 @@ export default function KeyboardShortcutsHelp() {
   // Handle Escape key to close dialog
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isOpen) {
+      if (event.key === "Escape" && isOpen) {
         event.stopPropagation(); // Prevent the global Escape handler from running
         setIsOpen(false);
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
   const shortcuts = [
     {
       key: "←→",
-      description: "Navigate between workshop pages"
+      description: "Navigate between workshop pages",
     },
     {
       key: "/",
-      description: "Focus search bar"
+      description: "Focus search bar",
     },
     {
       key: "Ctrl+K",
-      description: "Focus search bar"
+      description: "Focus search bar",
     },
     {
       key: "Esc",
-      description: "Close search/modals"
+      description: "Close search/modals",
     },
     {
       key: "Home",
-      description: "Go to homepage"
+      description: "Go to homepage",
     },
     {
       key: "End",
-      description: "Go to last workshop page"
-    }
+      description: "Go to last workshop page",
+    },
   ];
 
   if (!isOpen) {
@@ -114,10 +114,7 @@ export default function KeyboardShortcutsHelp() {
 
         <div className="space-y-3">
           {shortcuts.map((shortcut, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between"
-            >
+            <div key={index} className="flex items-center justify-between">
               <kbd className="px-2 py-1 text-sm bg-[var(--muted)] border border-[var(--border)] rounded font-mono">
                 {shortcut.key}
               </kbd>
@@ -130,7 +127,11 @@ export default function KeyboardShortcutsHelp() {
 
         <div className="mt-4 pt-3 border-t border-[var(--border)]">
           <p className="text-xs text-[var(--muted-foreground)]">
-            Press <kbd className="px-1 py-0.5 bg-[var(--muted)] border border-[var(--border)] rounded text-xs">Esc</kbd> to close this dialog
+            Press{" "}
+            <kbd className="px-1 py-0.5 bg-[var(--muted)] border border-[var(--border)] rounded text-xs">
+              Esc
+            </kbd>{" "}
+            to close this dialog
           </p>
         </div>
       </div>

@@ -25,7 +25,9 @@ interface MiniSearchRawResult {
   [key: string]: unknown; // Allow any additional stored fields
 }
 
-export const mapMiniSearchResults = (results: MiniSearchRawResult[]): SearchResult[] => {
+export const mapMiniSearchResults = (
+  results: MiniSearchRawResult[]
+): SearchResult[] => {
   return results.map((result: MiniSearchRawResult) => ({
     id: result.id,
     title: result.title as string,
@@ -35,22 +37,22 @@ export const mapMiniSearchResults = (results: MiniSearchRawResult[]): SearchResu
     category: result.category as string,
     tags: result.tags as string[],
     score: result.score,
-    match: result.match
+    match: result.match,
   }));
 };
 
 export const createSearchInstance = () => {
   const miniSearch = new MiniSearch({
-    fields: ['title', 'description', 'content', 'tags', 'category'],
-    storeFields: ['title', 'description', 'content', 'url', 'category', 'tags'],
+    fields: ["title", "description", "content", "tags", "category"],
+    storeFields: ["title", "description", "content", "url", "category", "tags"],
     searchOptions: {
       boost: { title: 2, tags: 1.5, description: 1.2 },
       fuzzy: 0.2,
       prefix: true,
-      combineWith: 'OR'
-    }
+      combineWith: "OR",
+    },
   });
-  
+
   miniSearch.addAll(searchData);
   return miniSearch;
 };

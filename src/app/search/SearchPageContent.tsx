@@ -3,7 +3,11 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { createSearchInstance, SearchResult, mapMiniSearchResults } from "@/lib/searchConfig";
+import {
+  createSearchInstance,
+  SearchResult,
+  mapMiniSearchResults,
+} from "@/lib/searchConfig";
 
 export default function SearchPageContent() {
   const searchParams = useSearchParams();
@@ -43,8 +47,14 @@ export default function SearchPageContent() {
   const highlightMatch = (text: string, queryTerm: string) => {
     if (!queryTerm.trim()) return text;
 
-    const regex = new RegExp(`(${queryTerm.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-    return text.replace(regex, '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$1</mark>');
+    const regex = new RegExp(
+      `(${queryTerm.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
+      "gi"
+    );
+    return text.replace(
+      regex,
+      '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$1</mark>'
+    );
   };
 
   const getMatchPreview = (item: SearchResult, queryTerm: string) => {
@@ -52,15 +62,18 @@ export default function SearchPageContent() {
     const lowerContent = item.content.toLowerCase();
     const lowerQuery = queryTerm.toLowerCase();
     const matchIndex = lowerContent.indexOf(lowerQuery);
-    
+
     if (matchIndex !== -1) {
       const contextStart = Math.max(0, matchIndex - 50);
-      const contextEnd = Math.min(item.content.length, matchIndex + queryTerm.length + 50);
+      const contextEnd = Math.min(
+        item.content.length,
+        matchIndex + queryTerm.length + 50
+      );
       let preview = item.content.slice(contextStart, contextEnd);
-      
+
       if (contextStart > 0) preview = "..." + preview;
       if (contextEnd < item.content.length) preview = preview + "...";
-      
+
       return preview;
     }
 
@@ -77,7 +90,9 @@ export default function SearchPageContent() {
         {query && (
           <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
             <span>Searching for:</span>
-            <span className="bg-[var(--muted)] px-2 py-1 rounded font-mono text-sm">&quot;{query}&quot;</span>
+            <span className="bg-[var(--muted)] px-2 py-1 rounded font-mono text-sm">
+              &quot;{query}&quot;
+            </span>
             <span>•</span>
             <span>{results.length} results found</span>
           </div>
@@ -88,7 +103,9 @@ export default function SearchPageContent() {
       {isLoading && (
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-          <span className="ml-2 text-slate-600 dark:text-slate-300">Searching...</span>
+          <span className="ml-2 text-slate-600 dark:text-slate-300">
+            Searching...
+          </span>
         </div>
       )}
 
@@ -142,7 +159,10 @@ export default function SearchPageContent() {
           <div className="text-sm text-slate-500 dark:text-slate-400">
             <p>Try:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>Different keywords (e.g., &quot;PID&quot;, &quot;motor&quot;, &quot;subsystem&quot;)</li>
+              <li>
+                Different keywords (e.g., &quot;PID&quot;, &quot;motor&quot;,
+                &quot;subsystem&quot;)
+              </li>
               <li>More general terms</li>
               <li>Checking for typos</li>
             </ul>
@@ -159,18 +179,17 @@ export default function SearchPageContent() {
               className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-3">
-                <Link
-                  href={result.url}
-                  className="group flex-1"
-                >
+                <Link href={result.url} className="group flex-1">
                   <h2
                     className="text-xl font-semibold text-primary-600 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 mb-2 leading-tight"
                     dangerouslySetInnerHTML={{
-                      __html: highlightMatch(result.title, query)
+                      __html: highlightMatch(result.title, query),
                     }}
                   />
                 </Link>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-4 ${getCategoryColor(result.category)}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-4 ${getCategoryColor(result.category)}`}
+                >
                   {result.category}
                 </span>
               </div>
@@ -202,7 +221,9 @@ export default function SearchPageContent() {
       {/* Search Tips */}
       {results.length > 0 && (
         <div className="mt-12 bg-[var(--muted)] rounded-lg p-6">
-          <h3 className="font-semibold text-[var(--foreground)] mb-3">Search Tips</h3>
+          <h3 className="font-semibold text-[var(--foreground)] mb-3">
+            Search Tips
+          </h3>
           <div className="grid md:grid-cols-2 gap-4 text-sm text-[var(--muted-foreground)]">
             <div>
               <p className="font-medium mb-1">Keywords to try:</p>

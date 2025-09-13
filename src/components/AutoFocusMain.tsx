@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /**
  * Component that automatically focuses the main content area
@@ -10,7 +10,7 @@ export default function AutoFocusMain() {
   useEffect(() => {
     // Focus the main element on page load with a small delay
     const timer = setTimeout(() => {
-      const mainElement = document.querySelector('main');
+      const mainElement = document.querySelector("main");
       if (mainElement) {
         mainElement.focus({ preventScroll: true });
       }
