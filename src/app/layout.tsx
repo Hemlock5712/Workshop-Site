@@ -7,6 +7,8 @@ import SearchBar from "@/components/SearchBar";
 import KeyboardNavigationProvider from "@/components/KeyboardNavigationProvider";
 import KeyboardShortcutsHelp from "@/components/KeyboardShortcutsHelp";
 import AutoFocusMain from "@/components/AutoFocusMain";
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,6 +64,8 @@ export default function RootLayout({
           </div>
           <KeyboardShortcutsHelp />
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
