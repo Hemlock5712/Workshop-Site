@@ -33,6 +33,7 @@ export default function RootLayout({
     <html lang="en" data-theme="system">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
+        suppressHydrationWarning={true}
       >
         <div className="flex flex-col h-screen">
           <KeyboardNavigationProvider />

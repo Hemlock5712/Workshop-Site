@@ -154,9 +154,10 @@ public void setTargetPosition(double positionRotations) {
             pullRequestNumber: 4,
             focusFile: "Arm.java",
             walkthrough: {
-              leftTitle: "Motion Magic Parameters",
+              leftTitle: "Motion Magic Example Params for 25:1 Arm",
               leftItems: [
-                "• <strong>Cruise Velocity (2.0):</strong> Maximum speed during motion",
+                "• <strong>25:1 Gearing:</strong> Krakens run ~100 RPS, so 4 RPS theoretical max at output",
+                "• <strong>Cruise Velocity (2.0):</strong> Conservative start - can reach 4 RPS but load may reduces performance",
                 "• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed",
                 "• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes",
                 "• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control"
@@ -238,25 +239,62 @@ public void setTargetPosition(double positionRotations) {
         {/* Motion Magic Tuning Steps */}
         <CollapsibleSection title="⚙️ Motion Magic Tuning Steps" variant="info">
           <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-[var(--foreground)] mb-2">1. Find Maximum Velocity:</h4>
-              <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
-                <li>Plot velocity <strong>without Motion Magic</strong></li>
-                <li>Move mechanism the maximum distance it will travel</li>
-                <li>Record the maximum velocity it reaches</li>
-                <li>Store this value in your code as a constant</li>
-                <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">MAX_VELOCITY = 8.5; // rps from plot</code></li>
-              </ul>
+            {/* Arm/Elevator Position Mechanisms */}
+            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3 flex items-center">
+                🦾 Position Mechanisms (Arms, Elevators)
+              </h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">1. Find Maximum Velocity:</h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>Run mechanism with PID control <strong>without Motion Magic</strong></li>
+                    <li>Plot velocity and record the maximum velocity reached</li>
+                    <li>Store this value as a constant in your code</li>
+                    <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">MAX_VELOCITY = 8.5; // rps from plot</code></li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">2. Set Motion Magic Parameters:</h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li><strong>Cruise Velocity:</strong> Use 80% of max velocity</li>
+                    <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">cruiseVel = MAX_VELOCITY * 0.8</code></li>
+                    <li><strong>Acceleration:</strong> Use 4x cruise velocity for smooth motion</li>
+                    <li><strong>Acceleration:</strong> Use 10x cruise velocity for quicker motion</li>
+                    <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">acceleration = cruiseVel * 4.0</code></li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="font-semibold text-[var(--foreground)] mb-2">2. Set Motion Magic Parameters:</h4>
-              <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
-                <li><strong>Cruise Velocity:</strong> Use 80% of max velocity</li>
-                <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">cruiseVel = MAX_VELOCITY * 0.8</code></li>
-                <li><strong>Acceleration:</strong> Use 4x cruise velocity for smooth motion</li>
-                <li><strong>Acceleration:</strong> Use 10x cruise velocity for quicker motion</li>
-                <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">acceleration = cruiseVel * 4.0</code></li>
-              </ul>
+
+            {/* Flywheel Velocity Mechanisms */}
+            <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
+              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center">
+                🌪️ Velocity Mechanisms (Flywheels, Shooters)
+              </h4>
+              
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">1. Determine Target Velocity:</h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>Set cruise velocity to your maximum operating velocity</li>
+                    <li>Can be slightly higher than typical use for headroom</li>
+                    <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">cruiseVel = 60.0; // target shooting speed</code></li>
+                  </ul>
+                </div>
+                
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">2. Tune Acceleration:</h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>Start with low acceleration values</li>
+                    <li>Gradually increase until flywheel cannot follow the curve</li>
+                    <li>Back off to the last stable value</li>
+                    <li><code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">acceleration = 200.0; // tuned value</code></li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
