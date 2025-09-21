@@ -131,6 +131,26 @@ export default function PIDControl() {
             icon="📖"
           />
         </AlertBox>
+
+        {/* PID Tuning Video */}
+        <section className="flex flex-col gap-6">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            📹 PID and Feedforward Tuning Tutorial
+          </h3>
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
+            <p className="text-[var(--foreground)] mb-4">
+              Watch this comprehensive tutorial on PID and feedforward tuning techniques, practical tuning steps, and optimization strategies:
+            </p>
+            <div className="aspect-video rounded-lg overflow-hidden">
+              <iframe
+                src="https://www.youtube.com/embed/Pt7SBFfl3oM"
+                title="PID and Feedforward Tuning Tutorial"
+                className="w-full h-full"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
       </section>
 
       {/* Code Implementation */}

@@ -111,6 +111,159 @@ export default function MotionMagic() {
             icon="📖"
           />
         </div>
+
+        {/* Motion Magic Tuning Steps */}
+        <CollapsibleSection title="⚙️ Motion Magic Tuning Steps" variant="info">
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Arm/Elevator Position Mechanisms */}
+            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3 flex items-center">
+                🦾 Position Mechanisms (Arms, Elevators)
+              </h4>
+
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
+                    1. Calculate Maximum Velocity:
+                  </h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>
+                      <strong>Motor Speed:</strong> Krakens run around 100 RPS at maximum
+                    </li>
+                    <li>
+                      <strong>Efficiency:</strong> Best used around 80% efficiency
+                    </li>
+                    <li>
+                      <strong>Gear Ratio:</strong> Our 25:1 arm gearing reduces speed
+                    </li>
+                    <li>
+                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
+                        maxVel = (100 / 25) * 0.8 = 3.2 RPS
+                      </code>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
+                    2. Set Motion Magic Parameters:
+                  </h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>
+                      <strong>Cruise Velocity:</strong> Use calculated max velocity
+                    </li>
+                    <li>
+                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
+                        cruiseVel = 3.0; // conservative start
+                      </code>
+                    </li>
+                    <li>
+                      <strong>Acceleration:</strong> Start with 2x cruise velocity for smooth motion
+                    </li>
+                    <li>
+                      <strong>Competition:</strong> Typically end up with 4x to 10x cruise velocity
+                    </li>
+                    <li>
+                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
+                        acceleration = cruiseVel * 2.0; // smooth start
+                      </code>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Flywheel Velocity Mechanisms */}
+            <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
+              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center">
+                🌪️ Velocity Mechanisms (Flywheels, Shooters)
+              </h4>
+
+              <div className="space-y-4">
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
+                    1. Calculate Maximum Velocity:
+                  </h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>
+                      <strong>Motor Speed:</strong> Krakens run around 100 RPS at maximum
+                    </li>
+                    <li>
+                      <strong>Efficiency:</strong> Best used around 80% efficiency
+                    </li>
+                    <li>
+                      <strong>Direct Drive:</strong> Using Kraken encoder directly on flywheel
+                    </li>
+                    <li>
+                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
+                        cruiseVel = 100 * 0.8 = 80 RPS
+                      </code>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
+                    2. Set Motion Magic Parameters:
+                  </h5>
+                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
+                    <li>
+                      <strong>Cruise Velocity:</strong> Use calculated max velocity
+                    </li>
+                    <li>
+                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
+                        cruiseVel = 80.0; // based on motor efficiency
+                      </code>
+                    </li>
+                    <li>
+                      <strong>Acceleration:</strong> Start with 2x cruise velocity for smooth motion
+                    </li>
+                    <li>
+                      <strong>Competition:</strong> Typically end up with 4x to 10x cruise velocity
+                    </li>
+                    <li>
+                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
+                        acceleration = cruiseVel * 2.0; // smooth start
+                      </code>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-[var(--border)]">
+            <h4 className="font-semibold text-[var(--foreground)] mb-2">
+              💡 Why This Method Works:
+            </h4>
+            <p className="text-[var(--foreground)] text-sm">
+              By calculating cruise velocity based on motor specifications and efficiency, you set realistic
+              motion limits that prevent oscillation and ensure smooth, achievable motion profiles. Starting
+              with 2x acceleration provides smooth motion, while competition applications often require
+              4x to 10x cruise velocity for faster response.
+            </p>
+          </div>
+        </CollapsibleSection>
+
+        {/* Motion Magic Tuning Video */}
+        <section className="flex flex-col gap-6">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            📹 Motion Magic Tuning Tutorial
+          </h3>
+          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
+            <p className="text-[var(--foreground)] mb-4">
+              Watch this comprehensive tutorial on Motion Magic tuning techniques, parameter selection, and optimization strategies:
+            </p>
+            <div className="aspect-video rounded-lg overflow-hidden">
+              <iframe
+                src="https://www.youtube.com/embed/7I7r9p1RBZI"
+                title="Motion Magic Tuning Tutorial"
+                className="w-full h-full"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </section>
       </section>
 
       {/* Code Implementation */}
@@ -272,128 +425,6 @@ public void setTargetPosition(double positionRotations) {
           </div>
         </CollapsibleSection>
 
-        {/* Motion Magic Tuning Steps */}
-        <CollapsibleSection title="⚙️ Motion Magic Tuning Steps" variant="info">
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Arm/Elevator Position Mechanisms */}
-            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3 flex items-center">
-                🦾 Position Mechanisms (Arms, Elevators)
-              </h4>
-
-              <div className="space-y-4">
-                <div>
-                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
-                    1. Find Maximum Velocity:
-                  </h5>
-                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
-                    <li>
-                      Run mechanism with PID control{" "}
-                      <strong>without Motion Magic</strong>
-                    </li>
-                    <li>
-                      Plot velocity and record the maximum velocity reached
-                    </li>
-                    <li>Store this value as a constant in your code</li>
-                    <li>
-                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        MAX_VELOCITY = 8.5; // rps from plot
-                      </code>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
-                    2. Set Motion Magic Parameters:
-                  </h5>
-                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
-                    <li>
-                      <strong>Cruise Velocity:</strong> Use 80% of max velocity
-                    </li>
-                    <li>
-                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = MAX_VELOCITY * 0.8
-                      </code>
-                    </li>
-                    <li>
-                      <strong>Acceleration:</strong> Use 4x cruise velocity for
-                      smooth motion
-                    </li>
-                    <li>
-                      <strong>Acceleration:</strong> Use 10x cruise velocity for
-                      quicker motion
-                    </li>
-                    <li>
-                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        acceleration = cruiseVel * 4.0
-                      </code>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            {/* Flywheel Velocity Mechanisms */}
-            <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
-              <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center">
-                🌪️ Velocity Mechanisms (Flywheels, Shooters)
-              </h4>
-
-              <div className="space-y-4">
-                <div>
-                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
-                    1. Determine Target Velocity:
-                  </h5>
-                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
-                    <li>
-                      Set cruise velocity to your maximum operating velocity
-                    </li>
-                    <li>
-                      Can be slightly higher than typical use for headroom
-                    </li>
-                    <li>
-                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = 60.0; // target shooting speed
-                      </code>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h5 className="font-semibold text-[var(--foreground)] mb-2">
-                    2. Tune Acceleration:
-                  </h5>
-                  <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
-                    <li>Start with low acceleration values</li>
-                    <li>
-                      Gradually increase until flywheel cannot follow the curve
-                    </li>
-                    <li>Back off to the last stable value</li>
-                    <li>
-                      <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        acceleration = 200.0; // tuned value
-                      </code>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-[var(--border)]">
-            <h4 className="font-semibold text-[var(--foreground)] mb-2">
-              💡 Why This Method Works:
-            </h4>
-            <p className="text-[var(--foreground)] text-sm">
-              By measuring actual mechanism performance first, you set realistic
-              motion limits that prevent oscillation and ensure smooth,
-              achievable motion profiles. The 80% cruise velocity provides
-              headroom for control corrections while maintaining good
-              performance.
-            </p>
-          </div>
-        </CollapsibleSection>
       </section>
     </PageTemplate>
   );
