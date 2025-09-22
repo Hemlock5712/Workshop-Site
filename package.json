@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "pnpm run format && pnpm run generate-search && next build",
+    "build": "pnpm run generate-search && pnpm run format && next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
