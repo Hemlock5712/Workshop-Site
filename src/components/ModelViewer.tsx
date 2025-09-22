@@ -12,7 +12,6 @@ import { Canvas, useLoader, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import * as THREE from "three";
-import type { OrbitControls as OrbitControlsType } from "three-stdlib";
 
 interface ModelViewerProps {
   url: string;
@@ -78,7 +77,8 @@ const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
     const [cameraPosition, setCameraPosition] = useState<
       [number, number, number]
     >([100, 489, 530]);
-    const orbitControlsRef = useRef<OrbitControlsType>(null);
+    const orbitControlsRef =
+      useRef<React.ElementRef<typeof OrbitControls>>(null);
     const initialPosition: [number, number, number] = [100, 489, 530];
 
     useImperativeHandle(ref, () => ({
