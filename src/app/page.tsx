@@ -95,12 +95,12 @@ export default function Home() {
         </h2>
         <div className="text-center space-y-6">
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 items-center justify-items-center">
               <a
                 href="https://store.ctr-electronics.com/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                className="w-full max-w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
                   src="/images/sponsors/ctre-logo.jpg"
@@ -114,7 +114,7 @@ export default function Home() {
                 href="https://michauto.org/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                className="w-full max-w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
                   src="/images/sponsors/MichAuto Logo 600x600.png"
@@ -128,7 +128,7 @@ export default function Home() {
                 href="https://www.michiganbusiness.org/ofme/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                className="w-full max-w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
                   src="/images/sponsors/OFME-Logo.png"
@@ -142,7 +142,7 @@ export default function Home() {
                 href="https://lockwoodstemcenter.hemlockps.com/home"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                className="w-full max-w-48 h-32 flex items-center justify-center bg-white dark:bg-slate-800 rounded-lg p-2 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
               >
                 <Image
                   src="/images/sponsors/lockwood-stem-center-logo.png"

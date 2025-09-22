@@ -232,7 +232,7 @@ export default function MechanismSetup() {
                   </ContentCard>
 
                   <iframe
-                    src="https://www.youtube.com/watch?v=mjGn3y19eUc"
+                    src="https://www.youtube.com/embed/mjGn3y19eUc"
                     title="Encoder Setup and Verification"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen

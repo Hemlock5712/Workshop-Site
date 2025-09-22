@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "pnpm run generate-search && next build",
+    "build": "pnpm run format && pnpm run generate-search && next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "test": "pnpm run lint && pnpm run type-check && pnpm run build",
+    "test": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run build",
     "spell": "cspell \"src/**/*.{ts,tsx}\" *.md",
     "generate-search": "node scripts/generate-search-data.js",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",

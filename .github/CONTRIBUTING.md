@@ -5,6 +5,7 @@ Thank you for your interest in contributing to the Gray Matter Coding Workshop w
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ installed
 - Git installed
 - A GitHub account
@@ -12,17 +13,20 @@ Thank you for your interest in contributing to the Gray Matter Coding Workshop w
 ### Local Development
 
 1. **Fork and clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/Workshop-Site.git
    cd Workshop-Site
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -42,12 +46,14 @@ Thank you for your interest in contributing to the Gray Matter Coding Workshop w
 ## 📝 Making Changes
 
 ### Code Style
+
 - Use TypeScript for all new code
 - Follow the existing Tailwind CSS patterns
 - Use `&apos;` instead of `'` in JSX content to avoid ESLint errors
 - Keep components small and focused
 
 ### File Structure
+
 ```
 src/
 ├── app/                    # Next.js App Router pages
@@ -79,6 +85,7 @@ src/
 ## 🔄 Pull Request Process
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -88,9 +95,11 @@ src/
    - Test your changes locally with `npm run test`
 
 3. **Push and create a PR**
+
    ```bash
    git push origin feature/your-feature-name
    ```
+
    - Open a Pull Request on GitHub
    - Describe your changes clearly
    - Reference any related issues
@@ -103,11 +112,13 @@ src/
 ## 🧪 Testing
 
 The CI pipeline runs:
+
 - **ESLint** - Code quality and style checks
 - **TypeScript** - Type checking
 - **Build** - Ensures the project compiles successfully
 
 Run these locally before submitting:
+
 ```bash
 npm run test
 ```
@@ -121,6 +132,7 @@ npm run test
 ## 🐛 Reporting Issues
 
 When reporting issues, please include:
+
 - Steps to reproduce the problem
 - Expected vs actual behavior
 - Screenshots if applicable
@@ -129,6 +141,7 @@ When reporting issues, please include:
 ## 💡 Suggestions
 
 We welcome suggestions for:
+
 - New workshop content
 - UI/UX improvements
 - Performance optimizations

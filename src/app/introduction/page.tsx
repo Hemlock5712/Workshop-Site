@@ -41,7 +41,8 @@ export default function Introduction() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mt-2">
               Develop reliable, maintainable code that performs under pressure
-              and helps your team succeed at regional and world championships.
+              and helps your team succeed at districts, regionals and FIRST
+              Championship.
             </p>
           </div>
         </div>
@@ -88,11 +89,11 @@ export default function Introduction() {
               Our Mission
             </h3>
             <p className="text-lg text-slate-600 dark:text-slate-300">
-              This site was put together by Team 5712 and help from others as a
-              resource to help cover introduction to advanced materials and to
-              give a clear learning and implementation plan. The goal is to
-              learn code architecture, command base programming, PID tuning,
-              libraries, odometry, vision, and more!
+              This site was created by Team 5712, Hemlocks Gray Matter, with
+              support from its friends as a resource to cover introductory to
+              advanced topics while providing a clear learning and
+              implementation plan. We are excited for you to learn code
+              architecture, command base programming….and more!
             </p>
           </div>
         </div>
@@ -103,9 +104,9 @@ export default function Introduction() {
           Choose Your Workshop
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Workshop #1 */}
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-shadow">
+          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 sm:p-8 shadow-lg border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-shadow">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold text-xl mr-4">
                 1
@@ -285,7 +286,7 @@ export default function Introduction() {
           </div>
 
           {/* Workshop #2 */}
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800 opacity-60">
+          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 sm:p-8 shadow-lg border border-slate-200 dark:border-slate-800 opacity-60">
             <div className="flex items-center mb-4">
               <div className="w-12 h-12 bg-slate-400 rounded-lg flex items-center justify-center text-white font-bold text-xl mr-4">
                 2

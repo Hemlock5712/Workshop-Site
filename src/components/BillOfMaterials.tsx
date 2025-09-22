@@ -526,204 +526,206 @@ export default function BillOfMaterials({
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-slate-100 dark:bg-slate-800">
-                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    Own
-                  </th>
-                  <th
-                    className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort("partDescription")}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      Part Description
-                      <SortIcon field="partDescription" />
-                    </div>
-                  </th>
-                  <th
-                    className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort("quantity")}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      Qty
-                      <SortIcon field="quantity" />
-                    </div>
-                  </th>
-                  <th
-                    className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort("vendor")}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      Vendor
-                      <SortIcon field="vendor" />
-                    </div>
-                  </th>
-                  <th
-                    className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort("partNumber")}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      Part #
-                      <SortIcon field="partNumber" />
-                    </div>
-                  </th>
-                  <th
-                    className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
-                    onClick={() => handleSort("pricePerUnit")}
-                  >
-                    <div className="flex items-center justify-center gap-2">
-                      Price
-                      <SortIcon field="pricePerUnit" />
-                    </div>
-                  </th>
-                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    Link
-                  </th>
-                  <th className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 w-48">
-                    Notes
-                  </th>
-                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    3D Print
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredAndSortedItems.map((item, index) => {
-                  const itemIndex = items.indexOf(item);
-                  const effectivePrice = getEffectivePrice(item, itemIndex);
-                  const isDiscounted = effectivePrice < item.pricePerUnit;
-
-                  return (
-                    <tr
-                      key={index}
-                      className={`${
-                        index % 2 === 0
-                          ? "bg-white dark:bg-slate-950"
-                          : "bg-slate-50 dark:bg-slate-900"
-                      } hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
+          <div className="overflow-x-auto -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 xl:-mx-16">
+            <div className="inline-block min-w-full align-middle px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+              <table className="min-w-full border-collapse">
+                <thead>
+                  <tr className="bg-slate-100 dark:bg-slate-800">
+                    <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      Own
+                    </th>
+                    <th
+                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      onClick={() => handleSort("partDescription")}
                     >
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center">
-                        <input
-                          type="checkbox"
-                          checked={ownedItems.has(itemIndex)}
-                          onChange={() => handleOwnedToggle(itemIndex)}
-                          className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
-                        />
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
-                        <div className="flex items-center justify-center gap-2">
-                          {item.partDescription}
-                          {isCTREPart(item) && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                              CTRE
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
-                        {item.quantity}
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
-                        {item.vendor}
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 font-mono text-center">
-                        {item.partNumber || "N/A"}
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
-                        <div className="flex flex-col items-center">
-                          <span
-                            className={
-                              isDiscounted
-                                ? "text-green-600 dark:text-green-400 font-semibold"
-                                : ""
-                            }
-                          >
-                            ${effectivePrice.toFixed(2)}
-                          </span>
-                          {isDiscounted && (
-                            <span className="text-xs text-slate-500 dark:text-slate-400 line-through">
-                              ${item.pricePerUnit.toFixed(2)}
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
-                        {item.vendor === "Custom" ? (
-                          <span className="text-slate-500 dark:text-slate-400 text-xs">
-                            Files in Repository
-                          </span>
-                        ) : (
-                          <a
-                            href={item.productLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline"
-                          >
-                            <svg
-                              className="w-4 h-4 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                              />
-                            </svg>
-                            View
-                          </a>
-                        )}
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-xs text-slate-700 dark:text-slate-300 w-48">
-                        <div className="break-words" title={item.notes}>
-                          {item.notes}
-                        </div>
-                      </td>
-                      <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
-                        {item.is3DPrinted ? (
+                      <div className="flex items-center justify-center gap-2">
+                        Part Description
+                        <SortIcon field="partDescription" />
+                      </div>
+                    </th>
+                    <th
+                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      onClick={() => handleSort("quantity")}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        Qty
+                        <SortIcon field="quantity" />
+                      </div>
+                    </th>
+                    <th
+                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      onClick={() => handleSort("vendor")}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        Vendor
+                        <SortIcon field="vendor" />
+                      </div>
+                    </th>
+                    <th
+                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      onClick={() => handleSort("partNumber")}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        Part #
+                        <SortIcon field="partNumber" />
+                      </div>
+                    </th>
+                    <th
+                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      onClick={() => handleSort("pricePerUnit")}
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        Price
+                        <SortIcon field="pricePerUnit" />
+                      </div>
+                    </th>
+                    <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      Link
+                    </th>
+                    <th className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 w-48">
+                      Notes
+                    </th>
+                    <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                      3D Print
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredAndSortedItems.map((item, index) => {
+                    const itemIndex = items.indexOf(item);
+                    const effectivePrice = getEffectivePrice(item, itemIndex);
+                    const isDiscounted = effectivePrice < item.pricePerUnit;
+
+                    return (
+                      <tr
+                        key={index}
+                        className={`${
+                          index % 2 === 0
+                            ? "bg-white dark:bg-slate-950"
+                            : "bg-slate-50 dark:bg-slate-900"
+                        } hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
+                      >
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center">
+                          <input
+                            type="checkbox"
+                            checked={ownedItems.has(itemIndex)}
+                            onChange={() => handleOwnedToggle(itemIndex)}
+                            className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+                          />
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
                           <div className="flex items-center justify-center gap-2">
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-                              Yes
-                            </span>
-                            {item.printedModelLink && (
-                              <a
-                                href={item.printedModelLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
-                                title="3D Model Link"
-                              >
-                                <svg
-                                  className="w-4 h-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                                  />
-                                </svg>
-                              </a>
+                            {item.partDescription}
+                            {isCTREPart(item) && (
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                CTRE
+                              </span>
                             )}
                           </div>
-                        ) : (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
-                            No
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                          {item.quantity}
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                          {item.vendor}
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 font-mono text-center">
+                          {item.partNumber || "N/A"}
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                          <div className="flex flex-col items-center">
+                            <span
+                              className={
+                                isDiscounted
+                                  ? "text-green-600 dark:text-green-400 font-semibold"
+                                  : ""
+                              }
+                            >
+                              ${effectivePrice.toFixed(2)}
+                            </span>
+                            {isDiscounted && (
+                              <span className="text-xs text-slate-500 dark:text-slate-400 line-through">
+                                ${item.pricePerUnit.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
+                          {item.vendor === "Custom" ? (
+                            <span className="text-slate-500 dark:text-slate-400 text-xs">
+                              Files in Repository
+                            </span>
+                          ) : (
+                            <a
+                              href={item.productLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline"
+                            >
+                              <svg
+                                className="w-4 h-4 mr-1"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                />
+                              </svg>
+                              View
+                            </a>
+                          )}
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-xs text-slate-700 dark:text-slate-300 w-48">
+                          <div className="break-words" title={item.notes}>
+                            {item.notes}
+                          </div>
+                        </td>
+                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
+                          {item.is3DPrinted ? (
+                            <div className="flex items-center justify-center gap-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                                Yes
+                              </span>
+                              {item.printedModelLink && (
+                                <a
+                                  href={item.printedModelLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                                  title="3D Model Link"
+                                >
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                    />
+                                  </svg>
+                                </a>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+                              No
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="mt-4 text-sm text-slate-600 dark:text-slate-400">

@@ -1,14 +1,18 @@
 "use client";
 
 import PageTemplate from "@/components/PageTemplate";
-import ModelViewer from "@/components/ModelViewer";
+import ModelViewer, { ModelViewerRef } from "@/components/ModelViewer";
 import BillOfMaterials from "@/components/BillOfMaterials";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import AlertBox from "@/components/AlertBox";
 import { armBOMData } from "@/data/armBOM";
 import { shooterBOMData } from "@/data/shooterBOM";
+import { useRef } from "react";
 
 export default function MechanismCAD() {
+  const flywheelModelRef = useRef<ModelViewerRef>(null);
+  const armModelRef = useRef<ModelViewerRef>(null);
+
   return (
     <PageTemplate
       title="Mechanism CAD"
@@ -23,20 +27,20 @@ export default function MechanismCAD() {
       />
 
       {/* 3D Model Viewer Section */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+      <section className="flex flex-col gap-8 -mx-4 sm:-mx-6 md:-mx-8 lg:-mx-12 xl:-mx-16">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
           Interactive 3D Models
         </h2>
 
         {/* Flywheel Mechanism */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-          <div className="flex flex-col items-center gap-6">
-            <div className="w-full max-w-4xl">
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 md:p-8 shadow-lg border border-slate-200 dark:border-slate-800 mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16">
+          <div className="flex flex-col gap-6">
+            <div className="w-full">
               <ModelViewer
+                ref={flywheelModelRef}
                 url="/cad/HTTI Mechanism v2 - Shooter Mode.gltf"
-                width={800}
-                height={600}
-                className="w-full shadow-lg"
+                className="w-full h-64 sm:h-80 md:h-96 lg:h-[600px] shadow-lg"
+                showResetButton={true}
               />
             </div>
 
@@ -79,14 +83,14 @@ export default function MechanismCAD() {
         </div>
 
         {/* Arm Mechanism */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-          <div className="flex flex-col items-center gap-6">
-            <div className="w-full max-w-4xl">
+        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 md:p-8 shadow-lg border border-slate-200 dark:border-slate-800 mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16">
+          <div className="flex flex-col gap-6">
+            <div className="w-full">
               <ModelViewer
+                ref={armModelRef}
                 url="/cad/HTTI Mechanism v2 - Arm Mode.gltf"
-                width={800}
-                height={600}
-                className="w-full shadow-lg"
+                className="w-full h-64 sm:h-80 md:h-96 lg:h-[600px] shadow-lg"
+                showResetButton={true}
               />
             </div>
 
@@ -128,36 +132,38 @@ export default function MechanismCAD() {
         </div>
 
         {/* File Format Guide */}
-        <AlertBox variant="info" title="📋 File Format Guide">
-          <div className="grid md:grid-cols-2 gap-4 text-sm">
-            <div>
-              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">
-                STL Files
-              </h5>
-              <p className="text-blue-700 dark:text-blue-300">
-                Standard format for 3D printing. Compatible with most slicers
-                including PrusaSlicer, Cura, and Bambu Studio.
-              </p>
+        <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+          <AlertBox variant="info" title="📋 File Format Guide">
+            <div className="grid md:grid-cols-2 gap-4 text-sm">
+              <div>
+                <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">
+                  STL Files
+                </h5>
+                <p className="text-blue-700 dark:text-blue-300">
+                  Standard format for 3D printing. Compatible with most slicers
+                  including PrusaSlicer, Cura, and Bambu Studio.
+                </p>
+              </div>
+              <div>
+                <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">
+                  STP Files
+                </h5>
+                <p className="text-blue-700 dark:text-blue-300">
+                  CAD format for editing and modification. Opens in Fusion 360,
+                  SolidWorks, and other CAD software.
+                </p>
+              </div>
             </div>
-            <div>
-              <h5 className="font-bold text-blue-800 dark:text-blue-300 mb-2">
-                STP Files
-              </h5>
-              <p className="text-blue-700 dark:text-blue-300">
-                CAD format for editing and modification. Opens in Fusion 360,
-                SolidWorks, and other CAD software.
-              </p>
-            </div>
-          </div>
-        </AlertBox>
+          </AlertBox>
+        </div>
 
         {/* Arm Bill of Materials */}
-        <div className="mt-8">
+        <div className="mt-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
           <BillOfMaterials items={armBOMData} title="Arm Mechanism" />
         </div>
 
         {/* Shooter Bill of Materials */}
-        <div className="mt-8">
+        <div className="mt-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
           <BillOfMaterials items={shooterBOMData} title="Shooter Mechanism" />
         </div>
       </section>

@@ -539,7 +539,7 @@ export default function Sidebar() {
       <button
         onClick={handleToggle}
         className={`fixed top-20 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
-          isOpen ? "left-60" : "left-20"
+          isOpen ? "left-60 sm:left-64" : "left-4 md:left-20"
         }`}
         title={isOpen ? "Close sidebar" : "Open sidebar"}
       >
@@ -566,7 +566,7 @@ export default function Sidebar() {
       <div
         className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-40 transform transition-all duration-300 ease-in-out ${
           isOpen
-            ? "translate-x-0 w-64"
+            ? "translate-x-0 w-60 sm:w-64"
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
       >
@@ -728,7 +728,13 @@ export default function Sidebar() {
             {/* Workshop #1 collapsed view */}
             {!isOpen && (
               <div className="relative group">
-                <div className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors">
+                <button
+                  onClick={() => {
+                    setIsOpen(true);
+                    setIsWorkshop1Open(true);
+                  }}
+                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -742,7 +748,7 @@ export default function Sidebar() {
                       d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
                     />
                   </svg>
-                </div>
+                </button>
 
                 {/* Tooltip for collapsed workshop */}
                 <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
@@ -829,7 +835,13 @@ export default function Sidebar() {
             {/* Workshop #2 collapsed view */}
             {!isOpen && (
               <div className="relative group">
-                <div className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors">
+                <button
+                  onClick={() => {
+                    setIsOpen(true);
+                    setIsWorkshop2Open(true);
+                  }}
+                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -843,7 +855,7 @@ export default function Sidebar() {
                       d="M13 10V3L4 14h7v7l9-11h-7z"
                     />
                   </svg>
-                </div>
+                </button>
 
                 {/* Tooltip for collapsed workshop */}
                 <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">

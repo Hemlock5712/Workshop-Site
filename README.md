@@ -9,7 +9,7 @@ A responsive website built with Next.js and Tailwind CSS that converts the Gray 
 This website transforms the FRC programming workshop content into an interactive web experience, covering:
 
 - **Introduction & Prerequisites** - Getting started with FRC programming
-- **Hardware Setup** - CTRE motors, CANivore, and device configuration  
+- **Hardware Setup** - CTRE motors, CANivore, and device configuration
 - **Project Setup** - Creating and organizing WPILib projects
 - **Command-Based Framework** - Understanding triggers, subsystems, and commands
 - **Control Systems** - PID and Feedforward control theory
@@ -21,6 +21,7 @@ The workshop includes live code examples from the companion repository:
 **[Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)**
 
 ### Implementation Progression
+
 The workshop follows a structured 5-step progression:
 
 1. **Step 1: Creating a Subsystem** - Basic motor control and sensor integration
@@ -79,7 +80,7 @@ src/
 │   └── tuning/           # Mechanism tuning guide
 └── components/            # Reusable React components
     ├── Sidebar.tsx        # Collapsible navigation sidebar
-    ├── PageTemplate.tsx   # Shared page layout  
+    ├── PageTemplate.tsx   # Shared page layout
     ├── CodeBlock.tsx      # IDE-style syntax highlighted code
     ├── GitHubPR.tsx       # Live GitHub pull request display
     ├── GitHubPage.tsx     # Live GitHub file display
@@ -96,7 +97,7 @@ This project includes automated workflows for quality assurance and deployment:
 The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 
 - ✅ **Lints code** with ESLint for style consistency
-- 🔍 **Type checks** with TypeScript for type safety  
+- 🔍 **Type checks** with TypeScript for type safety
 - 🏗️ **Builds project** to ensure compilation success
 - 📦 **Uploads artifacts** for deployment verification
 
@@ -118,6 +119,7 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 ### Automatic Deployment
 
 This project is automatically deployed to Vercel:
+
 - **Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)
 - **Production Branch:** `master`
 - **Auto-deploy:** Every push to `master` triggers a new deployment
@@ -175,6 +177,7 @@ To add new sections:
 ## 📱 Mobile Optimization
 
 The site includes:
+
 - Responsive navigation menu
 - Touch-friendly buttons and links
 - Optimized font sizes for mobile reading

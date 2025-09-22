@@ -3,7 +3,6 @@ import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import DocumentationButton from "@/components/DocumentationButton";
 
 export default function StateBased() {
   return (
@@ -97,7 +96,6 @@ export default function StateBased() {
             </div>
           </div>
         </div>
-
       </section>
 
       {/* Code Implementation */}
@@ -158,14 +156,14 @@ public ArmState getCurrentState() {
               "• Hard-coded values scattered throughout code",
               "• Difficult to add new arm positions",
               "• No clear organization of arm configurations",
-              "• Tolerance values repeated in multiple places"
+              "• Tolerance values repeated in multiple places",
             ],
             afterItems: [
               "• Well-defined states: LOW, HIGH, BACKWARD",
               "• Each state encapsulates target position and tolerance",
               "• Easy to add new states by extending the enum",
               "• Clear, readable code with semantic state names",
-              "• Centralized configuration management"
+              "• Centralized configuration management",
             ],
             repository: "Hemlock5712/Workshop-Code",
             filePath: "src/main/java/frc/robot/subsystems/Arm.java",
@@ -178,17 +176,18 @@ public ArmState getCurrentState() {
                 "• <strong>ArmState Enum:</strong> Defines LOW, HIGH, and BACKWARD states",
                 "• <strong>Encapsulated Targets:</strong> Each state contains its target position",
                 "• <strong>State-Specific Tolerances:</strong> Different tolerance for each position",
-                "• <strong>Current State Tracking:</strong> Always know which state the arm is in"
+                "• <strong>Current State Tracking:</strong> Always know which state the arm is in",
               ],
               rightTitle: "Enhanced Features",
               rightItems: [
                 "• <strong>setState() Method:</strong> Simple way to change arm configuration",
                 "• <strong>atState() Check:</strong> Easy validation using state-specific tolerance",
                 "• <strong>Semantic Names:</strong> Code clearly shows intent (HIGH vs 0.25 rotations)",
-                "• <strong>Extensible Design:</strong> Add new states without changing existing code"
-              ]
+                "• <strong>Extensible Design:</strong> Add new states without changing existing code",
+              ],
             },
-            nextStepText: "State-based control makes our arm subsystem much more organized and maintainable! This pattern scales well as we add more complex behaviors."
+            nextStepText:
+              "State-based control makes our arm subsystem much more organized and maintainable! This pattern scales well as we add more complex behaviors.",
           }}
           flywheelContent={{
             beforeItems: [
@@ -196,14 +195,14 @@ public ArmState getCurrentState() {
               "• Hard-coded RPM values throughout the code",
               "• Difficult to add new shooting modes",
               "• No clear organization of flywheel configurations",
-              "• Tolerance values scattered in multiple places"
+              "• Tolerance values scattered in multiple places",
             ],
             afterItems: [
               "• Well-defined states: IDLE, SHOOTING, INTAKE",
               "• Each state encapsulates target velocity and tolerance",
               "• Easy to add new shooting modes by extending enum",
               "• Clear, readable code with semantic state names",
-              "• Centralized flywheel configuration management"
+              "• Centralized flywheel configuration management",
             ],
             repository: "Hemlock5712/Workshop-Code",
             filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
@@ -216,17 +215,18 @@ public ArmState getCurrentState() {
                 "• <strong>FlywheelState Enum:</strong> Defines IDLE, SHOOTING, and INTAKE states",
                 "• <strong>Encapsulated Targets:</strong> Each state contains its target velocity",
                 "• <strong>State-Specific Tolerances:</strong> Different tolerance for each mode",
-                "• <strong>Current State Tracking:</strong> Always know flywheel operating mode"
+                "• <strong>Current State Tracking:</strong> Always know flywheel operating mode",
               ],
               rightTitle: "Enhanced Features",
               rightItems: [
                 "• <strong>setState() Method:</strong> Simple way to change flywheel mode",
                 "• <strong>atState() Check:</strong> Easy validation using state-specific tolerance",
                 "• <strong>Semantic Names:</strong> Code clearly shows intent (SHOOTING vs 3000 RPM)",
-                "• <strong>Extensible Design:</strong> Add new modes without changing existing code"
-              ]
+                "• <strong>Extensible Design:</strong> Add new modes without changing existing code",
+              ],
             },
-            nextStepText: "State-based control makes our flywheel subsystem much more organized and maintainable! This pattern is essential for complex shooting systems."
+            nextStepText:
+              "State-based control makes our flywheel subsystem much more organized and maintainable! This pattern is essential for complex shooting systems.",
           }}
         />
 

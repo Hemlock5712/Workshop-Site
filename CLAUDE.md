@@ -3,15 +3,18 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Development Server Rules
+
 **NEVER run development servers automatically** - The user will start/stop servers manually. Do not use commands like:
+
 - `npm run dev`
-- `npm start` 
+- `npm start`
 - `bun dev`
 - Any server-starting commands
 
 The user will handle server management themselves.
 
 ## Project Overview
+
 Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 15, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
 
 **Live Site:** [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)  
@@ -23,6 +26,7 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 Requires Node.js 20+ (Bun v1+ supported).
 
 ### Essential Commands
+
 - **Development server**: `npm run dev` (with Turbopack for faster builds) - **USER RUNS MANUALLY**
 - **Production build**: `npm run build`
 - **Production server**: `npm start` - **USER RUNS MANUALLY**
@@ -33,6 +37,7 @@ Requires Node.js 20+ (Bun v1+ supported).
 Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 
 ### Development Workflow
+
 1. **User runs** `npm run dev` for development with hot reload
 2. Before committing, run `npm test` to ensure code quality
 3. Use `npm run type-check` for TypeScript validation
@@ -41,6 +46,7 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 ## Code Architecture
 
 ### Application Structure
+
 - **Framework**: Next.js 15.4.6 with App Router (`src/app/` directory)
 - **UI Library**: React 19.1.0
 - **Styling**: Tailwind CSS 4 with dark mode support
@@ -53,23 +59,27 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 ### Key Components Architecture
 
 #### Layout & Navigation
+
 - **`src/app/layout.tsx`**: Root layout with theme setup, font configuration, sidebar integration, and search bar
 - **`src/components/Sidebar.tsx`**: Collapsible navigation with workshop organization, tooltips, and responsive design
 - **`src/components/PageTemplate.tsx`**: Consistent page wrapper with prev/next navigation and prose styling
 - **`src/components/SearchBar.tsx`**: Fuzzy search component with Fuse.js integration
 
 #### Search System
+
 - **`src/data/searchData.ts`**: Comprehensive search index of all workshop content
 - **Search Features**: Fuzzy search, keyboard navigation, category filtering, match highlighting
 - **Integration**: Search bar positioned in top right corner of header
 
 #### Theme System
+
 - **`src/components/ThemePicker.tsx`**: Theme toggle component with Zustand state management
 - **Implementation**: Uses `data-theme` attribute and localStorage persistence
 - **Modes**: light, dark, system (follows OS preference)
 - **Integration**: Tailwind CSS `dark:` classes throughout the app
 
 #### Content Components
+
 - **`src/components/CodeBlock.tsx`**: Syntax-highlighted code display
 - **`src/components/GitHubPR.tsx`**: Live GitHub pull request embedding
 - **`src/components/GitHubPage.tsx`**: Live GitHub file display
@@ -77,6 +87,7 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 - **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
 
 ### Route Organization
+
 ```
 Workshop Content:
 ├── / (Homepage with team, mechanisms, overview)
@@ -91,11 +102,13 @@ Workshop Content:
 ```
 
 ### Asset Management
+
 - **Images**: Stored in `public/images/` with organized subdirectories
 - **Optimization**: All images use Next.js Image component
 - **Structure**: `presenters/`, `mechanisms/`, `hardware/` folders
 
 ### Development Patterns
+
 - **File Naming**: kebab-case for routes, PascalCase for components
 - **Import Alias**: `@/*` maps to `src/*`
 - **Component Structure**: Functional components with TypeScript interfaces
@@ -107,6 +120,7 @@ Workshop Content:
 - **Progressive Learning**: 5-step implementation approach following real development workflow
 
 ### Important Implementation Notes
+
 - Theme system uses document-level attribute manipulation
 - Sidebar state management handles responsive behavior and tooltips
 - All workshop pages should use PageTemplate for consistency
@@ -117,15 +131,18 @@ Workshop Content:
 ## Visual Development
 
 ### Design Principles
+
 - Comprehensive design checklist in `/context/design-principles.md`
 - Brand style guide in `/context/style-guide.md`
 - When making visual (front-end, UI/UX) changes, always refer to these files for guidance
 
 ### Quick Visual Check
+
 IMMEDIATELY after implementing any front-end change:
+
 1. **Identify what changed** - Review the modified components/pages
 2. **Navigate to affected pages** - Use `mcp__playwright__browser_navigate` to visit each changed view
-3. **Verify design compliance** - Compare against `/context/design-principles.md` and `/context/style-guide.md` 
+3. **Verify design compliance** - Compare against `/context/design-principles.md` and `/context/style-guide.md`
 4. **Validate feature implementation** - Ensure the change fulfills the user's specific request
 5. **Check acceptance criteria** - Review any provided context files or requirements
 6. **Capture evidence** - Take full page screenshot at desktop viewport (1440px) of each changed view
@@ -134,7 +151,9 @@ IMMEDIATELY after implementing any front-end change:
 This verification ensures changes meet design standards and user requirements.
 
 ### Comprehensive Design Review
+
 Invoke the `@agent-design-review` subagent for thorough design validation when:
+
 - Completing significant UI/UX features
 - Before finalizing PRs with visual changes
 - Needing comprehensive accessibility and responsiveness testing
