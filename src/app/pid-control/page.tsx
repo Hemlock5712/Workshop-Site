@@ -139,7 +139,8 @@ export default function PIDControl() {
           </h3>
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] mb-4">
-              Watch this comprehensive tutorial on PID and feedforward tuning techniques, practical tuning steps, and optimization strategies:
+              Watch this comprehensive tutorial on PID and feedforward tuning
+              techniques, practical tuning steps, and optimization strategies:
             </p>
             <div className="aspect-video rounded-lg overflow-hidden">
               <iframe

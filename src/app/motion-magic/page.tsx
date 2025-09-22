@@ -128,13 +128,16 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Motor Speed:</strong> Krakens run around 100 RPS at maximum
+                      <strong>Motor Speed:</strong> Krakens run around 100 RPS
+                      at maximum
                     </li>
                     <li>
-                      <strong>Efficiency:</strong> Best used around 80% efficiency
+                      <strong>Efficiency:</strong> Best used around 80%
+                      efficiency
                     </li>
                     <li>
-                      <strong>Gear Ratio:</strong> Our 25:1 arm gearing reduces speed
+                      <strong>Gear Ratio:</strong> Our 25:1 arm gearing reduces
+                      speed
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
@@ -150,7 +153,8 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Cruise Velocity:</strong> Use calculated max velocity
+                      <strong>Cruise Velocity:</strong> Use calculated max
+                      velocity
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
@@ -158,10 +162,12 @@ export default function MotionMagic() {
                       </code>
                     </li>
                     <li>
-                      <strong>Acceleration:</strong> Start with 2x cruise velocity for smooth motion
+                      <strong>Acceleration:</strong> Start with 2x cruise
+                      velocity for smooth motion
                     </li>
                     <li>
-                      <strong>Competition:</strong> Typically end up with 4x to 10x cruise velocity
+                      <strong>Competition:</strong> Typically end up with 4x to
+                      10x cruise velocity
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
@@ -186,13 +192,16 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Motor Speed:</strong> Krakens run around 100 RPS at maximum
+                      <strong>Motor Speed:</strong> Krakens run around 100 RPS
+                      at maximum
                     </li>
                     <li>
-                      <strong>Efficiency:</strong> Best used around 80% efficiency
+                      <strong>Efficiency:</strong> Best used around 80%
+                      efficiency
                     </li>
                     <li>
-                      <strong>Direct Drive:</strong> Using Kraken encoder directly on flywheel
+                      <strong>Direct Drive:</strong> Using Kraken encoder
+                      directly on flywheel
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
@@ -208,7 +217,8 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Cruise Velocity:</strong> Use calculated max velocity
+                      <strong>Cruise Velocity:</strong> Use calculated max
+                      velocity
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
@@ -216,10 +226,12 @@ export default function MotionMagic() {
                       </code>
                     </li>
                     <li>
-                      <strong>Acceleration:</strong> Start with 2x cruise velocity for smooth motion
+                      <strong>Acceleration:</strong> Start with 2x cruise
+                      velocity for smooth motion
                     </li>
                     <li>
-                      <strong>Competition:</strong> Typically end up with 4x to 10x cruise velocity
+                      <strong>Competition:</strong> Typically end up with 4x to
+                      10x cruise velocity
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
@@ -237,10 +249,12 @@ export default function MotionMagic() {
               💡 Why This Method Works:
             </h4>
             <p className="text-[var(--foreground)] text-sm">
-              By calculating cruise velocity based on motor specifications and efficiency, you set realistic
-              motion limits that prevent oscillation and ensure smooth, achievable motion profiles. Starting
-              with 2x acceleration provides smooth motion, while competition applications often require
-              4x to 10x cruise velocity for faster response.
+              By calculating cruise velocity based on motor specifications and
+              efficiency, you set realistic motion limits that prevent
+              oscillation and ensure smooth, achievable motion profiles.
+              Starting with 2x acceleration provides smooth motion, while
+              competition applications often require 4x to 10x cruise velocity
+              for faster response.
             </p>
           </div>
         </CollapsibleSection>
@@ -252,7 +266,8 @@ export default function MotionMagic() {
           </h3>
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] mb-4">
-              Watch this comprehensive tutorial on Motion Magic tuning techniques, parameter selection, and optimization strategies:
+              Watch this comprehensive tutorial on Motion Magic tuning
+              techniques, parameter selection, and optimization strategies:
             </p>
             <div className="aspect-video rounded-lg overflow-hidden">
               <iframe
@@ -424,7 +439,6 @@ public void setTargetPosition(double positionRotations) {
             </div>
           </div>
         </CollapsibleSection>
-
       </section>
     </PageTemplate>
   );
