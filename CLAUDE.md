@@ -28,11 +28,14 @@ Requires Node.js 20+ (Bun v1+ supported).
 ### Essential Commands
 
 - **Development server**: `npm run dev` (with Turbopack for faster builds) - **USER RUNS MANUALLY**
-- **Production build**: `npm run build`
+- **Production build**: `npm run build` (includes search generation and formatting)
 - **Production server**: `npm start` - **USER RUNS MANUALLY**
 - **Linting**: `npm run lint` (ESLint with Next.js config)
 - **Type checking**: `npm run type-check` (TypeScript compiler check)
-- **Full test suite**: `npm test` (runs lint + type-check + build)
+- **Code formatting**: `npm run format` (Prettier with write), `npm run format:check` (check only)
+- **Search data generation**: `npm run generate-search` (updates search index)
+- **Spell checking**: `npm run spell` (cspell on TypeScript and markdown files)
+- **Full test suite**: `npm test` (runs format:check + lint + type-check + build)
 
 Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 
@@ -54,7 +57,7 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 - **Type Safety**: TypeScript with strict configuration
 - **Icons**: Lucide React icons
 - **Syntax Highlighting**: React Syntax Highlighter
-- **Search**: Fuse.js for fuzzy search functionality
+- **Search**: MiniSearch for fast fuzzy search functionality
 
 ### Key Components Architecture
 
@@ -68,7 +71,8 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 #### Search System
 
 - **`src/data/searchData.ts`**: Comprehensive search index of all workshop content
-- **Search Features**: Fuzzy search, keyboard navigation, category filtering, match highlighting
+- **`src/lib/searchConfig.ts`**: MiniSearch configuration and result mapping
+- **Search Features**: Fuzzy search, keyboard navigation, category filtering, match highlighting, prefix matching
 - **Integration**: Search bar positioned in top right corner of header
 
 #### Theme System
@@ -81,10 +85,20 @@ Bun users can run the same scripts with `bun dev`, `bun test`, etc.
 #### Content Components
 
 - **`src/components/CodeBlock.tsx`**: Syntax-highlighted code display
+- **`src/components/CodeWalkthrough.tsx`**: Step-by-step code explanation component
 - **`src/components/GitHubPR.tsx`**: Live GitHub pull request embedding
 - **`src/components/GitHubPage.tsx`**: Live GitHub file display
 - **`src/components/GithubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
 - **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
+- **`src/components/AlertBox.tsx`**: Styled alert/warning boxes
+- **`src/components/BillOfMaterials.tsx`**: Hardware BOM table component
+- **`src/components/CollapsibleSection.tsx`**: Expandable content sections
+- **`src/components/ComparisonTable.tsx`**: Side-by-side comparison tables
+- **`src/components/ConceptBox.tsx`**: Highlighted concept explanation boxes
+- **`src/components/ContentCard.tsx`**: Card-based content layout
+- **`src/components/KeyConceptSection.tsx`**: Key learning point sections
+- **`src/components/MechanismTabs.tsx`**: Tabbed mechanism selection interface
+- **`src/components/ModelViewer.tsx`**: 3D model display with Three.js
 
 ### Route Organization
 
@@ -93,12 +107,26 @@ Workshop Content:
 ├── / (Homepage with team, mechanisms, overview)
 ├── /introduction (Workshop introduction)
 ├── /prerequisites (Required software & hardware)
-└── Workshop #1 (Collapsible section):
-    ├── /hardware (CTRE hardware setup)
-    ├── /project-setup (WPILib project creation)
-    ├── /command-framework (Triggers, subsystems, commands)
-    ├── /running-program (Run code with hardware sim)
-    ├── /control-systems (PID & Feedforward theory)
+├── /mechanism-setup (Mechanism selection & setup)
+├── /mechanism-cad (CAD files and 3D modeling)
+├── /hardware (CTRE hardware setup)
+├── /project-setup (WPILib project creation)
+├── /building-subsystems (Creating subsystem architecture)
+├── /adding-commands (Command-based programming)
+├── /triggers (Button and trigger configuration)
+├── /command-framework (Advanced command patterns)
+├── /running-program (Run code with hardware sim)
+├── /state-based (State machine control)
+├── /pid-control (PID controller implementation)
+├── /motion-magic (Motion Magic profiled movement)
+├── /pathplanner (PathPlanner trajectory following)
+├── /swerve-drive-project (Swerve drive implementation)
+├── /vision-options (Computer vision approaches)
+├── /vision-implementation (Vision system integration)
+├── /vision-shooting (Vision-based shooting)
+├── /logging-options (Data logging strategies)
+├── /logging-implementation (Logging system setup)
+└── /search (Search functionality page)
 ```
 
 ### Asset Management
@@ -126,7 +154,7 @@ Workshop Content:
 - All workshop pages should use PageTemplate for consistency
 - Navigation items are defined as static arrays in Sidebar component
 - Build process includes comprehensive testing (lint + type-check + build)
-- Search system provides fuzzy search across all workshop content
+- Search system provides fast fuzzy search across all workshop content using MiniSearch
 
 ## Visual Development
 

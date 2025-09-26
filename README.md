@@ -55,8 +55,16 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ### Development Commands
 
-- `npm run dev` – start the local development server
-- `npm test` – lint, type-check, and build the project
+- `npm run dev` – start the local development server with Turbopack
+- `npm run build` – build for production (includes search generation and formatting)
+- `npm run start` – start the production server
+- `npm run lint` – lint code with ESLint
+- `npm run type-check` – check TypeScript types
+- `npm run format` – format code with Prettier
+- `npm run format:check` – check code formatting without writing
+- `npm run generate-search` – update search index data
+- `npm run spell` – run spell check on TypeScript and markdown files
+- `npm test` – run full test suite (format:check + lint + type-check + build)
 
 ## 🛠 Tech Stack
 
@@ -70,22 +78,57 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── introduction/       # Workshop introduction
-│   ├── prerequisites/      # Required software & hardware
-│   ├── hardware/          # Hardware setup guide
-│   ├── project-setup/     # Project creation & organization
-│   ├── command-framework/ # Command-based programming
-│   ├── control-systems/   # PID & Feedforward theory
-│   └── tuning/           # Mechanism tuning guide
-└── components/            # Reusable React components
-    ├── Sidebar.tsx        # Collapsible navigation sidebar
-    ├── PageTemplate.tsx   # Shared page layout
-    ├── CodeBlock.tsx      # IDE-style syntax highlighted code
-    ├── GitHubPR.tsx       # Live GitHub pull request display
-    ├── GitHubPage.tsx     # Live GitHub file display
-    ├── GithubPageWithPR.tsx # Tabbed GitHub file and PR diff view
-    └── ImageBlock.tsx     # Optimized image display
+├── app/                           # Next.js App Router pages
+│   ├── introduction/              # Workshop introduction
+│   ├── prerequisites/             # Required software & hardware
+│   ├── mechanism-setup/           # Mechanism selection & setup
+│   ├── mechanism-cad/             # CAD files and 3D modeling
+│   ├── hardware/                  # Hardware setup guide
+│   ├── project-setup/             # Project creation & organization
+│   ├── building-subsystems/       # Creating subsystem architecture
+│   ├── adding-commands/           # Command-based programming
+│   ├── triggers/                  # Button and trigger configuration
+│   ├── command-framework/         # Advanced command patterns
+│   ├── running-program/           # Run code with hardware sim
+│   ├── state-based/               # State machine control
+│   ├── pid-control/               # PID controller implementation
+│   ├── motion-magic/              # Motion Magic profiled movement
+│   ├── pathplanner/               # PathPlanner trajectory following
+│   ├── swerve-drive-project/      # Swerve drive implementation
+│   ├── vision-options/            # Computer vision approaches
+│   ├── vision-implementation/     # Vision system integration
+│   ├── vision-shooting/           # Vision-based shooting
+│   ├── logging-options/           # Data logging strategies
+│   ├── logging-implementation/    # Logging system setup
+│   └── search/                    # Search functionality page
+├── components/                    # Reusable React components
+│   ├── Sidebar.tsx                # Collapsible navigation sidebar
+│   ├── PageTemplate.tsx           # Shared page layout
+│   ├── SearchBar.tsx              # MiniSearch-powered search
+│   ├── ThemePicker.tsx            # Dark/light theme toggle
+│   ├── CodeBlock.tsx              # IDE-style syntax highlighted code
+│   ├── CodeWalkthrough.tsx        # Step-by-step code explanation
+│   ├── GitHubPR.tsx               # Live GitHub pull request display
+│   ├── GitHubPage.tsx             # Live GitHub file display
+│   ├── GithubPageWithPR.tsx       # Tabbed GitHub file and PR diff view
+│   ├── ImageBlock.tsx             # Optimized image display
+│   ├── AlertBox.tsx               # Styled alert/warning boxes
+│   ├── BillOfMaterials.tsx        # Hardware BOM table component
+│   ├── CollapsibleSection.tsx     # Expandable content sections
+│   ├── ComparisonTable.tsx        # Side-by-side comparison tables
+│   ├── ConceptBox.tsx             # Highlighted concept explanation boxes
+│   ├── ContentCard.tsx            # Card-based content layout
+│   ├── KeyConceptSection.tsx      # Key learning point sections
+│   ├── MechanismTabs.tsx          # Tabbed mechanism selection interface
+│   └── ModelViewer.tsx            # 3D model display with Three.js
+├── data/                          # Static data and configuration
+│   ├── searchData.ts              # Search index for all content
+│   ├── armBOM.ts                  # Arm mechanism bill of materials
+│   └── shooterBOM.ts              # Shooter mechanism bill of materials
+├── hooks/                         # Custom React hooks
+│   └── useKeyboardNavigation.ts   # Keyboard navigation functionality
+└── lib/                          # Utility libraries
+    └── searchConfig.ts            # MiniSearch configuration
 ```
 
 ## 🤖 GitHub Actions CI/CD
