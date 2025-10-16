@@ -109,7 +109,8 @@ src/
 │   ├── Sidebar.tsx                # Collapsible navigation sidebar
 │   ├── PageTemplate.tsx           # Shared page layout
 │   ├── SearchBar.tsx              # MiniSearch-powered search
-│   ├── ThemePicker.tsx            # Dark/light theme toggle
+│   ├── ui/
+│   │   └── animated-theme-toggler.tsx # Animated theme toggle button
 │   ├── CodeBlock.tsx              # IDE-style syntax highlighted code
 │   ├── CodeWalkthrough.tsx        # Step-by-step code explanation
 │   ├── GitHubPR.tsx               # Live GitHub pull request display
@@ -137,7 +138,8 @@ src/
 ├── hooks/                         # Custom React hooks
 │   └── useKeyboardNavigation.ts   # Keyboard navigation functionality
 └── lib/                          # Utility libraries
-    └── searchConfig.ts            # MiniSearch configuration
+    ├── searchConfig.ts            # MiniSearch configuration
+    └── utils.ts                   # Shared utility helpers (e.g., className merging)
 ```
 
 ## 🤖 GitHub Actions CI/CD

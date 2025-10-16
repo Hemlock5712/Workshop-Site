@@ -77,7 +77,7 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
 #### Theme System
 
-- **`src/components/ThemePicker.tsx`**: Theme toggle component with Zustand state management
+- **`src/components/ui/animated-theme-toggler.tsx`**: Animated theme toggle button with view transitions
 - **Implementation**: Uses `data-theme` attribute and localStorage persistence
 - **Modes**: light, dark, system (follows OS preference)
 - **Integration**: Tailwind CSS `dark:` classes throughout the app

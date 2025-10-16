@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Image from "next/image";
+import Script from "next/script";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import SearchBar from "@/components/SearchBar";
@@ -33,8 +34,39 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const themeScript = `
+    (() => {
+      const storageKey = "theme";
+      const getPrefersDark = () => {
+        try {
+          return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        } catch {
+          return false;
+        }
+      };
+
+      try {
+        const stored = localStorage.getItem(storageKey);
+        const prefersDark = getPrefersDark();
+        const resolved = stored === "light" || stored === "dark" ? stored : prefersDark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", resolved === "dark");
+        if (stored !== resolved) {
+          localStorage.setItem(storageKey, resolved);
+        }
+      } catch {
+        const prefersDark = getPrefersDark();
+        document.documentElement.classList.toggle("dark", prefersDark);
+      }
+    })();
+  `;
+
   return (
-    <html lang="en" data-theme="system">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script id="theme-script" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
         suppressHydrationWarning={true}
