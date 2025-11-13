@@ -80,18 +80,20 @@ export default function SearchBar() {
       <button
         type="button"
         onClick={handleOpen}
-        className="flex items-center gap-3 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--card)] text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-primary-500/80 transition-colors w-full md:w-80"
+        className="flex items-center gap-3 px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--card)] text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-primary-500/80 transition-colors w-fit md:w-80"
       >
         <Search className="w-4 h-4" aria-hidden="true" />
-        <span className="flex-1 text-left">Search the workshop</span>
-        <span className="hidden md:flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
-          <kbd className="px-1.5 py-0.5 rounded border border-[var(--border)] bg-[var(--muted)]">
-            Ctrl
-          </kbd>
-          <kbd className="px-1.5 py-0.5 rounded border border-[var(--border)] bg-[var(--muted)]">
-            K
-          </kbd>
-        </span>
+        <div className="hidden md:flex gap-2">
+          <span className="flex-1 text-left">Search the workshop</span>
+          <span className="hidden md:flex items-center gap-1 text-xs text-[var(--muted-foreground)]">
+            <kbd className="px-1.5 py-0.5 rounded border border-[var(--border)] bg-[var(--muted)]">
+              Ctrl
+            </kbd>
+            <kbd className="px-1.5 py-0.5 rounded border border-[var(--border)] bg-[var(--muted)]">
+              K
+            </kbd>
+          </span>
+        </div>
       </button>
 
       <Dialog.Root open={open} onOpenChange={setOpen}>

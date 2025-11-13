@@ -32,7 +32,7 @@ export default function KeyboardShortcutsHelp() {
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button
-          className="fixed bottom-4 right-4 z-50 p-3 bg-[var(--card)] border border-[var(--border)] rounded-full shadow-lg hover:bg-[var(--muted)] transition-colors group"
+          className="hidden md:flex fixed bottom-4 right-4 z-50 p-3 bg-[var(--card)] border border-[var(--border)] rounded-full shadow-lg hover:bg-[var(--muted)] transition-colors group"
           title="Show keyboard shortcuts"
           type="button"
         >

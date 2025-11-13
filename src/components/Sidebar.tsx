@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatedThemeToggler } from "./ui/animated-theme-toggler";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 /**
  * Main navigation items (Home, Introduction, Prerequisites)
@@ -562,32 +563,28 @@ const advancedTopicsItems = [
  * - Active state highlighting based on current route
  */
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(true); // Default open
+  const { isOpen, setIsOpen, toggleSidebar } = useSidebar();
   const [isWorkshop1Open, setIsWorkshop1Open] = useState(false); // Workshop 1 sections closed by default
   const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
   const [isAdvancedTopicsOpen, setIsAdvancedTopicsOpen] = useState(false); // Advanced Topics sections closed by default
   const pathname = usePathname();
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
 
   return (
     <>
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-[60] md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Sidebar toggle button - always visible */}
+      {/* Sidebar toggle button - always visible on desktop */}
       <button
         type="button"
-        onClick={handleToggle}
+        onClick={toggleSidebar}
         aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
-        className={`fixed top-20 z-50 p-2 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
+        className={`hidden md:flex fixed top-20 z-50 p-2 m-1 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
           isOpen ? "left-60 sm:left-64" : "left-4 md:left-20"
         }`}
         title={isOpen ? "Close sidebar" : "Open sidebar"}
@@ -613,12 +610,39 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-40 transform transition-all duration-300 ease-in-out ${
+        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-[70] transform transition-all duration-300 ease-in-out ${
           isOpen
-            ? "translate-x-0 w-60 sm:w-64"
+            ? "translate-x-0 w-full md:w-60 lg:w-64"
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
       >
+        {/* Close button - visible when sidebar is open */}
+        {isOpen && (
+          <div className="flex md:hidden justify-end p-4 border-b border-[var(--border)]">
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              aria-label="Close sidebar"
+              className="p-2 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+              title="Close sidebar"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        )}
+
         <div
           className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}
         >
