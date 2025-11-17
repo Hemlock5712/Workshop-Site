@@ -122,7 +122,7 @@ const workshop1Items = [
   },
   {
     href: "/command-framework",
-    label: "Command-Based Framework",
+    label: "Command System",
     icon: (
       <svg
         className="w-5 h-5"
@@ -212,7 +212,7 @@ const workshop1Items = [
   },
   {
     href: "/running-program",
-    label: "Running Program",
+    label: "Run Program",
     icon: (
       <svg
         className="w-5 h-5"
@@ -231,7 +231,7 @@ const workshop1Items = [
   },
   {
     href: "/mechanism-setup",
-    label: "Mechanism Setup",
+    label: "Mechanism",
     icon: (
       <svg
         className="w-5 h-5"
@@ -399,8 +399,27 @@ const workshop2Items = [
     ),
   },
   {
+    href: "/swerve-calibration",
+    label: "Odom Calib",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+        />
+      </svg>
+    ),
+  },
+  {
     href: "/logging-options",
-    label: "Logging Options",
+    label: "Log Options",
     icon: (
       <svg
         className="w-5 h-5"
@@ -506,27 +525,8 @@ const workshop2Items = [
     ),
   },
   {
-    href: "/swerve-calibration",
-    label: "Odom Calibration",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-        />
-      </svg>
-    ),
-  },
-  {
     href: "/vision-shooting",
-    label: "Dynamic Flywheel",
+    label: "Flywheel Ctrl",
     icon: (
       <svg
         className="w-5 h-5"
@@ -553,7 +553,7 @@ const workshop2Items = [
 const advancedTopicsItems = [
   {
     href: "/state-based",
-    label: "State-Based Control",
+    label: "State Control",
     icon: (
       <svg
         className="w-5 h-5"
@@ -572,6 +572,25 @@ const advancedTopicsItems = [
           strokeLinejoin="round"
           strokeWidth={2}
           d="M10 12h4M10 16h4"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/advanced-drive-to-point",
+    label: "Adv DriveToP",
+    icon: (
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M13 10V3L4 14h7v7l9-11h-7z"
         />
       </svg>
     ),

@@ -13,7 +13,10 @@ export default function StateBased() {
         href: "/vision-shooting",
         title: "Dynamic Flywheel",
       }}
-      nextPage={{ href: "/", title: "Home" }}
+      nextPage={{
+        href: "/advanced-drive-to-point",
+        title: "Advanced DriveToPoint",
+      }}
     >
       {/* Introduction */}
       <KeyConceptSection

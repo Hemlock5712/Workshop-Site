@@ -16,7 +16,7 @@ export default function PathPlanner() {
         href: "/swerve-drive-project",
         title: "Creating a Swerve Drive Project",
       }}
-      nextPage={{ href: "/logging-options", title: "Logging Options" }}
+      nextPage={{ href: "/swerve-calibration", title: "Odometry Calibration" }}
     >
       {/* Introduction */}
       <KeyConceptSection

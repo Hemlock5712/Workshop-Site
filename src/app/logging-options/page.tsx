@@ -18,8 +18,8 @@ export default function LoggingOptions() {
     <PageTemplate
       title="Logging Options"
       previousPage={{
-        href: "/pathplanner",
-        title: "Adding PathPlanner",
+        href: "/swerve-calibration",
+        title: "Odometry Calibration",
       }}
       nextPage={{
         href: "/logging-implementation",

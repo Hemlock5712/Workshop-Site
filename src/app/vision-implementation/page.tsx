@@ -14,7 +14,7 @@ export default function VisionImplementation() {
     <PageTemplate
       title="Implementing Vision"
       previousPage={{ href: "/vision-options", title: "Vision Options" }}
-      nextPage={{ href: "/swerve-calibration", title: "Odometry Calibration" }}
+      nextPage={{ href: "/vision-shooting", title: "Dynamic Flywheel" }}
     >
       <KeyConceptSection
         title="Integrating Vision into Robot Code"

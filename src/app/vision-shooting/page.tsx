@@ -13,8 +13,8 @@ export default function DynamicFlywheel() {
     <PageTemplate
       title="Dynamic Flywheel Control"
       previousPage={{
-        href: "/swerve-calibration",
-        title: "Odom Calibration",
+        href: "/vision-implementation",
+        title: "Implementing Vision",
       }}
       nextPage={{ href: "/state-based", title: "State-Based Control" }}
     >

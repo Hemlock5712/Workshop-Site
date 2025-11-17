@@ -19,10 +19,10 @@ export default function OdometryCalibration() {
     <PageTemplate
       title="Odometry Calibration"
       previousPage={{
-        href: "/vision-implementation",
-        title: "Implementing Vision",
+        href: "/pathplanner",
+        title: "Adding PathPlanner",
       }}
-      nextPage={{ href: "/vision-shooting", title: "Dynamic Flywheel" }}
+      nextPage={{ href: "/logging-options", title: "Logging Options" }}
     >
       <KeyConceptSection
         title="Calibrating Your Robot's Odometry"

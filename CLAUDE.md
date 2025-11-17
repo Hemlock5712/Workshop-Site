@@ -134,6 +134,7 @@ Workshop Content:
 ├── /vision-options (Computer vision approaches)
 ├── /vision-implementation (Vision system integration)
 ├── /vision-shooting (Vision-based shooting)
+├── /advanced-drive-to-point (Profiled path following with feedforward)
 └── /search (Search functionality page)
 ```
 
