@@ -1,0 +1,650 @@
+import PageTemplate from "@/components/PageTemplate";
+import KeyConceptSection from "@/components/KeyConceptSection";
+import Box from "@/components/Box";
+import ContentCard from "@/components/ContentCard";
+import CollapsibleSection from "@/components/CollapsibleSection";
+import CodeBlock from "@/components/CodeBlock";
+import GithubPageWithPR from "@/components/GithubPageWithPR";
+import Quiz from "@/components/Quiz";
+import { Lightbulb, MapPin, Target } from "lucide-react";
+
+export default function DriveToPoint() {
+  return (
+    <PageTemplate
+      title="Drive to Point"
+      previousPage={{
+        href: "/logging-implementation",
+        title: "Implementing Logging",
+      }}
+      nextPage={{ href: "/vision-options", title: "Vision Options" }}
+    >
+      <KeyConceptSection
+        title="Autonomous Point Navigation with Odometry"
+        description="Use your swerve drivetrain's odometry to autonomously navigate to specific field coordinates with PID control."
+        concept="Combine odometry tracking with PID controllers to command your robot to drive to any (x, y, rotation) position on the field."
+      />
+
+      <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
+        Drive to point functionality enables your robot to move to precise field
+        positions automatically, forming the foundation for advanced autonomous
+        routines and teleop assists.
+      </p>
+
+      {/* Understanding Field Coordinates */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Understanding Field Coordinates
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          The FRC field uses a coordinate system where positions are defined as{" "}
+          <strong>Pose2d</strong> objects containing X position, Y position, and
+          rotation (heading). Your swerve drivetrain&apos;s odometry
+          continuously tracks your robot&apos;s current pose, allowing you to
+          navigate to any target pose using feedback control.
+        </p>
+
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              <MapPin className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Pose2d Structure
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                A Pose2d represents a position and orientation on the field.
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+              Pose2d Components:
+            </h4>
+            <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+              <div className="flex gap-4 items-start">
+                <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
+                  X (meters)
+                </span>
+                <span>
+                  Distance along the field&apos;s length (0 to ~16.5m)
+                </span>
+              </div>
+              <div className="flex gap-4 items-start">
+                <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
+                  Y (meters)
+                </span>
+                <span>Distance along the field&apos;s width (0 to ~8.2m)</span>
+              </div>
+              <div className="flex gap-4 items-start">
+                <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
+                  Rotation
+                </span>
+                <span>
+                  Robot heading as Rotation2d (0° = facing down the field)
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <CodeBlock
+            language="java"
+            title="Creating Target Poses"
+            code={`// Drive to origin (0, 0) facing 0 degrees
+Pose2d origin = Pose2d.kZero;
+
+// Drive to (3, 2) facing 180 degrees
+Pose2d targetPose = new Pose2d(3, 2, Rotation2d.fromDegrees(180));
+
+// Get current robot position from odometry
+Pose2d currentPose = drivetrain.getPose();`}
+          />
+        </ContentCard>
+      </section>
+
+      {/* PID Control for Position */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          PID Control for Position Tracking
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          To drive to a point, we use{" "}
+          <strong>three separate PID controllers</strong>
+          —one for X position, one for Y position, and one for rotation. Each
+          controller calculates the required velocity by comparing the current
+          value to the target value.
+        </p>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-6 border-l-4 border-blue-400 dark:border-blue-900">
+            <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-3">
+              X Controller
+            </h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              Controls forward/backward velocity based on X position error
+            </p>
+            <div className="mt-3 p-2 bg-white dark:bg-slate-800 rounded font-mono text-xs">
+              xVelocity = kP × (target.X - current.X)
+            </div>
+          </div>
+
+          <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border-l-4 border-green-400 dark:border-green-900">
+            <h3 className="text-lg font-bold text-green-800 dark:text-green-300 mb-3">
+              Y Controller
+            </h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              Controls left/right velocity based on Y position error
+            </p>
+            <div className="mt-3 p-2 bg-white dark:bg-slate-800 rounded font-mono text-xs">
+              yVelocity = kP × (target.Y - current.Y)
+            </div>
+          </div>
+
+          <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-6 border-l-4 border-purple-400 dark:border-purple-900">
+            <h3 className="text-lg font-bold text-purple-800 dark:text-purple-300 mb-3">
+              Theta Controller
+            </h3>
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              Controls rotation rate based on heading error
+            </p>
+            <div className="mt-3 p-2 bg-white dark:bg-slate-800 rounded font-mono text-xs">
+              rotation = kP × (target.θ - current.θ)
+            </div>
+          </div>
+        </div>
+
+        <Box
+          variant="alert-info"
+          title="Why Three Controllers?"
+          icon={<Lightbulb className="w-5 h-5" />}
+        >
+          <p>
+            Swerve drivetrains can move in X, Y, and rotate independently. By
+            using separate PID controllers for each degree of freedom, the robot
+            can simultaneously drive to the target position while rotating to
+            the target heading.
+          </p>
+        </Box>
+      </section>
+
+      {/* Implementation */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          DriveToPoint Command Implementation
+        </h2>
+
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              1
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Create PID Controllers
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Initialize three PID controllers with appropriate gains. The
+                theta controller uses continuous input to handle angle wrapping.
+              </p>
+            </div>
+          </div>
+
+          <CodeBlock
+            language="java"
+            title="DriveToPoint Command Setup"
+            code={`public class DriveToPoint extends Command {
+  private final CommandSwerveDrivetrain m_drivetrain;
+  private final Pose2d m_targetPose;
+
+  // Three PID controllers for X, Y, and rotation
+  private PIDController xController = new PIDController(10, 0, 0);
+  private PIDController yController = new PIDController(10, 0, 0);
+  private PIDController thetaController = new PIDController(7, 0, 0);
+
+  private SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric();
+
+  public DriveToPoint(CommandSwerveDrivetrain drivetrain, Pose2d targetPose) {
+    m_drivetrain = drivetrain;
+    m_targetPose = targetPose;
+
+    // Enable continuous input for theta (-π to π)
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    addRequirements(drivetrain);
+  }
+}`}
+          />
+
+          <Box variant="alert-tip" title="Continuous Input">
+            <p>
+              <code>enableContinuousInput(-Math.PI, Math.PI)</code> tells the
+              controller that angles wrap around. This ensures the robot rotates
+              via the shortest path (e.g., from 350° to 10° goes clockwise
+              through 0°, not counterclockwise 340°).
+            </p>
+          </Box>
+        </ContentCard>
+
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              2
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Calculate Velocities in Execute
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Each execute cycle, get the current pose and calculate the
+                required velocities to reach the target.
+              </p>
+            </div>
+          </div>
+
+          <CodeBlock
+            language="java"
+            title="Command Execute Method"
+            code={`@Override
+public void execute() {
+  // Get current robot position from odometry
+  Pose2d currentPose = m_drivetrain.getPose();
+
+  // Calculate required velocities using PID
+  double xVelocity = xController.calculate(
+      currentPose.getX(),
+      m_targetPose.getX()
+  );
+  double yVelocity = yController.calculate(
+      currentPose.getY(),
+      m_targetPose.getY()
+  );
+  double thetaVelocity = thetaController.calculate(
+      currentPose.getRotation().getRadians(),
+      m_targetPose.getRotation().getRadians()
+  );
+
+  // Apply velocities to drivetrain
+  m_drivetrain.setControl(
+      driveRequest
+          .withVelocityX(xVelocity)
+          .withVelocityY(yVelocity)
+          .withRotationalRate(thetaVelocity)
+  );
+}`}
+          />
+
+          <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg border-l-4 border-primary-400 dark:border-primary-900 mt-4">
+            <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
+              <Target className="w-5 h-5 inline mr-2" />
+              How It Works
+            </h4>
+            <p className="text-sm text-slate-700 dark:text-slate-300">
+              The command runs continuously, recalculating velocities every 20ms
+              (50Hz). As the robot gets closer to the target, the error
+              decreases, and the PID controllers automatically reduce the
+              velocity until the robot reaches the setpoint.
+            </p>
+          </div>
+        </ContentCard>
+
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              3
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Stop When Command Ends
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                When the command is interrupted or finished, stop the drivetrain
+                to prevent unwanted movement.
+              </p>
+            </div>
+          </div>
+
+          <CodeBlock
+            language="java"
+            title="Command End Method"
+            code={`@Override
+public void end(boolean interrupted) {
+  // Stop the drivetrain when command ends
+  m_drivetrain.setControl(new SwerveRequest.Idle());
+}
+
+@Override
+public boolean isFinished() {
+  // This command runs until interrupted
+  // Could add tolerance checking to auto-finish
+  return false;
+}`}
+          />
+        </ContentCard>
+      </section>
+
+      {/* Button Bindings */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Binding to Controller Buttons
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          Bind the DriveToPoint command to buttons for easy testing and teleop
+          use. Hold the button to drive to the point; release to stop.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="RobotContainer Button Bindings"
+          code={`private void configureBindings() {
+  // Hold A button: drive to origin (0, 0, 0°)
+  joystick.a().whileTrue(
+      new DriveToPoint(drivetrain, Pose2d.kZero)
+  );
+
+  // Hold B button: drive to (3m, 2m, 180°)
+  joystick.b().whileTrue(
+      new DriveToPoint(
+          drivetrain,
+          new Pose2d(3, 2, Rotation2d.fromDegrees(180))
+      )
+  );
+}`}
+        />
+
+        <Box variant="alert-warning" title="Testing Safety">
+          <p>
+            Start with conservative PID gains (kP = 1-2) and test in a clear
+            area. The robot will move automatically when you press the button.
+            Make sure you have a way to disable the robot quickly if needed.
+          </p>
+        </Box>
+      </section>
+
+      {/* Code Example from GitHub */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Workshop Implementation: DriveToPoint
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          See the complete implementation in the Workshop-Code repository. The{" "}
+          <code>5-DriveToPoint</code> branch shows the full command structure
+          and button bindings.
+        </p>
+
+        <GithubPageWithPR
+          repository="Hemlock5712/Workshop-Code"
+          filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
+          branch="5-DriveToPoint"
+          pullRequestNumber={11}
+          focusFile="DriveToPoint.java"
+        />
+      </section>
+
+      {/* Practical Applications */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Practical Applications
+        </h2>
+
+        <CollapsibleSection title="🎮 Teleop Assists" variant="info">
+          <div className="space-y-4 text-slate-600 dark:text-slate-300">
+            <p>
+              Bind preset positions to buttons to help drivers quickly position
+              the robot:
+            </p>
+            <ul className="space-y-2 ml-6">
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Amp scoring position:</strong> Drive to the precise
+                  position for scoring in the amp
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Speaker shooting position:</strong> Auto-position for
+                  optimal shooting angle
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Source pickup position:</strong> Navigate to game
+                  piece source quickly
+                </span>
+              </li>
+              <li className="flex items-start">
+                <span className="mr-2">•</span>
+                <span>
+                  <strong>Defensive positions:</strong> Move to strategic
+                  blocking locations
+                </span>
+              </li>
+            </ul>
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection title="🤖 Autonomous Routines" variant="info">
+          <div className="space-y-4 text-slate-600 dark:text-slate-300">
+            <p>Use DriveToPoint as building blocks for autonomous sequences:</p>
+            <CodeBlock
+              language="java"
+              title="Example Auto Sequence"
+              code={`// Sequential autonomous routine
+Command autoSequence = new SequentialCommandGroup(
+    new DriveToPoint(drivetrain, startPose),
+    new IntakeCommand(intake),
+    new DriveToPoint(drivetrain, scoringPose),
+    new ScoreCommand(shooter),
+    new DriveToPoint(drivetrain, nextGamePiecePose)
+);`}
+            />
+            <p>
+              This forms the foundation for more complex autonomous navigation
+              before adding vision or PathPlanner.
+            </p>
+          </div>
+        </CollapsibleSection>
+
+        <CollapsibleSection title="⚙️ Tuning Tips" variant="warning">
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <span className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                1
+              </span>
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                  Start with low gains
+                </h4>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  Begin with kP = 1-2 for position controllers. If the robot
+                  oscillates, reduce gains. If it&apos;s too slow, increase
+                  gradually.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <span className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                2
+              </span>
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                  Theta controller typically needs different gains
+                </h4>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  Rotation usually requires different tuning than translation.
+                  Start with kP around 5-7 for theta.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <span className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                3
+              </span>
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                  Add velocity limits for safety
+                </h4>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  Clamp the output velocities to prevent the robot from moving
+                  too fast:
+                </p>
+                <CodeBlock
+                  language="java"
+                  title="Velocity Limiting"
+                  code={`double maxVelocity = 4.0; // m/s
+xVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, xVelocity));
+yVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, yVelocity));`}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              <span className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                4
+              </span>
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                  Consider adding tolerance checking
+                </h4>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  Make the command finish automatically when close enough to the
+                  target:
+                </p>
+                <CodeBlock
+                  language="java"
+                  title="isFinished with Tolerance"
+                  code={`@Override
+public boolean isFinished() {
+  Pose2d currentPose = m_drivetrain.getPose();
+  double distanceError = currentPose.getTranslation()
+      .getDistance(m_targetPose.getTranslation());
+  double rotationError = Math.abs(
+      currentPose.getRotation().getRadians() -
+      m_targetPose.getRotation().getRadians()
+  );
+
+  return distanceError < 0.05 && rotationError < Math.toRadians(5);
+}`}
+                />
+              </div>
+            </div>
+          </div>
+        </CollapsibleSection>
+      </section>
+
+      {/* Quiz */}
+      <section className="flex flex-col gap-8">
+        <Quiz
+          title="Knowledge Check"
+          questions={[
+            {
+              id: 1,
+              question: "What three values does a Pose2d contain?",
+              options: [
+                "X velocity, Y velocity, and angular velocity",
+                "X position, Y position, and rotation",
+                "Left encoder, right encoder, and gyro angle",
+                "Red, green, and blue color values",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "A Pose2d represents a position and orientation on the field, containing X position (meters), Y position (meters), and rotation (Rotation2d).",
+            },
+            {
+              id: 2,
+              question:
+                "Why does the DriveToPoint command use three separate PID controllers?",
+              options: [
+                "To control three different motors on the drivetrain",
+                "Because swerve drivetrains can move in X, Y, and rotate independently",
+                "To make the code more complex and impressive",
+                "One controller isn't powerful enough to control the robot",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "Swerve drivetrains have three independent degrees of freedom (X translation, Y translation, and rotation). Using separate PID controllers for each allows the robot to simultaneously drive to a position while rotating to the target heading.",
+            },
+            {
+              id: 3,
+              question:
+                "What does thetaController.enableContinuousInput(-Math.PI, Math.PI) do?",
+              options: [
+                "Makes the controller run continuously without stopping",
+                "Tells the controller that angles wrap around, ensuring shortest rotation path",
+                "Limits the maximum rotation speed to π radians per second",
+                "Enables the controller to accept negative rotation values",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "enableContinuousInput tells the controller that the input wraps around (angles are circular). This ensures the robot rotates via the shortest path—for example, from 350° to 10° goes through 0° (20° clockwise) rather than going backwards 340° counterclockwise.",
+            },
+            {
+              id: 4,
+              question:
+                "In the execute() method, what does currentPose represent?",
+              options: [
+                "The target position we want to drive to",
+                "The starting position when the command began",
+                "The robot's current position from odometry",
+                "The position of the nearest game piece",
+              ],
+              correctAnswer: 2,
+              explanation:
+                "currentPose is obtained from m_drivetrain.getPose() and represents the robot's current position as tracked by the swerve drivetrain's odometry system. This is compared against the target pose to calculate the error.",
+            },
+            {
+              id: 5,
+              question:
+                "What happens when you use .whileTrue() to bind the DriveToPoint command?",
+              options: [
+                "The command runs once when the button is pressed",
+                "The command runs continuously while the button is held",
+                "The command runs until the robot reaches the target",
+                "The command toggles on and off each time the button is pressed",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "The .whileTrue() binding runs the command continuously while the button is held down. When you release the button, the command is interrupted and the robot stops (via the end() method).",
+            },
+            {
+              id: 6,
+              question:
+                "If your PID controllers have gains that are too high, what will likely happen?",
+              options: [
+                "The robot will move too slowly",
+                "The robot will oscillate or shake around the target",
+                "The robot won't move at all",
+                "The robot will drive backwards",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "PID gains that are too high cause overshoot and oscillation. The robot will move past the target, then overcorrect back, repeatedly oscillating around the setpoint. Reducing the gains will dampen this oscillation.",
+            },
+            {
+              id: 7,
+              question:
+                "What is a practical teleop application of DriveToPoint?",
+              options: [
+                "Replacing all driver control with autonomous movement",
+                "Creating preset buttons to auto-position for scoring locations",
+                "Automatically avoiding all obstacles on the field",
+                "Controlling the robot's LED colors",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "DriveToPoint is excellent for teleop assists where you bind preset field positions to buttons (e.g., amp scoring position, speaker position). This helps drivers quickly and accurately position the robot without manual driving.",
+            },
+          ]}
+        />
+      </section>
+    </PageTemplate>
+  );
+}

@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface SidebarContextType {
   isOpen: boolean;
@@ -18,11 +24,11 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
     const handleResize = () => {
       setIsOpen(window.innerWidth >= 768);
     };
-    
+
     handleResize();
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const toggleSidebar = () => {

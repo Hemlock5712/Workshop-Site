@@ -128,11 +128,12 @@ Workshop Content:
 ├── /motion-magic (Motion Magic profiled movement)
 ├── /pathplanner (PathPlanner trajectory following)
 ├── /swerve-drive-project (Swerve drive implementation)
+├── /logging-options (Data logging strategies)
+├── /logging-implementation (Logging system setup)
+├── /drive-to-point (Drive to point navigation with PID)
 ├── /vision-options (Computer vision approaches)
 ├── /vision-implementation (Vision system integration)
 ├── /vision-shooting (Vision-based shooting)
-├── /logging-options (Data logging strategies)
-├── /logging-implementation (Logging system setup)
 └── /search (Search functionality page)
 ```
 

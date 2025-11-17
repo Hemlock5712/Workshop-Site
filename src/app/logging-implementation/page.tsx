@@ -21,7 +21,7 @@ export default function LoggingImplementation() {
     <PageTemplate
       title="Implementing Logging"
       previousPage={{ href: "/logging-options", title: "Logging Options" }}
-      nextPage={{ href: "/vision-options", title: "Vision Options" }}
+      nextPage={{ href: "/drive-to-point", title: "Drive to Point" }}
     >
       {/* Introduction */}
       <KeyConceptSection

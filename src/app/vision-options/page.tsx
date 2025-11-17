@@ -11,8 +11,8 @@ export default function VisionOptions() {
     <PageTemplate
       title="Vision Options"
       previousPage={{
-        href: "/logging-implementation",
-        title: "Implementing Logging",
+        href: "/drive-to-point",
+        title: "Drive to Point",
       }}
       nextPage={{
         href: "/vision-implementation",
