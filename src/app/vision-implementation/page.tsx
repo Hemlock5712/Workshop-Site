@@ -7,7 +7,7 @@ import GithubPageWithPR from "@/components/GithubPageWithPR";
 import DocumentationButton from "@/components/DocumentationButton";
 import ContentCard from "@/components/ContentCard";
 import Quiz from "@/components/Quiz";
-import { Link, Tag } from "lucide-react";
+import { Link, Tag, Camera, Book } from "lucide-react";
 
 export default function VisionImplementation() {
   return (
@@ -145,6 +145,89 @@ export default function VisionImplementation() {
             </li>
           </ul>
         </Box>
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Camera Setup & Calibration
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          Accurate camera calibration ensures vision measurements integrate
+          correctly with your odometry, providing reliable pose estimates.
+        </p>
+
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              <Camera className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Limelight Camera Configuration
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Set up your Limelight camera with proper positioning, focus, and
+                calibration.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Camera Setup Checklist:
+              </h4>
+              <div className="space-y-3">
+                <div>
+                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    1. Camera Position Configuration
+                  </h5>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                    Enter the camera&apos;s position relative to the robot
+                    center in the Limelight web interface. Accurate position
+                    values are critical for pose estimation.
+                  </p>
+                </div>
+
+                <div>
+                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    2. Camera Calibration
+                  </h5>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                    Use a Limelight calibration board to calibrate your camera.
+                    This corrects for lens distortion and improves pose
+                    accuracy, especially at the edges of the field of view.
+                  </p>
+                </div>
+
+                <div>
+                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    3. Lens Focus & Security
+                  </h5>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                    Ensure the lens is properly focused for your AprilTag
+                    detection distance. Once focused,{" "}
+                    <strong>glue the lens in place</strong> to prevent it from
+                    shifting due to vibrations.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <Box variant="alert-info" title="📍 Limelight Documentation">
+              <p className="mb-2">
+                Refer to the official Limelight AprilTag documentation for
+                detailed camera calibration instructions and best practices:
+              </p>
+              <DocumentationButton
+                href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
+                title="Limelight Calibration Guide"
+                icon={<Book className="w-5 h-5" />}
+              />
+            </Box>
+          </div>
+        </ContentCard>
       </section>
 
       <section className="flex flex-col gap-8">
@@ -335,6 +418,20 @@ export default function VisionImplementation() {
               explanation:
                 "Standard deviation should increase with distance (farther tags = less accurate) and decrease with more tags visible (more tags = more confident measurement). This models measurement uncertainty appropriately.",
             },
+            {
+              id: 6,
+              question:
+                "What should you do after properly focusing a Limelight camera lens?",
+              options: [
+                "Leave it as-is for future adjustments",
+                "Glue the lens in place to prevent shifting",
+                "Cover it with tape for protection",
+                "Record the focus setting in your code",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "Once the Limelight lens is properly focused for your AprilTag detection distance, you should glue the lens in place to prevent it from shifting due to robot vibrations during competition, which would ruin your calibration.",
+            },
           ]}
         />
       </section>
@@ -347,12 +444,12 @@ export default function VisionImplementation() {
 
         <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
           <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Odometry Calibration
+            Up Next: Dynamic Flywheel
           </h3>
           <p className="text-slate-600 dark:text-slate-300">
-            With vision integrated, you&apos;ll learn how to calibrate your
-            robot&apos;s odometry for maximum accuracy, including motor tuning,
-            wheel radius calibration, camera setup, and PathPlanner PID tuning.
+            With vision integrated into your odometry, you&apos;re ready to
+            implement dynamic flywheel control using vision-based distance
+            measurements to shoot accurately from anywhere on the field.
           </p>
         </div>
       </section>

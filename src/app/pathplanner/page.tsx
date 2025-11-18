@@ -7,6 +7,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import Quiz from "@/components/Quiz";
 import GitHubPage from "@/components/GitHubPage";
 import GithubPageWithPR from "@/components/GithubPageWithPR";
+import ContentCard from "@/components/ContentCard";
 
 export default function PathPlanner() {
   return (
@@ -377,7 +378,65 @@ export default function PathPlanner() {
         </div>
       </section>
 
-      {/* Section 5: Tips and Best Practices */}
+      {/* Section 5: PathPlanner Configuration & Tuning */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          PathPlanner Configuration & Tuning
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          PathPlanner uses PID controllers to follow autonomous paths
+          accurately. Proper tuning ensures your robot tracks paths smoothly
+          without oscillation or lag.
+        </p>
+
+        <ContentCard>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+            PathPlanner Configuration - Do in the GUI
+          </h3>
+
+          <div className="space-y-4">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Robot Config should be as accurate as possible to your robot,
+                and many configs are available online. However, to significantly
+                help path tracking, configure the App Settings, which contain
+                the MotionMagic configurations for PathPlanner.
+              </h4>
+              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                <li>
+                  <strong>App Setting: Max Velocity:</strong> Set to 80-90% of
+                  your robot&apos;s maximum speed. This provides headroom for
+                  PID corrections.
+                </li>
+                <li>
+                  <strong>App Setting: Max Acceleration:</strong> Conservative
+                  values (2-3 m/s²) prevent wheel slip. Increase gradually while
+                  testing.
+                </li>
+                <li>
+                  <strong>App Setting: Max Angular Velocity:</strong> Limit
+                  rotational speed to prevent modules from fighting each other.
+                </li>
+                <li>
+                  <strong>App Setting: Max Angular Acceleration:</strong> Limit
+                  rotational acceleration to prevent robot from rotating too
+                  quickly.
+                </li>
+              </ul>
+            </div>
+
+            <Box variant="alert-tip" title="🎯 Tuning Strategy">
+              <p className="mb-2">
+                Tune PathPlanner PID values like normal. However be aware that
+                due to loop times these cannot be tuned as aggressively.
+              </p>
+            </Box>
+          </div>
+        </ContentCard>
+      </section>
+
+      {/* Section 6: Tips and Best Practices */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           PathPlanner Tips & Best Practices
@@ -534,12 +593,13 @@ export default function PathPlanner() {
 
         <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
           <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Logging Options
+            Up Next: Swerve Calibration
           </h3>
           <p className="text-slate-600 dark:text-slate-300">
-            With autonomous paths configured, you&apos;ll learn about data
-            logging strategies to capture telemetry and debug your robot&apos;s
-            performance.
+            With PathPlanner configured, you&apos;re ready to calibrate your
+            swerve drive for maximum accuracy. You&apos;ll tune motor gains,
+            configure slip current limits, and measure wheel radius for precise
+            odometry.
           </p>
         </div>
       </section>

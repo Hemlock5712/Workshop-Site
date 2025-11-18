@@ -5,19 +5,12 @@ import ContentCard from "@/components/ContentCard";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import ImageBlock from "@/components/ImageBlock";
-import {
-  Book,
-  Camera,
-  Settings,
-  Target,
-  Lightbulb,
-  AlertTriangle,
-} from "lucide-react";
+import { Book, Settings, Lightbulb, AlertTriangle } from "lucide-react";
 
 export default function OdometryCalibration() {
   return (
     <PageTemplate
-      title="Odometry Calibration"
+      title="Swerve Calibration"
       previousPage={{
         href: "/pathplanner",
         title: "Adding PathPlanner",
@@ -25,8 +18,8 @@ export default function OdometryCalibration() {
       nextPage={{ href: "/logging-options", title: "Logging Options" }}
     >
       <KeyConceptSection
-        title="Calibrating Your Robot's Odometry"
-        description="Proper calibration is the foundation of accurate autonomous performance. This includes tuning motor values, finding the effective wheel radius, configuring camera positions, and tuning PID controllers for path following."
+        title="Swerve Calibration"
+        description="Proper calibration is the foundation of accurate autonomous performance. This includes tuning swerve motor gains, configuring drive request types, preventing wheel slip, finding effective wheel radius, configuring camera positions, and tuning PID controllers for path following."
         concept="Calibration transforms theoretical parameters into real-world accuracy."
       />
 
@@ -43,161 +36,312 @@ export default function OdometryCalibration() {
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Motor Calibration
+          Motor Calibration & Tuning
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Start by tuning your drive and turning motors to ensure they respond
-          correctly to commands and maintain accurate position tracking.
+          Follow these steps in order to properly tune your swerve drive motors
+          and configure optimal drive performance. Each step builds on the
+          previous one to ensure accurate odometry and reliable autonomous
+          operation.
         </p>
 
+        {/* Step 1: Tune steerGains */}
         <ContentCard>
           <div className="flex items-start gap-4 mb-4">
             <div className="bg-primary-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              <Settings className="w-5 h-5" />
+              1
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Tune Drive and Turning Motors
+                Tune steerGains (TunerConstants.java)
               </h3>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
-                Configure motor PID values, velocity/acceleration limits, and
-                ensure proper sensor feedback.
+              <p className="text-slate-600 dark:text-slate-300">
+                Configure PID gains for your swerve module steering motors to
+                ensure accurate module angle control.
               </p>
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                Key Calibration Steps:
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Tuning Procedure:
               </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  Make sure to read and follow Tuner X instructions carefully
-                </li>
-                <li>Verify your robot drives correct direction</li>
-                <li>Tune turning motor first then move onto drive motors</li>
-                <li>
-                  Configure{" "}
-                  <a
-                    href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-primary-600 dark:text-primary-400 hover:underline"
-                  >
-                    Stator Current
-                  </a>{" "}
-                  to prevent wheel slippage.
-                </li>
-              </ul>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+                Use the <strong>Turret tuning instructions</strong> from the{" "}
+                <a
+                  href="/pid-control"
+                  className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
+                >
+                  PID Control page
+                </a>{" "}
+                to tune your steer gains. The steering motors behave like a
+                rotational mechanism (similar to a turret) and require
+                position-based PID tuning.
+              </p>
             </div>
 
             <Box
-              variant="alert-tip"
-              title="Encoder Security"
-              icon={<Lightbulb className="w-5 h-5" />}
+              variant="alert-info"
+              title="Reference: Turret PID Tuning"
+              icon={<Book className="w-5 h-5" />}
             >
               <p>
-                <strong>Highly Recommended:</strong> Glue your drive encoders in
-                place to prevent them from shifting during impacts or aggressive
-                movements. Even small encoder shifts can cause significant
-                odometry drift.
+                The Turret section on the{" "}
+                <a
+                  href="/pid-control"
+                  className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
+                >
+                  PID Control page
+                </a>{" "}
+                provides detailed examples of position-based PID tuning.
               </p>
             </Box>
           </div>
         </ContentCard>
-      </section>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Effective Wheel Radius
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          The effective wheel radius accounts for compression, tread wear, and
-          carpet interaction. This value is critical for accurate odometry.
-        </p>
-
+        {/* Step 2: Tune driveGains */}
         <ContentCard>
           <div className="flex items-start gap-4 mb-4">
-            <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              <Target className="w-5 h-5" />
+            <div className="bg-primary-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              2
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Wheel Radius Test Procedure
+                Tune driveGains (TunerConstants.java)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Follow this systematic procedure to determine your robot&apos;s
-                effective wheel radius.
+                Configure velocity PID gains for your drive motors to ensure
+                accurate speed control.
               </p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <div className="bg-primary-50 dark:bg-primary-950/30 p-6 rounded-lg border border-primary-200 dark:border-primary-800">
-              <ol className="space-y-4">
-                <li className="flex gap-4">
-                  <span className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Two-Phase Tuning Approach:
+              </h4>
+
+              <div className="space-y-4">
+                <div>
+                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                    Phase 1: Initial Tuning (Wheels Off Ground)
+                  </h5>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+                    Use the <strong>Flywheel tuning instructions</strong> from
+                    the{" "}
+                    <a
+                      href="/pid-control"
+                      className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
+                    >
+                      PID Control page
+                    </a>
+                    . Start with the robot&apos;s wheels off the ground to tune
+                    velocity control without friction interference.
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-slate-600 dark:text-slate-300">
+                    <li>
+                      Set up velocity control using VelocityVoltage control
+                      request
+                    </li>
+                    <li>
+                      Tune kP, kI, and kD values to achieve smooth velocity
+                      tracking
+                    </li>
+                    <li>
+                      Configure feedforward gains (kV for velocity, kS for
+                      static friction)
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                    Phase 2: Fine-Tuning kP (On the Ground)
+                  </h5>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+                    Once basic velocity control works, place the robot on the
+                    ground and fine-tune kP to account for real-world friction
+                    and load:
+                  </p>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-slate-600 dark:text-slate-300">
+                    <li>
+                      Test velocity tracking while driving on carpet/competition
+                      surface
+                    </li>
+                    <li>
+                      Adjust kP if you observe steady-state velocity errors
+                    </li>
+                    <li>
+                      Verify smooth acceleration and deceleration without
+                      oscillation
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <Box
+              variant="alert-info"
+              title="Reference: Flywheel PID Tuning"
+              icon={<Book className="w-5 h-5" />}
+            >
+              <p>
+                The Flywheel section on the{" "}
+                <a
+                  href="/pid-control"
+                  className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
+                >
+                  PID Control page
+                </a>{" "}
+                provides detailed examples of velocity-based PID tuning with
+                VelocityVoltage control requests.
+              </p>
+            </Box>
+          </div>
+        </ContentCard>
+
+        {/* Step 3: Update DriveRequestType */}
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-primary-700 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              3
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Update DriveRequestType (RobotContainer.java)
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Configure the drive system to use velocity-based control for
+                more precise speed tracking.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Configuration Changes:
+              </h4>
+              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <li>
+                  <strong>1. Change drive request type:</strong> Modify{" "}
+                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                    .withDriveRequestType()
+                  </code>{" "}
+                  to use{" "}
+                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                    DriveRequestType.Velocity
+                  </code>
+                </li>
+                <li>
+                  <strong>2. Remove deadband:</strong> Remove any deadband
+                  configuration to allow precise low-speed control
+                </li>
+              </ol>
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
+                <strong>Example code change:</strong>
+              </p>
+              <pre className="bg-slate-900 text-slate-100 p-3 rounded text-xs overflow-x-auto">
+                {`// Before
+.withDriveRequestType(DriveRequestType.OpenLoopVoltage)
+.withDeadband(MaxSpeed * 0.1)
+
+// After
+.withDriveRequestType(DriveRequestType.Velocity)
+// Deadband removed for precise control`}
+              </pre>
+            </div>
+          </div>
+        </ContentCard>
+
+        {/* Step 4: Find kSlipCurrent */}
+        <ContentCard>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              4
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Find kSlipCurrent (RobotContainer.java)
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Determine the stator current limit that prevents wheel slip
+                while maximizing traction and power transfer.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                How Stator Current Limits Prevent Wheel Slip:
+              </h4>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+                Stator current is the output current of the motor and is
+                directly proportional to torque. By restricting stator current,
+                you cap the torque output, which prevents wheels from spinning
+                faster than the friction between tire and floor can support.
+                This maximizes traction and power transfer to the ground.
+              </p>
+            </div>
+
+            <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
+              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Step-by-Step Procedure:
+              </h4>
+              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <li className="flex gap-3">
+                  <span className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     1
                   </span>
                   <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                      Drive Forward at Low Acceleration
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                      Command the robot to drive straight forward for a fixed
-                      distance (e.g., 3 meters) at low acceleration to minimize
-                      wheel slip.
-                    </p>
+                    <strong>Position the robot:</strong> Place your robot up
+                    against a wall on carpet (to simulate match conditions)
                   </div>
                 </li>
-                <li className="flex gap-4">
-                  <span className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                <li className="flex gap-3">
+                  <span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     2
                   </span>
                   <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                      Record Sensor-Reported Distance
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                      Log the distance traveled as calculated from encoder
-                      readings. This will differ from the actual distance due to
-                      wheel compression and slip.
-                    </p>
+                    <strong>Open Phoenix Tuner X:</strong> Begin plotting both
+                    velocity and stator current in real-time
                   </div>
                 </li>
-                <li className="flex gap-4">
-                  <span className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                <li className="flex gap-3">
+                  <span className="bg-orange-700 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     3
                   </span>
                   <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                      Measure True Distance Traveled
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                      Use a tape measure to determine the actual distance the
-                      robot moved. Measure from the starting position to the
-                      final position.
-                    </p>
+                    <strong>Gradually increase voltage:</strong> Slowly increase
+                    voltage output until velocity becomes non-zero (wheels start
+                    slipping) and stator current drops noticeably
                   </div>
                 </li>
-                <li className="flex gap-4">
-                  <span className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                <li className="flex gap-3">
+                  <span className="bg-orange-800 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
                     4
                   </span>
                   <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                      Calculate Rolling Radius
-                    </h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                      Use this formula:{" "}
-                      <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                        effectiveRadius = (actualDistance / sensorDistance) *
-                        currentRadius
-                      </code>
-                    </p>
+                    <strong>Record the slip threshold:</strong> The stator
+                    current value where wheels begin slipping (velocity spikes)
+                    represents your threshold
+                  </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="bg-orange-900 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
+                    5
+                  </span>
+                  <div>
+                    <strong>Set the limit:</strong> Configure your stator
+                    current limit to a value slightly below this observed value
+                    for a safety margin
                   </div>
                 </li>
               </ol>
@@ -205,47 +349,50 @@ export default function OdometryCalibration() {
 
             <Box
               variant="alert-warning"
-              title="Test Conditions Matter"
+              title="Important Considerations"
               icon={<AlertTriangle className="w-5 h-5" />}
             >
               <ul className="list-disc list-inside space-y-1 text-sm">
                 <li>
-                  Perform this test on the same surface you&apos;ll compete on
-                  (carpet vs. tile affects compression)
+                  <strong>Testing environment matters:</strong> Always test on
+                  carpet against a wall to accurately simulate match conditions
                 </li>
                 <li>
-                  Run multiple trials and average the results for better
-                  accuracy
+                  <strong>Conservative tuning:</strong> Set limits below the
+                  slip point to maintain a safety margin
                 </li>
-                <li>Re-calibrate if you change wheels or tread</li>
+                <li>
+                  <strong>Performance tradeoff:</strong> Stator limits restrict
+                  acceleration. Setting limits too low degrades responsiveness
+                </li>
+                <li>
+                  <strong>Monitor during testing:</strong> Watch for the
+                  characteristic velocity spike that indicates slip occurrence
+                </li>
               </ul>
             </Box>
+
+            <DocumentationButton
+              href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
+              title="CTRE: Preventing Wheel Slip Documentation"
+              icon={<Book className="w-5 h-5" />}
+            />
           </div>
         </ContentCard>
-      </section>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Camera Setup & Calibration
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Accurate camera calibration ensures vision measurements integrate
-          correctly with your odometry, providing reliable pose estimates.
-        </p>
-
+        {/* Step 5: Tune kWheelRadius */}
         <ContentCard>
           <div className="flex items-start gap-4 mb-4">
-            <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              <Camera className="w-5 h-5" />
+            <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              5
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Limelight Camera Configuration
+                Tune kWheelRadius (TunerConstants.java)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Set up your Limelight camera with proper positioning, focus, and
-                calibration.
+                Find the effective wheel radius by comparing actual distance
+                traveled vs. what the robot reports.
               </p>
             </div>
           </div>
@@ -253,115 +400,110 @@ export default function OdometryCalibration() {
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Camera Setup Checklist:
+                Quick Calibration Procedure:
               </h4>
-              <div className="space-y-3">
-                <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    1. Camera Position Configuration
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    Enter the camera&apos;s position relative to the robot
-                    center in the Limelight web interface. Accurate position
-                    values are critical for pose estimation.
-                  </p>
-                </div>
-
-                <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    2. Camera Calibration
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    Use a Limelight calibration board to calibrate your camera.
-                    This corrects for lens distortion and improves pose
-                    accuracy, especially at the edges of the field of view.
-                  </p>
-                </div>
-
-                <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    3. Lens Focus & Security
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    Ensure the lens is properly focused for your AprilTag
-                    detection distance. Once focused,{" "}
-                    <strong>glue the lens in place</strong> to prevent it from
-                    shifting due to vibrations.
-                  </p>
-                </div>
-              </div>
+              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                <li>
+                  <strong>1. Drive slowly forward:</strong> Command the robot to
+                  drive straight at low speed (to minimize slip)
+                </li>
+                <li>
+                  <strong>2. Measure actual distance:</strong> Use a tape
+                  measure to record how far the robot actually moved
+                </li>
+                <li>
+                  <strong>3. Read reported distance:</strong> Check the distance
+                  the robot thinks it traveled from odometry
+                </li>
+                <li>
+                  <strong>4. Calculate new radius:</strong> Use the formula:{" "}
+                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                    kWheelRadius = (actualDistance / reportedDistance) *
+                    currentRadius
+                  </code>
+                </li>
+              </ol>
             </div>
-
-            <Box variant="alert-info" title="📍 Limelight Documentation">
-              <p className="mb-2">
-                Refer to the official Limelight AprilTag documentation for
-                detailed camera calibration instructions and best practices:
-              </p>
-              <DocumentationButton
-                href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
-                title="Limelight Calibration Guide"
-                icon={<Book className="w-5 h-5" />}
-              />
-            </Box>
           </div>
         </ContentCard>
-      </section>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          PathPlanner PID Tuning
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          PathPlanner uses PID controllers to follow autonomous paths
-          accurately. Proper tuning ensures your robot tracks paths smoothly
-          without oscillation or lag.
-        </p>
-
+        {/* Step 6: Find kSpeedAt12Volts */}
         <ContentCard>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            PathPlanner Configuration - Do in the GUI
-          </h3>
+          <div className="flex items-start gap-4 mb-4">
+            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
+              6
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Find kSpeedAt12Volts (TunerConstants.java)
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                Measure your robot&apos;s maximum velocity to configure accurate
+                feedforward gains.
+              </p>
+            </div>
+          </div>
 
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Robot Config should be as accurate as possible to your robot,
-                and many configs are available online. However, to significantly
-                help path tracking, configure the App Settings, which contain
-                the MotionMagic configurations for PathPlanner.
+                Measurement Procedure:
               </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  <strong>App Setting: Max Velocity:</strong> Set to 80-90% of
-                  your robot&apos;s maximum speed. This provides headroom for
-                  PID corrections.
+                  <strong>1. Drive at maximum speed:</strong> Command the robot
+                  to drive straight at full throttle
                 </li>
                 <li>
-                  <strong>App Setting: Max Acceleration:</strong> Conservative
-                  values (2-3 m/s²) prevent wheel slip. Increase gradually while
-                  testing.
+                  <strong>2. Record peak velocity:</strong> Log the maximum
+                  velocity achieved from odometry (in meters/second)
                 </li>
                 <li>
-                  <strong>App Setting: Max Angular Velocity:</strong> Limit
-                  rotational speed to prevent modules from fighting each other.
+                  <strong>3. Update TunerConstants:</strong> Set{" "}
+                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                    kSpeedAt12Volts
+                  </code>{" "}
+                  to this measured value
+                </li>
+              </ol>
+            </div>
+
+            <Box
+              variant="alert-info"
+              title="Testing Conditions"
+              icon={<Settings className="w-5 h-5" />}
+            >
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                <li>
+                  <strong>Preferred:</strong> Test on the ground (carpet or
+                  competition surface) for most accurate results
                 </li>
                 <li>
-                  <strong>App Setting: Max Angular Acceleration:</strong> Limit
-                  rotational acceleration to prevent robot from rotating too
-                  quickly.
+                  <strong>Alternative:</strong> Testing in the air (wheels off
+                  ground) is acceptable for initial testing, but may yield
+                  slightly different results
+                </li>
+                <li>
+                  Use the on-ground measurement for final competition
+                  configuration
                 </li>
               </ul>
-            </div>
-
-            <Box variant="alert-tip" title="🎯 Tuning Strategy">
-              <p className="mb-2">
-                Tune PathPlanner PID values like normal. However be aware that
-                due to loop times these cannot be tuned as aggressively.
-              </p>
             </Box>
           </div>
         </ContentCard>
+
+        <Box
+          variant="alert-tip"
+          title="Encoder Security"
+          icon={<Lightbulb className="w-5 h-5" />}
+        >
+          <p>
+            <strong>Highly Recommended:</strong> Glue your drive encoders in
+            place to prevent them from shifting during impacts or aggressive
+            movements. Even small encoder shifts can cause significant odometry
+            drift.
+          </p>
+        </Box>
       </section>
 
       {/* Quiz Section */}
@@ -400,20 +542,6 @@ export default function OdometryCalibration() {
             {
               id: 3,
               question:
-                "What should you do after properly focusing a Limelight camera lens?",
-              options: [
-                "Leave it as-is for future adjustments",
-                "Glue the lens in place to prevent shifting",
-                "Cover it with tape for protection",
-                "Record the focus setting in your code",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Once the Limelight lens is properly focused for your AprilTag detection distance, you should glue the lens in place to prevent it from shifting due to robot vibrations during competition, which would ruin your calibration.",
-            },
-            {
-              id: 4,
-              question:
                 "How do you calculate the effective wheel radius from a drive test?",
               options: [
                 "Divide sensor distance by actual distance",
@@ -426,7 +554,7 @@ export default function OdometryCalibration() {
                 "The formula is: effectiveRadius = (actualDistance / sensorDistance) * currentRadius. This ratio corrects your theoretical radius based on how far the robot actually moved compared to what the sensors reported.",
             },
             {
-              id: 5,
+              id: 4,
               question:
                 "Why is it recommended to glue drive encoders in place?",
               options: [
@@ -450,13 +578,13 @@ export default function OdometryCalibration() {
 
         <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
           <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Vision-Based Shooting
+            Up Next: Logging Options
           </h3>
           <p className="text-slate-600 dark:text-slate-300">
-            With your odometry fully calibrated, you&apos;re ready to apply
-            vision data for automated targeting and distance-based shooting
-            calculations. You&apos;ll learn how to use vision feedback to
-            calculate shooter angles and velocities dynamically.
+            With your swerve drive fully calibrated, you&apos;re ready to
+            explore data logging strategies. You&apos;ll learn about different
+            logging frameworks, what data to log, and how to use logs for
+            debugging and performance analysis.
           </p>
         </div>
       </section>

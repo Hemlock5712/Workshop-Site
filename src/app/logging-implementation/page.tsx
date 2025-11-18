@@ -525,11 +525,12 @@ public class ArmSubsystem extends SubsystemBase {
 
         <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
           <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Vision Options
+            Up Next: Drive to Point
           </h3>
           <p className="text-slate-600 dark:text-slate-300">
-            With logging configured, you&apos;re ready to add computer vision
-            for AprilTag localization and field-aware control.
+            With logging configured, you&apos;re ready to implement autonomous
+            navigation using PID controllers to drive to specific field
+            positions with precise control.
           </p>
         </div>
       </section>
