@@ -359,8 +359,8 @@ drivetrain.setControl(
                 X Position
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Distance along the field length (left/right from your driver
-                station perspective). Units: meters.
+                Distance along the field length. X increases as you move away
+                from the driver station. Units: meters.
               </p>
             </div>
 
@@ -369,8 +369,8 @@ drivetrain.setControl(
                 Y Position
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Distance along the field width (forward/backward from your
-                driver station). Units: meters.
+                Distance along the field width. Y increases as you move to the
+                left. Units: meters.
               </p>
             </div>
 
@@ -391,10 +391,10 @@ drivetrain.setControl(
             icon={<Lightbulb className="w-5 h-5" />}
           >
             <p>
-              The field coordinate system origin (0, 0) is at the corner of the
-              field from your alliance&apos;s perspective. X increases to the
-              right, Y increases forward, and rotation is counter-clockwise
-              positive.
+              The field coordinate system origin (0, 0) is at the right corner
+              on the blue side of the field. X increases as you move away from
+              the driver station, Y increases as you move to the left, and
+              rotation is counter-clockwise positive.
             </p>
           </Box>
         </div>
