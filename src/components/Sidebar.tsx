@@ -628,8 +628,9 @@ export default function Sidebar() {
         type="button"
         onClick={toggleSidebar}
         aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
-        className={`hidden md:flex fixed top-20 z-50 p-2 m-1 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${isOpen ? "left-60 sm:left-64" : "left-4 md:left-20"
-          }`}
+        className={`hidden md:flex fixed top-20 z-50 p-2 m-1 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
+          isOpen ? "left-60 sm:left-64" : "left-4 md:left-20"
+        }`}
         title={isOpen ? "Close sidebar" : "Open sidebar"}
       >
         <svg
@@ -653,10 +654,11 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-[70] transform transition-all duration-300 ease-in-out ${isOpen
-          ? "translate-x-0 w-full md:w-60 lg:w-64"
-          : "-translate-x-full md:translate-x-0 md:w-16"
-          }`}
+        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-[70] transform transition-all duration-300 ease-in-out ${
+          isOpen
+            ? "translate-x-0 w-full md:w-60 lg:w-64"
+            : "-translate-x-full md:translate-x-0 md:w-16"
+        }`}
       >
         {/* Close button - visible when sidebar is open */}
         {isOpen && (
@@ -697,13 +699,15 @@ export default function Sidebar() {
                 <div key={item.href} className="relative group">
                   <Link
                     href={item.href}
-                    className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${isOpen
-                      ? "px-4 py-3 space-x-3"
-                      : "px-3 py-3 justify-center"
-                      } ${isActive
+                    className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                      isOpen
+                        ? "px-4 py-3 space-x-3"
+                        : "px-3 py-3 justify-center"
+                    } ${
+                      isActive
                         ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
                         : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                      }`}
+                    }`}
                   >
                     <span className="flex-shrink-0">{item.icon}</span>
                     {isOpen && <span className="truncate">{item.label}</span>}
@@ -723,11 +727,13 @@ export default function Sidebar() {
             <div className="pt-2 relative group">
               <Link
                 href="/mechanism-cad"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                  } ${pathname === "/mechanism-cad"
+                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
+                } ${
+                  pathname === "/mechanism-cad"
                     ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
                     : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                  }`}
+                }`}
                 onClick={() => {
                   // Only close on mobile
                   if (window.innerWidth < 768) {
@@ -786,8 +792,9 @@ export default function Sidebar() {
                       <span>Workshop #1</span>
                     </div>
                     <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${isWorkshop1Open ? "rotate-90" : ""
-                        }`}
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isWorkshop1Open ? "rotate-90" : ""
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -803,8 +810,9 @@ export default function Sidebar() {
 
                   {/* Workshop #1 Items */}
                   <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${isWorkshop1Open ? "block" : "hidden"
-                      }`}
+                    className={`mt-2 space-y-1 transition-all duration-300 ${
+                      isWorkshop1Open ? "block" : "hidden"
+                    }`}
                   >
                     {workshop1Items.map((item) => {
                       const isActive = pathname === item.href;
@@ -812,10 +820,11 @@ export default function Sidebar() {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${isActive
-                            ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                            : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                            }`}
+                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
+                            isActive
+                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
+                          }`}
                           onClick={() => {
                             // Only close on mobile
                             if (window.innerWidth < 768) {
@@ -890,8 +899,9 @@ export default function Sidebar() {
                       <span>Workshop #2</span>
                     </div>
                     <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${isWorkshop2Open ? "rotate-90" : ""
-                        }`}
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isWorkshop2Open ? "rotate-90" : ""
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -907,8 +917,9 @@ export default function Sidebar() {
 
                   {/* Workshop #2 Items */}
                   <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${isWorkshop2Open ? "block" : "hidden"
-                      }`}
+                    className={`mt-2 space-y-1 transition-all duration-300 ${
+                      isWorkshop2Open ? "block" : "hidden"
+                    }`}
                   >
                     {workshop2Items.map((item) => {
                       const isActive = pathname === item.href;
@@ -916,10 +927,11 @@ export default function Sidebar() {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${isActive
-                            ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                            : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                            }`}
+                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
+                            isActive
+                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
+                          }`}
                           onClick={() => {
                             // Only close on mobile
                             if (window.innerWidth < 768) {
@@ -996,8 +1008,9 @@ export default function Sidebar() {
                       <span>Advanced Topics</span>
                     </div>
                     <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${isAdvancedTopicsOpen ? "rotate-90" : ""
-                        }`}
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isAdvancedTopicsOpen ? "rotate-90" : ""
+                      }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -1013,8 +1026,9 @@ export default function Sidebar() {
 
                   {/* Advanced Topics Items */}
                   <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${isAdvancedTopicsOpen ? "block" : "hidden"
-                      }`}
+                    className={`mt-2 space-y-1 transition-all duration-300 ${
+                      isAdvancedTopicsOpen ? "block" : "hidden"
+                    }`}
                   >
                     {advancedTopicsItems.map((item) => {
                       const isActive = pathname === item.href;
@@ -1022,10 +1036,11 @@ export default function Sidebar() {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${isActive
-                            ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                            : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                            }`}
+                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
+                            isActive
+                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
+                          }`}
                           onClick={() => {
                             // Only close on mobile
                             if (window.innerWidth < 768) {
@@ -1079,11 +1094,13 @@ export default function Sidebar() {
             <div className="pt-2 relative group">
               <Link
                 href="/ai-assistant"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                  } ${pathname === "/ai-assistant"
+                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
+                } ${
+                  pathname === "/ai-assistant"
                     ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
                     : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                  }`}
+                }`}
                 onClick={() => {
                   // Only close on mobile
                   if (window.innerWidth < 768) {
@@ -1121,11 +1138,13 @@ export default function Sidebar() {
             <div className="pt-2 relative group">
               <Link
                 href="/glossary"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                  } ${pathname === "/glossary"
+                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
+                } ${
+                  pathname === "/glossary"
                     ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
                     : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                  }`}
+                }`}
                 onClick={() => {
                   // Only close on mobile
                   if (window.innerWidth < 768) {

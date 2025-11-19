@@ -20,8 +20,9 @@ export default function Home() {
               </span>
             </h1>
             <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Master the art of robot code. Build competition-winning robots with industry-standard architecture,
-              advanced PID control, and motion profiling.
+              Master the art of robot code. Build competition-winning robots
+              with industry-standard architecture, advanced PID control, and
+              motion profiling.
             </p>
           </div>
 
@@ -63,7 +64,8 @@ export default function Home() {
               What We&apos;re Building
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
-              Master universal programming concepts through two fundamental FRC mechanisms.
+              Master universal programming concepts through two fundamental FRC
+              mechanisms.
             </p>
           </div>
 
@@ -81,13 +83,26 @@ export default function Home() {
               </div>
               <div className="p-6 space-y-4">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Arm Position Control</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                  Arm Position Control
+                </h3>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Program precise arm positioning using PID control, encoder feedback, and Motion Magic for smooth, controlled movements.
+                  Program precise arm positioning using PID control, encoder
+                  feedback, and Motion Magic for smooth, controlled movements.
                 </p>
               </div>
             </div>
@@ -105,13 +120,26 @@ export default function Home() {
               </div>
               <div className="p-6 space-y-4">
                 <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">Flywheel Velocity Control</h3>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                  Flywheel Velocity Control
+                </h3>
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Master velocity control for consistent shooting performance using feedforward control and velocity PID.
+                  Master velocity control for consistent shooting performance
+                  using feedforward control and velocity PID.
                 </p>
               </div>
             </div>
@@ -126,10 +154,26 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center justify-items-center opacity-75 hover:opacity-100 transition-opacity duration-500">
             {[
-              { href: "https://store.ctr-electronics.com/", src: "/images/sponsors/ctre-logo.jpg", alt: "CTR Electronics" },
-              { href: "https://michauto.org/", src: "/images/sponsors/MichAuto Logo 600x600.png", alt: "MichAuto" },
-              { href: "https://www.michiganbusiness.org/ofme/", src: "/images/sponsors/OFME-Logo.png", alt: "OFME" },
-              { href: "https://lockwoodstemcenter.hemlockps.com/home", src: "/images/sponsors/lockwood-stem-center-logo.png", alt: "Lockwood STEM Center" },
+              {
+                href: "https://store.ctr-electronics.com/",
+                src: "/images/sponsors/ctre-logo.jpg",
+                alt: "CTR Electronics",
+              },
+              {
+                href: "https://michauto.org/",
+                src: "/images/sponsors/MichAuto Logo 600x600.png",
+                alt: "MichAuto",
+              },
+              {
+                href: "https://www.michiganbusiness.org/ofme/",
+                src: "/images/sponsors/OFME-Logo.png",
+                alt: "OFME",
+              },
+              {
+                href: "https://lockwoodstemcenter.hemlockps.com/home",
+                src: "/images/sponsors/lockwood-stem-center-logo.png",
+                alt: "Lockwood STEM Center",
+              },
             ].map((sponsor) => (
               <a
                 key={sponsor.alt}
@@ -154,7 +198,9 @@ export default function Home() {
                 Workshop Team
               </h3>
               <div className="flex flex-col gap-1 text-slate-600 dark:text-slate-400">
-                <p>Joe Lockwood, Josh Bacon, Chris Bale, Alex Haltom (Team 5712)</p>
+                <p>
+                  Joe Lockwood, Josh Bacon, Chris Bale, Alex Haltom (Team 5712)
+                </p>
                 <p>Ethan Shannon (Team 5216)</p>
               </div>
             </div>
@@ -164,4 +210,3 @@ export default function Home() {
     </div>
   );
 }
-
