@@ -7,6 +7,7 @@ import CodeBlock from "@/components/CodeBlock";
 import GithubPageWithPR from "@/components/GithubPageWithPR";
 import Quiz from "@/components/Quiz";
 import { Lightbulb, MapPin, Target } from "lucide-react";
+import Image from "next/image";
 
 export default function DriveToPoint() {
   return (
@@ -43,6 +44,16 @@ export default function DriveToPoint() {
           continuously tracks your robot&apos;s current pose, allowing you to
           navigate to any target pose using feedback control.
         </p>
+
+        <div className="flex justify-center my-8">
+          <Image
+            src="/images/drive-to-point-field.png"
+            alt="FRC field coordinate system showing X and Y axes with blue and red alliance robots"
+            width={1024}
+            height={463}
+            className="rounded-lg shadow-lg border border-slate-200 dark:border-slate-800"
+          />
+        </div>
 
         <ContentCard>
           <div className="flex items-start gap-4 mb-4">
