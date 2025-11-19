@@ -69,14 +69,18 @@ export default function DriveToPoint() {
                   X (meters)
                 </span>
                 <span>
-                  Distance along the field&apos;s length (0 to ~16.5m)
+                  Distance along the field&apos;s length. X increases as you
+                  move away from the driver station (0 to ~16.5m)
                 </span>
               </div>
               <div className="flex gap-4 items-start">
                 <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
                   Y (meters)
                 </span>
-                <span>Distance along the field&apos;s width (0 to ~8.2m)</span>
+                <span>
+                  Distance along the field&apos;s width. Y increases as you move
+                  to the left (0 to ~8.2m)
+                </span>
               </div>
               <div className="flex gap-4 items-start">
                 <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
