@@ -192,6 +192,73 @@ export default function VisionOptions() {
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Hardware Setup
+        </h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <ContentCard>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              🔌 Power & Connectivity
+            </h3>
+            <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>
+                <strong>Power:</strong> Connect Limelight to the PDH/PDP (12V).
+                Do not use the VRM unless necessary.
+              </li>
+              <li>
+                <strong>Ethernet:</strong> Connect directly to the radio or use
+                a <strong>network switch</strong> if you have multiple devices.
+              </li>
+              <li>
+                <strong>Mounting:</strong> Recommendation for mounting is to
+                mount ideally where the cameras can see scoring target tags when
+                you are scoring. Also make sure not to mount at the same height
+                as tags. You want your cameras looking left or right and up or
+                down when looking at the tag.
+              </li>
+            </ul>
+          </ContentCard>
+
+          <ContentCard>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              🏷️ AprilTag Configuration
+            </h3>
+            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+              Ensure your Limelight is up to date and configured for the current
+              game&apos;s AprilTag field map.
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+              <li>
+                Update <strong>Limelight OS</strong> to the latest version via
+                USB flash drive.
+              </li>
+              <li>
+                Download the latest <strong>AprilTag Field Map</strong> from the
+                Limelight Downloads page.
+              </li>
+              <li>
+                Upload the map via the Limelight web interface (Hardware Manager
+                2.0).
+              </li>
+            </ul>
+            <div className="mt-4 flex flex-col gap-2">
+              <DocumentationButton
+                href="https://docs.limelightvision.io/docs/resources/downloads"
+                title="Limelight Downloads"
+                icon={<Book className="w-5 h-5" />}
+              />
+              <DocumentationButton
+                href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-map-builder"
+                title="Map Builder Guide"
+                icon={<Wrench className="w-5 h-5" />}
+              />
+            </div>
+          </ContentCard>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Vision System Comparison
         </h2>
 

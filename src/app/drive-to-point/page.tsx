@@ -369,11 +369,19 @@ public boolean isFinished() {
 }`}
         />
 
-        <Box variant="alert-warning" title="Testing Safety">
-          <p>
+        <Box
+          variant="alert-warning"
+          title="Testing Safety & Field Requirements"
+        >
+          <p className="mb-2">
             Start with conservative PID gains (kP = 1-2) and test in a clear
             area. The robot will move automatically when you press the button.
             Make sure you have a way to disable the robot quickly if needed.
+          </p>
+          <p>
+            <strong>No full field? No problem!</strong> You don&apos;t need a
+            full FRC field to test this. You can pick any point just remember to
+            use the robot&apos;s starting position as the origin (0, 0, 0°).
           </p>
         </Box>
       </section>
@@ -477,9 +485,16 @@ Command autoSequence = new SequentialCommandGroup(
                   Start with low gains
                 </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Begin with kP = 1-2 for position controllers. If the robot
-                  oscillates, reduce gains. If it&apos;s too slow, increase
-                  gradually.
+                  The values provided (kP = 10) are just{" "}
+                  <strong>starting points</strong>. Every robot is different! If
+                  the robot oscillates, reduce gains. If it&apos;s too slow,
+                  increase gradually.
+                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  <strong>Pro Tip:</strong> Graph the{" "}
+                  <code>Target Position</code> vs <code>Actual Position</code>{" "}
+                  in AdvantageScope to visualize how well your PID controller is
+                  tracking.
                 </p>
               </div>
             </div>
