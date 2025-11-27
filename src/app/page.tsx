@@ -61,12 +61,21 @@ export default function Home() {
         <div className="space-y-16">
           <div className="text-center space-y-4 max-w-3xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">
-              What We&apos;re Building
+              What We&apos;re Programming
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-400">
               Master universal programming concepts through two fundamental FRC
               mechanisms.
             </p>
+          </div>
+
+          {/* Workshop #1 Banner */}
+          <div className="text-center">
+            <div className="inline-block px-6 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800">
+              <p className="text-sm font-semibold text-primary-700 dark:text-primary-300">
+                Workshop #1
+              </p>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -140,6 +149,97 @@ export default function Home() {
                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                   Master velocity control for consistent shooting performance
                   using feedforward control and velocity PID.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Workshop #2 Banner */}
+          <div className="text-center">
+            <div className="inline-block px-6 py-2 rounded-full bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800">
+              <p className="text-sm font-semibold text-green-700 dark:text-green-300">
+                Workshop #2
+              </p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+            {/* Card 3 - Limelight */}
+            <div className="group relative bg-white dark:bg-slate-800/50 rounded-3xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/50 hover:border-purple-500/20 transition-all duration-300 hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
+                <Image
+                  src="/images/mechanisms/limelight.png"
+                  alt="Limelight Vision System"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                  Limelight Vision System
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Implement computer vision for AprilTag detection, target
+                  tracking, and vision-based autonomous positioning.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 4 - Swerve */}
+            <div className="group relative bg-white dark:bg-slate-800/50 rounded-3xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/50 hover:border-orange-500/20 transition-all duration-300 hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
+                <Image
+                  src="/images/mechanisms/swerve.png"
+                  alt="CTR Swerve Drive"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                  CTR Swerve
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Master holonomic swerve drive programming with advanced
+                  kinematics, odometry, and field-oriented control.
                 </p>
               </div>
             </div>
