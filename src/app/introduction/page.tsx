@@ -167,26 +167,12 @@ export default function Introduction() {
               </Link>
 
               <Link
-                href="/mechanism-setup"
-                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Mechanism Setup
-                  </span>
-                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
-                    →
-                  </span>
-                </div>
-              </Link>
-
-              <Link
                 href="/command-framework"
                 className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Command-Based Framework
+                    Command System
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -200,7 +186,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Building Subsystems
+                    Subsystems
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -214,7 +200,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Adding Commands
+                    Commands
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -242,7 +228,21 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Running Program
+                    Run Program
+                  </span>
+                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
+                    →
+                  </span>
+                </div>
+              </Link>
+
+              <Link
+                href="/mechanism-setup"
+                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
+                    Mechanism
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -271,20 +271,6 @@ export default function Introduction() {
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
                     Motion Magic
-                  </span>
-                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
-                    →
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                href="/state-based"
-                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    State-Based Control
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -324,7 +310,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Swerve Prerequisites
+                    Swerve Prereqs
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -338,7 +324,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Swerve Drive Project
+                    Swerve Project
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -361,12 +347,26 @@ export default function Introduction() {
               </Link>
 
               <Link
+                href="/swerve-calibration"
+                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
+                    Odom Calib
+                  </span>
+                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
+                    →
+                  </span>
+                </div>
+              </Link>
+
+              <Link
                 href="/logging-options"
                 className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Logging Options
+                    Log Options
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -380,7 +380,21 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Logging Implementation
+                    Logging Setup
+                  </span>
+                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
+                    →
+                  </span>
+                </div>
+              </Link>
+
+              <Link
+                href="/drive-to-point"
+                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
+                    Drive to Point
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -408,21 +422,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Vision Implementation
-                  </span>
-                  <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
-                    →
-                  </span>
-                </div>
-              </Link>
-
-              <Link
-                href="/swerve-calibration"
-                className="block p-3 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-950/30 transition-colors group"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Odometry Calibration
+                    Vision Setup
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -436,7 +436,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Vision-Based Shooting
+                    Odom Shot
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →

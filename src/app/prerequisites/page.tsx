@@ -65,6 +65,25 @@ export default function Prerequisites() {
               </p>
             </div>
 
+            <div className="border-l-4 border-indigo-200 dark:border-indigo-900 pl-4">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                <a
+                  href="https://github.com/Mechanical-Advantage/AdvantageScope/releases"
+                  className="text-indigo-600 underline hover:no-underline dark:text-indigo-400"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  AdvantageScope
+                </a>
+              </h3>
+              <p className="text-slate-600 dark:text-slate-300 mt-2">
+                A powerful tool for viewing robot logs and visualizing data.
+                Required for debugging and tuning. A lite version comes
+                preinstalled with WPILib. However, we recommend downloading the
+                latest full version from the GitHub releases page.
+              </p>
+            </div>
+
             <div className="border-l-4 border-green-200 dark:border-green-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 <a

@@ -7,6 +7,7 @@ import CodeBlock from "@/components/CodeBlock";
 import GithubPageWithPR from "@/components/GithubPageWithPR";
 import Quiz from "@/components/Quiz";
 import { Lightbulb, MapPin, Target } from "lucide-react";
+import Image from "next/image";
 
 export default function DriveToPoint() {
   return (
@@ -44,6 +45,16 @@ export default function DriveToPoint() {
           navigate to any target pose using feedback control.
         </p>
 
+        <div className="flex justify-center my-8">
+          <Image
+            src="/images/drive-to-point-field.png"
+            alt="FRC field coordinate system showing X and Y axes with blue and red alliance robots"
+            width={1024}
+            height={463}
+            className="rounded-lg shadow-lg border border-slate-200 dark:border-slate-800"
+          />
+        </div>
+
         <ContentCard>
           <div className="flex items-start gap-4 mb-4">
             <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
@@ -69,14 +80,18 @@ export default function DriveToPoint() {
                   X (meters)
                 </span>
                 <span>
-                  Distance along the field&apos;s length (0 to ~16.5m)
+                  Distance along the field&apos;s length. X increases as you
+                  move away from the driver station (0 to ~16.5m)
                 </span>
               </div>
               <div className="flex gap-4 items-start">
                 <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
                   Y (meters)
                 </span>
-                <span>Distance along the field&apos;s width (0 to ~8.2m)</span>
+                <span>
+                  Distance along the field&apos;s width. Y increases as you move
+                  to the left (0 to ~8.2m)
+                </span>
               </div>
               <div className="flex gap-4 items-start">
                 <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
@@ -354,11 +369,19 @@ public boolean isFinished() {
 }`}
         />
 
-        <Box variant="alert-warning" title="Testing Safety">
-          <p>
+        <Box
+          variant="alert-warning"
+          title="Testing Safety & Field Requirements"
+        >
+          <p className="mb-2">
             Start with conservative PID gains (kP = 1-2) and test in a clear
             area. The robot will move automatically when you press the button.
             Make sure you have a way to disable the robot quickly if needed.
+          </p>
+          <p>
+            <strong>No full field? No problem!</strong> You don&apos;t need a
+            full FRC field to test this. You can pick any point just remember to
+            use the robot&apos;s starting position as the origin (0, 0, 0°).
           </p>
         </Box>
       </section>
@@ -462,9 +485,16 @@ Command autoSequence = new SequentialCommandGroup(
                   Start with low gains
                 </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Begin with kP = 1-2 for position controllers. If the robot
-                  oscillates, reduce gains. If it&apos;s too slow, increase
-                  gradually.
+                  The values provided (kP = 10) are just{" "}
+                  <strong>starting points</strong>. Every robot is different! If
+                  the robot oscillates, reduce gains. If it&apos;s too slow,
+                  increase gradually.
+                </p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  <strong>Pro Tip:</strong> Graph the{" "}
+                  <code>Target Position</code> vs <code>Actual Position</code>{" "}
+                  in AdvantageScope to visualize how well your PID controller is
+                  tracking.
                 </p>
               </div>
             </div>

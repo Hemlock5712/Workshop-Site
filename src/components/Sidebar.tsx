@@ -526,7 +526,7 @@ const workshop2Items = [
   },
   {
     href: "/vision-shooting",
-    label: "Flywheel Ctrl",
+    label: "Odom Shot",
     icon: (
       <svg
         className="w-5 h-5"
@@ -578,7 +578,7 @@ const advancedTopicsItems = [
   },
   {
     href: "/advanced-drive-to-point",
-    label: "Adv DriveToP",
+    label: "LinearPath",
     icon: (
       <svg
         className="w-5 h-5"

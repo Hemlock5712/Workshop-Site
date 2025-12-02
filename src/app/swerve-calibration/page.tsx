@@ -57,6 +57,19 @@ export default function OdometryCalibration() {
                 Tune steerGains (TunerConstants.java)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
+                Before diving into code, ensure your hardware is ready. We
+                strongly recommend following the{" "}
+                <a
+                  href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
+                  className="text-primary-600 underline hover:no-underline dark:text-primary-400"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Official CTRE Swerve Setup Guide
+                </a>{" "}
+                for the initial configuration using Phoenix Tuner X.
+              </p>
+              <p className="text-slate-600 dark:text-slate-300">
                 Configure PID gains for your swerve module steering motors to
                 ensure accurate module angle control.
               </p>
@@ -483,11 +496,18 @@ export default function OdometryCalibration() {
                   ground) is acceptable for initial testing, but may yield
                   slightly different results
                 </li>
-                <li>
-                  Use the on-ground measurement for final competition
-                  configuration
-                </li>
+                <li>Use the on-ground measurement for final competition</li>
               </ul>
+            </Box>
+
+            <Box variant="alert-warning" title="Zeroing Procedure">
+              <p>
+                Zeroing your modules is critical for straight driving. We
+                recommend using a <strong>straight edge</strong> (like a long
+                piece of metal or 2x4) pressed against the wheel modules to
+                physically align them perfectly straight before saving the zero
+                positions in Tuner X.
+              </p>
             </Box>
           </div>
         </ContentCard>

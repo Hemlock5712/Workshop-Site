@@ -308,18 +308,17 @@ public class ArmSubsystem extends SubsystemBase {
               📥 Post-Match Log Analysis
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-              Download and analyze .wpilog files after matches for detailed
-              performance review.
+              Download and analyze logs using AdvantageScope&apos;s built-in
+              tools.
             </p>
             <ol className="list-decimal list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-              <li>Connect to roboRIO via USB or WiFi</li>
-              <li>Open web browser to roborio-TEAM-frc.local</li>
-              <li>Navigate to the /logs/ directory</li>
-              <li>Download .wpilog files from recent matches</li>
-              <li>Open the log file in AdvantageScope</li>
-              <li>Add line graphs for numeric data</li>
-              <li>Use 3D field view for odometry visualization</li>
-              <li>Scrub timeline to analyze specific moments</li>
+              <li>Open Preferences (App &gt; Show Preferences)</li>
+              <li>Update the robot address and log folder if needed</li>
+              <li>Click &quot;File&quot; &gt; &quot;Download Logs...&quot;</li>
+              <li>Select the logs you want to download (newest at top)</li>
+              <li>Click the download symbol (↓) and select a save location</li>
+              <li>Open the downloaded .wpilog file</li>
+              <li>Add line graphs or use 3D field view for analysis</li>
             </ol>
           </div>
         </div>

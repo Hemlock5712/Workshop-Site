@@ -6,6 +6,7 @@ import GitHubPage from "@/components/GitHubPage";
 import GithubPageWithPR from "@/components/GithubPageWithPR";
 import DocumentationButton from "@/components/DocumentationButton";
 import ContentCard from "@/components/ContentCard";
+import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
 import { Link, Tag, Camera, Book } from "lucide-react";
 
@@ -106,24 +107,6 @@ export default function VisionImplementation() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-4 p-4 bg-primary-400 dark:bg-primary-600/60 rounded-lg">
-                <div className="bg-primary-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  5
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 dark:text-white">
-                    Standard Deviation Tuning
-                  </h4>
-                  <p className="text-slate-800 dark:text-slate-100 text-sm">
-                    As mentioned, we need a formula for how much to trust the
-                    vision reading. For this, we will use a simple formula we
-                    have used for the past two years based on tag count and
-                    distance. This formula can be significantly improved with
-                    even some simple modifications (inside field boundaries,
-                    single tag filter ambiguity, and several other checks).
-                  </p>
-                </div>
-              </div>
             </div>
           </ContentCard>
         </div>
@@ -145,6 +128,72 @@ export default function VisionImplementation() {
             </li>
           </ul>
         </Box>
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Standard Deviation & Filtering
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          Trusting vision data correctly is just as important as receiving it.
+          We use a combination of dynamic standard deviations and filtering to
+          ensure only high-quality data affects our odometry.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <ContentCard>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Formula for Workshop
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm">
+              We use a simple formula based on tag count and distance. As the
+              robot gets further from tags, the standard deviation increases
+              (trust decreases). More tags visible decreases the standard
+              deviation (trust increases).
+            </p>
+            <CodeBlock
+              language="java"
+              title="Standard Deviation Formula"
+              code={`double xyStandardDev = 0.5 * Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
+double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;`}
+            />
+          </ContentCard>
+
+          <ContentCard>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Suggested Filtering Strategies
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm">
+              Beyond the formula, we apply several filters to reject bad data
+              entirely:
+            </p>
+            <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-primary-600">•</span>
+                <span>
+                  <strong>Field Boundary Check:</strong> Reject poses that are
+                  outside the field perimeter.
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-primary-600">•</span>
+                <span>
+                  <strong>Ambiguity Filter:</strong> For single-tag detections,
+                  reject if the ambiguity score is too high (indicating the tag
+                  might be flipped).
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-primary-600">•</span>
+                <span>
+                  <strong>Z-Height Check:</strong> Reject poses where the robot
+                  is calculated to be flying or underground.
+                </span>
+              </li>
+            </ul>
+          </ContentCard>
+        </div>
       </section>
 
       <section className="flex flex-col gap-8">

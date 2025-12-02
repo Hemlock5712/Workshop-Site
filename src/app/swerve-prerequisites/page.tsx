@@ -104,6 +104,55 @@ export default function SwervePrerequisites() {
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Hardware Setup & Wiring
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          Proper wiring and CAN ID configuration are essential for a reliable
+          swerve drive. We recommend the following standard configuration for
+          all our robots.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          <ContentCard>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Recommended CAN ID Scheme
+            </h3>
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                <li>
+                  <strong>Drive Motors:</strong> 1, 3, 5, 7 (FL, FR, BL, BR)
+                </li>
+                <li>
+                  <strong>Steer Motors:</strong> 2, 4, 6, 8 (FL, FR, BL, BR)
+                </li>
+                <li>
+                  <strong>CANcoders:</strong> 9, 10, 11, 12 (FL, FR, BL, BR)
+                </li>
+                <li>
+                  <strong>Pigeon 2 Gyro:</strong> 13
+                </li>
+              </ul>
+            </div>
+          </ContentCard>
+        </div>
+
+        <Box variant="alert-tip" title="Why Use a CANivore?">
+          <p className="mb-2">
+            A <strong>CANivore</strong> is a USB-to-CAN adapter that creates a
+            separate, high-speed CAN FD bus.
+          </p>
+          <p>
+            <strong>Benefit:</strong> It allows you to run your swerve motors at
+            a much higher refresh rate (250Hz vs 50Hz on the native RIO bus).
+            This significantly improves the responsiveness and smoothness of
+            your swerve drive control loop.
+          </p>
+        </Box>
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
           Coordinate Systems &amp; Reference Frames
         </h2>
 
@@ -359,8 +408,8 @@ drivetrain.setControl(
                 X Position
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Distance along the field length (left/right from your driver
-                station perspective). Units: meters.
+                Distance along the field length. X increases as you move away
+                from the driver station. Units: meters.
               </p>
             </div>
 
@@ -369,8 +418,8 @@ drivetrain.setControl(
                 Y Position
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Distance along the field width (forward/backward from your
-                driver station). Units: meters.
+                Distance along the field width. Y increases as you move to the
+                left. Units: meters.
               </p>
             </div>
 
@@ -391,10 +440,10 @@ drivetrain.setControl(
             icon={<Lightbulb className="w-5 h-5" />}
           >
             <p>
-              The field coordinate system origin (0, 0) is at the corner of the
-              field from your alliance&apos;s perspective. X increases to the
-              right, Y increases forward, and rotation is counter-clockwise
-              positive.
+              The field coordinate system origin (0, 0) is at the right corner
+              on the blue side of the field. X increases as you move away from
+              the driver station, Y increases as you move to the left, and
+              rotation is counter-clockwise positive.
             </p>
           </Box>
         </div>
