@@ -8,7 +8,7 @@ import DocumentationButton from "@/components/DocumentationButton";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
-import { Link, Tag, Camera, Book } from "lucide-react";
+import { Link, Tag, Camera, FileDown } from "lucide-react";
 
 export default function VisionImplementation() {
   return (
@@ -223,58 +223,112 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
           </div>
 
           <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Camera Setup Checklist:
-              </h4>
-              <div className="space-y-3">
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
+                <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                  1
+                </div>
                 <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    1. Camera Position Configuration
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    Enter the camera&apos;s position relative to the robot
-                    center in the Limelight web interface. Accurate position
-                    values are critical for pose estimation.
+                  <h4 className="font-bold text-primary-700 dark:text-primary-300">
+                    Change Pipeline to AprilTag
+                  </h4>
+                  <p className="text-primary-600 dark:text-primary-400 text-sm">
+                    Access the Limelight web interface and switch the active
+                    pipeline to AprilTag mode. This enables 3D pose estimation
+                    using AprilTags for accurate robot localization.
                   </p>
                 </div>
+              </div>
 
+              <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
+                <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                  2
+                </div>
                 <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    2. Camera Calibration
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
+                  <h4 className="font-bold text-primary-800 dark:text-primary-200">
+                    Adjust Exposure
+                  </h4>
+                  <p className="text-primary-700 dark:text-primary-300 text-sm">
+                    In the camera settings, reduce the exposure as low as
+                    possible while still reliably detecting AprilTags. Lower
+                    exposure reduces motion blur and improves tag detection
+                    accuracy during fast robot movement.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
+                <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <h4 className="font-bold text-primary-900 dark:text-primary-100">
+                    Set Camera Offsets
+                  </h4>
+                  <p className="text-primary-800 dark:text-primary-200 text-sm">
+                    Accurately measure and enter your camera&apos;s position and
+                    angle relative to the robot&apos;s center. This transform is
+                    critical for converting camera detections into accurate
+                    field-relative robot poses. Follow the{" "}
+                    <a
+                      href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-primary-700 dark:hover:text-primary-300"
+                    >
+                      Limelight documentation
+                    </a>{" "}
+                    for detailed instructions.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 p-4 bg-primary-300 dark:bg-primary-700/50 rounded-lg">
+                <div className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
+                  4
+                </div>
+                <div>
+                  <h4 className="font-bold text-primary-950 dark:text-white">
+                    Camera Calibration
+                  </h4>
+                  <p className="text-primary-900 dark:text-primary-100 text-sm">
                     Use a Limelight calibration board to calibrate your camera.
                     This corrects for lens distortion and improves pose
                     accuracy, especially at the edges of the field of view.
-                  </p>
-                </div>
-
-                <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                    3. Lens Focus & Security
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    Ensure the lens is properly focused for your AprilTag
-                    detection distance. Once focused,{" "}
-                    <strong>glue the lens in place</strong> to prevent it from
-                    shifting due to vibrations.
+                    Follow the{" "}
+                    <a
+                      href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-primary-700 dark:hover:text-primary-300"
+                    >
+                      Limelight Calibration Guide
+                    </a>{" "}
+                    for detailed instructions.
                   </p>
                 </div>
               </div>
             </div>
 
-            <Box variant="alert-info" title="📍 Limelight Documentation">
-              <p className="mb-2">
-                Refer to the official Limelight AprilTag documentation for
-                detailed camera calibration instructions and best practices:
+            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+              <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">
+                The custom field map includes AprilTag positions specifically
+                arranged for workshop exercises. You&apos;ll need to upload this
+                file to your Limelight to match the physical setup.{" "}
+                <strong>
+                  After uploading the map, reboot your Limelight for the changes
+                  to take effect.
+                </strong>
               </p>
-              <DocumentationButton
-                href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
-                title="Limelight Calibration Guide"
-                icon={<Book className="w-5 h-5" />}
-              />
-            </Box>
+              <a
+                href="/maps/custom-field-map.json"
+                download
+                className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors"
+              >
+                <FileDown className="w-4 h-4" />
+                Download Custom Field Map
+              </a>
+            </div>
           </div>
         </ContentCard>
       </section>

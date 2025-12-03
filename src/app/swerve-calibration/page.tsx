@@ -236,7 +236,8 @@ export default function OdometryCalibration() {
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Configuration Changes:
+                Configuration Changes (done if using our example code on last
+                page):
               </h4>
               <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                 <li>
@@ -250,8 +251,9 @@ export default function OdometryCalibration() {
                   </code>
                 </li>
                 <li>
-                  <strong>2. Remove deadband:</strong> Remove any deadband
-                  configuration to allow precise low-speed control
+                  <strong>2. Remove deadband:</strong> Remove CTR deadband. The
+                  current implementation they have elements small input values,
+                  which hinders precise low-speed control.
                 </li>
               </ol>
             </div>
