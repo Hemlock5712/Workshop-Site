@@ -448,10 +448,9 @@ export default function GitHubPR({
                         },
                         overviewRulerBorder: false,
                         contextmenu: false,
-                        domReadOnly: true,
                         enableSplitViewResizing: true,
                         renderOverviewRuler: false,
-                        diffWordWrap: "on",
+                        diffWordWrap: "off",
                       }}
                       loading={
                         <div className="flex items-center justify-center h-32 bg-[#1e1e1e]">

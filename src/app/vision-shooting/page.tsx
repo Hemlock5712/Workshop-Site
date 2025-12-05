@@ -297,7 +297,6 @@ public void periodic() {
  */
 public Command distanceShoot() {
     return run(() -> setVelocity(table.get(distance)));
-}
 }`}
           />
 
