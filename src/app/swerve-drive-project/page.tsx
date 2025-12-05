@@ -4,7 +4,7 @@ import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import Link from "next/link";
-import { Book } from "lucide-react";
+import { Book, Download } from "lucide-react";
 
 export default function SwerveDriveProject() {
   return (
@@ -39,6 +39,25 @@ export default function SwerveDriveProject() {
           <li>Module anatomy (drive motor, azimuth motor, CANcoder)</li>
           <li>Coordinate systems (robot-centric vs field-centric)</li>
         </ul>
+      </Box>
+
+      {/* Quick Download Section */}
+      <Box variant="alert-info" title="📦 Quick Start: Download Baseline Code">
+        <p className="mb-4 text-slate-600 dark:text-slate-300">
+          Need a baseline to get started? Download our complete swerve drive
+          project from the workshop code repository. This serves as an excellent
+          starting point with all the core swerve functionality already
+          implemented.
+        </p>
+        <a
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v1.0-swerve.zip"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium gap-2"
+        >
+          <Download className="w-5 h-5" />
+          Download Swerve Project (v1.0)
+        </a>
       </Box>
 
       {/* Section 1: Phoenix Tuner X Project Setup */}
