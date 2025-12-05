@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { DiffEditor } from "@monaco-editor/react";
 import {
   GitMerge,
   X,
@@ -18,9 +19,11 @@ interface GitHubFile {
   additions: number;
   deletions: number;
   patch?: string;
+  sha: string;
+  contents_url: string;
 }
 
-interface GitHubPR {
+interface GitHubPRData {
   number: number;
   title: string;
   body: string;
@@ -34,28 +37,64 @@ interface GitHubPR {
   };
   head: {
     sha: string;
+    ref: string;
   };
   base: {
     sha: string;
+    ref: string;
   };
 }
 
+interface FileContent {
+  original: string;
+  modified: string;
+}
+
 /**
- * GitHub Pull Request display component
+ * GitHub Pull Request display component with Monaco Diff Editor
  * Features:
  * - Fetches live PR data from GitHub API
  * - Shows PR metadata (title, author, dates, status)
- * - Displays file changes with GitHub-style diff visualization
- * - Filters to focus on specific files (e.g., Arm.java)
+ * - VSCode-style diff visualization using Monaco Diff Editor
+ * - Filters to focus on specific files
  * - Educational context for learning git workflow
  */
 interface GitHubPRProps {
-  repository: string; // e.g., "Hemlock5712/2025-Workshop"
+  repository: string;
   pullRequestNumber: number;
   title?: string;
   description?: string;
-  focusFile?: string; // e.g., "src/main/java/frc/robot/subsystems/Arm.java"
+  focusFile?: string;
   className?: string;
+}
+
+// Get Monaco language from file extension
+function getLanguageFromFilename(filename: string): string {
+  const ext = filename.split(".").pop()?.toLowerCase();
+  const languageMap: Record<string, string> = {
+    java: "java",
+    js: "javascript",
+    jsx: "javascript",
+    ts: "typescript",
+    tsx: "typescript",
+    py: "python",
+    cpp: "cpp",
+    c: "c",
+    h: "cpp",
+    hpp: "cpp",
+    cs: "csharp",
+    json: "json",
+    xml: "xml",
+    yaml: "yaml",
+    yml: "yaml",
+    md: "markdown",
+    sh: "shell",
+    bash: "shell",
+    html: "html",
+    css: "css",
+    sql: "sql",
+  };
+  return languageMap[ext || ""] || "plaintext";
 }
 
 export default function GitHubPR({
@@ -66,10 +105,14 @@ export default function GitHubPR({
   focusFile,
   className = "",
 }: GitHubPRProps) {
-  const [pr, setPR] = useState<GitHubPR | null>(null);
+  const [pr, setPR] = useState<GitHubPRData | null>(null);
   const [files, setFiles] = useState<GitHubFile[]>([]);
+  const [fileContents, setFileContents] = useState<
+    Record<string, FileContent>
+  >({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchPRData = async () => {
@@ -104,6 +147,11 @@ export default function GitHubPR({
             )
           : filesData;
         setFiles(filteredFiles);
+
+        // Fetch file contents for diff view
+        if (prData) {
+          await fetchFileContents(filteredFiles, prData, repository);
+        }
       } catch (err) {
         setError(
           err instanceof Error ? err.message : "Failed to fetch PR data"
@@ -115,6 +163,84 @@ export default function GitHubPR({
 
     fetchPRData();
   }, [repository, pullRequestNumber, focusFile]);
+
+  const fetchFileContents = async (
+    files: GitHubFile[],
+    prData: GitHubPRData,
+    repo: string
+  ) => {
+    const contents: Record<string, FileContent> = {};
+
+    for (const file of files) {
+      setLoadingFiles((prev) => new Set(prev).add(file.filename));
+
+      try {
+        let originalContent = "";
+        let modifiedContent = "";
+
+        // Fetch original content (from base branch)
+        if (file.status !== "added") {
+          try {
+            const originalResponse = await fetch(
+              `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.base.sha}`
+            );
+            if (originalResponse.ok) {
+              const originalData = await originalResponse.json();
+              originalContent = atob(originalData.content);
+            }
+          } catch {
+            // File might not exist in base branch
+            originalContent = "";
+          }
+        }
+
+        // Fetch modified content (from head branch)
+        if (file.status !== "removed") {
+          try {
+            const modifiedResponse = await fetch(
+              `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.head.sha}`
+            );
+            if (modifiedResponse.ok) {
+              const modifiedData = await modifiedResponse.json();
+              modifiedContent = atob(modifiedData.content);
+            }
+          } catch {
+            // File might not exist in head branch
+            modifiedContent = "";
+          }
+        }
+
+        contents[file.filename] = {
+          original: originalContent,
+          modified: modifiedContent,
+        };
+      } catch (err) {
+        console.error(`Failed to fetch content for ${file.filename}:`, err);
+        contents[file.filename] = { original: "", modified: "" };
+      }
+
+      setLoadingFiles((prev) => {
+        const next = new Set(prev);
+        next.delete(file.filename);
+        return next;
+      });
+    }
+
+    setFileContents(contents);
+  };
+
+  // Calculate diff editor height based on content
+  const calculateEditorHeight = (content: FileContent) => {
+    const maxLines = Math.max(
+      content.original.split("\n").length,
+      content.modified.split("\n").length
+    );
+    const lineHeight = 19;
+    const padding = 20;
+    const minHeight = 150;
+    const maxHeight = 600;
+    return Math.min(Math.max(maxLines * lineHeight + padding, minHeight), maxHeight);
+  };
 
   if (loading) {
     return (
@@ -153,86 +279,6 @@ export default function GitHubPR({
       month: "short",
       day: "numeric",
     });
-  };
-
-  const renderDiff = (patch: string) => {
-    const lines = patch.split("\n");
-    let oldLineNum = 0;
-    let newLineNum = 0;
-
-    // Parse hunk headers to get starting line numbers
-    const hunkHeaderRegex = /^@@\s+-(\d+)(?:,\d+)?\s+\+(\d+)(?:,\d+)?\s+@@/;
-
-    return (
-      <div className="card font-mono text-sm overflow-x-auto">
-        {lines.map((line, index) => {
-          // Handle hunk headers
-          if (line.startsWith("@@")) {
-            const match = line.match(hunkHeaderRegex);
-            if (match) {
-              oldLineNum = parseInt(match[1]) - 1;
-              newLineNum = parseInt(match[2]) - 1;
-            }
-            return (
-              <div
-                key={index}
-                className="bg-primary-50 text-primary-700 dark:bg-primary-950/30 dark:text-primary-300 px-4 py-1 border-b border-[var(--border)]"
-              >
-                {line}
-              </div>
-            );
-          }
-
-          // Handle diff content
-          const lineType = line[0];
-          const content = line.slice(1);
-
-          let bgClass = "";
-          let textClass = "";
-          let prefix = "";
-          let lineNumbers = "";
-
-          if (lineType === "+") {
-            bgClass = "bg-green-50 dark:bg-green-950/30";
-            textClass = "text-green-800 dark:text-green-300";
-            prefix = "+";
-            newLineNum++;
-            lineNumbers = `    ${newLineNum}`;
-          } else if (lineType === "-") {
-            bgClass = "bg-red-50 dark:bg-red-950/30";
-            textClass = "text-red-800 dark:text-red-300";
-            prefix = "-";
-            oldLineNum++;
-            lineNumbers = `${oldLineNum}    `;
-          } else if (lineType === " ") {
-            bgClass = "bg-[var(--card)]";
-            textClass = "text-[var(--foreground)]";
-            prefix = " ";
-            oldLineNum++;
-            newLineNum++;
-            lineNumbers = `${oldLineNum} ${newLineNum}`;
-          } else {
-            // Context lines or other
-            return null;
-          }
-
-          return (
-            <div
-              key={index}
-              className={`flex ${bgClass} border-b border-[var(--border)]`}
-            >
-              <div className="text-[var(--muted-foreground)] text-xs px-2 py-1 w-16 text-right bg-[var(--muted)] border-r border-[var(--border)] select-none">
-                {lineNumbers}
-              </div>
-              <div className={`flex-1 px-2 py-1 ${textClass}`}>
-                <span className="select-none w-4 inline-block">{prefix}</span>
-                <span>{content}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
   };
 
   return (
@@ -303,7 +349,7 @@ export default function GitHubPR({
           </div>
         </div>
 
-        {/* GitHub Diff View */}
+        {/* Monaco Diff View */}
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h5 className="font-semibold text-[var(--foreground)]">
@@ -322,48 +368,101 @@ export default function GitHubPR({
             </div>
           </div>
 
-          {files.map((file, index) => (
-            <div
-              key={index}
-              className="border border-[var(--border)] rounded-lg overflow-hidden"
-            >
-              <div className="bg-[var(--muted)] px-4 py-3 border-b border-[var(--border)] flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <span className="font-mono text-sm font-medium text-[var(--foreground)]">
-                    {file.filename}
-                  </span>
-                  <span
-                    className={`px-2 py-1 rounded text-xs ${
-                      file.status === "added"
-                        ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-                        : file.status === "removed"
-                          ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                          : "bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300"
-                    }`}
-                  >
-                    {file.status}
-                  </span>
+          {files.map((file, index) => {
+            const content = fileContents[file.filename];
+            const isLoadingContent = loadingFiles.has(file.filename);
+            const language = getLanguageFromFilename(file.filename);
+
+            return (
+              <div
+                key={index}
+                className="border border-[var(--border)] rounded-lg overflow-hidden mb-4 last:mb-0"
+              >
+                <div className="bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <span className="font-mono text-sm font-medium text-gray-200">
+                      {file.filename}
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        file.status === "added"
+                          ? "bg-green-600 text-white"
+                          : file.status === "removed"
+                            ? "bg-red-600 text-white"
+                            : "bg-primary-600 text-white"
+                      }`}
+                    >
+                      {file.status}
+                    </span>
+                    <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded font-medium">
+                      {language.toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3 text-sm">
+                    {file.additions > 0 && (
+                      <span className="text-green-400 font-medium">
+                        +{file.additions}
+                      </span>
+                    )}
+                    {file.deletions > 0 && (
+                      <span className="text-red-400 font-medium">
+                        -{file.deletions}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  {file.additions > 0 && (
-                    <span className="text-green-600 dark:text-green-400 font-medium">
-                      +{file.additions}
-                    </span>
-                  )}
-                  {file.deletions > 0 && (
-                    <span className="text-red-600 dark:text-red-400 font-medium">
-                      -{file.deletions}
-                    </span>
+
+                {/* Monaco Diff Editor */}
+                <div className="bg-[#1e1e1e]">
+                  {isLoadingContent ? (
+                    <div className="flex items-center justify-center h-32">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                    </div>
+                  ) : content ? (
+                    <DiffEditor
+                      height={calculateEditorHeight(content)}
+                      language={language}
+                      original={content.original}
+                      modified={content.modified}
+                      theme="vs-dark"
+                      options={{
+                        readOnly: true,
+                        renderSideBySide: true,
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        renderLineHighlight: "none",
+                        fontSize: 13,
+                        fontFamily:
+                          "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+                        fontLigatures: true,
+                        scrollbar: {
+                          vertical: "auto",
+                          horizontal: "auto",
+                          verticalScrollbarSize: 10,
+                          horizontalScrollbarSize: 10,
+                        },
+                        overviewRulerBorder: false,
+                        contextmenu: false,
+                        domReadOnly: true,
+                        enableSplitViewResizing: true,
+                        renderOverviewRuler: false,
+                        diffWordWrap: "on",
+                      }}
+                      loading={
+                        <div className="flex items-center justify-center h-32 bg-[#1e1e1e]">
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                        </div>
+                      }
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-32 text-gray-400">
+                      Unable to load file content
+                    </div>
                   )}
                 </div>
               </div>
-
-              {/* GitHub-style diff */}
-              {file.patch && (
-                <div className="overflow-x-auto">{renderDiff(file.patch)}</div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 

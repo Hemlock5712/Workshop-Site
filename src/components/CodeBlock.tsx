@@ -1,19 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useState, useMemo } from "react";
+import Editor from "@monaco-editor/react";
 import { Check, Copy } from "lucide-react";
 
 /**
- * Professional IDE-style code block component
+ * Professional VSCode-style code block component using Monaco Editor
  * Features:
- * - VS Code Dark+ theme for syntax highlighting
- * - macOS-style window controls (optional)
+ * - Full VS Code editor experience with syntax highlighting
+ * - Read-only view by default
  * - Copy to clipboard functionality
  * - Line numbers
  * - Language badge
- * - Optimized for educational content
+ * - Automatic height calculation based on content
  */
 interface CodeBlockProps {
   code: string;
@@ -24,6 +23,37 @@ interface CodeBlockProps {
   showLineNumbers?: boolean;
   hideControls?: boolean;
 }
+
+// Map common language names to Monaco language identifiers
+const languageMap: Record<string, string> = {
+  java: "java",
+  javascript: "javascript",
+  js: "javascript",
+  jsx: "javascript",
+  typescript: "typescript",
+  ts: "typescript",
+  tsx: "typescript",
+  python: "python",
+  py: "python",
+  cpp: "cpp",
+  "c++": "cpp",
+  c: "c",
+  csharp: "csharp",
+  "c#": "csharp",
+  json: "json",
+  xml: "xml",
+  yaml: "yaml",
+  yml: "yaml",
+  markdown: "markdown",
+  md: "markdown",
+  bash: "shell",
+  shell: "shell",
+  sh: "shell",
+  html: "html",
+  css: "css",
+  sql: "sql",
+  text: "plaintext",
+};
 
 export default function CodeBlock({
   code,
@@ -46,25 +76,19 @@ export default function CodeBlock({
     }
   };
 
-  // Custom VS Code Dark+ style optimizations
-  const customStyle = {
-    ...vscDarkPlus,
-    'pre[class*="language-"]': {
-      ...vscDarkPlus['pre[class*="language-"]'],
-      background: "#1e1e1e",
-      fontSize: "14px",
-      lineHeight: "1.5",
-      fontFamily:
-        "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-    },
-    'code[class*="language-"]': {
-      ...vscDarkPlus['code[class*="language-"]'],
-      background: "#1e1e1e",
-      fontSize: "14px",
-      fontFamily:
-        "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-    },
-  };
+  // Calculate editor height based on number of lines
+  const editorHeight = useMemo(() => {
+    const lineCount = code.split("\n").length;
+    const lineHeight = 19; // Monaco default line height
+    const padding = 16; // Top and bottom padding
+    const minHeight = 100;
+    const maxHeight = 800;
+    const calculatedHeight = lineCount * lineHeight + padding;
+    return Math.min(Math.max(calculatedHeight, minHeight), maxHeight);
+  }, [code]);
+
+  // Get Monaco language identifier
+  const monacoLanguage = languageMap[language.toLowerCase()] || "plaintext";
 
   return (
     <div
@@ -117,38 +141,49 @@ export default function CodeBlock({
       )}
 
       <div className="relative">
-        <SyntaxHighlighter
-          language={language}
-          style={customStyle}
-          showLineNumbers={showLineNumbers}
-          customStyle={{
-            margin: 0,
-            padding: "1rem",
-            background: "#1e1e1e",
-            fontSize: "14px",
-            lineHeight: "1.5",
+        <Editor
+          height={editorHeight}
+          language={monacoLanguage}
+          value={code}
+          theme="vs-dark"
+          options={{
+            readOnly: true,
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            lineNumbers: showLineNumbers ? "on" : "off",
+            renderLineHighlight: "none",
+            folding: true,
+            fontSize: 14,
             fontFamily:
               "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
+            fontLigatures: true,
+            padding: { top: 8, bottom: 8 },
+            scrollbar: {
+              vertical: "auto",
+              horizontal: "auto",
+              verticalScrollbarSize: 10,
+              horizontalScrollbarSize: 10,
+            },
+            overviewRulerBorder: false,
+            overviewRulerLanes: 0,
+            hideCursorInOverviewRuler: true,
+            contextmenu: false,
+            domReadOnly: true,
+            wordWrap: "off",
           }}
-          lineNumberStyle={{
-            color: "#6a9955",
-            paddingRight: "1rem",
-            paddingLeft: "0.5rem",
-            userSelect: "none",
-            fontSize: "13px",
-          }}
-          wrapLines={true}
-          wrapLongLines={true}
-        >
-          {code}
-        </SyntaxHighlighter>
+          loading={
+            <div className="flex items-center justify-center h-24 bg-[#1e1e1e]">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+            </div>
+          }
+        />
 
         {!title && !filename && (
           <button
             type="button"
             onClick={copyToClipboard}
             aria-label={copied ? "Copied" : "Copy code"}
-            className="absolute top-3 right-3 text-gray-400 hover:text-gray-200 transition-colors px-2 py-1 rounded bg-gray-800 bg-opacity-90 text-xs font-medium"
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-200 transition-colors px-2 py-1 rounded bg-gray-800 bg-opacity-90 text-xs font-medium z-10"
             title="Copy code"
           >
             {copied ? (
