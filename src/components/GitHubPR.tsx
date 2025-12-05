@@ -9,6 +9,7 @@ import {
   ExternalLink,
   GraduationCap,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 
 /**
  * GitHub API response types for pull request data
@@ -105,11 +106,12 @@ export default function GitHubPR({
   focusFile,
   className = "",
 }: GitHubPRProps) {
+  const theme = useTheme();
   const [pr, setPR] = useState<GitHubPRData | null>(null);
   const [files, setFiles] = useState<GitHubFile[]>([]);
-  const [fileContents, setFileContents] = useState<
-    Record<string, FileContent>
-  >({});
+  const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
+    {}
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
@@ -239,7 +241,10 @@ export default function GitHubPR({
     const padding = 20;
     const minHeight = 150;
     const maxHeight = 600;
-    return Math.min(Math.max(maxLines * lineHeight + padding, minHeight), maxHeight);
+    return Math.min(
+      Math.max(maxLines * lineHeight + padding, minHeight),
+      maxHeight
+    );
   };
 
   if (loading) {
@@ -378,9 +383,9 @@ export default function GitHubPR({
                 key={index}
                 className="border border-[var(--border)] rounded-lg overflow-hidden mb-4 last:mb-0"
               >
-                <div className="bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex items-center justify-between">
+                <div className="bg-white dark:bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <span className="font-mono text-sm font-medium text-gray-200">
+                    <span className="font-mono text-sm font-medium text-gray-800 dark:text-gray-200">
                       {file.filename}
                     </span>
                     <span
@@ -424,7 +429,7 @@ export default function GitHubPR({
                       language={language}
                       original={content.original}
                       modified={content.modified}
-                      theme="vs-dark"
+                      theme={theme.resolvedTheme === "dark" ? "vs-dark" : "vs"}
                       options={{
                         readOnly: true,
                         renderSideBySide: true,

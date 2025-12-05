@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Editor from "@monaco-editor/react";
 import { Check, Copy } from "lucide-react";
+import { useTheme } from "next-themes";
 
 /**
  * Professional VSCode-style code block component using Monaco Editor
@@ -64,6 +65,8 @@ export default function CodeBlock({
   showLineNumbers = true,
   hideControls = false,
 }: CodeBlockProps) {
+  const theme = useTheme();
+
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = async () => {
@@ -95,7 +98,7 @@ export default function CodeBlock({
       className={`bg-[#1e1e1e] rounded-lg overflow-hidden shadow-lg border border-gray-700 ${className}`}
     >
       {(title || filename) && (
-        <div className="bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex justify-between items-center">
+        <div className="bg-white dark:bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex justify-between items-center">
           <div className="flex items-center space-x-3">
             {filename && !hideControls && (
               <div className="flex items-center space-x-2">
@@ -109,7 +112,7 @@ export default function CodeBlock({
                 <span className="text-gray-200 font-medium">{title}</span>
               )}
               {filename && (
-                <span className="text-gray-400 text-sm font-mono bg-gray-700 px-2 py-1 rounded">
+                <span className="text-gray-800 dark:text-gray-400 text-sm font-mono px-2 py-1 rounded">
                   {filename}
                 </span>
               )}
@@ -145,7 +148,7 @@ export default function CodeBlock({
           height={editorHeight}
           language={monacoLanguage}
           value={code}
-          theme="vs-dark"
+          theme={theme.resolvedTheme === "dark" ? "vs-dark" : "vs"}
           options={{
             readOnly: true,
             minimap: { enabled: false },
