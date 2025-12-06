@@ -183,9 +183,9 @@ export default function SwerveDriveProject() {
                 <p className="text-slate-600 dark:text-slate-300">
                   Click <strong>New Project</strong> and follow the steps in
                   Tuner X to set up and test your swerve drivetrain. Once you
-                  finish, click <strong>Generate Project</strong> and
-                  you&apos;ll have a completed project fully ready to deploy and
-                  drive your robot.
+                  finish, click <strong>Generate Tuner Constants</strong> and
+                  you&apos;ll be ready to override the TunerConstants.java file
+                  with your own values.
                 </p>
               </div>
             </div>

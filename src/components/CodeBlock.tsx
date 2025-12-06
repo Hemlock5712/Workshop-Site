@@ -109,7 +109,9 @@ export default function CodeBlock({
             )}
             <div className="flex items-center space-x-2">
               {title && (
-                <span className="text-gray-200 font-medium">{title}</span>
+                <span className="text-gray-800 dark:text-gray-400 font-medium">
+                  {title}
+                </span>
               )}
               {filename && (
                 <span className="text-gray-800 dark:text-gray-400 text-sm font-mono px-2 py-1 rounded">

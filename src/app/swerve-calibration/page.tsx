@@ -4,7 +4,6 @@ import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import ImageBlock from "@/components/ImageBlock";
 import { Book, Settings, Lightbulb, AlertTriangle } from "lucide-react";
 
 export default function OdometryCalibration() {
@@ -29,10 +28,198 @@ export default function OdometryCalibration() {
         Below is a graphic showing the order we follow when setting up a robot.
       </p>
 
-      <ImageBlock
-        src="/images/odometry-setup/Robot Flowchart.png"
-        alt="Odometry calibration setup showing measurement procedure"
-      />
+      {/* Pre-Season vs In-Season Timeline Visualization */}
+      <div className="w-full my-8 space-y-6">
+        {/* Pre-Season Section */}
+        <div className="rounded-2xl border-2 border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950/50 dark:via-slate-900 dark:to-teal-950/50 p-6 shadow-lg shadow-emerald-500/10">
+          {/* Section Header */}
+          <div className="flex items-center gap-3 mb-5">
+            <div className="bg-emerald-500 text-white p-2.5 rounded-xl shadow-md">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-emerald-800 dark:text-emerald-300">
+                Before the Season
+              </h3>
+              <p className="text-sm text-emerald-600 dark:text-emerald-400">
+                Can be done now with any robot
+              </p>
+            </div>
+          </div>
+
+          {/* Pre-Season Tasks Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {[
+              {
+                num: 1,
+                label: "Drive/Steer Motor Tuning",
+                icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+              },
+              {
+                num: 2,
+                label: "Wheel Radius Calibration",
+                icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+              },
+              {
+                num: 3,
+                label: "Drivetrain Odometry",
+                icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7",
+              },
+              {
+                num: 4,
+                label: "Camera Calibration",
+                icon: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z",
+              },
+              {
+                num: 5,
+                label: "AprilTag Tuning",
+                icon: "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z",
+              },
+              {
+                num: 6,
+                label: "Robot Localization Fusion",
+                icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z",
+              },
+              {
+                num: 7,
+                label: "Drive to Point",
+                icon: "M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z",
+              },
+            ].map((item) => (
+              <div
+                key={item.num}
+                className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-emerald-200 dark:border-emerald-800 hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors"
+              >
+                <div className="bg-emerald-500 text-white rounded-lg w-7 h-7 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                  {item.num}
+                </div>
+                <span className="font-medium text-slate-700 dark:text-slate-200 text-sm">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Season Kickoff Divider */}
+        <div className="flex items-center gap-4 py-2">
+          <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-amber-500 rounded-full" />
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-amber-500/30 flex items-center gap-2 flex-shrink-0">
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            Season Kickoff
+          </div>
+          <div className="flex-1 h-0.5 bg-gradient-to-l from-transparent via-amber-400 to-amber-500 rounded-full" />
+        </div>
+
+        {/* In-Season Section */}
+        <div className="rounded-2xl border-2 border-rose-300 dark:border-rose-700 bg-gradient-to-br from-rose-50 via-white to-pink-50 dark:from-rose-950/50 dark:via-slate-900 dark:to-pink-950/50 p-6 shadow-lg shadow-rose-500/10">
+          {/* Section Header */}
+          <div className="flex items-center gap-3 mb-5">
+            <div className="bg-gradient-to-br from-rose-500 to-pink-500 text-white p-2.5 rounded-xl shadow-md">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-rose-800 dark:text-rose-300">
+                After the Season Begins
+              </h3>
+              <p className="text-sm text-rose-600 dark:text-rose-400">
+                Requires game-specific knowledge
+              </p>
+            </div>
+          </div>
+
+          {/* In-Season Tasks Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
+            <div className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-rose-200 dark:border-rose-800 hover:border-rose-400 dark:hover:border-rose-600 transition-colors">
+              <div className="bg-gradient-to-br from-rose-500 to-pink-500 text-white rounded-lg p-1.5 flex-shrink-0">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <span className="font-medium text-slate-700 dark:text-slate-200 text-sm">
+                  Autonomous Programming
+                </span>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Field layout dependent
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-rose-200 dark:border-rose-800 hover:border-rose-400 dark:hover:border-rose-600 transition-colors">
+              <div className="bg-gradient-to-br from-rose-500 to-pink-500 text-white rounded-lg p-1.5 flex-shrink-0">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <span className="font-medium text-slate-700 dark:text-slate-200 text-sm">
+                  Mechanism Programming
+                </span>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Game piece dependent
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
