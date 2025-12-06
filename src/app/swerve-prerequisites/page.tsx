@@ -7,6 +7,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { Book, MapPin, Lightbulb } from "lucide-react";
+import Image from "next/image";
 
 export default function SwervePrerequisites() {
   return (
@@ -392,6 +393,16 @@ drivetrain.setControl(
           Accurate odometry is essential for autonomous navigation and
           field-aware control.
         </p>
+
+        <div className="flex justify-center my-8">
+          <Image
+            src="/images/drive-to-point-field.png"
+            alt="FRC field coordinate system showing X and Y axes with blue and red alliance robots"
+            width={1024}
+            height={463}
+            className="rounded-lg shadow-lg border border-slate-200 dark:border-slate-800"
+          />
+        </div>
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
