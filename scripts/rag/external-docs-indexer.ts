@@ -132,7 +132,7 @@ async function indexExternalDocs(options: IndexingOptions) {
 
     const embeddings = await generateEmbeddings(texts, {
       batchSize: 10,
-      delayMs: 150,
+      delayMs: 200, // Paid tier has much higher limits
       onProgress: (completed, total) => {
         if (verbose) {
           process.stdout.write(

@@ -29,6 +29,63 @@ type SortDirection = "asc" | "desc";
 type FilterType = "all" | "3d-printed" | "purchased";
 type PrintFilter = "all" | "yes" | "no";
 
+function SortIcon({
+  field,
+  sortField,
+  sortDirection,
+}: {
+  field: SortField;
+  sortField: SortField;
+  sortDirection: SortDirection;
+}) {
+  if (sortField !== field) {
+    return (
+      <svg
+        className="w-4 h-4 text-slate-400"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+        />
+      </svg>
+    );
+  }
+  return sortDirection === "asc" ? (
+    <svg
+      className="w-4 h-4 text-primary-600"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+      />
+    </svg>
+  ) : (
+    <svg
+      className="w-4 h-4 text-primary-600"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+      />
+    </svg>
+  );
+}
+
 export default function BillOfMaterials({
   items,
   title,
@@ -270,55 +327,6 @@ export default function BillOfMaterials({
     return uniqueVendors.sort();
   }, [items]);
 
-  const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) {
-      return (
-        <svg
-          className="w-4 h-4 text-slate-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
-          />
-        </svg>
-      );
-    }
-    return sortDirection === "asc" ? (
-      <svg
-        className="w-4 h-4 text-primary-600"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
-        />
-      </svg>
-    ) : (
-      <svg
-        className="w-4 h-4 text-primary-600"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
-        />
-      </svg>
-    );
-  };
-
   return (
     <ContentCard>
       <div className="mb-6">
@@ -540,7 +548,11 @@ export default function BillOfMaterials({
                     >
                       <div className="flex items-center justify-center gap-2">
                         Part Description
-                        <SortIcon field="partDescription" />
+                        <SortIcon
+                          field="partDescription"
+                          sortField={sortField}
+                          sortDirection={sortDirection}
+                        />
                       </div>
                     </th>
                     <th
@@ -549,7 +561,11 @@ export default function BillOfMaterials({
                     >
                       <div className="flex items-center justify-center gap-2">
                         Qty
-                        <SortIcon field="quantity" />
+                        <SortIcon
+                          field="quantity"
+                          sortField={sortField}
+                          sortDirection={sortDirection}
+                        />
                       </div>
                     </th>
                     <th
@@ -558,7 +574,11 @@ export default function BillOfMaterials({
                     >
                       <div className="flex items-center justify-center gap-2">
                         Vendor
-                        <SortIcon field="vendor" />
+                        <SortIcon
+                          field="vendor"
+                          sortField={sortField}
+                          sortDirection={sortDirection}
+                        />
                       </div>
                     </th>
                     <th
@@ -567,7 +587,11 @@ export default function BillOfMaterials({
                     >
                       <div className="flex items-center justify-center gap-2">
                         Part #
-                        <SortIcon field="partNumber" />
+                        <SortIcon
+                          field="partNumber"
+                          sortField={sortField}
+                          sortDirection={sortDirection}
+                        />
                       </div>
                     </th>
                     <th
@@ -576,7 +600,11 @@ export default function BillOfMaterials({
                     >
                       <div className="flex items-center justify-center gap-2">
                         Price
-                        <SortIcon field="pricePerUnit" />
+                        <SortIcon
+                          field="pricePerUnit"
+                          sortField={sortField}
+                          sortDirection={sortDirection}
+                        />
                       </div>
                     </th>
                     <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">

@@ -34,13 +34,13 @@ if (!apiKey) {
 const genAI = new GoogleGenAI({ apiKey });
 
 /**
- * Generate embedding for a single text using text-embedding-004 model
- * Returns 768-dimensional vector
+ * Generate embedding for a single text using gemini-embedding-001 model
+ * Returns 3072-dimensional vector
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
   try {
     const result = await genAI.models.embedContent({
-      model: "text-embedding-004",
+      model: "gemini-embedding-001",
       contents: text,
     });
     return result.embeddings?.[0]?.values || [];

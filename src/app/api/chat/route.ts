@@ -124,7 +124,7 @@ When users ask questions:
               // Generate embedding for the query
               const embeddingResult = await embeddingClient.models.embedContent(
                 {
-                  model: "text-embedding-004",
+                  model: "gemini-embedding-001",
                   contents: query,
                 }
               );

@@ -47,7 +47,8 @@ export default function SwerveDriveProject() {
           Need a baseline to get started? Download our complete swerve drive
           project from the workshop code repository. This serves as an excellent
           starting point with all the core swerve functionality already
-          implemented.
+          implemented. After downloading just change the Team Number in the
+          `.wpilib/wpilib_preferences.json` and import tuner constants.
         </p>
         <a
           href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v1.0-swerve.zip"

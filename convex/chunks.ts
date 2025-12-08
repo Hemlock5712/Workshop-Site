@@ -8,8 +8,8 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 
-// Expected embedding dimension for text-embedding-004
-const EXPECTED_EMBEDDING_DIM = 768;
+// Expected embedding dimension for gemini-embedding-001
+const EXPECTED_EMBEDDING_DIM = 3072;
 
 /**
  * Validates that an embedding is valid before DB operations

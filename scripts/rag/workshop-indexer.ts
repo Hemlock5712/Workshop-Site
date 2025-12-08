@@ -37,6 +37,9 @@ const ALL_WORKSHOP_PAGES = [
   "/vision-shooting",
   "/logging-options",
   "/logging-implementation",
+  "/drive-to-point",
+  "/advanced-drive-to-point",
+  "/glossary",
 ];
 
 // Pilot pages to index (subset for testing)
@@ -158,7 +161,7 @@ async function indexWorkshopPages(options: IndexingOptions) {
 
     const embeddings = await generateEmbeddings(texts, {
       batchSize: 10,
-      delayMs: mode === "full" ? 150 : 100, // Slightly slower for large batches
+      delayMs: 200, // Paid tier has much higher limits
       onProgress: (completed, total) => {
         if (verbose) {
           process.stdout.write(
@@ -227,8 +230,9 @@ async function indexWorkshopPages(options: IndexingOptions) {
       console.log(
         `\n🎯 Indexed ${extractedPages.length} pages with ${allChunks.length} chunks`
       );
+      const deploymentName = process.env.NEXT_PUBLIC_CONVEX_URL?.match(/https:\/\/([^.]+)/)?.[1] || "unknown";
       console.log(
-        `📍 View in Convex Dashboard: https://dashboard.convex.dev/d/useful-boar-291\n`
+        `📍 View in Convex Dashboard: https://dashboard.convex.dev/d/${deploymentName}\n`
       );
     }
 

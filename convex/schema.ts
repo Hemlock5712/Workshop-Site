@@ -6,7 +6,7 @@ export default defineSchema({
     // Content
     content: v.string(),
 
-    // Vector embedding (768 dimensions for text-embedding-004)
+    // Vector embedding (3072 dimensions for gemini-embedding-001)
     embedding: v.array(v.float64()),
 
     // Metadata
@@ -45,7 +45,7 @@ export default defineSchema({
   })
     .vectorIndex("by_embedding", {
       vectorField: "embedding",
-      dimensions: 768,
+      dimensions: 3072,
       filterFields: ["sourceType", "pageUrl", "contentType"],
     })
     .index("by_page", ["pageUrl"])
