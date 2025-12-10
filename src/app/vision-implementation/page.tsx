@@ -8,7 +8,7 @@ import DocumentationButton from "@/components/DocumentationButton";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
-import { Link, Tag, Camera, FileDown } from "lucide-react";
+import { Link, Tag, Camera } from "lucide-react";
 
 export default function VisionImplementation() {
   return (
@@ -308,26 +308,6 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
                   </p>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">
-                The custom field map includes AprilTag positions specifically
-                arranged for workshop exercises. You&apos;ll need to upload this
-                file to your Limelight to match the physical setup.{" "}
-                <strong>
-                  After uploading the map, reboot your Limelight for the changes
-                  to take effect.
-                </strong>
-              </p>
-              <a
-                href="/maps/custom-field-map.json"
-                download
-                className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors"
-              >
-                <FileDown className="w-4 h-4" />
-                Download Custom Field Map
-              </a>
             </div>
           </div>
         </ContentCard>
