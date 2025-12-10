@@ -8,7 +8,7 @@ import Box from "@/components/Box";
 import { armBOMData } from "@/data/armBOM";
 import { shooterBOMData } from "@/data/shooterBOM";
 import { useRef } from "react";
-import { Package, Wrench, ClipboardCheck } from "lucide-react";
+import { Package, Wrench, ClipboardCheck, Box as BoxIcon } from "lucide-react";
 
 export default function MechanismCAD() {
   const flywheelModelRef = useRef<ModelViewerRef>(null);
@@ -74,6 +74,15 @@ export default function MechanismCAD() {
                   <Wrench className="w-4 h-4" />
                   Download STP
                 </a>
+                <a
+                  href="https://cad.onshape.com/documents/1ca9ee00bfdd386abbe2ae30"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <BoxIcon className="w-4 h-4" />
+                  Onshape CAD
+                </a>
               </div>
             </div>
           </div>
@@ -118,6 +127,15 @@ export default function MechanismCAD() {
                 >
                   <Wrench className="w-4 h-4" />
                   Download STP
+                </a>
+                <a
+                  href="https://cad.onshape.com/documents/1526b66636cd3480c668b626/w/5db28f1a1dfc3c271601c02c/e/a3954701d9987f0ea70d8b60"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-center font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <BoxIcon className="w-4 h-4" />
+                  Onshape CAD
                 </a>
               </div>
             </div>
