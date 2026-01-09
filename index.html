@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaypointPlanner</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --panel-color: #252526;
+            --text-color: #d4d4d4;
+            --accent: #007acc;
+            --border: #3e3e42;
+            --danger: #d94444;
+            --success: #4caf50;
+            --warning: #f1c40f;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #sidebar {
+            width: 320px;
+            background-color: var(--panel-color);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            z-index: 10;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+            background: #2d2d30;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+            color: #888;
+        }
+
+        input,
+        select {
+            width: 100%;
+            background: #3e3e42;
+            border: 1px solid #555;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+        }
+
+        .link-active {
+            border: 1px solid var(--warning) !important;
+            color: var(--warning);
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .btn-row button {
+            margin-bottom: 0;
+        }
+
+        #waypoint-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            background: #111;
+        }
+
+        .waypoint-item {
+            padding: 6px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+        }
+
+        .waypoint-item.selected {
+            background-color: #094771;
+        }
+
+        .waypoint-item.is-linked::before {
+            content: "🔗 ";
+        }
+
+        #viewport {
+            flex-grow: 1;
+            position: relative;
+            background-color: #111;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #playback-bar {
+            position: fixed;
+            bottom: 0px;
+            left: 320px;
+            right: 0;
+            background: #252526;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-top: 1px solid var(--border);
+            z-index: 50;
+        }
+
+        input[type=range] {
+            flex-grow: 1;
+            cursor: pointer;
+            margin: 0;
+            accent-color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sidebar">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2 style="margin:0; font-size:1.2rem; color:white;">WaypointPlanner</h2>
+            <button onclick="openSettings()" style="width:auto; background:transparent; padding:5px; margin:0; font-size:1.2rem;">⚙️</button>
+        </div>
+
+        <div class="btn-row">
+            <button onclick="undo()">Undo</button>
+            <button onclick="redo()">Redo</button>
+        </div>
+
+        <div class="control-group">
+            <div style="display:flex; gap: 5px;">
+                <button onclick="saveProject()" style="background:#2d8c4f">Save Project</button>
+                <button onclick="document.getElementById('file-input').click()" style="background:#555">Load Project</button>
+                <input type="file" id="file-input" style="display:none;" onchange="loadProject(this.files[0])" accept=".json">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label style="margin:0; font-weight:bold;">View</label>
+                <button onclick="toggleGrid()" id="grid-btn" style="width:auto; padding:2px 8px; font-size:0.8rem; background:#444;">Grid: Off</button>
+            </div>
+             <div id="grid-controls" style="display:none; margin-top:5px;">
+                <div style="display:flex; gap:5px; align-items:center;">
+                    <label style="margin:0;">Snap:</label>
+                    <input type="checkbox" id="snap-check" style="width:auto;" onchange="toggleSnap()">
+                    <label style="margin:0; margin-left:10px;">Size (m):</label>
+                    <input type="number" id="grid-size" value="1.0" step="0.5" style="width:60px; margin:0;" onchange="updateGridSize()">
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <select id="path-select" onchange="switchPath(this.value)"></select>
+            <input type="text" id="path-name-edit" placeholder="Path Name" oninput="renamePath(this.value)">
+            <div style="font-size:0.8rem; color:#888; margin-bottom:5px; display:flex; justify-content:space-between;">
+                 <span>Len: <span id="path-len-display" style="color:white">0.0</span>m</span>
+                 <span>Time: <span id="path-time-display" style="color:white">0.0</span>s</span>
+            </div>
+            <button onclick="createNewPath()" style="background:#444">+ New Path</button>
+            <button onclick="duplicateCurrentPath()" style="background:#555">Duplicate Path</button>
+            <button onclick="reverseCurrentPath()" style="background:#555">Reverse Path</button>
+            <button onclick="deleteCurrentPath()" style="background:var(--danger)">Delete Path</button>
+        </div>
+
+
+
+        <div id="waypoint-list"></div>
+
+        <div id="editor-panel" class="control-group" style="display:none;">
+            <!-- Waypoint Editor Content -->
+            <div id="wp-editor-content">
+                <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <label style="margin:0;">Waypoint Settings</label>
+                    <div style="font-size: 0.75rem; color: var(--warning); cursor: pointer;" onclick="toggleLinkState()">
+                        <span id="link-icon">🔗 Link Point</span>
+                    </div>
+                </div>
+
+                <input type="text" id="wp-name" placeholder="Name" oninput="uiUpdatePoint()">
+
+                <div id="linked-dropdown-container" style="display:none;">
+                    <label>Existing Links</label>
+                    <select id="linked-names-select" onchange="applyExistingLink(this.value)">
+                        <option value="">-- Select to Link --</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; gap:5px;">
+                    <div><label>X (m)</label><input type="number" id="wp-x" step="0.01" oninput="uiUpdatePoint()"></div>
+                    <div><label>Y (m)</label><input type="number" id="wp-y" step="0.01" oninput="uiUpdatePoint()"></div>
+                </div>
+                <label>Rotation (deg)</label>
+                <input type="number" id="wp-rot-num" oninput="uiUpdatePoint()">
+                <div class="btn-row">
+                    <button onclick="insertWaypointAfter()" style="background:#555">Insert After</button>
+                    <button onclick="deleteSelected()" style="background:var(--danger)">Delete Point</button>
+                </div>
+            </div>
+
+            <!-- Obstacle Editor Content -->
+            <div id="obs-editor-content" style="display:none;">
+                 <label>Obstacle Settings</label>
+                 <input type="text" id="obs-name" placeholder="Name" oninput="uiUpdateObstacle()">
+                 <div style="display:flex; gap:5px;" id="obs-pos-row">
+                    <div><label>X (m)</label><input type="number" id="obs-x" step="0.05" oninput="uiUpdateObstacle()"></div>
+                    <div><label>Y (m)</label><input type="number" id="obs-y" step="0.05" oninput="uiUpdateObstacle()"></div>
+                </div>
+                
+                <div id="obs-rect-params" style="display:flex; gap:5px;">
+                    <div><label>Width (m)</label><input type="number" id="obs-w" step="0.05" oninput="uiUpdateObstacle()"></div>
+                    <div><label>Height (m)</label><input type="number" id="obs-h" step="0.05" oninput="uiUpdateObstacle()"></div>
+                </div>
+
+                <div id="obs-circle-params" style="display:none; gap:5px;">
+                    <div style="width:100%"><label>Radius (m)</label><input type="number" id="obs-r" step="0.05" oninput="uiUpdateObstacle()"></div>
+                </div>
+
+                <div id="obs-poly-params" style="display:none;">
+                     <label style="font-size:0.75rem; color:#888;">Drag points to edit shape</label>
+                </div>
+
+                <button onclick="deleteSelectedObstacle()" style="background:var(--danger)">Delete Obstacle</button>
+            </div>
+        </div>
+
+        <button onclick="exportCode()" style="background:var(--success)">Export Java</button>
+    </div>
+
+    <div id="viewport">
+        <canvas id="fieldCanvas"></canvas>
+    </div>
+
+    <div id="playback-bar">
+        <button id="play-btn" onclick="togglePlay()" style="width: auto; margin:0; padding: 5px 15px;">▶</button>
+        <span id="time-display" style="font-family: monospace; font-size: 0.9rem;">0.0s / 0.0s</span>
+        <input type="range" id="time-slider" min="0" max="100" step="0.1" value="0" oninput="scrub(this.value)">
+    </div>
+
+    <div id="code-modal" class="modal" onclick="this.style.display='none'">
+        <div style="background:var(--panel-color); padding:20px; width:80%; height:80%;"
+            onclick="event.stopPropagation()">
+            <textarea id="java-output"
+                style="width:100%; height:90%; background:#111; color:#0f0; font-family:monospace; resize:none;"></textarea>
+            <button onclick="document.getElementById('code-modal').style.display='none'">Close</button>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal" onclick="this.style.display='none'">
+        <div style="background:var(--panel-color); padding:20px; width:700px; max-width:95vw; border-radius:5px; max-height:90vh; overflow-y:auto;"
+            onclick="event.stopPropagation()">
+            <h3 style="margin-top:0; color:white; border-bottom:1px solid #444; padding-bottom:10px;">Settings</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h4 style="margin: 0 0 5px 0; border-bottom: 1px solid #444;">Field Settings</h4>
+                    <label>Field Width (m)</label>
+                    <input type="number" id="field-width-input" step="0.01" oninput="updateFieldConfig()">
+                    <label>Custom Field Image</label>
+                    <input type="file" id="field-image-input" accept="image/*" onchange="uploadFieldImage(this.files[0])">
+
+                    <h4 style="margin: 10px 0 5px 0; border-bottom: 1px solid #444;">Robot Dimensions</h4>
+                    <label>Robot Length (m)</label>
+                    <input type="number" id="robot-length-input" step="0.05" oninput="updateRobotConfig()">
+                    
+                    <label>Robot Width (m)</label>
+                    <input type="number" id="robot-width-input" step="0.05" oninput="updateRobotConfig()">
+
+                    <h4 style="margin: 10px 0 5px 0; border-bottom: 1px solid #444;">Simulation Physics</h4>
+                    
+                    <label>Max Velocity (m/s)</label>
+                    <input type="number" id="max-vel-input" step="0.1" oninput="updateRobotConfig()">
+
+                    <label>Max Friction (G)</label>
+                    <input type="number" id="max-fric-input" step="0.1" oninput="updateRobotConfig()">
+
+                    <label>Drive Base Radius (m)</label>
+                    <input type="number" id="drive-radius-input" step="0.01" oninput="updateRobotConfig()">
+
+                    <h4 style="margin: 10px 0 5px 0; border-bottom: 1px solid #444;">Drivetrain</h4>
+
+                    <label>Gear Ratio</label>
+                    <input type="number" id="gear-ratio-input" step="0.01" oninput="updateRobotConfig()">
+
+                    <label>Wheel Radius (m)</label>
+                    <input type="number" id="wheel-radius-input" step="0.001" oninput="updateRobotConfig()">
+
+                    <label>Robot Mass (kg)</label>
+                    <input type="number" id="robot-mass-input" step="0.5" oninput="updateRobotConfig()">
+                </div>
+
+                <div>
+                    <h4 style="margin: 0 0 5px 0; border-bottom: 1px solid #444;">Motor Parameters</h4>
+
+                    <label>Motor Type</label>
+                    <select id="motor-type-input" onchange="updateMotorPreset(this.value)">
+                        <option value="kraken_foc">Kraken X60 FOC</option>
+                        <option value="kraken">Kraken X60</option>
+                        <option value="custom">Custom</option>
+                    </select>
+
+                    <label>Stall Torque (N-m)</label>
+                    <input type="number" id="motor-stall-torque-input" step="0.1" oninput="updateRobotConfig()">
+
+                    <label>Free Speed (RPM)</label>
+                    <input type="number" id="motor-free-speed-input" step="10" oninput="updateRobotConfig()">
+
+                    <label>Stator Current Limit (A)</label>
+                    <input type="number" id="current-limit-input" step="5" oninput="updateRobotConfig()">
+
+                    <h4 style="margin: 10px 0 5px 0; border-bottom: 1px solid #444;">Tolerances</h4>
+
+                    <label>Waypoint Tolerance (m)</label>
+                    <input type="number" id="waypoint-tolerance-input" step="0.01" oninput="updateRobotConfig()">
+
+                    <label>Position Tolerance (m)</label>
+                    <input type="number" id="position-tolerance-input" step="0.01" oninput="updateRobotConfig()">
+
+                    <label>Reaction Time (s)</label>
+                    <input type="number" id="reaction-time-input" step="0.01" oninput="updateRobotConfig()">
+                </div>
+            </div>
+
+            <h4 style="margin: 20px 0 5px 0; border-bottom: 1px solid #444;">Obstacles</h4>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <label style="margin:0;">Manage Obstacles</label>
+                <div style="display:flex; gap: 5px;">
+                    <button onclick="addObstacle('rectangle')" title="Rectangle" style="width:auto; padding:5px 10px; font-size:0.9rem; background:var(--panel-color); border:1px solid #555;">⬜ Box</button>
+                    <button onclick="addObstacle('circle')" title="Circle" style="width:auto; padding:5px 10px; font-size:0.9rem; background:var(--panel-color); border:1px solid #555;">◯ Circle</button>
+                    <button onclick="document.getElementById('settings-modal').style.display='none'; startPolygonTool()" title="Polygon" style="width:auto; padding:5px 10px; font-size:0.9rem; background:var(--panel-color); border:1px solid #555;">⬡ Poly</button>
+                </div>
+            </div>
+            <div id="obstacle-list" style="max-height:150px; overflow-y:auto; background:#1e1e1e; padding:5px; border:1px solid #444; margin-bottom:10px;"></div>
+
+            <button onclick="document.getElementById('settings-modal').style.display='none'" style="margin-top:15px;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let fieldWidth = 17.55;
+        let fieldImageSrc = 'field25-annotated.png';
+        let gridEnabled = false;
+        let snapEnabled = false;
+        let gridSize = 1.0;
+
+        let config = {
+            robotLength: 0.8,
+            robotWidth: 0.8,
+            maxVelocity: 4.287,        // Match TunerConstants.kSpeedAt12Volts
+            maxFriction: 1.0,
+            driveBaseRadius: 0.4,
+            // Timing and tolerance parameters (match Java)
+            reactionTime: 0.03,        // Match BRAKING_REACTION_TIME (was 0.1)
+            waypointTolerance: 0.15,   // Match WAYPOINT_ADVANCEMENT_TOLERANCE (was 0.2)
+            positionTolerance: 0.02,   // Match DEFAULT_POSITION_TOLERANCE (was 0.05)
+            rotationTolerance: 0.0349, // Match DEFAULT_ROTATION_TOLERANCE 2deg (was 0.05 rad)
+            // Motor model parameters (match AccelerationLimiter.java)
+            gearRatio: 6.746,          // Match kDriveGearRatio
+            wheelRadius: 0.0483,       // 1.9 inches in meters
+            robotMass: 56.7,           // kg
+            numDriveMotors: 4,
+            statorCurrentLimit: 150.0, // Amps
+            // Motor: KRAKEN_X60_FOC (match Motor.java)
+            motorStallTorque: 9.3615,  // N-m
+            motorFreeSpeedRpm: 5784.65,
+            motorStallCurrent: 476.1   // A
+        };
+
+        // Motor Physics Model (matches Motor.java)
+        const Motor = {
+            // Torque constant Kt = stallTorque / stallCurrent
+            kt: function() {
+                return config.motorStallTorque / config.motorStallCurrent;
+            },
+
+            // Linear torque-speed relationship (matches Motor.getTorqueAtRpm)
+            getTorqueAtRpm: function(rpm, currentLimitAmps) {
+                if (currentLimitAmps === undefined) currentLimitAmps = Infinity;
+                rpm = Math.abs(rpm);
+                if (rpm >= config.motorFreeSpeedRpm) return 0.0;
+
+                const torqueFromCurve = config.motorStallTorque * (1.0 - rpm / config.motorFreeSpeedRpm);
+                const torqueFromCurrentLimit = this.kt() * currentLimitAmps;
+                return Math.min(torqueFromCurve, torqueFromCurrentLimit);
+            },
+
+            // Max acceleration at given wheel speed (matches Motor.getMaxAcceleration)
+            getMaxAcceleration: function(wheelSpeedMps) {
+                // Convert wheel speed to motor RPM
+                const wheelRadPerSec = wheelSpeedMps / config.wheelRadius;
+                const motorRadPerSec = wheelRadPerSec * config.gearRatio;
+                const motorRpm = motorRadPerSec * 60.0 / (2.0 * Math.PI);
+
+                // Look up torque at this speed WITH current limit
+                const motorTorque = this.getTorqueAtRpm(motorRpm, config.statorCurrentLimit);
+
+                // Calculate force: F = (T * gearRatio) / wheelRadius
+                const wheelTorque = motorTorque * config.gearRatio;
+                const forcePerWheel = wheelTorque / config.wheelRadius;
+                const totalForce = forcePerWheel * config.numDriveMotors;
+
+                // Newton's second law: a = F / m
+                return totalForce / config.robotMass;
+            }
+        };
+
+        // Core Data
+        let paths = { "p1": { name: "Auto Path 1", points: [] } };
+        let obstacles = []; // {id, x, y, w, h, name, type, r, points}
+        let linkedWaypoints = {}; // { "Name": {x, y, rot} }
+
+        let currentPathId = "p1";
+        let selectedIndex = -1;
+        let selectedObstacleIndex = -1;
+        
+        // Polygon Tool State
+        let isDrawingPolygon = false;
+        let tempPolygonPoints = [];
+
+        let simulationPath = [];
+        let collisionDetected = false;
+        let collisionPoint = null;
+        
+        // Playback State
+        let isPlaying = false;
+        let playbackTime = 0;
+        let totalDuration = 0;
+        let animationFrameId = null;
+        let lastTimestamp = 0;
+
+        // Physics Engine Port
+        const Physics = {
+            calculateTargetOmega: (angleError, distance, currentSpeed, currentOmega, reactionBuffer = 0.03) => {
+                const MAX_FRICTION_ACCEL = config.maxFriction * 9.81;
+                const DRIVE_BASE_RADIUS = config.driveBaseRadius;
+                const MAX_VELOCITY = config.maxVelocity;
+                
+                const STOPPING_OMEGA_FACTOR = 2.0 * MAX_FRICTION_ACCEL / DRIVE_BASE_RADIUS;
+                const HARDWARE_MAX_OMEGA = MAX_VELOCITY / DRIVE_BASE_RADIUS;
+
+                const absAngle = Math.abs(angleError);
+                const bufferedAngle = Math.max(0, absAngle - Math.abs(currentOmega) * reactionBuffer); 
+                const maxStoppingOmega = Math.sqrt(STOPPING_OMEGA_FACTOR * bufferedAngle);
+                
+                const effectiveDistance = Math.max(0, distance - currentSpeed * reactionBuffer);
+                const brakingTime = Math.sqrt(2.0 * effectiveDistance / MAX_FRICTION_ACCEL);
+                const cruiseTime = currentSpeed > 0 ? effectiveDistance / currentSpeed : brakingTime;
+                const driveTime = Math.max(brakingTime, cruiseTime);
+                
+                const timeBasedOmega = driveTime > 0 ? 2.0 * absAngle / driveTime : 0;
+                
+                const target = Math.min(maxStoppingOmega, Math.min(timeBasedOmega, HARDWARE_MAX_OMEGA));
+                return Math.sign(angleError) * target;
+            },
+
+            // Matches DriveToPointUtils.calculateBrakingTargetSpeed()
+            calculateBrakingTargetSpeed: (distance, currentSpeed, reactionBuffer, targetOmega, angleError, targetEndSpeed) => {
+                const MAX_FRICTION_ACCEL = config.maxFriction * 9.81;
+                const DRIVE_BASE_RADIUS = config.driveBaseRadius;
+                const MAX_VELOCITY = config.maxVelocity;
+                const MAX_FRICTION_ACCEL_SQ = MAX_FRICTION_ACCEL * MAX_FRICTION_ACCEL;
+                const MAX_ANGULAR_DECEL = MAX_FRICTION_ACCEL / DRIVE_BASE_RADIUS;
+                const ANGLE_EPSILON = 1e-9;
+
+                const absAngleError = Math.abs(angleError);
+
+                // Angular deceleration needed (capped at physical max)
+                const angularDecel = absAngleError > ANGLE_EPSILON
+                    ? Math.min((targetOmega * targetOmega) / (2.0 * absAngleError), MAX_ANGULAR_DECEL)
+                    : 0;
+
+                // Friction budget used by angular deceleration
+                const angularAccelContribution = angularDecel * DRIVE_BASE_RADIUS;
+                const availableLinearAccel = Math.sqrt(
+                    Math.max(0, MAX_FRICTION_ACCEL_SQ - angularAccelContribution * angularAccelContribution)
+                );
+
+                // Account for reaction time
+                const bufferedDistance = Math.max(0, distance - currentSpeed * reactionBuffer);
+
+                // Target speed using kinematic equation
+                const targetEndSpeedSq = targetEndSpeed * targetEndSpeed;
+                const bufferedTargetSpeed = Math.min(
+                    Math.sqrt(targetEndSpeedSq + 2.0 * availableLinearAccel * bufferedDistance),
+                    MAX_VELOCITY
+                );
+
+                // Conservative vs aggressive logic (matches Java)
+                if (bufferedTargetSpeed < currentSpeed) {
+                    // Decelerating - use conservative buffered value
+                    return bufferedTargetSpeed;
+                } else {
+                    // Accelerating - use full distance
+                    return Math.min(
+                        Math.sqrt(targetEndSpeedSq + 2.0 * availableLinearAccel * distance),
+                        MAX_VELOCITY
+                    );
+                }
+            },
+            
+            // Matches AccelerationLimiter.integrateVelocity()
+            integrate: (currentSpeeds, targetSpeeds, dt) => {
+                const MAX_FRICTION_ACCEL = config.maxFriction * 9.81;
+                const DRIVE_BASE_RADIUS = config.driveBaseRadius;
+
+                // Calculate desired acceleration
+                const accelX = (targetSpeeds.vx - currentSpeeds.vx) / dt;
+                const accelY = (targetSpeeds.vy - currentSpeeds.vy) / dt;
+                const accelOmega = (targetSpeeds.omega - currentSpeeds.omega) / dt;
+
+                // Step 1: Apply motor torque limit (only for acceleration, not braking)
+                let limitedAccelX = accelX;
+                let limitedAccelY = accelY;
+                let limitedAccelOmega = accelOmega;
+
+                // Check if braking (acceleration opposes velocity)
+                const linearBraking = (accelX * currentSpeeds.vx + accelY * currentSpeeds.vy) < 0;
+                const angularBraking = accelOmega * currentSpeeds.omega < 0;
+
+                // Motor limit only applies when accelerating (matches Java AccelerationLimiter.applyMotorLimit)
+                // If BOTH are braking, skip motor limit entirely - braking uses regen/friction, not motor torque
+                if (!(linearBraking && angularBraking)) {
+                    // Calculate acceleration contributions (only count accelerating components)
+                    const linearAccelMag = Math.hypot(accelX, accelY);
+                    const linearContrib = linearBraking ? 0 : linearAccelMag;
+                    const angularContrib = angularBraking ? 0 : Math.abs(accelOmega) * DRIVE_BASE_RADIUS;
+                    const combinedAccel = Math.hypot(linearContrib, angularContrib);
+
+                    // Estimate worst-case module speed for torque lookup
+                    const linearVelMag = Math.hypot(currentSpeeds.vx, currentSpeeds.vy);
+                    const moduleSpeed = linearVelMag + Math.abs(currentSpeeds.omega) * DRIVE_BASE_RADIUS;
+                    const maxMotorAccel = Motor.getMaxAcceleration(moduleSpeed);
+
+                    // Scale if exceeds motor limit (only scale accelerating components)
+                    if (combinedAccel > maxMotorAccel && combinedAccel > 0) {
+                        const scale = maxMotorAccel / combinedAccel;
+                        const linearScale = linearBraking ? 1.0 : scale;
+                        const angularScale = angularBraking ? 1.0 : scale;
+                        limitedAccelX = accelX * linearScale;
+                        limitedAccelY = accelY * linearScale;
+                        limitedAccelOmega = accelOmega * angularScale;
+                    }
+                }
+
+                // Step 2: Apply friction limit (affects both acceleration and braking)
+                const linearMag = Math.hypot(limitedAccelX, limitedAccelY);
+                const angularContribution = Math.abs(limitedAccelOmega) * DRIVE_BASE_RADIUS;
+                const combinedFrictionAccel = Math.hypot(linearMag, angularContribution);
+
+                if (combinedFrictionAccel > MAX_FRICTION_ACCEL) {
+                    const scale = MAX_FRICTION_ACCEL / combinedFrictionAccel;
+                    limitedAccelX *= scale;
+                    limitedAccelY *= scale;
+                    limitedAccelOmega *= scale;
+                }
+
+                // Integrate to get next velocity
+                return {
+                    vx: currentSpeeds.vx + limitedAccelX * dt,
+                    vy: currentSpeeds.vy + limitedAccelY * dt,
+                    omega: currentSpeeds.omega + limitedAccelOmega * dt
+                };
+            }
+        };
+
+        function runSimulation() {
+            const pts = paths[currentPathId].points;
+            if (pts.length < 2) { simulationPath = []; return; }
+
+            const waypoints = pts.map(p => {
+                 const data = p.isLinked ? linkedWaypoints[p.name] : p;
+                 return { x: data.x, y: data.y, rot: data.rot * Math.PI / 180 };
+            });
+
+            // Precompute segment lengths (matches DriveToPointWaypoints.java initialize())
+            const segmentLengths = [];
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                segmentLengths.push(Math.hypot(
+                    waypoints[i+1].x - waypoints[i].x,
+                    waypoints[i+1].y - waypoints[i].y
+                ));
+            }
+
+            let currentPose = { ...waypoints[0] };
+            let currentSpeeds = { vx: 0, vy: 0, omega: 0 };
+            const dt = 0.02;
+
+            simulationPath = [ { ...currentPose } ];
+            collisionDetected = false;
+            collisionPoint = null;
+
+            let currentWaypointIndex = 0;
+            let accumulatedTime = 0;
+
+            for(let step=0; step<1000; step++) {
+                let targetPose = waypoints[waypoints.length-1];
+
+                if (currentWaypointIndex < waypoints.length - 1) {
+                    targetPose = waypoints[currentWaypointIndex + 1];
+                    const dist = Math.hypot(targetPose.x - currentPose.x, targetPose.y - currentPose.y);
+                    // Use config.waypointTolerance (matches Java WAYPOINT_ADVANCEMENT_TOLERANCE)
+                    if (dist < config.waypointTolerance && currentWaypointIndex < waypoints.length - 2) {
+                        currentWaypointIndex++;
+                        targetPose = waypoints[currentWaypointIndex + 1];
+                    }
+                }
+
+                const goalPose = waypoints[waypoints.length - 1];
+                const dx = targetPose.x - currentPose.x;
+                const dy = targetPose.y - currentPose.y;
+                const distToTarget = Math.hypot(dx, dy);
+
+                const angleDiff = goalPose.rot - currentPose.rot;
+                const angleError = Math.atan2(Math.sin(angleDiff), Math.cos(angleDiff));
+
+                // FIXED: Correct remaining distance calculation (matches Java)
+                let remainingDist = distToTarget;
+                for (let i = currentWaypointIndex; i < segmentLengths.length; i++) {
+                    remainingDist += segmentLengths[i];
+                }
+
+                const currentLinearSpeed = Math.hypot(currentSpeeds.vx, currentSpeeds.vy);
+                // Use config.reactionTime (matches Java BRAKING_REACTION_TIME)
+                // Use remainingDist (distanceToEnd in Java) to sync rotation with total remaining travel time
+                const targetOmega = Physics.calculateTargetOmega(angleError, remainingDist, currentLinearSpeed, currentSpeeds.omega, config.reactionTime);
+
+                // Intermediate vs final waypoint logic (matches DriveToPointWaypoints.java)
+                // isAtFinalDestination = true when targeting the final waypoint
+                // In JS: waypoints includes start, so final is at index waypoints.length-1
+                // We target waypoints[currentWaypointIndex + 1], so final when currentWaypointIndex + 1 == waypoints.length - 1
+                const isAtFinalDestination = (currentWaypointIndex + 1) >= waypoints.length - 1;
+
+                let targetSpeed;
+                if (isAtFinalDestination) {
+                    // At final destination - use braking calculation with distance to TARGET (not remainingDist!)
+                    // This matches Java: DriveToPointUtils.calculateBrakingTargetSpeed(distance, ...)
+                    targetSpeed = Physics.calculateBrakingTargetSpeed(
+                        distToTarget, currentLinearSpeed, config.reactionTime, targetOmega, angleError, 0);
+                } else {
+                    // Heading to intermediate waypoint - go max speed
+                    targetSpeed = config.maxVelocity;
+                }
+                targetSpeed = Math.min(targetSpeed, config.maxVelocity);
+
+                const dirX = distToTarget > config.positionTolerance ? dx / distToTarget : 0;
+                const dirY = distToTarget > config.positionTolerance ? dy / distToTarget : 0;
+
+                const targetVx = dirX * targetSpeed;
+                const targetVy = dirY * targetSpeed;
+
+                const nextSpeeds = Physics.integrate(currentSpeeds, {vx: targetVx, vy: targetVy, omega: targetOmega}, dt);
+
+                // Velocity normalization (matches AccelerationLimiter.normalizeSpeeds)
+                const translationSpeed = Math.hypot(nextSpeeds.vx, nextSpeeds.vy);
+                const maxModuleSpeed = translationSpeed + Math.abs(nextSpeeds.omega) * config.driveBaseRadius;
+                if (maxModuleSpeed > config.maxVelocity) {
+                    const scale = config.maxVelocity / maxModuleSpeed;
+                    nextSpeeds.vx *= scale;
+                    nextSpeeds.vy *= scale;
+                    nextSpeeds.omega *= scale;
+                }
+
+                currentPose.x += nextSpeeds.vx * dt;
+                currentPose.y += nextSpeeds.vy * dt;
+                currentPose.rot += nextSpeeds.omega * dt;
+                currentPose.rot = Math.atan2(Math.sin(currentPose.rot), Math.cos(currentPose.rot));
+
+                accumulatedTime += dt;
+                currentSpeeds = nextSpeeds;
+                simulationPath.push({ ...currentPose, t: accumulatedTime });
+
+                if (checkCollision(currentPose)) {
+                    collisionDetected = true;
+                    collisionPoint = { ...currentPose };
+                    break;
+                }
+
+                // Use config tolerances (matches Java DEFAULT_POSITION/ROTATION_TOLERANCE)
+                // Check distance to goal pose, not remainingDist (which includes future segments)
+                const distToGoal = Math.hypot(goalPose.x - currentPose.x, goalPose.y - currentPose.y);
+                if (distToGoal < config.positionTolerance && Math.abs(angleError) < config.rotationTolerance) break;
+            }
+
+            totalDuration = accumulatedTime;
+            
+            // Calculate Path Length (sum of segmentLengths)
+            // But segmentLengths only includes distance BETWEEN waypoints.
+            // We want total simulated path length? Or just waypoint-to-waypoint?
+            // "Path Length" usually means the geometric path.
+            let totalLen = 0;
+            if (segmentLengths) segmentLengths.forEach(l => totalLen += l);
+            
+            // Update Stats UI
+            document.getElementById('path-len-display').innerText = totalLen.toFixed(2);
+            document.getElementById('path-time-display').innerText = totalDuration.toFixed(2);
+
+            document.getElementById('time-slider').max = totalDuration.toFixed(1);
+            updatePlaybackUI();
+        }
+
+        function checkCollision(pose) {
+            const L = config.robotLength;
+            const W = config.robotWidth;
+            const c = Math.cos(pose.rot);
+            const s = Math.sin(pose.rot);
+            
+            function transform(lx, ly) {
+                return { x: pose.x + (lx * c - ly * s), y: pose.y + (lx * s + ly * c) };
+            }
+            
+            const robotCorners = [
+                transform(L/2, W/2), transform(L/2, -W/2),
+                transform(-L/2, -W/2), transform(-L/2, W/2)
+            ];
+            
+            if (obstacles.length > 0) {
+                for (let obs of obstacles) {
+                    const type = obs.type || 'rectangle';
+
+                    if (type === 'rectangle') {
+                        const minX = obs.x - obs.w/2;
+                        const maxX = obs.x + obs.w/2;
+                        const minY = obs.y - obs.h/2;
+                        const maxY = obs.y + obs.h/2;
+                        
+                        for (let corner of robotCorners) {
+                            if (corner.x >= minX && corner.x <= maxX && corner.y >= minY && corner.y <= maxY) return true;
+                        }
+                        
+                        const obsCorners = [
+                            {x: minX, y: minY}, {x: maxX, y: minY}, {x: maxX, y: maxY}, {x: minX, y: maxY}
+                        ];
+                        
+                        for (let oc of obsCorners) {
+                             const dx = oc.x - pose.x;
+                             const dy = oc.y - pose.y;
+                             const localX = dx * c + dy * s;
+                             const localY = -dx * s + dy * c;
+                             if (Math.abs(localX) < L/2 && Math.abs(localY) < W/2) return true;
+                        }
+                    } else if (type === 'circle') {
+                        const dx = obs.x - pose.x;
+                        const dy = obs.y - pose.y;
+                        const localX = dx * c + dy * s;
+                        const localY = -dx * s + dy * c;
+                        
+                        const closestX = Math.max(-L/2, Math.min(L/2, localX));
+                        const closestY = Math.max(-W/2, Math.min(W/2, localY));
+                        
+                        const distX = localX - closestX;
+                        const distY = localY - closestY;
+                        
+                        if ((distX*distX + distY*distY) < (obs.r * obs.r)) return true;
+                    } else if (type === 'polygon') {
+                        if (obs.points && obs.points.length >= 3) {
+                             if (checkSAT(obs.points, robotCorners)) return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        
+        function checkSAT(poly1, poly2) {
+            const polys = [poly1, poly2];
+            for (let i = 0; i < polys.length; i++) {
+                const poly = polys[i];
+                for (let j = 0; j < poly.length; j++) {
+                    const p1 = poly[j];
+                    const p2 = poly[(j + 1) % poly.length];
+                    const normal = { x: -(p2.y - p1.y), y: p2.x - p1.x };
+                    
+                    let min1 = Infinity, max1 = -Infinity;
+                    for (let p of poly1) {
+                        const proj = (p.x * normal.x + p.y * normal.y);
+                        min1 = Math.min(min1, proj);
+                        max1 = Math.max(max1, proj);
+                    }
+                    
+                    let min2 = Infinity, max2 = -Infinity;
+                    for (let p of poly2) {
+                        const proj = (p.x * normal.x + p.y * normal.y);
+                        min2 = Math.min(min2, proj);
+                        max2 = Math.max(max2, proj);
+                    }
+                    
+                    if (max1 < min2 || max2 < min1) return false;
+                }
+            }
+            return true;
+        }
+
+        // --- Playback Logic ---
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            document.getElementById('play-btn').innerText = isPlaying ? "⏸" : "▶";
+            
+            if (isPlaying) {
+                lastTimestamp = performance.now();
+                requestAnimationFrame(animateFrame);
+            }
+        }
+
+        function scrub(val) {
+            playbackTime = parseFloat(val);
+            updatePlaybackUI();
+            draw();
+        }
+
+        function updatePlaybackUI() {
+            document.getElementById('time-slider').value = playbackTime.toFixed(1);
+            document.getElementById('time-display').innerText = `${playbackTime.toFixed(1)}s / ${totalDuration.toFixed(1)}s`;
+        }
+
+        function animateFrame(timestamp) {
+            if (!isPlaying) return;
+            
+            const dt = (timestamp - lastTimestamp) / 1000;
+            lastTimestamp = timestamp;
+            
+            playbackTime += dt;
+            if (playbackTime > totalDuration) {
+                playbackTime = 0; // Loop or stop? Let's loop for now
+                // isPlaying = false; document.getElementById('play-btn').innerText = "▶"; return;
+            }
+            
+            updatePlaybackUI();
+            draw();
+            requestAnimationFrame(animateFrame);
+        }
+
+        function getPoseAtTime(t) {
+            if (simulationPath.length === 0) return null;
+            // Binary search or simple find
+            const idx = simulationPath.findIndex(p => p.t >= t);
+            if (idx === -1) return simulationPath[simulationPath.length - 1];
+            if (idx === 0) return simulationPath[0];
+            
+            const p2 = simulationPath[idx];
+            const p1 = simulationPath[idx - 1];
+            const ratio = (t - p1.t) / (p2.t - p1.t);
+            
+            return {
+                x: p1.x + (p2.x - p1.x) * ratio,
+                y: p1.y + (p2.y - p1.y) * ratio,
+                rot: p1.rot + (p2.rot - p1.rot) * ratio // Simplified trig interpolation
+            };
+        }
+
+        // Viewport
+        let scale = 1.0;
+        let offset = { x: 0, y: 0 };
+        let isPanning = false, isDragging = false, isRotating = false;
+        let lastMouse = { x: 0, y: 0 };
+
+        // History
+        let history = [];
+        let historyStep = -1;
+
+        const canvas = document.getElementById('fieldCanvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+
+        // Load autosave
+        try {
+            const saved = localStorage.getItem('waypointPlanner_autosave');
+            if (saved) {
+                const data = JSON.parse(saved);
+                paths = data.paths || paths;
+                linkedWaypoints = data.linkedWaypoints || linkedWaypoints;
+                obstacles = data.obstacles || obstacles;
+                config = { ...config, ...(data.config || {}) };
+                if (data.fieldWidth) fieldWidth = data.fieldWidth;
+                if (data.fieldImageSrc) fieldImageSrc = data.fieldImageSrc;
+                if (data.gridEnabled !== undefined) gridEnabled = data.gridEnabled;
+                if (data.snapEnabled !== undefined) snapEnabled = data.snapEnabled;
+                if (data.gridSize !== undefined) gridSize = data.gridSize;
+            }
+        } catch (e) { console.error(e); }
+
+        document.getElementById('field-width-input').value = fieldWidth;
+        document.getElementById('grid-btn').innerText = "Grid: " + (gridEnabled ? "On" : "Off");
+        document.getElementById('grid-controls').style.display = gridEnabled ? "block" : "none";
+        document.getElementById('snap-check').checked = snapEnabled;
+        document.getElementById('grid-size').value = gridSize;
+
+        img.src = fieldImageSrc;
+
+        img.onload = () => {
+            resizeCanvas();
+            scale = Math.min(canvas.width / img.width, canvas.height / img.height) * 0.9;
+            offset.x = (canvas.width - img.width * scale) / 2;
+            offset.y = (canvas.height - img.height * scale) / 2;
+            
+            if (!paths[currentPathId]) currentPathId = Object.keys(paths)[0];
+
+            saveHistory();
+            updatePathDropdown();
+            renderList();
+            draw();
+        };
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth - 320;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = () => { resizeCanvas(); draw(); };
+
+        // --- Transforms ---
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        }
+
+        function screenToField(sx, sy) {
+            const pxPerMeter = (img.width * scale) / fieldWidth;
+            let fx = (sx - offset.x) / pxPerMeter;
+            let fy = (img.height * scale - (sy - offset.y)) / pxPerMeter;
+            if (snapEnabled) {
+                fx = Math.round(fx / gridSize) * gridSize;
+                fy = Math.round(fy / gridSize) * gridSize;
+            }
+            return { x: fx, y: fy };
+        }
+
+        function fieldToScreen(fx, fy) {
+            const pxPerMeter = (img.width * scale) / fieldWidth;
+            return { x: fx * pxPerMeter + offset.x, y: (img.height * scale - (fy * pxPerMeter)) + offset.y };
+        }
+
+        // --- Linked Waypoint Logic ---
+        function toggleLinkState() {
+            const wp = paths[currentPathId].points[selectedIndex];
+            wp.isLinked = !wp.isLinked;
+
+            if (wp.isLinked) {
+                // Register this point in the master list if name is unique
+                if (!linkedWaypoints[wp.name]) {
+                    linkedWaypoints[wp.name] = { x: wp.x, y: wp.y, rot: wp.rot };
+                }
+            }
+            saveHistory();
+            uiSync();
+            renderList();
+            draw();
+        }
+
+        function applyExistingLink(name) {
+            if (!name) return;
+            const wp = paths[currentPathId].points[selectedIndex];
+            wp.name = name;
+            wp.isLinked = true;
+            saveHistory();
+            uiSync();
+            renderList();
+            draw();
+        }
+
+        function updateLinkedDropdown() {
+            const select = document.getElementById('linked-names-select');
+            select.innerHTML = '<option value="">-- Select to Link --</option>';
+            Object.keys(linkedWaypoints).forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+
+        // --- Interaction ---
+        canvas.onwheel = (e) => {
+            e.preventDefault();
+            const factor = Math.pow(1.1, -e.deltaY / 150);
+            const mouse = getMousePos(e);
+            const worldPos = screenToField(mouse.x, mouse.y);
+            scale *= factor;
+            const newScreenPos = fieldToScreen(worldPos.x, worldPos.y);
+            offset.x += (mouse.x - newScreenPos.x);
+            offset.y += (mouse.y - newScreenPos.y);
+            draw();
+        };
+
+        canvas.onmousedown = (e) => {
+            const mouse = getMousePos(e);
+            lastMouse = mouse;
+            
+            if (isDrawingPolygon) {
+                if (e.button === 2) { // Right click to finish
+                    finishPolygon(); 
+                    return; 
+                }
+                const f = screenToField(mouse.x, mouse.y);
+                tempPolygonPoints.push({ x: f.x, y: f.y });
+                draw();
+                return;
+            }
+
+            if (e.button === 1) { isPanning = true; return; }
+
+            const pts = paths[currentPathId].points;
+            const pxPerMeter = (img.width * scale) / fieldWidth;
+
+            if (selectedIndex !== -1) {
+                const wp = pts[selectedIndex];
+                const actual = wp.isLinked ? linkedWaypoints[wp.name] : wp;
+                const p = fieldToScreen(actual.x, actual.y);
+                const handleDist = (config.robotLength * pxPerMeter / 2) + 25;
+                const hX = p.x + Math.cos(-actual.rot * Math.PI / 180) * handleDist;
+                const hY = p.y + Math.sin(-actual.rot * Math.PI / 180) * handleDist;
+                if (Math.hypot(mouse.x - hX, mouse.y - hY) < 20) { isRotating = true; return; }
+            }
+
+            let hit = pts.findIndex(p => {
+                const actual = p.isLinked ? linkedWaypoints[p.name] : p;
+                const s = fieldToScreen(actual.x, actual.y);
+                return Math.hypot(mouse.x - s.x, mouse.y - s.y) < 25;
+            });
+
+            if (hit !== -1) {
+                selectWaypoint(hit);
+                isDragging = true;
+                return;
+            }
+
+            // Check Obstacles
+            let obsHit = obstacles.findIndex(o => {
+                const s = fieldToScreen(o.x, o.y);
+                const type = o.type || 'rectangle';
+                
+                if (type === 'rectangle') {
+                    const w = o.w * pxPerMeter;
+                    const h = o.h * pxPerMeter;
+                    return Math.abs(mouse.x - s.x) < w/2 && Math.abs(mouse.y - s.y) < h/2;
+                } else if (type === 'circle') {
+                     const r = o.r * pxPerMeter;
+                     return Math.hypot(mouse.x - s.x, mouse.y - s.y) < r;
+                } else if (type === 'polygon') {
+                     const f = screenToField(mouse.x, mouse.y);
+                     return isPointInPolygon(f, o.points);
+                }
+                return false;
+            });
+
+            if (obsHit !== -1) {
+                selectObstacle(obsHit);
+                isDragging = true;
+                return;
+            }
+
+            if (e.button === 0) {
+                const f = screenToField(mouse.x, mouse.y);
+                pts.push({ name: "WP_" + (pts.length + 1), x: f.x, y: f.y, rot: 0, isLinked: false });
+                selectWaypoint(pts.length - 1);
+                isDragging = true;
+                saveHistory();
+            }
+        };
+        
+        // Prevent context menu to allow right-click usage
+        window.oncontextmenu = (e) => e.preventDefault();
+
+        function isPointInPolygon(p, polygon) {
+            let isInside = false;
+            if (!polygon) return false;
+            let i = 0, j = polygon.length - 1;
+            for (i, j; i < polygon.length; j = i++) {
+                if ( (polygon[i].y > p.y) != (polygon[j].y > p.y) &&
+                        p.x < (polygon[j].x - polygon[i].x) * (p.y - polygon[i].y) / (polygon[j].y - polygon[i].y) + polygon[i].x ) {
+                    isInside = !isInside;
+                }
+            }
+            return isInside;
+        }
+
+        window.onmousemove = (e) => {
+            const mouse = getMousePos(e);
+            if (isPanning) {
+                offset.x += mouse.x - lastMouse.x;
+                offset.y += mouse.y - lastMouse.y;
+            } else if (isDragging || isRotating) {
+                if (selectedIndex !== -1) {
+                    const wp = paths[currentPathId].points[selectedIndex];
+                    const target = wp.isLinked ? linkedWaypoints[wp.name] : wp;
+
+                    if (isDragging) {
+                        const f = screenToField(mouse.x, mouse.y);
+                        target.x = f.x; target.y = f.y;
+                    } else {
+                        const p = fieldToScreen(target.x, target.y);
+                        target.rot = -Math.atan2(mouse.y - p.y, mouse.x - p.x) * 180 / Math.PI;
+                    }
+                    uiSync();
+                } else if (selectedObstacleIndex !== -1 && isDragging) {
+                    const obs = obstacles[selectedObstacleIndex];
+                    const f = screenToField(mouse.x, mouse.y);
+                    
+                    if (obs.type === 'polygon' && obs.points) {
+                         const dx = f.x - obs.x;
+                         const dy = f.y - obs.y;
+                         obs.points.forEach(p => { p.x += dx; p.y += dy; });
+                    }
+                    
+                    obs.x = f.x; obs.y = f.y;
+                    uiSync();
+                }
+            }
+            lastMouse = mouse;
+            draw();
+        };
+
+        window.onmouseup = () => {
+            if (isDragging || isRotating) saveHistory();
+            isPanning = isDragging = isRotating = false;
+        };
+
+        // --- History ---
+        function saveHistory() {
+            const state = JSON.stringify({ paths, linkedWaypoints, obstacles });
+            if (historyStep < history.length - 1) history = history.slice(0, historyStep + 1);
+            history.push(state);
+            historyStep = history.length - 1;
+            
+            localStorage.setItem('waypointPlanner_autosave', JSON.stringify({
+                paths, linkedWaypoints, obstacles, config,
+                fieldWidth, fieldImageSrc,
+                gridEnabled, snapEnabled, gridSize
+            }));
+
+            runSimulation();
+        }
+
+        function syncStateAfterHistory() {
+            const data = JSON.parse(history[historyStep]);
+            paths = data.paths;
+            linkedWaypoints = data.linkedWaypoints;
+            obstacles = data.obstacles || []; // Default to empty if missing
+            
+            const pts = paths[currentPathId].points;
+            if (pts.length > 0) selectWaypoint(pts.length - 1);
+            else if (obstacles.length > 0) selectObstacle(0); // Optional fallback
+            else { 
+                selectedIndex = -1; 
+                selectedObstacleIndex = -1;
+                document.getElementById('editor-panel').style.display = 'none'; 
+            }
+            renderList(); draw();
+            runSimulation();
+        }
+
+        function undo() { if (historyStep > 0) { historyStep--; syncStateAfterHistory(); } }
+        function redo() { if (historyStep < history.length - 1) { historyStep++; syncStateAfterHistory(); } }
+        window.onkeydown = (e) => {
+            // Ignore if typing in input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (e.key === 'Escape') {
+                if (isDrawingPolygon) {
+                    isDrawingPolygon = false;
+                    tempPolygonPoints = [];
+                    draw();
+                } else {
+                    selectedIndex = -1;
+                    selectedObstacleIndex = -1;
+                    uiSync();
+                    renderList();
+                    draw();
+                }
+            }
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                if (selectedIndex !== -1) deleteSelected();
+                if (selectedObstacleIndex !== -1) deleteSelectedObstacle();
+            }
+            if (e.key === ' ') {
+                e.preventDefault();
+                togglePlay();
+            }
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                saveProject();
+            }
+            if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undo(); }
+            if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redo(); }
+        };
+
+        // --- Drawing ---
+        function draw() {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, offset.x, offset.y, img.width * scale, img.height * scale);
+
+            const pts = paths[currentPathId].points;
+            const pxPerMeter = (img.width * scale) / fieldWidth;
+
+            if (gridEnabled) {
+                ctx.save();
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+                ctx.lineWidth = 1;
+                const fieldH = (img.height * scale) / pxPerMeter;
+                
+                for (let x = 0; x <= fieldWidth; x += gridSize) {
+                    const s = fieldToScreen(x, 0); // Bottom
+                    const e = fieldToScreen(x, fieldH); // Top
+                    ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(e.x, e.y); ctx.stroke();
+                }
+                for (let y = 0; y <= fieldH; y += gridSize) {
+                    const s = fieldToScreen(0, y); // Left
+                    const e = fieldToScreen(fieldWidth, y); // Right
+                    ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(e.x, e.y); ctx.stroke();
+                }
+                ctx.restore();
+            }
+
+            // Draw Obstacles
+            obstacles.forEach((obs, i) => {
+                const type = obs.type || 'rectangle'; // legacy default
+                
+                ctx.save();
+                ctx.fillStyle = (i === selectedObstacleIndex) ? "rgba(255, 100, 100, 0.4)" : "rgba(100, 100, 100, 0.6)";
+                ctx.strokeStyle = (i === selectedObstacleIndex) ? "#ff4444" : "#444";
+                ctx.lineWidth = 2;
+
+                if (type === 'rectangle') {
+                    const s = fieldToScreen(obs.x, obs.y);
+                    const w = obs.w * pxPerMeter;
+                    const h = obs.h * pxPerMeter;
+                    
+                    ctx.translate(s.x, s.y);
+                    ctx.fillRect(-w/2, -h/2, w, h);
+                    ctx.strokeRect(-w/2, -h/2, w, h);
+                    
+                    if (i === selectedObstacleIndex) {
+                        ctx.strokeStyle = "#fff";
+                        ctx.setLineDash([4, 4]);
+                        ctx.strokeRect(-w/2 - 2, -h/2 - 2, w + 4, h + 4);
+                    }
+                    
+                    ctx.fillStyle = "white";
+                    ctx.font = "bold 12px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(obs.name, 0, 0);
+
+                } else if (type === 'circle') {
+                    const s = fieldToScreen(obs.x, obs.y);
+                    const r = obs.r * pxPerMeter;
+                    
+                    ctx.translate(s.x, s.y);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, r, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    if (i === selectedObstacleIndex) {
+                        ctx.strokeStyle = "#fff";
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.arc(0, 0, r + 2, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+
+                    ctx.fillStyle = "white";
+                    ctx.font = "bold 12px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(obs.name, 0, 0);
+
+                } else if (type === 'polygon') {
+                    if (obs.points && obs.points.length > 0) {
+                        ctx.beginPath();
+                        const first = fieldToScreen(obs.points[0].x, obs.points[0].y);
+                        ctx.moveTo(first.x, first.y);
+                        for(let k=1; k<obs.points.length; k++) {
+                            const p = fieldToScreen(obs.points[k].x, obs.points[k].y);
+                            ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+
+                        if (i === selectedObstacleIndex) {
+                             ctx.strokeStyle = "#fff"; // Vertices highlight maybe?
+                             obs.points.forEach(pt => {
+                                 const sc = fieldToScreen(pt.x, pt.y);
+                                 ctx.beginPath();
+                                 ctx.arc(sc.x, sc.y, 4, 0, Math.PI*2);
+                                 ctx.fillStyle = "#fff";
+                                 ctx.fill();
+                             });
+                        }
+                        
+                        // Name at centroid (obs.x, obs.y)
+                        const s = fieldToScreen(obs.x, obs.y);
+                        ctx.fillStyle = "white";
+                        ctx.font = "bold 12px Arial";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(obs.name, s.x, s.y);
+                    }
+                }
+                
+                ctx.restore();
+            });
+
+            // Draw Temp Polygon
+            if (isDrawingPolygon && tempPolygonPoints.length > 0) {
+                ctx.save();
+                ctx.strokeStyle = "#f1c40f";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                const start = fieldToScreen(tempPolygonPoints[0].x, tempPolygonPoints[0].y);
+                ctx.moveTo(start.x, start.y);
+                for(let k=1; k<tempPolygonPoints.length; k++) {
+                    const p = fieldToScreen(tempPolygonPoints[k].x, tempPolygonPoints[k].y);
+                    ctx.lineTo(p.x, p.y);
+                }
+                // Draw line to current mouse if needed, but we don't track mouse here easily without passing it.
+                // Just close if we wanted to show preview, but usually drawing tools show line to cursor.
+                // We'll trust the user sees dots.
+                ctx.stroke();
+                
+                tempPolygonPoints.forEach(pt => {
+                    const sc = fieldToScreen(pt.x, pt.y);
+                    ctx.beginPath();
+                    ctx.arc(sc.x, sc.y, 3, 0, Math.PI*2);
+                    ctx.fillStyle = "#f1c40f";
+                    ctx.fill();
+                });
+                ctx.restore();
+            }
+
+            // Draw Simulated Path
+            if (typeof simulationPath !== 'undefined' && simulationPath.length > 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = (typeof collisionDetected !== 'undefined' && collisionDetected) ? "#ff4444" : "#4caf50";
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                
+                const start = fieldToScreen(simulationPath[0].x, simulationPath[0].y);
+                ctx.moveTo(start.x, start.y);
+                
+                for(let i=1; i<simulationPath.length; i+=5) { // Optimization: only draw every 5th point
+                     const p = fieldToScreen(simulationPath[i].x, simulationPath[i].y);
+                     ctx.lineTo(p.x, p.y);
+                }
+                const end = fieldToScreen(simulationPath[simulationPath.length-1].x, simulationPath[simulationPath.length-1].y);
+                ctx.lineTo(end.x, end.y);
+                
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                const ghostPose = getPoseAtTime(playbackTime);
+                if (ghostPose) {
+                     const ghostScreen = fieldToScreen(ghostPose.x, ghostPose.y);
+                     drawRobot(ghostScreen, ghostPose.rot * 180 / Math.PI, "rgba(0, 200, 255, 0.7)", false, pxPerMeter, false);
+                }
+                
+                if (typeof collisionPoint !== 'undefined' && collisionPoint) {
+                    const p = fieldToScreen(collisionPoint.x, collisionPoint.y);
+                    ctx.fillStyle = "#ff4444";
+                    ctx.font = "bold 24px Arial"; 
+                    ctx.textAlign = "left";
+                    ctx.fillText("⚠️ COLLISION", p.x + 15, p.y);
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 8, 0, Math.PI*2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+
+            // Draw Path Lines
+            if (pts.length > 1) {
+                ctx.beginPath();
+                ctx.strokeStyle = "rgba(255,255,255,0.4)";
+                ctx.lineWidth = 4;
+
+                const startData = (pts[0].isLinked && linkedWaypoints[pts[0].name]) ? linkedWaypoints[pts[0].name] : pts[0];
+                const start = fieldToScreen(startData.x, startData.y);
+                ctx.moveTo(start.x, start.y);
+
+                for (let i = 1; i < pts.length; i++) {
+                    const pData = (pts[i].isLinked && linkedWaypoints[pts[i].name]) ? linkedWaypoints[pts[i].name] : pts[i];
+                    const p = fieldToScreen(pData.x, pData.y);
+                    ctx.lineTo(p.x, p.y);
+                }
+                ctx.stroke();
+            }
+
+            // Draw Waypoints
+            pts.forEach((wp, i) => {
+                // Safety check for linked data
+                const data = (wp.isLinked && linkedWaypoints[wp.name]) ? linkedWaypoints[wp.name] : wp;
+                const pos = fieldToScreen(data.x, data.y);
+                const color = (i === 0) ? "#4caf50" : (i === pts.length - 1 ? "#d94444" : "#ccc");
+
+                if (i === 0 || i === pts.length - 1 || i === selectedIndex) {
+                    drawRobot(pos, data.rot, color, (i === selectedIndex), pxPerMeter, wp.isLinked);
+                } else {
+                    ctx.beginPath();
+                    // FIXED: Changed var(--warning) to hex string
+                    ctx.fillStyle = wp.isLinked ? "#f1c40f" : "#aaa";
+                    ctx.arc(pos.x, pos.y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawRobot(pos, rot, color, isSelected, pxPerMeter, isLinked) {
+            ctx.save();
+            ctx.translate(pos.x, pos.y);
+            ctx.rotate(-rot * Math.PI / 180);
+            const w = config.robotLength * pxPerMeter, h = config.robotWidth * pxPerMeter;
+
+            if (isSelected) {
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = isLinked ? "#f1c40f" : "white";
+                ctx.strokeStyle = isLinked ? "#f1c40f" : "white";
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.roundRect(-w / 2, -h / 2, w, h, 10);
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.roundRect(-w / 2, -h / 2, w, h, 10);
+            ctx.stroke();
+
+            // Robot Center Dot
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(0, 0, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Linked Icon Overlay (Centered)
+            if (isLinked) {
+                ctx.fillStyle = "#f1c40f";
+                ctx.font = "bold 16px Arial";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("🔗", 0, -h / 2 - 15); // Floating above the robot
+            }
+
+            // Rotation Handle (Only if selected)
+            if (isSelected) {
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(w / 2 + 25, 0);
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(w / 2 + 25, 0, 8, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        // --- UI Logic ---
+        function selectWaypoint(i) { 
+            selectedIndex = i; 
+            selectedObstacleIndex = -1; 
+            isDrawingPolygon = false; // Cancel polygon drawing
+            uiSync(); 
+            renderList(); 
+            draw(); 
+        }
+
+        function selectObstacle(i) {
+            selectedObstacleIndex = i;
+            selectedIndex = -1;
+            isDrawingPolygon = false; // Cancel polygon drawing
+            uiSync();
+            renderList();
+            draw();
+        }
+
+        function uiSync() {
+            const editor = document.getElementById('editor-panel');
+            const wpContent = document.getElementById('wp-editor-content');
+            const obsContent = document.getElementById('obs-editor-content');
+
+            if (selectedIndex === -1 && selectedObstacleIndex === -1) {
+                editor.style.display = 'none';
+                return;
+            }
+            editor.style.display = 'block';
+
+            if (selectedIndex !== -1) {
+                wpContent.style.display = 'block';
+                obsContent.style.display = 'none';
+
+                const wp = paths[currentPathId].points[selectedIndex];
+                const data = wp.isLinked ? linkedWaypoints[wp.name] : wp;
+
+                const nameInput = document.getElementById('wp-name');
+                nameInput.value = wp.name;
+                nameInput.className = wp.isLinked ? 'link-active' : '';
+
+                document.getElementById('wp-x').value = data.x.toFixed(2);
+                document.getElementById('wp-y').value = data.y.toFixed(2);
+                document.getElementById('wp-rot-num').value = Math.round(data.rot);
+                document.getElementById('link-icon').innerText = wp.isLinked ? "🔗 Linked" : "🔗 Link Point";
+
+                document.getElementById('linked-dropdown-container').style.display = wp.isLinked ? 'none' : 'block';
+                updateLinkedDropdown();
+            } else if (selectedObstacleIndex !== -1) {
+                wpContent.style.display = 'none';
+                obsContent.style.display = 'block';
+                
+                const obs = obstacles[selectedObstacleIndex];
+                const type = obs.type || 'rectangle';
+                
+                document.getElementById('obs-name').value = obs.name;
+                
+                const rowPos = document.getElementById('obs-pos-row');
+                const rowRect = document.getElementById('obs-rect-params');
+                const rowCirc = document.getElementById('obs-circle-params');
+                const rowPoly = document.getElementById('obs-poly-params');
+                
+                // Defaults
+                rowPos.style.display = 'flex';
+                rowRect.style.display = 'none';
+                rowCirc.style.display = 'none';
+                rowPoly.style.display = 'none';
+                
+                document.getElementById('obs-x').value = obs.x.toFixed(2);
+                document.getElementById('obs-y').value = obs.y.toFixed(2);
+
+                if (type === 'rectangle') {
+                    rowRect.style.display = 'flex';
+                    document.getElementById('obs-w').value = obs.w.toFixed(2);
+                    document.getElementById('obs-h').value = obs.h.toFixed(2);
+                } else if (type === 'circle') {
+                    rowCirc.style.display = 'flex';
+                    document.getElementById('obs-r').value = obs.r.toFixed(2);
+                } else if (type === 'polygon') {
+                    rowPoly.style.display = 'block';
+                }
+            }
+        }
+
+        function uiUpdatePoint() {
+            const wp = paths[currentPathId].points[selectedIndex];
+            const oldName = wp.name;
+            const newName = document.getElementById('wp-name').value;
+
+            if (wp.isLinked) {
+                // Rename the master link if we change the name while linked
+                const data = linkedWaypoints[oldName];
+                delete linkedWaypoints[oldName];
+                linkedWaypoints[newName] = data;
+                wp.name = newName;
+                // Also update any other waypoint in any path referencing the old name
+                Object.values(paths).forEach(path => {
+                    path.points.forEach(p => { if (p.isLinked && p.name === oldName) p.name = newName; });
+                });
+            } else {
+                wp.name = newName;
+                wp.x = parseFloat(document.getElementById('wp-x').value) || 0;
+                wp.y = parseFloat(document.getElementById('wp-y').value) || 0;
+                wp.rot = parseFloat(document.getElementById('wp-rot-num').value) || 0;
+            }
+            runSimulation();
+            renderList(); draw();
+        }
+
+        function renderList() {
+            const l = document.getElementById('waypoint-list'); l.innerHTML = "";
+            paths[currentPathId].points.forEach((wp, i) => {
+                const d = document.createElement('div');
+                const data = wp.isLinked ? linkedWaypoints[wp.name] : wp;
+                d.className = `waypoint-item ${i === selectedIndex ? 'selected' : ''} ${wp.isLinked ? 'is-linked' : ''}`;
+                d.innerHTML = `<span>${i + 1}. ${wp.name}</span><span>${data.x.toFixed(1)}m</span>`;
+                d.onclick = () => selectWaypoint(i);
+                l.appendChild(d);
+            });
+
+            const lo = document.getElementById('obstacle-list'); lo.innerHTML = "";
+            obstacles.forEach((obs, i) => {
+                const d = document.createElement('div');
+                d.className = `waypoint-item ${i === selectedObstacleIndex ? 'selected' : ''}`;
+                d.style.cursor = "pointer";
+                
+                let desc = "";
+                if (obs.type === 'circle') desc = `R: ${obs.r.toFixed(1)}`;
+                else if (obs.type === 'polygon') desc = `${obs.points ? obs.points.length : 0} pts`;
+                else desc = `${(obs.w||0).toFixed(1)}x${(obs.h||0).toFixed(1)}`;
+                
+                d.innerHTML = `<span>${obs.name}</span><span>${desc}</span>`;
+                d.onclick = () => selectObstacle(i);
+                lo.appendChild(d);
+            });
+        }
+
+        function updatePathDropdown() {
+            const s = document.getElementById('path-select'); s.innerHTML = "";
+            Object.keys(paths).forEach(k => {
+                const o = document.createElement('option'); o.value = k; o.text = paths[k].name; s.appendChild(o);
+            });
+            s.value = currentPathId;
+            syncPathHeaderUI();
+        }
+
+        function syncPathHeaderUI() {
+            const selector = document.getElementById('path-select');
+            if (selector && selector.value !== currentPathId) selector.value = currentPathId;
+
+            const nameInput = document.getElementById('path-name-edit');
+            if (nameInput && paths[currentPathId]) {
+                nameInput.value = paths[currentPathId].name || "";
+            }
+        }
+
+        function reverseCurrentPath() {
+        const pts = paths[currentPathId].points;
+        if (pts.length < 2) return; // Nothing to reverse
+
+        // Flip the array order
+        pts.reverse();
+
+        // Optional: Re-number names if they use the default "WP_#" format
+        // This ensures the list still looks logical (1, 2, 3...)
+        pts.forEach((wp, i) => {
+            if (wp.name.startsWith("WP_")) {
+                wp.name = "WP_" + (i + 1);
+            }
+        });
+
+        selectedIndex = -1; // Deselect to avoid index confusion
+        document.getElementById('editor-panel').style.display = 'none';
+        
+        renderList();
+        saveHistory();
+        draw();
+    }
+
+        function duplicateCurrentPath() {
+            const sourcePath = paths[currentPathId];
+            const newId = "p" + Date.now();
+
+            // Deep copy the points array to ensure they are independent objects
+            const copiedPoints = sourcePath.points.map(wp => ({ ...wp }));
+
+            paths[newId] = {
+                name: sourcePath.name + " (Copy)",
+                points: copiedPoints
+            };
+
+            currentPathId = newId;
+            selectedIndex = -1; // Reset selection in the new path
+
+            updatePathDropdown();
+            syncPathHeaderUI();
+            playbackTime = 0;
+            updatePlaybackUI();
+            renderList();
+            saveHistory();
+            draw();
+        }
+
+        // Reinforced switchPath to ensure UI remains clean
+        function switchPath(id) {
+            if (!paths[id]) return;
+
+            currentPathId = id;
+            selectedIndex = -1;
+            selectedObstacleIndex = -1;
+            isDrawingPolygon = false;
+            playbackTime = 0;
+            isPlaying = false;
+            document.getElementById('play-btn').innerText = "▶";
+
+            const list = document.getElementById('waypoint-list');
+            list.innerHTML = ""; // Force clear before rendering
+
+            document.getElementById('editor-panel').style.display = 'none';
+
+            syncPathHeaderUI();
+            renderList();
+            runSimulation();
+            updatePlaybackUI();
+            draw();
+        }
+
+        function createNewPath() {
+            const id = "p" + Date.now();
+            paths[id] = { name: "New Path", points: [] };
+            currentPathId = id;
+            selectedIndex = -1; // Reset selection for the empty path
+
+            // Explicitly wipe the sidebar list so old waypoints disappear immediately
+            document.getElementById('waypoint-list').innerHTML = "";
+            document.getElementById('editor-panel').style.display = 'none';
+
+            updatePathDropdown();
+            syncPathHeaderUI();
+            playbackTime = 0;
+            updatePlaybackUI();
+            saveHistory();
+            draw();
+        }
+
+        function deleteCurrentPath() {
+            const pathKeys = Object.keys(paths);
+            if (pathKeys.length === 0) return;
+
+            const currentName = paths[currentPathId]?.name || "Current Path";
+
+            if (pathKeys.length === 1) {
+                if (!confirm(`Delete "${currentName}" and start a new empty path?`)) return;
+                delete paths[currentPathId];
+                const id = "p" + Date.now();
+                paths[id] = { name: "New Path", points: [] };
+                currentPathId = id;
+            } else {
+                if (!confirm(`Delete path "${currentName}"?`)) return;
+                delete paths[currentPathId];
+                currentPathId = Object.keys(paths)[0];
+            }
+
+            selectedIndex = -1;
+            selectedObstacleIndex = -1;
+            isDrawingPolygon = false;
+            playbackTime = 0;
+            isPlaying = false;
+            document.getElementById('play-btn').innerText = "▶";
+            document.getElementById('editor-panel').style.display = 'none';
+            document.getElementById('waypoint-list').innerHTML = "";
+
+            updatePathDropdown();
+            syncPathHeaderUI();
+            renderList();
+            saveHistory();
+            updatePlaybackUI();
+            draw();
+        }
+
+        // --- Obstacle Logic ---
+        function addObstacle(type = 'rectangle') {
+            const name = "Obs " + (obstacles.length + 1);
+            if (type === 'rectangle') {
+                obstacles.push({
+                    type: 'rectangle',
+                    x: 4,
+                    y: 4,
+                    w: 1,
+                    h: 1,
+                    name: name
+                });
+            } else if (type === 'circle') {
+                obstacles.push({
+                    type: 'circle',
+                    x: 4,
+                    y: 4,
+                    r: 0.5,
+                    name: name
+                });
+            }
+            selectObstacle(obstacles.length - 1);
+            saveHistory();
+        }
+
+        function startPolygonTool() {
+            isDrawingPolygon = true;
+            tempPolygonPoints = [];
+            selectedIndex = -1;
+            selectedObstacleIndex = -1;
+            uiSync();
+            renderList();
+            draw();
+        }
+
+        function finishPolygon() {
+            if (tempPolygonPoints.length >= 3) {
+                // Calculate centroid for x,y
+                let cx = 0, cy = 0;
+                tempPolygonPoints.forEach(p => { cx += p.x; cy += p.y; });
+                cx /= tempPolygonPoints.length;
+                cy /= tempPolygonPoints.length;
+
+                obstacles.push({
+                    type: 'polygon',
+                    x: cx, // Centroid (approximated)
+                    y: cy,
+                    points: tempPolygonPoints, // List of {x, y}
+                    name: "Poly " + (obstacles.length + 1)
+                });
+                selectObstacle(obstacles.length - 1);
+                saveHistory();
+            }
+            isDrawingPolygon = false;
+            tempPolygonPoints = [];
+            draw();
+        }
+
+        function deleteSelectedObstacle() {
+            if (selectedObstacleIndex !== -1) {
+                obstacles.splice(selectedObstacleIndex, 1);
+                selectedObstacleIndex = -1;
+                saveHistory();
+                uiSync();
+                renderList();
+                draw();
+            }
+        }
+
+        function uiUpdateObstacle() {
+            if (selectedObstacleIndex === -1) return;
+            const obs = obstacles[selectedObstacleIndex];
+            obs.name = document.getElementById('obs-name').value;
+            
+            if (obs.type === 'rectangle' || !obs.type) {
+                obs.x = parseFloat(document.getElementById('obs-x').value) || 0;
+                obs.y = parseFloat(document.getElementById('obs-y').value) || 0;
+                obs.w = parseFloat(document.getElementById('obs-w').value) || 0;
+                obs.h = parseFloat(document.getElementById('obs-h').value) || 0;
+            } else if (obs.type === 'circle') {
+                obs.x = parseFloat(document.getElementById('obs-x').value) || 0;
+                obs.y = parseFloat(document.getElementById('obs-y').value) || 0;
+                obs.r = parseFloat(document.getElementById('obs-r').value) || 0;
+            } else if (obs.type === 'polygon') {
+                 // For now, polygon vertex editing is not in the sidebar inputs
+                 // But we might want to allow shifting the whole polygon by X/Y
+                 const newX = parseFloat(document.getElementById('obs-x').value) || 0;
+                 const newY = parseFloat(document.getElementById('obs-y').value) || 0;
+                 const dx = newX - obs.x;
+                 const dy = newY - obs.y;
+                 if (dx !== 0 || dy !== 0) {
+                     obs.points.forEach(p => { p.x += dx; p.y += dy; });
+                     obs.x = newX;
+                     obs.y = newY;
+                 }
+            }
+            
+            runSimulation();
+            renderList();
+            draw();
+        }
+
+        function renamePath(v) { paths[currentPathId].name = v; updatePathDropdown(); }
+        function deleteSelected() { paths[currentPathId].points.splice(selectedIndex, 1); selectedIndex = -1; saveHistory(); renderList(); draw(); }
+
+        function exportCode() {
+            let res = "public class Waypoints {\n";
+            // Export Shared Links first
+            res += "  /* Linked Waypoints */\n";
+            Object.keys(linkedWaypoints).forEach(name => {
+                const ld = linkedWaypoints[name];
+                res += `  public static final Pose2d ${name.replace(/\s+/g, '_').toUpperCase()} = new Pose2d(${ld.x.toFixed(3)}, ${ld.y.toFixed(3)}, Rotation2d.fromDegrees(${Math.round(ld.rot)}));\n`;
+            });
+            res += "\n  /* Path Specific Waypoints */\n";
+            Object.values(paths).forEach(p => {
+                res += `  // Path: ${p.name}\n`;
+                p.points.forEach(wp => {
+                    if (!wp.isLinked) {
+                        res += `  public static final Pose2d ${wp.name.replace(/\s+/g, '_').toUpperCase()} = new Pose2d(${wp.x.toFixed(3)}, ${wp.y.toFixed(3)}, Rotation2d.fromDegrees(${Math.round(wp.rot)}));\n`;
+                    }
+                });
+            });
+            res += "}";
+            document.getElementById('java-output').value = res;
+            document.getElementById('code-modal').style.display = 'flex';
+        }
+
+        function openSettings() {
+            // Field
+            document.getElementById('field-width-input').value = fieldWidth;
+
+            // Robot dimensions
+            document.getElementById('robot-length-input').value = config.robotLength;
+            document.getElementById('robot-width-input').value = config.robotWidth;
+
+            // Physics
+            document.getElementById('max-vel-input').value = config.maxVelocity;
+            document.getElementById('max-fric-input').value = config.maxFriction;
+            document.getElementById('drive-radius-input').value = config.driveBaseRadius;
+
+            // Motor parameters
+            document.getElementById('motor-stall-torque-input').value = config.motorStallTorque;
+            document.getElementById('motor-free-speed-input').value = config.motorFreeSpeedRpm;
+            document.getElementById('current-limit-input').value = config.statorCurrentLimit;
+
+            // Drivetrain
+            document.getElementById('gear-ratio-input').value = config.gearRatio;
+            document.getElementById('wheel-radius-input').value = config.wheelRadius;
+            document.getElementById('robot-mass-input').value = config.robotMass;
+
+            // Tolerances
+            document.getElementById('waypoint-tolerance-input').value = config.waypointTolerance;
+            document.getElementById('position-tolerance-input').value = config.positionTolerance;
+            document.getElementById('reaction-time-input').value = config.reactionTime;
+
+            document.getElementById('settings-modal').style.display = 'flex';
+        }
+
+        function updateMotorPreset(preset) {
+            if (preset === 'kraken_foc') {
+                config.motorStallTorque = 9.3615;
+                config.motorFreeSpeedRpm = 5784.65;
+                config.motorStallCurrent = 476.1;
+            } else if (preset === 'kraken') {
+                config.motorStallTorque = 7.1573;
+                config.motorFreeSpeedRpm = 6065.33;
+                config.motorStallCurrent = 374.4;
+            }
+            // Update input fields to show new values
+            document.getElementById('motor-stall-torque-input').value = config.motorStallTorque;
+            document.getElementById('motor-free-speed-input').value = config.motorFreeSpeedRpm;
+            // Re-run simulation with new motor
+            runSimulation();
+            draw();
+        }
+
+        function updateRobotConfig() {
+            // Robot dimensions
+            config.robotLength = parseFloat(document.getElementById('robot-length-input').value) || 0.8;
+            config.robotWidth = parseFloat(document.getElementById('robot-width-input').value) || 0.8;
+
+            // Physics
+            config.maxVelocity = parseFloat(document.getElementById('max-vel-input').value) || 4.287;
+            config.maxFriction = parseFloat(document.getElementById('max-fric-input').value) || 1.0;
+            config.driveBaseRadius = parseFloat(document.getElementById('drive-radius-input').value) || 0.4;
+
+            // Motor parameters
+            config.motorStallTorque = parseFloat(document.getElementById('motor-stall-torque-input').value) || 9.3615;
+            config.motorFreeSpeedRpm = parseFloat(document.getElementById('motor-free-speed-input').value) || 5784.65;
+            config.statorCurrentLimit = parseFloat(document.getElementById('current-limit-input').value) || 150.0;
+
+            // Drivetrain
+            config.gearRatio = parseFloat(document.getElementById('gear-ratio-input').value) || 6.746;
+            config.wheelRadius = parseFloat(document.getElementById('wheel-radius-input').value) || 0.0483;
+            config.robotMass = parseFloat(document.getElementById('robot-mass-input').value) || 56.7;
+
+            // Tolerances
+            config.waypointTolerance = parseFloat(document.getElementById('waypoint-tolerance-input').value) || 0.15;
+            config.positionTolerance = parseFloat(document.getElementById('position-tolerance-input').value) || 0.02;
+            config.reactionTime = parseFloat(document.getElementById('reaction-time-input').value) || 0.03;
+
+            // Re-run simulation with new parameters
+            runSimulation();
+            draw();
+        }
+
+        // --- Added Features ---
+        function saveProject() {
+            const data = {
+                paths, linkedWaypoints, obstacles, config, 
+                fieldWidth, fieldImageSrc, 
+                gridEnabled, snapEnabled, gridSize
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "waypoint_project.json";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadProject(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    paths = data.paths || paths;
+                    linkedWaypoints = data.linkedWaypoints || linkedWaypoints;
+                    obstacles = data.obstacles || [];
+                    config = { ...config, ...(data.config || {}) };
+                    
+                    if (data.fieldWidth) fieldWidth = data.fieldWidth;
+                    
+                    if (data.gridEnabled !== undefined) gridEnabled = data.gridEnabled;
+                    if (data.snapEnabled !== undefined) snapEnabled = data.snapEnabled;
+                    if (data.gridSize !== undefined) gridSize = data.gridSize;
+                    
+                    // Update UI controls
+                    document.getElementById('grid-btn').innerText = "Grid: " + (gridEnabled ? "On" : "Off");
+                    document.getElementById('grid-controls').style.display = gridEnabled ? "block" : "none";
+                    document.getElementById('snap-check').checked = snapEnabled;
+                    document.getElementById('grid-size').value = gridSize;
+                    
+                    // Handle image load last
+                    if (data.fieldImageSrc && data.fieldImageSrc !== fieldImageSrc) {
+                        fieldImageSrc = data.fieldImageSrc;
+                        img.src = fieldImageSrc; 
+                        // img.onload will trigger draw loop and saveHistory
+                    } else {
+                        // Just update state
+                        currentPathId = Object.keys(paths)[0];
+                        selectedIndex = -1;
+                        updatePathDropdown();
+                        syncPathHeaderUI();
+                        playbackTime = 0;
+                        updatePlaybackUI();
+                        renderList();
+                        saveHistory();
+                        draw();
+                    }
+
+                } catch (err) {
+                    alert("Failed to load project: " + err);
+                }
+            };
+            reader.readAsText(file);
+            document.getElementById('file-input').value = '';
+        }
+
+        function toggleGrid() {
+            gridEnabled = !gridEnabled;
+            document.getElementById('grid-btn').innerText = "Grid: " + (gridEnabled ? "On" : "Off");
+            document.getElementById('grid-controls').style.display = gridEnabled ? "block" : "none";
+            saveHistory();
+            draw();
+        }
+
+        function toggleSnap() {
+            snapEnabled = document.getElementById('snap-check').checked;
+            saveHistory();
+        }
+
+        function updateGridSize() {
+            gridSize = parseFloat(document.getElementById('grid-size').value) || 1.0;
+            saveHistory();
+            draw();
+        }
+        
+        function updateFieldConfig() {
+            fieldWidth = parseFloat(document.getElementById('field-width-input').value) || 17.55;
+            saveHistory();
+            draw();
+        }
+        
+        function uploadFieldImage(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                fieldImageSrc = e.target.result;
+                img.src = fieldImageSrc;
+                saveHistory();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function insertWaypointAfter() {
+            if (selectedIndex === -1) return;
+            const pts = paths[currentPathId].points;
+            
+            // Current point
+            const curr = pts[selectedIndex];
+            const currData = curr.isLinked ? linkedWaypoints[curr.name] : curr;
+            
+            // Next point (if exists)
+            const nextIndex = selectedIndex + 1;
+            let nextData = currData; // Default to same spot if end
+            
+            if (nextIndex < pts.length) {
+                const next = pts[nextIndex];
+                nextData = next.isLinked ? linkedWaypoints[next.name] : next;
+            } else {
+                // If at end, offset slightly so it's visible
+                nextData = { x: currData.x + 0.5, y: currData.y, rot: currData.rot };
+            }
+
+            // Midpoint
+            const midX = (currData.x + nextData.x) / 2;
+            const midY = (currData.y + nextData.y) / 2;
+
+            const newPoint = { 
+                name: "WP_" + Date.now().toString().slice(-4), 
+                x: midX, 
+                y: midY, 
+                rot: currData.rot, 
+                isLinked: false 
+            };
+            
+            pts.splice(selectedIndex + 1, 0, newPoint);
+            selectedIndex = selectedIndex + 1; // Select the new point
+            
+            saveHistory();
+            renderList();
+            draw();
+        }
+    </script>
+</body>
+
+</html>

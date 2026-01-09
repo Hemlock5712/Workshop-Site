@@ -336,6 +336,15 @@ export const searchData: SearchItem[] = [
     ],
   },
   {
+    id: "planner",
+    title: "planner",
+    description: "",
+    content: "use client",
+    url: "/planner",
+    category: "General",
+    tags: ["planner"],
+  },
+  {
     id: "prerequisites",
     title: "Prerequisites",
     description:
