@@ -11,6 +11,7 @@ export interface Waypoint {
   y: number;
   rot: number; // degrees
   isLinked: boolean;
+  endSpeed?: number; // Optional manual end speed in m/s (undefined = auto-calculate)
 }
 
 export interface Path {

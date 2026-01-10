@@ -271,6 +271,34 @@ export class Physics {
 }
 
 /**
+ * Calculate the turn angle between three points (matches Java implementation)
+ * Returns angle in radians (0 = straight, π = 180° turn)
+ */
+function calculateTurnAngle(
+  robotPos: { x: number; y: number },
+  waypoint: { x: number; y: number },
+  nextTarget: { x: number; y: number }
+): number {
+  // Incoming vector (robot to waypoint)
+  const incomingX = waypoint.x - robotPos.x;
+  const incomingY = waypoint.y - robotPos.y;
+
+  // Outgoing vector (waypoint to next target)
+  const outgoingX = nextTarget.x - waypoint.x;
+  const outgoingY = nextTarget.y - waypoint.y;
+
+  // Calculate angle between vectors using atan2 (matches Java)
+  const inAngle = Math.atan2(incomingY, incomingX);
+  const outAngle = Math.atan2(outgoingY, outgoingX);
+
+  // Wrap to [-π, π] then take absolute value (matches MathUtil.angleModulus)
+  let angleDiff = outAngle - inAngle;
+  while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+  while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+  return Math.abs(angleDiff);
+}
+
+/**
  * Resolve waypoint data (handles linked waypoints)
  */
 export function resolveWaypointData(
@@ -367,11 +395,12 @@ export function runSimulation(
     const angleDiff = goalPose.rot - currentPose.rot;
     const angleError = normalizeAngle(angleDiff);
 
-    // Calculate remaining distance
-    let remainingDist = distToTarget;
-    for (let i = currentWaypointIndex; i < segmentLengths.length; i++) {
-      remainingDist += segmentLengths[i];
+    // Calculate remaining distance (segments AFTER current target)
+    let remainingDistAfterTarget = 0;
+    for (let i = currentWaypointIndex + 1; i < segmentLengths.length; i++) {
+      remainingDistAfterTarget += segmentLengths[i];
     }
+    const remainingDist = distToTarget + remainingDistAfterTarget;
 
     const currentLinearSpeed = Math.hypot(currentSpeeds.vx, currentSpeeds.vy);
     const targetOmega = physics.calculateTargetOmega(
@@ -396,7 +425,43 @@ export function runSimulation(
         0
       );
     } else {
-      targetSpeed = config.maxVelocity;
+      // Calculate turn angle to determine waypoint end speed
+      const nextTargetIndex = Math.min(
+        currentWaypointIndex + 2,
+        poses.length - 1
+      );
+      const nextTarget = poses[nextTargetIndex];
+      const turnAngle = calculateTurnAngle(currentPose, targetPose, nextTarget);
+
+      // Use manual speed if set, otherwise auto-calculate from turn angle
+      const targetWaypoint = waypoints[currentWaypointIndex + 1];
+      let waypointEndSpeed =
+        targetWaypoint.endSpeed ??
+        config.maxVelocity * Math.cos(turnAngle / 2.0);
+
+      // Clamp to valid range
+      waypointEndSpeed = Math.max(
+        0,
+        Math.min(waypointEndSpeed, config.maxVelocity)
+      );
+
+      // Cap based on remaining distance - ensure we can brake to 0 after waypoint
+      if (remainingDistAfterTarget > 0) {
+        const maxSpeedFromDistance = Math.sqrt(
+          2.0 * config.maxFriction * 9.81 * remainingDistAfterTarget
+        );
+        waypointEndSpeed = Math.min(waypointEndSpeed, maxSpeedFromDistance);
+      }
+
+      // Use braking calculation with waypoint end speed
+      targetSpeed = physics.calculateBrakingTargetSpeed(
+        distToTarget,
+        currentLinearSpeed,
+        config.reactionTime,
+        targetOmega,
+        angleError,
+        waypointEndSpeed
+      );
     }
     targetSpeed = Math.min(targetSpeed, config.maxVelocity);
 

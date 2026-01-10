@@ -36,6 +36,12 @@ export function WaypointEditor() {
     actions.rotateWaypoint(state.selectedWaypointIndex, value);
   };
 
+  const handleEndSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value =
+      e.target.value === "" ? undefined : parseFloat(e.target.value);
+    actions.updateWaypoint(state.selectedWaypointIndex, { endSpeed: value });
+  };
+
   const handleToggleLink = () => {
     actions.toggleWaypointLink(state.selectedWaypointIndex);
     saveToHistory();
@@ -149,6 +155,23 @@ export function WaypointEditor() {
           type="number"
           value={Math.round(data.rot)}
           onChange={handleRotChange}
+          className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+        />
+      </div>
+
+      {/* End Speed Input */}
+      <div>
+        <label className="text-xs text-[var(--muted-foreground)] block mb-1">
+          End Speed (m/s)
+        </label>
+        <input
+          type="number"
+          value={waypoint.endSpeed ?? ""}
+          onChange={handleEndSpeedChange}
+          placeholder="Auto"
+          min="0"
+          max={state.config.maxVelocity}
+          step="0.1"
           className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
         />
       </div>
