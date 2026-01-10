@@ -11,11 +11,11 @@ export function WaypointList() {
   const pts = currentPath?.points || [];
 
   return (
-    <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+    <div className="flex flex-col">
       <div className="text-xs font-medium text-[var(--muted-foreground)] px-2 py-1">
         Waypoints ({pts.length})
       </div>
-      <div className="flex-1 overflow-y-auto border border-[var(--border)] rounded-md bg-[var(--background)]">
+      <div className="max-h-64 overflow-y-auto border border-[var(--border)] rounded-md bg-[var(--background)]">
         {pts.length === 0 ? (
           <div className="p-4 text-center text-sm text-[var(--muted-foreground)]">
             Click on the field to add waypoints

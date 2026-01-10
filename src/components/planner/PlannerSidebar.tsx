@@ -71,7 +71,7 @@ export function PlannerSidebar({
 
   return (
     <div className="w-80 bg-[var(--card)] border-r border-[var(--border)] flex flex-col h-full overflow-hidden">
-      {/* Header */}
+      {/* Header - Fixed at top */}
       <div className="flex-shrink-0 p-4 border-b border-[var(--border)]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-[var(--card-foreground)]">
@@ -178,38 +178,41 @@ export function PlannerSidebar({
         </div>
       </div>
 
-      {/* Path Selector */}
-      <div className="flex-shrink-0 p-4 border-b border-[var(--border)]">
-        <PathSelector />
-      </div>
+      {/* Scrollable content area */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        {/* Path Selector */}
+        <div className="p-4 border-b border-[var(--border)]">
+          <PathSelector />
+        </div>
 
-      {/* Waypoint List */}
-      <div className="flex-1 min-h-0 p-4 overflow-hidden flex flex-col">
-        <WaypointList />
-      </div>
+        {/* Waypoint List */}
+        <div className="p-4 border-b border-[var(--border)]">
+          <WaypointList />
+        </div>
 
-      {/* Editor Panel */}
-      <div className="flex-shrink-0 p-4 border-t border-[var(--border)]">
-        {state.selectedWaypointIndex !== -1 ? (
-          <WaypointEditor />
-        ) : state.selectedObstacleIndex !== -1 ? (
-          <ObstacleEditor />
-        ) : (
-          <div className="text-center text-sm text-[var(--muted-foreground)] py-4">
-            Select a waypoint or obstacle to edit
-          </div>
-        )}
-      </div>
+        {/* Editor Panel */}
+        <div className="p-4 border-b border-[var(--border)]">
+          {state.selectedWaypointIndex !== -1 ? (
+            <WaypointEditor />
+          ) : state.selectedObstacleIndex !== -1 ? (
+            <ObstacleEditor />
+          ) : (
+            <div className="text-center text-sm text-[var(--muted-foreground)] py-4">
+              Select a waypoint or obstacle to edit
+            </div>
+          )}
+        </div>
 
-      {/* Export Button */}
-      <div className="flex-shrink-0 p-4 border-t border-[var(--border)]">
-        <button
-          onClick={onOpenExport}
-          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-md font-medium transition-colors"
-        >
-          <FileCode className="w-5 h-5" />
-          Export Java
-        </button>
+        {/* Export Button */}
+        <div className="p-4">
+          <button
+            onClick={onOpenExport}
+            className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-md font-medium transition-colors"
+          >
+            <FileCode className="w-5 h-5" />
+            Export Java
+          </button>
+        </div>
       </div>
     </div>
   );
