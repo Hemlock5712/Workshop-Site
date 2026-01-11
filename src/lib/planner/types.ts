@@ -179,7 +179,7 @@ export interface PlannerState {
 }
 
 export const DEFAULT_FIELD_WIDTH = 17.55;
-export const DEFAULT_FIELD_IMAGE = "/images/planner/field25-annotated.png";
+export const DEFAULT_FIELD_IMAGE = "/images/planner/field26.png";
 
 export const INITIAL_STATE: PlannerState = {
   paths: {
