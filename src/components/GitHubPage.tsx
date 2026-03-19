@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import CodeBlock from "./CodeBlock";
+import CodeBlock from "@/components/CodeBlock";
 import { Folder, ExternalLink } from "lucide-react";
 
 /**

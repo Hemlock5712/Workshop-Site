@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePlannerContext } from "./PlannerContext";
+import { usePlannerContext } from "@/components/planner/PlannerContext";
 import { resolveWaypointData } from "@/lib/planner/physics";
 import { Link2, Plus, Trash2 } from "lucide-react";
 

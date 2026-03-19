@@ -4,7 +4,7 @@ import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import CodeBlock from "@/components/CodeBlock";
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import Quiz from "@/components/Quiz";
 import { Lightbulb, AlertTriangle, TrendingUp } from "lucide-react";
 
@@ -325,7 +325,7 @@ public Command distanceShoot() {
           together in a real subsystem.
         </p>
 
-        <GithubPageWithPR
+        <GitHubPageWithPR
           repository="Hemlock5712/Workshop-Code"
           filePath="src/main/java/frc/robot/subsystems/Flywheel.java"
           branch="4-DynamicFlywheel"

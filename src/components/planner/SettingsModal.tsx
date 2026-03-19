@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
-import { usePlannerContext } from "./PlannerContext";
+import { usePlannerContext } from "@/components/planner/PlannerContext";
 import { MOTOR_PRESETS } from "@/lib/planner/types";
 import { X, Square, Circle, Pentagon } from "lucide-react";
 

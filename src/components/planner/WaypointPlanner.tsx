@@ -1,12 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { PlannerProvider, usePlannerContext } from "./PlannerContext";
-import { PlannerCanvas } from "./PlannerCanvas";
-import { PlannerSidebar } from "./PlannerSidebar";
-import { PlaybackBar } from "./PlaybackBar";
-import { SettingsModal } from "./SettingsModal";
-import { CodeExportModal } from "./CodeExportModal";
+import {
+  PlannerProvider,
+  usePlannerContext,
+} from "@/components/planner/PlannerContext";
+import { PlannerCanvas } from "@/components/planner/PlannerCanvas";
+import { PlannerSidebar } from "@/components/planner/PlannerSidebar";
+import { PlaybackBar } from "@/components/planner/PlaybackBar";
+import { SettingsModal } from "@/components/planner/SettingsModal";
+import { CodeExportModal } from "@/components/planner/CodeExportModal";
 
 function WaypointPlannerContent() {
   const [settingsOpen, setSettingsOpen] = useState(false);

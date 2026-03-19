@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Code, GitPullRequest } from "lucide-react";
-import GitHubPage from "./GitHubPage";
-import GitHubPR from "./GitHubPR";
+import GitHubPage from "@/components/GitHubPage";
+import GitHubPR from "@/components/GitHubPR";
 
-interface GithubPageWithPRProps {
+interface GitHubPageWithPRProps {
   repository: string;
   filePath: string;
   branch?: string;
@@ -13,13 +13,13 @@ interface GithubPageWithPRProps {
   focusFile: string;
 }
 
-export default function GithubPageWithPR({
+export default function GitHubPageWithPR({
   repository,
   filePath,
   branch,
   pullRequestNumber,
   focusFile,
-}: GithubPageWithPRProps) {
+}: GitHubPageWithPRProps) {
   const [activeTab, setActiveTab] = useState<"ide" | "diff">("ide");
 
   return (

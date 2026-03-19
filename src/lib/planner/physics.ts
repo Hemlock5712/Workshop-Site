@@ -8,9 +8,9 @@ import {
   Waypoint,
   LinkedWaypointData,
   Obstacle,
-} from "./types";
-import { checkCollision } from "./collision";
-import { degToRad, normalizeAngle } from "./transforms";
+} from "@/lib/planner/types";
+import { checkCollision } from "@/lib/planner/collision";
+import { degToRad, normalizeAngle } from "@/lib/planner/transforms";
 
 /**
  * Motor physics model (matches Motor.java)

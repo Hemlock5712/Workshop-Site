@@ -3,7 +3,7 @@ import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import {
@@ -228,7 +228,7 @@ public class ArmSubsystem extends SubsystemBase {
           Robot.java - Adding Logging
         </h3>
 
-        <GithubPageWithPR
+        <GitHubPageWithPR
           repository="Hemlock5712/Workshop-Code"
           branch="2-Logging"
           filePath="src/main/java/frc/robot/Robot.java"
@@ -242,7 +242,7 @@ public class ArmSubsystem extends SubsystemBase {
             commands. This helps track which commands are running and monitor
             subsystem state.
           </p>
-          <GithubPageWithPR
+          <GitHubPageWithPR
             repository="Hemlock5712/Workshop-Code"
             branch="2-Logging"
             filePath="src/main/java/frc/robot/RobotContainer.java"
@@ -257,7 +257,7 @@ public class ArmSubsystem extends SubsystemBase {
             log data. This example shows the CommandSwerveDrivetrain with
             Epilogue logging enabled.
           </p>
-          <GithubPageWithPR
+          <GitHubPageWithPR
             repository="Hemlock5712/Workshop-Code"
             branch="2-Logging"
             filePath="src/main/java/frc/robot/subsystems/CommandSwerveDrivetrain.java"

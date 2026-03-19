@@ -4,7 +4,7 @@ import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import CodeBlock from "@/components/CodeBlock";
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import Quiz from "@/components/Quiz";
 import { Lightbulb, MapPin, Target } from "lucide-react";
 import Image from "next/image";
@@ -398,7 +398,7 @@ public boolean isFinished() {
           and button bindings.
         </p>
 
-        <GithubPageWithPR
+        <GitHubPageWithPR
           repository="Hemlock5712/Workshop-Code"
           filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
           branch="5-DriveToPoint"

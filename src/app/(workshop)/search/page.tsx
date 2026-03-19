@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import PageTemplate from "@/components/PageTemplate";
-import SearchPageContent from "./SearchPageContent";
+import SearchPageContent from "@/app/(workshop)/search/SearchPageContent";
 
 function SearchFallback() {
   return (

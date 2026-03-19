@@ -6,7 +6,7 @@ import DocumentationButton from "@/components/DocumentationButton";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import Quiz from "@/components/Quiz";
 import GitHubPage from "@/components/GitHubPage";
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import ContentCard from "@/components/ContentCard";
 
 export default function PathPlanner() {
@@ -67,7 +67,7 @@ export default function PathPlanner() {
 
         <CollapsibleSection title="🎮 RobotContainer.java">
           <div className="space-y-4">
-            <GithubPageWithPR
+            <GitHubPageWithPR
               repository="Hemlock5712/Workshop-Code"
               branch="1-Swerve"
               filePath="src/main/java/frc/robot/RobotContainer.java"

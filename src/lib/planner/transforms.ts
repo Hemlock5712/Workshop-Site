@@ -1,6 +1,6 @@
 // Coordinate transformation utilities for the WaypointPlanner
 
-import { Point, ViewState, GridSettings } from "./types";
+import { Point, ViewState, GridSettings } from "@/lib/planner/types";
 
 export interface TransformContext {
   fieldWidth: number;

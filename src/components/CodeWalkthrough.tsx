@@ -1,5 +1,5 @@
 import { ArrowRightCircle, FileCode } from "lucide-react";
-import ComparisonTable from "./ComparisonTable";
+import ComparisonTable from "@/components/ComparisonTable";
 
 interface WalkthroughItem {
   title: string;

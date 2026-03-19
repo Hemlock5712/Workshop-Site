@@ -66,7 +66,7 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 - **`src/app/layout.tsx`**: Root layout with theme setup, font configuration, sidebar integration, and search bar
 - **`src/components/Sidebar.tsx`**: Collapsible navigation with workshop organization, tooltips, and responsive design
 - **`src/components/PageTemplate.tsx`**: Consistent page wrapper with prev/next navigation and prose styling
-- **`src/components/SearchBar.tsx`**: Fuzzy search component with Fuse.js integration
+- **`src/components/SearchBar.tsx`**: Fuzzy search component with MiniSearch integration
 
 #### Search System
 
@@ -77,7 +77,7 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
 #### Theme System
 
-- **`src/components/theme-provider.tsx`**: Theme provider wrapper using next-themes
+- **`src/components/ThemeProvider.tsx`**: Theme provider wrapper using next-themes
 - **`src/components/ui/animated-theme-toggler.tsx`**: Animated theme toggle with smooth visual transitions
 - **Implementation**: Uses `class` attribute with next-themes for theme management
 - **Modes**: light, dark, system (follows OS preference with automatic detection)
@@ -90,19 +90,17 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 - **`src/components/CodeWalkthrough.tsx`**: Step-by-step code explanation component
 - **`src/components/GitHubPR.tsx`**: Live GitHub pull request embedding
 - **`src/components/GitHubPage.tsx`**: Live GitHub file display
-- **`src/components/GithubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
+- **`src/components/GitHubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
 - **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
-- **`src/components/AlertBox.tsx`**: Styled alert/warning boxes
+- **`src/components/Box.tsx`**: Unified styled box component with alert (warning, info, tip), concept, and info variants
 - **`src/components/BillOfMaterials.tsx`**: Hardware BOM table component
 - **`src/components/CollapsibleSection.tsx`**: Expandable content sections
 - **`src/components/ComparisonTable.tsx`**: Side-by-side comparison tables
-- **`src/components/ConceptBox.tsx`**: Highlighted concept explanation boxes
 - **`src/components/ContentCard.tsx`**: Card-based content layout
 - **`src/components/KeyConceptSection.tsx`**: Key learning point sections
 - **`src/components/MechanismTabs.tsx`**: Tabbed mechanism selection interface
 - **`src/components/ModelViewer.tsx`**: 3D model display with Three.js
 - **`src/components/AutoFocusMain.tsx`**: Automatic focus management for main content
-- **`src/components/ComingSoonPage.tsx`**: Template for upcoming features
 - **`src/components/DocumentationButton.tsx`**: Quick access to external documentation
 - **`src/components/KeyboardNavigationProvider.tsx`**: Context provider for keyboard shortcuts
 - **`src/components/KeyboardShortcutsHelp.tsx`**: Modal displaying available keyboard shortcuts
@@ -149,7 +147,7 @@ Workshop Content:
 - **File Naming**: kebab-case for routes, PascalCase for components
 - **Import Alias**: `@/*` maps to `src/*`
 - **Component Structure**: Functional components with TypeScript interfaces
-- **Styling**: Tailwind utility classes with dark mode variants
+- **Styling**: Tailwind utility classes with dark mode variants. Use template literals for conditional classNames (e.g., `` className={`p-4 ${isOpen ? "px-6" : "px-2"}`} ``). The `cn()` utility from `@/lib/utils` is reserved for UI primitives only (`Box.tsx`, `button.tsx`, `animated-theme-toggler.tsx`).
 - **Navigation**: Client-side routing with active state management
 - **Video Integration**: YouTube embeds for educational content
 - **Code Learning**: Tabbed interfaces combining final code with development process

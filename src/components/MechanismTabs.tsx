@@ -2,9 +2,9 @@
 
 import { ReactNode } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
-import GithubPageWithPR from "./GithubPageWithPR";
-import CodeWalkthrough from "./CodeWalkthrough";
-import ComparisonTable from "./ComparisonTable";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import CodeWalkthrough from "@/components/CodeWalkthrough";
+import ComparisonTable from "@/components/ComparisonTable";
 
 interface MechanismContent {
   beforeItems: string[];
@@ -51,7 +51,7 @@ function MechanismPanel({ content }: { content: MechanismContent }) {
         />
       </div>
 
-      <GithubPageWithPR
+      <GitHubPageWithPR
         repository={content.repository}
         filePath={content.filePath}
         branch={content.branch}

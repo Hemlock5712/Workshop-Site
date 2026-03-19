@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { usePlannerContext } from "./PlannerContext";
+import { usePlannerContext } from "@/components/planner/PlannerContext";
 import { X, Copy, Check } from "lucide-react";
 import { resolveWaypointData } from "@/lib/planner/physics";
 

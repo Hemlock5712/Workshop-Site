@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useRef } from "react";
-import { usePlannerContext } from "./PlannerContext";
-import { PathSelector } from "./PathSelector";
-import { WaypointList } from "./WaypointList";
-import { WaypointEditor } from "./WaypointEditor";
-import { ObstacleEditor } from "./ObstacleEditor";
+import { usePlannerContext } from "@/components/planner/PlannerContext";
+import { PathSelector } from "@/components/planner/PathSelector";
+import { WaypointList } from "@/components/planner/WaypointList";
+import { WaypointEditor } from "@/components/planner/WaypointEditor";
+import { ObstacleEditor } from "@/components/planner/ObstacleEditor";
 import {
   Undo2,
   Redo2,

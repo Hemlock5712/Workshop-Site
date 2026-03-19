@@ -3,7 +3,7 @@ import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import GitHubPage from "@/components/GitHubPage";
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import DocumentationButton from "@/components/DocumentationButton";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
@@ -349,7 +349,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
             how the Limelight subsystem connects with the swerve drivetrain and
             command bindings.
           </p>
-          <GithubPageWithPR
+          <GitHubPageWithPR
             repository="Hemlock5712/Workshop-Code"
             branch="3-Limelight"
             filePath="src/main/java/frc/robot/RobotContainer.java"

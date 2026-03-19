@@ -1,11 +1,27 @@
 const fs = require("fs");
 const path = require("path");
 
+// Check if a string looks like CSS/Tailwind classes
+function looksLikeCSSClasses(text) {
+  const cssPatterns =
+    /\b(flex|grid|block|inline|hidden|absolute|relative|fixed|sticky|overflow|border|rounded|shadow|opacity|transition|duration|ease|cursor|pointer|select|resize|appearance|outline|ring|gap|space|divide|place|items|justify|self|order|col|row|bg-|text-|font-|leading-|tracking-|decoration-|p-|px-|py-|pt-|pb-|pl-|pr-|m-|mx-|my-|mt-|mb-|ml-|mr-|w-|h-|min-|max-|top-|right-|bottom-|left-|z-|dark:|hover:|focus:|active:|disabled:|sm:|md:|lg:|xl:|2xl:)\b/;
+  // If more than half the words match CSS patterns, it's likely CSS
+  const words = text.split(/\s+/);
+  if (words.length === 0) return false;
+  const cssWordCount = words.filter((w) => cssPatterns.test(w)).length;
+  return cssWordCount / words.length > 0.3;
+}
+
 // Extract text content from JSX/TSX strings
 function extractTextFromJSX(content) {
   // Remove imports and exports
   content = content.replace(/^import.*$/gm, "");
   content = content.replace(/^export.*$/gm, "");
+
+  // Remove className attributes (both string and expression forms)
+  content = content.replace(/className="[^"]*"/g, "");
+  content = content.replace(/className={`[^`]*`}/g, "");
+  content = content.replace(/className=\{[^}]*\}/g, "");
 
   // Extract text from JSX elements
   const textMatches = [];
@@ -19,7 +35,8 @@ function extractTextFromJSX(content) {
       text &&
       !text.startsWith("{") &&
       !text.startsWith("//") &&
-      text.length > 1
+      text.length > 1 &&
+      !looksLikeCSSClasses(text)
     ) {
       textMatches.push(text);
     }
@@ -33,7 +50,11 @@ function extractTextFromJSX(content) {
       text &&
       text.length > 2 &&
       !text.includes("className") &&
-      !text.includes("href")
+      !text.includes("href") &&
+      !looksLikeCSSClasses(text) &&
+      !text.startsWith("http") &&
+      !text.startsWith("/images/") &&
+      !text.startsWith("src/")
     ) {
       textMatches.push(text);
     }
@@ -192,6 +213,42 @@ function getPageMetadata(route) {
       description:
         "Advanced application combining vision systems with shooting mechanisms for accurate targeting.",
     },
+    "swerve-calibration": {
+      title: "Swerve Calibration",
+      category: "Workshop 2",
+      description:
+        "Calibrating and tuning swerve drive modules for accurate autonomous and teleop performance.",
+    },
+    "drive-to-point": {
+      title: "Drive to Point",
+      category: "Workshop 2",
+      description:
+        "Implementing drive-to-point navigation using PID control for precise autonomous positioning.",
+    },
+    "advanced-drive-to-point": {
+      title: "Advanced Drive to Point",
+      category: "Workshop 2",
+      description:
+        "Profiled path following with feedforward control for smooth autonomous movement.",
+    },
+    glossary: {
+      title: "Glossary",
+      category: "Resources",
+      description:
+        "Terminology reference for FRC programming concepts and CTRE hardware components.",
+    },
+    "ai-assistant": {
+      title: "AI Assistant",
+      category: "Resources",
+      description:
+        "AI-powered chat assistant for workshop questions and FRC programming help.",
+    },
+    search: {
+      title: "Search",
+      category: "Resources",
+      description:
+        "Search across all workshop content to find specific topics and lessons.",
+    },
   };
 
   return (
@@ -214,15 +271,22 @@ function generateSearchData() {
           path.join(dir, item.name),
           route ? `${route}/${item.name}` : item.name
         );
-      } else if (item.name === "page.tsx") {
+      } else if (item.name === "page.tsx" || item.name === "page.mdx") {
+        // Strip Next.js route group prefixes like (workshop)/ and (planner)/
+        const cleanRoute = route.replace(/\([^)]+\)\/?/g, "");
+
         const filePath = path.join(dir, item.name);
         const content = fs.readFileSync(filePath, "utf8");
         const extractedText = extractTextFromJSX(content);
-        const metadata = getPageMetadata(route);
 
-        // Generate tags from content and route
+        // Skip pages with no meaningful content
+        if (extractedText.length < 50) continue;
+
+        const metadata = getPageMetadata(cleanRoute);
+
+        // Generate tags from content and clean route
         const tags = [
-          ...route.split("/").filter(Boolean),
+          ...cleanRoute.split("/").filter(Boolean),
           ...(extractedText
             .toLowerCase()
             .match(
@@ -231,11 +295,11 @@ function generateSearchData() {
         ];
 
         const searchItem = {
-          id: route || "home",
+          id: cleanRoute || "home",
           title: metadata.title,
           description: metadata.description,
           content: extractedText,
-          url: route ? `/${route}` : "/",
+          url: cleanRoute ? `/${cleanRoute}` : "/",
           category: metadata.category,
           tags: [...new Set(tags)],
         };

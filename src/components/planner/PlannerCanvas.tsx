@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useCallback, useState } from "react";
-import { usePlannerContext } from "./PlannerContext";
+import { usePlannerContext } from "@/components/planner/PlannerContext";
 import { useCanvasInteraction } from "@/hooks/planner/useCanvasInteraction";
 import {
   fieldToScreen,

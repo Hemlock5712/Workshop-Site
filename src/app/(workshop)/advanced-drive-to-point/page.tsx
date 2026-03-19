@@ -3,7 +3,7 @@ import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import GithubPageWithPR from "@/components/GithubPageWithPR";
+import GitHubPageWithPR from "@/components/GitHubPageWithPR";
 import Quiz from "@/components/Quiz";
 
 export default function AdvancedDriveToPoint() {
@@ -509,7 +509,7 @@ double yError = setpoint.y - currentY;
             The pull request shows the profiled path following with feedforward
             control.
           </p>
-          <GithubPageWithPR
+          <GitHubPageWithPR
             repository="Hemlock5712/Workshop-Code"
             filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
             branch="6-ProfiledToPoint"

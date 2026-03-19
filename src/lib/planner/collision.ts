@@ -1,6 +1,11 @@
 // Collision detection utilities for the WaypointPlanner
 
-import { Point, Obstacle, RobotConfig, SimulationPose } from "./types";
+import {
+  Point,
+  Obstacle,
+  RobotConfig,
+  SimulationPose,
+} from "@/lib/planner/types";
 
 /**
  * Check if a point is inside a polygon using ray casting
