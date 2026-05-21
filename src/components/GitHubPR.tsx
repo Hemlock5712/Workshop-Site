@@ -14,9 +14,18 @@ import { useTheme } from "next-themes";
 /**
  * GitHub API response types for pull request data
  */
+type GitHubFileStatus =
+  | "added"
+  | "modified"
+  | "removed"
+  | "renamed"
+  | "copied"
+  | "changed"
+  | "unchanged";
+
 interface GitHubFile {
   filename: string;
-  status: string;
+  status: GitHubFileStatus;
   additions: number;
   deletions: number;
   patch?: string;
@@ -29,7 +38,7 @@ interface GitHubPRData {
   title: string;
   body: string;
   html_url: string;
-  state: string;
+  state: "open" | "closed";
   created_at: string;
   merged_at: string | null;
   user: {

@@ -1,10 +1,11 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import type MiniSearch from "minisearch";
 import {
-  createSearchInstance,
+  getSearchInstance,
   SearchResult,
   mapMiniSearchResults,
 } from "@/lib/searchConfig";
@@ -14,20 +15,27 @@ export default function SearchPageContent() {
   const query = searchParams.get("q") || "";
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const searchRef = useRef(createSearchInstance());
+  const [searchInstance, setSearchInstance] = useState<MiniSearch | null>(null);
 
   useEffect(() => {
+    getSearchInstance().then(setSearchInstance);
+  }, []);
+
+  useEffect(() => {
+    if (!searchInstance) {
+      setIsLoading(true);
+      return;
+    }
     setIsLoading(true);
     if (query.trim()) {
-      const searchResults = searchRef.current.search(query.trim());
+      const searchResults = searchInstance.search(query.trim());
       const mappedResults = mapMiniSearchResults(searchResults);
       setResults(mappedResults);
     } else {
       setResults([]);
     }
     setIsLoading(false);
-  }, [query]);
+  }, [query, searchInstance]);
 
   const getCategoryColor = (category: string) => {
     switch (category) {
