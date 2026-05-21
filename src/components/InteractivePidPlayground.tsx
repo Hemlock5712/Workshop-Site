@@ -7,13 +7,14 @@ import "uplot/dist/uPlot.min.css";
 import { useShallow } from "zustand/react/shallow";
 import { usePidStore } from "@/lib/pidStore";
 import {
-  DEFAULT_PHYSICS,
+  TARGET_RANGE_DEG,
   SLIDER_RANGES,
+  physicsFor,
   simulateStepResponse,
   type ControllerGains,
   type Regime,
 } from "@/lib/pidPhysics";
-import { RotateCcw } from "lucide-react";
+import { Lightbulb, RotateCcw, Target as TargetIcon } from "lucide-react";
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -30,8 +31,11 @@ function useReducedMotion(): boolean {
 
 type GainKey = keyof ControllerGains;
 
+// ── Slider ───────────────────────────────────────────────────────────────
+
 interface SliderProps {
   label: string;
+  unit: string;
   axisColor: string;
   value: number;
   min: number;
@@ -40,11 +44,11 @@ interface SliderProps {
   precision: number;
   onChange: (v: number) => void;
   ariaDescription: string;
-  hint?: string;
 }
 
 function Slider({
   label,
+  unit,
   axisColor,
   value,
   min,
@@ -53,7 +57,6 @@ function Slider({
   precision,
   onChange,
   ariaDescription,
-  hint,
 }: SliderProps) {
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!e.shiftKey) return;
@@ -67,17 +70,26 @@ function Slider({
     onChange(Number(next.toFixed(precision)));
   };
   const id = `pid-slider-${label}`;
+  const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-2">
-        <label
-          htmlFor={id}
-          className="font-mono text-xs font-semibold"
-          style={{ color: axisColor }}
+        <div className="flex items-baseline gap-1.5">
+          <label
+            htmlFor={id}
+            className="font-mono text-[13px] font-semibold"
+            style={{ color: axisColor }}
+          >
+            {label}
+          </label>
+          <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
+            {unit}
+          </span>
+        </div>
+        <span
+          className="font-mono text-[12px] tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
+          aria-hidden
         >
-          {label}
-        </label>
-        <span className="font-mono text-[11px] tabular-nums text-[var(--muted-foreground)]">
           {value.toFixed(precision)}
         </span>
       </div>
@@ -90,7 +102,7 @@ function Slider({
         value={value}
         onChange={(e) => onChange(parseFloat(e.target.value))}
         onKeyDown={onKeyDown}
-        aria-label={ariaDescription}
+        aria-label={`${ariaDescription} Current value ${value.toFixed(precision)} ${unit}.`}
         aria-valuemin={min}
         aria-valuemax={max}
         aria-valuenow={value}
@@ -98,123 +110,78 @@ function Slider({
         style={
           {
             ["--slider-accent" as string]: axisColor,
+            ["--slider-fill" as string]: `${pct}%`,
           } as React.CSSProperties
         }
       />
-      {hint && (
-        <span className="text-[10px] leading-tight text-[var(--muted-foreground)]">
-          {hint}
-        </span>
-      )}
     </div>
   );
 }
 
+// ── Regime chip ──────────────────────────────────────────────────────────
+
 const REGIME_STYLE: Record<Regime, { label: string; classes: string; dot: string }> = {
-  underdamped: {
-    label: "Underdamped",
-    dot: "bg-yellow-500",
+  oscillating: {
+    label: "Oscillating",
+    dot: "bg-amber-500",
     classes:
-      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200",
+      "bg-amber-50 text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-800/50",
   },
-  "critically damped": {
-    label: "Critically damped",
-    dot: "bg-green-500",
+  stable: {
+    label: "Stable",
+    dot: "bg-emerald-500",
     classes:
-      "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200",
+      "bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200/70 dark:bg-emerald-950/40 dark:text-emerald-100 dark:ring-emerald-800/50",
   },
-  overdamped: {
-    label: "Overdamped",
-    dot: "bg-blue-500",
+  drifting: {
+    label: "Drifting",
+    dot: "bg-rose-500",
     classes:
-      "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
+      "bg-rose-50 text-rose-900 ring-1 ring-rose-200/70 dark:bg-rose-950/40 dark:text-rose-100 dark:ring-rose-800/50",
   },
 };
+
+// ── Slider configs ──────────────────────────────────────────────────────
 
 interface SliderConfig {
   key: GainKey;
   label: string;
   axisColor: string;
-  hint: string;
   ariaDescription: string;
 }
 
 const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
-  {
-    key: "kP",
-    label: "kP",
-    axisColor: "#dc2626",
-    hint: "Proportional — error response",
-    ariaDescription:
-      "Proportional gain kP. Arrow keys nudge by one; Shift plus arrow keys jump by ten percent of range.",
-  },
-  {
-    key: "kI",
-    label: "kI",
-    axisColor: "#ca8a04",
-    hint: "Integral — kills steady-state error",
-    ariaDescription:
-      "Integral gain kI. Arrow keys nudge by zero point one; Shift plus arrow keys jump by ten percent of range.",
-  },
-  {
-    key: "kD",
-    label: "kD",
-    axisColor: "#2563eb",
-    hint: "Derivative — damps overshoot",
-    ariaDescription:
-      "Derivative gain kD. Arrow keys nudge by zero point one; Shift plus arrow keys jump by ten percent of range.",
-  },
+  { key: "kP", label: "kP", axisColor: "#dc2626", ariaDescription: "Proportional gain." },
+  { key: "kI", label: "kI", axisColor: "#ca8a04", ariaDescription: "Integral gain." },
+  { key: "kD", label: "kD", axisColor: "#2563eb", ariaDescription: "Derivative gain." },
 ];
 
 const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
-  {
-    key: "kS",
-    label: "kS",
-    axisColor: "#7c3aed",
-    hint: "Static — friction breakaway boost",
-    ariaDescription:
-      "Static friction feedforward kS. Arrow keys nudge by zero point zero five.",
-  },
-  {
-    key: "kV",
-    label: "kV",
-    axisColor: "#0891b2",
-    hint: "Velocity — tracks profile speed",
-    ariaDescription:
-      "Velocity feedforward kV. Arrow keys nudge by zero point zero five.",
-  },
-  {
-    key: "kG",
-    label: "kG",
-    axisColor: "#16a34a",
-    hint: "Gravity — cancels arm weight",
-    ariaDescription:
-      "Gravity feedforward kG. Arrow keys nudge by zero point one. Around 7.85 perfectly balances this arm.",
-  },
+  { key: "kS", label: "kS", axisColor: "#7c3aed", ariaDescription: "Static friction feedforward." },
+  { key: "kV", label: "kV", axisColor: "#0891b2", ariaDescription: "Velocity feedforward." },
+  { key: "kG", label: "kG", axisColor: "#16a34a", ariaDescription: "Gravity feedforward." },
 ];
 
-// ── Arm visualization ────────────────────────────────────────────────────
-//
-// SVG arm. theta=0 hangs straight down (gravity-aligned), theta=π/2 points
-// horizontally to the right. Pivot is at (cx, cy); the arm end ball is
-// imperatively moved every RAF so we don't churn React state at 60 Hz.
+// ── Arm visualization ───────────────────────────────────────────────────
 
 interface ArmVizProps {
   responseTheta: Float64Array;
   targetDeg: number;
+  initialDeg: number;
   durationSec: number;
   reducedMotion: boolean;
   isDark: boolean;
 }
 
 const ARM_VB = 220;
-const ARM_PIVOT = { x: 110, y: 70 };
+const ARM_PIVOT = { x: 110, y: 64 };
 const ARM_LENGTH = 110;
-const SAMPLE_RATE_MS = 1; // physics dt
+const SAMPLE_RATE_MS = 1;
 
 function ArmViz({
   responseTheta,
   targetDeg,
+  initialDeg,
   durationSec,
   reducedMotion,
   isDark,
@@ -223,7 +190,6 @@ function ArmViz({
   const ballRef = useRef<SVGCircleElement>(null);
   const angleLabelRef = useRef<SVGTextElement>(null);
 
-  // Position the arm given an angle in degrees.
   const placeArm = useCallback((thetaDeg: number) => {
     const r = (thetaDeg * Math.PI) / 180;
     const ex = ARM_PIVOT.x + ARM_LENGTH * Math.sin(r);
@@ -233,22 +199,27 @@ function ArmViz({
     ballRef.current?.setAttribute("cx", ex.toString());
     ballRef.current?.setAttribute("cy", ey.toString());
     if (angleLabelRef.current) {
-      angleLabelRef.current.textContent = `${thetaDeg.toFixed(0)}°`;
+      // Suppress signed-zero display ("-0°")
+      const rounded = Math.round(thetaDeg);
+      angleLabelRef.current.textContent = `${rounded === 0 ? 0 : rounded}°`;
     }
   }, []);
+
+  // Snap to initial pose immediately when the response/scenario changes.
+  useEffect(() => {
+    placeArm(responseTheta[0] ?? initialDeg);
+  }, [responseTheta, initialDeg, placeArm]);
 
   useEffect(() => {
     if (responseTheta.length === 0) return;
     if (reducedMotion) {
-      // Snap to final position
-      const finalTheta = responseTheta[responseTheta.length - 1] ?? 0;
-      placeArm(finalTheta);
+      placeArm(responseTheta[responseTheta.length - 1] ?? 0);
       return;
     }
 
     let frameId = 0;
     const startTime = performance.now();
-    const loopMs = durationSec * 1000 + 600; // 600 ms hold at end
+    const loopMs = durationSec * 1000 + 600;
     const tick = () => {
       const elapsed = performance.now() - startTime;
       const loopT = elapsed % loopMs;
@@ -269,69 +240,49 @@ function ArmViz({
     return () => cancelAnimationFrame(frameId);
   }, [responseTheta, durationSec, reducedMotion, placeArm]);
 
-  // Ghost target arm position (static)
   const tRad = (targetDeg * Math.PI) / 180;
   const tx = ARM_PIVOT.x + ARM_LENGTH * Math.sin(tRad);
   const ty = ARM_PIVOT.y + ARM_LENGTH * Math.cos(tRad);
 
-  const gradientStart = isDark ? "#9fbcd9" : "#264060";
-  const gradientEnd = isDark ? "#c1d4e7" : "#4a73a0";
-  const ghostColor = isDark ? "#475569" : "#94a3b8";
-  const mountColor = isDark ? "#475569" : "#cbd5e1";
+  const gradStart = isDark ? "#9fbcd9" : "#264060";
+  const gradEnd = isDark ? "#c1d4e7" : "#4a73a0";
+  const ghost = isDark ? "#64748b" : "#94a3b8";
   const tickColor = isDark ? "#475569" : "#cbd5e1";
+  const mount = isDark ? "#475569" : "#cbd5e1";
+  const ballStroke = isDark ? "#0d233f" : "#fff";
 
   return (
     <svg
       viewBox={`0 0 ${ARM_VB} ${ARM_VB}`}
-      className="h-full w-full"
+      className="block h-full w-full"
       role="img"
-      aria-label="Live simulated 1-DOF arm. Solid arm is the current angle; dashed arm is the 90 degree target."
+      aria-label="Simulated 1-DOF arm. Solid arm shows the current angle; dashed arm marks the target."
     >
-      <defs>
-        <linearGradient id="armGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={gradientStart} />
-          <stop offset="100%" stopColor={gradientEnd} />
-        </linearGradient>
-        <radialGradient id="ballGrad" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stopColor={gradientEnd} />
-          <stop offset="100%" stopColor={gradientStart} />
-        </radialGradient>
-      </defs>
-
-      {/* Protractor reference arc, 0 → 90° */}
       <path
-        d={`M ${ARM_PIVOT.x} ${ARM_PIVOT.y + 60} A 60 60 0 0 0 ${ARM_PIVOT.x + 60} ${ARM_PIVOT.y}`}
+        d={`M ${ARM_PIVOT.x} ${ARM_PIVOT.y + 56} A 56 56 0 0 0 ${ARM_PIVOT.x + 56} ${ARM_PIVOT.y}`}
         fill="none"
         stroke={tickColor}
         strokeWidth={1}
         strokeDasharray="2 4"
-        opacity={0.7}
+        opacity={0.65}
       />
-      {/* Reference ticks at 0, 45, 90 */}
       {[0, 45, 90].map((deg) => {
         const r = (deg * Math.PI) / 180;
-        const x1 = ARM_PIVOT.x + 55 * Math.sin(r);
-        const y1 = ARM_PIVOT.y + 55 * Math.cos(r);
-        const x2 = ARM_PIVOT.x + 66 * Math.sin(r);
-        const y2 = ARM_PIVOT.y + 66 * Math.cos(r);
-        const lx = ARM_PIVOT.x + 78 * Math.sin(r);
-        const ly = ARM_PIVOT.y + 78 * Math.cos(r) + 3;
+        const x1 = ARM_PIVOT.x + 52 * Math.sin(r);
+        const y1 = ARM_PIVOT.y + 52 * Math.cos(r);
+        const x2 = ARM_PIVOT.x + 60 * Math.sin(r);
+        const y2 = ARM_PIVOT.y + 60 * Math.cos(r);
+        const lx = ARM_PIVOT.x + 72 * Math.sin(r);
+        const ly = ARM_PIVOT.y + 72 * Math.cos(r) + 3;
         return (
           <g key={deg}>
-            <line
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={tickColor}
-              strokeWidth={1.25}
-            />
+            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={tickColor} strokeWidth={1.25} />
             <text
               x={lx}
               y={ly}
               fontSize={9}
               textAnchor="middle"
-              fill={ghostColor}
+              fill={ghost}
               fontFamily="ui-sans-serif, system-ui"
             >
               {deg}°
@@ -346,8 +297,8 @@ function ArmViz({
         y1={ARM_PIVOT.y}
         x2={tx}
         y2={ty}
-        stroke={ghostColor}
-        strokeWidth={3}
+        stroke={ghost}
+        strokeWidth={2.5}
         strokeDasharray="4 4"
         opacity={0.55}
         strokeLinecap="round"
@@ -355,34 +306,37 @@ function ArmViz({
       <circle
         cx={tx}
         cy={ty}
-        r={7}
+        r={6}
         fill="none"
-        stroke={ghostColor}
+        stroke={ghost}
         strokeWidth={1.5}
         strokeDasharray="2 2"
         opacity={0.7}
       />
 
       {/* Mount bracket */}
+      <rect x={ARM_PIVOT.x - 26} y={ARM_PIVOT.y - 20} width={52} height={12} rx={2} fill={mount} />
       <rect
         x={ARM_PIVOT.x - 26}
-        y={ARM_PIVOT.y - 22}
+        y={ARM_PIVOT.y - 20}
         width={52}
-        height={14}
-        rx={3}
-        fill={mountColor}
-      />
-      <rect
-        x={ARM_PIVOT.x - 26}
-        y={ARM_PIVOT.y - 22}
-        width={52}
-        height={3}
+        height={2.5}
         rx={1}
-        fill={ghostColor}
+        fill={ghost}
         opacity={0.7}
       />
 
-      {/* Live arm */}
+      <defs>
+        <linearGradient id="armGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={gradStart} />
+          <stop offset="100%" stopColor={gradEnd} />
+        </linearGradient>
+        <radialGradient id="ballGrad" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stopColor={gradEnd} />
+          <stop offset="100%" stopColor={gradStart} />
+        </radialGradient>
+      </defs>
+
       <line
         ref={armLineRef}
         x1={ARM_PIVOT.x}
@@ -390,39 +344,27 @@ function ArmViz({
         x2={ARM_PIVOT.x}
         y2={ARM_PIVOT.y + ARM_LENGTH}
         stroke="url(#armGrad)"
-        strokeWidth={10}
+        strokeWidth={9}
         strokeLinecap="round"
       />
       <circle
         ref={ballRef}
         cx={ARM_PIVOT.x}
         cy={ARM_PIVOT.y + ARM_LENGTH}
-        r={11}
+        r={10}
         fill="url(#ballGrad)"
-        stroke={isDark ? "#0d233f" : "#fff"}
-        strokeWidth={2}
+        stroke={ballStroke}
+        strokeWidth={1.75}
       />
 
-      {/* Pivot pin */}
-      <circle
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y}
-        r={5}
-        fill={isDark ? "#cbd5e1" : "#0d233f"}
-      />
-      <circle
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y}
-        r={2}
-        fill={isDark ? "#0d233f" : "#cbd5e1"}
-      />
+      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={4.5} fill={isDark ? "#cbd5e1" : "#0d233f"} />
+      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={1.75} fill={isDark ? "#0d233f" : "#cbd5e1"} />
 
-      {/* Live angle label */}
       <text
         ref={angleLabelRef}
         x={ARM_PIVOT.x}
-        y={ARM_VB - 12}
-        fontSize={14}
+        y={ARM_VB - 8}
+        fontSize={13}
         fontWeight={600}
         textAnchor="middle"
         fill={isDark ? "#e2e8f0" : "#0d233f"}
@@ -433,6 +375,8 @@ function ArmViz({
     </svg>
   );
 }
+
+// ── Main component ──────────────────────────────────────────────────────
 
 export default function InteractivePidPlayground() {
   const reducedMotion = useReducedMotion();
@@ -451,6 +395,8 @@ export default function InteractivePidPlayground() {
       kG: s.kG,
     })),
   );
+  const targetDeg = usePidStore((s) => s.targetDeg);
+  const setTargetDeg = usePidStore((s) => s.setTargetDeg);
   const setKP = usePidStore((s) => s.setKP);
   const setKI = usePidStore((s) => s.setKI);
   const setKD = usePidStore((s) => s.setKD);
@@ -460,29 +406,24 @@ export default function InteractivePidPlayground() {
   const reset = usePidStore((s) => s.reset);
 
   const setters: Record<GainKey, (v: number) => void> = useMemo(
-    () => ({
-      kP: setKP,
-      kI: setKI,
-      kD: setKD,
-      kS: setKS,
-      kV: setKV,
-      kG: setKG,
-    }),
+    () => ({ kP: setKP, kI: setKI, kD: setKD, kS: setKS, kV: setKV, kG: setKG }),
     [setKP, setKI, setKD, setKS, setKV, setKG],
   );
 
-  // Throttle gains → sim recompute. Normal motion: next paint (RAF).
-  // Reduced motion: 250 ms (4 fps).
-  const [throttled, setThrottled] = useState(gains);
+  const targetRad = (targetDeg * Math.PI) / 180;
+  const physics = useMemo(() => physicsFor(targetRad), [targetRad]);
+
+  // Throttled mirror of gains+target → sim recompute.
+  const inputs = useMemo(() => ({ ...gains, targetDeg }), [gains, targetDeg]);
+  const [throttled, setThrottled] = useState(inputs);
   const rafRef = useRef<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
-
   useEffect(() => {
     if (reducedMotion) {
       if (timeoutRef.current !== null) return;
       timeoutRef.current = window.setTimeout(() => {
         timeoutRef.current = null;
-        setThrottled(gains);
+        setThrottled(inputs);
       }, 250);
       return () => {
         if (timeoutRef.current !== null) {
@@ -494,7 +435,7 @@ export default function InteractivePidPlayground() {
     if (rafRef.current !== null) return;
     rafRef.current = window.requestAnimationFrame(() => {
       rafRef.current = null;
-      setThrottled(gains);
+      setThrottled(inputs);
     });
     return () => {
       if (rafRef.current !== null) {
@@ -502,25 +443,37 @@ export default function InteractivePidPlayground() {
         rafRef.current = null;
       }
     };
-  }, [gains, reducedMotion]);
+  }, [inputs, reducedMotion]);
 
-  const response = useMemo(
-    () => simulateStepResponse(DEFAULT_PHYSICS, throttled),
-    [throttled],
-  );
+  const response = useMemo(() => {
+    const { targetDeg: td, kP, kI, kD, kS, kV, kG } = throttled;
+    const targetR = (td * Math.PI) / 180;
+    return simulateStepResponse(physicsFor(targetR), {
+      kP,
+      kI,
+      kD,
+      kS,
+      kV,
+      kG,
+    });
+  }, [throttled]);
 
-  // uPlot lifecycle
+  // uPlot
   const containerRef = useRef<HTMLDivElement>(null);
   const plotRef = useRef<uPlot | null>(null);
 
   const accent = useMemo(
     () => ({
-      target: isDark ? "#475569" : "#94a3b8",
+      target: isDark ? "#64748b" : "#94a3b8",
       setpoint: isDark ? "#f59e0b" : "#b45309",
       actual: isDark ? "#7da4cb" : "#264060",
-      actualFillTop: isDark ? "rgba(125, 164, 203, 0.28)" : "rgba(38, 64, 96, 0.18)",
-      actualFillBottom: isDark ? "rgba(125, 164, 203, 0)" : "rgba(38, 64, 96, 0)",
-      grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.14)",
+      actualFillTop: isDark
+        ? "rgba(125, 164, 203, 0.28)"
+        : "rgba(38, 64, 96, 0.16)",
+      actualFillBottom: isDark
+        ? "rgba(125, 164, 203, 0)"
+        : "rgba(38, 64, 96, 0)",
+      grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
       text: isDark ? "#94a3b8" : "#64748b",
     }),
     [isDark],
@@ -531,8 +484,8 @@ export default function InteractivePidPlayground() {
     const width = containerRef.current.clientWidth;
     const opts: uPlot.Options = {
       width: width || 480,
-      height: 240,
-      padding: [16, 12, 0, 0],
+      height: 220,
+      padding: [12, 12, 0, 0],
       legend: { show: false },
       cursor: {
         drag: { x: false, y: false },
@@ -540,8 +493,15 @@ export default function InteractivePidPlayground() {
         points: { show: false },
       },
       scales: {
-        x: { time: false, range: [0, DEFAULT_PHYSICS.durationSec] },
-        y: { range: [-15, 130] },
+        x: { time: false, range: [0, physics.durationSec] },
+        // y-range gives a bit of headroom both above (overshoot) and below
+        // (sag) the chosen target.
+        y: {
+          range: [
+            Math.min(targetDeg - 30, -20),
+            Math.max(targetDeg + 30, 30),
+          ],
+        },
       },
       axes: [
         {
@@ -557,7 +517,7 @@ export default function InteractivePidPlayground() {
           grid: { stroke: accent.grid, width: 1, dash: [2, 4] },
           ticks: { show: false },
           font: "11px ui-sans-serif, system-ui",
-          size: 38,
+          size: 36,
           space: 32,
           values: (_u, splits) => splits.map((v) => `${v.toFixed(0)}°`),
         },
@@ -602,7 +562,7 @@ export default function InteractivePidPlayground() {
       containerRef.current,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accent]);
+  }, [accent, physics.durationSec, targetDeg]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -628,7 +588,7 @@ export default function InteractivePidPlayground() {
     const el = containerRef.current;
     const obs = new ResizeObserver(() => {
       if (plotRef.current && el.clientWidth > 0) {
-        plotRef.current.setSize({ width: el.clientWidth, height: 240 });
+        plotRef.current.setSize({ width: el.clientWidth, height: 220 });
       }
     });
     obs.observe(el);
@@ -636,15 +596,13 @@ export default function InteractivePidPlayground() {
   }, []);
 
   const regimeStyle = REGIME_STYLE[response.metrics.regime];
-  const riseTimeStr =
-    response.metrics.riseTime !== null
-      ? `${(response.metrics.riseTime * 1000).toFixed(0)} ms`
-      : "—";
+  const physicsTargetDeg = (physics.target * 180) / Math.PI;
+  const initialDeg = (physics.initialAngle * 180) / Math.PI;
+
   const settlingStr =
     response.metrics.settlingTime !== null
       ? `${response.metrics.settlingTime.toFixed(2)} s`
       : "—";
-  const targetDeg = (DEFAULT_PHYSICS.target * 180) / Math.PI;
 
   const renderSlider = (cfg: SliderConfig) => {
     const range = SLIDER_RANGES[cfg.key];
@@ -652,6 +610,7 @@ export default function InteractivePidPlayground() {
       <Slider
         key={cfg.key}
         label={cfg.label}
+        unit={range.unit}
         axisColor={cfg.axisColor}
         value={gains[cfg.key]}
         min={range.min}
@@ -660,120 +619,158 @@ export default function InteractivePidPlayground() {
         precision={range.precision}
         onChange={setters[cfg.key]}
         ariaDescription={cfg.ariaDescription}
-        hint={cfg.hint}
       />
     );
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2">
+    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-[0_1px_2px_rgb(0_0_0_/_0.04)] sm:p-6">
+      {/* ── Toolbar ──────────────────────────── */}
+      <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${regimeStyle.classes}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${regimeStyle.classes}`}
             aria-live="polite"
           >
-            <span
-              aria-hidden
-              className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`}
-            />
+            <span aria-hidden className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`} />
             {regimeStyle.label}
           </span>
-          <span className="text-xs text-[var(--muted-foreground)] tabular-nums">
-            overshoot {response.metrics.overshootPct.toFixed(1)}% · rise{" "}
-            {riseTimeStr} · settle {settlingStr}
-          </span>
+          <div
+            className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
+            aria-label="Performance metrics"
+          >
+            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.maxDeviationDeg.toFixed(1)}°</span> max dev</span>
+            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.steadyStateErrorDeg.toFixed(1)}°</span> final err</span>
+            <span><span className="text-[var(--foreground)] font-medium">{settlingStr}</span> settle</span>
+            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.peakVoltage.toFixed(1)} V</span> peak</span>
+          </div>
         </div>
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2.5 py-1 text-xs font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
-          aria-label="Reset gains to defaults"
+          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-[11px] font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+          aria-label="Reset all gains and the target to defaults"
         >
           <RotateCcw className="h-3 w-3" />
           Reset
         </button>
+      </header>
+
+      {/* ── Target picker ───────────────────── */}
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+        <label
+          htmlFor="pid-target"
+          className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
+        >
+          <TargetIcon className="h-3.5 w-3.5" aria-hidden />
+          Target
+        </label>
+        <input
+          id="pid-target"
+          type="range"
+          min={TARGET_RANGE_DEG.min}
+          max={TARGET_RANGE_DEG.max}
+          step={TARGET_RANGE_DEG.step}
+          value={targetDeg}
+          onChange={(e) => setTargetDeg(parseFloat(e.target.value))}
+          aria-label="Target angle in degrees. The arm starts at this angle; the controller has to hold it there against gravity."
+          aria-valuemin={TARGET_RANGE_DEG.min}
+          aria-valuemax={TARGET_RANGE_DEG.max}
+          aria-valuenow={targetDeg}
+          className="pid-slider min-w-0 flex-1"
+          style={
+            {
+              ["--slider-accent" as string]: "#475569",
+              ["--slider-fill" as string]: `${((targetDeg - TARGET_RANGE_DEG.min) / (TARGET_RANGE_DEG.max - TARGET_RANGE_DEG.min)) * 100}%`,
+            } as React.CSSProperties
+          }
+        />
+        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-[12px] tabular-nums text-[var(--foreground)]">
+          {targetDeg}°
+        </span>
+        <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
+          {(targetDeg / 360).toFixed(3)} rot
+        </span>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-[160px_minmax(0,1fr)] sm:gap-4">
-        {/* Mechanism */}
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-2">
+      {/* ── Visualization ───────────────────── */}
+      <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:gap-5">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:aspect-square md:p-3">
           <ArmViz
             responseTheta={response.theta}
-            targetDeg={targetDeg}
-            durationSec={DEFAULT_PHYSICS.durationSec}
+            targetDeg={physicsTargetDeg}
+            initialDeg={initialDeg}
+            durationSec={physics.durationSec}
             reducedMotion={reducedMotion}
             isDark={isDark}
           />
         </div>
-
-        {/* Plot */}
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-2">
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:p-3">
           <div
             ref={containerRef}
             className="pid-plot w-full"
-            style={{ minHeight: 240 }}
-            aria-label="Step response plot: dashed line is the 90 degree target, dotted line is the motion-profile setpoint, solid line is the simulated arm angle over three seconds"
+            style={{ minHeight: 220 }}
+            aria-label={`Response plot for the hold scenario at ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (flat since the arm starts at target), solid is the actual arm angle over two seconds.`}
             role="img"
           />
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
+            <span className="inline-flex items-center gap-1">
+              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)` }} />
+              target
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.setpoint} 0 2px, transparent 2px 5px)` }} />
+              profile setpoint
+            </span>
+            <span className="inline-flex items-center gap-1">
+              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: accent.actual }} />
+              arm angle
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-[var(--muted-foreground)]">
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            aria-hidden
-            className="inline-block h-0.5 w-4"
-            style={{
-              background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)`,
-            }}
-          />
-          target 90°
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            aria-hidden
-            className="inline-block h-0.5 w-4"
-            style={{
-              background: `repeating-linear-gradient(to right, ${accent.setpoint} 0 2px, transparent 2px 5px)`,
-            }}
-          />
-          motion-profile setpoint
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span
-            aria-hidden
-            className="inline-block h-0.5 w-4"
-            style={{ background: accent.actual }}
-          />
-          arm angle
-        </span>
+      {/* ── Tuning hint ─────────────────────── */}
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+        <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
+        <p>
+          <span className="font-semibold text-[var(--foreground)]">Tuning order:</span>{" "}
+          <span className="font-mono">kG → kS → kP → kD → kI</span>. With every gain at
+          zero the arm falls under gravity. Raise kG until the arm holds at{" "}
+          <span className="font-mono">{targetDeg}°</span> (peaks near{" "}
+          <span className="font-mono">3.14&nbsp;V</span> when the target is at the
+          horizontal — gravity scales with{" "}
+          <span className="font-mono">cos(angle&nbsp;from&nbsp;horizontal)</span>),
+          then add kP and kD to reject disturbances.
+        </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      {/* ── Sliders ─────────────────────────── */}
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
-            Feedback (PID)
-          </p>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
+            Feedback · PID
+          </h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDBACK_SLIDERS.map(renderSlider)}
           </div>
         </div>
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
+          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
             Feedforward
-          </p>
-          <div className="grid gap-3 sm:grid-cols-3">
+          </h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDFORWARD_SLIDERS.map(renderSlider)}
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-[var(--muted-foreground)]">
-        1-DOF arm: 2 kg · 0.4 m · viscous friction. Trapezoidal motion profile
-        steps to 90°. Try kP&nbsp;≈ 100 then bump kD to dampen the ring; or set
-        kG to ≈ 7.85 to cancel the gravity sag without any kI at all.
+      {/* ── Footer ──────────────────────────── */}
+      <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+        2 kg · 0.4 m arm on a 30 N·m, 15 rad/s motor (back-EMF modelled). Output saturates at
+        ±12 V. Gains use Phoenix 6 / WPILib units — drop these values straight into a{" "}
+        <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>.
       </p>
-    </div>
+    </section>
   );
 }

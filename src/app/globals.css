@@ -129,13 +129,15 @@
   mix-blend-mode: normal;
 }
 
-/* PID Playground slider — accessible, themed via --slider-accent */
+/* PID Playground slider — accessible, themed via --slider-accent and a
+   fill percentage --slider-fill so the track shows current value progress.  */
 .pid-slider {
   appearance: none;
   -webkit-appearance: none;
-  height: 1.25rem;
+  height: 1.125rem;
   background: transparent;
   cursor: pointer;
+  display: block;
 }
 .pid-slider:focus-visible {
   outline: 2px solid var(--primary);
@@ -143,43 +145,62 @@
   border-radius: 4px;
 }
 .pid-slider::-webkit-slider-runnable-track {
-  height: 4px;
-  background: var(--muted);
+  height: 5px;
   border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--slider-accent, var(--primary)) 0%,
+    var(--slider-accent, var(--primary)) var(--slider-fill, 0%),
+    var(--muted) var(--slider-fill, 0%),
+    var(--muted) 100%
+  );
 }
 .pid-slider::-moz-range-track {
-  height: 4px;
-  background: var(--muted);
+  height: 5px;
   border-radius: 999px;
+  background: var(--muted);
+}
+.pid-slider::-moz-range-progress {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--slider-accent, var(--primary));
 }
 .pid-slider::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  margin-top: -6px;
+  width: 14px;
+  height: 14px;
+  margin-top: -4.5px;
   border-radius: 999px;
-  background: var(--slider-accent, var(--primary));
-  border: 2px solid var(--card);
+  background: var(--card);
+  border: 2px solid var(--slider-accent, var(--primary));
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
-  transition: transform 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
 }
 .pid-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border-radius: 999px;
-  background: var(--slider-accent, var(--primary));
-  border: 2px solid var(--card);
+  background: var(--card);
+  border: 2px solid var(--slider-accent, var(--primary));
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
-  transition: transform 120ms ease;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
 }
 .pid-slider:hover::-webkit-slider-thumb,
-.pid-slider:active::-webkit-slider-thumb {
-  transform: scale(1.15);
+.pid-slider:active::-webkit-slider-thumb,
+.pid-slider:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--slider-accent, var(--primary)) 18%, transparent);
 }
 .pid-slider:hover::-moz-range-thumb,
-.pid-slider:active::-moz-range-thumb {
-  transform: scale(1.15);
+.pid-slider:active::-moz-range-thumb,
+.pid-slider:focus-visible::-moz-range-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--slider-accent, var(--primary)) 18%, transparent);
 }
 
 /* uPlot — minimal modern chrome */

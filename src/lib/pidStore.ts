@@ -1,16 +1,21 @@
 /**
  * Local store for the PID Playground.
  *
- * Lives separately from React state so we can hand the same gains to a future
- * 3D arm coupling (Phase 2) and a possible Web Worker (Phase 3) without
- * threading props through every consumer. For v0.5 it backs the six gain
- * sliders on /pid-control.
+ * Six controller gains + the chosen target angle for the hold scenario.
+ * Lives outside React state so future Phase 2 / Phase 3 consumers (3D arm
+ * coupling, a Web Worker physics tick) can read the same data without prop
+ * drilling.
  */
 
 import { create } from "zustand";
-import { DEFAULT_GAINS, type ControllerGains } from "@/lib/pidPhysics";
+import {
+  DEFAULT_GAINS,
+  DEFAULT_TARGET_DEG,
+  type ControllerGains,
+} from "@/lib/pidPhysics";
 
 interface PidStoreState extends ControllerGains {
+  targetDeg: number;
   setKP: (v: number) => void;
   setKI: (v: number) => void;
   setKD: (v: number) => void;
@@ -18,11 +23,13 @@ interface PidStoreState extends ControllerGains {
   setKV: (v: number) => void;
   setKG: (v: number) => void;
   setGains: (g: Partial<ControllerGains>) => void;
+  setTargetDeg: (d: number) => void;
   reset: () => void;
 }
 
 export const usePidStore = create<PidStoreState>((set) => ({
   ...DEFAULT_GAINS,
+  targetDeg: DEFAULT_TARGET_DEG,
   setKP: (v) => set({ kP: v }),
   setKI: (v) => set({ kI: v }),
   setKD: (v) => set({ kD: v }),
@@ -30,5 +37,10 @@ export const usePidStore = create<PidStoreState>((set) => ({
   setKV: (v) => set({ kV: v }),
   setKG: (v) => set({ kG: v }),
   setGains: (g) => set(g),
-  reset: () => set({ ...DEFAULT_GAINS }),
+  setTargetDeg: (targetDeg) => set({ targetDeg }),
+  reset: () =>
+    set({
+      ...DEFAULT_GAINS,
+      targetDeg: DEFAULT_TARGET_DEG,
+    }),
 }));

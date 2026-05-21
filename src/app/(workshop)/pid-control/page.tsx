@@ -16,12 +16,14 @@ export default function PIDControl() {
       previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
-      {/* Introduction — interactive playground in the hero right-slot */}
+      {/* Introduction */}
       <PageHero
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Drag the six gain sliders to feel how each one shapes a 1-DOF arm's step response — the same controller you'll wire into a TalonFX on real hardware."
-        concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the torque needed before any error has accumulated."
-        rightSlot={<InteractivePidPlayground />}
+        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. The interactive playground below lets you tune the same six gains you'd type into a TalonFX Slot0Configs — see how each one shapes a 1-DOF arm's response in real time."
+        concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the voltage needed before any error has accumulated."
       />
+
+      {/* Live PID playground */}
+      <InteractivePidPlayground />
 
       {/* PID Theory */}
       <section className="flex flex-col gap-8">
