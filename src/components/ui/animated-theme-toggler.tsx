@@ -7,8 +7,7 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { MoonIcon, SunIcon } from "lucide-react";
 
-interface AnimatedThemeTogglerProps
-  extends React.ComponentPropsWithoutRef<"button"> {
+interface AnimatedThemeTogglerProps extends React.ComponentPropsWithoutRef<"button"> {
   duration?: number;
 }
 
