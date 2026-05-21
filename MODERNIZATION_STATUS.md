@@ -121,6 +121,16 @@ From the redesign:
 
 ### SHIPPED
 
+**Bonus pickup: Fallback queue item A — valibot at the GitHub trust boundary.**
+- `src/lib/githubSchemas.ts` (new) — `GitHubPRDataSchema`, `GitHubFilesArraySchema`, `GitHubFileContentSchema`, plus a `parseGitHub()` helper that throws `GitHubSchemaError` with the offending path on mismatch.
+- `src/components/GitHubPR.tsx:14-21,151,167,205,210,225` — every `await res.json()` now goes through `parseGitHub()` before the rest of the component reads from it. `GitHubSchemaError` surfaces a typed message instead of leaking through as a generic `Error`.
+- `src/components/GitHubPage.tsx:6-10,54-60` — same treatment for the file-contents endpoint.
+- `src/app/api/chat/route.ts:1-26,40-55,85-89` — incoming POST body parsed with `ChatRequestSchema`. Malformed client payloads now return `400` with the offending path instead of a `500`. Outbound stream is still passed to `convertToModelMessages`; the AI SDK does deeper validation downstream and that path is unchanged.
+- Smoke-tested by hitting `/triggers` (uses `GitHubPR`) — 0 console errors, embed rendered correctly through the valibot gate.
+- Added `valibot@1.4.0` (29 KB minified, tree-shakes per-schema; no runtime cost on routes that don't import schemas).
+
+---
+
 **Headline: PID + Feedforward Playground v0.5 live on `/pid-control`.** Six gain sliders (kP/kI/kD + kS/kV/kG), modernized uPlot step-response chart with dotted gridlines and gradient fill, and a live SVG arm that replays the trajectory in real time alongside a ghosted target. The playground replaced the yellow `KeyConceptSection` at the top of `/pid-control` only — the other 27 pages were not touched.
 
 Files:
