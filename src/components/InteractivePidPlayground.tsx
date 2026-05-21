@@ -771,15 +771,15 @@ export default function InteractivePidPlayground() {
         <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
         <p>
           <span className="font-semibold text-[var(--foreground)]">Tuning order:</span>{" "}
-          <span className="font-mono">kG → kS → kP → kD → kI</span>.{" "}
+          <span className="font-mono">kG → kP → kD → kS</span>.{" "}
           <span className="font-mono">θ = 0°</span> is horizontal,{" "}
-          <span className="font-mono">+90°</span> is straight up. With everything
-          at zero, the arm falls because gravity wins. Raise kG — the
-          feedforward applies{" "}
-          <span className="font-mono">kG · cos(θ)</span> volts, so a single value
-          handles every angle. For this 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm the
-          ideal kG is around <span className="font-mono">3.14&nbsp;V</span>.
-          Add kP and kD afterward to reject disturbances.
+          <span className="font-mono">+90°</span> straight up. kG is a pure
+          feedforward — it outputs{" "}
+          <span className="font-mono">kG·cos(target)</span> volts to{" "}
+          <em>hold</em> the commanded angle, so +45° and −45° apply the same
+          voltage. Around <span className="font-mono">3.14&nbsp;V</span> the
+          arm sits still at any target; off-ideal, kP&nbsp;+&nbsp;kD pull the
+          arm back to target and kS overcomes the last bit of static friction.
         </p>
       </div>
 

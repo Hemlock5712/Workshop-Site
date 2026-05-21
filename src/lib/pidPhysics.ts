@@ -50,13 +50,20 @@ export interface PhysicsParams {
   mass: number; // kg
   length: number; // m (point-mass approximation)
   gravity: number; // m/s²
-  friction: number; // N·m·s/rad (viscous, on the load side)
+  /** Viscous friction (∝ ω). */
+  friction: number; // N·m·s/rad
+  /** Coulomb static friction the system has to break before moving. */
+  staticFriction: number; // N·m
+  /** Coulomb kinetic friction while moving. */
+  kineticFriction: number; // N·m
   motor: MotorParams;
   initialAngle: number; // rad
   target: number; // rad — final commanded position
   durationSec: number;
   profileMaxVel: number; // rotations/sec — trapezoidal motion-profile cap
   profileMaxAccel: number; // rotations/sec²
+  /** Soft mechanical limits. The arm can't rotate past these. */
+  limitRad: number;
 }
 
 export interface PidGains {
@@ -83,11 +90,17 @@ const PHYSICS_BASE: Omit<PhysicsParams, "initialAngle" | "target"> = {
   mass: 2,
   length: 0.4,
   gravity: 9.81,
-  friction: 0.5,
+  friction: 0.3,
+  // Static friction creates a small holding "deadband" — kG inside this band
+  // doesn't need to be exact, but kS becomes the gain that snaps the last bit
+  // of error closed.
+  staticFriction: 0.5, // N·m
+  kineticFriction: 0.4, // N·m
   motor: MOTOR_DEFAULT,
   durationSec: 3,
   profileMaxVel: 2, // rotations/sec
   profileMaxAccel: 15, // rotations/sec²
+  limitRad: (135 * Math.PI) / 180, // arm pegs ±135° from horizontal
 };
 
 /**
@@ -157,7 +170,8 @@ export interface StepResponse {
 }
 
 const INTEGRAL_CLAMP_V_SEC = 1.5;
-const STATIC_DEADBAND_ROTPS = 0.005;
+const ERROR_DEADBAND_ROT = 0.002; // ~0.72° — kS sleeps inside this band
+const STICK_VEL_RAD = 0.02; // below this we're treated as stuck
 
 interface ProfileSample {
   thetaRot: number;
@@ -284,15 +298,22 @@ export function simulateStepResponse(
       const pidV =
         gains.kP * errorRot + gains.kI * integral + gains.kD * dErrorRot;
 
+      // ── Feedforward ──────────────────────────────────────────────
+      // kG: arm-cosine gravity feedforward driven by the SETPOINT angle, not
+      //     the measured one. That keeps kG a true predictive term — at the
+      //     commanded position it provides the constant voltage that should
+      //     balance gravity. (Same magnitude at +θ and −θ; zero at vertical.)
+      // kV: velocity feedforward on the profile velocity (zero during a pure
+      //     hold, but kept so motion-profiled scenarios reuse this block).
+      // kS: static-friction breakaway in the direction needed to reduce the
+      //     current position error. Sleeps inside a small deadband so we don't
+      //     chatter on top of a perfect hold.
       const ksign =
-        Math.abs(sp.omegaRotPs) > STATIC_DEADBAND_ROTPS
-          ? Math.sign(sp.omegaRotPs)
-          : 0;
-      // ArmFeedforward (cosine convention): kG·cos(theta) peaks at horizontal
-      // (theta=0) and dies off at vertical (theta=±90°), matching the
-      // gravity-induced torque on a single-jointed arm.
+        Math.abs(errorRot) > ERROR_DEADBAND_ROT ? Math.sign(errorRot) : 0;
       const ffV =
-        gains.kS * ksign + gains.kV * sp.omegaRotPs + gains.kG * Math.cos(th);
+        gains.kS * ksign +
+        gains.kV * sp.omegaRotPs +
+        gains.kG * Math.cos(params.target);
 
       voltage = pidV + ffV;
       if (voltage > vMax) voltage = vMax;
@@ -307,11 +328,38 @@ export function simulateStepResponse(
     //   τ_g = -m·g·L·cos(theta) — peaks at horizontal, zero when vertical.
     const tauGravity =
       -params.mass * params.gravity * params.length * Math.cos(th);
-    const tauFriction = -params.friction * om;
-    const alpha = (tauMotor + tauGravity + tauFriction) / I;
+    const tauNonFric = tauMotor + tauGravity;
 
+    // Coulomb stick-slip friction:
+    //   moving  → kinetic friction opposes ω, plus viscous drag
+    //   nearly stopped → static friction matches the net applied torque
+    //                    (up to μ_static); if everything else exceeds the
+    //                    static limit, friction caps at ±μ_static and the
+    //                    arm breaks free.
+    let tauFriction: number;
+    if (Math.abs(om) > STICK_VEL_RAD) {
+      tauFriction =
+        -params.friction * om - params.kineticFriction * Math.sign(om);
+    } else if (Math.abs(tauNonFric) <= params.staticFriction) {
+      // Stuck — static friction perfectly cancels the rest.
+      tauFriction = -tauNonFric;
+      om = 0;
+    } else {
+      tauFriction = -params.staticFriction * Math.sign(tauNonFric);
+    }
+
+    const alpha = (tauNonFric + tauFriction) / I;
     om += alpha * dt;
     th += om * dt;
+
+    // Soft mechanical limits — arm physically can't rotate past these.
+    if (th > params.limitRad) {
+      th = params.limitRad;
+      if (om > 0) om = 0;
+    } else if (th < -params.limitRad) {
+      th = -params.limitRad;
+      if (om < 0) om = 0;
+    }
 
     t[i] = time;
     theta[i] = (th * 180) / Math.PI;
