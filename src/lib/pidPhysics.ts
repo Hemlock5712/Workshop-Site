@@ -1,6 +1,15 @@
 /**
  * 1-DOF rotational arm physics for the PID + Feedforward Playground.
  *
+ * Angle convention matches WPILib's `GravityTypeValue.Arm_Cosine`
+ * (and Phoenix 6's ArmFeedforward):
+ *   theta = 0      → arm sticking STRAIGHT OUT (horizontal)
+ *   theta = +π/2   → arm pointing UP
+ *   theta = -π/2   → arm pointing DOWN
+ * Gravity torque on the arm is proportional to `cos(theta)`: maximum at
+ * horizontal, zero when vertical. The gravity feedforward term is
+ * `kG · cos(theta)` — same shape, equal and opposite.
+ *
  * Units match how an FRC programmer actually wires this on Phoenix 6 / WPILib:
  *  - Position: rotations
  *  - Velocity: rotations / second
@@ -11,22 +20,19 @@
  *      kD : V · s / rotation         (a.k.a. V / (rotation/second))
  *      kS : V                        (static friction breakaway)
  *      kV : V · s / rotation         (per unit setpoint velocity)
- *      kG : V                        (gravity comp; multiplied by cos(angle_from_horizontal))
+ *      kG : V                        (gravity comp; multiplied by cos(theta))
  *
- * Internally we still integrate in radians (cleaner sin/cos), but every gain
+ * Internally we still integrate in radians (cleaner cos/sin), but every gain
  * the user touches is in the same units they'd type into Phoenix Tuner.
  *
  * Motor model is back-EMF aware:
  *   τ = K_T · (V − K_B · ω)
  * where K_T = τ_stall / V_max and K_B = V_max / ω_free.
  *
- * Two scenarios:
- *  - "step"  — arm sits at 0° (gravity-aligned), profile commands it to 90°
- *              (horizontal). Demonstrates the full PID + FF tuning loop.
- *  - "hold"  — arm starts at 90° (horizontal), profile target is also 90°.
- *              No motion is commanded; the only thing that can keep the arm
- *              up is kG (gravity feedforward). This is the kG-in-isolation
- *              demo: with no gains set, gravity wins and the arm falls.
+ * One scenario: hold-at-target. The arm starts at `targetRad` and the
+ * controller has to keep it there against gravity. With every gain at zero,
+ * the arm falls under gravity (visible in the plot). Raising kG cancels the
+ * gravity term; adding kP and kD then makes the loop reject disturbances.
  *
  * Integration is fixed 1 ms dt; the controller updates every 5 ms (200 Hz),
  * matching a typical TalonFX closed-loop on the robot side.
@@ -87,9 +93,10 @@ const PHYSICS_BASE: Omit<PhysicsParams, "initialAngle" | "target"> = {
 /**
  * Build the PhysicsParams for the hold scenario: arm starts at the target
  * angle and the controller has to keep it there against gravity + friction.
- * Setting target=0 puts the arm hanging straight down (the resting position
- * gravity already supports — no FF needed); target=90° is horizontal (max
- * gravity torque); negative targets reach below the pivot.
+ *
+ *   target =   0°  →  arm horizontal — max gravity torque
+ *   target = +90°  →  arm straight up — no gravity torque
+ *   target = -90°  →  arm straight down — no gravity torque
  */
 export function physicsFor(targetRad: number): PhysicsParams {
   return {
@@ -100,7 +107,7 @@ export function physicsFor(targetRad: number): PhysicsParams {
   };
 }
 
-export const DEFAULT_TARGET_DEG = 90;
+export const DEFAULT_TARGET_DEG = 0;
 
 export const DEFAULT_GAINS: ControllerGains = {
   kP: 0,
@@ -122,7 +129,7 @@ export const SLIDER_RANGES = {
 
 export const TARGET_RANGE_DEG = {
   min: -90,
-  max: 180,
+  max: 90,
   step: 1,
 } as const;
 
@@ -281,8 +288,11 @@ export function simulateStepResponse(
         Math.abs(sp.omegaRotPs) > STATIC_DEADBAND_ROTPS
           ? Math.sign(sp.omegaRotPs)
           : 0;
+      // ArmFeedforward (cosine convention): kG·cos(theta) peaks at horizontal
+      // (theta=0) and dies off at vertical (theta=±90°), matching the
+      // gravity-induced torque on a single-jointed arm.
       const ffV =
-        gains.kS * ksign + gains.kV * sp.omegaRotPs + gains.kG * Math.sin(th);
+        gains.kS * ksign + gains.kV * sp.omegaRotPs + gains.kG * Math.cos(th);
 
       voltage = pidV + ffV;
       if (voltage > vMax) voltage = vMax;
@@ -293,8 +303,10 @@ export function simulateStepResponse(
     }
 
     const tauMotor = K_T * (voltage - K_B * om);
+    // Gravity torque about the pivot with theta = 0 horizontal:
+    //   τ_g = -m·g·L·cos(theta) — peaks at horizontal, zero when vertical.
     const tauGravity =
-      -params.mass * params.gravity * params.length * Math.sin(th);
+      -params.mass * params.gravity * params.length * Math.cos(th);
     const tauFriction = -params.friction * om;
     const alpha = (tauMotor + tauGravity + tauFriction) / I;
 

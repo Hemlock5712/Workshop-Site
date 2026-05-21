@@ -163,6 +163,13 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
 ];
 
 // ── Arm visualization ───────────────────────────────────────────────────
+//
+// Convention: theta=0 → arm horizontal (extends right from pivot),
+//             theta=+90° → straight up,
+//             theta=-90° → straight down.
+// In SVG y grows downward, so:
+//   end.x = pivot.x + L·cos(theta)
+//   end.y = pivot.y − L·sin(theta)
 
 interface ArmVizProps {
   responseTheta: Float64Array;
@@ -174,8 +181,9 @@ interface ArmVizProps {
 }
 
 const ARM_VB = 220;
-const ARM_PIVOT = { x: 110, y: 64 };
+const ARM_PIVOT = { x: 64, y: 110 };
 const ARM_LENGTH = 110;
+const TICK_RADIUS = 96; // arc radius for reference ticks
 const SAMPLE_RATE_MS = 1;
 
 function ArmViz({
@@ -192,8 +200,8 @@ function ArmViz({
 
   const placeArm = useCallback((thetaDeg: number) => {
     const r = (thetaDeg * Math.PI) / 180;
-    const ex = ARM_PIVOT.x + ARM_LENGTH * Math.sin(r);
-    const ey = ARM_PIVOT.y + ARM_LENGTH * Math.cos(r);
+    const ex = ARM_PIVOT.x + ARM_LENGTH * Math.cos(r);
+    const ey = ARM_PIVOT.y - ARM_LENGTH * Math.sin(r);
     armLineRef.current?.setAttribute("x2", ex.toString());
     armLineRef.current?.setAttribute("y2", ey.toString());
     ballRef.current?.setAttribute("cx", ex.toString());
@@ -205,7 +213,6 @@ function ArmViz({
     }
   }, []);
 
-  // Snap to initial pose immediately when the response/scenario changes.
   useEffect(() => {
     placeArm(responseTheta[0] ?? initialDeg);
   }, [responseTheta, initialDeg, placeArm]);
@@ -216,7 +223,6 @@ function ArmViz({
       placeArm(responseTheta[responseTheta.length - 1] ?? 0);
       return;
     }
-
     let frameId = 0;
     const startTime = performance.now();
     const loopMs = durationSec * 1000 + 600;
@@ -241,8 +247,8 @@ function ArmViz({
   }, [responseTheta, durationSec, reducedMotion, placeArm]);
 
   const tRad = (targetDeg * Math.PI) / 180;
-  const tx = ARM_PIVOT.x + ARM_LENGTH * Math.sin(tRad);
-  const ty = ARM_PIVOT.y + ARM_LENGTH * Math.cos(tRad);
+  const tx = ARM_PIVOT.x + ARM_LENGTH * Math.cos(tRad);
+  const ty = ARM_PIVOT.y - ARM_LENGTH * Math.sin(tRad);
 
   const gradStart = isDark ? "#9fbcd9" : "#264060";
   const gradEnd = isDark ? "#c1d4e7" : "#4a73a0";
@@ -251,29 +257,43 @@ function ArmViz({
   const mount = isDark ? "#475569" : "#cbd5e1";
   const ballStroke = isDark ? "#0d233f" : "#fff";
 
+  // Half-circle protractor sweep from -90° (bottom) to +90° (top)
+  const arcStart = {
+    x: ARM_PIVOT.x,
+    y: ARM_PIVOT.y + TICK_RADIUS, // -90° (down)
+  };
+  const arcEnd = {
+    x: ARM_PIVOT.x,
+    y: ARM_PIVOT.y - TICK_RADIUS, // +90° (up)
+  };
+
   return (
     <svg
       viewBox={`0 0 ${ARM_VB} ${ARM_VB}`}
       className="block h-full w-full"
       role="img"
-      aria-label="Simulated 1-DOF arm. Solid arm shows the current angle; dashed arm marks the target."
+      aria-label="Simulated 1-DOF arm. theta=0 is horizontal (pointing right), +90° is up, -90° is down. Solid arm shows the current angle; dashed arm marks the target."
     >
+      {/* Reference half-arc */}
       <path
-        d={`M ${ARM_PIVOT.x} ${ARM_PIVOT.y + 56} A 56 56 0 0 0 ${ARM_PIVOT.x + 56} ${ARM_PIVOT.y}`}
+        d={`M ${arcStart.x} ${arcStart.y} A ${TICK_RADIUS} ${TICK_RADIUS} 0 0 1 ${arcEnd.x} ${arcEnd.y}`}
         fill="none"
         stroke={tickColor}
         strokeWidth={1}
         strokeDasharray="2 4"
         opacity={0.65}
       />
-      {[0, 45, 90].map((deg) => {
+      {[-90, -45, 0, 45, 90].map((deg) => {
         const r = (deg * Math.PI) / 180;
-        const x1 = ARM_PIVOT.x + 52 * Math.sin(r);
-        const y1 = ARM_PIVOT.y + 52 * Math.cos(r);
-        const x2 = ARM_PIVOT.x + 60 * Math.sin(r);
-        const y2 = ARM_PIVOT.y + 60 * Math.cos(r);
-        const lx = ARM_PIVOT.x + 72 * Math.sin(r);
-        const ly = ARM_PIVOT.y + 72 * Math.cos(r) + 3;
+        const inner = TICK_RADIUS - 6;
+        const outer = TICK_RADIUS + 2;
+        const label = TICK_RADIUS + 14;
+        const x1 = ARM_PIVOT.x + inner * Math.cos(r);
+        const y1 = ARM_PIVOT.y - inner * Math.sin(r);
+        const x2 = ARM_PIVOT.x + outer * Math.cos(r);
+        const y2 = ARM_PIVOT.y - outer * Math.sin(r);
+        const lx = ARM_PIVOT.x + label * Math.cos(r);
+        const ly = ARM_PIVOT.y - label * Math.sin(r) + 3;
         return (
           <g key={deg}>
             <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={tickColor} strokeWidth={1.25} />
@@ -314,20 +334,27 @@ function ArmViz({
         opacity={0.7}
       />
 
-      {/* Mount bracket */}
-      <rect x={ARM_PIVOT.x - 26} y={ARM_PIVOT.y - 20} width={52} height={12} rx={2} fill={mount} />
+      {/* Mount bracket (vertical wall to the left of the pivot) */}
       <rect
-        x={ARM_PIVOT.x - 26}
-        y={ARM_PIVOT.y - 20}
-        width={52}
-        height={2.5}
+        x={ARM_PIVOT.x - 22}
+        y={ARM_PIVOT.y - 30}
+        width={14}
+        height={60}
+        rx={2}
+        fill={mount}
+      />
+      <rect
+        x={ARM_PIVOT.x - 22}
+        y={ARM_PIVOT.y - 30}
+        width={3}
+        height={60}
         rx={1}
         fill={ghost}
         opacity={0.7}
       />
 
       <defs>
-        <linearGradient id="armGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <linearGradient id="armGrad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor={gradStart} />
           <stop offset="100%" stopColor={gradEnd} />
         </linearGradient>
@@ -341,16 +368,16 @@ function ArmViz({
         ref={armLineRef}
         x1={ARM_PIVOT.x}
         y1={ARM_PIVOT.y}
-        x2={ARM_PIVOT.x}
-        y2={ARM_PIVOT.y + ARM_LENGTH}
+        x2={ARM_PIVOT.x + ARM_LENGTH}
+        y2={ARM_PIVOT.y}
         stroke="url(#armGrad)"
         strokeWidth={9}
         strokeLinecap="round"
       />
       <circle
         ref={ballRef}
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y + ARM_LENGTH}
+        cx={ARM_PIVOT.x + ARM_LENGTH}
+        cy={ARM_PIVOT.y}
         r={10}
         fill="url(#ballGrad)"
         stroke={ballStroke}
@@ -360,13 +387,14 @@ function ArmViz({
       <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={4.5} fill={isDark ? "#cbd5e1" : "#0d233f"} />
       <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={1.75} fill={isDark ? "#0d233f" : "#cbd5e1"} />
 
+      {/* Live angle readout — bottom-right corner */}
       <text
         ref={angleLabelRef}
-        x={ARM_PIVOT.x}
-        y={ARM_VB - 8}
+        x={ARM_VB - 10}
+        y={ARM_VB - 10}
         fontSize={13}
         fontWeight={600}
-        textAnchor="middle"
+        textAnchor="end"
         fill={isDark ? "#e2e8f0" : "#0d233f"}
         fontFamily="ui-monospace, monospace"
       >
@@ -494,13 +522,21 @@ export default function InteractivePidPlayground() {
       },
       scales: {
         x: { time: false, range: [0, physics.durationSec] },
-        // y-range gives a bit of headroom both above (overshoot) and below
-        // (sag) the chosen target.
+        // Auto-fit the response with a small pad on both sides; the arm can
+        // fall all the way to −90° with insufficient FF, and overshoot above
+        // target when kG is too high.
         y: {
-          range: [
-            Math.min(targetDeg - 30, -20),
-            Math.max(targetDeg + 30, 30),
-          ],
+          range: (_u, _min, _max) => {
+            let lo = targetDeg;
+            let hi = targetDeg;
+            for (let i = 0; i < response.theta.length; i++) {
+              const v = response.theta[i] ?? targetDeg;
+              if (v < lo) lo = v;
+              if (v > hi) hi = v;
+            }
+            const pad = Math.max(10, (hi - lo) * 0.08);
+            return [lo - pad, hi + pad];
+          },
         },
       },
       axes: [
@@ -735,13 +771,15 @@ export default function InteractivePidPlayground() {
         <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
         <p>
           <span className="font-semibold text-[var(--foreground)]">Tuning order:</span>{" "}
-          <span className="font-mono">kG → kS → kP → kD → kI</span>. With every gain at
-          zero the arm falls under gravity. Raise kG until the arm holds at{" "}
-          <span className="font-mono">{targetDeg}°</span> (peaks near{" "}
-          <span className="font-mono">3.14&nbsp;V</span> when the target is at the
-          horizontal — gravity scales with{" "}
-          <span className="font-mono">cos(angle&nbsp;from&nbsp;horizontal)</span>),
-          then add kP and kD to reject disturbances.
+          <span className="font-mono">kG → kS → kP → kD → kI</span>.{" "}
+          <span className="font-mono">θ = 0°</span> is horizontal,{" "}
+          <span className="font-mono">+90°</span> is straight up. With everything
+          at zero, the arm falls because gravity wins. Raise kG — the
+          feedforward applies{" "}
+          <span className="font-mono">kG · cos(θ)</span> volts, so a single value
+          handles every angle. For this 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm the
+          ideal kG is around <span className="font-mono">3.14&nbsp;V</span>.
+          Add kP and kD afterward to reject disturbances.
         </p>
       </div>
 
