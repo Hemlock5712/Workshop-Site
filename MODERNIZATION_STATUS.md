@@ -114,3 +114,80 @@ From the redesign:
 
 5. **Commit to MDX content layer (Velite)?** Decides whether quiz authoring is hand-rolled or frontmatter-driven.
 6. **Drop OKLCH and chroma-on-dark? (recommended)** Keep the existing CSS-variable + `.dark` class system; only adjust token values.
+
+---
+
+## Overnight session — 2026-05-21
+
+### SHIPPED
+
+**Headline: PID + Feedforward Playground v0.5 live on `/pid-control`.** Six gain sliders (kP/kI/kD + kS/kV/kG), modernized uPlot step-response chart with dotted gridlines and gradient fill, and a live SVG arm that replays the trajectory in real time alongside a ghosted target. The playground replaced the yellow `KeyConceptSection` at the top of `/pid-control` only — the other 27 pages were not touched.
+
+Files:
+
+- `src/lib/pidPhysics.ts` (new, 246 lines) — 1-DOF arm sim. 1 ms integrator, 200 Hz controller, semi-implicit Euler. Trapezoidal motion profile generator (`trapezoidalProfile`). Setpoint-tracking PID + WPILib-shaped ArmFeedforward (`kS*sign(ω_sp) + kV*ω_sp + kG*sin(θ)`). Anti-windup integral clamp (±12 N·m·s). Metrics: overshoot %, 10-90 rise time, 2 % settling-band time, regime classification. Physics tuned (`maxTorque=60`, `vMax=10`, `aMax=80`) so kP changes produce visibly different overshoot envelopes — see Known Issues below for why this took two passes.
+- `src/lib/pidStore.ts` (new, 33 lines) — Zustand store fronting the six gains. Picked Zustand over `useState` to future-proof Phase 2 (3D arm coupling) and Phase 3 (Web Worker physics) without prop-drilling.
+- `src/components/InteractivePidPlayground.tsx` (new, 580 lines) — client component. RAF-throttled sim recompute on slider change (250 ms throttle when `prefers-reduced-motion`). uPlot chart with subtle gradient fill, dotted gridlines, no chrome. Live SVG arm with protractor reference arc (0°/45°/90° ticks), pivot mount, ghost target arm, end-effector ball; mutated imperatively via refs every RAF so we never re-render React state at 60 Hz. Sliders are native `<input type=range>` with Shift+arrow = 10 % jump, aria-labels per gain, focus-visible ring. Regime chip live region (`aria-live="polite"`).
+- `src/components/PageHero.tsx` (new, 60 lines) — left text / right interactive layout. Title is optional so it composes with `PageTemplate`'s existing `<h1>` instead of duplicating it.
+- `src/app/(workshop)/pid-control/page.tsx:18-23` — swapped `KeyConceptSection` → `PageHero` + `InteractivePidPlayground`. No other content on the page changed.
+- `src/app/globals.css:131-188` — `.pid-slider` themed via `--slider-accent` CSS var per gain; `.pid-plot` strips uPlot's default chrome.
+
+Deps:
+
+- `uplot@1.6.32` — ~30 KB canvas chart for sub-ms step-response repaints. Chosen over Recharts (SVG, ~150 KB).
+- `zustand@5.0.13` — gains store. `useShallow` for the gain selector to avoid identity re-renders.
+
+Validated:
+
+- `pnpm lint` clean.
+- `pnpm type-check` clean.
+- Playwright at 1440 × 900 and 375 × 812. Console error count: **0** at every gain configuration tested.
+- Acceptance criteria (all observed in Playwright screenshots):
+  - `kP=130, kD=0` → 39.9 % overshoot, large oscillation. `.playwright-screenshots/pid-v07-1440-test-kP-high.png`
+  - Add `kD=12` → overshoot drops to 3.8 %. `.playwright-screenshots/pid-v08-1440-test-kD-damps.png`
+  - `kP=50, kI=8, kD=2` → arm settles right on 90° (gravity sag eliminated). `.playwright-screenshots/pid-v09-1440-test-kI-removes-ss-err.png`
+  - `kG≈7.85` alone → cancels gravity sag without any kI. `.playwright-screenshots/pid-v10-1440-test-kG-cancels-gravity.png`
+  - Mobile 375 px stacks gracefully. `.playwright-screenshots/pid-v12-375-mobile-playground.png`, `pid-v13-375-mobile-ff-sliders.png`
+  - Dark mode `pid-v14-1440-dark.png`
+  - Keyboard: focus kP, ArrowRight → 51, Shift+ArrowRight → 71. Works.
+
+### ATTEMPTED BUT NOT LANDED
+
+- **First physics pass shipped with `maxTorque=25`, `vMax=6`, `aMax=30`** and high kP (180) produced **0 %** overshoot because the actuator clamp saturated and the motion profile damped everything. Re-tuned to `maxTorque=60 / vMax=10 / aMax=80` after a numerical sweep in `/tmp/sim-test2.mjs` (not committed). Default `kP=50, kD=2` now reads "Underdamped, 20.9 % overshoot" out of the box.
+- **Web Worker physics**: not done. The acceptance criteria explicitly made it optional ("Run physics on the main thread first … only move to a Worker if FPS visibly drops below 50"). Static `simulateStepResponse` runs ~0.5 ms per call on the dev machine; throttled to RAF; no FPS issue observed. Worker can come in Phase 2 when 3D arm coupling lands.
+- **Lighthouse score**: not measured. Dev server is running (Turbopack) and CLAUDE.md forbids running `pnpm start`. Documenting build-output route sizes belongs in a separate session where the user can stop dev → build → start → measure.
+
+### WHAT THE USER SHOULD LOOK AT FIRST
+
+Open `/pid-control` and drag the sliders. The arm visualization is the headline change the user explicitly requested late in the session ("would be nice to see a simulation of some sort of gui of mechanism … instead of just a line graph"). Verify the arm playback feels right at the defaults; if the loop timing is off (3 s sim + 600 ms hold) it's tuned in `InteractivePidPlayground.tsx:259`. Then drag kP up to ~130 with kD=0 to feel the oscillation in both the arm and the plot.
+
+### DECISIONS YOU COULDN'T MAKE
+
+1. **Should the playground also appear on `/motion-magic`?** That page is the natural next home — motion profiles + feedforward are its core topic. Spec scoped tonight's work to `/pid-control` only, so I didn't touch it. Question: copy the playground into `/motion-magic` with different defaults (showing more aggressive profile + kV demonstration), or factor the page-level integration so both pages reuse one canonical playground state?
+2. **Slider grouping naming.** I labelled them "FEEDBACK (PID)" and "FEEDFORWARD". The existing static content on the same page uses "P / I / D" headers under "Understanding PID Components" and a separate "⚡ Feedforward Gains" box. Slight redundancy now. Worth removing the static "Understanding PID Components" / "Feedforward Gains" cards entirely since the interactive playground now teaches the same content?
+3. **Setpoint trace visibility.** I added a third dotted trace ("motion-profile setpoint") because it's pedagogically useful — students see what the controller is *trying* to track. It does add visual noise, especially when the actual line tracks it tightly. Could be a toggle ("show setpoint").
+4. **kV interpretation for non-profile mechanisms.** kV in the playground only matters during the profile ramp. The existing page copy explicitly says kV is for *flywheels and intakes*, not arms. There's a small pedagogical mismatch — the user explicitly asked for kV included, so I included it, but the framing could mislead. Worth a one-line caption clarifying kV is "ProfiledPIDController-style FF on the profile velocity"?
+
+### KNOWN ISSUES / FOLLOW-UPS
+
+- **`@/lib/utils` cn() is not used in the new components.** I respected the CLAUDE.md rule ("`cn()` is reserved for UI primitives only"). All conditional classNames use template literals.
+- **uPlot ResizeObserver thrash on rapid sidebar collapse.** Not actually observed, but worth flagging — the `ResizeObserver` in `InteractivePidPlayground.tsx:333` calls `setSize` on every observed layout change. If users collapse the sidebar mid-drag we *might* see a frame stutter. If reported, debounce.
+- **Arm SVG breaks the prose width budget.** The `PageHero` right-slot is wider than the `max-w-4xl` content column thanks to the grid template (`minmax(0,1fr)_minmax(0,1.15fr)`). At 1440 px desktop the playground card sits inside the prose column fine; at wider viewports it stays bounded by the prose container. No issue, just non-obvious if anyone tries to widen the layout later.
+- **Static "Understanding PID Components" cards below the playground still use raw color divs** (`bg-[var(--muted)] dark:bg-slate-700/20` plus colored left borders). They are NOT in scope for fallback queue item C (Box-variant sweep) yet, but they're prime candidates next time Box gets refactored to left-border accents.
+- **`prefers-reduced-motion` arm behavior** — snaps the arm to the final pose instead of animating. The chart still updates on a 250 ms throttle. Visually verified by toggling `(prefers-reduced-motion: reduce)` in the code; not screenshotted because Playwright doesn't expose a clean way to flip the media query without rebooting the browser context.
+- **PageHero's grid template uses `lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]`** — the `minmax(0,…)` is load-bearing. Without it the right column's uPlot canvas refuses to shrink because of an `auto` min-width default on grid items. Don't simplify this template without re-verifying at 1440 px.
+- **`SLIDER_RANGES` lives in `pidPhysics.ts`** even though it's purely UI. I left it there so the playground and the physics module stay in lockstep on what's a sane value. Could be moved to `pidStore.ts` if the physics file feels overloaded later.
+
+### SCREENSHOT INDEX (`.playwright-screenshots/`)
+
+- `pid-v01-1440-initial.png` — first build, before duplicate-title fix
+- `pid-v02-1440-hero-fixed.png` — duplicate `<h1>` removed
+- `pid-v04-1440-with-arm.png` — first arm + modernized chart pass (still showing the old physics defaults)
+- `pid-v06-1440-defaults-tuned.png` — after maxTorque/profile retune; default 21 % overshoot
+- `pid-v07-1440-test-kP-high.png` — kP=130 → 39.9 % overshoot
+- `pid-v08-1440-test-kD-damps.png` — kP=130 + kD=12 → 3.8 %
+- `pid-v09-1440-test-kI-removes-ss-err.png` — kI=8 settles right on 90°
+- `pid-v10-1440-test-kG-cancels-gravity.png` — kG=7.85 cancels gravity without kI
+- `pid-v11-375-mobile-full.png`, `pid-v12-…`, `pid-v13-…` — mobile layout
+- `pid-v14-1440-dark.png` — dark mode
+- `pid-v15-1440-final.png` — full-page light-mode capture at the defaults
