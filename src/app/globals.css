@@ -129,6 +129,77 @@
   mix-blend-mode: normal;
 }
 
+/* PID Playground slider — accessible, themed via --slider-accent */
+.pid-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 1.25rem;
+  background: transparent;
+  cursor: pointer;
+}
+.pid-slider:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.pid-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--muted);
+  border-radius: 999px;
+}
+.pid-slider::-moz-range-track {
+  height: 4px;
+  background: var(--muted);
+  border-radius: 999px;
+}
+.pid-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 999px;
+  background: var(--slider-accent, var(--primary));
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition: transform 120ms ease;
+}
+.pid-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--slider-accent, var(--primary));
+  border: 2px solid var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition: transform 120ms ease;
+}
+.pid-slider:hover::-webkit-slider-thumb,
+.pid-slider:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.pid-slider:hover::-moz-range-thumb,
+.pid-slider:active::-moz-range-thumb {
+  transform: scale(1.15);
+}
+
+/* uPlot — minimal modern chrome */
+.pid-plot .u-wrap {
+  background: transparent;
+  font-family: var(--font-sans);
+}
+.pid-plot .u-axis {
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum";
+}
+.pid-plot .u-legend {
+  display: none;
+}
+/* Hide uPlot's default axis baseline; we draw our own dotted gridlines instead */
+.pid-plot .u-over,
+.pid-plot .u-under {
+  border: 0;
+}
+
 @keyframes fade-in-up {
   from {
     opacity: 0;

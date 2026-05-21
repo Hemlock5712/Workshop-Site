@@ -1,7 +1,8 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import PageHero from "@/components/PageHero";
+import InteractivePidPlayground from "@/components/InteractivePidPlayground";
 import Box from "@/components/Box";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import DocumentationButton from "@/components/DocumentationButton";
@@ -15,11 +16,11 @@ export default function PIDControl() {
       previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
       nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
     >
-      {/* Introduction */}
-      <KeyConceptSection
-        title="PID Control - Precise Position Control"
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Essential for mechanisms that need to hit specific targets."
-        concept="PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions."
+      {/* Introduction — interactive playground in the hero right-slot */}
+      <PageHero
+        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Drag the six gain sliders to feel how each one shapes a 1-DOF arm's step response — the same controller you'll wire into a TalonFX on real hardware."
+        concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the torque needed before any error has accumulated."
+        rightSlot={<InteractivePidPlayground />}
       />
 
       {/* PID Theory */}
