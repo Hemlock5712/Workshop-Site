@@ -770,16 +770,18 @@ export default function InteractivePidPlayground() {
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
         <p>
-          <span className="font-semibold text-[var(--foreground)]">Tuning order:</span>{" "}
-          <span className="font-mono">kG → kP → kD → kS</span>.{" "}
-          <span className="font-mono">θ = 0°</span> is horizontal,{" "}
-          <span className="font-mono">+90°</span> straight up. kG is a pure
-          feedforward — it outputs{" "}
-          <span className="font-mono">kG·cos(target)</span> volts to{" "}
-          <em>hold</em> the commanded angle, so +45° and −45° apply the same
-          voltage. Around <span className="font-mono">3.14&nbsp;V</span> the
-          arm sits still at any target; off-ideal, kP&nbsp;+&nbsp;kD pull the
-          arm back to target and kS overcomes the last bit of static friction.
+          Each loop the arm starts at <span className="font-mono">0°</span>{" "}
+          (horizontal). For the first second the setpoint stays at{" "}
+          <span className="font-mono">0°</span> — use that window to tune{" "}
+          <span className="font-mono">kG</span> until the arm holds (≈{" "}
+          <span className="font-mono">3.14&nbsp;V</span> for this arm), then
+          add <span className="font-mono">kS</span> to overcome the residual
+          static friction. At <span className="font-mono">t&nbsp;=&nbsp;1&nbsp;s</span>{" "}
+          the setpoint steps to your slider target — that&rsquo;s where{" "}
+          <span className="font-mono">kP</span> and{" "}
+          <span className="font-mono">kD</span> earn their keep, chasing to
+          the new pose and damping the overshoot. Order:{" "}
+          <span className="font-mono">kG → kS → kP → kD</span>.
         </p>
       </div>
 

@@ -29,10 +29,11 @@
  *   τ = K_T · (V − K_B · ω)
  * where K_T = τ_stall / V_max and K_B = V_max / ω_free.
  *
- * One scenario: hold-at-target. The arm starts at `targetRad` and the
- * controller has to keep it there against gravity. With every gain at zero,
- * the arm falls under gravity (visible in the plot). Raising kG cancels the
- * gravity term; adding kP and kD then makes the loop reject disturbances.
+ * Scenario: a 5-second loop where the arm always starts at 0° (horizontal).
+ * For the first second the commanded setpoint is also 0°, so the user can
+ * tune kG (and kS for the static-friction breakaway) to make the arm hold.
+ * At t = 1 s the setpoint instantly steps to the user-selected target angle,
+ * which is where kP and kD earn their keep tracking the arm to a new pose.
  *
  * Integration is fixed 1 ms dt; the controller updates every 5 ms (200 Hz),
  * matching a typical TalonFX closed-loop on the robot side.
@@ -97,26 +98,28 @@ const PHYSICS_BASE: Omit<PhysicsParams, "initialAngle" | "target"> = {
   staticFriction: 0.5, // N·m
   kineticFriction: 0.4, // N·m
   motor: MOTOR_DEFAULT,
-  durationSec: 3,
+  durationSec: 5,
   profileMaxVel: 2, // rotations/sec
   profileMaxAccel: 15, // rotations/sec²
   limitRad: (135 * Math.PI) / 180, // arm pegs ±135° from horizontal
 };
 
 /**
- * Build the PhysicsParams for the hold scenario: arm starts at the target
- * angle and the controller has to keep it there against gravity + friction.
- *
- *   target =   0°  →  arm horizontal — max gravity torque
- *   target = +90°  →  arm straight up — no gravity torque
- *   target = -90°  →  arm straight down — no gravity torque
+ * How long the simulation holds at the home pose (0°) before the
+ * setpoint steps to the user-selected target.
+ */
+export const HOLD_PHASE_SEC = 1.0;
+
+/**
+ * Build the PhysicsParams for the standard playground loop. The arm always
+ * starts at 0° (horizontal); the user-selected target is where the setpoint
+ * steps to after the initial hold phase.
  */
 export function physicsFor(targetRad: number): PhysicsParams {
   return {
     ...PHYSICS_BASE,
-    initialAngle: targetRad,
+    initialAngle: 0,
     target: targetRad,
-    durationSec: 2,
   };
 }
 
@@ -174,74 +177,28 @@ const ERROR_DEADBAND_ROT = 0.002; // ~0.72° — kS sleeps inside this band
 const STICK_VEL_RAD = 0.02; // below this we're treated as stuck
 
 interface ProfileSample {
+  /** Commanded angle (rotations). */
   thetaRot: number;
+  /** Commanded angular velocity (rotations / second). */
   omegaRotPs: number;
 }
 
-function trapezoidalProfile(
+/**
+ * Two-phase setpoint:
+ *   t < HOLD_PHASE_SEC → arm should be holding at 0° (home pose)
+ *   t ≥ HOLD_PHASE_SEC → arm should be at the user-selected target
+ *
+ * Instant step at t = HOLD_PHASE_SEC (no smoothing). Velocity setpoint is
+ * always zero — this isn't a profile, it's a step. kP/kD do the work of
+ * tracking the discontinuity.
+ */
+function setpointAt(
   t: number,
-  startRot: number,
-  targetRot: number,
-  vMax: number,
-  aMax: number,
+  targetRad: number,
+  holdSec: number,
 ): ProfileSample {
-  const span = targetRot - startRot;
-  const dir = Math.sign(span) || 1;
-  const dist = Math.abs(span);
-  if (dist === 0) return { thetaRot: targetRot, omegaRotPs: 0 };
-
-  const tAccel = vMax / aMax;
-  const distAccel = 0.5 * aMax * tAccel * tAccel;
-
-  if (2 * distAccel >= dist) {
-    const peakV = Math.sqrt(dist * aMax);
-    const tPeak = peakV / aMax;
-    if (t <= 0) return { thetaRot: startRot, omegaRotPs: 0 };
-    if (t < tPeak) {
-      return {
-        thetaRot: startRot + dir * 0.5 * aMax * t * t,
-        omegaRotPs: dir * aMax * t,
-      };
-    }
-    const tTotal = 2 * tPeak;
-    if (t < tTotal) {
-      const dt = t - tPeak;
-      return {
-        thetaRot:
-          startRot + dir * (0.5 * dist + peakV * dt - 0.5 * aMax * dt * dt),
-        omegaRotPs: dir * Math.max(0, peakV - aMax * dt),
-      };
-    }
-    return { thetaRot: targetRot, omegaRotPs: 0 };
-  }
-
-  const tCruise = (dist - 2 * distAccel) / vMax;
-  if (t <= 0) return { thetaRot: startRot, omegaRotPs: 0 };
-  if (t < tAccel) {
-    return {
-      thetaRot: startRot + dir * 0.5 * aMax * t * t,
-      omegaRotPs: dir * aMax * t,
-    };
-  }
-  if (t < tAccel + tCruise) {
-    const dt = t - tAccel;
-    return {
-      thetaRot: startRot + dir * (distAccel + vMax * dt),
-      omegaRotPs: dir * vMax,
-    };
-  }
-  const tTotal = 2 * tAccel + tCruise;
-  if (t < tTotal) {
-    const dt = t - (tAccel + tCruise);
-    return {
-      thetaRot:
-        startRot +
-        dir *
-          (distAccel + vMax * tCruise + vMax * dt - 0.5 * aMax * dt * dt),
-      omegaRotPs: dir * Math.max(0, vMax - aMax * dt),
-    };
-  }
-  return { thetaRot: targetRot, omegaRotPs: 0 };
+  const cmdRad = t < holdSec ? 0 : targetRad;
+  return { thetaRot: cmdRad / TWO_PI, omegaRotPs: 0 };
 }
 
 export function simulateStepResponse(
@@ -257,8 +214,6 @@ export function simulateStepResponse(
   const K_T = stallTorque / vMax;
   const K_B = vMax / freeSpeed;
 
-  const startRot = params.initialAngle / TWO_PI;
-  const targetRot = params.target / TWO_PI;
 
   const t = new Float64Array(N);
   const theta = new Float64Array(N);
@@ -278,13 +233,9 @@ export function simulateStepResponse(
   for (let i = 0; i < N; i++) {
     const time = i * dt;
 
-    const sp = trapezoidalProfile(
-      time,
-      startRot,
-      targetRot,
-      params.profileMaxVel,
-      params.profileMaxAccel,
-    );
+    const sp = setpointAt(time, params.target, HOLD_PHASE_SEC);
+    // Reconstruct the setpoint angle in radians for kG.
+    const setpointRad = sp.thetaRot * TWO_PI;
 
     if (i % controllerEvery === 0) {
       const dtC = dt * controllerEvery;
@@ -302,9 +253,11 @@ export function simulateStepResponse(
       // kG: arm-cosine gravity feedforward driven by the SETPOINT angle, not
       //     the measured one. That keeps kG a true predictive term — at the
       //     commanded position it provides the constant voltage that should
-      //     balance gravity. (Same magnitude at +θ and −θ; zero at vertical.)
-      // kV: velocity feedforward on the profile velocity (zero during a pure
-      //     hold, but kept so motion-profiled scenarios reuse this block).
+      //     balance gravity there. (Same magnitude at +θ and −θ; zero at
+      //     vertical.) Updates when the setpoint steps from the home pose to
+      //     the user-selected target at t = HOLD_PHASE_SEC.
+      // kV: velocity feedforward on the profile velocity (zero during a step,
+      //     kept for future motion-profiled scenarios).
       // kS: static-friction breakaway in the direction needed to reduce the
       //     current position error. Sleeps inside a small deadband so we don't
       //     chatter on top of a perfect hold.
@@ -313,7 +266,7 @@ export function simulateStepResponse(
       const ffV =
         gains.kS * ksign +
         gains.kV * sp.omegaRotPs +
-        gains.kG * Math.cos(params.target);
+        gains.kG * Math.cos(setpointRad);
 
       voltage = pidV + ffV;
       if (voltage > vMax) voltage = vMax;
@@ -363,27 +316,35 @@ export function simulateStepResponse(
 
     t[i] = time;
     theta[i] = (th * 180) / Math.PI;
-    targetArr[i] = targetDeg;
-    setpointArr[i] = (sp.thetaRot * 360);
+    // Target trace mirrors the commanded setpoint (steps mid-loop).
+    targetArr[i] = (setpointRad * 180) / Math.PI;
+    setpointArr[i] = sp.thetaRot * 360;
     voltageArr[i] = voltage;
   }
 
   // ── Metrics ────────────────────────────────────────────────────────────
+  // Track how badly the arm deviated from the commanded setpoint at any
+  // moment — covers both phases (hold-at-0° and chase-to-target).
   let maxDeviationDeg = 0;
   for (let i = 0; i < N; i++) {
-    const dev = Math.abs(theta[i] - targetDeg);
+    const dev = Math.abs(theta[i] - targetArr[i]);
     if (dev > maxDeviationDeg) maxDeviationDeg = dev;
   }
 
-  // Time the last sample inside the ±2° band; null if never settles.
+  // Settling time: first sustained entry into the ±2° band around the final
+  // target, starting from after the step.
   const SETTLE_BAND_DEG = 2;
+  const stepStartIdx = Math.round(HOLD_PHASE_SEC / dt);
   let settlingTime: number | null = null;
   let settled = false;
-  for (let i = 0; i < N; i++) {
+  for (let i = stepStartIdx; i < N; i++) {
     if (Math.abs(theta[i] - targetDeg) <= SETTLE_BAND_DEG && !settled) {
       settled = true;
       settlingTime = t[i];
-    } else if (Math.abs(theta[i] - targetDeg) > SETTLE_BAND_DEG && settled) {
+    } else if (
+      Math.abs(theta[i] - targetDeg) > SETTLE_BAND_DEG &&
+      settled
+    ) {
       settled = false;
       settlingTime = null;
     }
