@@ -3,6 +3,11 @@
 import { useState, useEffect } from "react";
 import CodeBlock from "@/components/CodeBlock";
 import { Folder, ExternalLink } from "lucide-react";
+import {
+  GitHubFileContentSchema,
+  parseGitHub,
+  GitHubSchemaError,
+} from "@/lib/githubSchemas";
 
 /**
  * GitHub file display component
@@ -43,15 +48,17 @@ export default function GitHubPage({
       try {
         setLoading(true);
 
-        // Fetch file content from GitHub API
-        const response = await fetch(
-          `https://api.github.com/repos/${repository}/contents/${filePath}?ref=${branch}`
-        );
+        const endpoint = `https://api.github.com/repos/${repository}/contents/${filePath}?ref=${branch}`;
+        const response = await fetch(endpoint);
         if (!response.ok) {
           throw new Error(`Failed to fetch file: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const data = parseGitHub(
+          GitHubFileContentSchema,
+          endpoint,
+          await response.json(),
+        );
 
         // Store only necessary metadata to avoid keeping full content
         setFileInfo({ size: data.size });
@@ -60,7 +67,13 @@ export default function GitHubPage({
         const content = atob(data.content);
         setFileContent(content);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch file");
+        if (err instanceof GitHubSchemaError) {
+          setError(
+            `GitHub returned an unexpected response shape (${err.message})`,
+          );
+        } else {
+          setError(err instanceof Error ? err.message : "Failed to fetch file");
+        }
       } finally {
         setLoading(false);
       }

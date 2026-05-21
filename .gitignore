@@ -46,3 +46,6 @@ bun.lockb
 # playwright-mcp
 .playwright-mcp
 
+# verification screenshots from overnight playground build
+.playwright-screenshots
+

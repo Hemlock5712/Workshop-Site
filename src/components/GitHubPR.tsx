@@ -10,50 +10,15 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-
-/**
- * GitHub API response types for pull request data
- */
-type GitHubFileStatus =
-  | "added"
-  | "modified"
-  | "removed"
-  | "renamed"
-  | "copied"
-  | "changed"
-  | "unchanged";
-
-interface GitHubFile {
-  filename: string;
-  status: GitHubFileStatus;
-  additions: number;
-  deletions: number;
-  patch?: string;
-  sha: string;
-  contents_url: string;
-}
-
-interface GitHubPRData {
-  number: number;
-  title: string;
-  body: string;
-  html_url: string;
-  state: "open" | "closed";
-  created_at: string;
-  merged_at: string | null;
-  user: {
-    login: string;
-    avatar_url: string;
-  };
-  head: {
-    sha: string;
-    ref: string;
-  };
-  base: {
-    sha: string;
-    ref: string;
-  };
-}
+import {
+  GitHubPRDataSchema,
+  GitHubFilesArraySchema,
+  GitHubFileContentSchema,
+  parseGitHub,
+  GitHubSchemaError,
+  type GitHubFile,
+  type GitHubPRData,
+} from "@/lib/githubSchemas";
 
 interface FileContent {
   original: string;
@@ -142,11 +107,14 @@ export default function GitHubPR({
 
           if (file.status !== "added") {
             try {
-              const originalResponse = await fetch(
-                `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.base.sha}`
-              );
+              const originalUrl = `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.base.sha}`;
+              const originalResponse = await fetch(originalUrl);
               if (originalResponse.ok) {
-                const originalData = await originalResponse.json();
+                const originalData = parseGitHub(
+                  GitHubFileContentSchema,
+                  originalUrl,
+                  await originalResponse.json(),
+                );
                 originalContent = atob(originalData.content);
               }
             } catch {
@@ -156,11 +124,14 @@ export default function GitHubPR({
 
           if (file.status !== "removed") {
             try {
-              const modifiedResponse = await fetch(
-                `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.head.sha}`
-              );
+              const modifiedUrl = `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.head.sha}`;
+              const modifiedResponse = await fetch(modifiedUrl);
               if (modifiedResponse.ok) {
-                const modifiedData = await modifiedResponse.json();
+                const modifiedData = parseGitHub(
+                  GitHubFileContentSchema,
+                  modifiedUrl,
+                  await modifiedResponse.json(),
+                );
                 modifiedContent = atob(modifiedData.content);
               }
             } catch {
@@ -191,24 +162,30 @@ export default function GitHubPR({
       try {
         setLoading(true);
 
-        const prResponse = await fetch(
-          `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}`
-        );
+        const prUrl = `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}`;
+        const prResponse = await fetch(prUrl);
         if (!prResponse.ok) {
           throw new Error(`Failed to fetch PR: ${prResponse.statusText}`);
         }
-        const prData = await prResponse.json();
+        const prData = parseGitHub(
+          GitHubPRDataSchema,
+          prUrl,
+          await prResponse.json(),
+        );
         setPR(prData);
 
-        const filesResponse = await fetch(
-          `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}/files`
-        );
+        const filesUrl = `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}/files`;
+        const filesResponse = await fetch(filesUrl);
         if (!filesResponse.ok) {
           throw new Error(
             `Failed to fetch PR files: ${filesResponse.statusText}`
           );
         }
-        const filesData = await filesResponse.json();
+        const filesData = parseGitHub(
+          GitHubFilesArraySchema,
+          filesUrl,
+          await filesResponse.json(),
+        );
 
         const filteredFiles = focusFile
           ? filesData.filter((file: GitHubFile) =>
@@ -217,13 +194,15 @@ export default function GitHubPR({
           : filesData;
         setFiles(filteredFiles);
 
-        if (prData) {
-          await fetchFileContents(filteredFiles, prData, repository);
-        }
+        await fetchFileContents(filteredFiles, prData, repository);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch PR data"
-        );
+        if (err instanceof GitHubSchemaError) {
+          setError(`GitHub returned an unexpected response shape (${err.message})`);
+        } else {
+          setError(
+            err instanceof Error ? err.message : "Failed to fetch PR data"
+          );
+        }
       } finally {
         setLoading(false);
       }
