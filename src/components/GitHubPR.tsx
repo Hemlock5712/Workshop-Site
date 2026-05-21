@@ -117,11 +117,71 @@ export default function GitHubPR({
   const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
 
   useEffect(() => {
+    const fetchFileContents = async (
+      files: GitHubFile[],
+      prData: GitHubPRData,
+      repo: string
+    ) => {
+      const contents: Record<string, FileContent> = {};
+
+      for (const file of files) {
+        setLoadingFiles((prev) => new Set(prev).add(file.filename));
+
+        try {
+          let originalContent = "";
+          let modifiedContent = "";
+
+          if (file.status !== "added") {
+            try {
+              const originalResponse = await fetch(
+                `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.base.sha}`
+              );
+              if (originalResponse.ok) {
+                const originalData = await originalResponse.json();
+                originalContent = atob(originalData.content);
+              }
+            } catch {
+              originalContent = "";
+            }
+          }
+
+          if (file.status !== "removed") {
+            try {
+              const modifiedResponse = await fetch(
+                `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.head.sha}`
+              );
+              if (modifiedResponse.ok) {
+                const modifiedData = await modifiedResponse.json();
+                modifiedContent = atob(modifiedData.content);
+              }
+            } catch {
+              modifiedContent = "";
+            }
+          }
+
+          contents[file.filename] = {
+            original: originalContent,
+            modified: modifiedContent,
+          };
+        } catch (err) {
+          console.error(`Failed to fetch content for ${file.filename}:`, err);
+          contents[file.filename] = { original: "", modified: "" };
+        }
+
+        setLoadingFiles((prev) => {
+          const next = new Set(prev);
+          next.delete(file.filename);
+          return next;
+        });
+      }
+
+      setFileContents(contents);
+    };
+
     const fetchPRData = async () => {
       try {
         setLoading(true);
 
-        // Fetch PR details
         const prResponse = await fetch(
           `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}`
         );
@@ -131,7 +191,6 @@ export default function GitHubPR({
         const prData = await prResponse.json();
         setPR(prData);
 
-        // Fetch PR files
         const filesResponse = await fetch(
           `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}/files`
         );
@@ -142,7 +201,6 @@ export default function GitHubPR({
         }
         const filesData = await filesResponse.json();
 
-        // Filter to focus file if specified
         const filteredFiles = focusFile
           ? filesData.filter((file: GitHubFile) =>
               file.filename.includes(focusFile)
@@ -150,7 +208,6 @@ export default function GitHubPR({
           : filesData;
         setFiles(filteredFiles);
 
-        // Fetch file contents for diff view
         if (prData) {
           await fetchFileContents(filteredFiles, prData, repository);
         }
@@ -165,71 +222,6 @@ export default function GitHubPR({
 
     fetchPRData();
   }, [repository, pullRequestNumber, focusFile]);
-
-  const fetchFileContents = async (
-    files: GitHubFile[],
-    prData: GitHubPRData,
-    repo: string
-  ) => {
-    const contents: Record<string, FileContent> = {};
-
-    for (const file of files) {
-      setLoadingFiles((prev) => new Set(prev).add(file.filename));
-
-      try {
-        let originalContent = "";
-        let modifiedContent = "";
-
-        // Fetch original content (from base branch)
-        if (file.status !== "added") {
-          try {
-            const originalResponse = await fetch(
-              `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.base.sha}`
-            );
-            if (originalResponse.ok) {
-              const originalData = await originalResponse.json();
-              originalContent = atob(originalData.content);
-            }
-          } catch {
-            // File might not exist in base branch
-            originalContent = "";
-          }
-        }
-
-        // Fetch modified content (from head branch)
-        if (file.status !== "removed") {
-          try {
-            const modifiedResponse = await fetch(
-              `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.head.sha}`
-            );
-            if (modifiedResponse.ok) {
-              const modifiedData = await modifiedResponse.json();
-              modifiedContent = atob(modifiedData.content);
-            }
-          } catch {
-            // File might not exist in head branch
-            modifiedContent = "";
-          }
-        }
-
-        contents[file.filename] = {
-          original: originalContent,
-          modified: modifiedContent,
-        };
-      } catch (err) {
-        console.error(`Failed to fetch content for ${file.filename}:`, err);
-        contents[file.filename] = { original: "", modified: "" };
-      }
-
-      setLoadingFiles((prev) => {
-        const next = new Set(prev);
-        next.delete(file.filename);
-        return next;
-      });
-    }
-
-    setFileContents(contents);
-  };
 
   // Calculate diff editor height based on content
   const calculateEditorHeight = (content: FileContent) => {

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as React from "react";
 import { useChat } from "@ai-sdk/react";
 import PageTemplate from "@/components/PageTemplate";
-import { Send, Sparkles, AlertCircle, ExternalLink, Key } from "lucide-react";
+import { Send, Sparkles, AlertCircle, ExternalLink } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -19,38 +19,8 @@ export default function AIAssistantPage() {
   const currentTheme =
     theme === "system" ? (systemTheme ?? "light") : (theme ?? "light");
   const [input, setInput] = useState("");
-  const [apiKey, setApiKey] = useState("");
-  const [showApiKey, setShowApiKey] = useState(false);
 
-  // Load API key from localStorage on mount
-  useEffect(() => {
-    const savedApiKey = localStorage.getItem("gemini-api-key");
-    if (savedApiKey) {
-      setApiKey(savedApiKey);
-    }
-  }, []);
-
-  // Save API key to localStorage when it changes
-  useEffect(() => {
-    if (apiKey) {
-      localStorage.setItem("gemini-api-key", apiKey);
-    } else {
-      localStorage.removeItem("gemini-api-key");
-    }
-  }, [apiKey]);
-
-  // AI SDK v5 useChat hook - handles conversation memory automatically!
-  // Defaults to /api/chat endpoint
-  const { messages, status, error, sendMessage } = useChat({
-    fetch: async (input: RequestInfo | URL, init?: RequestInit) => {
-      const body = JSON.parse(init?.body as string);
-      body.customApiKey = apiKey || undefined;
-      return fetch(input, {
-        ...init,
-        body: JSON.stringify(body),
-      });
-    },
-  } as Parameters<typeof useChat>[0]);
+  const { messages, status, error, sendMessage } = useChat();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,52 +48,6 @@ export default function AIAssistantPage() {
             has access to all workshop content and remembers your conversation
             history for contextual follow-up questions.
           </p>
-        </div>
-
-        <div className="card p-4 mb-4">
-          <div className="flex items-start gap-3">
-            <Key className="w-5 h-5 text-primary-600 dark:text-primary-400 mt-0.5 flex-shrink-0" />
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                  Custom API Key (Optional)
-                </h3>
-              </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
-                By default, the assistant uses the shared API key. Enter your
-                own Google Gemini API key to use your personal quota.{" "}
-                <a
-                  href="https://aistudio.google.com/apikey"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary-600 dark:text-primary-400 hover:underline"
-                >
-                  Get an API key
-                </a>
-              </p>
-              <div className="flex gap-2">
-                <input
-                  type={showApiKey ? "text" : "password"}
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="Enter your Gemini API key..."
-                  className="flex-1 px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowApiKey(!showApiKey)}
-                  className="px-3 py-2 text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 rounded-lg transition-colors"
-                >
-                  {showApiKey ? "Hide" : "Show"}
-                </button>
-              </div>
-              {apiKey && (
-                <p className="text-xs text-green-600 dark:text-green-400 mt-2">
-                  Using custom API key
-                </p>
-              )}
-            </div>
-          </div>
         </div>
 
         <div className="card p-4 mb-4 min-h-[400px] max-h-[600px] overflow-y-auto">
@@ -221,7 +145,6 @@ export default function AIAssistantPage() {
                                     }: {
                                       children?: React.ReactNode;
                                     }) {
-                                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                       const codeElement = children as any;
                                       const className =
                                         codeElement?.props?.className || "";
@@ -316,18 +239,24 @@ export default function AIAssistantPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex gap-2">
+        <form
+          onSubmit={handleSubmit}
+          className="flex gap-2"
+          suppressHydrationWarning
+        >
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about subsystems, commands, PID tuning..."
             disabled={status !== "ready"}
+            suppressHydrationWarning
             className="flex-1 px-4 py-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
             disabled={status !== "ready" || !input.trim()}
+            suppressHydrationWarning
             className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
           >
             <Send className="w-4 h-4" />
