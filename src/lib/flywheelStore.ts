@@ -46,9 +46,11 @@ export const useFlywheelStore = create<FlywheelStoreState>((set) => ({
  * Which mechanism the playground is currently showing.
  * Persisted across the session so the user lands back where they were.
  */
+export type Mechanism = "arm" | "flywheel" | "elevator";
+
 interface MechanismToggleState {
-  mechanism: "arm" | "flywheel";
-  setMechanism: (m: "arm" | "flywheel") => void;
+  mechanism: Mechanism;
+  setMechanism: (m: Mechanism) => void;
 }
 
 export const useMechanismToggle = create<MechanismToggleState>((set) => ({

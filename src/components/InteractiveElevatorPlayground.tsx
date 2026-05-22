@@ -5,16 +5,16 @@ import { useTheme } from "next-themes";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import { useShallow } from "zustand/react/shallow";
-import { usePidStore } from "@/lib/pidStore";
+import { useElevatorStore } from "@/lib/elevatorStore";
 import {
-  TARGET_RANGE_DEG,
-  SLIDER_RANGES,
-  physicsFor,
-  simulateStepResponse,
-  type ControllerGains,
-  type Regime,
-} from "@/lib/pidPhysics";
-import { Lightbulb, RotateCcw, Target as TargetIcon } from "lucide-react";
+  ELEV_TARGET_RANGE_M,
+  ELEV_SLIDER_RANGES,
+  elevatorPhysicsFor,
+  simulateElevatorResponse,
+  type ElevatorGains,
+  type ElevRegime,
+} from "@/lib/elevatorPhysics";
+import { Lightbulb, RotateCcw, ArrowUpDown } from "lucide-react";
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -29,7 +29,7 @@ function useReducedMotion(): boolean {
   return reduced;
 }
 
-type GainKey = keyof ControllerGains;
+type GainKey = keyof ElevatorGains;
 
 // ── Slider ───────────────────────────────────────────────────────────────
 
@@ -69,7 +69,7 @@ function Slider({
         : Math.max(min, value - big);
     onChange(Number(next.toFixed(precision)));
   };
-  const id = `pid-slider-${label}`;
+  const id = `elev-slider-${label}`;
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div className="flex flex-col gap-1.5">
@@ -118,9 +118,7 @@ function Slider({
   );
 }
 
-// ── Regime chip ──────────────────────────────────────────────────────────
-
-const REGIME_STYLE: Record<Regime, { label: string; classes: string; dot: string }> = {
+const REGIME_STYLE: Record<ElevRegime, { label: string; classes: string; dot: string }> = {
   oscillating: {
     label: "Oscillating",
     dot: "bg-amber-500",
@@ -141,8 +139,6 @@ const REGIME_STYLE: Record<Regime, { label: string; classes: string; dot: string
   },
 };
 
-// ── Slider configs ──────────────────────────────────────────────────────
-
 interface SliderConfig {
   key: GainKey;
   label: string;
@@ -159,68 +155,70 @@ const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
 const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
   { key: "kS", label: "kS", axisColor: "#7c3aed", ariaDescription: "Static friction feedforward." },
   { key: "kV", label: "kV", axisColor: "#0891b2", ariaDescription: "Velocity feedforward." },
-  { key: "kG", label: "kG", axisColor: "#16a34a", ariaDescription: "Gravity feedforward." },
+  { key: "kG", label: "kG", axisColor: "#16a34a", ariaDescription: "Gravity feedforward — constant lift voltage." },
 ];
 
-// ── Arm visualization ───────────────────────────────────────────────────
-//
-// Convention: theta=0 → arm horizontal (extends right from pivot),
-//             theta=+90° → straight up,
-//             theta=-90° → straight down.
-// In SVG y grows downward, so:
-//   end.x = pivot.x + L·cos(theta)
-//   end.y = pivot.y − L·sin(theta)
+// ── Elevator viz ────────────────────────────────────────────────────────
 
-interface ArmVizProps {
-  responseTheta: Float64Array;
-  targetDeg: number;
-  initialDeg: number;
+interface ElevatorVizProps {
+  responsePosition: Float64Array;
+  targetM: number;
+  maxMeters: number;
   durationSec: number;
   reducedMotion: boolean;
   isDark: boolean;
 }
 
-const ARM_VB = 220;
-const ARM_PIVOT = { x: 64, y: 110 };
-const ARM_LENGTH = 110;
-const TICK_RADIUS = 96; // arc radius for reference ticks
+const ELEV_VB_W = 220;
+const ELEV_VB_H = 220;
+const RAIL_X = ELEV_VB_W / 2;
+const RAIL_TOP = 22;
+const RAIL_BOTTOM = ELEV_VB_H - 22;
+const RAIL_HEIGHT = RAIL_BOTTOM - RAIL_TOP;
+const CARRIAGE_HALF_H = 14;
+const CARRIAGE_HALF_W = 36;
 const SAMPLE_RATE_MS = 1;
 
-function ArmViz({
-  responseTheta,
-  targetDeg,
-  initialDeg,
+function ElevatorViz({
+  responsePosition,
+  targetM,
+  maxMeters,
   durationSec,
   reducedMotion,
   isDark,
-}: ArmVizProps) {
-  const armLineRef = useRef<SVGLineElement>(null);
-  const ballRef = useRef<SVGCircleElement>(null);
-  const angleLabelRef = useRef<SVGTextElement>(null);
+}: ElevatorVizProps) {
+  const carriageRef = useRef<SVGGElement>(null);
+  const posLabelRef = useRef<SVGTextElement>(null);
 
-  const placeArm = useCallback((thetaDeg: number) => {
-    const r = (thetaDeg * Math.PI) / 180;
-    const ex = ARM_PIVOT.x + ARM_LENGTH * Math.cos(r);
-    const ey = ARM_PIVOT.y - ARM_LENGTH * Math.sin(r);
-    armLineRef.current?.setAttribute("x2", ex.toString());
-    armLineRef.current?.setAttribute("y2", ey.toString());
-    ballRef.current?.setAttribute("cx", ex.toString());
-    ballRef.current?.setAttribute("cy", ey.toString());
-    if (angleLabelRef.current) {
-      // Suppress signed-zero display ("-0°")
-      const rounded = Math.round(thetaDeg);
-      angleLabelRef.current.textContent = `${rounded === 0 ? 0 : rounded}°`;
-    }
-  }, []);
+  /** Map meters [0..maxMeters] to SVG y (bottom of carriage). */
+  const mToY = useCallback(
+    (m: number) => {
+      const clamped = Math.max(0, Math.min(maxMeters, m));
+      const frac = clamped / maxMeters;
+      return RAIL_BOTTOM - frac * RAIL_HEIGHT;
+    },
+    [maxMeters],
+  );
+
+  const placeCarriage = useCallback(
+    (m: number) => {
+      const y = mToY(m) - CARRIAGE_HALF_H;
+      carriageRef.current?.setAttribute("transform", `translate(0 ${y})`);
+      if (posLabelRef.current) {
+        posLabelRef.current.textContent = `${m.toFixed(2)} m`;
+      }
+    },
+    [mToY],
+  );
 
   useEffect(() => {
-    placeArm(responseTheta[0] ?? initialDeg);
-  }, [responseTheta, initialDeg, placeArm]);
+    placeCarriage(responsePosition[0] ?? 0);
+  }, [responsePosition, placeCarriage]);
 
   useEffect(() => {
-    if (responseTheta.length === 0) return;
+    if (responsePosition.length === 0) return;
     if (reducedMotion) {
-      placeArm(responseTheta[responseTheta.length - 1] ?? 0);
+      placeCarriage(responsePosition[responsePosition.length - 1] ?? 0);
       return;
     }
     let frameId = 0;
@@ -229,176 +227,140 @@ function ArmViz({
     const tick = () => {
       const elapsed = performance.now() - startTime;
       const loopT = elapsed % loopMs;
-      let thetaDeg: number;
+      let m: number;
       if (loopT < durationSec * 1000) {
         const idx = Math.min(
-          responseTheta.length - 1,
+          responsePosition.length - 1,
           Math.floor(loopT / SAMPLE_RATE_MS),
         );
-        thetaDeg = responseTheta[idx] ?? 0;
+        m = responsePosition[idx] ?? 0;
       } else {
-        thetaDeg = responseTheta[responseTheta.length - 1] ?? 0;
+        m = responsePosition[responsePosition.length - 1] ?? 0;
       }
-      placeArm(thetaDeg);
+      placeCarriage(m);
       frameId = requestAnimationFrame(tick);
     };
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [responseTheta, durationSec, reducedMotion, placeArm]);
+  }, [responsePosition, durationSec, reducedMotion, placeCarriage]);
 
-  const tRad = (targetDeg * Math.PI) / 180;
-  const tx = ARM_PIVOT.x + ARM_LENGTH * Math.cos(tRad);
-  const ty = ARM_PIVOT.y - ARM_LENGTH * Math.sin(tRad);
-
-  const gradStart = isDark ? "#9fbcd9" : "#264060";
-  const gradEnd = isDark ? "#c1d4e7" : "#4a73a0";
+  const rail = isDark ? "#475569" : "#94a3b8";
+  const tickColor = isDark ? "#64748b" : "#cbd5e1";
   const ghost = isDark ? "#64748b" : "#94a3b8";
-  const tickColor = isDark ? "#475569" : "#cbd5e1";
-  const mount = isDark ? "#475569" : "#cbd5e1";
-  const ballStroke = isDark ? "#0d233f" : "#fff";
+  const carriage1 = isDark ? "#9fbcd9" : "#264060";
+  const carriage2 = isDark ? "#c1d4e7" : "#4a73a0";
+  const cable = isDark ? "#94a3b8" : "#64748b";
+  const groundFill = isDark ? "#1e293b" : "#f1f5f9";
 
-  // Half-circle protractor sweep from -90° (bottom) to +90° (top)
-  const arcStart = {
-    x: ARM_PIVOT.x,
-    y: ARM_PIVOT.y + TICK_RADIUS, // -90° (down)
-  };
-  const arcEnd = {
-    x: ARM_PIVOT.x,
-    y: ARM_PIVOT.y - TICK_RADIUS, // +90° (up)
-  };
+  const targetY = mToY(targetM);
 
   return (
     <svg
-      viewBox={`0 0 ${ARM_VB} ${ARM_VB}`}
+      viewBox={`0 0 ${ELEV_VB_W} ${ELEV_VB_H}`}
       className="block h-full w-full"
       role="img"
-      aria-label="Simulated 1-DOF arm. theta=0 is horizontal (pointing right), +90° is up, -90° is down. Solid arm shows the current angle; dashed arm marks the target."
+      aria-label="Simulated elevator. The carriage rides on a vertical rail; the dashed ghost marks the commanded target height."
     >
-      {/* Reference half-arc */}
-      <path
-        d={`M ${arcStart.x} ${arcStart.y} A ${TICK_RADIUS} ${TICK_RADIUS} 0 0 1 ${arcEnd.x} ${arcEnd.y}`}
-        fill="none"
-        stroke={tickColor}
-        strokeWidth={1}
-        strokeDasharray="2 4"
-        opacity={0.65}
-      />
-      {[-90, -45, 0, 45, 90].map((deg) => {
-        const r = (deg * Math.PI) / 180;
-        const inner = TICK_RADIUS - 6;
-        const outer = TICK_RADIUS + 2;
-        const label = TICK_RADIUS + 14;
-        const x1 = ARM_PIVOT.x + inner * Math.cos(r);
-        const y1 = ARM_PIVOT.y - inner * Math.sin(r);
-        const x2 = ARM_PIVOT.x + outer * Math.cos(r);
-        const y2 = ARM_PIVOT.y - outer * Math.sin(r);
-        const lx = ARM_PIVOT.x + label * Math.cos(r);
-        const ly = ARM_PIVOT.y - label * Math.sin(r) + 3;
+      <defs>
+        <linearGradient id="elevCarriageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor={carriage2} />
+          <stop offset="100%" stopColor={carriage1} />
+        </linearGradient>
+      </defs>
+
+      {/* Ground */}
+      <rect x={0} y={RAIL_BOTTOM} width={ELEV_VB_W} height={ELEV_VB_H - RAIL_BOTTOM} fill={groundFill} />
+
+      {/* Rails */}
+      <line x1={RAIL_X - 28} y1={RAIL_TOP - 4} x2={RAIL_X - 28} y2={RAIL_BOTTOM} stroke={rail} strokeWidth={2} strokeLinecap="round" />
+      <line x1={RAIL_X + 28} y1={RAIL_TOP - 4} x2={RAIL_X + 28} y2={RAIL_BOTTOM} stroke={rail} strokeWidth={2} strokeLinecap="round" />
+
+      {/* Top mount with motor */}
+      <rect x={RAIL_X - 36} y={RAIL_TOP - 16} width={72} height={12} rx={2} fill={rail} />
+      <rect x={RAIL_X - 18} y={RAIL_TOP - 22} width={36} height={6} rx={1} fill={isDark ? "#cbd5e1" : "#475569"} />
+
+      {/* Height ticks (every 0.5 m) */}
+      {[0, 0.5, 1.0, 1.5].map((m) => {
+        const y = mToY(m);
         return (
-          <g key={deg}>
-            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={tickColor} strokeWidth={1.25} />
+          <g key={m}>
+            <line x1={RAIL_X + 38} y1={y} x2={RAIL_X + 46} y2={y} stroke={tickColor} strokeWidth={1.25} />
             <text
-              x={lx}
-              y={ly}
+              x={RAIL_X + 52}
+              y={y + 3}
               fontSize={9}
-              textAnchor="middle"
               fill={ghost}
               fontFamily="ui-sans-serif, system-ui"
             >
-              {deg}°
+              {m.toFixed(1)} m
             </text>
           </g>
         );
       })}
 
-      {/* Ghost target arm */}
+      {/* Target ghost marker */}
       <line
-        x1={ARM_PIVOT.x}
-        y1={ARM_PIVOT.y}
-        x2={tx}
-        y2={ty}
-        stroke={ghost}
-        strokeWidth={2.5}
-        strokeDasharray="4 4"
-        opacity={0.55}
-        strokeLinecap="round"
-      />
-      <circle
-        cx={tx}
-        cy={ty}
-        r={6}
-        fill="none"
+        x1={RAIL_X - 38}
+        y1={targetY}
+        x2={RAIL_X + 38}
+        y2={targetY}
         stroke={ghost}
         strokeWidth={1.5}
-        strokeDasharray="2 2"
+        strokeDasharray="3 3"
         opacity={0.7}
       />
-
-      {/* Mount bracket (vertical wall to the left of the pivot) */}
-      <rect
-        x={ARM_PIVOT.x - 22}
-        y={ARM_PIVOT.y - 30}
-        width={14}
-        height={60}
-        rx={2}
-        fill={mount}
-      />
-      <rect
-        x={ARM_PIVOT.x - 22}
-        y={ARM_PIVOT.y - 30}
-        width={3}
-        height={60}
-        rx={1}
-        fill={ghost}
-        opacity={0.7}
-      />
-
-      <defs>
-        <linearGradient id="armGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor={gradStart} />
-          <stop offset="100%" stopColor={gradEnd} />
-        </linearGradient>
-        <radialGradient id="ballGrad" cx="35%" cy="35%" r="65%">
-          <stop offset="0%" stopColor={gradEnd} />
-          <stop offset="100%" stopColor={gradStart} />
-        </radialGradient>
-      </defs>
-
-      <line
-        ref={armLineRef}
-        x1={ARM_PIVOT.x}
-        y1={ARM_PIVOT.y}
-        x2={ARM_PIVOT.x + ARM_LENGTH}
-        y2={ARM_PIVOT.y}
-        stroke="url(#armGrad)"
-        strokeWidth={9}
-        strokeLinecap="round"
-      />
-      <circle
-        ref={ballRef}
-        cx={ARM_PIVOT.x + ARM_LENGTH}
-        cy={ARM_PIVOT.y}
-        r={10}
-        fill="url(#ballGrad)"
-        stroke={ballStroke}
-        strokeWidth={1.75}
-      />
-
-      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={4.5} fill={isDark ? "#cbd5e1" : "#0d233f"} />
-      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={1.75} fill={isDark ? "#0d233f" : "#cbd5e1"} />
-
-      {/* Live angle readout — bottom-right corner */}
       <text
-        ref={angleLabelRef}
-        x={ARM_VB - 10}
-        y={ARM_VB - 10}
+        x={RAIL_X - 42}
+        y={targetY + 3}
+        fontSize={9}
+        textAnchor="end"
+        fill={ghost}
+        fontFamily="ui-sans-serif, system-ui"
+        opacity={0.8}
+      >
+        target
+      </text>
+
+      {/* Carriage (group is translated each frame) */}
+      <g ref={carriageRef}>
+        {/* Cable from top mount to carriage top */}
+        <line
+          x1={RAIL_X}
+          y1={RAIL_TOP - 4}
+          x2={RAIL_X}
+          y2={RAIL_BOTTOM - CARRIAGE_HALF_H * 2 + CARRIAGE_HALF_H}
+          stroke={cable}
+          strokeWidth={1.25}
+          strokeDasharray="2 2"
+          opacity={0.6}
+        />
+        <rect
+          x={RAIL_X - CARRIAGE_HALF_W}
+          y={RAIL_BOTTOM - CARRIAGE_HALF_H * 2}
+          width={CARRIAGE_HALF_W * 2}
+          height={CARRIAGE_HALF_H * 2}
+          rx={3}
+          fill="url(#elevCarriageGrad)"
+          stroke={isDark ? "#0d233f" : "#0d233f"}
+          strokeWidth={1}
+        />
+        {/* Roller wheels on rails */}
+        <circle cx={RAIL_X - 28} cy={RAIL_BOTTOM - CARRIAGE_HALF_H} r={3} fill={isDark ? "#cbd5e1" : "#0d233f"} />
+        <circle cx={RAIL_X + 28} cy={RAIL_BOTTOM - CARRIAGE_HALF_H} r={3} fill={isDark ? "#cbd5e1" : "#0d233f"} />
+      </g>
+
+      {/* Live position readout */}
+      <text
+        ref={posLabelRef}
+        x={ELEV_VB_W - 10}
+        y={ELEV_VB_H - 8}
         fontSize={13}
         fontWeight={600}
         textAnchor="end"
         fill={isDark ? "#e2e8f0" : "#0d233f"}
         fontFamily="ui-monospace, monospace"
       >
-        0°
+        0.00 m
       </text>
     </svg>
   );
@@ -406,14 +368,14 @@ function ArmViz({
 
 // ── Main component ──────────────────────────────────────────────────────
 
-export default function InteractivePidPlayground() {
+export default function InteractiveElevatorPlayground() {
   const reducedMotion = useReducedMotion();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const isDark = mounted && resolvedTheme === "dark";
 
-  const gains = usePidStore(
+  const gains = useElevatorStore(
     useShallow((s) => ({
       kP: s.kP,
       kI: s.kI,
@@ -423,26 +385,25 @@ export default function InteractivePidPlayground() {
       kG: s.kG,
     })),
   );
-  const targetDeg = usePidStore((s) => s.targetDeg);
-  const setTargetDeg = usePidStore((s) => s.setTargetDeg);
-  const setKP = usePidStore((s) => s.setKP);
-  const setKI = usePidStore((s) => s.setKI);
-  const setKD = usePidStore((s) => s.setKD);
-  const setKS = usePidStore((s) => s.setKS);
-  const setKV = usePidStore((s) => s.setKV);
-  const setKG = usePidStore((s) => s.setKG);
-  const reset = usePidStore((s) => s.reset);
+  const targetM = useElevatorStore((s) => s.targetM);
+  const setTargetM = useElevatorStore((s) => s.setTargetM);
+  const setKP = useElevatorStore((s) => s.setKP);
+  const setKI = useElevatorStore((s) => s.setKI);
+  const setKD = useElevatorStore((s) => s.setKD);
+  const setKS = useElevatorStore((s) => s.setKS);
+  const setKV = useElevatorStore((s) => s.setKV);
+  const setKG = useElevatorStore((s) => s.setKG);
+  const reset = useElevatorStore((s) => s.reset);
 
   const setters: Record<GainKey, (v: number) => void> = useMemo(
     () => ({ kP: setKP, kI: setKI, kD: setKD, kS: setKS, kV: setKV, kG: setKG }),
     [setKP, setKI, setKD, setKS, setKV, setKG],
   );
 
-  const targetRad = (targetDeg * Math.PI) / 180;
-  const physics = useMemo(() => physicsFor(targetRad), [targetRad]);
+  const physics = useMemo(() => elevatorPhysicsFor(targetM), [targetM]);
 
-  // Throttled mirror of gains+target → sim recompute.
-  const inputs = useMemo(() => ({ ...gains, targetDeg }), [gains, targetDeg]);
+  // Throttled mirror of gains + target → sim recompute.
+  const inputs = useMemo(() => ({ ...gains, targetM }), [gains, targetM]);
   const [throttled, setThrottled] = useState(inputs);
   const rafRef = useRef<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
@@ -474,9 +435,8 @@ export default function InteractivePidPlayground() {
   }, [inputs, reducedMotion]);
 
   const response = useMemo(() => {
-    const { targetDeg: td, kP, kI, kD, kS, kV, kG } = throttled;
-    const targetR = (td * Math.PI) / 180;
-    return simulateStepResponse(physicsFor(targetR), {
+    const { targetM: tm, kP, kI, kD, kS, kV, kG } = throttled;
+    return simulateElevatorResponse(elevatorPhysicsFor(tm), {
       kP,
       kI,
       kD,
@@ -493,7 +453,6 @@ export default function InteractivePidPlayground() {
   const accent = useMemo(
     () => ({
       target: isDark ? "#64748b" : "#94a3b8",
-      setpoint: isDark ? "#f59e0b" : "#b45309",
       actual: isDark ? "#7da4cb" : "#264060",
       actualFillTop: isDark
         ? "rgba(125, 164, 203, 0.28)"
@@ -522,9 +481,7 @@ export default function InteractivePidPlayground() {
       },
       scales: {
         x: { time: false, range: [0, physics.durationSec] },
-        // Fixed -90° → 90° range so different gain configurations are directly
-        // comparable. Matches the arm's physical mechanical range.
-        y: { range: [-90, 90] },
+        y: { range: [-0.1, ELEV_TARGET_RANGE_M.max + 0.1] },
       },
       axes: [
         {
@@ -540,10 +497,9 @@ export default function InteractivePidPlayground() {
           grid: { stroke: accent.grid, width: 1, dash: [2, 4] },
           ticks: { show: false },
           font: "11px ui-sans-serif, system-ui",
-          size: 38,
-          // Explicit ticks: -90, -45, 0, 45, 90.
-          splits: () => [-90, -45, 0, 45, 90],
-          values: (_u, splits) => splits.map((v) => `${v.toFixed(0)}°`),
+          size: 44,
+          splits: () => [0, 0.5, 1.0, 1.5],
+          values: (_u, splits) => splits.map((v) => `${v.toFixed(1)}m`),
         },
       ],
       series: [
@@ -556,14 +512,7 @@ export default function InteractivePidPlayground() {
           points: { show: false },
         },
         {
-          label: "Setpoint",
-          stroke: accent.setpoint,
-          width: 1,
-          dash: [2, 3],
-          points: { show: false },
-        },
-        {
-          label: "Actual",
+          label: "Position",
           stroke: accent.actual,
           width: 2.5,
           points: { show: false },
@@ -582,11 +531,11 @@ export default function InteractivePidPlayground() {
     plotRef.current?.destroy();
     plotRef.current = new uPlot(
       opts,
-      [response.t, response.target, response.setpoint, response.theta],
+      [response.t, response.targetM, response.positionM],
       containerRef.current,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accent, physics.durationSec, targetDeg]);
+  }, [accent, physics.durationSec]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -601,9 +550,8 @@ export default function InteractivePidPlayground() {
     if (!plotRef.current) return;
     plotRef.current.setData([
       response.t,
-      response.target,
-      response.setpoint,
-      response.theta,
+      response.targetM,
+      response.positionM,
     ]);
   }, [response]);
 
@@ -620,16 +568,13 @@ export default function InteractivePidPlayground() {
   }, []);
 
   const regimeStyle = REGIME_STYLE[response.metrics.regime];
-  const physicsTargetDeg = (physics.target * 180) / Math.PI;
-  const initialDeg = (physics.initialAngle * 180) / Math.PI;
-
   const settlingStr =
     response.metrics.settlingTime !== null
       ? `${response.metrics.settlingTime.toFixed(2)} s`
       : "—";
 
   const renderSlider = (cfg: SliderConfig) => {
-    const range = SLIDER_RANGES[cfg.key];
+    const range = ELEV_SLIDER_RANGES[cfg.key];
     return (
       <Slider
         key={cfg.key}
@@ -663,8 +608,8 @@ export default function InteractivePidPlayground() {
             className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
             aria-label="Performance metrics"
           >
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.maxDeviationDeg.toFixed(1)}°</span> max dev</span>
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.steadyStateErrorDeg.toFixed(1)}°</span> final err</span>
+            <span><span className="text-[var(--foreground)] font-medium">{(response.metrics.maxDeviationM * 100).toFixed(1)}</span> cm max dev</span>
+            <span><span className="text-[var(--foreground)] font-medium">{(response.metrics.steadyStateErrorM * 100).toFixed(1)}</span> cm final err</span>
             <span><span className="text-[var(--foreground)] font-medium">{settlingStr}</span> settle</span>
             <span><span className="text-[var(--foreground)] font-medium">{response.metrics.peakVoltage.toFixed(1)} V</span> peak</span>
           </div>
@@ -683,47 +628,44 @@ export default function InteractivePidPlayground() {
       {/* ── Target picker ───────────────────── */}
       <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
         <label
-          htmlFor="pid-target"
+          htmlFor="elev-target"
           className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
         >
-          <TargetIcon className="h-3.5 w-3.5" aria-hidden />
+          <ArrowUpDown className="h-3.5 w-3.5" aria-hidden />
           Target
         </label>
         <input
-          id="pid-target"
+          id="elev-target"
           type="range"
-          min={TARGET_RANGE_DEG.min}
-          max={TARGET_RANGE_DEG.max}
-          step={TARGET_RANGE_DEG.step}
-          value={targetDeg}
-          onChange={(e) => setTargetDeg(parseFloat(e.target.value))}
-          aria-label="Target angle in degrees. The arm starts at this angle; the controller has to hold it there against gravity."
-          aria-valuemin={TARGET_RANGE_DEG.min}
-          aria-valuemax={TARGET_RANGE_DEG.max}
-          aria-valuenow={targetDeg}
+          min={ELEV_TARGET_RANGE_M.min}
+          max={ELEV_TARGET_RANGE_M.max}
+          step={ELEV_TARGET_RANGE_M.step}
+          value={targetM}
+          onChange={(e) => setTargetM(parseFloat(e.target.value))}
+          aria-label="Target carriage height in meters. After the 1-second hold the controller steps the setpoint up to this height."
+          aria-valuemin={ELEV_TARGET_RANGE_M.min}
+          aria-valuemax={ELEV_TARGET_RANGE_M.max}
+          aria-valuenow={targetM}
           className="pid-slider min-w-0 flex-1"
           style={
             {
               ["--slider-accent" as string]: "#475569",
-              ["--slider-fill" as string]: `${((targetDeg - TARGET_RANGE_DEG.min) / (TARGET_RANGE_DEG.max - TARGET_RANGE_DEG.min)) * 100}%`,
+              ["--slider-fill" as string]: `${((targetM - ELEV_TARGET_RANGE_M.min) / (ELEV_TARGET_RANGE_M.max - ELEV_TARGET_RANGE_M.min)) * 100}%`,
             } as React.CSSProperties
           }
         />
         <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-[12px] tabular-nums text-[var(--foreground)]">
-          {targetDeg}°
-        </span>
-        <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
-          {(targetDeg / 360).toFixed(3)} rot
+          {targetM.toFixed(2)} m
         </span>
       </div>
 
       {/* ── Visualization ───────────────────── */}
       <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:gap-5">
         <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:aspect-square md:p-3">
-          <ArmViz
-            responseTheta={response.theta}
-            targetDeg={physicsTargetDeg}
-            initialDeg={initialDeg}
+          <ElevatorViz
+            responsePosition={response.positionM}
+            targetM={targetM}
+            maxMeters={ELEV_TARGET_RANGE_M.max}
             durationSec={physics.durationSec}
             reducedMotion={reducedMotion}
             isDark={isDark}
@@ -734,7 +676,7 @@ export default function InteractivePidPlayground() {
             ref={containerRef}
             className="pid-plot w-full"
             style={{ minHeight: 220 }}
-            aria-label={`Response plot for the hold scenario at ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (flat since the arm starts at target), solid is the actual arm angle over two seconds.`}
+            aria-label={`Position-response plot for the elevator target of ${targetM.toFixed(2)} m. Dashed is the commanded target, solid is the carriage position.`}
             role="img"
           />
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
@@ -743,12 +685,8 @@ export default function InteractivePidPlayground() {
               target
             </span>
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.setpoint} 0 2px, transparent 2px 5px)` }} />
-              profile setpoint
-            </span>
-            <span className="inline-flex items-center gap-1">
               <span aria-hidden className="inline-block h-px w-3.5" style={{ background: accent.actual }} />
-              arm angle
+              carriage position
             </span>
           </div>
         </div>
@@ -758,23 +696,16 @@ export default function InteractivePidPlayground() {
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
         <p>
-          Each loop the arm starts at <span className="font-mono">0°</span>{" "}
-          (horizontal). For the first second the setpoint stays at{" "}
-          <span className="font-mono">0°</span> — use that window to tune{" "}
-          <span className="font-mono">kG</span> until the arm holds. For a
-          Kraken X60 + 25:1 driving a 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm,
-          the spec-sheet math gives{" "}
-          <span className="font-mono">
-            kG = mgL / (Kₜ·R) ≈ 0.53&nbsp;V
-          </span>
-          . Add <span className="font-mono">kS</span> to overcome residual
-          static friction. At{" "}
-          <span className="font-mono">t&nbsp;=&nbsp;1&nbsp;s</span> the
-          setpoint steps to your slider target —{" "}
-          <span className="font-mono">kP</span> and{" "}
-          <span className="font-mono">kD</span> chase the arm there and damp
-          the overshoot. Order:{" "}
-          <span className="font-mono">kG → kS → kP → kD</span>.
+          The carriage starts at the ground and holds there for 1&nbsp;s, then
+          steps up to your slider target. Gravity is constant so{" "}
+          <span className="font-mono">kG</span> is just a fixed voltage —{" "}
+          <span className="font-mono">kG = m·g·r_spool / (Kₜ·R)</span> ≈{" "}
+          <span className="font-mono">0.22&nbsp;V</span> for this 8&nbsp;kg
+          carriage on a Kraken X60 + 15:1 + 1&quot; spool. Add{" "}
+          <span className="font-mono">kS</span> for the rail friction
+          breakaway, then <span className="font-mono">kP</span> and{" "}
+          <span className="font-mono">kD</span> close the loop. Order:{" "}
+          <span className="font-mono">kG → kS → kP → kD → kI</span>.
         </p>
       </div>
 
@@ -800,16 +731,16 @@ export default function InteractivePidPlayground() {
 
       {/* ── Footer ──────────────────────────── */}
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        2 kg · 0.4 m arm on a Kraken X60 + 25:1 reduction (7.09 N·m / 6000 RPM
-        motor, ≈ 177 N·m / 240 RPM at the arm; back-EMF modelled, ±12 V
-        saturation). Gains use Phoenix 6 / WPILib mechanism-side units — drop
-        these values straight into a{" "}
+        8&nbsp;kg carriage on a Kraken X60 + 15:1 reduction + 1&quot;-radius
+        spool (back-EMF + stick-slip friction modelled, ±12&nbsp;V saturation,
+        max travel 1.5&nbsp;m). Gains use Phoenix 6 / WPILib elevator units —
+        drop these into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         with{" "}
         <span className="font-mono text-[var(--foreground)]">
-          SensorToMechanismRatio&nbsp;=&nbsp;25
-        </span>
-        .
+          SensorToMechanismRatio
+        </span>{" "}
+        configured to report meters of travel.
       </p>
     </section>
   );

@@ -43,8 +43,13 @@ const TWO_PI = 2 * Math.PI;
 
 export interface MotorParams {
   vMax: number; // V — supply voltage cap (12 V for FRC)
-  stallTorque: number; // N·m at vMax, ω = 0
-  freeSpeed: number; // rad/s at vMax, τ = 0
+  stallTorque: number; // N·m at vMax, ω = 0 (motor side)
+  freeSpeed: number; // rad/s at vMax, τ = 0 (motor side)
+  /**
+   * Mechanical reduction between motor and output. K_T_output and K_B_output
+   * are derived as motor_value * gearRatio at the output side.
+   */
+  gearRatio: number;
 }
 
 export interface PhysicsParams {
@@ -83,8 +88,13 @@ export interface ControllerGains extends PidGains, FfGains {}
 
 export const MOTOR_DEFAULT: MotorParams = {
   vMax: 12,
-  stallTorque: 30, // generous so kP can actually drive overshoot
-  freeSpeed: 15, // rad/s ≈ 2.39 rotations/sec (~143 RPM at the arm)
+  // Kraken X60 spec sheet: 7.09 N·m stall torque, 6000 RPM free speed.
+  stallTorque: 7.09,
+  freeSpeed: (6000 * 2 * Math.PI) / 60, // 628.3 rad/s at the motor shaft
+  // 25:1 reduction (typical FRC arm gearbox). Output stall ≈ 177 N·m,
+  // output free speed ≈ 240 RPM (4 rps). kG_ideal = mgL / (Kₜ·R) = 0.53 V
+  // for this 2 kg · 0.4 m arm — matches what a team would type in.
+  gearRatio: 25,
 };
 
 const PHYSICS_BASE: Omit<PhysicsParams, "initialAngle" | "target"> = {
@@ -135,12 +145,12 @@ export const DEFAULT_GAINS: ControllerGains = {
 };
 
 export const SLIDER_RANGES = {
-  kP: { min: 0, max: 100, step: 1, precision: 0, unit: "V/rot" },
-  kI: { min: 0, max: 30, step: 0.1, precision: 1, unit: "V/(rot·s)" },
-  kD: { min: 0, max: 10, step: 0.05, precision: 2, unit: "V·s/rot" },
-  kS: { min: 0, max: 2, step: 0.05, precision: 2, unit: "V" },
-  kV: { min: 0, max: 15, step: 0.1, precision: 1, unit: "V·s/rot" },
-  kG: { min: 0, max: 8, step: 0.05, precision: 2, unit: "V" },
+  kP: { min: 0, max: 50, step: 0.5, precision: 1, unit: "V/rot" },
+  kI: { min: 0, max: 20, step: 0.1, precision: 1, unit: "V/(rot·s)" },
+  kD: { min: 0, max: 5, step: 0.025, precision: 3, unit: "V·s/rot" },
+  kS: { min: 0, max: 2, step: 0.02, precision: 2, unit: "V" },
+  kV: { min: 0, max: 5, step: 0.05, precision: 2, unit: "V·s/rot" },
+  kG: { min: 0, max: 2, step: 0.02, precision: 2, unit: "V" },
 } as const;
 
 export const TARGET_RANGE_DEG = {
@@ -210,9 +220,12 @@ export function simulateStepResponse(
   const controllerEvery = 5;
 
   const I = params.mass * params.length * params.length;
-  const { vMax, stallTorque, freeSpeed } = params.motor;
-  const K_T = stallTorque / vMax;
-  const K_B = vMax / freeSpeed;
+  const { vMax, stallTorque, freeSpeed, gearRatio } = params.motor;
+  // Output-side motor coefficients (after the gearbox):
+  //   K_T_output = K_T_motor · R         (torque per applied voltage)
+  //   K_B_output = K_B_motor · R         (back-EMF voltage per rad/s on output)
+  const K_T = (stallTorque / vMax) * gearRatio;
+  const K_B = (vMax / freeSpeed) * gearRatio;
 
 
   const t = new Float64Array(N);

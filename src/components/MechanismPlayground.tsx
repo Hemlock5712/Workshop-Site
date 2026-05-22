@@ -1,15 +1,41 @@
 "use client";
 
-import { Bot, Disc3 } from "lucide-react";
+import { Bot, Disc3, ArrowUpDown } from "lucide-react";
 import InteractivePidPlayground from "@/components/InteractivePidPlayground";
 import InteractiveFlywheelPlayground from "@/components/InteractiveFlywheelPlayground";
-import { useMechanismToggle } from "@/lib/flywheelStore";
+import InteractiveElevatorPlayground from "@/components/InteractiveElevatorPlayground";
+import { useMechanismToggle, type Mechanism } from "@/lib/flywheelStore";
+
+const OPTIONS: ReadonlyArray<{
+  value: Mechanism;
+  label: string;
+  icon: React.ReactNode;
+  desc: string;
+}> = [
+  {
+    value: "arm",
+    label: "Arm",
+    icon: <Bot className="h-3.5 w-3.5" aria-hidden />,
+    desc: "1-DOF arm with gravity — position control",
+  },
+  {
+    value: "flywheel",
+    label: "Flywheel",
+    icon: <Disc3 className="h-3.5 w-3.5" aria-hidden />,
+    desc: "Spinning wheel with inertia — velocity control",
+  },
+  {
+    value: "elevator",
+    label: "Elevator",
+    icon: <ArrowUpDown className="h-3.5 w-3.5" aria-hidden />,
+    desc: "Carriage on a vertical rail — position control with constant gravity",
+  },
+];
 
 /**
- * Wraps the two PID playgrounds (arm position control + flywheel velocity
- * control) with a single segmented toggle. The two store backends are kept
- * independent so each mechanism remembers its own gains as the user flips
- * back and forth.
+ * Three playgrounds (arm position, flywheel velocity, elevator position) sit
+ * behind one segmented toggle. Each playground has its own Zustand store, so
+ * each mechanism remembers its own gains as the user flips between them.
  */
 export default function MechanismPlayground() {
   const mechanism = useMechanismToggle((s) => s.mechanism);
@@ -23,22 +49,7 @@ export default function MechanismPlayground() {
           aria-label="Choose mechanism"
           className="inline-flex rounded-lg border border-[var(--border)] bg-[var(--muted)] p-0.5 text-[12px] font-medium"
         >
-          {(
-            [
-              {
-                value: "arm",
-                label: "Arm (position)",
-                icon: <Bot className="h-3.5 w-3.5" aria-hidden />,
-                desc: "1-DOF arm with gravity — position control",
-              },
-              {
-                value: "flywheel",
-                label: "Flywheel (velocity)",
-                icon: <Disc3 className="h-3.5 w-3.5" aria-hidden />,
-                desc: "Spinning wheel with inertia — velocity control",
-              },
-            ] as const
-          ).map((opt) => {
+          {OPTIONS.map((opt) => {
             const active = mechanism === opt.value;
             return (
               <button
@@ -62,11 +73,9 @@ export default function MechanismPlayground() {
         </div>
       </div>
 
-      {mechanism === "arm" ? (
-        <InteractivePidPlayground />
-      ) : (
-        <InteractiveFlywheelPlayground />
-      )}
+      {mechanism === "arm" && <InteractivePidPlayground />}
+      {mechanism === "flywheel" && <InteractiveFlywheelPlayground />}
+      {mechanism === "elevator" && <InteractiveElevatorPlayground />}
     </div>
   );
 }
