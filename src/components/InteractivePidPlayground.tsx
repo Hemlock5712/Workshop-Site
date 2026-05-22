@@ -522,22 +522,9 @@ export default function InteractivePidPlayground() {
       },
       scales: {
         x: { time: false, range: [0, physics.durationSec] },
-        // Auto-fit the response with a small pad on both sides; the arm can
-        // fall all the way to −90° with insufficient FF, and overshoot above
-        // target when kG is too high.
-        y: {
-          range: (_u, _min, _max) => {
-            let lo = targetDeg;
-            let hi = targetDeg;
-            for (let i = 0; i < response.theta.length; i++) {
-              const v = response.theta[i] ?? targetDeg;
-              if (v < lo) lo = v;
-              if (v > hi) hi = v;
-            }
-            const pad = Math.max(10, (hi - lo) * 0.08);
-            return [lo - pad, hi + pad];
-          },
-        },
+        // Fixed -90° → 90° range so different gain configurations are directly
+        // comparable. Matches the arm's physical mechanical range.
+        y: { range: [-90, 90] },
       },
       axes: [
         {
@@ -553,8 +540,9 @@ export default function InteractivePidPlayground() {
           grid: { stroke: accent.grid, width: 1, dash: [2, 4] },
           ticks: { show: false },
           font: "11px ui-sans-serif, system-ui",
-          size: 36,
-          space: 32,
+          size: 38,
+          // Explicit ticks: -90, -45, 0, 45, 90.
+          splits: () => [-90, -45, 0, 45, 90],
           values: (_u, splits) => splits.map((v) => `${v.toFixed(0)}°`),
         },
       ],
