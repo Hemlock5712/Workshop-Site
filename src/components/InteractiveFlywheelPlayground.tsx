@@ -696,10 +696,12 @@ export default function InteractiveFlywheelPlayground() {
           Every loop the wheel sits idle for 1&nbsp;s, then the setpoint
           steps to your slider target. Tune{" "}
           <span className="font-mono">kV</span> first to predict the
-          back-EMF voltage at speed (≈{" "}
-          <span className="font-mono">0.15&nbsp;V·s/rot</span> for this
-          motor); add <span className="font-mono">kS</span> for the
-          static-friction breakaway, then close the loop with{" "}
+          back-EMF voltage at speed —{" "}
+          <span className="font-mono">V_max / free_rps</span> for this
+          Kraken X60 works out to ≈{" "}
+          <span className="font-mono">0.124&nbsp;V·s/rot</span>. Add{" "}
+          <span className="font-mono">kS</span> for the static-friction
+          breakaway, then close the loop with{" "}
           <span className="font-mono">kP</span> and{" "}
           <span className="font-mono">kI</span> to nail the steady-state.
           Order: <span className="font-mono">kV → kS → kP → kI → kD</span>.
@@ -728,9 +730,10 @@ export default function InteractiveFlywheelPlayground() {
 
       {/* ── Footer ──────────────────────────── */}
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        0.01&nbsp;kg·m² flywheel on a 4&nbsp;N·m / 80&nbsp;rps motor
-        (back-EMF modelled, ±12&nbsp;V saturation). Gains use Phoenix 6 /
-        WPILib velocity-control units — drop them straight into a{" "}
+        0.01&nbsp;kg·m² flywheel on a Kraken&nbsp;X60 motor
+        (7.09&nbsp;N·m stall, 5800&nbsp;RPM free; back-EMF modelled,
+        ±12&nbsp;V saturation). Gains use Phoenix 6 / WPILib
+        velocity-control units — drop them straight into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         on a{" "}
         <span className="font-mono text-[var(--foreground)]">VelocityVoltage</span>{" "}
