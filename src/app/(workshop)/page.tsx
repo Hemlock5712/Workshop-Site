@@ -160,26 +160,21 @@ export default function Home() {
         }}
       >
         <div className="max-w-[820px]">
-          {/* Brand mark + name */}
+          {/* Brand logo + name */}
           <div className="mb-7 flex items-center gap-3.5">
-            <div
-              className="relative flex shrink-0 items-center justify-center rounded-[4px]"
+            <Image
+              src="/images/gray-matter-logo.jpg"
+              alt="Gray Matter Coding logo"
+              width={64}
+              height={64}
+              quality={95}
+              className="shrink-0 rounded-md"
+              priority
               style={{
-                width: 38,
-                height: 38,
-                border: "2px solid var(--accent)",
+                border: "1px solid var(--line)",
+                background: "var(--bg-elev)",
               }}
-              aria-hidden
-            >
-              <div
-                style={{
-                  width: 14,
-                  height: 14,
-                  background: "var(--accent)",
-                  borderRadius: 2,
-                }}
-              />
-            </div>
+            />
             <div style={{ lineHeight: 1.2 }}>
               <div className="text-lg font-semibold tracking-tight">
                 Gray Matter Coding Workshop
@@ -240,59 +235,25 @@ export default function Home() {
                 →
               </span>
             </Link>
-            <Link
-              href="/ai-assistant"
-              className="inline-flex items-center rounded-md px-4 py-2.5 text-[13px] font-medium no-underline transition"
-              style={{
-                background: "var(--bg-elev)",
-                color: "var(--fg)",
-                border: "1px solid var(--line)",
-              }}
-            >
-              Ask the Co-pilot
-            </Link>
-            <a
-              href="#mechanisms"
-              className="inline-flex items-center rounded-md px-4 py-2.5 text-[13px] font-medium no-underline transition"
-              style={{
-                background: "transparent",
-                color: "var(--fg-mute)",
-                border: "1px solid transparent",
-              }}
-            >
-              See what you&rsquo;ll build
-            </a>
           </div>
         </div>
       </section>
 
       {/* ── MECHANISMS ─────────────────────────────────────────────── */}
       <section id="mechanisms" className="mb-16 mt-14">
-        <div className="mb-7 flex items-baseline justify-between flex-wrap gap-2">
-          <div>
-            <div className="micro">WHAT YOU&rsquo;LL PROGRAM</div>
-            <h2
-              className="font-semibold"
-              style={{
-                fontSize: 30,
-                letterSpacing: "-0.01em",
-                marginTop: 8,
-                fontFamily: "var(--font-serif)",
-              }}
-            >
-              Four mechanisms. Two workshops.
-            </h2>
-          </div>
-          <span
-            className="font-mono"
+        <div className="mb-7">
+          <div className="micro">WHAT YOU&rsquo;LL PROGRAM</div>
+          <h2
+            className="font-semibold"
             style={{
-              fontSize: 11.5,
-              color: "var(--fg-dim)",
-              letterSpacing: "0.05em",
+              fontSize: 30,
+              letterSpacing: "-0.01em",
+              marginTop: 8,
+              fontFamily: "var(--font-serif)",
             }}
           >
-            real CTRE Phoenix 6 hardware
-          </span>
+            Four mechanisms. Two workshops.
+          </h2>
         </div>
 
         <WorkshopBanner
@@ -409,7 +370,7 @@ export default function Home() {
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex flex-col gap-2.5 rounded-sm p-4 no-underline transition-colors"
+              className="group flex flex-col gap-3 rounded-sm p-4 no-underline transition-colors"
               style={{
                 border: "1px solid var(--line)",
                 background: "var(--bg-elev)",
@@ -419,7 +380,7 @@ export default function Home() {
               <div
                 className="relative flex items-center justify-center"
                 style={{
-                  height: 56,
+                  height: 96,
                   background: "var(--bg)",
                   border: "1px solid var(--line-soft)",
                   borderRadius: 3,
@@ -428,10 +389,9 @@ export default function Home() {
                 <Image
                   src={s.logo}
                   alt={s.full}
-                  width={120}
-                  height={48}
-                  className="max-h-[44px] w-auto object-contain"
-                  style={{ filter: "grayscale(1)", opacity: 0.9 }}
+                  width={180}
+                  height={80}
+                  className="max-h-[80px] w-auto object-contain grayscale opacity-80 transition duration-200 group-hover:grayscale-0 group-hover:opacity-100"
                 />
               </div>
               <div>

@@ -1,9 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { ChevronsLeft, ChevronsRight, X } from "lucide-react";
+import {
+  ChevronsLeft,
+  ChevronsRight,
+  X,
+  Sparkles,
+  BookOpen,
+} from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useProgress } from "@/lib/useProgress";
@@ -16,18 +22,27 @@ import {
   type LessonSection,
   type SectionMeta,
 } from "@/data/lessons";
-import { SECTION_ICONS } from "@/data/lessonIcons";
+import { LESSON_ICONS, SECTION_ICONS } from "@/data/lessonIcons";
 
 // ── Utility nav (non-lesson links) ───────────────────────────────────────
 
 interface UtilityLink {
   href: string;
   label: string;
+  icon: ReactNode;
 }
 
 const UTILITY_LINKS: ReadonlyArray<UtilityLink> = [
-  { href: "/ai-assistant", label: "AI Assistant" },
-  { href: "/glossary", label: "Glossary" },
+  {
+    href: "/ai-assistant",
+    label: "AI Assistant",
+    icon: <Sparkles className="h-[18px] w-[18px]" aria-hidden />,
+  },
+  {
+    href: "/glossary",
+    label: "Glossary",
+    icon: <BookOpen className="h-[18px] w-[18px]" aria-hidden />,
+  },
 ];
 
 // Section-index labels shown in the sidebar. Sections live in
@@ -41,81 +56,58 @@ const SECTION_LABEL: Record<LessonSection, string> = {
   advanced: "03 · ADVANCED TOPICS",
 };
 
-// ── Status dot ───────────────────────────────────────────────────────────
+// ── Item status (drives icon recolouring) ────────────────────────────────
 
 type ItemStatus = "done" | "current" | "todo";
 
-function StatusDot({ status }: { status: ItemStatus }) {
+/** Colour for the lesson icon based on its progress status. */
+function statusColor(status: ItemStatus): string {
+  if (status === "done") return "var(--ok)";
+  if (status === "current") return "var(--accent)";
+  return "var(--fg-mute)";
+}
+
+/**
+ * Wraps a lesson icon in a fixed-size slot so different Lucide icons
+ * (some 18px stroke, some 20px) line up cleanly. Sets `color` on the
+ * span so each Lucide icon's `stroke="currentColor"` resolves to the
+ * right status hue without per-icon plumbing. Adds a subtle amber
+ * glow ring on the "current" lesson so the active item still pops
+ * the way the StatusDot's --accent-soft ring used to.
+ */
+function StatusIcon({ icon, status }: { icon: ReactNode; status: ItemStatus }) {
   const isCurrent = status === "current";
-  const fill =
-    status === "done"
-      ? "var(--ok)"
-      : isCurrent
-        ? "var(--accent)"
-        : "transparent";
   return (
     <span
       aria-hidden
-      className="shrink-0"
+      className="inline-flex shrink-0 items-center justify-center"
       style={{
-        position: "relative",
-        display: "inline-block",
-        width: 7,
-        height: 7,
-        borderRadius: "50%",
-        background: fill,
-        border: status === "todo" ? "1px solid var(--line)" : "none",
-        boxShadow: isCurrent ? "0 0 0 3px var(--accent-soft)" : "none",
+        width: 22,
+        height: 22,
+        borderRadius: 4,
+        color: statusColor(status),
+        background: isCurrent ? "var(--accent-soft)" : "transparent",
+        transition: "color 0.15s, background 0.15s",
       }}
-    />
+    >
+      {icon}
+    </span>
   );
 }
 
-// ── Brand mark + header ──────────────────────────────────────────────────
-
-function BrandMark() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div
-        className="relative flex items-center justify-center rounded-[4px]"
-        style={{
-          width: 28,
-          height: 28,
-          border: "1.5px solid var(--accent)",
-        }}
-        aria-hidden
-      >
-        <div
-          style={{
-            width: 10,
-            height: 10,
-            background: "var(--accent)",
-            borderRadius: 2,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: -4,
-            border: "1px dashed var(--line)",
-            borderRadius: 6,
-          }}
-        />
-      </div>
-      <div className="leading-tight">
-        <div className="text-sm font-semibold tracking-tight">Gray Matter</div>
-        <div className="micro" style={{ fontSize: 9.5, marginTop: 2 }}>
-          CODING WORKSHOP
-        </div>
-      </div>
-    </div>
-  );
-}
+// ── Progress meter ───────────────────────────────────────────────────────
 
 function ProgressMeter() {
   const { completed, clearAll } = useProgress();
-  const total = LESSONS.length;
-  const done = completed.size;
+  // Count only Workshop 1 + Workshop 2 lessons toward progress. The
+  // "Getting Started" (main) and "Advanced" sections are orientation
+  // and bonus material — they shouldn't dilute the headline number.
+  const TRACKED = LESSONS.filter(
+    (l) => l.section === "workshop1" || l.section === "workshop2"
+  );
+  const trackedSlugs = new Set(TRACKED.map((l) => l.slug));
+  const total = TRACKED.length;
+  const done = [...completed].filter((slug) => trackedSlugs.has(slug)).length;
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
 
   return (
@@ -127,7 +119,7 @@ function ProgressMeter() {
         <button
           type="button"
           onClick={() => {
-            if (done === 0) return;
+            if (completed.size === 0) return;
             // Confirm before clearing so users don't lose progress by mis-click.
             const ok =
               typeof window === "undefined"
@@ -137,7 +129,7 @@ function ProgressMeter() {
           }}
           className="mono tabular cursor-pointer border-0 bg-transparent p-0"
           style={{ color: "var(--fg)", fontSize: 11 }}
-          title={done > 0 ? "Reset progress" : "No progress yet"}
+          title={completed.size > 0 ? "Reset progress" : "No progress yet"}
         >
           {String(done).padStart(2, "0")}/{total}
         </button>
@@ -164,6 +156,7 @@ function ProgressMeter() {
 interface ItemLinkProps {
   href: string;
   label: string;
+  icon: ReactNode;
   status: ItemStatus;
   expanded: boolean;
   onNavigate?: () => void;
@@ -172,6 +165,7 @@ interface ItemLinkProps {
 function ItemLink({
   href,
   label,
+  icon,
   status,
   expanded,
   onNavigate,
@@ -179,27 +173,24 @@ function ItemLink({
   const isActive = status === "current";
 
   if (!expanded) {
-    // Rail mode: render as a status dot button with hover tooltip. The
-    // user clicks the dot to navigate; the section it lives under still
-    // expands the sidebar on click of the section icon (handled below).
+    // Rail mode: render just the icon, colour-tinted by status. The
+    // section it lives under still expands the sidebar on click of the
+    // section icon (handled by SectionGroup).
     return (
       <div className="group relative flex justify-center">
         <Link
           href={href}
           onClick={onNavigate}
-          className="rounded-md p-2 transition-colors hover:bg-[var(--bg-elev)]"
+          className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--bg-elev)]"
           aria-current={isActive ? "page" : undefined}
           aria-label={label}
         >
-          <StatusDot status={status} />
+          <StatusIcon icon={icon} status={status} />
         </Link>
         <div
           role="tooltip"
           className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-          style={{
-            background: "var(--fg)",
-            color: "var(--bg)",
-          }}
+          style={{ background: "var(--fg)", color: "var(--bg)" }}
         >
           {label}
         </div>
@@ -225,7 +216,7 @@ function ItemLink({
         if (!isActive) e.currentTarget.style.background = "transparent";
       }}
     >
-      <StatusDot status={status} />
+      <StatusIcon icon={icon} status={status} />
       <span className="truncate">{label}</span>
     </Link>
   );
@@ -331,6 +322,7 @@ function SectionGroup({
               key={lesson.slug}
               href={lesson.slug}
               label={getSidebarLabel(lesson)}
+              icon={LESSON_ICONS[lesson.slug] ?? SECTION_ICONS[lesson.section]}
               status={statusFor(lesson.slug, pathname, isCompleted)}
               expanded
               onNavigate={onItemNavigate}
@@ -459,55 +451,15 @@ export default function Sidebar() {
           </div>
         )}
 
-        {/* Brand + progress meter (only shown when expanded) */}
+        {/* Progress meter — only shown when expanded. The workshop
+            header above already carries the Gray Matter logo + name,
+            so we keep the sidebar header focused on completion state. */}
         {isOpen && (
           <div
-            className="flex flex-col gap-3.5 px-5 py-4"
+            className="px-5 py-4"
             style={{ borderBottom: "1px solid var(--line)" }}
           >
-            <Link
-              href="/"
-              onClick={closeOnMobile}
-              className="block no-underline"
-              style={{ color: "var(--fg)" }}
-            >
-              <BrandMark />
-            </Link>
             <ProgressMeter />
-          </div>
-        )}
-
-        {/* Collapsed rail brand — just the mark, links home */}
-        {!isOpen && (
-          <div
-            className="flex justify-center py-4"
-            style={{ borderBottom: "1px solid var(--line)" }}
-          >
-            <Link
-              href="/"
-              onClick={closeOnMobile}
-              aria-label="Workshop home"
-              className="block"
-            >
-              <div
-                className="relative flex items-center justify-center rounded-[4px]"
-                style={{
-                  width: 28,
-                  height: 28,
-                  border: "1.5px solid var(--accent)",
-                }}
-                aria-hidden
-              >
-                <div
-                  style={{
-                    width: 10,
-                    height: 10,
-                    background: "var(--accent)",
-                    borderRadius: 2,
-                  }}
-                />
-              </div>
-            </Link>
           </div>
         )}
 
@@ -522,6 +474,9 @@ export default function Sidebar() {
                 key={lesson.slug}
                 href={lesson.slug}
                 label={getSidebarLabel(lesson)}
+                icon={
+                  LESSON_ICONS[lesson.slug] ?? SECTION_ICONS[lesson.section]
+                }
                 status={statusFor(lesson.slug, pathname, isCompleted)}
                 expanded={isOpen}
                 onNavigate={closeOnMobile}
@@ -564,6 +519,7 @@ export default function Sidebar() {
                   key={link.href}
                   href={link.href}
                   label={link.label}
+                  icon={link.icon}
                   status={
                     pathname === link.href
                       ? "current"

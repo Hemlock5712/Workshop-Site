@@ -31,9 +31,10 @@ export default function WorkshopLayout({
             <Image
               src="/images/gray-matter-logo.jpg"
               alt="Gray Matter Logo"
-              width={32}
-              height={32}
-              className="w-8 h-8 rounded-lg"
+              width={36}
+              height={36}
+              quality={95}
+              className="w-9 h-9 rounded-lg"
             />
             <span
               className="font-semibold text-base"
