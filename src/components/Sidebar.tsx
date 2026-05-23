@@ -1,18 +1,77 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Check } from "lucide-react";
+import {
+  Check,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  Sparkles,
+  BookOpen,
+  X,
+} from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useProgress } from "@/lib/useProgress";
-import { getLessonsBySection, type LessonSection } from "@/data/lessons";
+import {
+  SECTIONS,
+  getLessonsBySection,
+  getSidebarLabel,
+  type Lesson,
+  type LessonSection,
+  type SectionMeta,
+} from "@/data/lessons";
+import { LESSON_ICONS, SECTION_ICONS } from "@/data/lessonIcons";
 
-/**
- * Tiny "X/N" chip rendered in a collapsible-section header. Hidden when
- * none of the section's lessons are complete to keep the empty state clean.
- */
+// ── Utility nav (extra links that aren't workshop lessons) ───────────────
+
+interface UtilityLink {
+  href: string;
+  label: string;
+  icon: ReactNode;
+}
+
+const UTILITY_LINKS: ReadonlyArray<UtilityLink> = [
+  {
+    href: "/ai-assistant",
+    label: "AI Assistant",
+    icon: <Sparkles className="w-5 h-5" aria-hidden />,
+  },
+  {
+    href: "/glossary",
+    label: "Glossary",
+    icon: <BookOpen className="w-5 h-5" aria-hidden />,
+  },
+];
+
+// ── Small primitives ─────────────────────────────────────────────────────
+
+function ProgressIndicator({
+  done,
+  expanded,
+}: {
+  done: boolean;
+  expanded: boolean;
+}) {
+  if (!done) return null;
+  if (expanded) {
+    return (
+      <Check
+        className="ml-auto h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+        aria-label="Completed"
+      />
+    );
+  }
+  return (
+    <span
+      aria-label="Completed"
+      className="absolute right-1.5 top-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"
+    />
+  );
+}
+
 function SectionProgressChip({
   section,
   isCompleted,
@@ -39,643 +98,202 @@ function SectionProgressChip({
   );
 }
 
-/**
- * Small completion indicator shown next to nav items the user has marked
- * done. Two visual modes:
- *  - sidebar expanded → a check icon to the right of the label
- *  - sidebar collapsed → a small green dot in the corner of the icon
- */
-function ProgressIndicator({
-  done,
-  expanded,
-}: {
-  done: boolean;
+// ── Link rendering ───────────────────────────────────────────────────────
+
+interface NavLinkProps {
+  href: string;
+  label: string;
+  icon: ReactNode;
   expanded: boolean;
-}) {
-  if (!done) return null;
-  if (expanded) {
-    return (
-      <Check
-        className="ml-auto h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
-        aria-label="Completed"
-      />
-    );
-  }
+  active: boolean;
+  done?: boolean;
+  /** Indent inside a collapsible section. */
+  nested?: boolean;
+  onNavigate?: () => void;
+}
+
+function NavLink({
+  href,
+  label,
+  icon,
+  expanded,
+  active,
+  done = false,
+  nested = false,
+  onNavigate,
+}: NavLinkProps) {
+  const base =
+    "relative flex items-center rounded-md text-sm font-medium transition-colors";
+  const padding = expanded
+    ? nested
+      ? "pl-8 pr-4 py-2 gap-3"
+      : "px-4 py-3 gap-3"
+    : "px-3 py-3 justify-center";
+  const colour = active
+    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
+    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]";
+
   return (
-    <span
-      aria-label="Completed"
-      className="absolute right-1.5 top-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"
-    />
+    <div className="relative group">
+      <Link
+        href={href}
+        onClick={onNavigate}
+        className={`${base} ${padding} ${colour}`}
+        aria-current={active ? "page" : undefined}
+      >
+        <span className="flex-shrink-0">{icon}</span>
+        {expanded && <span className="truncate">{label}</span>}
+        <ProgressIndicator done={done} expanded={expanded} />
+      </Link>
+      {!expanded && (
+        <div
+          role="tooltip"
+          className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50"
+        >
+          {label}
+        </div>
+      )}
+    </div>
   );
 }
 
-/**
- * Main navigation items (Home, Introduction, Prerequisites)
- * These are always visible at the top of the sidebar
- */
+// ── Collapsible section ─────────────────────────────────────────────────
 
-const navigationItems = [
-  {
-    href: "/",
-    label: "Home",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/introduction",
-    label: "Introduction",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/prerequisites",
-    label: "Prerequisites",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-  },
-];
+interface SectionGroupProps {
+  meta: SectionMeta;
+  lessons: ReadonlyArray<Lesson>;
+  expanded: boolean;
+  isOpen: boolean;
+  isCompleted: (slug: string) => boolean;
+  pathname: string;
+  onSectionToggle: () => void;
+  onItemNavigate: () => void;
+  /** Expand the sidebar when the user clicks a collapsed section's icon. */
+  onCollapsedHeaderClick: () => void;
+}
 
-/**
- * Workshop #1 navigation items
- * These appear in a collapsible section under the main navigation
- */
-const workshop1Items = [
-  {
-    href: "/hardware",
-    label: "Hardware Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/project-setup",
-    label: "Project Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/command-framework",
-    label: "Command System",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 4.5V2.25M15 4.5V2.25M9 21.75V19.5M15 21.75V19.5M4.5 9H2.25M4.5 15H2.25M21.75 9H19.5M21.75 15H19.5M7.5 7.5h9v9h-9v-9z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/building-subsystems",
-    label: "Subsystems",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25A2.25 2.25 0 018.25 10.5H6A2.25 2.25 0 013.75 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/adding-commands",
-    label: "Commands",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/triggers",
-    label: "Triggers",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2M4 8v8a2 2 0 002 2h12a2 2 0 002-2V8M4 8h16"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 12h2m6 0h2"
-        />
-        <circle cx="8" cy="8" r="1" fill="currentColor" />
-        <circle cx="16" cy="8" r="1" fill="currentColor" />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M6 4L5 2M18 4l1-2"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/running-program",
-    label: "Run Program",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M14.752 11.168l-5.197-3.031A1 1 0 008 9.031v5.938a1 1 0 001.555.832l5.197-3.031a1 1 0 000-1.664z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/mechanism-setup",
-    label: "Mechanism",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/pid-control",
-    label: "PID Control",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 10V3L4 14h7v7l9-11h-7z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/motion-magic",
-    label: "Motion Magic",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="m14 7 3 3"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 6v4"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 14v4"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 2v2"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 8H3"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 16h-4"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M11 3H9"
-        />
-      </svg>
-    ),
-  },
-];
+function SectionGroup({
+  meta,
+  lessons,
+  expanded,
+  isOpen,
+  isCompleted,
+  pathname,
+  onSectionToggle,
+  onItemNavigate,
+  onCollapsedHeaderClick,
+}: SectionGroupProps) {
+  // Collapsed sidebar: render the section as a single icon button that
+  // expands the whole sidebar and opens this section.
+  if (!expanded) {
+    return (
+      <div className="relative group">
+        <button
+          type="button"
+          onClick={onCollapsedHeaderClick}
+          className="flex w-full items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
+          aria-label={`Open ${meta.title}`}
+        >
+          {SECTION_ICONS[meta.id]}
+        </button>
+        <div
+          role="tooltip"
+          className="absolute left-full top-1/2 -translate-y-1/2 ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50"
+        >
+          {meta.title}
+        </div>
+      </div>
+    );
+  }
 
-/**
- * Workshop #2 navigation items
- * These appear in a collapsible section under Workshop #1
- */
-const workshop2Items = [
-  {
-    href: "/swerve-prerequisites",
-    label: "Swerve Prereqs",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/swerve-drive-project",
-    label: "Swerve Project",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/pathplanner",
-    label: "PathPlanner",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/swerve-calibration",
-    label: "Odom Calib",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/logging-options",
-    label: "Log Options",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/logging-implementation",
-    label: "Logging Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/drive-to-point",
-    label: "Drive to Point",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/vision-options",
-    label: "Vision Options",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/vision-implementation",
-    label: "Vision Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-        />
-      </svg>
-    ),
-  },
-];
+  return (
+    <div className="pt-4">
+      <div className="border-t border-[var(--border)] pt-4">
+        <button
+          type="button"
+          onClick={onSectionToggle}
+          aria-expanded={isOpen}
+          className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            {SECTION_ICONS[meta.id]}
+            <span>{meta.title}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <SectionProgressChip section={meta.id} isCompleted={isCompleted} />
+            <ChevronRight
+              className={`w-4 h-4 transition-transform duration-200 ${
+                isOpen ? "rotate-90" : ""
+              }`}
+              aria-hidden
+            />
+          </div>
+        </button>
 
-/**
- * Advanced Topics navigation items
- * These appear in a collapsible section after Workshop #2
- * Contains advanced programming patterns and techniques
- */
-const advancedTopicsItems = [
-  {
-    href: "/vision-shooting",
-    label: "Odom Shot",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/state-based",
-    label: "State Control",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 12h4M10 16h4"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/advanced-drive-to-point",
-    label: "LinearPath",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 10V3L4 14h7v7l9-11h-7z"
-        />
-      </svg>
-    ),
-  },
-];
+        {isOpen && (
+          <div className="mt-2 space-y-1">
+            {lessons.map((lesson) => (
+              <NavLink
+                key={lesson.slug}
+                href={lesson.slug}
+                label={getSidebarLabel(lesson)}
+                icon={
+                  LESSON_ICONS[lesson.slug] ?? SECTION_ICONS[lesson.section]
+                }
+                expanded
+                nested
+                active={pathname === lesson.slug}
+                done={isCompleted(lesson.slug)}
+                onNavigate={onItemNavigate}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
-/**
- * Collapsible sidebar navigation component
- * Features:
- * - Responsive design (overlay on mobile, fixed on desktop)
- * - Collapsible state with smooth animations
- * - Workshop-based organization with expandable sections
- * - Tooltips when collapsed
- * - Active state highlighting based on current route
- */
+// ── Sidebar ─────────────────────────────────────────────────────────────
+
 export default function Sidebar() {
   const { isOpen, setIsOpen, toggleSidebar } = useSidebar();
-  const [isWorkshop1Open, setIsWorkshop1Open] = useState(false); // Workshop 1 sections closed by default
-  const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
-  const [isAdvancedTopicsOpen, setIsAdvancedTopicsOpen] = useState(false); // Advanced Topics sections closed by default
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const { isCompleted } = useProgress();
+
+  // Each collapsible section keeps its own open/closed state.
+  const collapsibleSections = SECTIONS.filter((s) => s.collapsible);
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(
+    () => Object.fromEntries(collapsibleSections.map((s) => [s.id, false]))
+  );
+
+  // Auto-open the section containing the current page on mount / route change.
+  const lastPathnameRef = useRef<string>("");
+  useEffect(() => {
+    if (pathname === lastPathnameRef.current) return;
+    lastPathnameRef.current = pathname;
+    const match = SECTIONS.find((s) =>
+      getLessonsBySection(s.id).some((l) => l.slug === pathname)
+    );
+    if (match && match.collapsible) {
+      setOpenSections((prev) =>
+        prev[match.id] ? prev : { ...prev, [match.id]: true }
+      );
+    }
+  }, [pathname]);
+
+  const closeOnMobile = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  };
+
+  const openSectionAfterExpand = (id: LessonSection) => {
+    setIsOpen(true);
+    setOpenSections((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const mainLessons = getLessonsBySection("main");
 
   return (
     <>
@@ -684,10 +302,11 @@ export default function Sidebar() {
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-[60] md:hidden"
           onClick={() => setIsOpen(false)}
+          aria-hidden
         />
       )}
 
-      {/* Sidebar toggle button - always visible on desktop */}
+      {/* Desktop expand/collapse rail toggle */}
       <button
         type="button"
         onClick={toggleSidebar}
@@ -697,26 +316,14 @@ export default function Sidebar() {
         }`}
         title={isOpen ? "Close sidebar" : "Open sidebar"}
       >
-        <svg
-          className="w-5 h-5 text-[var(--muted-foreground)]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d={
-              isOpen
-                ? "M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                : "M13 5l7 7-7 7M5 5l7 7-7 7"
-            }
-          />
-        </svg>
+        {isOpen ? (
+          <ChevronsLeft className="w-5 h-5 text-[var(--muted-foreground)]" />
+        ) : (
+          <ChevronsRight className="w-5 h-5 text-[var(--muted-foreground)]" />
+        )}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar shell */}
       <div
         className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-[70] transform transition-all duration-300 ease-in-out ${
           isOpen
@@ -724,7 +331,7 @@ export default function Sidebar() {
             : "-translate-x-full md:translate-x-0 md:w-16"
         }`}
       >
-        {/* Close button - visible when sidebar is open */}
+        {/* Mobile close header */}
         {isOpen && (
           <div className="flex md:hidden justify-end p-4 border-b border-[var(--border)]">
             <button
@@ -734,19 +341,7 @@ export default function Sidebar() {
               className="p-2 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
               title="Close sidebar"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="w-5 h-5" />
             </button>
           </div>
         )}
@@ -754,525 +349,59 @@ export default function Sidebar() {
         <div
           className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}
         >
-          {/* Navigation */}
-          <nav className="space-y-2">
-            {/* Main Navigation Items */}
-            {navigationItems.map((item) => {
-              const isActive = pathname === item.href;
-              const done = isCompleted(item.href);
-              return (
-                <div key={item.href} className="relative group">
-                  <Link
-                    href={item.href}
-                    className={`relative flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                      isOpen
-                        ? "px-4 py-3 space-x-3"
-                        : "px-3 py-3 justify-center"
-                    } ${
-                      isActive
-                        ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                        : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                    }`}
-                  >
-                    <span className="flex-shrink-0">{item.icon}</span>
-                    {isOpen && <span className="truncate">{item.label}</span>}
-                    <ProgressIndicator done={done} expanded={isOpen} />
-                  </Link>
+          <nav className="space-y-2" aria-label="Workshop navigation">
+            {/* Main section (always visible, no collapsible header) */}
+            {mainLessons.map((lesson) => (
+              <NavLink
+                key={lesson.slug}
+                href={lesson.slug}
+                label={getSidebarLabel(lesson)}
+                icon={LESSON_ICONS[lesson.slug] ?? SECTION_ICONS.main}
+                expanded={isOpen}
+                active={pathname === lesson.slug}
+                done={isCompleted(lesson.slug)}
+                onNavigate={closeOnMobile}
+              />
+            ))}
 
-                  {/* Tooltip for collapsed state */}
-                  {!isOpen && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                      {item.label}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+            {/* Collapsible sections (Workshop #1, Workshop #2, Advanced) */}
+            {collapsibleSections.map((meta) => (
+              <SectionGroup
+                key={meta.id}
+                meta={meta}
+                lessons={getLessonsBySection(meta.id)}
+                expanded={isOpen}
+                isOpen={!!openSections[meta.id]}
+                isCompleted={isCompleted}
+                pathname={pathname}
+                onSectionToggle={() =>
+                  setOpenSections((prev) => ({
+                    ...prev,
+                    [meta.id]: !prev[meta.id],
+                  }))
+                }
+                onItemNavigate={closeOnMobile}
+                onCollapsedHeaderClick={() => openSectionAfterExpand(meta.id)}
+              />
+            ))}
 
-            {/* Mechanism CAD Item */}
-            <div className="pt-2 relative group">
-              <Link
-                href="/mechanism-cad"
-                className={`relative flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                } ${
-                  pathname === "/mechanism-cad"
-                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                }`}
-                onClick={() => {
-                  // Only close on mobile
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
-                  }
-                }}
-              >
-                <span className="flex-shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                    />
-                  </svg>
-                </span>
-                {isOpen && <span className="truncate">Mechanism CAD</span>}
-                <ProgressIndicator
-                  done={isCompleted("/mechanism-cad")}
+            {/* Utility links (AI Assistant, Glossary) */}
+            <div className="pt-4 space-y-2">
+              {UTILITY_LINKS.map((link) => (
+                <NavLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  icon={link.icon}
                   expanded={isOpen}
+                  active={pathname === link.href}
+                  onNavigate={closeOnMobile}
                 />
-              </Link>
-
-              {/* Tooltip for collapsed state */}
-              {!isOpen && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Mechanism CAD
-                </div>
-              )}
-            </div>
-
-            {/* Workshop #1 Section */}
-            {isOpen && (
-              <div className="pt-4">
-                <div className="border-t border-[var(--border)] pt-4">
-                  <button
-                    onClick={() => setIsWorkshop1Open(!isWorkshop1Open)}
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                        />
-                      </svg>
-                      <span>Workshop #1</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <SectionProgressChip
-                        section="workshop1"
-                        isCompleted={isCompleted}
-                      />
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          isWorkshop1Open ? "rotate-90" : ""
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </button>
-
-                  {/* Workshop #1 Items */}
-                  <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${
-                      isWorkshop1Open ? "block" : "hidden"
-                    }`}
-                  >
-                    {workshop1Items.map((item) => {
-                      const isActive = pathname === item.href;
-                      const done = isCompleted(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
-                            isActive
-                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                          }`}
-                          onClick={() => {
-                            // Only close on mobile
-                            if (window.innerWidth < 768) {
-                              setIsOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="flex-shrink-0">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
-                          <ProgressIndicator done={done} expanded />
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Workshop #1 collapsed view */}
-            {!isOpen && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setIsWorkshop1Open(true);
-                  }}
-                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                    />
-                  </svg>
-                </button>
-
-                {/* Tooltip for collapsed workshop */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Workshop #1
-                </div>
-              </div>
-            )}
-
-            {/* Workshop #2 Section */}
-            {isOpen && (
-              <div className="pt-4">
-                <div className="border-t border-[var(--border)] pt-4">
-                  <button
-                    onClick={() => setIsWorkshop2Open(!isWorkshop2Open)}
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
-                      <span>Workshop #2</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <SectionProgressChip
-                        section="workshop2"
-                        isCompleted={isCompleted}
-                      />
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          isWorkshop2Open ? "rotate-90" : ""
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </button>
-
-                  {/* Workshop #2 Items */}
-                  <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${
-                      isWorkshop2Open ? "block" : "hidden"
-                    }`}
-                  >
-                    {workshop2Items.map((item) => {
-                      const isActive = pathname === item.href;
-                      const done = isCompleted(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
-                            isActive
-                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                          }`}
-                          onClick={() => {
-                            // Only close on mobile
-                            if (window.innerWidth < 768) {
-                              setIsOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="flex-shrink-0">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
-                          <ProgressIndicator done={done} expanded />
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Workshop #2 collapsed view */}
-            {!isOpen && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setIsWorkshop2Open(true);
-                  }}
-                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </button>
-
-                {/* Tooltip for collapsed workshop */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Workshop #2
-                </div>
-              </div>
-            )}
-
-            {/* Advanced Topics Section */}
-            {isOpen && (
-              <div className="pt-4">
-                <div className="border-t border-[var(--border)] pt-4">
-                  <button
-                    onClick={() =>
-                      setIsAdvancedTopicsOpen(!isAdvancedTopicsOpen)
-                    }
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                        />
-                      </svg>
-                      <span>Advanced Topics</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <SectionProgressChip
-                        section="advanced"
-                        isCompleted={isCompleted}
-                      />
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          isAdvancedTopicsOpen ? "rotate-90" : ""
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </button>
-
-                  {/* Advanced Topics Items */}
-                  <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${
-                      isAdvancedTopicsOpen ? "block" : "hidden"
-                    }`}
-                  >
-                    {advancedTopicsItems.map((item) => {
-                      const isActive = pathname === item.href;
-                      const done = isCompleted(item.href);
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
-                            isActive
-                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                          }`}
-                          onClick={() => {
-                            // Only close on mobile
-                            if (window.innerWidth < 768) {
-                              setIsOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="flex-shrink-0">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
-                          <ProgressIndicator done={done} expanded />
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Advanced Topics collapsed view */}
-            {!isOpen && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setIsAdvancedTopicsOpen(true);
-                  }}
-                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                </button>
-
-                {/* Tooltip for collapsed section */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Advanced Topics
-                </div>
-              </div>
-            )}
-
-            {/* AI Assistant Item - After Advanced Topics */}
-            <div className="pt-2 relative group">
-              <Link
-                href="/ai-assistant"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                } ${
-                  pathname === "/ai-assistant"
-                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                }`}
-                onClick={() => {
-                  // Only close on mobile
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
-                  }
-                }}
-              >
-                <span className="flex-shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
-                    />
-                  </svg>
-                </span>
-                {isOpen && <span className="truncate">AI Assistant</span>}
-              </Link>
-
-              {/* Tooltip for collapsed state */}
-              {!isOpen && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  AI Assistant
-                </div>
-              )}
-            </div>
-
-            {/* Glossary Item - After AI Assistant */}
-            <div className="pt-2 relative group">
-              <Link
-                href="/glossary"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                } ${
-                  pathname === "/glossary"
-                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                }`}
-                onClick={() => {
-                  // Only close on mobile
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
-                  }
-                }}
-              >
-                <span className="flex-shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </span>
-                {isOpen && <span className="truncate">Glossary</span>}
-              </Link>
-
-              {/* Tooltip for collapsed state */}
-              {!isOpen && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Glossary
-                </div>
-              )}
+              ))}
             </div>
           </nav>
         </div>
+
         <div className="p-4">
           <AnimatedThemeToggler />
         </div>
