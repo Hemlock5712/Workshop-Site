@@ -1,5 +1,9 @@
-import { Target } from "lucide-react";
-
+/**
+ * Top-of-lesson "key concept" intro panel. Rebuilt on the module pattern:
+ * a bordered container with a "KEY CONCEPT" tag corner label, a serif
+ * heading, descriptive body copy, and an amber-striped takeaway line at
+ * the bottom that names the concept itself.
+ */
 interface KeyConceptSectionProps {
   title: string;
   description: string | string[];
@@ -13,29 +17,65 @@ export default function KeyConceptSection({
   concept,
   children,
 }: KeyConceptSectionProps) {
-  const renderDescription = () => {
-    if (Array.isArray(description)) {
-      return description.map((line, index) => (
-        <p key={index} className="text-[var(--muted-foreground)] mb-4">
-          {line}
-        </p>
-      ));
-    }
-    return <p className="text-[var(--muted-foreground)] mb-4">{description}</p>;
-  };
+  const lines = Array.isArray(description) ? description : [description];
 
   return (
-    <div className="bg-yellow-50 dark:bg-yellow-900/20 text-[var(--foreground)] rounded-lg p-8 border border-yellow-200 dark:border-yellow-800">
-      <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+    <div
+      className="module ticked relative"
+      style={{ padding: "44px 24px 24px" }}
+    >
+      <span className="module-tag">KEY CONCEPT</span>
+
+      <h2
+        className="mb-3 text-2xl font-semibold leading-tight"
+        style={{
+          fontFamily: "var(--font-serif)",
+          color: "var(--fg)",
+          letterSpacing: "-0.01em",
+        }}
+      >
         {title}
       </h2>
-      {renderDescription()}
-      <div className="bg-green-100 dark:bg-green-900/30 p-4 rounded-lg">
-        <p className="text-green-800 dark:text-green-300 font-medium flex items-center gap-2">
-          <Target className="w-5 h-5" />
-          Key Concept: {concept}
+
+      <div className="flex flex-col gap-3">
+        {lines.map((line, i) => (
+          <p
+            key={i}
+            className="text-[15px] leading-relaxed"
+            style={{ color: "var(--fg-mute)", margin: 0 }}
+          >
+            {line}
+          </p>
+        ))}
+      </div>
+
+      <div
+        className="mt-5 flex items-start gap-3 rounded-md p-4"
+        style={{
+          background: "var(--bg)",
+          border: "1px solid var(--line-soft)",
+          borderLeft: "3px solid var(--accent)",
+        }}
+      >
+        <span
+          className="mono shrink-0"
+          style={{
+            color: "var(--accent)",
+            fontSize: 10.5,
+            letterSpacing: "0.08em",
+            marginTop: 3,
+          }}
+        >
+          ↳ TAKEAWAY
+        </span>
+        <p
+          className="text-[14px] leading-relaxed"
+          style={{ color: "var(--fg)", margin: 0 }}
+        >
+          {concept}
         </p>
       </div>
+
       {children}
     </div>
   );

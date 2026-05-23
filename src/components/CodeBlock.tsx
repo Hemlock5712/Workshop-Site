@@ -5,9 +5,18 @@ import dynamic from "next/dynamic";
 const CodeBlockClient = dynamic(() => import("./CodeBlockClient"), {
   ssr: false,
   loading: () => (
-    <div className="bg-[#1e1e1e] rounded-lg overflow-hidden shadow-lg border border-gray-700">
-      <div className="flex items-center justify-center h-24">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500" />
+    <div
+      className="overflow-hidden rounded-md"
+      style={{
+        background: "var(--bg)",
+        border: "1px solid var(--line-soft)",
+      }}
+    >
+      <div className="flex h-24 items-center justify-center">
+        <div
+          className="h-6 w-6 animate-spin rounded-full border-b-2"
+          style={{ borderBottomColor: "var(--accent)" }}
+        />
       </div>
     </div>
   ),

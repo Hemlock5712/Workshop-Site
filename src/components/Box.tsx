@@ -17,17 +17,22 @@ interface BoxProps {
   children: ReactNode;
   icon?: ReactNode;
   className?: string;
+  /**
+   * Optional mono "module-tag"-style micro-label rendered above the
+   * title. Used to give a callout a category label like
+   * "NOTE · GRAVITY" or "WATCH OUT · WINDUP". Free-form string.
+   */
+  tag?: string;
   // Concept variant specific props
   code?: ReactNode;
   uses?: ReactNode;
 }
 
 /**
- * Alert variants are styled as a neutral card with a colored 3-pixel left
- * stripe — the redesign brief's "calmness sweep" replaces the previous
- * tinted-wash backgrounds. Color lives only in the stripe and the icon
- * tint; the body sits on `--card` so text contrast doesn't depend on the
- * tint at every breakpoint and theme.
+ * Alert variants render as a neutral card with a 3-pixel left stripe
+ * coloured by signal hue (--accent / --info / --ok / --err / --primary-lifted).
+ * Body sits on --bg-elev so contrast doesn't depend on tinted backgrounds
+ * at any breakpoint or theme.
  */
 const alertAccent: Record<
   | "alert-warning"
@@ -35,34 +40,34 @@ const alertAccent: Record<
   | "alert-tip"
   | "alert-success"
   | "alert-danger",
-  { stripe: string; icon: string }
+  { stripe: string; iconColor: string }
 > = {
   "alert-warning": {
-    stripe: "border-l-amber-500 dark:border-l-amber-400",
-    icon: "text-amber-600 dark:text-amber-400",
+    stripe: "var(--accent)",
+    iconColor: "var(--accent)",
   },
   "alert-info": {
-    stripe: "border-l-sky-500 dark:border-l-sky-400",
-    icon: "text-sky-600 dark:text-sky-400",
+    stripe: "var(--info)",
+    iconColor: "var(--info)",
   },
   "alert-tip": {
-    stripe: "border-l-indigo-500 dark:border-l-indigo-400",
-    icon: "text-indigo-600 dark:text-indigo-400",
+    stripe: "var(--primary-lifted)",
+    iconColor: "var(--primary-lifted)",
   },
   "alert-success": {
-    stripe: "border-l-emerald-500 dark:border-l-emerald-400",
-    icon: "text-emerald-600 dark:text-emerald-400",
+    stripe: "var(--ok)",
+    iconColor: "var(--ok)",
   },
   "alert-danger": {
-    stripe: "border-l-rose-500 dark:border-l-rose-400",
-    icon: "text-rose-600 dark:text-rose-400",
+    stripe: "var(--err)",
+    iconColor: "var(--err)",
   },
 };
 
 const conceptStyles = {
-  container: "bg-[var(--muted)] border-[var(--border)]",
-  title: "text-lg font-bold text-[var(--foreground)]",
-  text: "text-[var(--foreground)] text-sm",
+  container: "bg-[var(--bg-elev)] border-[var(--line)]",
+  title: "text-lg font-bold text-[var(--fg)]",
+  text: "text-[var(--fg-mute)] text-sm",
 };
 
 export default function Box({
@@ -72,61 +77,113 @@ export default function Box({
   children,
   icon,
   className,
+  tag,
   code,
   uses,
 }: BoxProps) {
-  // Alert rendering (warning, info, tip)
+  // Alert rendering (warning, info, tip, success, danger)
   if (variant !== "concept") {
     const accent = alertAccent[variant];
     return (
       <div
         className={cn(
-          "rounded-lg border border-[var(--border)] border-l-[3px] bg-[var(--card)] p-4",
-          accent.stripe,
+          "rounded-md border p-4",
+          "border-[var(--line)] bg-[var(--bg-elev)]",
           className
         )}
+        style={{
+          borderLeftWidth: 3,
+          borderLeftColor: accent.stripe,
+        }}
         role="note"
       >
         <div className="flex items-start gap-3">
           {icon && (
-            <div className={cn("mt-0.5 shrink-0", accent.icon)}>{icon}</div>
+            <div
+              className="mt-0.5 shrink-0"
+              style={{ color: accent.iconColor }}
+            >
+              {icon}
+            </div>
           )}
-          <div className="space-y-1 text-sm text-[var(--foreground)]">
-            {title && <p className="font-semibold">{title}</p>}
-            <div className="text-[var(--muted-foreground)]">{children}</div>
+          <div className="space-y-1 text-sm" style={{ color: "var(--fg)" }}>
+            {tag && (
+              <div
+                className="font-mono"
+                style={{
+                  fontSize: 10.5,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: accent.iconColor,
+                  marginBottom: 2,
+                }}
+              >
+                {tag}
+              </div>
+            )}
+            {title && (
+              <p className="font-semibold" style={{ color: "var(--fg)" }}>
+                {title}
+              </p>
+            )}
+            <div style={{ color: "var(--fg-mute)" }}>{children}</div>
           </div>
         </div>
       </div>
     );
   }
 
-  // Concept rendering — kept as-is (this variant was already an
-  // accent-stripe-on-neutral design)
+  // Concept rendering — neutral card with thicker accent stripe + content blocks
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 rounded-lg p-6 border-l-4",
+        "flex flex-col gap-3 rounded-md border p-6",
         conceptStyles.container,
         className
       )}
+      style={{
+        borderLeftWidth: 4,
+        borderLeftColor: "var(--accent)",
+      }}
     >
+      {tag && (
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 10.5,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--accent)",
+          }}
+        >
+          {tag}
+        </div>
+      )}
       {title && <h4 className={conceptStyles.title}>{title}</h4>}
       {subtitle && (
-        <p className="text-[var(--foreground)] text-sm font-semibold">
+        <p className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
           {subtitle}
         </p>
       )}
       <div className={cn(conceptStyles.text, "flex-1")}>{children}</div>
       {code && (
-        <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
+        <div
+          className="rounded p-3 text-xs"
+          style={{
+            background: "var(--bg)",
+            border: "1px solid var(--line-soft)",
+            fontFamily: "var(--font-mono)",
+            color: "var(--fg-mute)",
+          }}
+        >
           {code}
         </div>
       )}
       {uses && (
-        <div className="text-[var(--foreground)] text-sm">
+        <div className="text-sm" style={{ color: "var(--fg)" }}>
           <strong>When to use:</strong>
           <br />
-          {uses}
+          <span style={{ color: "var(--fg-mute)" }}>{uses}</span>
         </div>
       )}
     </div>

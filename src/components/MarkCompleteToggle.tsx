@@ -26,18 +26,28 @@ export default function MarkCompleteToggle() {
       aria-label={
         done ? "Mark this page incomplete" : "Mark this page complete"
       }
-      className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-2 ${
-        done
-          ? "border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200 dark:hover:bg-emerald-950/60"
-          : "border-[var(--border)] bg-[var(--muted)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-      }`}
+      className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none"
+      style={{
+        background: done ? "var(--accent-soft)" : "var(--bg-elev)",
+        borderColor: done ? "var(--ok)" : "var(--line)",
+        color: done ? "var(--ok)" : "var(--fg-mute)",
+      }}
     >
       {done ? (
         <Check className="h-4 w-4" aria-hidden />
       ) : (
         <Circle className="h-4 w-4" aria-hidden />
       )}
-      {done ? "Completed" : "Mark complete"}
+      <span
+        className="font-mono"
+        style={{
+          fontSize: 11,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+        }}
+      >
+        {done ? "Completed" : "Mark complete"}
+      </span>
     </button>
   );
 }
