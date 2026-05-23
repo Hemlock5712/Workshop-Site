@@ -88,9 +88,7 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
 - **`src/components/CodeBlock.tsx`**: Syntax-highlighted code display
 - **`src/components/CodeWalkthrough.tsx`**: Step-by-step code explanation component
-- **`src/components/GitHubPR.tsx`**: Live GitHub pull request embedding
-- **`src/components/GitHubPage.tsx`**: Live GitHub file display
-- **`src/components/GitHubPageWithPR.tsx`**: Tabbed component combining GitHub file view and PR diff view
+- **`src/components/GitHubContent.tsx`**: Live GitHub file viewer with optional tabbed PR diff (Monaco). Pass `pr={{ number, focusFile? }}` to enable the tabbed Final Implementation / GitHub Changes UI.
 - **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
 - **`src/components/Box.tsx`**: Unified styled box component with alert (warning, info, tip), concept, and info variants
 - **`src/components/BillOfMaterials.tsx`**: Hardware BOM table component
@@ -147,7 +145,7 @@ Workshop Content:
 - **File Naming**: kebab-case for routes, PascalCase for components
 - **Import Alias**: `@/*` maps to `src/*`
 - **Component Structure**: Functional components with TypeScript interfaces
-- **Styling**: Tailwind utility classes with dark mode variants. Use template literals for conditional classNames (e.g., `` className={`p-4 ${isOpen ? "px-6" : "px-2"}`} ``). The `cn()` utility from `@/lib/utils` is reserved for UI primitives only (`Box.tsx`, `button.tsx`, `animated-theme-toggler.tsx`).
+- **Styling**: Tailwind utility classes with dark mode variants. Use template literals for conditional classNames (e.g., ``className={`p-4 ${isOpen ? "px-6" : "px-2"}`}``). The `cn()` utility from `@/lib/utils` is reserved for UI primitives only (`Box.tsx`, `button.tsx`, `animated-theme-toggler.tsx`).
 - **Navigation**: Client-side routing with active state management
 - **Video Integration**: YouTube embeds for educational content
 - **Code Learning**: Tabbed interfaces combining final code with development process

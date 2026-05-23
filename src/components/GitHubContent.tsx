@@ -3,85 +3,348 @@
 import { useState, useEffect } from "react";
 import { DiffEditor } from "@monaco-editor/react";
 import {
-  GitMerge,
-  X,
-  GitPullRequest,
+  Code,
   ExternalLink,
+  Folder,
+  GitMerge,
+  GitPullRequest,
   GraduationCap,
+  X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import CodeBlock from "@/components/CodeBlock";
 import {
-  GitHubPRDataSchema,
-  GitHubFilesArraySchema,
   GitHubFileContentSchema,
-  parseGitHub,
+  GitHubFilesArraySchema,
+  GitHubPRDataSchema,
   GitHubSchemaError,
+  parseGitHub,
   type GitHubFile,
   type GitHubPRData,
 } from "@/lib/githubSchemas";
+
+interface PRRef {
+  number: number;
+  focusFile?: string;
+}
+
+interface GitHubContentProps {
+  repository: string;
+  filePath: string;
+  branch?: string;
+  pr?: PRRef;
+  title?: string;
+  description?: string;
+  className?: string;
+}
+
+const LANGUAGE_MAP: Record<string, string> = {
+  java: "java",
+  js: "javascript",
+  jsx: "javascript",
+  ts: "typescript",
+  tsx: "typescript",
+  py: "python",
+  cpp: "cpp",
+  cc: "cpp",
+  cxx: "cpp",
+  c: "c",
+  h: "cpp",
+  hpp: "cpp",
+  cs: "csharp",
+  json: "json",
+  xml: "xml",
+  yaml: "yaml",
+  yml: "yaml",
+  md: "markdown",
+  sh: "bash",
+  bash: "bash",
+  html: "html",
+  css: "css",
+  sql: "sql",
+};
+
+function getLanguage(filename: string): string {
+  const ext = filename.split(".").pop()?.toLowerCase();
+  return LANGUAGE_MAP[ext ?? ""] ?? "plaintext";
+}
+
+function formatFileSize(size: number): string {
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatDate(dateString: string): string {
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function LoadingCard({ label }: { label: string }) {
+  return (
+    <div className="card p-8 text-center">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p className="text-[var(--muted-foreground)]">{label}</p>
+    </div>
+  );
+}
+
+function ErrorCard({
+  heading,
+  message,
+  context,
+}: {
+  heading: string;
+  message: string;
+  context: string;
+}) {
+  return (
+    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg p-6">
+      <h3 className="text-red-800 dark:text-red-300 font-semibold mb-2">
+        {heading}
+      </h3>
+      <p className="text-red-600 dark:text-red-400 text-sm">{message}</p>
+      <p className="text-red-600 dark:text-red-400 text-sm mt-2">{context}</p>
+    </div>
+  );
+}
+
+export default function GitHubContent({
+  repository,
+  filePath,
+  branch = "main",
+  pr,
+  title,
+  description,
+  className = "",
+}: GitHubContentProps) {
+  const [activeTab, setActiveTab] = useState<"ide" | "diff">("ide");
+
+  const header =
+    title || description ? (
+      <div className="mb-6">
+        {title && (
+          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
+            {title}
+          </h3>
+        )}
+        {description && (
+          <p className="text-[var(--muted-foreground)]">{description}</p>
+        )}
+      </div>
+    ) : null;
+
+  if (!pr) {
+    return (
+      <div className={className}>
+        {header}
+        <FileView repository={repository} filePath={filePath} branch={branch} />
+      </div>
+    );
+  }
+
+  return (
+    <div className={className}>
+      {header}
+      <div className="card">
+        <div className="border-b border-[var(--border)]">
+          <div className="flex">
+            <button
+              onClick={() => setActiveTab("ide")}
+              className={`px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 ${
+                activeTab === "ide"
+                  ? "border-primary-600 text-primary-600"
+                  : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              <Code className="w-4 h-4" />
+              Final Implementation
+            </button>
+            <button
+              onClick={() => setActiveTab("diff")}
+              className={`px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 ${
+                activeTab === "diff"
+                  ? "border-primary-600 text-primary-600"
+                  : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              }`}
+            >
+              <GitPullRequest className="w-4 h-4" />
+              GitHub Changes
+            </button>
+          </div>
+        </div>
+        <div className="p-0">
+          {activeTab === "ide" ? (
+            <FileView
+              repository={repository}
+              filePath={filePath}
+              branch={branch}
+              className="m-0"
+            />
+          ) : (
+            <PRView
+              repository={repository}
+              pullRequestNumber={pr.number}
+              focusFile={pr.focusFile}
+              className="m-0"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FileView({
+  repository,
+  filePath,
+  branch,
+  className = "",
+}: {
+  repository: string;
+  filePath: string;
+  branch: string;
+  className?: string;
+}) {
+  const [fileContent, setFileContent] = useState<string>("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState<number | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchFile = async () => {
+      try {
+        setLoading(true);
+        const endpoint = `https://api.github.com/repos/${repository}/contents/${filePath}?ref=${branch}`;
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch file: ${response.statusText}`);
+        }
+        const data = parseGitHub(
+          GitHubFileContentSchema,
+          endpoint,
+          await response.json()
+        );
+        setFileSize(data.size);
+        setFileContent(atob(data.content));
+      } catch (err) {
+        if (err instanceof GitHubSchemaError) {
+          setError(
+            `GitHub returned an unexpected response shape (${err.message})`
+          );
+        } else {
+          setError(err instanceof Error ? err.message : "Failed to fetch file");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFile();
+  }, [repository, filePath, branch]);
+
+  if (loading) {
+    return (
+      <div className={className}>
+        <LoadingCard label="Loading file..." />
+      </div>
+    );
+  }
+
+  if (error || !fileContent) {
+    return (
+      <div className={className}>
+        <ErrorCard
+          heading="Failed to Load File"
+          message={error || "File not found"}
+          context={`Repository: ${repository}, File: ${filePath}`}
+        />
+      </div>
+    );
+  }
+
+  const filename = filePath.split("/").pop() || filePath;
+  const language = getLanguage(filename);
+
+  return (
+    <div className={className}>
+      <div className="card mb-6 overflow-hidden">
+        <div className="border-b border-[var(--border)] p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <span className="font-mono text-lg font-medium text-[var(--foreground)]">
+                {filename}
+              </span>
+              <span className="px-2 py-1 bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 rounded text-xs font-medium">
+                {language.toUpperCase()}
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
+              {fileSize !== undefined && (
+                <span>{formatFileSize(fileSize)}</span>
+              )}
+              <a
+                href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-[var(--muted)] text-[var(--foreground)] px-3 py-1 rounded hover:bg-[var(--border)] transition-colors text-sm font-medium flex items-center gap-1"
+              >
+                View on GitHub <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          <div className="mt-2 text-sm text-[var(--muted-foreground)]">
+            {repository} / {filePath.replace(filename, "").replace(/\/$/, "")}
+          </div>
+        </div>
+
+        <div className="p-0">
+          <CodeBlock
+            code={fileContent}
+            filename={filename}
+            language={language}
+            className="border-0 rounded-none"
+            hideControls={true}
+          />
+        </div>
+      </div>
+
+      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
+        <h5 className="font-semibold mb-3 flex items-center gap-2">
+          <Folder className="w-5 h-5" /> Live from GitHub
+        </h5>
+        <p className="text-[var(--muted-foreground)] text-sm">
+          This file is displayed directly from the GitHub repository. Click
+          &quot;View on GitHub&quot; to see the file in its repository context,
+          view history, blame information, and make edits.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 interface FileContent {
   original: string;
   modified: string;
 }
 
-/**
- * GitHub Pull Request display component with Monaco Diff Editor
- * Features:
- * - Fetches live PR data from GitHub API
- * - Shows PR metadata (title, author, dates, status)
- * - VSCode-style diff visualization using Monaco Diff Editor
- * - Filters to focus on specific files
- * - Educational context for learning git workflow
- */
-interface GitHubPRProps {
-  repository: string;
-  pullRequestNumber: number;
-  title?: string;
-  description?: string;
-  focusFile?: string;
-  className?: string;
-}
-
-// Get Monaco language from file extension
-function getLanguageFromFilename(filename: string): string {
-  const ext = filename.split(".").pop()?.toLowerCase();
-  const languageMap: Record<string, string> = {
-    java: "java",
-    js: "javascript",
-    jsx: "javascript",
-    ts: "typescript",
-    tsx: "typescript",
-    py: "python",
-    cpp: "cpp",
-    c: "c",
-    h: "cpp",
-    hpp: "cpp",
-    cs: "csharp",
-    json: "json",
-    xml: "xml",
-    yaml: "yaml",
-    yml: "yaml",
-    md: "markdown",
-    sh: "shell",
-    bash: "shell",
-    html: "html",
-    css: "css",
-    sql: "sql",
-  };
-  return languageMap[ext || ""] || "plaintext";
-}
-
-export default function GitHubPR({
+function PRView({
   repository,
   pullRequestNumber,
-  title,
-  description,
   focusFile,
   className = "",
-}: GitHubPRProps) {
+}: {
+  repository: string;
+  pullRequestNumber: number;
+  focusFile?: string;
+  className?: string;
+}) {
   const theme = useTheme();
-  const [pr, setPR] = useState<GitHubPRData | null>(null);
+  const [prData, setPRData] = useState<GitHubPRData | null>(null);
   const [files, setFiles] = useState<GitHubFile[]>([]);
   const [fileContents, setFileContents] = useState<Record<string, FileContent>>(
     {}
@@ -113,7 +376,7 @@ export default function GitHubPR({
                 const originalData = parseGitHub(
                   GitHubFileContentSchema,
                   originalUrl,
-                  await originalResponse.json(),
+                  await originalResponse.json()
                 );
                 originalContent = atob(originalData.content);
               }
@@ -130,7 +393,7 @@ export default function GitHubPR({
                 const modifiedData = parseGitHub(
                   GitHubFileContentSchema,
                   modifiedUrl,
-                  await modifiedResponse.json(),
+                  await modifiedResponse.json()
                 );
                 modifiedContent = atob(modifiedData.content);
               }
@@ -158,7 +421,7 @@ export default function GitHubPR({
       setFileContents(contents);
     };
 
-    const fetchPRData = async () => {
+    const fetchPR = async () => {
       try {
         setLoading(true);
 
@@ -167,12 +430,12 @@ export default function GitHubPR({
         if (!prResponse.ok) {
           throw new Error(`Failed to fetch PR: ${prResponse.statusText}`);
         }
-        const prData = parseGitHub(
+        const prResult = parseGitHub(
           GitHubPRDataSchema,
           prUrl,
-          await prResponse.json(),
+          await prResponse.json()
         );
-        setPR(prData);
+        setPRData(prResult);
 
         const filesUrl = `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}/files`;
         const filesResponse = await fetch(filesUrl);
@@ -181,23 +444,23 @@ export default function GitHubPR({
             `Failed to fetch PR files: ${filesResponse.statusText}`
           );
         }
-        const filesData = parseGitHub(
+        const filesResult = parseGitHub(
           GitHubFilesArraySchema,
           filesUrl,
-          await filesResponse.json(),
+          await filesResponse.json()
         );
 
         const filteredFiles = focusFile
-          ? filesData.filter((file: GitHubFile) =>
-              file.filename.includes(focusFile)
-            )
-          : filesData;
+          ? filesResult.filter((file) => file.filename.includes(focusFile))
+          : filesResult;
         setFiles(filteredFiles);
 
-        await fetchFileContents(filteredFiles, prData, repository);
+        await fetchFileContents(filteredFiles, prResult, repository);
       } catch (err) {
         if (err instanceof GitHubSchemaError) {
-          setError(`GitHub returned an unexpected response shape (${err.message})`);
+          setError(
+            `GitHub returned an unexpected response shape (${err.message})`
+          );
         } else {
           setError(
             err instanceof Error ? err.message : "Failed to fetch PR data"
@@ -208,10 +471,9 @@ export default function GitHubPR({
       }
     };
 
-    fetchPRData();
+    fetchPR();
   }, [repository, pullRequestNumber, focusFile]);
 
-  // Calculate diff editor height based on content
   const calculateEditorHeight = (content: FileContent) => {
     const maxLines = Math.max(
       content.original.split("\n").length,
@@ -230,56 +492,25 @@ export default function GitHubPR({
   if (loading) {
     return (
       <div className={`my-8 ${className}`}>
-        <div className="card p-8 text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-[var(--muted-foreground)]">
-            Loading pull request...
-          </p>
-        </div>
+        <LoadingCard label="Loading pull request..." />
       </div>
     );
   }
 
-  if (error || !pr) {
+  if (error || !prData) {
     return (
       <div className={`my-8 ${className}`}>
-        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg p-6">
-          <h3 className="text-red-800 dark:text-red-300 font-semibold mb-2">
-            Failed to Load Pull Request
-          </h3>
-          <p className="text-red-600 dark:text-red-400 text-sm">
-            {error || "PR not found"}
-          </p>
-          <p className="text-red-600 dark:text-red-400 text-sm mt-2">
-            Repository: {repository}
-          </p>
-        </div>
+        <ErrorCard
+          heading="Failed to Load Pull Request"
+          message={error || "PR not found"}
+          context={`Repository: ${repository}`}
+        />
       </div>
     );
   }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
 
   return (
     <div className={`my-8 ${className}`}>
-      {title && (
-        <div className="mb-6">
-          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
-            {title}
-          </h3>
-          {description && (
-            <p className="text-[var(--muted-foreground)]">{description}</p>
-          )}
-        </div>
-      )}
-
-      {/* PR Header */}
       <div className="card mb-6">
         <div className="p-6 border-b border-[var(--border)]">
           <div className="flex items-start justify-between">
@@ -287,18 +518,18 @@ export default function GitHubPR({
               <div className="flex items-center space-x-3 mb-3">
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
-                    pr.merged_at
+                    prData.merged_at
                       ? "bg-[var(--muted)] text-[var(--foreground)]"
-                      : pr.state === "closed"
+                      : prData.state === "closed"
                         ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
                         : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
                   }`}
                 >
-                  {pr.merged_at ? (
+                  {prData.merged_at ? (
                     <>
                       <GitMerge className="w-3 h-3" /> Merged
                     </>
-                  ) : pr.state === "closed" ? (
+                  ) : prData.state === "closed" ? (
                     <>
                       <X className="w-3 h-3" /> Closed
                     </>
@@ -309,22 +540,24 @@ export default function GitHubPR({
                   )}
                 </span>
                 <span className="text-[var(--muted-foreground)] text-sm">
-                  #{pr.number}
+                  #{prData.number}
                 </span>
               </div>
 
               <h4 className="text-xl font-semibold text-[var(--foreground)] mb-3">
-                {pr.title}
+                {prData.title}
               </h4>
 
               <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
-                <span>created {formatDate(pr.created_at)}</span>
-                {pr.merged_at && <span>merged {formatDate(pr.merged_at)}</span>}
+                <span>created {formatDate(prData.created_at)}</span>
+                {prData.merged_at && (
+                  <span>merged {formatDate(prData.merged_at)}</span>
+                )}
               </div>
             </div>
 
             <a
-              href={pr.html_url}
+              href={prData.html_url}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium flex items-center gap-1"
@@ -334,7 +567,6 @@ export default function GitHubPR({
           </div>
         </div>
 
-        {/* Monaco Diff View */}
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h5 className="font-semibold text-[var(--foreground)]">
@@ -356,7 +588,7 @@ export default function GitHubPR({
           {files.map((file, index) => {
             const content = fileContents[file.filename];
             const isLoadingContent = loadingFiles.has(file.filename);
-            const language = getLanguageFromFilename(file.filename);
+            const language = getLanguage(file.filename);
 
             return (
               <div
@@ -397,7 +629,6 @@ export default function GitHubPR({
                   </div>
                 </div>
 
-                {/* Monaco Diff Editor */}
                 <div className="bg-[#1e1e1e]">
                   {isLoadingContent ? (
                     <div className="flex items-center justify-center h-32">
@@ -450,7 +681,6 @@ export default function GitHubPR({
         </div>
       </div>
 
-      {/* Workshop Context */}
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
         <h5 className="font-semibold text-[var(--foreground)] mb-3 flex items-center gap-2">
           <GraduationCap className="w-5 h-5" /> Workshop Learning

@@ -10,20 +10,21 @@ and what the next agent (with Playwright MCP) should pick up first.
 
 All changes are code-only, type-safe, and validated by `pnpm lint` + `pnpm type-check` (both pass clean).
 
-| # | Change | Files touched | Validation |
-|---|---|---|---|
-| 1 | **Lazy MiniSearch index + module-singleton cache.** `createSearchInstance()` (sync) replaced with `getSearchInstance()` (async, memoized). Both `minisearch` and `@/data/searchData` are now dynamic imports — the ~188 KB index no longer ships with the initial bundle of every workshop page. | `src/lib/searchConfig.ts`, `src/components/SearchBar.tsx`, `src/app/(workshop)/search/SearchPageContent.tsx` | lint + tsc clean |
-| 2 | **Dynamic-import CodeBlock (Monaco).** `CodeBlock.tsx` is now a thin client wrapper that `next/dynamic`-imports the heavy implementation. Real implementation moved to `CodeBlockClient.tsx`. All 14 consumers unchanged. | `src/components/CodeBlock.tsx` (new wrapper), `src/components/CodeBlockClient.tsx` (was old CodeBlock body) | lint + tsc clean |
-| 3 | **Dynamic-import react-syntax-highlighter in the AI assistant.** Extracted into `MarkdownCodeBlock.tsx` and dynamic-imported with `ssr: false`. Removes ~100-150 KB from the `/ai-assistant` route's initial chunk. | `src/components/MarkdownCodeBlock.tsx` (new), `src/app/(workshop)/ai-assistant/page.tsx` | lint + tsc clean |
-| 4 | **Verified ModelViewer (Three.js) is already route-isolated.** Only consumer is `src/app/(workshop)/mechanism-cad/page.tsx`. Next's automatic route splitting already keeps Three.js + R3F + drei off every other route. Wrapping in `next/dynamic({ssr:false})` would break the `useRef<ModelViewerRef>` reset-camera handle. No code change needed. | (verification only) | — |
-| 5 | **Removed the `as any` in the AI assistant code renderer.** Now uses `React.ReactElement<{className?, children?}>` — autocomplete restored, no type escape. | `src/app/(workshop)/ai-assistant/page.tsx` | tsc clean |
-| 6 | **Discriminated unions on GitHub embed types.** `GitHubFile.status: string` → `GitHubFileStatus = "added" \| "modified" \| ...` (full GitHub REST set). `GitHubPRData.state: string` → `"open" \| "closed"`. | `src/components/GitHubPR.tsx` | tsc clean |
-| 7 | **Removed `format` from build script.** Builds are now deterministic — no more source-file mutation during `pnpm build`. | `package.json` | — |
-| 8 | **Added `.env.example`.** Documents `GOOGLE_GENERATIVE_AI_API_KEY`, `GEMINI_FILE_SEARCH_STORE`, `NEXT_PUBLIC_POSTHOG_KEY`. Removes the #1 AI-assistant onboarding tripwire. | `.env.example` (new) | — |
-| 9 | **Aligned CI workflow.** Switched from Bun → pnpm (matches project default), split into discrete steps (format-check, lint, type-check, spell, build), added spell-check, fixed push/PR branch logic (now both fire on master + main). | `.github/workflows/ci.yml` | — |
-| 10 | **Tightened tsconfig (safe flags only).** Added `noImplicitOverride: true` and `noFallthroughCasesInSwitch: true`. Skipped `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` — those surface dozens of real fixes that belong in their own focused PR. | `tsconfig.json` | tsc clean |
+| #   | Change                                                                                                                                                                                                                                                                                                                                                | Files touched                                                                                                | Validation       |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------- |
+| 1   | **Lazy MiniSearch index + module-singleton cache.** `createSearchInstance()` (sync) replaced with `getSearchInstance()` (async, memoized). Both `minisearch` and `@/data/searchData` are now dynamic imports — the ~188 KB index no longer ships with the initial bundle of every workshop page.                                                      | `src/lib/searchConfig.ts`, `src/components/SearchBar.tsx`, `src/app/(workshop)/search/SearchPageContent.tsx` | lint + tsc clean |
+| 2   | **Dynamic-import CodeBlock (Monaco).** `CodeBlock.tsx` is now a thin client wrapper that `next/dynamic`-imports the heavy implementation. Real implementation moved to `CodeBlockClient.tsx`. All 14 consumers unchanged.                                                                                                                             | `src/components/CodeBlock.tsx` (new wrapper), `src/components/CodeBlockClient.tsx` (was old CodeBlock body)  | lint + tsc clean |
+| 3   | **Dynamic-import react-syntax-highlighter in the AI assistant.** Extracted into `MarkdownCodeBlock.tsx` and dynamic-imported with `ssr: false`. Removes ~100-150 KB from the `/ai-assistant` route's initial chunk.                                                                                                                                   | `src/components/MarkdownCodeBlock.tsx` (new), `src/app/(workshop)/ai-assistant/page.tsx`                     | lint + tsc clean |
+| 4   | **Verified ModelViewer (Three.js) is already route-isolated.** Only consumer is `src/app/(workshop)/mechanism-cad/page.tsx`. Next's automatic route splitting already keeps Three.js + R3F + drei off every other route. Wrapping in `next/dynamic({ssr:false})` would break the `useRef<ModelViewerRef>` reset-camera handle. No code change needed. | (verification only)                                                                                          | —                |
+| 5   | **Removed the `as any` in the AI assistant code renderer.** Now uses `React.ReactElement<{className?, children?}>` — autocomplete restored, no type escape.                                                                                                                                                                                           | `src/app/(workshop)/ai-assistant/page.tsx`                                                                   | tsc clean        |
+| 6   | **Discriminated unions on GitHub embed types.** `GitHubFile.status: string` → `GitHubFileStatus = "added" \| "modified" \| ...` (full GitHub REST set). `GitHubPRData.state: string` → `"open" \| "closed"`.                                                                                                                                          | `src/components/GitHubPR.tsx`                                                                                | tsc clean        |
+| 7   | **Removed `format` from build script.** Builds are now deterministic — no more source-file mutation during `pnpm build`.                                                                                                                                                                                                                              | `package.json`                                                                                               | —                |
+| 8   | **Added `.env.example`.** Documents `GOOGLE_GENERATIVE_AI_API_KEY`, `GEMINI_FILE_SEARCH_STORE`, `NEXT_PUBLIC_POSTHOG_KEY`. Removes the #1 AI-assistant onboarding tripwire.                                                                                                                                                                           | `.env.example` (new)                                                                                         | —                |
+| 9   | **Aligned CI workflow.** Switched from Bun → pnpm (matches project default), split into discrete steps (format-check, lint, type-check, spell, build), added spell-check, fixed push/PR branch logic (now both fire on master + main).                                                                                                                | `.github/workflows/ci.yml`                                                                                   | —                |
+| 10  | **Tightened tsconfig (safe flags only).** Added `noImplicitOverride: true` and `noFallthroughCasesInSwitch: true`. Skipped `noUncheckedIndexedAccess` and `exactOptionalPropertyTypes` — those surface dozens of real fixes that belong in their own focused PR.                                                                                      | `tsconfig.json`                                                                                              | tsc clean        |
 
 ### Bundle-size estimate (initial JS on a typical workshop page)
+
 - **~188 KB** off main bundle (search index now lazy)
 - **~2.5-3.5 MB deferred** (Monaco now dynamic-imported via CodeBlock wrapper)
 - **~100-150 KB** off the `/ai-assistant` route initial chunk
@@ -31,6 +32,7 @@ All changes are code-only, type-safe, and validated by `pnpm lint` + `pnpm type-
 These won't show in Lighthouse until you rebuild for production (`pnpm build && pnpm start`) — dev mode does its own chunking.
 
 ### Verification commands (run with dev server stopped)
+
 ```powershell
 pnpm install
 pnpm lint
@@ -40,6 +42,7 @@ pnpm start  # then check the home page and /search smoke test
 ```
 
 ### Smoke tests to run with dev (or prod) server up
+
 1. Home page loads, search bar visible in header, no console errors
 2. Ctrl+K opens the palette, "Start typing to search workshop content"
 3. Type "PID" — results appear within ~100 ms (first open does the lazy load)
@@ -57,10 +60,10 @@ Safe revert for just the search work: `git checkout src/lib/searchConfig.ts src/
 
 These are low-risk and can be picked up by any agent (with or without browser access).
 
-1. **valibot at GitHub trust boundary** *(audit P0, ~3 hours).* Add valibot, write schemas for the responses in `src/components/GitHubPR.tsx:185-202` and `src/components/GitHubPage.tsx:47-60` and the Gemini streaming response in `src/app/api/chat/route.ts`. Parse before consuming. Real crash-prevention for when GitHub API surprises you.
-2. **Centralize lesson navigation in `src/data/lessons.ts`** *(audit #12, half a day, mechanical).* Replace the hand-rolled `previousPage` / `nextPage` props at every workshop page with a single SoT module. Derives sidebar, search route map, and PageTemplate prev/next from it. ~56 LOC removed across 28 pages.
-3. **Add `simple-git-hooks` + `lint-staged`** *(audit #18, 1-2 hours).* Pre-commit format + lint on staged files. Eliminates "CI failed on formatting" round-trips.
-4. **Consolidate the GitHub embed trio** *(audit #15, M effort).* Collapse `GitHubPage`, `GitHubPR`, `GitHubPageWithPR` into one `<GitHubContent repo file pr?={...}>`. ~300 LOC removed. Wait until after the valibot work so you migrate one set of types.
+1. **valibot at GitHub trust boundary** _(audit P0, ~3 hours)._ Add valibot, write schemas for the responses in `src/components/GitHubPR.tsx:185-202` and `src/components/GitHubPage.tsx:47-60` and the Gemini streaming response in `src/app/api/chat/route.ts`. Parse before consuming. Real crash-prevention for when GitHub API surprises you.
+2. **Centralize lesson navigation in `src/data/lessons.ts`** _(audit #12, half a day, mechanical)._ Replace the hand-rolled `previousPage` / `nextPage` props at every workshop page with a single SoT module. Derives sidebar, search route map, and PageTemplate prev/next from it. ~56 LOC removed across 28 pages.
+3. **Add `simple-git-hooks` + `lint-staged`** _(audit #18, 1-2 hours)._ Pre-commit format + lint on staged files. Eliminates "CI failed on formatting" round-trips.
+4. ~~**Consolidate the GitHub embed trio**~~ ✅ shipped 2026-05-21 (see session entry below).
 5. **Generalize `MechanismTabs`** into `<ComparisonWithCodeWalkthrough>` so vision/swerve/pathplanner can stop hand-rolling its layout (audit #20).
 6. **Strategic: move to Pagefind** (audit #13). Better than the lazy-MiniSearch we shipped. Indexes rendered HTML at build time; ~2 KB runtime stub. Wait until you decide on the MDX migration — they sequence together.
 
@@ -122,6 +125,7 @@ From the redesign:
 ### SHIPPED
 
 **Bonus pickup: Fallback queue item A — valibot at the GitHub trust boundary.**
+
 - `src/lib/githubSchemas.ts` (new) — `GitHubPRDataSchema`, `GitHubFilesArraySchema`, `GitHubFileContentSchema`, plus a `parseGitHub()` helper that throws `GitHubSchemaError` with the offending path on mismatch.
 - `src/components/GitHubPR.tsx:14-21,151,167,205,210,225` — every `await res.json()` now goes through `parseGitHub()` before the rest of the component reads from it. `GitHubSchemaError` surfaces a typed message instead of leaking through as a generic `Error`.
 - `src/components/GitHubPage.tsx:6-10,54-60` — same treatment for the file-contents endpoint.
@@ -175,13 +179,13 @@ Open `/pid-control` and drag the sliders. The arm visualization is the headline 
 
 1. **Should the playground also appear on `/motion-magic`?** That page is the natural next home — motion profiles + feedforward are its core topic. Spec scoped tonight's work to `/pid-control` only, so I didn't touch it. Question: copy the playground into `/motion-magic` with different defaults (showing more aggressive profile + kV demonstration), or factor the page-level integration so both pages reuse one canonical playground state?
 2. **Slider grouping naming.** I labelled them "FEEDBACK (PID)" and "FEEDFORWARD". The existing static content on the same page uses "P / I / D" headers under "Understanding PID Components" and a separate "⚡ Feedforward Gains" box. Slight redundancy now. Worth removing the static "Understanding PID Components" / "Feedforward Gains" cards entirely since the interactive playground now teaches the same content?
-3. **Setpoint trace visibility.** I added a third dotted trace ("motion-profile setpoint") because it's pedagogically useful — students see what the controller is *trying* to track. It does add visual noise, especially when the actual line tracks it tightly. Could be a toggle ("show setpoint").
-4. **kV interpretation for non-profile mechanisms.** kV in the playground only matters during the profile ramp. The existing page copy explicitly says kV is for *flywheels and intakes*, not arms. There's a small pedagogical mismatch — the user explicitly asked for kV included, so I included it, but the framing could mislead. Worth a one-line caption clarifying kV is "ProfiledPIDController-style FF on the profile velocity"?
+3. **Setpoint trace visibility.** I added a third dotted trace ("motion-profile setpoint") because it's pedagogically useful — students see what the controller is _trying_ to track. It does add visual noise, especially when the actual line tracks it tightly. Could be a toggle ("show setpoint").
+4. **kV interpretation for non-profile mechanisms.** kV in the playground only matters during the profile ramp. The existing page copy explicitly says kV is for _flywheels and intakes_, not arms. There's a small pedagogical mismatch — the user explicitly asked for kV included, so I included it, but the framing could mislead. Worth a one-line caption clarifying kV is "ProfiledPIDController-style FF on the profile velocity"?
 
 ### KNOWN ISSUES / FOLLOW-UPS
 
 - **`@/lib/utils` cn() is not used in the new components.** I respected the CLAUDE.md rule ("`cn()` is reserved for UI primitives only"). All conditional classNames use template literals.
-- **uPlot ResizeObserver thrash on rapid sidebar collapse.** Not actually observed, but worth flagging — the `ResizeObserver` in `InteractivePidPlayground.tsx:333` calls `setSize` on every observed layout change. If users collapse the sidebar mid-drag we *might* see a frame stutter. If reported, debounce.
+- **uPlot ResizeObserver thrash on rapid sidebar collapse.** Not actually observed, but worth flagging — the `ResizeObserver` in `InteractivePidPlayground.tsx:333` calls `setSize` on every observed layout change. If users collapse the sidebar mid-drag we _might_ see a frame stutter. If reported, debounce.
 - **Arm SVG breaks the prose width budget.** The `PageHero` right-slot is wider than the `max-w-4xl` content column thanks to the grid template (`minmax(0,1fr)_minmax(0,1.15fr)`). At 1440 px desktop the playground card sits inside the prose column fine; at wider viewports it stays bounded by the prose container. No issue, just non-obvious if anyone tries to widen the layout later.
 - **Static "Understanding PID Components" cards below the playground still use raw color divs** (`bg-[var(--muted)] dark:bg-slate-700/20` plus colored left borders). They are NOT in scope for fallback queue item C (Box-variant sweep) yet, but they're prime candidates next time Box gets refactored to left-border accents.
 - **`prefers-reduced-motion` arm behavior** — snaps the arm to the final pose instead of animating. The chart still updates on a 250 ms throttle. Visually verified by toggling `(prefers-reduced-motion: reduce)` in the code; not screenshotted because Playwright doesn't expose a clean way to flip the media query without rebooting the browser context.
@@ -201,3 +205,34 @@ Open `/pid-control` and drag the sliders. The arm visualization is the headline 
 - `pid-v11-375-mobile-full.png`, `pid-v12-…`, `pid-v13-…` — mobile layout
 - `pid-v14-1440-dark.png` — dark mode
 - `pid-v15-1440-final.png` — full-page light-mode capture at the defaults
+
+---
+
+## Parallel session — 2026-05-21 (while PID window iterated)
+
+### SHIPPED
+
+**Queue item 4: Consolidate the GitHub embed trio → `<GitHubContent>`.**
+
+- `src/components/GitHubContent.tsx` (new, 535 lines) — one public component with internal `FileView` and `PRView`. Public API: `repository`, `filePath`, optional `branch` (default `"main"`), optional `pr={{ number, focusFile? }}`, plus `title`/`description`/`className`. When `pr` is present, renders the tabbed Final Implementation / GitHub Changes UI; absent, renders the file viewer only.
+- Deleted `src/components/GitHubPage.tsx` (230 LOC), `src/components/GitHubPR.tsx` (468 LOC), `src/components/GitHubPageWithPR.tsx` (76 LOC).
+- Migrated 7 callsites: `triggers`, `advanced-drive-to-point`, `drive-to-point`, `logging-implementation` (×3), `pathplanner` (×2), `vision-shooting`, `vision-implementation` (×3), plus `MechanismTabs.tsx`.
+- Updated docs that listed the old component files: `CLAUDE.md`, `README.md`, `.github/CONTRIBUTING.md`, and the source comment in `src/lib/githubSchemas.ts`.
+
+Behavior preserved: in tabbed mode, only the active tab mounts (matches old `GitHubPageWithPR` ternary, so PR fetches still don't fire until user clicks the diff tab). Footers ("Live from GitHub" / "Workshop Learning") render exactly as before. Loading/error UI extracted into local `LoadingCard` / `ErrorCard` helpers (shared between views, no behavior change).
+
+Discoveries:
+
+- `<GitHubPR>` was never called directly from any workshop page — only nested inside `<GitHubPageWithPR>`. The "trio" was really a public binary (`GitHubPage` + `GitHubPageWithPR`) with an internal helper. The new `<GitHubContent>` collapses that into a single public API with one optional prop.
+- `pathplanner/page.tsx` passed `focusFile="src/main/java/frc/robot/RobotContainer.java"` (full path) while every other caller passed just the basename. Both work because `GitHubPR` uses `file.filename.includes(focusFile)`; preserved as-is.
+
+Validated:
+
+- `pnpm lint` clean.
+- `pnpm type-check` clean.
+- Net diff: **-887 / +151 = -736 LOC** (audit estimate was ~300; beat it because every callsite's prop list also shrank).
+- `pnpm spell` errors due to a Node version mismatch on this machine (Node 22.15 vs required 22.18) — pre-existing tooling issue, unrelated.
+
+Not done:
+
+- No Playwright run. CLAUDE.md forbids running `pnpm dev`/`pnpm start`, and the visual change here is zero (same DOM, same classes) — but a smoke pass at `/triggers` or `/logging-implementation` in the next session that has a live server would be the standard verification.

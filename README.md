@@ -118,9 +118,7 @@ src/
 │   │   └── animated-theme-toggler.tsx # Animated dark/light theme toggle
 │   ├── CodeBlock.tsx              # IDE-style syntax highlighted code
 │   ├── CodeWalkthrough.tsx        # Step-by-step code explanation
-│   ├── GitHubPR.tsx               # Live GitHub pull request display
-│   ├── GitHubPage.tsx             # Live GitHub file display
-│   ├── GithubPageWithPR.tsx       # Tabbed GitHub file and PR diff view
+│   ├── GitHubContent.tsx          # Live GitHub file viewer + optional PR diff tab
 │   ├── ImageBlock.tsx             # Optimized image display
 │   ├── AlertBox.tsx               # Styled alert/warning boxes
 │   ├── BillOfMaterials.tsx        # Hardware BOM table component

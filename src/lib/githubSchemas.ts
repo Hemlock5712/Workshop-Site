@@ -3,9 +3,8 @@
  *
  * GitHub fields drift over time and the OpenAPI spec describes far more
  * than we use, so each schema is intentionally minimal — exactly the
- * shape the callers in src/components/GitHubPR.tsx and
- * src/components/GitHubPage.tsx actually read. Anything new must be added
- * here before the components can rely on it.
+ * shape the callers in src/components/GitHubContent.tsx actually read.
+ * Anything new must be added here before the component can rely on it.
  *
  * `parseOrThrow` keeps the failure path strict: we surface schema
  * mismatches as typed errors instead of letting `undefined.foo` crash at
@@ -77,10 +76,13 @@ export class GitHubSchemaError extends Error {
   constructor(endpoint: string, issues: readonly v.BaseIssue<unknown>[]) {
     const summary = issues
       .slice(0, 3)
-      .map((i) => `${i.path?.map((p) => p.key).join(".") ?? "<root>"}: ${i.message}`)
+      .map(
+        (i) =>
+          `${i.path?.map((p) => p.key).join(".") ?? "<root>"}: ${i.message}`
+      )
       .join("; ");
     super(
-      `GitHub response from ${endpoint} did not match the expected shape — ${summary}`,
+      `GitHub response from ${endpoint} did not match the expected shape — ${summary}`
     );
     this.endpoint = endpoint;
     this.name = "GitHubSchemaError";
@@ -90,7 +92,7 @@ export class GitHubSchemaError extends Error {
 export function parseGitHub<TSchema extends v.GenericSchema>(
   schema: TSchema,
   endpoint: string,
-  raw: unknown,
+  raw: unknown
 ): v.InferOutput<TSchema> {
   const result = v.safeParse(schema, raw);
   if (!result.success) {
