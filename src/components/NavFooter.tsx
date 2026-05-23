@@ -2,32 +2,44 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import MarkCompleteToggle from "@/components/MarkCompleteToggle";
-import { getPreviousLesson, getNextLesson, type Lesson } from "@/data/lessons";
+import {
+  LESSONS,
+  getPreviousLesson,
+  getNextLesson,
+  type Lesson,
+} from "@/data/lessons";
 
 interface NavOverride {
   href: string;
   title: string;
+  /** Optional 1-based index shown as "NN" in the engineering label. */
+  index?: number;
 }
 
 interface NavFooterProps {
-  /** Override the auto-derived previous link. Pass `null` to suppress. */
   previousPage?: NavOverride | null;
-  /** Override the auto-derived next link. Pass `null` to suppress. */
   nextPage?: NavOverride | null;
 }
 
 function lessonToOverride(l: Lesson | null): NavOverride | null {
   if (!l) return null;
-  return { href: l.slug, title: l.title };
+  const idx = LESSONS.findIndex((x) => x.slug === l.slug);
+  return {
+    href: l.slug,
+    title: l.title,
+    index: idx >= 0 ? idx + 1 : undefined,
+  };
 }
 
+const padIndex = (n: number | undefined) =>
+  n === undefined ? "" : String(n).padStart(2, "0");
+
 /**
- * Bottom nav row for every workshop page. Reads the current pathname to
- * look up the lesson in `src/data/lessons.ts` and auto-derives Previous /
- * Next links. Pages can still pass explicit `previousPage` / `nextPage`
- * props to override (e.g. for branch-specific nav).
+ * Bottom prev/next row. Each side renders as a wide, two-line panel
+ * with a mono micro-label ("← PREVIOUS · 08") and the lesson title.
+ * Next button uses the accent treatment (amber border + accent-soft
+ * background) so the forward direction reads as the primary action.
  */
 export default function NavFooter({ previousPage, nextPage }: NavFooterProps) {
   const pathname = usePathname() ?? "";
@@ -42,60 +54,66 @@ export default function NavFooter({ previousPage, nextPage }: NavFooterProps) {
       : nextPage;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 pt-8 border-t border-[var(--border)]">
-      {prev ? (
-        <Link
-          href={prev.href}
-          className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] font-medium"
-        >
-          <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-          <span>Previous: {prev.title}</span>
-        </Link>
-      ) : (
-        <div />
-      )}
+    <div
+      className="mt-10 pt-8"
+      style={{ borderTop: "1px solid var(--line-soft)" }}
+    >
+      <div className="mb-4 flex justify-center">
+        <MarkCompleteToggle />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {prev ? (
+          <Link
+            href={prev.href}
+            className="group flex flex-col gap-1 rounded-md p-4 transition-colors"
+            style={{
+              background: "var(--bg-elev)",
+              border: "1px solid var(--line)",
+            }}
+          >
+            <span
+              className="mono"
+              style={{
+                fontSize: 10.5,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--fg-dim)",
+              }}
+            >
+              ← Previous{prev.index ? ` · ${padIndex(prev.index)}` : ""}
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 500 }}>{prev.title}</span>
+          </Link>
+        ) : (
+          <div />
+        )}
 
-      <MarkCompleteToggle />
-
-      {next ? (
-        <Link
-          href={next.href}
-          className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-        >
-          <span>Next: {next.title}</span>
-          <ArrowRight className="w-4 h-4" aria-hidden="true" />
-        </Link>
-      ) : (
-        <div />
-      )}
-    </div>
-  );
-}
-
-/**
- * Top breadcrumb row — "Back to <Previous>" link. Same derivation, just
- * separated so PageTemplate can render it above the H1.
- */
-export function NavBreadcrumb({
-  previousPage,
-}: {
-  previousPage?: NavOverride | null;
-}) {
-  const pathname = usePathname() ?? "";
-  const prev =
-    previousPage === undefined
-      ? lessonToOverride(getPreviousLesson(pathname))
-      : previousPage;
-  if (!prev) return null;
-  return (
-    <div className="mb-8">
-      <Link
-        href={prev.href}
-        className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-medium dark:text-primary-400 dark:hover:text-primary-300"
-      >
-        <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-        <span>Back to {prev.title}</span>
-      </Link>
+        {next ? (
+          <Link
+            href={next.href}
+            className="group flex flex-col items-end gap-1 rounded-md p-4 text-right transition-colors"
+            style={{
+              background: "var(--accent-soft)",
+              border: "1px solid var(--accent)",
+            }}
+          >
+            <span
+              className="mono"
+              style={{
+                fontSize: 10.5,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+              }}
+            >
+              Next{next.index ? ` · ${padIndex(next.index)}` : ""} →
+            </span>
+            <span style={{ fontSize: 14, fontWeight: 500 }}>{next.title}</span>
+          </Link>
+        ) : (
+          <div />
+        )}
+      </div>
     </div>
   );
 }

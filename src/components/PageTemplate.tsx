@@ -1,4 +1,5 @@
-import NavFooter, { NavBreadcrumb } from "@/components/NavFooter";
+import NavFooter from "@/components/NavFooter";
+import LessonBreadcrumb from "@/components/LessonBreadcrumb";
 
 interface NavOverride {
   href: string;
@@ -28,12 +29,26 @@ export default function PageTemplate({
   children,
 }: PageTemplateProps) {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <NavBreadcrumb previousPage={previousPage} />
+    <div className="mx-auto max-w-4xl px-4 py-12 md:px-6">
+      <LessonBreadcrumb />
 
-      <div className="flex flex-col gap-8 max-w-none dark:prose-invert">
-        <h1 className="text-4xl font-bold text-[var(--foreground)]">{title}</h1>
+      {/* H1 — serif, navy (--primary) per the design.
+          Lesson section subtitle (serif italic, muted) lives in
+          individual pages when they need it; this stays minimal. */}
+      <h1
+        className="mb-10 font-semibold"
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: "clamp(2.25rem, 4vw, 2.75rem)",
+          lineHeight: 1.05,
+          letterSpacing: "-0.02em",
+          color: "var(--primary)",
+        }}
+      >
+        {title}
+      </h1>
 
+      <div className="flex max-w-none flex-col gap-8 dark:prose-invert">
         {children}
 
         <NavFooter previousPage={previousPage} nextPage={nextPage} />

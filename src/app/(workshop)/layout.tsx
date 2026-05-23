@@ -19,8 +19,14 @@ export default function WorkshopLayout({
       <div className="flex flex-col h-screen">
         <KeyboardNavigationProvider />
         <AutoFocusMain />
-        <header className="flex-shrink-0 bg-[var(--card)] border-b border-[var(--border)] px-6 py-4 flex justify-between items-center z-10">
-          <div className="flex items-center space-x-3">
+        <header
+          className="flex-shrink-0 flex justify-between items-center z-10 px-6 py-3.5"
+          style={{
+            background: "var(--bg)",
+            borderBottom: "1px solid var(--line)",
+          }}
+        >
+          <div className="flex items-center gap-3">
             <HamburgerMenu />
             <Image
               src="/images/gray-matter-logo.jpg"
@@ -29,7 +35,10 @@ export default function WorkshopLayout({
               height={32}
               className="w-8 h-8 rounded-lg"
             />
-            <span className="font-bold text-lg text-[var(--card-foreground)]">
+            <span
+              className="font-semibold text-base"
+              style={{ color: "var(--fg)", letterSpacing: "-0.01em" }}
+            >
               Gray Matter Workshop
             </span>
           </div>
@@ -62,7 +71,11 @@ export default function WorkshopLayout({
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
           <main
-            className="flex-1 overflow-y-auto bg-[var(--card)] text-[var(--card-foreground)] focus:outline-none"
+            className="flex-1 overflow-y-auto focus:outline-none"
+            style={{
+              background: "var(--bg)",
+              color: "var(--fg)",
+            }}
             tabIndex={0}
           >
             {children}
