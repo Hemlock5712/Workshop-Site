@@ -15,11 +15,7 @@ export default function MechanismCAD() {
   const armModelRef = useRef<ModelViewerRef>(null);
 
   return (
-    <PageTemplate
-      title="Mechanism CAD"
-      previousPage={{ href: "/prerequisites", title: "Prerequisites" }}
-      nextPage={{ href: "/hardware", title: "Hardware Setup" }}
-    >
+    <PageTemplate title="Mechanism CAD">
       {/* Introduction */}
       <KeyConceptSection
         title="Mechanism CAD - 3D Model Exploration"

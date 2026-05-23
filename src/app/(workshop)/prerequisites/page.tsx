@@ -5,11 +5,7 @@ import { ClipboardCheck } from "lucide-react";
 
 export default function Prerequisites() {
   return (
-    <PageTemplate
-      title="Prerequisites"
-      previousPage={{ href: "/introduction", title: "Introduction" }}
-      nextPage={{ href: "/mechanism-cad", title: "Mechanism CAD" }}
-    >
+    <PageTemplate title="Prerequisites">
       <div className="grid gap-6">
         {/* Software Requirements */}
         <ContentCard>

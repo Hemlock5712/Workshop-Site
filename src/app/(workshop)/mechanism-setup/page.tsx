@@ -12,11 +12,7 @@ export default function MechanismSetup() {
   const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
 
   return (
-    <PageTemplate
-      title="Mechanism Setup"
-      previousPage={{ href: "/running-program", title: "Running Program" }}
-      nextPage={{ href: "/pid-control", title: "PID Control" }}
-    >
+    <PageTemplate title="Mechanism Setup">
       {/* Introduction */}
       <KeyConceptSection
         title="Mechanism Setup - Verifying Hardware Configuration"

@@ -8,11 +8,7 @@ import Quiz from "@/components/Quiz";
 
 export default function AddingCommands() {
   return (
-    <PageTemplate
-      title="Commands"
-      previousPage={{ href: "/building-subsystems", title: "Subsystems" }}
-      nextPage={{ href: "/triggers", title: "Triggers" }}
-    >
+    <PageTemplate title="Commands">
       {/* Introduction */}
       <KeyConceptSection
         title="Commands - Coordinating Robot Actions"

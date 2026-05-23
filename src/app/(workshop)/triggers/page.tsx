@@ -1,4 +1,4 @@
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import PageTemplate from "@/components/PageTemplate";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
@@ -8,11 +8,7 @@ import Quiz from "@/components/Quiz";
 
 export default function Triggers() {
   return (
-    <PageTemplate
-      title="Triggers"
-      previousPage={{ href: "/adding-commands", title: "Commands" }}
-      nextPage={{ href: "/running-program", title: "Running Program" }}
-    >
+    <PageTemplate title="Triggers">
       {/* Introduction */}
       <KeyConceptSection
         title="Triggers - Connecting User Input to Commands"
@@ -174,12 +170,11 @@ public class RobotContainer {
           <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-3">
             🎯 Final Implementation & GitHub Changes
           </h4>
-          <GitHubPageWithPR
+          <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             filePath="src/main/java/frc/robot/RobotContainer.java"
             branch="2-Commands"
-            pullRequestNumber={2}
-            focusFile="RobotContainer.java"
+            pr={{ number: 2, focusFile: "RobotContainer.java" }}
           />
         </ContentCard>
       </section>

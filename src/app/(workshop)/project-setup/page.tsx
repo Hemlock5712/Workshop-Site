@@ -6,14 +6,7 @@ import { AlertTriangle, Lightbulb } from "lucide-react";
 
 export default function ProjectSetup() {
   return (
-    <PageTemplate
-      title="Project Setup"
-      previousPage={{ href: "/hardware", title: "Hardware Setup" }}
-      nextPage={{
-        href: "/command-framework",
-        title: "Command-Based Framework",
-      }}
-    >
+    <PageTemplate title="Project Setup">
       {/* Introduction */}
       <KeyConceptSection
         title="Project Setup - Launching Your Codebase"

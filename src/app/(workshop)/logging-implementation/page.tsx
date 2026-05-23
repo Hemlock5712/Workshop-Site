@@ -3,7 +3,7 @@ import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import {
@@ -18,11 +18,7 @@ import {
 
 export default function LoggingImplementation() {
   return (
-    <PageTemplate
-      title="Implementing Logging"
-      previousPage={{ href: "/logging-options", title: "Logging Options" }}
-      nextPage={{ href: "/drive-to-point", title: "Drive to Point" }}
-    >
+    <PageTemplate title="Implementing Logging">
       {/* Introduction */}
       <KeyConceptSection
         title="Setting Up Data Logging"
@@ -228,12 +224,11 @@ public class ArmSubsystem extends SubsystemBase {
           Robot.java - Adding Logging
         </h3>
 
-        <GitHubPageWithPR
+        <GitHubContent
           repository="Hemlock5712/Workshop-Code"
           branch="2-Logging"
           filePath="src/main/java/frc/robot/Robot.java"
-          pullRequestNumber={8}
-          focusFile="Robot.java"
+          pr={{ number: 8, focusFile: "Robot.java" }}
         />
 
         <CollapsibleSection title="RobotContainer.java">
@@ -242,12 +237,11 @@ public class ArmSubsystem extends SubsystemBase {
             commands. This helps track which commands are running and monitor
             subsystem state.
           </p>
-          <GitHubPageWithPR
+          <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             branch="2-Logging"
             filePath="src/main/java/frc/robot/RobotContainer.java"
-            pullRequestNumber={8}
-            focusFile="RobotContainer.java"
+            pr={{ number: 8, focusFile: "RobotContainer.java" }}
           />
         </CollapsibleSection>
 
@@ -257,12 +251,11 @@ public class ArmSubsystem extends SubsystemBase {
             log data. This example shows the CommandSwerveDrivetrain with
             Epilogue logging enabled.
           </p>
-          <GitHubPageWithPR
+          <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             branch="2-Logging"
             filePath="src/main/java/frc/robot/subsystems/CommandSwerveDrivetrain.java"
-            pullRequestNumber={8}
-            focusFile="CommandSwerveDrivetrain.java"
+            pr={{ number: 8, focusFile: "CommandSwerveDrivetrain.java" }}
           />
         </CollapsibleSection>
       </section>

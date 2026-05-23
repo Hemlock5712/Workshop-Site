@@ -5,11 +5,7 @@ import Quiz from "@/components/Quiz";
 
 export default function RunningProgram() {
   return (
-    <PageTemplate
-      title="Running Program"
-      previousPage={{ href: "/triggers", title: "Triggers" }}
-      nextPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
-    >
+    <PageTemplate title="Running Program">
       {/* Introduction */}
       <KeyConceptSection
         title="Running Program - Hardware Simulation Testing"

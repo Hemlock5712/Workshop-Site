@@ -3,11 +3,7 @@ import Link from "next/link";
 
 export default function Introduction() {
   return (
-    <PageTemplate
-      title="Gray Matter Coding Workshop"
-      previousPage={{ href: "/", title: "Home" }}
-      nextPage={{ href: "/prerequisites", title: "Prerequisites" }}
-    >
+    <PageTemplate title="Gray Matter Coding Workshop">
       <div className="bg-primary-50 dark:bg-primary-950/30 border-l-4 border-primary-400 dark:border-primary-900 p-6">
         <p className="text-lg font-medium text-primary-900 dark:text-primary-300 mb-2">
           Quick Note

@@ -11,11 +11,7 @@ import { Book } from "lucide-react";
 
 export default function PIDControl() {
   return (
-    <PageTemplate
-      title="PID Control"
-      previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
-      nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
-    >
+    <PageTemplate title="PID Control">
       {/* Introduction */}
       <PageHero
         description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Toggle between an arm (position) and a flywheel (velocity) below — the gains in each map directly to a TalonFX Slot0Configs."

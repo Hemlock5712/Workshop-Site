@@ -11,14 +11,7 @@ import Image from "next/image";
 
 export default function SwervePrerequisites() {
   return (
-    <PageTemplate
-      title="Swerve Drive Prerequisites"
-      previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
-      nextPage={{
-        href: "/swerve-drive-project",
-        title: "Creating a Swerve Drive Project",
-      }}
-    >
+    <PageTemplate title="Swerve Drive Prerequisites">
       {/* Introduction */}
       <KeyConceptSection
         title="Understanding Swerve Drive Fundamentals"

@@ -9,11 +9,7 @@ import { Book, BookOpen } from "lucide-react";
 
 export default function CommandFramework() {
   return (
-    <PageTemplate
-      title="Command-Based Framework"
-      previousPage={{ href: "/project-setup", title: "Project Setup" }}
-      nextPage={{ href: "/building-subsystems", title: "Building Subsystems" }}
-    >
+    <PageTemplate title="Command-Based Framework">
       {/* Introduction */}
       <KeyConceptSection
         title="Command-Based Framework - Core Programming Concepts"

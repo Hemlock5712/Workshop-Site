@@ -8,14 +8,7 @@ import { Book, Settings, Lightbulb, AlertTriangle } from "lucide-react";
 
 export default function OdometryCalibration() {
   return (
-    <PageTemplate
-      title="Swerve Calibration"
-      previousPage={{
-        href: "/pathplanner",
-        title: "Adding PathPlanner",
-      }}
-      nextPage={{ href: "/logging-options", title: "Logging Options" }}
-    >
+    <PageTemplate title="Swerve Calibration">
       <KeyConceptSection
         title="Swerve Calibration"
         description="Proper calibration is the foundation of accurate autonomous performance. This includes tuning swerve motor gains, configuring drive request types, preventing wheel slip, finding effective wheel radius, configuring camera positions, and tuning PID controllers for path following."

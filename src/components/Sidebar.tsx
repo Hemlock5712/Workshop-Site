@@ -7,6 +7,37 @@ import { Check } from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { useProgress } from "@/lib/useProgress";
+import { getLessonsBySection, type LessonSection } from "@/data/lessons";
+
+/**
+ * Tiny "X/N" chip rendered in a collapsible-section header. Hidden when
+ * none of the section's lessons are complete to keep the empty state clean.
+ */
+function SectionProgressChip({
+  section,
+  isCompleted,
+}: {
+  section: LessonSection;
+  isCompleted: (slug: string) => boolean;
+}) {
+  const lessons = getLessonsBySection(section);
+  const done = lessons.filter((l) => isCompleted(l.slug)).length;
+  if (done === 0) return null;
+  const total = lessons.length;
+  const full = done === total;
+  return (
+    <span
+      className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
+        full
+          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
+          : "bg-[var(--muted)] text-[var(--muted-foreground)]"
+      }`}
+      aria-label={`${done} of ${total} lessons complete`}
+    >
+      {done}/{total}
+    </span>
+  );
+}
 
 /**
  * Small completion indicator shown next to nav items the user has marked
@@ -830,21 +861,27 @@ export default function Sidebar() {
                       </svg>
                       <span>Workshop #1</span>
                     </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isWorkshop1Open ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
+                    <div className="flex items-center gap-2">
+                      <SectionProgressChip
+                        section="workshop1"
+                        isCompleted={isCompleted}
                       />
-                    </svg>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          isWorkshop1Open ? "rotate-90" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
                   </button>
 
                   {/* Workshop #1 Items */}
@@ -939,21 +976,27 @@ export default function Sidebar() {
                       </svg>
                       <span>Workshop #2</span>
                     </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isWorkshop2Open ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
+                    <div className="flex items-center gap-2">
+                      <SectionProgressChip
+                        section="workshop2"
+                        isCompleted={isCompleted}
                       />
-                    </svg>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          isWorkshop2Open ? "rotate-90" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
                   </button>
 
                   {/* Workshop #2 Items */}
@@ -1050,21 +1093,27 @@ export default function Sidebar() {
                       </svg>
                       <span>Advanced Topics</span>
                     </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isAdvancedTopicsOpen ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
+                    <div className="flex items-center gap-2">
+                      <SectionProgressChip
+                        section="advanced"
+                        isCompleted={isCompleted}
                       />
-                    </svg>
+                      <svg
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          isAdvancedTopicsOpen ? "rotate-90" : ""
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
                   </button>
 
                   {/* Advanced Topics Items */}

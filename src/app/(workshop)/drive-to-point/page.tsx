@@ -4,21 +4,14 @@ import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import CodeBlock from "@/components/CodeBlock";
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
 import { Lightbulb, MapPin, Target } from "lucide-react";
 import Image from "next/image";
 
 export default function DriveToPoint() {
   return (
-    <PageTemplate
-      title="Drive to Point"
-      previousPage={{
-        href: "/logging-implementation",
-        title: "Implementing Logging",
-      }}
-      nextPage={{ href: "/vision-options", title: "Vision Options" }}
-    >
+    <PageTemplate title="Drive to Point">
       <KeyConceptSection
         title="Autonomous Point Navigation with Odometry"
         description="Use your swerve drivetrain's odometry to autonomously navigate to specific field coordinates with PID control."
@@ -398,12 +391,11 @@ public boolean isFinished() {
           and button bindings.
         </p>
 
-        <GitHubPageWithPR
+        <GitHubContent
           repository="Hemlock5712/Workshop-Code"
           filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
           branch="5-DriveToPoint"
-          pullRequestNumber={11}
-          focusFile="DriveToPoint.java"
+          pr={{ number: 11, focusFile: "DriveToPoint.java" }}
         />
       </section>
 

@@ -15,17 +15,7 @@ import {
 
 export default function LoggingOptions() {
   return (
-    <PageTemplate
-      title="Logging Options"
-      previousPage={{
-        href: "/swerve-calibration",
-        title: "Odometry Calibration",
-      }}
-      nextPage={{
-        href: "/logging-implementation",
-        title: "Implementing Logging",
-      }}
-    >
+    <PageTemplate title="Logging Options">
       {/* Introduction */}
       <KeyConceptSection
         title="Data Logging - Understanding What Happened"

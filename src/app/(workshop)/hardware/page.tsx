@@ -18,11 +18,7 @@ import {
 
 export default function Hardware() {
   return (
-    <PageTemplate
-      title="Hardware Setup"
-      previousPage={{ href: "/mechanism-cad", title: "Mechanism CAD" }}
-      nextPage={{ href: "/project-setup", title: "Project Setup" }}
-    >
+    <PageTemplate title="Hardware Setup">
       {/* Beginner-Friendly Introduction */}
       <div className="bg-blue-50 dark:bg-blue-950/30 border-l-4 border-blue-400 dark:border-blue-900 p-6 mb-8">
         <h3 className="text-lg font-medium text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">

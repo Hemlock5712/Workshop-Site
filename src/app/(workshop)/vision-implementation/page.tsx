@@ -2,8 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import GitHubPage from "@/components/GitHubPage";
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
@@ -12,11 +11,7 @@ import { Link, Tag, Camera } from "lucide-react";
 
 export default function VisionImplementation() {
   return (
-    <PageTemplate
-      title="Implementing Vision"
-      previousPage={{ href: "/vision-options", title: "Vision Options" }}
-      nextPage={{ href: "/vision-shooting", title: "Dynamic Flywheel" }}
-    >
+    <PageTemplate title="Implementing Vision">
       <KeyConceptSection
         title="Integrating Vision into Robot Code"
         description="Connecting vision systems to robot code involves reading NetworkTables data, integrating AprilTag measurements into odometry, and using vision feedback for control. This section demonstrates practical vision integration patterns."
@@ -325,7 +320,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         </p>
 
         <CollapsibleSection title="LimelightHelpers.java">
-          <GitHubPage
+          <GitHubContent
             repository="LimelightVision/limelightlib-wpijava"
             branch="main"
             filePath="LimelightHelpers.java"
@@ -335,7 +330,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         </CollapsibleSection>
 
         <CollapsibleSection title="Limelight.java">
-          <GitHubPage
+          <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             branch="3-Limelight"
             filePath="src/main/java/frc/robot/subsystems/Limelight.java"
@@ -349,12 +344,11 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
             how the Limelight subsystem connects with the swerve drivetrain and
             command bindings.
           </p>
-          <GitHubPageWithPR
+          <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             branch="3-Limelight"
             filePath="src/main/java/frc/robot/RobotContainer.java"
-            pullRequestNumber={9}
-            focusFile="RobotContainer.java"
+            pr={{ number: 9, focusFile: "RobotContainer.java" }}
           />
         </CollapsibleSection>
       </section>

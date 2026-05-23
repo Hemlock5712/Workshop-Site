@@ -5,20 +5,12 @@ import CodeBlock from "@/components/CodeBlock";
 import DocumentationButton from "@/components/DocumentationButton";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import Quiz from "@/components/Quiz";
-import GitHubPage from "@/components/GitHubPage";
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import ContentCard from "@/components/ContentCard";
 
 export default function PathPlanner() {
   return (
-    <PageTemplate
-      title="Adding PathPlanner"
-      previousPage={{
-        href: "/swerve-drive-project",
-        title: "Creating a Swerve Drive Project",
-      }}
-      nextPage={{ href: "/swerve-calibration", title: "Odometry Calibration" }}
-    >
+    <PageTemplate title="Adding PathPlanner">
       {/* Introduction */}
       <KeyConceptSection
         title="PathPlanner for Autonomous Navigation"
@@ -57,7 +49,7 @@ export default function PathPlanner() {
 
         <CollapsibleSection title="📁 CommandSwerveDrivetrain.java">
           <div className="space-y-4">
-            <GitHubPage
+            <GitHubContent
               repository="Hemlock5712/Workshop-Code"
               branch="1-Swerve"
               filePath="src/main/java/frc/robot/subsystems/CommandSwerveDrivetrain.java"
@@ -67,12 +59,14 @@ export default function PathPlanner() {
 
         <CollapsibleSection title="🎮 RobotContainer.java">
           <div className="space-y-4">
-            <GitHubPageWithPR
+            <GitHubContent
               repository="Hemlock5712/Workshop-Code"
               branch="1-Swerve"
               filePath="src/main/java/frc/robot/RobotContainer.java"
-              focusFile="src/main/java/frc/robot/RobotContainer.java"
-              pullRequestNumber={7}
+              pr={{
+                number: 7,
+                focusFile: "src/main/java/frc/robot/RobotContainer.java",
+              }}
             />
           </div>
         </CollapsibleSection>

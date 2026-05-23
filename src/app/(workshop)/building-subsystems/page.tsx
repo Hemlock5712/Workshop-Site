@@ -8,14 +8,7 @@ import Quiz from "@/components/Quiz";
 
 export default function BuildingSubsystems() {
   return (
-    <PageTemplate
-      title="Subsystems"
-      previousPage={{
-        href: "/command-framework",
-        title: "Command-Based Framework",
-      }}
-      nextPage={{ href: "/adding-commands", title: "Commands" }}
-    >
+    <PageTemplate title="Subsystems">
       {/* Introduction */}
       <KeyConceptSection
         title="Subsystems - Understanding the Foundation"

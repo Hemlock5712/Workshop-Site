@@ -8,17 +8,7 @@ import { Book, Wrench, Lightbulb } from "lucide-react";
 
 export default function VisionOptions() {
   return (
-    <PageTemplate
-      title="Vision Options"
-      previousPage={{
-        href: "/drive-to-point",
-        title: "Drive to Point",
-      }}
-      nextPage={{
-        href: "/vision-implementation",
-        title: "Implementing Vision",
-      }}
-    >
+    <PageTemplate title="Vision Options">
       <KeyConceptSection
         title="Computer Vision - See the Field"
         description="Computer vision enables robots to detect game pieces, track targets, and localize position using cameras. AprilTag targets provide absolute field positioning, while object detection helps with game piece manipulation."

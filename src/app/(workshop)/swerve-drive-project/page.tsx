@@ -8,14 +8,7 @@ import { Book, Download } from "lucide-react";
 
 export default function SwerveDriveProject() {
   return (
-    <PageTemplate
-      title="Creating a Swerve Drive Project"
-      previousPage={{
-        href: "/swerve-prerequisites",
-        title: "Swerve Drive Prerequisites",
-      }}
-      nextPage={{ href: "/pathplanner", title: "Adding PathPlanner" }}
-    >
+    <PageTemplate title="Creating a Swerve Drive Project">
       {/* Introduction */}
       <KeyConceptSection
         title="Using Phoenix Tuner X to Generate Swerve Code"
