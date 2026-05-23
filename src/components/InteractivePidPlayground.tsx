@@ -120,7 +120,10 @@ function Slider({
 
 // ── Regime chip ──────────────────────────────────────────────────────────
 
-const REGIME_STYLE: Record<Regime, { label: string; classes: string; dot: string }> = {
+const REGIME_STYLE: Record<
+  Regime,
+  { label: string; classes: string; dot: string }
+> = {
   oscillating: {
     label: "Oscillating",
     dot: "bg-amber-500",
@@ -151,15 +154,45 @@ interface SliderConfig {
 }
 
 const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
-  { key: "kP", label: "kP", axisColor: "#dc2626", ariaDescription: "Proportional gain." },
-  { key: "kI", label: "kI", axisColor: "#ca8a04", ariaDescription: "Integral gain." },
-  { key: "kD", label: "kD", axisColor: "#2563eb", ariaDescription: "Derivative gain." },
+  {
+    key: "kP",
+    label: "kP",
+    axisColor: "#dc2626",
+    ariaDescription: "Proportional gain.",
+  },
+  {
+    key: "kI",
+    label: "kI",
+    axisColor: "#ca8a04",
+    ariaDescription: "Integral gain.",
+  },
+  {
+    key: "kD",
+    label: "kD",
+    axisColor: "#2563eb",
+    ariaDescription: "Derivative gain.",
+  },
 ];
 
 const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
-  { key: "kS", label: "kS", axisColor: "#7c3aed", ariaDescription: "Static friction feedforward." },
-  { key: "kV", label: "kV", axisColor: "#0891b2", ariaDescription: "Velocity feedforward." },
-  { key: "kG", label: "kG", axisColor: "#16a34a", ariaDescription: "Gravity feedforward." },
+  {
+    key: "kS",
+    label: "kS",
+    axisColor: "#7c3aed",
+    ariaDescription: "Static friction feedforward.",
+  },
+  {
+    key: "kV",
+    label: "kV",
+    axisColor: "#0891b2",
+    ariaDescription: "Velocity feedforward.",
+  },
+  {
+    key: "kG",
+    label: "kG",
+    axisColor: "#16a34a",
+    ariaDescription: "Gravity feedforward.",
+  },
 ];
 
 // ── Arm visualization ───────────────────────────────────────────────────
@@ -233,7 +266,7 @@ function ArmViz({
       if (loopT < durationSec * 1000) {
         const idx = Math.min(
           responseTheta.length - 1,
-          Math.floor(loopT / SAMPLE_RATE_MS),
+          Math.floor(loopT / SAMPLE_RATE_MS)
         );
         thetaDeg = responseTheta[idx] ?? 0;
       } else {
@@ -296,7 +329,14 @@ function ArmViz({
         const ly = ARM_PIVOT.y - label * Math.sin(r) + 3;
         return (
           <g key={deg}>
-            <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={tickColor} strokeWidth={1.25} />
+            <line
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke={tickColor}
+              strokeWidth={1.25}
+            />
             <text
               x={lx}
               y={ly}
@@ -384,8 +424,18 @@ function ArmViz({
         strokeWidth={1.75}
       />
 
-      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={4.5} fill={isDark ? "#cbd5e1" : "#0d233f"} />
-      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={1.75} fill={isDark ? "#0d233f" : "#cbd5e1"} />
+      <circle
+        cx={ARM_PIVOT.x}
+        cy={ARM_PIVOT.y}
+        r={4.5}
+        fill={isDark ? "#cbd5e1" : "#0d233f"}
+      />
+      <circle
+        cx={ARM_PIVOT.x}
+        cy={ARM_PIVOT.y}
+        r={1.75}
+        fill={isDark ? "#0d233f" : "#cbd5e1"}
+      />
 
       {/* Live angle readout — bottom-right corner */}
       <text
@@ -421,7 +471,7 @@ export default function InteractivePidPlayground() {
       kS: s.kS,
       kV: s.kV,
       kG: s.kG,
-    })),
+    }))
   );
   const targetDeg = usePidStore((s) => s.targetDeg);
   const setTargetDeg = usePidStore((s) => s.setTargetDeg);
@@ -434,8 +484,15 @@ export default function InteractivePidPlayground() {
   const reset = usePidStore((s) => s.reset);
 
   const setters: Record<GainKey, (v: number) => void> = useMemo(
-    () => ({ kP: setKP, kI: setKI, kD: setKD, kS: setKS, kV: setKV, kG: setKG }),
-    [setKP, setKI, setKD, setKS, setKV, setKG],
+    () => ({
+      kP: setKP,
+      kI: setKI,
+      kD: setKD,
+      kS: setKS,
+      kV: setKV,
+      kG: setKG,
+    }),
+    [setKP, setKI, setKD, setKS, setKV, setKG]
   );
 
   const targetRad = (targetDeg * Math.PI) / 180;
@@ -504,7 +561,7 @@ export default function InteractivePidPlayground() {
       grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
       text: isDark ? "#94a3b8" : "#64748b",
     }),
-    [isDark],
+    [isDark]
   );
 
   const buildPlot = useCallback(() => {
@@ -583,7 +640,7 @@ export default function InteractivePidPlayground() {
     plotRef.current = new uPlot(
       opts,
       [response.t, response.target, response.setpoint, response.theta],
-      containerRef.current,
+      containerRef.current
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accent, physics.durationSec, targetDeg]);
@@ -656,17 +713,40 @@ export default function InteractivePidPlayground() {
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${regimeStyle.classes}`}
             aria-live="polite"
           >
-            <span aria-hidden className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`} />
+            <span
+              aria-hidden
+              className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`}
+            />
             {regimeStyle.label}
           </span>
           <div
             className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
             aria-label="Performance metrics"
           >
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.maxDeviationDeg.toFixed(1)}°</span> max dev</span>
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.steadyStateErrorDeg.toFixed(1)}°</span> final err</span>
-            <span><span className="text-[var(--foreground)] font-medium">{settlingStr}</span> settle</span>
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.peakVoltage.toFixed(1)} V</span> peak</span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.overshootDeg.toFixed(1)}°
+              </span>{" "}
+              overshoot
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.steadyStateErrorDeg.toFixed(1)}°
+              </span>{" "}
+              final err
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {settlingStr}
+              </span>{" "}
+              settle
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.peakVoltage.toFixed(1)} V
+              </span>{" "}
+              peak
+            </span>
           </div>
         </div>
         <button
@@ -739,15 +819,31 @@ export default function InteractivePidPlayground() {
           />
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)` }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{
+                  background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)`,
+                }}
+              />
               target
             </span>
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.setpoint} 0 2px, transparent 2px 5px)` }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{
+                  background: `repeating-linear-gradient(to right, ${accent.setpoint} 0 2px, transparent 2px 5px)`,
+                }}
+              />
               profile setpoint
             </span>
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: accent.actual }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{ background: accent.actual }}
+              />
               arm angle
             </span>
           </div>
@@ -756,25 +852,25 @@ export default function InteractivePidPlayground() {
 
       {/* ── Tuning hint ─────────────────────── */}
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
+        <Lightbulb
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          aria-hidden
+        />
         <p>
           Each loop the arm starts at <span className="font-mono">0°</span>{" "}
           (horizontal). For the first second the setpoint stays at{" "}
           <span className="font-mono">0°</span> — use that window to tune{" "}
           <span className="font-mono">kG</span> until the arm holds. For a
-          Kraken X60 + 25:1 driving a 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm,
-          the spec-sheet math gives{" "}
-          <span className="font-mono">
-            kG = mgL / (Kₜ·R) ≈ 0.53&nbsp;V
-          </span>
-          . Add <span className="font-mono">kS</span> to overcome residual
-          static friction. At{" "}
-          <span className="font-mono">t&nbsp;=&nbsp;1&nbsp;s</span> the
-          setpoint steps to your slider target —{" "}
+          Kraken X60 + 25:1 driving a 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm, the
+          spec-sheet math gives{" "}
+          <span className="font-mono">kG = mgL / (Kₜ·R) ≈ 0.53&nbsp;V</span>.
+          Add <span className="font-mono">kS</span> to overcome residual static
+          friction. At <span className="font-mono">t&nbsp;=&nbsp;1&nbsp;s</span>{" "}
+          the setpoint steps to your slider target —{" "}
           <span className="font-mono">kP</span> and{" "}
-          <span className="font-mono">kD</span> chase the arm there and damp
-          the overshoot. Order:{" "}
-          <span className="font-mono">kG → kS → kP → kD</span>.
+          <span className="font-mono">kD</span> chase the arm there and damp the
+          overshoot. Order: <span className="font-mono">kG → kS → kP → kD</span>
+          .
         </p>
       </div>
 

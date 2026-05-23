@@ -118,7 +118,10 @@ function Slider({
   );
 }
 
-const REGIME_STYLE: Record<ElevRegime, { label: string; classes: string; dot: string }> = {
+const REGIME_STYLE: Record<
+  ElevRegime,
+  { label: string; classes: string; dot: string }
+> = {
   oscillating: {
     label: "Oscillating",
     dot: "bg-amber-500",
@@ -147,15 +150,45 @@ interface SliderConfig {
 }
 
 const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
-  { key: "kP", label: "kP", axisColor: "#dc2626", ariaDescription: "Proportional gain." },
-  { key: "kI", label: "kI", axisColor: "#ca8a04", ariaDescription: "Integral gain." },
-  { key: "kD", label: "kD", axisColor: "#2563eb", ariaDescription: "Derivative gain." },
+  {
+    key: "kP",
+    label: "kP",
+    axisColor: "#dc2626",
+    ariaDescription: "Proportional gain.",
+  },
+  {
+    key: "kI",
+    label: "kI",
+    axisColor: "#ca8a04",
+    ariaDescription: "Integral gain.",
+  },
+  {
+    key: "kD",
+    label: "kD",
+    axisColor: "#2563eb",
+    ariaDescription: "Derivative gain.",
+  },
 ];
 
 const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
-  { key: "kS", label: "kS", axisColor: "#7c3aed", ariaDescription: "Static friction feedforward." },
-  { key: "kV", label: "kV", axisColor: "#0891b2", ariaDescription: "Velocity feedforward." },
-  { key: "kG", label: "kG", axisColor: "#16a34a", ariaDescription: "Gravity feedforward — constant lift voltage." },
+  {
+    key: "kS",
+    label: "kS",
+    axisColor: "#7c3aed",
+    ariaDescription: "Static friction feedforward.",
+  },
+  {
+    key: "kV",
+    label: "kV",
+    axisColor: "#0891b2",
+    ariaDescription: "Velocity feedforward.",
+  },
+  {
+    key: "kG",
+    label: "kG",
+    axisColor: "#16a34a",
+    ariaDescription: "Gravity feedforward — constant lift voltage.",
+  },
 ];
 
 // ── Elevator viz ────────────────────────────────────────────────────────
@@ -197,7 +230,7 @@ function ElevatorViz({
       const frac = clamped / maxMeters;
       return RAIL_BOTTOM - frac * RAIL_HEIGHT;
     },
-    [maxMeters],
+    [maxMeters]
   );
 
   const placeCarriage = useCallback(
@@ -208,7 +241,7 @@ function ElevatorViz({
         posLabelRef.current.textContent = `${m.toFixed(2)} m`;
       }
     },
-    [mToY],
+    [mToY]
   );
 
   useEffect(() => {
@@ -231,7 +264,7 @@ function ElevatorViz({
       if (loopT < durationSec * 1000) {
         const idx = Math.min(
           responsePosition.length - 1,
-          Math.floor(loopT / SAMPLE_RATE_MS),
+          Math.floor(loopT / SAMPLE_RATE_MS)
         );
         m = responsePosition[idx] ?? 0;
       } else {
@@ -269,22 +302,65 @@ function ElevatorViz({
       </defs>
 
       {/* Ground */}
-      <rect x={0} y={RAIL_BOTTOM} width={ELEV_VB_W} height={ELEV_VB_H - RAIL_BOTTOM} fill={groundFill} />
+      <rect
+        x={0}
+        y={RAIL_BOTTOM}
+        width={ELEV_VB_W}
+        height={ELEV_VB_H - RAIL_BOTTOM}
+        fill={groundFill}
+      />
 
       {/* Rails */}
-      <line x1={RAIL_X - 28} y1={RAIL_TOP - 4} x2={RAIL_X - 28} y2={RAIL_BOTTOM} stroke={rail} strokeWidth={2} strokeLinecap="round" />
-      <line x1={RAIL_X + 28} y1={RAIL_TOP - 4} x2={RAIL_X + 28} y2={RAIL_BOTTOM} stroke={rail} strokeWidth={2} strokeLinecap="round" />
+      <line
+        x1={RAIL_X - 28}
+        y1={RAIL_TOP - 4}
+        x2={RAIL_X - 28}
+        y2={RAIL_BOTTOM}
+        stroke={rail}
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+      <line
+        x1={RAIL_X + 28}
+        y1={RAIL_TOP - 4}
+        x2={RAIL_X + 28}
+        y2={RAIL_BOTTOM}
+        stroke={rail}
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
 
       {/* Top mount with motor */}
-      <rect x={RAIL_X - 36} y={RAIL_TOP - 16} width={72} height={12} rx={2} fill={rail} />
-      <rect x={RAIL_X - 18} y={RAIL_TOP - 22} width={36} height={6} rx={1} fill={isDark ? "#cbd5e1" : "#475569"} />
+      <rect
+        x={RAIL_X - 36}
+        y={RAIL_TOP - 16}
+        width={72}
+        height={12}
+        rx={2}
+        fill={rail}
+      />
+      <rect
+        x={RAIL_X - 18}
+        y={RAIL_TOP - 22}
+        width={36}
+        height={6}
+        rx={1}
+        fill={isDark ? "#cbd5e1" : "#475569"}
+      />
 
       {/* Height ticks (every 0.5 m) */}
       {[0, 0.5, 1.0, 1.5].map((m) => {
         const y = mToY(m);
         return (
           <g key={m}>
-            <line x1={RAIL_X + 38} y1={y} x2={RAIL_X + 46} y2={y} stroke={tickColor} strokeWidth={1.25} />
+            <line
+              x1={RAIL_X + 38}
+              y1={y}
+              x2={RAIL_X + 46}
+              y2={y}
+              stroke={tickColor}
+              strokeWidth={1.25}
+            />
             <text
               x={RAIL_X + 52}
               y={y + 3}
@@ -345,8 +421,18 @@ function ElevatorViz({
           strokeWidth={1}
         />
         {/* Roller wheels on rails */}
-        <circle cx={RAIL_X - 28} cy={RAIL_BOTTOM - CARRIAGE_HALF_H} r={3} fill={isDark ? "#cbd5e1" : "#0d233f"} />
-        <circle cx={RAIL_X + 28} cy={RAIL_BOTTOM - CARRIAGE_HALF_H} r={3} fill={isDark ? "#cbd5e1" : "#0d233f"} />
+        <circle
+          cx={RAIL_X - 28}
+          cy={RAIL_BOTTOM - CARRIAGE_HALF_H}
+          r={3}
+          fill={isDark ? "#cbd5e1" : "#0d233f"}
+        />
+        <circle
+          cx={RAIL_X + 28}
+          cy={RAIL_BOTTOM - CARRIAGE_HALF_H}
+          r={3}
+          fill={isDark ? "#cbd5e1" : "#0d233f"}
+        />
       </g>
 
       {/* Live position readout */}
@@ -383,7 +469,7 @@ export default function InteractiveElevatorPlayground() {
       kS: s.kS,
       kV: s.kV,
       kG: s.kG,
-    })),
+    }))
   );
   const targetM = useElevatorStore((s) => s.targetM);
   const setTargetM = useElevatorStore((s) => s.setTargetM);
@@ -396,8 +482,15 @@ export default function InteractiveElevatorPlayground() {
   const reset = useElevatorStore((s) => s.reset);
 
   const setters: Record<GainKey, (v: number) => void> = useMemo(
-    () => ({ kP: setKP, kI: setKI, kD: setKD, kS: setKS, kV: setKV, kG: setKG }),
-    [setKP, setKI, setKD, setKS, setKV, setKG],
+    () => ({
+      kP: setKP,
+      kI: setKI,
+      kD: setKD,
+      kS: setKS,
+      kV: setKV,
+      kG: setKG,
+    }),
+    [setKP, setKI, setKD, setKS, setKV, setKG]
   );
 
   const physics = useMemo(() => elevatorPhysicsFor(targetM), [targetM]);
@@ -463,7 +556,7 @@ export default function InteractiveElevatorPlayground() {
       grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
       text: isDark ? "#94a3b8" : "#64748b",
     }),
-    [isDark],
+    [isDark]
   );
 
   const buildPlot = useCallback(() => {
@@ -532,7 +625,7 @@ export default function InteractiveElevatorPlayground() {
     plotRef.current = new uPlot(
       opts,
       [response.t, response.targetM, response.positionM],
-      containerRef.current,
+      containerRef.current
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accent, physics.durationSec]);
@@ -548,11 +641,7 @@ export default function InteractiveElevatorPlayground() {
 
   useEffect(() => {
     if (!plotRef.current) return;
-    plotRef.current.setData([
-      response.t,
-      response.targetM,
-      response.positionM,
-    ]);
+    plotRef.current.setData([response.t, response.targetM, response.positionM]);
   }, [response]);
 
   useEffect(() => {
@@ -601,17 +690,40 @@ export default function InteractiveElevatorPlayground() {
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${regimeStyle.classes}`}
             aria-live="polite"
           >
-            <span aria-hidden className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`} />
+            <span
+              aria-hidden
+              className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`}
+            />
             {regimeStyle.label}
           </span>
           <div
             className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
             aria-label="Performance metrics"
           >
-            <span><span className="text-[var(--foreground)] font-medium">{(response.metrics.maxDeviationM * 100).toFixed(1)}</span> cm max dev</span>
-            <span><span className="text-[var(--foreground)] font-medium">{(response.metrics.steadyStateErrorM * 100).toFixed(1)}</span> cm final err</span>
-            <span><span className="text-[var(--foreground)] font-medium">{settlingStr}</span> settle</span>
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.peakVoltage.toFixed(1)} V</span> peak</span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {(response.metrics.overshootM * 100).toFixed(1)}
+              </span>{" "}
+              cm overshoot
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {(response.metrics.steadyStateErrorM * 100).toFixed(1)}
+              </span>{" "}
+              cm final err
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {settlingStr}
+              </span>{" "}
+              settle
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.peakVoltage.toFixed(1)} V
+              </span>{" "}
+              peak
+            </span>
           </div>
         </div>
         <button
@@ -681,11 +793,21 @@ export default function InteractiveElevatorPlayground() {
           />
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)` }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{
+                  background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)`,
+                }}
+              />
               target
             </span>
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: accent.actual }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{ background: accent.actual }}
+              />
               carriage position
             </span>
           </div>
@@ -694,7 +816,10 @@ export default function InteractiveElevatorPlayground() {
 
       {/* ── Tuning hint ─────────────────────── */}
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
+        <Lightbulb
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          aria-hidden
+        />
         <p>
           The carriage starts at the ground and holds there for 1&nbsp;s, then
           steps up to your slider target. Gravity is constant so{" "}
@@ -702,8 +827,8 @@ export default function InteractiveElevatorPlayground() {
           <span className="font-mono">kG = m·g·r_spool / (Kₜ·R)</span> ≈{" "}
           <span className="font-mono">0.22&nbsp;V</span> for this 8&nbsp;kg
           carriage on a Kraken X60 + 15:1 + 1&quot; spool. Add{" "}
-          <span className="font-mono">kS</span> for the rail friction
-          breakaway, then <span className="font-mono">kP</span> and{" "}
+          <span className="font-mono">kS</span> for the rail friction breakaway,
+          then <span className="font-mono">kP</span> and{" "}
           <span className="font-mono">kD</span> close the loop. Order:{" "}
           <span className="font-mono">kG → kS → kP → kD → kI</span>.
         </p>

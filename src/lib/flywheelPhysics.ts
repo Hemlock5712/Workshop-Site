@@ -98,8 +98,8 @@ export type FlyRegime = "stable" | "oscillating" | "drifting";
 
 export interface FlywheelResponseMetrics {
   regime: FlyRegime;
-  /** Max absolute deviation from the time-varying setpoint, in rpm. */
-  maxDeviationRpm: number;
+  /** Max excursion past the target after the step, in rpm. */
+  overshootRpm: number;
   settlingTime: number | null;
   /** Final |error| vs the commanded target, in rpm. */
   steadyStateErrorRpm: number;
@@ -129,7 +129,7 @@ export function flywheelPhysicsFor(targetRpm: number): FlywheelPhysicsParams {
 
 export function simulateFlywheelResponse(
   params: FlywheelPhysicsParams,
-  gains: FlywheelGains,
+  gains: FlywheelGains
 ): FlywheelResponse {
   const dt = 0.001;
   const N = Math.round(params.durationSec / dt);
@@ -155,8 +155,7 @@ export function simulateFlywheelResponse(
 
   for (let i = 0; i < N; i++) {
     const time = i * dt;
-    const setpointRps =
-      time < FLY_HOLD_PHASE_SEC ? 0 : params.targetRps;
+    const setpointRps = time < FLY_HOLD_PHASE_SEC ? 0 : params.targetRps;
 
     if (i % controllerEvery === 0) {
       const dtC = dt * controllerEvery;
@@ -164,7 +163,8 @@ export function simulateFlywheelResponse(
       const errorRps = setpointRps - omegaRps;
       integral += errorRps * dtC;
       if (integral > INTEGRAL_CLAMP_V_SEC) integral = INTEGRAL_CLAMP_V_SEC;
-      else if (integral < -INTEGRAL_CLAMP_V_SEC) integral = -INTEGRAL_CLAMP_V_SEC;
+      else if (integral < -INTEGRAL_CLAMP_V_SEC)
+        integral = -INTEGRAL_CLAMP_V_SEC;
       const dErrorRps = (errorRps - prevErrorRps) / dtC;
 
       const pidV =
@@ -213,23 +213,38 @@ export function simulateFlywheelResponse(
   }
 
   // ── Metrics ────────────────────────────────────────────────────────────
-  let maxDeviationRpm = 0;
-  for (let i = 0; i < N; i++) {
-    const dev = Math.abs(velocityRpm[i] - targetRpm[i]);
-    if (dev > maxDeviationRpm) maxDeviationRpm = dev;
+  // Overshoot: how far the wheel ran past the commanded target after the
+  // step, in the step direction. A pure ramp-up that settles at target
+  // without going over reads 0.
+  const targetRpmFinal = params.targetRps * 60;
+  const stepStartIdx = Math.round(FLY_HOLD_PHASE_SEC / dt);
+  const stepDir = Math.sign(targetRpmFinal);
+  let overshootRpm = 0;
+  if (stepDir !== 0) {
+    for (let i = stepStartIdx; i < N; i++) {
+      const beyond = (velocityRpm[i] - targetRpmFinal) * stepDir;
+      if (beyond > overshootRpm) overshootRpm = beyond;
+    }
+  } else {
+    for (let i = stepStartIdx; i < N; i++) {
+      const dev = Math.abs(velocityRpm[i] - targetRpmFinal);
+      if (dev > overshootRpm) overshootRpm = dev;
+    }
   }
 
   // ±2 % of the commanded target rpm, with a minimum 30 rpm band.
-  const SETTLE_BAND_RPM = Math.max(30, params.targetRps * 60 * 0.02);
-  const stepStartIdx = Math.round(FLY_HOLD_PHASE_SEC / dt);
+  const SETTLE_BAND_RPM = Math.max(30, targetRpmFinal * 0.02);
   let settlingTime: number | null = null;
   let settled = false;
   for (let i = stepStartIdx; i < N; i++) {
-    if (Math.abs(velocityRpm[i] - targetRpm[i]) <= SETTLE_BAND_RPM && !settled) {
+    if (
+      Math.abs(velocityRpm[i] - targetRpmFinal) <= SETTLE_BAND_RPM &&
+      !settled
+    ) {
       settled = true;
       settlingTime = t[i];
     } else if (
-      Math.abs(velocityRpm[i] - targetRpm[i]) > SETTLE_BAND_RPM &&
+      Math.abs(velocityRpm[i] - targetRpmFinal) > SETTLE_BAND_RPM &&
       settled
     ) {
       settled = false;
@@ -238,13 +253,13 @@ export function simulateFlywheelResponse(
   }
 
   const finalRpm = velocityRpm[N - 1] ?? 0;
-  const steadyStateErrorRpm = Math.abs(params.targetRps * 60 - finalRpm);
+  const steadyStateErrorRpm = Math.abs(targetRpmFinal - finalRpm);
 
+  const driftThreshold = Math.max(50, targetRpmFinal * 0.03);
+  const oscThreshold = Math.max(50, targetRpmFinal * 0.05);
   let regime: FlyRegime;
-  if (steadyStateErrorRpm > Math.max(50, params.targetRps * 60 * 0.03))
-    regime = "drifting";
-  else if (maxDeviationRpm > Math.max(50, params.targetRps * 60 * 0.05))
-    regime = "oscillating";
+  if (steadyStateErrorRpm > driftThreshold) regime = "drifting";
+  else if (overshootRpm > oscThreshold) regime = "oscillating";
   else regime = "stable";
 
   return {
@@ -255,7 +270,7 @@ export function simulateFlywheelResponse(
     angleRad,
     metrics: {
       regime,
-      maxDeviationRpm,
+      overshootRpm,
       settlingTime,
       steadyStateErrorRpm,
       peakVoltage,

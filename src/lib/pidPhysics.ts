@@ -163,8 +163,8 @@ export type Regime = "stable" | "oscillating" | "drifting";
 
 export interface StepResponseMetrics {
   regime: Regime;
-  /** Hold mode: max absolute deviation from the target, in degrees. */
-  maxDeviationDeg: number;
+  /** Max excursion past the target in the step direction, in degrees. */
+  overshootDeg: number;
   /** Time inside the ±2° settling band (or null if it never settles). */
   settlingTime: number | null;
   /** Absolute error between the final pose and the target. */
@@ -205,7 +205,7 @@ interface ProfileSample {
 function setpointAt(
   t: number,
   targetRad: number,
-  holdSec: number,
+  holdSec: number
 ): ProfileSample {
   const cmdRad = t < holdSec ? 0 : targetRad;
   return { thetaRot: cmdRad / TWO_PI, omegaRotPs: 0 };
@@ -213,7 +213,7 @@ function setpointAt(
 
 export function simulateStepResponse(
   params: PhysicsParams,
-  gains: ControllerGains,
+  gains: ControllerGains
 ): StepResponse {
   const dt = 0.001;
   const N = Math.round(params.durationSec / dt);
@@ -226,7 +226,6 @@ export function simulateStepResponse(
   //   K_B_output = K_B_motor · R         (back-EMF voltage per rad/s on output)
   const K_T = (stallTorque / vMax) * gearRatio;
   const K_B = (vMax / freeSpeed) * gearRatio;
-
 
   const t = new Float64Array(N);
   const theta = new Float64Array(N);
@@ -256,7 +255,8 @@ export function simulateStepResponse(
       const errorRot = sp.thetaRot - thRot;
       integral += errorRot * dtC;
       if (integral > INTEGRAL_CLAMP_V_SEC) integral = INTEGRAL_CLAMP_V_SEC;
-      else if (integral < -INTEGRAL_CLAMP_V_SEC) integral = -INTEGRAL_CLAMP_V_SEC;
+      else if (integral < -INTEGRAL_CLAMP_V_SEC)
+        integral = -INTEGRAL_CLAMP_V_SEC;
       const dErrorRot = (errorRot - prevErrorRot) / dtC;
 
       const pidV =
@@ -336,28 +336,35 @@ export function simulateStepResponse(
   }
 
   // ── Metrics ────────────────────────────────────────────────────────────
-  // Track how badly the arm deviated from the commanded setpoint at any
-  // moment — covers both phases (hold-at-0° and chase-to-target).
-  let maxDeviationDeg = 0;
-  for (let i = 0; i < N; i++) {
-    const dev = Math.abs(theta[i] - targetArr[i]);
-    if (dev > maxDeviationDeg) maxDeviationDeg = dev;
+  // Overshoot: the maximum the arm went *past* the target in the step
+  // direction, after the step fires. A clean step that homes in without
+  // overshooting gets 0. (For target = initial = 0°, fall-back to abs
+  // deviation post-step so a falling arm without FF still registers.)
+  const stepStartIdx = Math.round(HOLD_PHASE_SEC / dt);
+  const stepDir = Math.sign(params.target - params.initialAngle);
+  let overshootDeg = 0;
+  if (stepDir !== 0) {
+    for (let i = stepStartIdx; i < N; i++) {
+      const beyond = (theta[i] - targetDeg) * stepDir;
+      if (beyond > overshootDeg) overshootDeg = beyond;
+    }
+  } else {
+    for (let i = stepStartIdx; i < N; i++) {
+      const dev = Math.abs(theta[i] - targetDeg);
+      if (dev > overshootDeg) overshootDeg = dev;
+    }
   }
 
   // Settling time: first sustained entry into the ±2° band around the final
   // target, starting from after the step.
   const SETTLE_BAND_DEG = 2;
-  const stepStartIdx = Math.round(HOLD_PHASE_SEC / dt);
   let settlingTime: number | null = null;
   let settled = false;
   for (let i = stepStartIdx; i < N; i++) {
     if (Math.abs(theta[i] - targetDeg) <= SETTLE_BAND_DEG && !settled) {
       settled = true;
       settlingTime = t[i];
-    } else if (
-      Math.abs(theta[i] - targetDeg) > SETTLE_BAND_DEG &&
-      settled
-    ) {
+    } else if (Math.abs(theta[i] - targetDeg) > SETTLE_BAND_DEG && settled) {
       settled = false;
       settlingTime = null;
     }
@@ -366,13 +373,13 @@ export function simulateStepResponse(
   const finalTheta = theta[N - 1] ?? targetDeg;
   const steadyStateErrorDeg = Math.abs(targetDeg - finalTheta);
 
-  // Hold-only regime: how does the arm behave around the target?
-  //  • stable      — final pose close to target with no excessive ringing
-  //  • oscillating — bouncing around target (kP too high or kD too low)
-  //  • drifting    — never reaches/holds target (insufficient FF or PID)
+  // Regime — interpreted around the *final* target after the step:
+  //  • drifting    — final pose isn't near target (insufficient FF or kP)
+  //  • oscillating — went well past target during the chase
+  //  • stable      — arrived without excessive overshoot
   let regime: Regime;
-  if (steadyStateErrorDeg > 5) regime = "drifting";
-  else if (maxDeviationDeg > 5) regime = "oscillating";
+  if (steadyStateErrorDeg > 3) regime = "drifting";
+  else if (overshootDeg > 3) regime = "oscillating";
   else regime = "stable";
 
   return {
@@ -383,7 +390,7 @@ export function simulateStepResponse(
     voltage: voltageArr,
     metrics: {
       regime,
-      maxDeviationDeg,
+      overshootDeg,
       settlingTime,
       steadyStateErrorDeg,
       peakVoltage,

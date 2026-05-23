@@ -119,7 +119,10 @@ function Slider({
   );
 }
 
-const REGIME_STYLE: Record<FlyRegime, { label: string; classes: string; dot: string }> = {
+const REGIME_STYLE: Record<
+  FlyRegime,
+  { label: string; classes: string; dot: string }
+> = {
   oscillating: {
     label: "Oscillating",
     dot: "bg-amber-500",
@@ -148,14 +151,39 @@ interface SliderConfig {
 }
 
 const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
-  { key: "kP", label: "kP", axisColor: "#dc2626", ariaDescription: "Proportional gain." },
-  { key: "kI", label: "kI", axisColor: "#ca8a04", ariaDescription: "Integral gain." },
-  { key: "kD", label: "kD", axisColor: "#2563eb", ariaDescription: "Derivative gain." },
+  {
+    key: "kP",
+    label: "kP",
+    axisColor: "#dc2626",
+    ariaDescription: "Proportional gain.",
+  },
+  {
+    key: "kI",
+    label: "kI",
+    axisColor: "#ca8a04",
+    ariaDescription: "Integral gain.",
+  },
+  {
+    key: "kD",
+    label: "kD",
+    axisColor: "#2563eb",
+    ariaDescription: "Derivative gain.",
+  },
 ];
 
 const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
-  { key: "kS", label: "kS", axisColor: "#7c3aed", ariaDescription: "Static friction feedforward." },
-  { key: "kV", label: "kV", axisColor: "#0891b2", ariaDescription: "Velocity feedforward — back-EMF compensation." },
+  {
+    key: "kS",
+    label: "kS",
+    axisColor: "#7c3aed",
+    ariaDescription: "Static friction feedforward.",
+  },
+  {
+    key: "kV",
+    label: "kV",
+    axisColor: "#0891b2",
+    ariaDescription: "Velocity feedforward — back-EMF compensation.",
+  },
 ];
 
 // ── Flywheel viz ────────────────────────────────────────────────────────
@@ -188,7 +216,7 @@ function FlywheelViz({
       const deg = (angleRad * 180) / Math.PI;
       rotorRef.current.setAttribute(
         "transform",
-        `rotate(${deg} ${FLY_CENTER.x} ${FLY_CENTER.y})`,
+        `rotate(${deg} ${FLY_CENTER.x} ${FLY_CENTER.y})`
       );
     }
     if (rpmLabelRef.current) {
@@ -218,7 +246,7 @@ function FlywheelViz({
       if (loopT < durationSec * 1000) {
         idx = Math.min(
           responseAngleRad.length - 1,
-          Math.floor(loopT / SAMPLE_RATE_MS),
+          Math.floor(loopT / SAMPLE_RATE_MS)
         );
       } else {
         idx = responseAngleRad.length - 1;
@@ -324,12 +352,7 @@ function FlywheelViz({
           fill={isDark ? "#fbbf24" : "#f59e0b"}
         />
         {/* Hub */}
-        <circle
-          cx={FLY_CENTER.x}
-          cy={FLY_CENTER.y}
-          r={9}
-          fill={hub}
-        />
+        <circle cx={FLY_CENTER.x} cy={FLY_CENTER.y} r={9} fill={hub} />
         <circle
           cx={FLY_CENTER.x}
           cy={FLY_CENTER.y}
@@ -371,7 +394,7 @@ export default function InteractiveFlywheelPlayground() {
       kD: s.kD,
       kS: s.kS,
       kV: s.kV,
-    })),
+    }))
   );
   const targetRpm = useFlywheelStore((s) => s.targetRpm);
   const setTargetRpm = useFlywheelStore((s) => s.setTargetRpm);
@@ -384,16 +407,13 @@ export default function InteractiveFlywheelPlayground() {
 
   const setters: Record<GainKey, (v: number) => void> = useMemo(
     () => ({ kP: setKP, kI: setKI, kD: setKD, kS: setKS, kV: setKV }),
-    [setKP, setKI, setKD, setKS, setKV],
+    [setKP, setKI, setKD, setKS, setKV]
   );
 
   const physics = useMemo(() => flywheelPhysicsFor(targetRpm), [targetRpm]);
 
   // Throttled mirror of gains + target → sim recompute.
-  const inputs = useMemo(
-    () => ({ ...gains, targetRpm }),
-    [gains, targetRpm],
-  );
+  const inputs = useMemo(() => ({ ...gains, targetRpm }), [gains, targetRpm]);
   const [throttled, setThrottled] = useState(inputs);
   const rafRef = useRef<number | null>(null);
   const timeoutRef = useRef<number | null>(null);
@@ -452,7 +472,7 @@ export default function InteractiveFlywheelPlayground() {
       grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
       text: isDark ? "#94a3b8" : "#64748b",
     }),
-    [isDark],
+    [isDark]
   );
 
   const buildPlot = useCallback(() => {
@@ -525,7 +545,7 @@ export default function InteractiveFlywheelPlayground() {
     plotRef.current = new uPlot(
       opts,
       [response.t, response.targetRpm, response.velocityRpm],
-      containerRef.current,
+      containerRef.current
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accent, physics.durationSec]);
@@ -596,17 +616,40 @@ export default function InteractiveFlywheelPlayground() {
             className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${regimeStyle.classes}`}
             aria-live="polite"
           >
-            <span aria-hidden className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`} />
+            <span
+              aria-hidden
+              className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`}
+            />
             {regimeStyle.label}
           </span>
           <div
             className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
             aria-label="Performance metrics"
           >
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.maxDeviationRpm.toFixed(0)}</span> max dev rpm</span>
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.steadyStateErrorRpm.toFixed(0)}</span> final err</span>
-            <span><span className="text-[var(--foreground)] font-medium">{settlingStr}</span> settle</span>
-            <span><span className="text-[var(--foreground)] font-medium">{response.metrics.peakVoltage.toFixed(1)} V</span> peak</span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.overshootRpm.toFixed(0)}
+              </span>{" "}
+              rpm overshoot
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.steadyStateErrorRpm.toFixed(0)}
+              </span>{" "}
+              final err
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {settlingStr}
+              </span>{" "}
+              settle
+            </span>
+            <span>
+              <span className="text-[var(--foreground)] font-medium">
+                {response.metrics.peakVoltage.toFixed(1)} V
+              </span>{" "}
+              peak
+            </span>
           </div>
         </div>
         <button
@@ -678,11 +721,21 @@ export default function InteractiveFlywheelPlayground() {
           />
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)` }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{
+                  background: `repeating-linear-gradient(to right, ${accent.target} 0 4px, transparent 4px 8px)`,
+                }}
+              />
               target rpm
             </span>
             <span className="inline-flex items-center gap-1">
-              <span aria-hidden className="inline-block h-px w-3.5" style={{ background: accent.actual }} />
+              <span
+                aria-hidden
+                className="inline-block h-px w-3.5"
+                style={{ background: accent.actual }}
+              />
               wheel rpm
             </span>
           </div>
@@ -691,20 +744,22 @@ export default function InteractiveFlywheelPlayground() {
 
       {/* ── Tuning hint ─────────────────────── */}
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        <Lightbulb className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500" aria-hidden />
+        <Lightbulb
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          aria-hidden
+        />
         <p>
-          Every loop the wheel sits idle for 1&nbsp;s, then the setpoint
-          steps to your slider target. Tune{" "}
-          <span className="font-mono">kV</span> first to predict the
-          back-EMF voltage at speed —{" "}
-          <span className="font-mono">V_max / free_rps</span> for this
-          Kraken X60 works out to ≈{" "}
+          Every loop the wheel sits idle for 1&nbsp;s, then the setpoint steps
+          to your slider target. Tune <span className="font-mono">kV</span>{" "}
+          first to predict the back-EMF voltage at speed —{" "}
+          <span className="font-mono">V_max / free_rps</span> for this Kraken
+          X60 works out to ≈{" "}
           <span className="font-mono">0.124&nbsp;V·s/rot</span>. Add{" "}
           <span className="font-mono">kS</span> for the static-friction
           breakaway, then close the loop with{" "}
           <span className="font-mono">kP</span> and{" "}
-          <span className="font-mono">kI</span> to nail the steady-state.
-          Order: <span className="font-mono">kV → kS → kP → kI → kD</span>.
+          <span className="font-mono">kI</span> to nail the steady-state. Order:{" "}
+          <span className="font-mono">kV → kS → kP → kI → kD</span>.
         </p>
       </div>
 
@@ -730,13 +785,15 @@ export default function InteractiveFlywheelPlayground() {
 
       {/* ── Footer ──────────────────────────── */}
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        0.01&nbsp;kg·m² flywheel on a Kraken&nbsp;X60 motor
-        (7.09&nbsp;N·m stall, 5800&nbsp;RPM free; back-EMF modelled,
-        ±12&nbsp;V saturation). Gains use Phoenix 6 / WPILib
-        velocity-control units — drop them straight into a{" "}
+        0.01&nbsp;kg·m² flywheel on a Kraken&nbsp;X60 motor (7.09&nbsp;N·m
+        stall, 5800&nbsp;RPM free; back-EMF modelled, ±12&nbsp;V saturation).
+        Gains use Phoenix 6 / WPILib velocity-control units — drop them straight
+        into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         on a{" "}
-        <span className="font-mono text-[var(--foreground)]">VelocityVoltage</span>{" "}
+        <span className="font-mono text-[var(--foreground)]">
+          VelocityVoltage
+        </span>{" "}
         request.
       </p>
     </section>

@@ -115,7 +115,8 @@ export type ElevRegime = "stable" | "oscillating" | "drifting";
 
 export interface ElevatorResponseMetrics {
   regime: ElevRegime;
-  maxDeviationM: number;
+  /** Max excursion past the target after the step, in meters. */
+  overshootM: number;
   settlingTime: number | null;
   steadyStateErrorM: number;
   peakVoltage: number;
@@ -133,13 +134,15 @@ const INTEGRAL_CLAMP_V_SEC = 1;
 const ERROR_DEADBAND_M = 0.005;
 const STICK_VEL_MPS = 0.005;
 
-export function elevatorPhysicsFor(targetMeters: number): ElevatorPhysicsParams {
+export function elevatorPhysicsFor(
+  targetMeters: number
+): ElevatorPhysicsParams {
   return { ...ELEV_BASE, targetMeters };
 }
 
 export function simulateElevatorResponse(
   params: ElevatorPhysicsParams,
-  gains: ElevatorGains,
+  gains: ElevatorGains
 ): ElevatorResponse {
   const dt = 0.001;
   const N = Math.round(params.durationSec / dt);
@@ -173,19 +176,18 @@ export function simulateElevatorResponse(
       const errorM = setpointM - pos;
       integral += errorM * dtC;
       if (integral > INTEGRAL_CLAMP_V_SEC) integral = INTEGRAL_CLAMP_V_SEC;
-      else if (integral < -INTEGRAL_CLAMP_V_SEC) integral = -INTEGRAL_CLAMP_V_SEC;
+      else if (integral < -INTEGRAL_CLAMP_V_SEC)
+        integral = -INTEGRAL_CLAMP_V_SEC;
       const dErrorM = (errorM - prevErrorM) / dtC;
 
-      const pidV =
-        gains.kP * errorM + gains.kI * integral + gains.kD * dErrorM;
+      const pidV = gains.kP * errorM + gains.kI * integral + gains.kD * dErrorM;
 
       // Feedforward:
       // kG  — constant gravity comp (no cos term: gravity always pulls down)
       // kV  — back-EMF prediction for the commanded velocity (zero during
       //       a pure step, kept for motion-profiled scenarios)
       // kS  — static-friction breakaway in the direction of error
-      const ksign =
-        Math.abs(errorM) > ERROR_DEADBAND_M ? Math.sign(errorM) : 0;
+      const ksign = Math.abs(errorM) > ERROR_DEADBAND_M ? Math.sign(errorM) : 0;
       const ffV = gains.kS * ksign + gains.kV * 0 + gains.kG;
 
       outV = pidV + ffV;
@@ -230,19 +232,31 @@ export function simulateElevatorResponse(
   }
 
   // ── Metrics ────────────────────────────────────────────────────────────
-  let maxDeviationM = 0;
-  for (let i = 0; i < N; i++) {
-    const dev = Math.abs(positionM[i] - targetM[i]);
-    if (dev > maxDeviationM) maxDeviationM = dev;
+  // Overshoot: how far the carriage ran past the target after the step.
+  const stepStartIdx = Math.round(ELEV_HOLD_PHASE_SEC / dt);
+  const stepDir = Math.sign(params.targetMeters);
+  let overshootM = 0;
+  if (stepDir !== 0) {
+    for (let i = stepStartIdx; i < N; i++) {
+      const beyond = (positionM[i] - params.targetMeters) * stepDir;
+      if (beyond > overshootM) overshootM = beyond;
+    }
+  } else {
+    for (let i = stepStartIdx; i < N; i++) {
+      const dev = Math.abs(positionM[i] - params.targetMeters);
+      if (dev > overshootM) overshootM = dev;
+    }
   }
 
   // ±2 % of target (with a 1 cm floor)
   const SETTLE_BAND_M = Math.max(0.01, params.targetMeters * 0.02);
-  const stepStartIdx = Math.round(ELEV_HOLD_PHASE_SEC / dt);
   let settlingTime: number | null = null;
   let settled = false;
   for (let i = stepStartIdx; i < N; i++) {
-    if (Math.abs(positionM[i] - params.targetMeters) <= SETTLE_BAND_M && !settled) {
+    if (
+      Math.abs(positionM[i] - params.targetMeters) <= SETTLE_BAND_M &&
+      !settled
+    ) {
       settled = true;
       settlingTime = t[i];
     } else if (
@@ -257,11 +271,11 @@ export function simulateElevatorResponse(
   const finalM = positionM[N - 1] ?? 0;
   const steadyStateErrorM = Math.abs(params.targetMeters - finalM);
 
+  const driftThreshold = Math.max(0.02, params.targetMeters * 0.03);
+  const oscThreshold = Math.max(0.03, params.targetMeters * 0.05);
   let regime: ElevRegime;
-  if (steadyStateErrorM > Math.max(0.02, params.targetMeters * 0.03))
-    regime = "drifting";
-  else if (maxDeviationM > Math.max(0.05, params.targetMeters * 0.05))
-    regime = "oscillating";
+  if (steadyStateErrorM > driftThreshold) regime = "drifting";
+  else if (overshootM > oscThreshold) regime = "oscillating";
   else regime = "stable";
 
   return {
@@ -271,7 +285,7 @@ export function simulateElevatorResponse(
     voltage,
     metrics: {
       regime,
-      maxDeviationM,
+      overshootM,
       settlingTime,
       steadyStateErrorM,
       peakVoltage,
