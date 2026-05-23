@@ -120,27 +120,21 @@ function Slider({
 
 // ── Regime chip ──────────────────────────────────────────────────────────
 
-const REGIME_STYLE: Record<
-  Regime,
-  { label: string; classes: string; dot: string }
-> = {
+/** Regime status pill — engineering style: mono uppercase label, soft
+    accent-bg with a coloured ring, dot leading. Tokens drive the colour
+    so the pill stays consistent across light + dark themes. */
+const REGIME_STYLE: Record<Regime, { label: string; cssVar: string }> = {
   oscillating: {
-    label: "Oscillating",
-    dot: "bg-amber-500",
-    classes:
-      "bg-amber-50 text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-800/50",
+    label: "OSCILLATING",
+    cssVar: "var(--accent)",
   },
   stable: {
-    label: "Stable",
-    dot: "bg-emerald-500",
-    classes:
-      "bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200/70 dark:bg-emerald-950/40 dark:text-emerald-100 dark:ring-emerald-800/50",
+    label: "STABLE",
+    cssVar: "var(--ok)",
   },
   drifting: {
-    label: "Drifting",
-    dot: "bg-rose-500",
-    classes:
-      "bg-rose-50 text-rose-900 ring-1 ring-rose-200/70 dark:bg-rose-950/40 dark:text-rose-100 dark:ring-rose-800/50",
+    label: "DRIFTING",
+    cssVar: "var(--err)",
   },
 };
 
@@ -705,17 +699,30 @@ export default function InteractivePidPlayground() {
   };
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-[0_1px_2px_rgb(0_0_0_/_0.04)] sm:p-6">
+    <section className="module relative p-5 sm:p-6" style={{ paddingTop: 40 }}>
+      <span className="module-tag">PID · LIVE TUNER</span>
       {/* ── Toolbar ──────────────────────────── */}
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${regimeStyle.classes}`}
+            className="font-mono inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-[11px] font-semibold"
+            style={{
+              background: "var(--bg-elev)",
+              border: `1px solid ${regimeStyle.cssVar}`,
+              color: regimeStyle.cssVar,
+              letterSpacing: "0.08em",
+            }}
             aria-live="polite"
           >
             <span
               aria-hidden
-              className={`inline-block h-1.5 w-1.5 rounded-full ${regimeStyle.dot}`}
+              style={{
+                display: "inline-block",
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: regimeStyle.cssVar,
+              }}
             />
             {regimeStyle.label}
           </span>
