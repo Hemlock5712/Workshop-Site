@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import MarkCompleteToggle from "@/components/MarkCompleteToggle";
 
 interface PageTemplateProps {
   title: string;
@@ -33,7 +34,7 @@ export default function PageTemplate({
 
         {children}
 
-        <div className="flex justify-between items-center pt-8 border-t border-[var(--border)]">
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-8 border-t border-[var(--border)]">
           {previousPage ? (
             <Link
               href={previousPage.href}
@@ -46,7 +47,9 @@ export default function PageTemplate({
             <div />
           )}
 
-          {nextPage && (
+          <MarkCompleteToggle />
+
+          {nextPage ? (
             <Link
               href={nextPage.href}
               className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
@@ -54,6 +57,8 @@ export default function PageTemplate({
               <span>Next: {nextPage.title}</span>
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
+          ) : (
+            <div />
           )}
         </div>
       </div>

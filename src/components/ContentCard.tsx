@@ -22,7 +22,11 @@ export default function ContentCard({
   variant = "default",
   className = "",
 }: ContentCardProps) {
-  const baseStyles = "rounded-lg p-6 shadow-lg border";
+  // Softer 1-pixel rim shadow instead of the old `shadow-lg`. Pairs better
+  // with the redesign's tinted-wash backgrounds without making cards feel
+  // like they're floating above the page.
+  const baseStyles =
+    "rounded-lg p-6 border shadow-[0_1px_2px_rgb(0_0_0_/_0.05)]";
   const variantStyle = variantStyles[variant];
 
   return (

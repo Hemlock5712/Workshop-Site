@@ -3,8 +3,40 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { Check } from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useSidebar } from "@/contexts/SidebarContext";
+import { useProgress } from "@/lib/useProgress";
+
+/**
+ * Small completion indicator shown next to nav items the user has marked
+ * done. Two visual modes:
+ *  - sidebar expanded → a check icon to the right of the label
+ *  - sidebar collapsed → a small green dot in the corner of the icon
+ */
+function ProgressIndicator({
+  done,
+  expanded,
+}: {
+  done: boolean;
+  expanded: boolean;
+}) {
+  if (!done) return null;
+  if (expanded) {
+    return (
+      <Check
+        className="ml-auto h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+        aria-label="Completed"
+      />
+    );
+  }
+  return (
+    <span
+      aria-label="Completed"
+      className="absolute right-1.5 top-1.5 inline-block h-1.5 w-1.5 rounded-full bg-emerald-500"
+    />
+  );
+}
 
 /**
  * Main navigation items (Home, Introduction, Prerequisites)
@@ -612,6 +644,7 @@ export default function Sidebar() {
   const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
   const [isAdvancedTopicsOpen, setIsAdvancedTopicsOpen] = useState(false); // Advanced Topics sections closed by default
   const pathname = usePathname();
+  const { isCompleted } = useProgress();
 
   return (
     <>
@@ -695,11 +728,12 @@ export default function Sidebar() {
             {/* Main Navigation Items */}
             {navigationItems.map((item) => {
               const isActive = pathname === item.href;
+              const done = isCompleted(item.href);
               return (
                 <div key={item.href} className="relative group">
                   <Link
                     href={item.href}
-                    className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                    className={`relative flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
                       isOpen
                         ? "px-4 py-3 space-x-3"
                         : "px-3 py-3 justify-center"
@@ -711,6 +745,7 @@ export default function Sidebar() {
                   >
                     <span className="flex-shrink-0">{item.icon}</span>
                     {isOpen && <span className="truncate">{item.label}</span>}
+                    <ProgressIndicator done={done} expanded={isOpen} />
                   </Link>
 
                   {/* Tooltip for collapsed state */}
@@ -727,7 +762,7 @@ export default function Sidebar() {
             <div className="pt-2 relative group">
               <Link
                 href="/mechanism-cad"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
+                className={`relative flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
                   isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
                 } ${
                   pathname === "/mechanism-cad"
@@ -757,6 +792,10 @@ export default function Sidebar() {
                   </svg>
                 </span>
                 {isOpen && <span className="truncate">Mechanism CAD</span>}
+                <ProgressIndicator
+                  done={isCompleted("/mechanism-cad")}
+                  expanded={isOpen}
+                />
               </Link>
 
               {/* Tooltip for collapsed state */}
@@ -816,6 +855,7 @@ export default function Sidebar() {
                   >
                     {workshop1Items.map((item) => {
                       const isActive = pathname === item.href;
+                      const done = isCompleted(item.href);
                       return (
                         <Link
                           key={item.href}
@@ -834,6 +874,7 @@ export default function Sidebar() {
                         >
                           <span className="flex-shrink-0">{item.icon}</span>
                           <span className="truncate">{item.label}</span>
+                          <ProgressIndicator done={done} expanded />
                         </Link>
                       );
                     })}
@@ -923,6 +964,7 @@ export default function Sidebar() {
                   >
                     {workshop2Items.map((item) => {
                       const isActive = pathname === item.href;
+                      const done = isCompleted(item.href);
                       return (
                         <Link
                           key={item.href}
@@ -941,6 +983,7 @@ export default function Sidebar() {
                         >
                           <span className="flex-shrink-0">{item.icon}</span>
                           <span className="truncate">{item.label}</span>
+                          <ProgressIndicator done={done} expanded />
                         </Link>
                       );
                     })}
@@ -1032,6 +1075,7 @@ export default function Sidebar() {
                   >
                     {advancedTopicsItems.map((item) => {
                       const isActive = pathname === item.href;
+                      const done = isCompleted(item.href);
                       return (
                         <Link
                           key={item.href}
@@ -1050,6 +1094,7 @@ export default function Sidebar() {
                         >
                           <span className="flex-shrink-0">{item.icon}</span>
                           <span className="truncate">{item.label}</span>
+                          <ProgressIndicator done={done} expanded />
                         </Link>
                       );
                     })}
