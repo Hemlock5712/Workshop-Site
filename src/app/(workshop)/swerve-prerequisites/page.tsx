@@ -676,14 +676,11 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Ready for Implementation
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+        <Box variant="alert-success" title="Ready for Implementation">
+          <p className="mb-4">
             You now understand the fundamental concepts needed for swerve drive:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2">
             <li>Holonomic motion and independent module control</li>
             <li>Module anatomy: drive motor, azimuth motor, CANcoder</li>
             <li>Coordinate systems: robot-centric vs field-centric</li>
@@ -693,11 +690,11 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
             <li>Odometry</li>
             <li>Pose estimation</li>
           </ul>
-          <p className="text-slate-600 dark:text-slate-300 mt-4">
+          <p className="mt-4">
             Next, you&apos;ll learn how to use Phoenix Tuner X to generate a
             complete swerve project and bring up your drivetrain.
           </p>
-        </div>
+        </Box>
       </section>
     </PageTemplate>
   );

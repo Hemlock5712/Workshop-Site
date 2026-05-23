@@ -96,33 +96,14 @@ export default function MechanismSetup() {
             {activeTab === "arm" ? (
               <div className="flex flex-col gap-8">
                 {/* Encoder Replacement Warning - Top Level */}
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                  <div className="flex items-start gap-4">
-                    <svg
-                      className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    <div>
-                      <h4 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2">
-                        📝 Important Note: Encoder Replacement
-                      </h4>
-                      <p className="text-blue-700 dark:text-blue-300">
-                        If you replace your encoder with a new one, you will
-                        need to <strong>repeat these setup steps</strong> to
-                        ensure proper direction and zero position configuration.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                <Box
+                  variant="alert-info"
+                  title="📝 Important Note: Encoder Replacement"
+                >
+                  If you replace your encoder with a new one, you will need to{" "}
+                  <strong>repeat these setup steps</strong> to ensure proper
+                  direction and zero position configuration.
+                </Box>
 
                 {/* Step 1: Encoder Direction */}
                 <div className="card p-8">

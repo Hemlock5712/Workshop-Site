@@ -379,11 +379,8 @@ public class ArmSubsystem extends SubsystemBase {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-l-4 border-green-500">
-            <h3 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-4">
-              ✅ Do
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <Box variant="alert-success" title="✅ Do">
+            <ul className="list-disc list-inside space-y-2">
               <li>Log sensor inputs and motor outputs</li>
               <li>Use hierarchical key naming (Subsystem/Parameter)</li>
               <li>Log target setpoints alongside actual values</li>
@@ -391,18 +388,15 @@ public class ArmSubsystem extends SubsystemBase {
               <li>Download logs after every match</li>
               <li>Review logs between matches to catch issues</li>
             </ul>
-          </div>
+          </Box>
 
-          <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border-l-4 border-red-500">
-            <h3 className="text-lg font-semibold text-red-900 dark:text-red-300 mb-4">
-              ❌ Don&apos;t
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <Box variant="alert-danger" title="❌ Don&rsquo;t">
+            <ul className="list-disc list-inside space-y-2">
               <li>Log high-frequency strings (use numbers/booleans)</li>
               <li>Publish the same data multiple times</li>
               <li>Ignore loop overrun warnings from excessive logging</li>
             </ul>
-          </div>
+          </Box>
         </div>
       </section>
 
@@ -515,16 +509,11 @@ public class ArmSubsystem extends SubsystemBase {
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Drive to Point
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300">
-            With logging configured, you&apos;re ready to implement autonomous
-            navigation using PID controllers to drive to specific field
-            positions with precise control.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: Drive to Point">
+          With logging configured, you&apos;re ready to implement autonomous
+          navigation using PID controllers to drive to specific field positions
+          with precise control.
+        </Box>
       </section>
     </PageTemplate>
   );

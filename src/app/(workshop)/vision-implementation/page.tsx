@@ -373,31 +373,25 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg border-l-4 border-green-500">
-            <h3 className="text-lg font-semibold text-green-900 dark:text-green-300 mb-4">
-              Do
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <Box variant="alert-success" title="Do">
+            <ul className="list-disc list-inside space-y-2">
               <li>Validate vision data before using it</li>
               <li>Account for latency (automatically done)</li>
               <li>Use appropriate standard deviations</li>
               <li>Test different exposures (lower is better)</li>
               <li>Log vision data for debugging</li>
             </ul>
-          </div>
+          </Box>
 
-          <div className="bg-red-50 dark:bg-red-900/20 p-6 rounded-lg border-l-4 border-red-500">
-            <h3 className="text-lg font-semibold text-red-900 dark:text-red-300 mb-4">
-              Don&apos;t
-            </h3>
-            <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <Box variant="alert-danger" title="Don&rsquo;t">
+            <ul className="list-disc list-inside space-y-2">
               <li>Trust vision measurements blindly</li>
               <li>Ignore latency compensation</li>
               <li>Use vision as only odometry source</li>
               <li>Forget to tune camera settings</li>
               <li>Skip testing in match conditions</li>
             </ul>
-          </div>
+          </Box>
         </div>
       </section>
 
@@ -519,16 +513,11 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Dynamic Flywheel
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300">
-            With vision integrated into your odometry, you&apos;re ready to
-            implement dynamic flywheel control using vision-based distance
-            measurements to shoot accurately from anywhere on the field.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: Dynamic Flywheel">
+          With vision integrated into your odometry, you&apos;re ready to
+          implement dynamic flywheel control using vision-based distance
+          measurements to shoot accurately from anywhere on the field.
+        </Box>
       </section>
     </PageTemplate>
   );

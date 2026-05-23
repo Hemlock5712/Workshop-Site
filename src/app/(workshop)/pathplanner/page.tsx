@@ -469,15 +469,12 @@ export default function PathPlanner() {
           </Box>
         </div>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            PathPlanner Integration Complete!
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+        <Box variant="alert-success" title="PathPlanner Integration Complete!">
+          <p className="mb-4">
             You now have PathPlanner integrated with your swerve drivetrain and
             understand how to create autonomous paths. Key takeaways:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2">
             <li>
               PathPlanner provides visual path creation for autonomous routines
             </li>
@@ -494,7 +491,7 @@ export default function PathPlanner() {
             <li>Named commands create reusable actions for autonomous</li>
             <li>Workshop Code PRs demonstrate progressive implementation</li>
           </ul>
-        </div>
+        </Box>
 
         <DocumentationButton
           href="https://pathplanner.dev/home.html"
@@ -585,17 +582,12 @@ export default function PathPlanner() {
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Swerve Calibration
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300">
-            With PathPlanner configured, you&apos;re ready to calibrate your
-            swerve drive for maximum accuracy. You&apos;ll tune motor gains,
-            configure slip current limits, and measure wheel radius for precise
-            odometry.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: Swerve Calibration">
+          With PathPlanner configured, you&apos;re ready to calibrate your
+          swerve drive for maximum accuracy. You&apos;ll tune motor gains,
+          configure slip current limits, and measure wheel radius for precise
+          odometry.
+        </Box>
       </section>
     </PageTemplate>
   );

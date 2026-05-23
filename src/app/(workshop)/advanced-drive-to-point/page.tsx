@@ -5,6 +5,7 @@ import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
+import Box from "@/components/Box";
 
 export default function AdvancedDriveToPoint() {
   return (

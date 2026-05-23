@@ -139,31 +139,23 @@ public class RobotContainer {
           </h3>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
-            {/* Before Implementation */}
-            <div className="bg-red-50 dark:bg-red-950/20 rounded-lg p-4 border border-red-200 dark:border-red-800">
-              <h4 className="text-lg font-bold text-red-800 dark:text-red-300 mb-3">
-                📋 Before
-              </h4>
-              <ul className="space-y-2 text-red-700 dark:text-red-300 text-sm">
+            <Box variant="alert-danger" title="📋 Before">
+              <ul className="space-y-2 text-sm">
                 <li>• Empty RobotContainer constructor</li>
                 <li>• No controller declared</li>
                 <li>• No configureBindings() method</li>
                 <li>• Commands exist but can&apos;t be triggered</li>
               </ul>
-            </div>
+            </Box>
 
-            {/* After Implementation */}
-            <div className="bg-green-50 dark:bg-green-950/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
-              <h4 className="text-lg font-bold text-green-800 dark:text-green-300 mb-3">
-                ✅ After
-              </h4>
-              <ul className="space-y-2 text-green-700 dark:text-green-300 text-sm">
+            <Box variant="alert-success" title="✅ After">
+              <ul className="space-y-2 text-sm">
                 <li>• CommandXboxController instantiated</li>
                 <li>• configureBindings() method created</li>
                 <li>• Button triggers bound to commands</li>
                 <li>• Robot responds to controller input</li>
               </ul>
-            </div>
+            </Box>
           </div>
 
           {/* Final Implementation & GitHub Changes */}
@@ -187,49 +179,32 @@ public class RobotContainer {
               🚀 Advanced Command Patterns
             </summary>
             <div className="mt-4 space-y-8">
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                <div className="flex items-start gap-3">
-                  <svg
-                    className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <div>
-                    <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-2">
-                      ℹ️ Advanced Topics - Beyond This Workshop
-                    </h3>
-                    <p className="text-blue-700 dark:text-blue-300 mb-3">
-                      This workshop uses simplified patterns (
-                      <code className="bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-sm">
-                        runOnce()
-                      </code>
-                      ,{" "}
-                      <code className="bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-sm">
-                        onTrue()
-                      </code>
-                      , and{" "}
-                      <code className="bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-sm">
-                        onFalse()
-                      </code>
-                      ) for easier learning. The examples below show advanced
-                      command patterns that are powerful for competition but not
-                      required for this workshop&apos;s scope.
-                    </p>
-                    <p className="text-sm text-blue-600 dark:text-blue-400">
-                      💡 Feel free to explore these after completing the
-                      workshop fundamentals!
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <Box
+                variant="alert-info"
+                title="ℹ️ Advanced Topics - Beyond This Workshop"
+              >
+                <p className="mb-3">
+                  This workshop uses simplified patterns (
+                  <code className="bg-[var(--muted)] px-1.5 py-0.5 rounded text-sm">
+                    runOnce()
+                  </code>
+                  ,{" "}
+                  <code className="bg-[var(--muted)] px-1.5 py-0.5 rounded text-sm">
+                    onTrue()
+                  </code>
+                  , and{" "}
+                  <code className="bg-[var(--muted)] px-1.5 py-0.5 rounded text-sm">
+                    onFalse()
+                  </code>
+                  ) for easier learning. The examples below show advanced
+                  command patterns that are powerful for competition but not
+                  required for this workshop&apos;s scope.
+                </p>
+                <p className="text-sm">
+                  💡 Feel free to explore these after completing the workshop
+                  fundamentals!
+                </p>
+              </Box>
               <div>
                 <h3 className="text-xl font-bold text-[var(--foreground)] mb-2">
                   Extending WPILib Command

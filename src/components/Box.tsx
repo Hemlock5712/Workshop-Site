@@ -7,7 +7,8 @@ export type BoxVariant =
   | "alert-warning" // Amber warning alerts
   | "alert-info" // Sky blue informational alerts
   | "alert-tip" // Indigo tip/suggestion alerts
-  | "alert-success"; // Green summary / "got it" callouts
+  | "alert-success" // Green summary / "got it" callouts
+  | "alert-danger"; // Red "don't do this" / error callouts
 
 interface BoxProps {
   variant: BoxVariant;
@@ -29,7 +30,11 @@ interface BoxProps {
  * tint at every breakpoint and theme.
  */
 const alertAccent: Record<
-  "alert-warning" | "alert-info" | "alert-tip" | "alert-success",
+  | "alert-warning"
+  | "alert-info"
+  | "alert-tip"
+  | "alert-success"
+  | "alert-danger",
   { stripe: string; icon: string }
 > = {
   "alert-warning": {
@@ -47,6 +52,10 @@ const alertAccent: Record<
   "alert-success": {
     stripe: "border-l-emerald-500 dark:border-l-emerald-400",
     icon: "text-emerald-600 dark:text-emerald-400",
+  },
+  "alert-danger": {
+    stripe: "border-l-rose-500 dark:border-l-rose-400",
+    icon: "text-rose-600 dark:text-rose-400",
   },
 };
 
