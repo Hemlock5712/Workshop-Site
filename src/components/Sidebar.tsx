@@ -72,32 +72,6 @@ function ProgressIndicator({
   );
 }
 
-function SectionProgressChip({
-  section,
-  isCompleted,
-}: {
-  section: LessonSection;
-  isCompleted: (slug: string) => boolean;
-}) {
-  const lessons = getLessonsBySection(section);
-  const done = lessons.filter((l) => isCompleted(l.slug)).length;
-  if (done === 0) return null;
-  const total = lessons.length;
-  const full = done === total;
-  return (
-    <span
-      className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums ${
-        full
-          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200"
-          : "bg-[var(--muted)] text-[var(--muted-foreground)]"
-      }`}
-      aria-label={`${done} of ${total} lessons complete`}
-    >
-      {done}/{total}
-    </span>
-  );
-}
-
 // ── Link rendering ───────────────────────────────────────────────────────
 
 interface NavLinkProps {
@@ -219,15 +193,12 @@ function SectionGroup({
             {SECTION_ICONS[meta.id]}
             <span>{meta.title}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <SectionProgressChip section={meta.id} isCompleted={isCompleted} />
-            <ChevronRight
-              className={`w-4 h-4 transition-transform duration-200 ${
-                isOpen ? "rotate-90" : ""
-              }`}
-              aria-hidden
-            />
-          </div>
+          <ChevronRight
+            className={`w-4 h-4 transition-transform duration-200 ${
+              isOpen ? "rotate-90" : ""
+            }`}
+            aria-hidden
+          />
         </button>
 
         {isOpen && (
