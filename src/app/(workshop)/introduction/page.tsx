@@ -1,34 +1,25 @@
 import PageTemplate from "@/components/PageTemplate";
 import Link from "next/link";
+import Box from "@/components/Box";
 
 export default function Introduction() {
   return (
     <PageTemplate title="Gray Matter Coding Workshop">
-      <div className="bg-primary-50 dark:bg-primary-950/30 border-l-4 border-primary-400 dark:border-primary-900 p-6">
-        <p className="text-lg font-medium text-primary-900 dark:text-primary-300 mb-2">
-          Quick Note
-        </p>
-        <p className="text-primary-800 dark:text-primary-300">
-          All underlined text and images of code or products will have built-in
-          links to resources
-        </p>
-      </div>
+      <Box variant="alert-info" title="Quick Note">
+        All underlined text and images of code or products will have built-in
+        links to resources.
+      </Box>
 
-      <div className="bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-400 dark:border-amber-900 p-6">
-        <p className="text-lg font-medium text-amber-900 dark:text-amber-300 mb-2">
-          Before You Begin
-        </p>
-        <p className="text-amber-800 dark:text-amber-300">
-          This workshop requires specific software and hardware.{" "}
-          <Link
-            href="/prerequisites"
-            className="underline font-semibold hover:text-amber-900 dark:hover:text-amber-200 transition-colors"
-          >
-            Review prerequisites
-          </Link>{" "}
-          before starting to ensure you have everything needed.
-        </p>
-      </div>
+      <Box variant="alert-warning" title="Before You Begin">
+        This workshop requires specific software and hardware.{" "}
+        <Link
+          href="/prerequisites"
+          className="underline font-semibold hover:text-[var(--foreground)] transition-colors"
+        >
+          Review prerequisites
+        </Link>{" "}
+        before starting to ensure you have everything needed.
+      </Box>
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">

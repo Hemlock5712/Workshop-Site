@@ -127,41 +127,26 @@ Pose2d currentPose = drivetrain.getPose();`}
         </p>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-6 border-l-4 border-blue-400 dark:border-blue-900">
-            <h3 className="text-lg font-bold text-blue-800 dark:text-blue-300 mb-3">
-              X Controller
-            </h3>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              Controls forward/backward velocity based on X position error
-            </p>
-            <div className="mt-3 p-2 bg-white dark:bg-slate-800 rounded font-mono text-xs">
+          <Box variant="alert-info" title="X Controller">
+            <p>Controls forward/backward velocity based on X position error</p>
+            <div className="mt-3 p-2 bg-[var(--muted)] rounded font-mono text-xs text-[var(--foreground)]">
               xVelocity = kP × (target.X - current.X)
             </div>
-          </div>
+          </Box>
 
-          <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border-l-4 border-green-400 dark:border-green-900">
-            <h3 className="text-lg font-bold text-green-800 dark:text-green-300 mb-3">
-              Y Controller
-            </h3>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              Controls left/right velocity based on Y position error
-            </p>
-            <div className="mt-3 p-2 bg-white dark:bg-slate-800 rounded font-mono text-xs">
+          <Box variant="alert-success" title="Y Controller">
+            <p>Controls left/right velocity based on Y position error</p>
+            <div className="mt-3 p-2 bg-[var(--muted)] rounded font-mono text-xs text-[var(--foreground)]">
               yVelocity = kP × (target.Y - current.Y)
             </div>
-          </div>
+          </Box>
 
-          <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-6 border-l-4 border-purple-400 dark:border-purple-900">
-            <h3 className="text-lg font-bold text-purple-800 dark:text-purple-300 mb-3">
-              Theta Controller
-            </h3>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              Controls rotation rate based on heading error
-            </p>
-            <div className="mt-3 p-2 bg-white dark:bg-slate-800 rounded font-mono text-xs">
+          <Box variant="alert-tip" title="Theta Controller">
+            <p>Controls rotation rate based on heading error</p>
+            <div className="mt-3 p-2 bg-[var(--muted)] rounded font-mono text-xs text-[var(--foreground)]">
               rotation = kP × (target.θ - current.θ)
             </div>
-          </div>
+          </Box>
         </div>
 
         <Box

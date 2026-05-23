@@ -20,16 +20,17 @@ export default function Hardware() {
   return (
     <PageTemplate title="Hardware Setup">
       {/* Beginner-Friendly Introduction */}
-      <div className="bg-blue-50 dark:bg-blue-950/30 border-l-4 border-blue-400 dark:border-blue-900 p-6 mb-8">
-        <h3 className="text-lg font-medium text-blue-900 dark:text-blue-300 mb-3 flex items-center gap-2">
-          <Bot className="w-5 h-5" />
-          New to Robot Hardware? Start Here!
-        </h3>
-        <p className="text-blue-800 dark:text-blue-300 mb-3">
+      <Box
+        variant="alert-info"
+        icon={<Bot className="w-5 h-5" />}
+        title="New to Robot Hardware? Start Here!"
+        className="mb-8"
+      >
+        <p className="mb-3">
           Think of your robot like a remote control car, but much smarter. Just
           like a car needs:
         </p>
-        <ul className="list-disc list-inside text-blue-800 dark:text-blue-300 space-y-2 mb-3">
+        <ul className="list-disc list-inside space-y-2 mb-3">
           <li>
             <strong>
               <GlossaryTerm term="motor">Motors</GlossaryTerm>
@@ -53,14 +54,14 @@ export default function Hardware() {
             everything
           </li>
         </ul>
-        <p className="text-blue-800 dark:text-blue-300">
+        <p>
           This page explains the specific robot parts you&apos;ll use in this
           workshop and what each one does. Don&apos;t worry if terms like &quot;
           <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>&quot; or &quot;
           <GlossaryTerm term="encoder">encoder</GlossaryTerm>&quot; sound
           confusing - we&apos;ll explain everything in simple terms!
         </p>
-      </div>
+      </Box>
 
       {/* Introduction */}
       <KeyConceptSection

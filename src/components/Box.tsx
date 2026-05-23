@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 // Only the variants actually used in the codebase
 export type BoxVariant =
   | "concept" // Concept explanation boxes with left border
-  | "alert-warning" // Yellow warning alerts
-  | "alert-info" // Blue informational alerts
-  | "alert-tip"; // Indigo tip/suggestion alerts
+  | "alert-warning" // Amber warning alerts
+  | "alert-info" // Sky blue informational alerts
+  | "alert-tip" // Indigo tip/suggestion alerts
+  | "alert-success"; // Green summary / "got it" callouts
 
 interface BoxProps {
   variant: BoxVariant;
@@ -20,36 +21,39 @@ interface BoxProps {
   uses?: ReactNode;
 }
 
-const variantStyles: Record<
-  BoxVariant,
-  {
-    container: string;
-    title?: string;
-    text?: string;
-    hasLeftBorder?: boolean;
-  }
+/**
+ * Alert variants are styled as a neutral card with a colored 3-pixel left
+ * stripe — the redesign brief's "calmness sweep" replaces the previous
+ * tinted-wash backgrounds. Color lives only in the stripe and the icon
+ * tint; the body sits on `--card` so text contrast doesn't depend on the
+ * tint at every breakpoint and theme.
+ */
+const alertAccent: Record<
+  "alert-warning" | "alert-info" | "alert-tip" | "alert-success",
+  { stripe: string; icon: string }
 > = {
-  concept: {
-    container: "bg-[var(--muted)] border-[var(--border)]",
-    title: "text-lg font-bold text-[var(--foreground)]",
-    text: "text-[var(--foreground)] text-sm",
-    hasLeftBorder: true,
-  },
   "alert-warning": {
-    container:
-      "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800",
-    text: "text-yellow-800 dark:text-yellow-300",
+    stripe: "border-l-amber-500 dark:border-l-amber-400",
+    icon: "text-amber-600 dark:text-amber-400",
   },
   "alert-info": {
-    container:
-      "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800",
-    text: "text-blue-800 dark:text-blue-200",
+    stripe: "border-l-sky-500 dark:border-l-sky-400",
+    icon: "text-sky-600 dark:text-sky-400",
   },
   "alert-tip": {
-    container:
-      "bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800",
-    text: "text-indigo-800 dark:text-indigo-300",
+    stripe: "border-l-indigo-500 dark:border-l-indigo-400",
+    icon: "text-indigo-600 dark:text-indigo-400",
   },
+  "alert-success": {
+    stripe: "border-l-emerald-500 dark:border-l-emerald-400",
+    icon: "text-emerald-600 dark:text-emerald-400",
+  },
+};
+
+const conceptStyles = {
+  container: "bg-[var(--muted)] border-[var(--border)]",
+  title: "text-lg font-bold text-[var(--foreground)]",
+  text: "text-[var(--foreground)] text-sm",
 };
 
 export default function Box({
@@ -62,59 +66,60 @@ export default function Box({
   code,
   uses,
 }: BoxProps) {
-  const styles = variantStyles[variant];
-  const isAlert = variant.startsWith("alert-");
-  const isConcept = variant === "concept";
-
   // Alert rendering (warning, info, tip)
-  if (isAlert) {
+  if (variant !== "concept") {
+    const accent = alertAccent[variant];
     return (
-      <div className={cn("border rounded-lg p-4", styles.container, className)}>
+      <div
+        className={cn(
+          "rounded-lg border border-[var(--border)] border-l-[3px] bg-[var(--card)] p-4",
+          accent.stripe,
+          className
+        )}
+        role="note"
+      >
         <div className="flex items-start gap-3">
-          {icon && <div className={cn("mt-0.5", styles.text)}>{icon}</div>}
-          <div className={cn("space-y-1 text-sm", styles.text)}>
+          {icon && (
+            <div className={cn("mt-0.5 shrink-0", accent.icon)}>{icon}</div>
+          )}
+          <div className="space-y-1 text-sm text-[var(--foreground)]">
             {title && <p className="font-semibold">{title}</p>}
-            <div>{children}</div>
+            <div className="text-[var(--muted-foreground)]">{children}</div>
           </div>
         </div>
       </div>
     );
   }
 
-  // Concept rendering
-  if (isConcept) {
-    return (
-      <div
-        className={cn(
-          "flex flex-col gap-3 rounded-lg p-6",
-          styles.hasLeftBorder && "border-l-4",
-          styles.container,
-          className
-        )}
-      >
-        {title && <h4 className={styles.title}>{title}</h4>}
-        {subtitle && (
-          <p className="text-[var(--foreground)] text-sm font-semibold">
-            {subtitle}
-          </p>
-        )}
-        <div className={cn(styles.text, "flex-1")}>{children}</div>
-        {code && (
-          <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
-            {code}
-          </div>
-        )}
-        {uses && (
-          <div className="text-[var(--foreground)] text-sm">
-            <strong>When to use:</strong>
-            <br />
-            {uses}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // This should never be reached, but TypeScript needs it
-  return null;
+  // Concept rendering — kept as-is (this variant was already an
+  // accent-stripe-on-neutral design)
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-3 rounded-lg p-6 border-l-4",
+        conceptStyles.container,
+        className
+      )}
+    >
+      {title && <h4 className={conceptStyles.title}>{title}</h4>}
+      {subtitle && (
+        <p className="text-[var(--foreground)] text-sm font-semibold">
+          {subtitle}
+        </p>
+      )}
+      <div className={cn(conceptStyles.text, "flex-1")}>{children}</div>
+      {code && (
+        <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded text-xs">
+          {code}
+        </div>
+      )}
+      {uses && (
+        <div className="text-[var(--foreground)] text-sm">
+          <strong>When to use:</strong>
+          <br />
+          {uses}
+        </div>
+      )}
+    </div>
+  );
 }

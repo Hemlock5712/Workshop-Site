@@ -312,36 +312,20 @@ export default function SwervePrerequisites() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border-l-4 border-blue-500">
-                <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-2">
-                  Vx (Forward/Back)
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Linear velocity in the X direction. Positive = forward,
-                  Negative = backward. Units: meters per second.
-                </p>
-              </div>
+              <Box variant="alert-info" title="Vx (Forward/Back)">
+                Linear velocity in the X direction. Positive = forward, Negative
+                = backward. Units: meters per second.
+              </Box>
 
-              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border-l-4 border-green-500">
-                <h4 className="font-bold text-green-900 dark:text-green-300 mb-2">
-                  Vy (Left/Right)
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Linear velocity in the Y direction. Positive = left, Negative
-                  = right. Units: meters per second.
-                </p>
-              </div>
+              <Box variant="alert-success" title="Vy (Left/Right)">
+                Linear velocity in the Y direction. Positive = left, Negative =
+                right. Units: meters per second.
+              </Box>
 
-              <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border-l-4 border-purple-500">
-                <h4 className="font-bold text-purple-900 dark:text-purple-300 mb-2">
-                  Omega (Rotation)
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Angular velocity (rotation rate). Positive =
-                  counter-clockwise, Negative = clockwise. Units: radians per
-                  second.
-                </p>
-              </div>
+              <Box variant="alert-tip" title="Omega (Rotation)">
+                Angular velocity (rotation rate). Positive = counter-clockwise,
+                Negative = clockwise. Units: radians per second.
+              </Box>
             </div>
 
             <CodeBlock
