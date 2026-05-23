@@ -49,3 +49,9 @@ bun.lockb
 # verification screenshots from overnight playground build
 .playwright-screenshots
 
+# ad-hoc design-review screenshots that land at the repo root
+# (e.g. phase4-landing-desktop.png). Drop them into .playwright-mcp/
+# or .playwright-screenshots/ if you want to keep them around — they
+# don't belong in version control.
+phase*-*.png
+
