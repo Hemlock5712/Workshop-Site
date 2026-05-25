@@ -1,3 +1,9 @@
+# Single-package repo, but pnpm 9.15+ requires `packages` when this file
+# exists (for the `overrides` block below). Declare the root as the sole
+# workspace member to satisfy the check without changing install behavior.
+packages:
+  - "."
+
 overrides:
   js-yaml@>=4.0.0 <4.1.1: '>=4.1.1'
   jws@=4.0.0: '>=4.0.1'
