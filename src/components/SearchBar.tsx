@@ -104,8 +104,8 @@ export default function SearchBar() {
 
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
-          <Dialog.Content className="fixed inset-x-0 top-[10vh] mx-auto w-full max-w-2xl z-50 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-2xl focus:outline-none">
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-[90]" />
+          <Dialog.Content className="fixed inset-x-0 top-[10vh] mx-auto w-full max-w-2xl z-[100] rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-2xl focus:outline-none">
             <Dialog.Title className="sr-only">
               Workshop Search Command Palette
             </Dialog.Title>

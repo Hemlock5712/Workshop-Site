@@ -11,9 +11,7 @@ export default function Footer() {
       }}
     >
       <div className="container mx-auto flex flex-col items-center gap-1.5">
-        <span>
-          &copy; {new Date().getFullYear()} Hemlock&apos;s Gray Matter
-        </span>
+        <span>{`© ${new Date().getFullYear()} Hemlock's Gray Matter`}</span>
         <Link
           href="/privacy"
           className="text-sm underline-offset-2 hover:underline"

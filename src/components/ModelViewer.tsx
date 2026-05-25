@@ -158,6 +158,8 @@ const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
             enableZoom
             enableRotate
             makeDefault
+            minDistance={150}
+            maxDistance={1500}
           />
 
           <CameraTracker onPositionChange={handleCameraPositionUpdate} />

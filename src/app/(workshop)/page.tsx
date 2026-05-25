@@ -161,14 +161,14 @@ export default function Home() {
       >
         <div className="max-w-[820px]">
           {/* Brand logo + name */}
-          <div className="mb-7 flex items-center gap-3.5">
+          <div className="mb-7 flex items-center gap-5">
             <Image
               src="/images/gray-matter-logo.jpg"
               alt="Gray Matter Coding logo"
-              width={64}
-              height={64}
+              width={112}
+              height={112}
               quality={95}
-              className="shrink-0 rounded-md"
+              className="shrink-0 rounded-lg"
               priority
               style={{
                 border: "1px solid var(--line)",
@@ -176,7 +176,7 @@ export default function Home() {
               }}
             />
             <div style={{ lineHeight: 1.2 }}>
-              <div className="text-lg font-semibold tracking-tight">
+              <div className="text-xl font-semibold tracking-tight">
                 Gray Matter Coding Workshop
               </div>
               <div
