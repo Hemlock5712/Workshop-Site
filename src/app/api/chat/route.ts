@@ -23,7 +23,7 @@ const ChatRequestSchema = v.object({
       parts: v.optional(v.array(v.unknown())),
       content: v.optional(v.unknown()),
       id: v.optional(v.string()),
-    }),
+    })
   ),
 });
 
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
             ? `${issue.path?.map((p) => p.key).join(".") ?? "<root>"}: ${issue.message}`
             : "messages array required",
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } },
+        { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
     const { messages } = parsed.output;
@@ -90,7 +90,7 @@ export async function POST(req: Request) {
     // valibot gates the outer envelope; the AI SDK does its own deep
     // validation of UIMessagePart shapes downstream, so we cast through here.
     const modelMessages = await convertToModelMessages(
-      messages as unknown as UIMessage[],
+      messages as unknown as UIMessage[]
     );
 
     const googleAI = createGoogleGenerativeAI({ apiKey: geminiApiKey });
