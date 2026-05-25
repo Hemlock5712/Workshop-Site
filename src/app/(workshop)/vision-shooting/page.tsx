@@ -4,20 +4,13 @@ import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import CodeBlock from "@/components/CodeBlock";
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
 import { Lightbulb, AlertTriangle, TrendingUp } from "lucide-react";
 
 export default function DynamicFlywheel() {
   return (
-    <PageTemplate
-      title="Dynamic Flywheel Control"
-      previousPage={{
-        href: "/vision-implementation",
-        title: "Implementing Vision",
-      }}
-      nextPage={{ href: "/state-based", title: "State-Based Control" }}
-    >
+    <PageTemplate title="Dynamic Flywheel Control">
       <KeyConceptSection
         title="Vision-Based Shooting with Dynamic Velocity"
         description="Using odometry data with an interpolating lookup table, your robot can shoot accurately from anywhere on the field."
@@ -325,12 +318,11 @@ public Command distanceShoot() {
           together in a real subsystem.
         </p>
 
-        <GitHubPageWithPR
+        <GitHubContent
           repository="Hemlock5712/Workshop-Code"
           filePath="src/main/java/frc/robot/subsystems/Flywheel.java"
           branch="4-DynamicFlywheel"
-          pullRequestNumber={10}
-          focusFile="Flywheel.java"
+          pr={{ number: 10, focusFile: "Flywheel.java" }}
         />
       </section>
 

@@ -15,17 +15,7 @@ import {
 
 export default function LoggingOptions() {
   return (
-    <PageTemplate
-      title="Logging Options"
-      previousPage={{
-        href: "/swerve-calibration",
-        title: "Odometry Calibration",
-      }}
-      nextPage={{
-        href: "/logging-implementation",
-        title: "Implementing Logging",
-      }}
-    >
+    <PageTemplate title="Logging Options">
       {/* Introduction */}
       <KeyConceptSection
         title="Data Logging - Understanding What Happened"
@@ -825,16 +815,11 @@ export default function LoggingOptions() {
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Implementing Logging
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300">
-            Now that you understand the logging framework options, you&apos;ll
-            implement DataLogManager and Epilogue in your robot code to capture
-            telemetry.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: Implementing Logging">
+          Now that you understand the logging framework options, you&apos;ll
+          implement DataLogManager and Epilogue in your robot code to capture
+          telemetry.
+        </Box>
       </section>
     </PageTemplate>
   );

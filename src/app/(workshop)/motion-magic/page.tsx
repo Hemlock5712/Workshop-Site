@@ -9,11 +9,7 @@ import { Book } from "lucide-react";
 
 export default function MotionMagic() {
   return (
-    <PageTemplate
-      title="Motion Magic"
-      previousPage={{ href: "/pid-control", title: "PID Control" }}
-      nextPage={{ href: "/vision-shooting", title: "Vision-Based Shooting" }}
-    >
+    <PageTemplate title="Motion Magic">
       {/* Introduction */}
       <KeyConceptSection
         title="Motion Magic - Profiled Motion Control"

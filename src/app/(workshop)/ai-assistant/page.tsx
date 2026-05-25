@@ -2,22 +2,19 @@
 
 import { useState } from "react";
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { useChat } from "@ai-sdk/react";
 import PageTemplate from "@/components/PageTemplate";
 import { Send, Sparkles, AlertCircle, ExternalLink } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  oneDark,
-  oneLight,
-} from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useTheme } from "next-themes";
+
+const MarkdownCodeBlock = dynamic(
+  () => import("@/components/MarkdownCodeBlock"),
+  { ssr: false }
+);
 
 export default function AIAssistantPage() {
-  const { theme, systemTheme } = useTheme();
-  const currentTheme =
-    theme === "system" ? (systemTheme ?? "light") : (theme ?? "light");
   const [input, setInput] = useState("");
 
   const { messages, status, error, sendMessage } = useChat();
@@ -145,36 +142,19 @@ export default function AIAssistantPage() {
                                     }: {
                                       children?: React.ReactNode;
                                     }) {
-                                      const codeElement = children as any;
-                                      const className =
-                                        codeElement?.props?.className || "";
-                                      const codeChildren =
-                                        codeElement?.props?.children || "";
-
-                                      const match = /language-(\w+)/.exec(
-                                        className
-                                      );
-
+                                      const codeElement =
+                                        children as React.ReactElement<{
+                                          className?: string;
+                                          children?: React.ReactNode;
+                                        }>;
                                       return (
-                                        <SyntaxHighlighter
-                                          style={
-                                            currentTheme === "dark"
-                                              ? oneDark
-                                              : oneLight
+                                        <MarkdownCodeBlock
+                                          className={
+                                            codeElement?.props?.className
                                           }
-                                          language={match ? match[1] : "text"}
-                                          PreTag="div"
-                                          customStyle={{
-                                            margin: "1rem 0",
-                                            borderRadius: "0.5rem",
-                                            fontSize: "0.875rem",
-                                          }}
                                         >
-                                          {String(codeChildren).replace(
-                                            /\n$/,
-                                            ""
-                                          )}
-                                        </SyntaxHighlighter>
+                                          {codeElement?.props?.children}
+                                        </MarkdownCodeBlock>
                                       );
                                     },
                                     a({ href, children }) {

@@ -7,17 +7,7 @@ import Quiz from "@/components/Quiz";
 
 export default function StateBased() {
   return (
-    <PageTemplate
-      title="State-Based Control"
-      previousPage={{
-        href: "/vision-shooting",
-        title: "Dynamic Flywheel",
-      }}
-      nextPage={{
-        href: "/advanced-drive-to-point",
-        title: "Advanced DriveToPoint",
-      }}
-    >
+    <PageTemplate title="State-Based Control">
       {/* Introduction */}
       <KeyConceptSection
         title="State-Based Control - Structured Subsystem Management"

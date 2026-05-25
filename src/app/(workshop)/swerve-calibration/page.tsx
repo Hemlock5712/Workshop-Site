@@ -8,14 +8,7 @@ import { Book, Settings, Lightbulb, AlertTriangle } from "lucide-react";
 
 export default function OdometryCalibration() {
   return (
-    <PageTemplate
-      title="Swerve Calibration"
-      previousPage={{
-        href: "/pathplanner",
-        title: "Adding PathPlanner",
-      }}
-      nextPage={{ href: "/logging-options", title: "Logging Options" }}
-    >
+    <PageTemplate title="Swerve Calibration">
       <KeyConceptSection
         title="Swerve Calibration"
         description="Proper calibration is the foundation of accurate autonomous performance. This includes tuning swerve motor gains, configuring drive request types, preventing wheel slip, finding effective wheel radius, configuring camera positions, and tuning PID controllers for path following."
@@ -785,17 +778,12 @@ export default function OdometryCalibration() {
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Logging Options
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300">
-            With your swerve drive fully calibrated, you&apos;re ready to
-            explore data logging strategies. You&apos;ll learn about different
-            logging frameworks, what data to log, and how to use logs for
-            debugging and performance analysis.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: Logging Options">
+          With your swerve drive fully calibrated, you&apos;re ready to explore
+          data logging strategies. You&apos;ll learn about different logging
+          frameworks, what data to log, and how to use logs for debugging and
+          performance analysis.
+        </Box>
       </section>
     </PageTemplate>
   );

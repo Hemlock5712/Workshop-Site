@@ -8,17 +8,7 @@ import { Book, Wrench, Lightbulb } from "lucide-react";
 
 export default function VisionOptions() {
   return (
-    <PageTemplate
-      title="Vision Options"
-      previousPage={{
-        href: "/drive-to-point",
-        title: "Drive to Point",
-      }}
-      nextPage={{
-        href: "/vision-implementation",
-        title: "Implementing Vision",
-      }}
-    >
+    <PageTemplate title="Vision Options">
       <KeyConceptSection
         title="Computer Vision - See the Field"
         description="Computer vision enables robots to detect game pieces, track targets, and localize position using cameras. AprilTag targets provide absolute field positioning, while object detection helps with game piece manipulation."
@@ -537,15 +527,10 @@ export default function VisionOptions() {
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: Implementing Vision
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300">
-            You&apos;ll integrate Limelight into your swerve drivetrain for
-            AprilTag-based pose estimation and odometry correction.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: Implementing Vision">
+          You&apos;ll integrate Limelight into your swerve drivetrain for
+          AprilTag-based pose estimation and odometry correction.
+        </Box>
       </section>
     </PageTemplate>
   );

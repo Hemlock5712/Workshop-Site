@@ -1,7 +1,8 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
 import CodeBlock from "@/components/CodeBlock";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import PageHero from "@/components/PageHero";
+import MechanismPlayground from "@/components/MechanismPlayground";
 import Box from "@/components/Box";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import DocumentationButton from "@/components/DocumentationButton";
@@ -10,17 +11,15 @@ import { Book } from "lucide-react";
 
 export default function PIDControl() {
   return (
-    <PageTemplate
-      title="PID Control"
-      previousPage={{ href: "/mechanism-setup", title: "Mechanism Setup" }}
-      nextPage={{ href: "/motion-magic", title: "Motion Magic" }}
-    >
+    <PageTemplate title="PID Control">
       {/* Introduction */}
-      <KeyConceptSection
-        title="PID Control - Precise Position Control"
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Essential for mechanisms that need to hit specific targets."
-        concept="PID uses sensor feedback to automatically adjust motor output to reach and maintain target positions."
+      <PageHero
+        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Toggle between an arm (position) and a flywheel (velocity) below — the gains in each map directly to a TalonFX Slot0Configs."
+        concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the voltage needed before any error has accumulated."
       />
+
+      {/* Live playground — arm + flywheel toggle */}
+      <MechanismPlayground />
 
       {/* PID Theory */}
       <section className="flex flex-col gap-8">

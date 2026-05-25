@@ -3,19 +3,13 @@ import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import GitHubPageWithPR from "@/components/GitHubPageWithPR";
+import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
+import Box from "@/components/Box";
 
 export default function AdvancedDriveToPoint() {
   return (
-    <PageTemplate
-      title="Advanced: Profiled Drive to Point"
-      previousPage={{
-        href: "/state-based",
-        title: "State-Based Control",
-      }}
-      nextPage={{ href: "/", title: "Home" }}
-    >
+    <PageTemplate title="Advanced: Profiled Drive to Point">
       {/* Introduction */}
       <KeyConceptSection
         title="Profiled Path Following with Feedforward Control"
@@ -509,12 +503,11 @@ double yError = setpoint.y - currentY;
             The pull request shows the profiled path following with feedforward
             control.
           </p>
-          <GitHubPageWithPR
+          <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
             branch="6-ProfiledToPoint"
-            pullRequestNumber={12}
-            focusFile="DriveToPoint.java"
+            pr={{ number: 12, focusFile: "DriveToPoint.java" }}
           />
         </ContentCard>
       </section>

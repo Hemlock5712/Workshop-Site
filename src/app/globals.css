@@ -4,10 +4,20 @@
 @variant dark (.dark &);
 
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Font families — wired from next/font in layout.tsx */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
 
-  /* Educational Brand Colors - Based on #0D233F (Deep Academic Blue) */
+  /* ── Legacy Tailwind color scales ──────────────────────────────────
+     Many existing components reference `bg-primary-700`, `text-blue-300`,
+     etc. These scales stay registered so those classes don't silently
+     lose styling during the redesign. Phase 3 sweeps usages onto the
+     new --accent / --primary-lifted / --ok / --warn token system, after
+     which most of this block can be deleted.
+     ─────────────────────────────────────────────────────────────── */
+
+  /* Primary — Deep Academic Blue (#0D233F) */
   --color-primary-50: #f2f6fa;
   --color-primary-100: #e3ecf4;
   --color-primary-200: #c1d4e7;
@@ -20,7 +30,7 @@
   --color-primary-900: #0d233f;
   --color-primary-950: #081829;
 
-  /* Educational Neutral Colors - Professional but Approachable */
+  /* Slate — neutral surface scale */
   --color-slate-50: #fafbfc;
   --color-slate-100: #f5f7fa;
   --color-slate-200: #ebeef3;
@@ -32,7 +42,7 @@
   --color-slate-800: #1e242b;
   --color-slate-900: #151a1f;
 
-  /* Blue Color Scale - For Key Concept containers */
+  /* Blue — used in Key Concept containers */
   --color-blue-50: #eff6ff;
   --color-blue-100: #dbeafe;
   --color-blue-200: #bfdbfe;
@@ -45,7 +55,7 @@
   --color-blue-900: #1e3a8a;
   --color-blue-950: #172554;
 
-  /* Green Color Scale - For Key Concept boxes */
+  /* Green — Key Concept boxes */
   --color-green-50: #f0fdf4;
   --color-green-100: #dcfce7;
   --color-green-200: #bbf7d0;
@@ -58,7 +68,7 @@
   --color-green-900: #14532d;
   --color-green-950: #052e16;
 
-  /* Yellow Color Scale - For Key Concept containers */
+  /* Yellow — Key Concept containers */
   --color-yellow-50: #fefce8;
   --color-yellow-100: #fef3c7;
   --color-yellow-200: #fde68a;
@@ -72,40 +82,279 @@
   --color-yellow-950: #451a03;
 }
 
+/* ─────────────────────────────────────────────────────────────────
+   Design tokens — "Engineering" theme
+
+   School navy is the brand anchor (--brand). Signal amber is the
+   accent for CTAs and live indicators. The page sits on a navy-
+   tinted dark, never pure black; light "paper" theme keeps navy as
+   primary and warms the amber for legibility on white.
+
+   Existing semantic vars (--background, --foreground, --muted,
+   --muted-foreground, --card, --border, --primary,
+   --primary-foreground) are kept as the public surface so the rest
+   of the app keeps working; they just re-map onto the new palette.
+   New design-system vars (--fg-mute, --fg-dim, --line, --line-soft,
+   --bg-elev, --bg-elev-2, --accent, --brand, --grid-dot, --r…) are
+   what the instrument-panel components consume directly.
+   ───────────────────────────────────────────────────────────────── */
+
 :root {
-  color-scheme: light;
-  --background: var(--color-slate-50);
-  --foreground: var(--color-slate-900);
-  --muted: var(--color-slate-100);
-  --muted-foreground: var(--color-slate-600);
-  --card: #ffffff;
-  --card-foreground: var(--color-slate-900);
-  --border: var(--color-slate-200);
-  --primary: var(--color-primary-700);
+  color-scheme: dark;
+
+  /* Brand — school navy. Used for borders, brand marks, lesson H1s. */
+  --brand: #000759;
+  --brand-2: #1a2080;
+  --brand-fg: #ffffff;
+
+  /* Surfaces (dark "engineering") */
+  --bg: oklch(0.17 0.035 265);
+  --bg-elev: oklch(0.21 0.038 265);
+  --bg-elev-2: oklch(0.245 0.04 265);
+
+  /* Text. fg-mute is boosted from the prototype (0.74 → 0.83) for
+     body-copy legibility on the dotted-grid backdrop. */
+  --fg: oklch(0.97 0.005 80);
+  --fg-mute: oklch(0.83 0.014 250);
+  --fg-dim: oklch(0.63 0.018 250);
+
+  /* Lines / dividers */
+  --line: oklch(0.36 0.03 265);
+  --line-soft: oklch(0.29 0.028 265);
+
+  /* Signal amber — CTAs + live indicators. Navy lifted = primary brand
+     used for borders and lesson H1 colour. */
+  --accent: oklch(0.78 0.15 75);
+  --accent-soft: oklch(0.78 0.15 75 / 0.16);
+  --accent-fg: oklch(0.2 0.05 75);
+  --primary-lifted: oklch(0.72 0.13 265);
+  --primary-soft: oklch(0.72 0.13 265 / 0.18);
+
+  /* Semantic */
+  --ok: oklch(0.78 0.14 155);
+  --warn: oklch(0.82 0.16 95);
+  --err: oklch(0.7 0.18 25);
+  --info: oklch(0.74 0.13 235);
+
+  /* Blueprint grid */
+  --grid-dot: oklch(0.32 0.03 265);
+  --grid-size: 24px;
+
+  /* Radii */
+  --r-sm: 4px;
+  --r: 6px;
+  --r-lg: 10px;
+
+  /* ── Backwards-compatible surface vars ────────────────────────────
+     The rest of the codebase reads --background, --foreground, etc.
+     We re-map them to the engineering palette so existing components
+     pick up the new look without per-file changes. */
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --muted: var(--bg-elev);
+  --muted-foreground: var(--fg-mute);
+  --card: var(--bg-elev);
+  --card-foreground: var(--fg);
+  --border: var(--line);
+  --primary: var(--primary-lifted);
   --primary-foreground: #ffffff;
 }
 
+/* Light "paper" theme — keeps navy as primary, warms amber for white. */
 .dark {
+  /* The site uses next-themes with attribute="class" on <html>, applied
+     as .dark for dark mode. Engineering = dark, which is already the
+     :root default. We keep .dark as an explicit alias so existing
+     `dark:` Tailwind variants and the .dark CSS gate continue to fire. */
   color-scheme: dark;
-  --background: var(--color-slate-900);
-  --foreground: var(--color-slate-50);
-  --muted: var(--color-slate-800);
-  --muted-foreground: var(--color-slate-300);
-  --card: var(--color-slate-800);
-  --card-foreground: var(--color-slate-50);
-  --border: var(--color-slate-700);
-  --primary: var(--color-primary-300);
-  --primary-foreground: var(--color-slate-900);
 }
+
+html:not(.dark) {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg: oklch(0.98 0.006 80);
+  --bg-elev: oklch(0.995 0.004 80);
+  --bg-elev-2: oklch(1 0 0);
+
+  /* Text — navy-tinted dark on warm white */
+  --fg: oklch(0.22 0.04 265);
+  --fg-mute: oklch(0.42 0.025 265);
+  --fg-dim: oklch(0.55 0.02 265);
+
+  /* Lines */
+  --line: oklch(0.86 0.013 80);
+  --line-soft: oklch(0.92 0.01 80);
+
+  /* Warmer amber on paper for legibility */
+  --accent: oklch(0.6 0.18 50);
+  --accent-soft: oklch(0.6 0.18 50 / 0.14);
+  --accent-fg: #ffffff;
+
+  /* Navy holds its school value on paper */
+  --primary-lifted: #000759;
+  --primary-soft: oklch(0.4 0.18 270 / 0.12);
+
+  --grid-dot: oklch(0.88 0.012 80);
+
+  /* Re-map semantic vars for paper */
+  --background: var(--bg);
+  --foreground: var(--fg);
+  --muted: var(--bg-elev);
+  --muted-foreground: var(--fg-mute);
+  --card: var(--bg-elev);
+  --card-foreground: var(--fg);
+  --border: var(--line);
+  --primary: var(--primary-lifted);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Base body + selection
+   ───────────────────────────────────────────────────────────────── */
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-feature-settings: "ss01", "ss02", "cv11";
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* Focus ring — amber outline, consistent with the design's signal hue */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Engineering primitives — small reusable helpers
+
+   These are the building blocks of the "instrument panel" look:
+   mono micro-labels, tabular numerics, blueprint dotted grid, and
+   the .module wrapper with its top-left tag + top-right spec.
+   ───────────────────────────────────────────────────────────────── */
+
+.mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "zero" 1;
+}
+
+.micro {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.grid-bg {
+  background-image: radial-gradient(
+    circle,
+    var(--grid-dot) 1px,
+    transparent 1px
+  );
+  background-size: var(--grid-size) var(--grid-size);
+  background-position: 0 0;
+}
+
+.module {
+  position: relative;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+
+.module-tag {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 4px 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-top-left-radius: var(--r);
+  border-bottom-right-radius: var(--r);
+  border-top: none;
+  border-left: none;
+}
+
+.module-spec {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--fg-dim);
+  letter-spacing: 0.04em;
+}
+
+/* Corner tick marks — used on hero modules to read as "blueprint". */
+.ticked {
+  position: relative;
+}
+.ticked::before,
+.ticked::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--accent);
+  pointer-events: none;
+}
+.ticked::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.ticked::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Scrollbar — keep the instrument-panel restraint
+   ───────────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--line-soft);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Legacy: kept until Phase 3 reworks `.before-block` / `.after-block`
+   ───────────────────────────────────────────────────────────────── */
 
 .card {
   background-color: var(--card);
   color: var(--card-foreground);
   border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  box-shadow:
-    0 1px 3px 0 rgb(0 0 0 / 0.1),
-    0 1px 2px 0 rgb(0 0 0 / 0.06);
+  border-radius: var(--r);
 }
 
 @layer components {
@@ -127,6 +376,99 @@
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+/* PID Playground slider — themed via --slider-accent and a fill
+   percentage --slider-fill so the track shows current value progress. */
+.pid-slider {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 1.125rem;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+}
+.pid-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.pid-slider::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--slider-accent, var(--accent)) 0%,
+    var(--slider-accent, var(--accent)) var(--slider-fill, 0%),
+    var(--line) var(--slider-fill, 0%),
+    var(--line) 100%
+  );
+}
+.pid-slider::-moz-range-track {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--line);
+}
+.pid-slider::-moz-range-progress {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--slider-accent, var(--accent));
+}
+.pid-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -4.5px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 2px solid var(--slider-accent, var(--accent));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+.pid-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 2px solid var(--slider-accent, var(--accent));
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.18);
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease;
+}
+.pid-slider:hover::-webkit-slider-thumb,
+.pid-slider:active::-webkit-slider-thumb,
+.pid-slider:focus-visible::-webkit-slider-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--slider-accent, var(--accent)) 18%, transparent);
+}
+.pid-slider:hover::-moz-range-thumb,
+.pid-slider:active::-moz-range-thumb,
+.pid-slider:focus-visible::-moz-range-thumb {
+  transform: scale(1.2);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--slider-accent, var(--accent)) 18%, transparent);
+}
+
+/* uPlot — minimal modern chrome */
+.pid-plot .u-wrap {
+  background: transparent;
+  font-family: var(--font-sans);
+}
+.pid-plot .u-axis {
+  font-family: var(--font-sans);
+  font-feature-settings: "tnum";
+}
+.pid-plot .u-legend {
+  display: none;
+}
+.pid-plot .u-over,
+.pid-plot .u-under {
+  border: 0;
 }
 
 @keyframes fade-in-up {

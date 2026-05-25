@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import type MiniSearch from "minisearch";
 import { useRouter } from "next/navigation";
 import {
-  createSearchInstance,
+  getSearchInstance,
   mapMiniSearchResults,
   SearchResult,
 } from "@/lib/searchConfig";
@@ -17,10 +18,14 @@ export default function SearchBar() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [searchInstance, setSearchInstance] = useState<MiniSearch | null>(null);
 
-  const searchInstance = useMemo(() => createSearchInstance(), []);
-
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    if (!searchInstance) {
+      getSearchInstance().then(setSearchInstance);
+    }
+  };
   const handleClose = () => setOpen(false);
 
   useKeyboardNavigation({
@@ -37,6 +42,7 @@ export default function SearchBar() {
   }, [open]);
 
   useEffect(() => {
+    if (!searchInstance) return;
     const trimmed = query.trim();
     if (trimmed.length > 1) {
       const searchResults = searchInstance.search(trimmed);
@@ -98,8 +104,8 @@ export default function SearchBar() {
 
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
-          <Dialog.Content className="fixed inset-x-0 top-[10vh] mx-auto w-full max-w-2xl z-50 rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-2xl focus:outline-none">
+          <Dialog.Overlay className="fixed inset-0 bg-black/50 z-[90]" />
+          <Dialog.Content className="fixed inset-x-0 top-[10vh] mx-auto w-full max-w-2xl z-[100] rounded-xl border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-2xl focus:outline-none">
             <Dialog.Title className="sr-only">
               Workshop Search Command Palette
             </Dialog.Title>

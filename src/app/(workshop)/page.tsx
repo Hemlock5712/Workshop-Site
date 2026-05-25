@@ -1,312 +1,460 @@
 import Link from "next/link";
 import Image from "next/image";
 
+/**
+ * Workshop landing. Rebuilt on the "engineering instrument panel"
+ * aesthetic — serif hero, mono micro-labels, workshop banners with the
+ * primary/accent corner chips, mechanism cards with color-stripe
+ * mapping (per design: arm=red, flywheel=green, swerve=blue,
+ * vision=magenta), sponsors grid with the team list panel below.
+ *
+ * Real imagery, links, and team data are preserved from the previous
+ * landing — only the visual structure changes.
+ */
+
+interface MechanismCardProps {
+  tag: string;
+  title: string;
+  description: string;
+  /** OKLCH color string for the bottom image-stripe + bullet markers. */
+  color: string;
+  image: { src: string; alt: string };
+  items: string[];
+}
+
+function MechanismCard({
+  tag,
+  title,
+  description,
+  color,
+  image,
+  items,
+}: MechanismCardProps) {
+  return (
+    <article
+      className="flex flex-col overflow-hidden rounded-md"
+      style={{
+        background: "var(--bg-elev)",
+        border: "1px solid var(--line)",
+      }}
+    >
+      {/* Image slot — real photo with mechanism-coloured bottom stripe */}
+      <div
+        className="relative"
+        style={{
+          aspectRatio: "16/9",
+          borderBottom: "1px solid var(--line)",
+        }}
+      >
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          className="object-cover"
+          sizes="(min-width: 900px) 50vw, 100vw"
+        />
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 3,
+            background: color,
+          }}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2.5 px-5 pb-5 pt-4">
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 10.5,
+            color,
+            letterSpacing: "0.08em",
+            fontWeight: 500,
+          }}
+        >
+          {tag}
+        </div>
+        <h3
+          className="text-lg font-semibold leading-tight"
+          style={{ letterSpacing: "-0.01em" }}
+        >
+          {title}
+        </h3>
+        <p
+          className="text-[13.5px] leading-relaxed"
+          style={{ color: "var(--fg-mute)", margin: 0 }}
+        >
+          {description}
+        </p>
+        <ul
+          className="m-0 flex list-none flex-col gap-1 p-0"
+          style={{ marginTop: 4 }}
+        >
+          {items.map((item) => (
+            <li
+              key={item}
+              className="flex items-baseline gap-2 text-xs"
+              style={{ color: "var(--fg-mute)" }}
+            >
+              <span style={{ color }}>→</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </article>
+  );
+}
+
+interface WorkshopBannerProps {
+  number: string;
+  description: string;
+  tone: "primary" | "accent";
+}
+
+function WorkshopBanner({ number, description, tone }: WorkshopBannerProps) {
+  const stripe = tone === "primary" ? "var(--primary-lifted)" : "var(--accent)";
+  const bg = tone === "primary" ? "var(--primary-soft)" : "var(--accent-soft)";
+  return (
+    <div className="mb-3.5 flex items-center gap-3.5">
+      <span
+        className="font-mono"
+        style={{
+          fontSize: 11,
+          padding: "4px 10px",
+          background: bg,
+          border: `1px solid ${stripe}`,
+          color: stripe,
+          borderRadius: 3,
+          letterSpacing: "0.08em",
+          fontWeight: 600,
+        }}
+      >
+        WORKSHOP {number}
+      </span>
+      <span className="text-[13.5px]" style={{ color: "var(--fg-mute)" }}>
+        {description}
+      </span>
+      <span
+        aria-hidden
+        className="flex-1"
+        style={{ height: 1, background: "var(--line-soft)" }}
+      />
+    </div>
+  );
+}
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[var(--background)] overflow-hidden selection:bg-primary-200 selection:text-primary-900">
-      {/* Background Gradients */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary-400/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-400/10 blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 md:py-32 flex flex-col gap-24 md:gap-32">
-        {/* Hero Section */}
-        <div className="flex flex-col items-center text-center gap-8 md:gap-10 animate-fade-in-up">
-          <div className="space-y-4 max-w-4xl">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-primary-800 to-primary-500 dark:from-primary-200 dark:to-primary-500">
-                Hemlock&apos;s Gray Matter Coding Workshops
-              </span>
-            </h1>
-            <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-              Master the art of robot code. Build competition-winning robots
-              with industry-standard architecture, advanced PID control, and
-              motion profiling.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link
-              href="/introduction"
-              className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-primary-600 px-8 font-medium text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-lg hover:shadow-primary-500/25 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2"
-            >
-              <span className="mr-2">Start Learning</span>
-              <svg
-                className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+    <div className="mx-auto max-w-[1200px] px-6 pb-24 pt-8 md:px-12 md:pb-32">
+      {/* ── HERO ───────────────────────────────────────────────────── */}
+      <section
+        className="grid-bg relative px-0 py-14 md:py-16"
+        style={{
+          borderTop: "1px solid var(--line)",
+          borderBottom: "1px solid var(--line)",
+        }}
+      >
+        <div className="max-w-[820px]">
+          {/* Brand logo + name */}
+          <div className="mb-7 flex items-center gap-5">
+            <Image
+              src="/images/gray-matter-logo.jpg"
+              alt="Gray Matter Coding logo"
+              width={112}
+              height={112}
+              quality={95}
+              className="shrink-0 rounded-lg"
+              priority
+              style={{
+                border: "1px solid var(--line)",
+                background: "var(--bg-elev)",
+              }}
+            />
+            <div style={{ lineHeight: 1.2 }}>
+              <div className="text-xl font-semibold tracking-tight">
+                Gray Matter Coding Workshop
+              </div>
+              <div
+                className="font-mono"
+                style={{
+                  fontSize: 11,
+                  color: "var(--fg-dim)",
+                  letterSpacing: "0.08em",
+                  marginTop: 2,
+                }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            </Link>
-            <a
-              href="https://github.com/Hemlock5712/Workshop-Code"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 font-medium text-slate-700 dark:text-slate-200 transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
-            >
-              View on GitHub
-            </a>
-          </div>
-        </div>
-
-        {/* Features Section */}
-        <div className="space-y-16">
-          <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-50">
-              What We&apos;re Programming
-            </h2>
-            <p className="text-lg text-slate-600 dark:text-slate-400">
-              Master universal programming concepts through two fundamental FRC
-              mechanisms.
-            </p>
-          </div>
-
-          {/* Workshop #1 Banner */}
-          <div className="text-center">
-            <div className="inline-block px-6 py-2 rounded-full bg-primary-100 dark:bg-primary-900/30 border border-primary-200 dark:border-primary-800">
-              <p className="text-sm font-semibold text-primary-700 dark:text-primary-300">
-                Workshop #1
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Card 1 */}
-            <div className="group relative bg-white dark:bg-slate-800/50 rounded-3xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/50 hover:border-primary-500/20 transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-                <Image
-                  src="/images/mechanisms/arm.png"
-                  alt="Robot Arm"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                  Arm Position Control
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Program precise arm positioning using PID control, encoder
-                  feedback, and Motion Magic for smooth, controlled movements.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="group relative bg-white dark:bg-slate-800/50 rounded-3xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/50 hover:border-green-500/20 transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-                <Image
-                  src="/images/mechanisms/flywheel.png"
-                  alt="Flywheel Shooter"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                  Flywheel Velocity Control
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Master velocity control for consistent shooting performance
-                  using feedforward control and velocity PID.
-                </p>
+                BY HEMLOCK 5712 · FRC PROGRAMMING CURRICULUM
               </div>
             </div>
           </div>
 
-          {/* Workshop #2 Banner */}
-          <div className="text-center">
-            <div className="inline-block px-6 py-2 rounded-full bg-green-100 dark:bg-green-900/30 border border-green-200 dark:border-green-800">
-              <p className="text-sm font-semibold text-green-700 dark:text-green-300">
-                Workshop #2
-              </p>
-            </div>
-          </div>
+          <h1
+            className="mb-5 font-semibold"
+            style={{
+              fontSize: "clamp(38px, 5vw, 60px)",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              fontFamily: "var(--font-serif)",
+              textWrap: "balance",
+            }}
+          >
+            FRC programming,
+            <br />
+            <span style={{ fontStyle: "italic", color: "var(--accent)" }}>
+              taught hands-on.
+            </span>
+          </h1>
 
-          <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-            {/* Card 3 - Limelight */}
-            <div className="group relative bg-white dark:bg-slate-800/50 rounded-3xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/50 hover:border-purple-500/20 transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-                <Image
-                  src="/images/mechanisms/limelight.png"
-                  alt="Limelight Vision System"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                  Limelight Vision System
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Implement computer vision for AprilTag detection, target
-                  tracking, and vision-based autonomous positioning.
-                </p>
-              </div>
-            </div>
-
-            {/* Card 4 - Swerve */}
-            <div className="group relative bg-white dark:bg-slate-800/50 rounded-3xl p-2 shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-slate-700/50 hover:border-orange-500/20 transition-all duration-300 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl" />
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-                <Image
-                  src="/images/mechanisms/swerve.png"
-                  alt="CTR Swerve Drive"
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400">
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-50">
-                  CTR Swerve
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Master holonomic swerve drive programming with advanced
-                  kinematics, odometry, and field-oriented control.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Sponsors Section */}
-        <div className="border-t border-slate-200 dark:border-slate-800 pt-16 md:pt-24">
-          <p className="text-center text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-12">
-            Powered by Industry Leaders
+          <p
+            className="mb-7 max-w-[640px] text-lg leading-relaxed"
+            style={{ color: "var(--fg-mute)" }}
+          >
+            A curriculum covering command-based architecture, PID and motion
+            profiling, swerve drive, vision, and logging. Built around a
+            companion GitHub repository so every concept maps to real, runnable
+            code.
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center justify-items-center opacity-75 hover:opacity-100 transition-opacity duration-500">
-            {[
-              {
-                href: "https://store.ctr-electronics.com/",
-                src: "/images/sponsors/ctre-logo.jpg",
-                alt: "CTR Electronics",
-              },
-              {
-                href: "https://michauto.org/",
-                src: "/images/sponsors/MichAuto Logo 600x600.png",
-                alt: "MichAuto",
-              },
-              {
-                href: "https://www.michiganbusiness.org/ofme/",
-                src: "/images/sponsors/OFME-Logo.png",
-                alt: "OFME",
-              },
-              {
-                href: "https://lockwoodstemcenter.hemlockps.com/home",
-                src: "/images/sponsors/lockwood-stem-center-logo.png",
-                alt: "Lockwood STEM Center",
-              },
-            ].map((sponsor) => (
-              <a
-                key={sponsor.alt}
-                href={sponsor.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative w-full max-w-[180px] aspect-[3/2] flex items-center justify-center grayscale hover:grayscale-0 transition-all duration-300"
+          <div className="flex flex-wrap gap-2.5">
+            <Link
+              href="/introduction"
+              className="inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-[13px] font-semibold no-underline transition"
+              style={{
+                background: "var(--accent)",
+                color: "var(--accent-fg)",
+                border: "1px solid var(--accent)",
+              }}
+            >
+              Start Learning
+              <span aria-hidden style={{ marginLeft: 2 }}>
+                →
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── MECHANISMS ─────────────────────────────────────────────── */}
+      <section id="mechanisms" className="mb-16 mt-14">
+        <div className="mb-7">
+          <div className="micro">WHAT YOU&rsquo;LL PROGRAM</div>
+          <h2
+            className="font-semibold"
+            style={{
+              fontSize: 30,
+              letterSpacing: "-0.01em",
+              marginTop: 8,
+              fontFamily: "var(--font-serif)",
+            }}
+          >
+            Four mechanisms. Two workshops.
+          </h2>
+        </div>
+
+        <WorkshopBanner
+          number="01"
+          description="Control fundamentals — single-motor mechanisms"
+          tone="primary"
+        />
+        <div className="mb-8 grid gap-4 md:grid-cols-2">
+          <MechanismCard
+            tag="ARM · POSITION CONTROL"
+            title="Robot Arm"
+            color="oklch(0.78 0.16 25)"
+            description="Move a single-jointed arm to specific angles using closed-loop position control with gravity compensation."
+            image={{ src: "/images/mechanisms/arm.png", alt: "Robot Arm" }}
+            items={[
+              "TalonFX + integrated encoder",
+              "PID with gravity feedforward (kG)",
+              "Motion Magic for smooth profiling",
+            ]}
+          />
+          <MechanismCard
+            tag="FLYWHEEL · VELOCITY CONTROL"
+            title="Shooter Flywheel"
+            color="oklch(0.78 0.16 145)"
+            description="Hold a target RPM precisely for consistent shooting — velocity PID + velocity feedforward."
+            image={{
+              src: "/images/mechanisms/flywheel.png",
+              alt: "Flywheel Shooter",
+            }}
+            items={[
+              "Dual TalonFX, no encoder slip",
+              "Velocity PID with kV feedforward",
+              "Spin-up & at-speed detection",
+            ]}
+          />
+        </div>
+
+        <WorkshopBanner
+          number="02"
+          description="Drive & perception — full-robot autonomy"
+          tone="accent"
+        />
+        <div className="grid gap-4 md:grid-cols-2">
+          <MechanismCard
+            tag="SWERVE · HOLONOMIC DRIVE"
+            title="CTR Swerve Drive"
+            color="oklch(0.78 0.14 235)"
+            description="Holonomic drive with field-oriented control, real-time odometry, and trajectory following."
+            image={{
+              src: "/images/mechanisms/swerve.png",
+              alt: "CTR Swerve Drive",
+            }}
+            items={[
+              "8 TalonFX motors + 4 CANcoders",
+              "PathPlanner trajectory following",
+              "Pigeon 2 IMU for heading fusion",
+            ]}
+          />
+          <MechanismCard
+            tag="LIMELIGHT · VISION"
+            title="AprilTag Vision"
+            color="oklch(0.72 0.2 320)"
+            description="Detect AprilTags, fuse vision pose with odometry, and drive autonomously to scoring positions."
+            image={{
+              src: "/images/mechanisms/limelight.png",
+              alt: "Limelight Vision System",
+            }}
+            items={[
+              "Limelight 4 with MegaTag2",
+              "Pose estimator with vision standard deviations",
+              "Drive-to-point autonomous routine",
+            ]}
+          />
+        </div>
+      </section>
+
+      {/* ── SPONSORS ───────────────────────────────────────────────── */}
+      <section className="mb-8 mt-16">
+        <div
+          className="micro mb-6 text-center"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          POWERED BY
+        </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {[
+            {
+              full: "CTR Electronics",
+              short: "Phoenix 6 motor controllers, CANivore",
+              href: "https://store.ctr-electronics.com/",
+              logo: "/images/sponsors/ctre-logo.jpg",
+            },
+            {
+              full: "MichAuto",
+              short: "Michigan automotive industry",
+              href: "https://michauto.org/",
+              logo: "/images/sponsors/MichAuto Logo 600x600.png",
+            },
+            {
+              full: "Office of Future Mobility & Electrification",
+              short: "State of Michigan",
+              href: "https://www.michiganbusiness.org/ofme/",
+              logo: "/images/sponsors/OFME-Logo.png",
+            },
+            {
+              full: "Lockwood STEM Center",
+              short: "Hemlock Public Schools",
+              href: "https://lockwoodstemcenter.hemlockps.com/home",
+              logo: "/images/sponsors/lockwood-stem-center-logo.png",
+            },
+          ].map((s) => (
+            <a
+              key={s.full}
+              href={s.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col gap-3 rounded-sm p-4 no-underline transition-colors"
+              style={{
+                border: "1px solid var(--line)",
+                background: "var(--bg-elev)",
+                color: "var(--fg)",
+              }}
+            >
+              <div
+                className="relative flex items-center justify-center"
+                style={{
+                  height: 96,
+                  background: "var(--bg)",
+                  border: "1px solid var(--line-soft)",
+                  borderRadius: 3,
+                }}
               >
                 <Image
-                  src={sponsor.src}
-                  alt={sponsor.alt}
-                  fill
-                  className="object-contain"
+                  src={s.logo}
+                  alt={s.full}
+                  width={180}
+                  height={80}
+                  className="max-h-[80px] w-auto object-contain grayscale opacity-80 transition duration-200 group-hover:grayscale-0 group-hover:opacity-100"
                 />
-              </a>
-            ))}
-          </div>
-
-          <div className="mt-16 text-center">
-            <div className="inline-block p-6 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                Workshop Team
-              </h3>
-              <div className="flex flex-col gap-1 text-slate-600 dark:text-slate-400">
-                <p>
-                  Joe Lockwood, Josh Bacon, Chris Bale, Alex Haltom (Team 5712)
-                </p>
-                <p>Ethan Shannon (Team 5216)</p>
               </div>
+              <div>
+                <div
+                  className="text-[13.5px] font-semibold"
+                  style={{
+                    lineHeight: 1.25,
+                    textWrap: "balance",
+                  }}
+                >
+                  {s.full}
+                </div>
+                <div
+                  className="text-[11.5px]"
+                  style={{
+                    color: "var(--fg-mute)",
+                    marginTop: 4,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {s.short}
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* ── WORKSHOP TEAM ──────────────────────────────────────────── */}
+      <section className="mb-4">
+        <div
+          className="grid gap-6 rounded-sm p-6 md:grid-cols-2"
+          style={{
+            background: "var(--bg-elev)",
+            border: "1px solid var(--line)",
+          }}
+        >
+          <div>
+            <div className="micro mb-2.5">TEAM 5712 · HEMLOCK</div>
+            <div
+              className="text-sm"
+              style={{ color: "var(--fg)", lineHeight: 1.65 }}
+            >
+              Joe Lockwood
+              <br />
+              Josh Bacon
+              <br />
+              Chris Bale
+              <br />
+              Alex Haltom
+            </div>
+          </div>
+          <div>
+            <div className="micro mb-2.5">TEAM 5216</div>
+            <div
+              className="text-sm"
+              style={{ color: "var(--fg)", lineHeight: 1.65 }}
+            >
+              Ethan Shannon
             </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

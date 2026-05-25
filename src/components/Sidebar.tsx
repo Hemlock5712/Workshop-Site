@@ -1,1188 +1,548 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import {
+  ChevronsLeft,
+  ChevronsRight,
+  X,
+  Sparkles,
+  BookOpen,
+} from "lucide-react";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { useSidebar } from "@/contexts/SidebarContext";
+import { useProgress } from "@/lib/useProgress";
+import {
+  SECTIONS,
+  LESSONS,
+  getLessonsBySection,
+  getSidebarLabel,
+  type Lesson,
+  type LessonSection,
+  type SectionMeta,
+} from "@/data/lessons";
+import { LESSON_ICONS, SECTION_ICONS } from "@/data/lessonIcons";
 
-/**
- * Main navigation items (Home, Introduction, Prerequisites)
- * These are always visible at the top of the sidebar
- */
+// ── Utility nav (non-lesson links) ───────────────────────────────────────
 
-const navigationItems = [
+interface UtilityLink {
+  href: string;
+  label: string;
+  icon: ReactNode;
+}
+
+const UTILITY_LINKS: ReadonlyArray<UtilityLink> = [
   {
-    href: "/",
-    label: "Home",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
-    ),
+    href: "/ai-assistant",
+    label: "AI Assistant",
+    icon: <Sparkles className="h-[18px] w-[18px]" aria-hidden />,
   },
   {
-    href: "/introduction",
-    label: "Introduction",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/prerequisites",
-    label: "Prerequisites",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-    ),
+    href: "/glossary",
+    label: "Glossary",
+    icon: <BookOpen className="h-[18px] w-[18px]" aria-hidden />,
   },
 ];
 
-/**
- * Workshop #1 navigation items
- * These appear in a collapsible section under the main navigation
- */
-const workshop1Items = [
-  {
-    href: "/hardware",
-    label: "Hardware Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/project-setup",
-    label: "Project Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/command-framework",
-    label: "Command System",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 4.5V2.25M15 4.5V2.25M9 21.75V19.5M15 21.75V19.5M4.5 9H2.25M4.5 15H2.25M21.75 9H19.5M21.75 15H19.5M7.5 7.5h9v9h-9v-9z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/building-subsystems",
-    label: "Subsystems",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25A2.25 2.25 0 018.25 10.5H6A2.25 2.25 0 013.75 8.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25A2.25 2.25 0 0113.5 8.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/adding-commands",
-    label: "Commands",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/triggers",
-    label: "Triggers",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4 8V6a2 2 0 012-2h12a2 2 0 012 2v2M4 8v8a2 2 0 002 2h12a2 2 0 002-2V8M4 8h16"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 12h2m6 0h2"
-        />
-        <circle cx="8" cy="8" r="1" fill="currentColor" />
-        <circle cx="16" cy="8" r="1" fill="currentColor" />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M6 4L5 2M18 4l1-2"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/running-program",
-    label: "Run Program",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M14.752 11.168l-5.197-3.031A1 1 0 008 9.031v5.938a1 1 0 001.555.832l5.197-3.031a1 1 0 000-1.664z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/mechanism-setup",
-    label: "Mechanism",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/pid-control",
-    label: "PID Control",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 10V3L4 14h7v7l9-11h-7z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/motion-magic",
-    label: "Motion Magic",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="m14 7 3 3"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M5 6v4"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M19 14v4"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 2v2"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 8H3"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 16h-4"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M11 3H9"
-        />
-      </svg>
-    ),
-  },
-];
+// Section-index labels shown in the sidebar. Sections live in
+// `lessons.ts` with friendly titles ("Workshop #1"); the engineering
+// reskin wants mono "NN · TITLE" headers. We map here rather than
+// editing the data source — those titles are used elsewhere.
+const SECTION_LABEL: Record<LessonSection, string> = {
+  main: "00 · GETTING STARTED",
+  workshop1: "01 · CONTROL FUNDAMENTALS",
+  workshop2: "02 · DRIVE & PERCEPTION",
+  advanced: "03 · ADVANCED TOPICS",
+};
+
+// ── Item status (drives icon recolouring) ────────────────────────────────
+
+type ItemStatus = "done" | "current" | "todo";
+
+/** Colour for the lesson icon based on its progress status. */
+function statusColor(status: ItemStatus): string {
+  if (status === "done") return "var(--ok)";
+  if (status === "current") return "var(--accent)";
+  return "var(--fg-mute)";
+}
 
 /**
- * Workshop #2 navigation items
- * These appear in a collapsible section under Workshop #1
+ * Wraps a lesson icon in a fixed-size slot so different Lucide icons
+ * (some 18px stroke, some 20px) line up cleanly. Sets `color` on the
+ * span so each Lucide icon's `stroke="currentColor"` resolves to the
+ * right status hue without per-icon plumbing. Adds a subtle amber
+ * glow ring on the "current" lesson so the active item still pops
+ * the way the StatusDot's --accent-soft ring used to.
  */
-const workshop2Items = [
-  {
-    href: "/swerve-prerequisites",
-    label: "Swerve Prereqs",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/swerve-drive-project",
-    label: "Swerve Project",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/pathplanner",
-    label: "PathPlanner",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/swerve-calibration",
-    label: "Odom Calib",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/logging-options",
-    label: "Log Options",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/logging-implementation",
-    label: "Logging Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/drive-to-point",
-    label: "Drive to Point",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/vision-options",
-    label: "Vision Options",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/vision-implementation",
-    label: "Vision Setup",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-        />
-      </svg>
-    ),
-  },
-];
+function StatusIcon({ icon, status }: { icon: ReactNode; status: ItemStatus }) {
+  const isCurrent = status === "current";
+  return (
+    <span
+      aria-hidden
+      className="inline-flex shrink-0 items-center justify-center"
+      style={{
+        width: 22,
+        height: 22,
+        borderRadius: 4,
+        color: statusColor(status),
+        background: isCurrent ? "var(--accent-soft)" : "transparent",
+        transition: "color 0.15s, background 0.15s",
+      }}
+    >
+      {icon}
+    </span>
+  );
+}
 
-/**
- * Advanced Topics navigation items
- * These appear in a collapsible section after Workshop #2
- * Contains advanced programming patterns and techniques
- */
-const advancedTopicsItems = [
-  {
-    href: "/vision-shooting",
-    label: "Odom Shot",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/state-based",
-    label: "State Control",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 12h4M10 16h4"
-        />
-      </svg>
-    ),
-  },
-  {
-    href: "/advanced-drive-to-point",
-    label: "LinearPath",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 10V3L4 14h7v7l9-11h-7z"
-        />
-      </svg>
-    ),
-  },
-];
+// ── Progress meter ───────────────────────────────────────────────────────
 
-/**
- * Collapsible sidebar navigation component
- * Features:
- * - Responsive design (overlay on mobile, fixed on desktop)
- * - Collapsible state with smooth animations
- * - Workshop-based organization with expandable sections
- * - Tooltips when collapsed
- * - Active state highlighting based on current route
- */
+function ProgressMeter() {
+  const { completed, clearAll } = useProgress();
+  // Count only Workshop 1 + Workshop 2 lessons toward progress. The
+  // "Getting Started" (main) and "Advanced" sections are orientation
+  // and bonus material — they shouldn't dilute the headline number.
+  const TRACKED = LESSONS.filter(
+    (l) => l.section === "workshop1" || l.section === "workshop2"
+  );
+  const trackedSlugs = new Set(TRACKED.map((l) => l.slug));
+  const total = TRACKED.length;
+  const done = [...completed].filter((slug) => trackedSlugs.has(slug)).length;
+  const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+
+  return (
+    <div className="px-1">
+      <div className="mb-1.5 flex items-baseline justify-between">
+        <span className="micro" title="Lessons you've marked complete">
+          COMPLETED
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            if (completed.size === 0) return;
+            // Confirm before clearing so users don't lose progress by mis-click.
+            const ok =
+              typeof window === "undefined"
+                ? true
+                : window.confirm("Clear all marked-complete lessons?");
+            if (ok) clearAll();
+          }}
+          className="mono tabular cursor-pointer border-0 bg-transparent p-0"
+          style={{ color: "var(--fg)", fontSize: 11 }}
+          title={completed.size > 0 ? "Reset progress" : "No progress yet"}
+        >
+          {String(done).padStart(2, "0")}/{total}
+        </button>
+      </div>
+      <div
+        className="relative overflow-hidden rounded-sm"
+        style={{ height: 4, background: "var(--line)" }}
+      >
+        <div
+          style={{
+            width: `${pct}%`,
+            height: "100%",
+            background: "var(--accent)",
+            transition: "width 0.4s",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── Item link ────────────────────────────────────────────────────────────
+
+interface ItemLinkProps {
+  href: string;
+  label: string;
+  icon: ReactNode;
+  status: ItemStatus;
+  expanded: boolean;
+  onNavigate?: () => void;
+}
+
+function ItemLink({
+  href,
+  label,
+  icon,
+  status,
+  expanded,
+  onNavigate,
+}: ItemLinkProps) {
+  const isActive = status === "current";
+
+  if (!expanded) {
+    // Rail mode: render just the icon, colour-tinted by status. The
+    // section it lives under still expands the sidebar on click of the
+    // section icon (handled by SectionGroup).
+    return (
+      <div className="group relative flex justify-center">
+        <Link
+          href={href}
+          onClick={onNavigate}
+          className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-[var(--bg-elev)]"
+          aria-current={isActive ? "page" : undefined}
+          aria-label={label}
+        >
+          <StatusIcon icon={icon} status={status} />
+        </Link>
+        <div
+          role="tooltip"
+          className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          style={{ background: "var(--fg)", color: "var(--bg)" }}
+        >
+          {label}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      onClick={onNavigate}
+      aria-current={isActive ? "page" : undefined}
+      className="flex w-full items-center gap-2.5 px-3 py-1.5 text-[13px] transition-colors"
+      style={{
+        background: isActive ? "var(--accent-soft)" : "transparent",
+        borderLeft: `2px solid ${isActive ? "var(--accent)" : "transparent"}`,
+        color: isActive ? "var(--fg)" : "var(--fg-mute)",
+      }}
+      onMouseEnter={(e) => {
+        if (!isActive) e.currentTarget.style.background = "var(--bg-elev)";
+      }}
+      onMouseLeave={(e) => {
+        if (!isActive) e.currentTarget.style.background = "transparent";
+      }}
+    >
+      <StatusIcon icon={icon} status={status} />
+      <span className="truncate">{label}</span>
+    </Link>
+  );
+}
+
+// ── Section group ───────────────────────────────────────────────────────
+
+interface SectionGroupProps {
+  meta: SectionMeta;
+  lessons: ReadonlyArray<Lesson>;
+  expanded: boolean;
+  isOpen: boolean;
+  isCompleted: (slug: string) => boolean;
+  pathname: string;
+  onSectionToggle: () => void;
+  onItemNavigate: () => void;
+  onCollapsedHeaderClick: () => void;
+}
+
+function statusFor(
+  slug: string,
+  pathname: string,
+  isCompleted: (s: string) => boolean
+): ItemStatus {
+  if (pathname === slug) return "current";
+  if (isCompleted(slug)) return "done";
+  return "todo";
+}
+
+function SectionGroup({
+  meta,
+  lessons,
+  expanded,
+  isOpen,
+  isCompleted,
+  pathname,
+  onSectionToggle,
+  onItemNavigate,
+  onCollapsedHeaderClick,
+}: SectionGroupProps) {
+  if (!expanded) {
+    // Rail: an icon button expands the sidebar + opens this section.
+    return (
+      <div className="group relative">
+        <button
+          type="button"
+          onClick={onCollapsedHeaderClick}
+          aria-label={`Open ${meta.title}`}
+          className="flex w-full items-center justify-center rounded-md px-3 py-3 transition-colors hover:bg-[var(--bg-elev)]"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          {SECTION_ICONS[meta.id]}
+        </button>
+        <div
+          role="tooltip"
+          className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          style={{ background: "var(--fg)", color: "var(--bg)" }}
+        >
+          {meta.title}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-1">
+      <button
+        type="button"
+        onClick={onSectionToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between px-3 py-2.5 transition-colors hover:text-[var(--fg)]"
+        style={{ color: "var(--fg-dim)", background: "transparent" }}
+      >
+        <span
+          className="mono"
+          style={{ fontSize: 10, letterSpacing: "0.1em", fontWeight: 500 }}
+        >
+          {SECTION_LABEL[meta.id]}
+        </span>
+        <svg
+          width={9}
+          height={9}
+          viewBox="0 0 12 12"
+          style={{
+            transform: isOpen ? "rotate(90deg)" : "rotate(0)",
+            transition: "transform 0.15s",
+          }}
+          aria-hidden
+        >
+          <path
+            d="M4 2 l4 4 l-4 4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="pb-1">
+          {lessons.map((lesson) => (
+            <ItemLink
+              key={lesson.slug}
+              href={lesson.slug}
+              label={getSidebarLabel(lesson)}
+              icon={LESSON_ICONS[lesson.slug] ?? SECTION_ICONS[lesson.section]}
+              status={statusFor(lesson.slug, pathname, isCompleted)}
+              expanded
+              onNavigate={onItemNavigate}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Sidebar ─────────────────────────────────────────────────────────────
+
 export default function Sidebar() {
   const { isOpen, setIsOpen, toggleSidebar } = useSidebar();
-  const [isWorkshop1Open, setIsWorkshop1Open] = useState(false); // Workshop 1 sections closed by default
-  const [isWorkshop2Open, setIsWorkshop2Open] = useState(false); // Workshop 2 sections closed by default
-  const [isAdvancedTopicsOpen, setIsAdvancedTopicsOpen] = useState(false); // Advanced Topics sections closed by default
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
+  const { isCompleted } = useProgress();
+
+  const collapsibleSections = SECTIONS.filter((s) => s.collapsible);
+  // Workshop #1 is the most likely "current focus" — open it by default
+  // so a first-time visitor sees nested items without an extra click.
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(
+    () =>
+      Object.fromEntries(
+        collapsibleSections.map((s) => [s.id, s.id === "workshop1"])
+      )
+  );
+
+  // Auto-open the section containing the current page on mount / route change.
+  const lastPathnameRef = useRef<string>("");
+  useEffect(() => {
+    if (pathname === lastPathnameRef.current) return;
+    lastPathnameRef.current = pathname;
+    const match = SECTIONS.find((s) =>
+      getLessonsBySection(s.id).some((l) => l.slug === pathname)
+    );
+    if (match && match.collapsible) {
+      setOpenSections((prev) =>
+        prev[match.id] ? prev : { ...prev, [match.id]: true }
+      );
+    }
+  }, [pathname]);
+
+  const closeOnMobile = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  };
+
+  const openSectionAfterExpand = (id: LessonSection) => {
+    setIsOpen(true);
+    setOpenSections((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const mainLessons = getLessonsBySection("main");
 
   return (
     <>
       {/* Overlay for mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-[60] md:hidden"
+          className="fixed inset-0 z-[60] bg-black bg-opacity-50 md:hidden"
           onClick={() => setIsOpen(false)}
+          aria-hidden
         />
       )}
 
-      {/* Sidebar toggle button - always visible on desktop */}
+      {/* Desktop expand/collapse rail toggle */}
       <button
         type="button"
         onClick={toggleSidebar}
         aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
-        className={`hidden md:flex fixed top-20 z-50 p-2 m-1 bg-[var(--card)] rounded-md shadow-lg border border-[var(--border)] hover:bg-[var(--muted)] transition-all duration-300 ${
+        title={isOpen ? "Close sidebar" : "Open sidebar"}
+        className={`fixed top-20 z-50 m-1 hidden p-2 transition-all duration-300 md:flex ${
           isOpen ? "left-60 sm:left-64" : "left-4 md:left-20"
         }`}
-        title={isOpen ? "Close sidebar" : "Open sidebar"}
+        style={{
+          background: "var(--bg-elev)",
+          border: "1px solid var(--line)",
+          borderRadius: "var(--r-sm)",
+          boxShadow: "0 1px 2px rgb(0 0 0 / 0.25)",
+        }}
       >
-        <svg
-          className="w-5 h-5 text-[var(--muted-foreground)]"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d={
-              isOpen
-                ? "M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                : "M13 5l7 7-7 7M5 5l7 7-7 7"
-            }
+        {isOpen ? (
+          <ChevronsLeft
+            className="h-5 w-5"
+            style={{ color: "var(--fg-mute)" }}
           />
-        </svg>
+        ) : (
+          <ChevronsRight
+            className="h-5 w-5"
+            style={{ color: "var(--fg-mute)" }}
+          />
+        )}
       </button>
 
-      {/* Sidebar */}
-      <div
-        className={`fixed flex flex-col md:relative top-0 left-0 h-full bg-[var(--card)] text-[var(--card-foreground)] shadow-lg border-r border-[var(--border)] z-[70] transform transition-all duration-300 ease-in-out ${
+      {/* Sidebar shell */}
+      <aside
+        aria-label="Workshop navigation"
+        className={`fixed top-0 left-0 z-[70] flex h-full transform flex-col transition-all duration-300 ease-in-out md:relative ${
           isOpen
-            ? "translate-x-0 w-full md:w-60 lg:w-64"
-            : "-translate-x-full md:translate-x-0 md:w-16"
+            ? "w-full translate-x-0 md:w-60 lg:w-64"
+            : "-translate-x-full md:w-16 md:translate-x-0"
         }`}
+        style={{
+          background: "var(--bg)",
+          borderRight: "1px solid var(--line)",
+        }}
       >
-        {/* Close button - visible when sidebar is open */}
+        {/* Mobile close header */}
         {isOpen && (
-          <div className="flex md:hidden justify-end p-4 border-b border-[var(--border)]">
+          <div
+            className="flex justify-end p-4 md:hidden"
+            style={{ borderBottom: "1px solid var(--line)" }}
+          >
             <button
               type="button"
               onClick={toggleSidebar}
               aria-label="Close sidebar"
-              className="p-2 rounded-md text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition-colors"
+              className="rounded-md p-2 transition-colors hover:bg-[var(--bg-elev)]"
+              style={{ color: "var(--fg-mute)" }}
               title="Close sidebar"
             >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <X className="h-5 w-5" />
             </button>
           </div>
         )}
 
-        <div
-          className={`p-4 flex-grow ${isOpen ? "px-6 overflow-y-auto" : "px-2 overflow-hidden"}`}
+        {/* Progress meter — only shown when expanded. The workshop
+            header above already carries the Gray Matter logo + name,
+            so we keep the sidebar header focused on completion state. */}
+        {isOpen && (
+          <div
+            className="px-5 py-4"
+            style={{ borderBottom: "1px solid var(--line)" }}
+          >
+            <ProgressMeter />
+          </div>
+        )}
+
+        {/* Nav */}
+        <nav
+          className={`flex-1 ${isOpen ? "overflow-y-auto px-2 py-2" : "overflow-hidden px-1.5 py-2"}`}
         >
-          {/* Navigation */}
-          <nav className="space-y-2">
-            {/* Main Navigation Items */}
-            {navigationItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <div key={item.href} className="relative group">
-                  <Link
-                    href={item.href}
-                    className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                      isOpen
-                        ? "px-4 py-3 space-x-3"
-                        : "px-3 py-3 justify-center"
-                    } ${
-                      isActive
-                        ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                        : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                    }`}
-                  >
-                    <span className="flex-shrink-0">{item.icon}</span>
-                    {isOpen && <span className="truncate">{item.label}</span>}
-                  </Link>
+          {/* Main section — always-visible items at the top */}
+          <div className="pb-1">
+            {mainLessons.map((lesson) => (
+              <ItemLink
+                key={lesson.slug}
+                href={lesson.slug}
+                label={getSidebarLabel(lesson)}
+                icon={
+                  LESSON_ICONS[lesson.slug] ?? SECTION_ICONS[lesson.section]
+                }
+                status={statusFor(lesson.slug, pathname, isCompleted)}
+                expanded={isOpen}
+                onNavigate={closeOnMobile}
+              />
+            ))}
+          </div>
 
-                  {/* Tooltip for collapsed state */}
-                  {!isOpen && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                      {item.label}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+          {/* Workshop / Advanced collapsibles */}
+          {collapsibleSections.map((meta) => (
+            <SectionGroup
+              key={meta.id}
+              meta={meta}
+              lessons={getLessonsBySection(meta.id)}
+              expanded={isOpen}
+              isOpen={!!openSections[meta.id]}
+              isCompleted={isCompleted}
+              pathname={pathname}
+              onSectionToggle={() =>
+                setOpenSections((prev) => ({
+                  ...prev,
+                  [meta.id]: !prev[meta.id],
+                }))
+              }
+              onItemNavigate={closeOnMobile}
+              onCollapsedHeaderClick={() => openSectionAfterExpand(meta.id)}
+            />
+          ))}
 
-            {/* Mechanism CAD Item */}
-            <div className="pt-2 relative group">
-              <Link
-                href="/mechanism-cad"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                } ${
-                  pathname === "/mechanism-cad"
-                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                }`}
-                onClick={() => {
-                  // Only close on mobile
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
+          {/* Utility (AI Assistant, Glossary) — flat, no section header */}
+          {isOpen && (
+            <div
+              className="mt-3 pt-2"
+              style={{ borderTop: "1px solid var(--line-soft)" }}
+            >
+              <div className="micro mb-1 px-3" style={{ fontSize: 9.5 }}>
+                TOOLS
+              </div>
+              {UTILITY_LINKS.map((link) => (
+                <ItemLink
+                  key={link.href}
+                  href={link.href}
+                  label={link.label}
+                  icon={link.icon}
+                  status={
+                    pathname === link.href
+                      ? "current"
+                      : isCompleted(link.href)
+                        ? "done"
+                        : "todo"
                   }
-                }}
-              >
-                <span className="flex-shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                    />
-                  </svg>
-                </span>
-                {isOpen && <span className="truncate">Mechanism CAD</span>}
-              </Link>
-
-              {/* Tooltip for collapsed state */}
-              {!isOpen && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Mechanism CAD
-                </div>
-              )}
+                  expanded
+                  onNavigate={closeOnMobile}
+                />
+              ))}
             </div>
+          )}
+        </nav>
 
-            {/* Workshop #1 Section */}
-            {isOpen && (
-              <div className="pt-4">
-                <div className="border-t border-[var(--border)] pt-4">
-                  <button
-                    onClick={() => setIsWorkshop1Open(!isWorkshop1Open)}
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                        />
-                      </svg>
-                      <span>Workshop #1</span>
-                    </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isWorkshop1Open ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Workshop #1 Items */}
-                  <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${
-                      isWorkshop1Open ? "block" : "hidden"
-                    }`}
-                  >
-                    {workshop1Items.map((item) => {
-                      const isActive = pathname === item.href;
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
-                            isActive
-                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                          }`}
-                          onClick={() => {
-                            // Only close on mobile
-                            if (window.innerWidth < 768) {
-                              setIsOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="flex-shrink-0">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Workshop #1 collapsed view */}
-            {!isOpen && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setIsWorkshop1Open(true);
-                  }}
-                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                    />
-                  </svg>
-                </button>
-
-                {/* Tooltip for collapsed workshop */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Workshop #1
-                </div>
-              </div>
-            )}
-
-            {/* Workshop #2 Section */}
-            {isOpen && (
-              <div className="pt-4">
-                <div className="border-t border-[var(--border)] pt-4">
-                  <button
-                    onClick={() => setIsWorkshop2Open(!isWorkshop2Open)}
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
-                      <span>Workshop #2</span>
-                    </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isWorkshop2Open ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Workshop #2 Items */}
-                  <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${
-                      isWorkshop2Open ? "block" : "hidden"
-                    }`}
-                  >
-                    {workshop2Items.map((item) => {
-                      const isActive = pathname === item.href;
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
-                            isActive
-                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                          }`}
-                          onClick={() => {
-                            // Only close on mobile
-                            if (window.innerWidth < 768) {
-                              setIsOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="flex-shrink-0">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Workshop #2 collapsed view */}
-            {!isOpen && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setIsWorkshop2Open(true);
-                  }}
-                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                </button>
-
-                {/* Tooltip for collapsed workshop */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Workshop #2
-                </div>
-              </div>
-            )}
-
-            {/* Advanced Topics Section */}
-            {isOpen && (
-              <div className="pt-4">
-                <div className="border-t border-[var(--border)] pt-4">
-                  <button
-                    onClick={() =>
-                      setIsAdvancedTopicsOpen(!isAdvancedTopicsOpen)
-                    }
-                    className="flex items-center justify-between w-full px-4 py-2 text-sm font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                        />
-                      </svg>
-                      <span>Advanced Topics</span>
-                    </div>
-                    <svg
-                      className={`w-4 h-4 transition-transform duration-200 ${
-                        isAdvancedTopicsOpen ? "rotate-90" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Advanced Topics Items */}
-                  <div
-                    className={`mt-2 space-y-1 transition-all duration-300 ${
-                      isAdvancedTopicsOpen ? "block" : "hidden"
-                    }`}
-                  >
-                    {advancedTopicsItems.map((item) => {
-                      const isActive = pathname === item.href;
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 pl-8 pr-4 py-2 space-x-3 ${
-                            isActive
-                              ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                              : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                          }`}
-                          onClick={() => {
-                            // Only close on mobile
-                            if (window.innerWidth < 768) {
-                              setIsOpen(false);
-                            }
-                          }}
-                        >
-                          <span className="flex-shrink-0">{item.icon}</span>
-                          <span className="truncate">{item.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Advanced Topics collapsed view */}
-            {!isOpen && (
-              <div className="relative group">
-                <button
-                  onClick={() => {
-                    setIsOpen(true);
-                    setIsAdvancedTopicsOpen(true);
-                  }}
-                  className="flex items-center justify-center px-3 py-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] rounded-md transition-colors w-full"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                </button>
-
-                {/* Tooltip for collapsed section */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Advanced Topics
-                </div>
-              </div>
-            )}
-
-            {/* AI Assistant Item - After Advanced Topics */}
-            <div className="pt-2 relative group">
-              <Link
-                href="/ai-assistant"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                } ${
-                  pathname === "/ai-assistant"
-                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                }`}
-                onClick={() => {
-                  // Only close on mobile
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
-                  }
-                }}
-              >
-                <span className="flex-shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
-                    />
-                  </svg>
-                </span>
-                {isOpen && <span className="truncate">AI Assistant</span>}
-              </Link>
-
-              {/* Tooltip for collapsed state */}
-              {!isOpen && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  AI Assistant
-                </div>
-              )}
-            </div>
-
-            {/* Glossary Item - After AI Assistant */}
-            <div className="pt-2 relative group">
-              <Link
-                href="/glossary"
-                className={`flex items-center rounded-md text-sm font-medium transition-all duration-300 ${
-                  isOpen ? "px-4 py-3 space-x-3" : "px-3 py-3 justify-center"
-                } ${
-                  pathname === "/glossary"
-                    ? "bg-primary-200 text-primary-800 dark:bg-primary-800/40 dark:text-primary-200"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)]"
-                }`}
-                onClick={() => {
-                  // Only close on mobile
-                  if (window.innerWidth < 768) {
-                    setIsOpen(false);
-                  }
-                }}
-              >
-                <span className="flex-shrink-0">
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                    />
-                  </svg>
-                </span>
-                {isOpen && <span className="truncate">Glossary</span>}
-              </Link>
-
-              {/* Tooltip for collapsed state */}
-              {!isOpen && (
-                <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--foreground)] text-[var(--background)] text-sm rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                  Glossary
-                </div>
-              )}
-            </div>
-          </nav>
-        </div>
-        <div className="p-4">
+        {/* Footer — theme toggler */}
+        <div
+          className="flex items-center justify-center p-3"
+          style={{ borderTop: "1px solid var(--line)" }}
+        >
           <AnimatedThemeToggler />
         </div>
-      </div>
+      </aside>
     </>
   );
 }

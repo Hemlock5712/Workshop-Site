@@ -8,14 +8,7 @@ import { Book, Download } from "lucide-react";
 
 export default function SwerveDriveProject() {
   return (
-    <PageTemplate
-      title="Creating a Swerve Drive Project"
-      previousPage={{
-        href: "/swerve-prerequisites",
-        title: "Swerve Drive Prerequisites",
-      }}
-      nextPage={{ href: "/pathplanner", title: "Adding PathPlanner" }}
-    >
+    <PageTemplate title="Creating a Swerve Drive Project">
       {/* Introduction */}
       <KeyConceptSection
         title="Using Phoenix Tuner X to Generate Swerve Code"
@@ -283,15 +276,10 @@ export default function SwerveDriveProject() {
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Up Next: PathPlanner
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
-            Now that your swerve project is generated, the next step is
-            autonomous path following with PathPlanner.
-          </p>
-        </div>
+        <Box variant="alert-success" title="Up Next: PathPlanner">
+          Now that your swerve project is generated, the next step is autonomous
+          path following with PathPlanner.
+        </Box>
       </section>
     </PageTemplate>
   );

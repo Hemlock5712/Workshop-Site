@@ -64,8 +64,7 @@ src/
     ├── Sidebar.tsx        # Collapsible navigation sidebar
     ├── PageTemplate.tsx   # Shared page layout
     ├── CodeBlock.tsx      # IDE-style syntax highlighted code
-    ├── GitHubPR.tsx       # Live GitHub pull request display
-    ├── GitHubPage.tsx     # Live GitHub file display
+    ├── GitHubContent.tsx  # Live GitHub file viewer + optional PR diff tab
     └── ImageBlock.tsx     # Optimized image display
 ```
 

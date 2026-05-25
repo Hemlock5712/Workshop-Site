@@ -1,10 +1,24 @@
-import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import NavFooter from "@/components/NavFooter";
+import LessonBreadcrumb from "@/components/LessonBreadcrumb";
+
+interface NavOverride {
+  href: string;
+  title: string;
+}
 
 interface PageTemplateProps {
   title: string;
-  previousPage?: { href: string; title: string };
-  nextPage?: { href: string; title: string };
+  /**
+   * Optional explicit Previous link. Omit to auto-derive from
+   * `src/data/lessons.ts` based on the current pathname. Pass `null`
+   * to suppress the link entirely (e.g. on the landing page).
+   */
+  previousPage?: NavOverride | null;
+  /**
+   * Optional explicit Next link — same auto-derivation rules as
+   * `previousPage`.
+   */
+  nextPage?: NavOverride | null;
   children: React.ReactNode;
 }
 
@@ -15,47 +29,29 @@ export default function PageTemplate({
   children,
 }: PageTemplateProps) {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      {previousPage && (
-        <div className="mb-8">
-          <Link
-            href={previousPage.href}
-            className="inline-flex items-center gap-2 text-primary-600 hover:text-primary-800 font-medium dark:text-primary-400 dark:hover:text-primary-300"
-          >
-            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-            <span>Back to {previousPage.title}</span>
-          </Link>
-        </div>
-      )}
+    <div className="mx-auto max-w-4xl px-4 py-12 md:px-6">
+      <LessonBreadcrumb />
 
-      <div className="flex flex-col gap-8 max-w-none dark:prose-invert">
-        <h1 className="text-4xl font-bold text-[var(--foreground)]">{title}</h1>
+      {/* H1 — serif, navy (--primary) per the design.
+          Lesson section subtitle (serif italic, muted) lives in
+          individual pages when they need it; this stays minimal. */}
+      <h1
+        className="mb-10 font-semibold"
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: "clamp(2.25rem, 4vw, 2.75rem)",
+          lineHeight: 1.05,
+          letterSpacing: "-0.02em",
+          color: "var(--primary)",
+        }}
+      >
+        {title}
+      </h1>
 
+      <div className="flex max-w-none flex-col gap-8 dark:prose-invert">
         {children}
 
-        <div className="flex justify-between items-center pt-8 border-t border-[var(--border)]">
-          {previousPage ? (
-            <Link
-              href={previousPage.href}
-              className="inline-flex items-center gap-2 text-[var(--muted-foreground)] hover:text-[var(--foreground)] font-medium"
-            >
-              <ArrowLeft className="w-4 h-4" aria-hidden="true" />
-              <span>Previous: {previousPage.title}</span>
-            </Link>
-          ) : (
-            <div />
-          )}
-
-          {nextPage && (
-            <Link
-              href={nextPage.href}
-              className="inline-flex items-center gap-2 bg-primary-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-            >
-              <span>Next: {nextPage.title}</span>
-              <ArrowRight className="w-4 h-4" aria-hidden="true" />
-            </Link>
-          )}
-        </div>
+        <NavFooter previousPage={previousPage} nextPage={nextPage} />
       </div>
     </div>
   );

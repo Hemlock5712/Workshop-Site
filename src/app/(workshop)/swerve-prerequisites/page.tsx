@@ -11,14 +11,7 @@ import Image from "next/image";
 
 export default function SwervePrerequisites() {
   return (
-    <PageTemplate
-      title="Swerve Drive Prerequisites"
-      previousPage={{ href: "/motion-magic", title: "Motion Magic" }}
-      nextPage={{
-        href: "/swerve-drive-project",
-        title: "Creating a Swerve Drive Project",
-      }}
-    >
+    <PageTemplate title="Swerve Drive Prerequisites">
       {/* Introduction */}
       <KeyConceptSection
         title="Understanding Swerve Drive Fundamentals"
@@ -319,36 +312,20 @@ export default function SwervePrerequisites() {
             </p>
 
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border-l-4 border-blue-500">
-                <h4 className="font-bold text-blue-900 dark:text-blue-300 mb-2">
-                  Vx (Forward/Back)
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Linear velocity in the X direction. Positive = forward,
-                  Negative = backward. Units: meters per second.
-                </p>
-              </div>
+              <Box variant="alert-info" title="Vx (Forward/Back)">
+                Linear velocity in the X direction. Positive = forward, Negative
+                = backward. Units: meters per second.
+              </Box>
 
-              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border-l-4 border-green-500">
-                <h4 className="font-bold text-green-900 dark:text-green-300 mb-2">
-                  Vy (Left/Right)
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Linear velocity in the Y direction. Positive = left, Negative
-                  = right. Units: meters per second.
-                </p>
-              </div>
+              <Box variant="alert-success" title="Vy (Left/Right)">
+                Linear velocity in the Y direction. Positive = left, Negative =
+                right. Units: meters per second.
+              </Box>
 
-              <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg border-l-4 border-purple-500">
-                <h4 className="font-bold text-purple-900 dark:text-purple-300 mb-2">
-                  Omega (Rotation)
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  Angular velocity (rotation rate). Positive =
-                  counter-clockwise, Negative = clockwise. Units: radians per
-                  second.
-                </p>
-              </div>
+              <Box variant="alert-tip" title="Omega (Rotation)">
+                Angular velocity (rotation rate). Positive = counter-clockwise,
+                Negative = clockwise. Units: radians per second.
+              </Box>
             </div>
 
             <CodeBlock
@@ -699,14 +676,11 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
           What&apos;s Next?
         </h2>
 
-        <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border-l-4 border-green-500">
-          <h3 className="text-xl font-semibold text-green-900 dark:text-green-300 mb-4">
-            Ready for Implementation
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+        <Box variant="alert-success" title="Ready for Implementation">
+          <p className="mb-4">
             You now understand the fundamental concepts needed for swerve drive:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2">
             <li>Holonomic motion and independent module control</li>
             <li>Module anatomy: drive motor, azimuth motor, CANcoder</li>
             <li>Coordinate systems: robot-centric vs field-centric</li>
@@ -716,11 +690,11 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
             <li>Odometry</li>
             <li>Pose estimation</li>
           </ul>
-          <p className="text-slate-600 dark:text-slate-300 mt-4">
+          <p className="mt-4">
             Next, you&apos;ll learn how to use Phoenix Tuner X to generate a
             complete swerve project and bring up your drivetrain.
           </p>
-        </div>
+        </Box>
       </section>
     </PageTemplate>
   );
