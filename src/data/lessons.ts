@@ -86,7 +86,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   {
     slug: "/mechanism-setup",
     title: "Mechanism Setup",
-    shortLabel: "Mechanism",
+    shortLabel: "Setup",
     section: "workshop1",
   },
   { slug: "/pid-control", title: "PID Control", section: "workshop1" },
