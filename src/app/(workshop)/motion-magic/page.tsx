@@ -288,38 +288,23 @@ export default function MotionMagic() {
         <CollapsibleSection title="🔧 Motion Magic Configuration Example">
           <CodeBlock
             language="java"
-            title="Motion Magic Setup in Subsystem Constructor"
-            code={`// In your subsystem constructor
-public ArmSubsystem() {
+            title="Motion Magic Setup — just the new lines"
+            code={`public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    // PID Configuration (same as before)
-    Slot0Configs slot0 = config.Slot0;
-    slot0.kP = 24.0;    // Proportional gain
-    slot0.kI = 0.0;     // Integral gain
-    slot0.kD = 0.1;     // Derivative gain
+    // ... same PID + feedforward gains as the PID lesson (kP/kI/kD, kS/kG/kV/kA).
 
-    // Feedforward gains
-    slot0.kS = 0.25;    // Static friction compensation
-    slot0.kG = 0.12;    // Gravity compensation
-    slot0.kV = 0.12;    // Velocity feedforward
-    slot0.kA = 0.01;    // Acceleration feedforward
-
-    // Motion Magic Configuration
+    // The Motion Magic part — three numbers that shape the velocity profile.
     MotionMagicConfigs motionMagic = config.MotionMagic;
     motionMagic.MotionMagicCruiseVelocity = 2.0;    // 2 rot/s max velocity
-    motionMagic.MotionMagicAcceleration = 8.0;      // 8 rot/s² acceleration
-    motionMagic.MotionMagicJerk = 80.0;             // 80 rot/s³ jerk limit
+    motionMagic.MotionMagicAcceleration   = 8.0;    // 8 rot/s² acceleration
+    motionMagic.MotionMagicJerk           = 80.0;   // 80 rot/s³ jerk limit
 
     motor.getConfigurator().apply(config);
 }
 
-// Method to set target position with Motion Magic
-public void setTargetPosition(double positionRotations) {
-    motor.setControl(motionMagicRequest.withPosition(positionRotations));
-}
-
-`}
+// Then in your setter, use MotionMagicVoltage instead of PositionVoltage:
+motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
           />
         </CollapsibleSection>
 
@@ -375,7 +360,7 @@ public void setTargetPosition(double positionRotations) {
               "• Abrupt start/stop motions",
             ],
             afterItems: [
-              "• Motion Magic profiled velocity with MotionMagicVelocity",
+              "• Motion Magic profiled velocity with MotionMagicVelocityVoltage",
               "• Smooth acceleration and deceleration curves",
               "• Reduced mechanical stress and wear",
               "• Configurable acceleration and jerk for velocity changes",
@@ -391,7 +376,7 @@ public void setTargetPosition(double positionRotations) {
               leftItems: [
                 "• <strong>Acceleration:</strong> How quickly to reach target velocity",
                 "• <strong>Jerk:</strong> Smoothness of acceleration changes",
-                "• <strong>MotionMagicVelocity:</strong> Replaces VelocityVoltage for profiled control",
+                "• <strong>MotionMagicVelocityVoltage:</strong> Replaces VelocityVoltage for profiled control",
                 "• <strong>Velocity Targeting:</strong> Precise speed control with smooth ramping",
               ],
               rightTitle: "Enhanced Features",

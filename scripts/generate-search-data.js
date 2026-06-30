@@ -109,19 +109,19 @@ function getPageMetadata(route) {
       title: "Command-Based Framework",
       category: "Workshop 1",
       description:
-        "Understanding the command-based programming paradigm and its benefits for robot code organization.",
+        "Triggers, Mechanisms, and Commands in v3 — decorators (.named, .until, .whenCanceled, .withPriority) and composition with Command.sequence / Command.parallel and coroutine.await/awaitAll/awaitAny/fork. Top-level wiring lives in a Robot class and per-mode OpModes.",
     },
     "building-subsystems": {
-      title: "Building Subsystems",
+      title: "Mechanisms",
       category: "Workshop 1",
       description:
-        "Creating subsystems for robot mechanisms and understanding subsystem structure.",
+        "Implementing the v3 Mechanism base class (extends Mechanism) — run(), runRepeatedly(), idle(), and setDefaultCommand for one physical part of the robot.",
     },
     "adding-commands": {
-      title: "Adding Commands",
+      title: "Commands",
       category: "Workshop 1",
       description:
-        "Creating and implementing commands to control robot subsystems.",
+        "Writing v3 commands as coroutine-shaped bodies — set-once, set-and-hold, set-then-wait, and multi-phase shapes, plus runtime branching with await and fork.",
     },
     "running-program": {
       title: "Running Program",
@@ -157,13 +157,13 @@ function getPageMetadata(route) {
       title: "Triggers",
       category: "Workshop 1",
       description:
-        "Binding controller inputs to commands using triggers for responsive robot control.",
+        "Binding controller inputs and sensor predicates to commands in v3 — scoped bindings (global / opmode / command), OpMode as a sibling to Mechanism, and why each binding's lifetime matches its scope.",
     },
     "state-based": {
-      title: "State-Based Control",
+      title: "State Machines",
       category: "Advanced",
       description:
-        "Organizing subsystem behavior into discrete states for better code structure and maintainability.",
+        "WPILib Commands V3 ships a StateMachine class with first-class transitions, entry/exit hooks, and any-state interrupts. Use it when an auto routine needs to repeat, skip, or recover phases.",
     },
     "swerve-prerequisites": {
       title: "Swerve Drive Prerequisites",
@@ -178,10 +178,10 @@ function getPageMetadata(route) {
         "Advanced workshop on implementing swerve drive systems for omnidirectional robot movement.",
     },
     pathplanner: {
-      title: "Adding PathPlanner",
+      title: "Autonomous: Driving to a Pose",
       category: "Workshop 2",
       description:
-        "Integrating PathPlanner for autonomous path planning and trajectory following.",
+        "Autonomous in the v3 template: @Autonomous OpModes that sequence DriveToPose legs with CTRE LinearPath — no PathPlanner.",
     },
     "vision-options": {
       title: "Vision Options",
@@ -199,13 +199,13 @@ function getPageMetadata(route) {
       title: "Logging Options",
       category: "Workshop 2",
       description:
-        "Data logging options for robot debugging, analysis, and performance monitoring.",
+        "Comparing FRC logging frameworks; this workshop uses WPILib DataLogManager (not AdvantageKit) for robot debugging and analysis.",
     },
     "logging-implementation": {
       title: "Implementing Logging",
       category: "Workshop 2",
       description:
-        "Setting up and implementing comprehensive logging systems for robot data collection.",
+        "Setting up WPILib DataLogManager — start it in Robot's constructor and publish robot state to NetworkTables; view in AdvantageScope.",
     },
     "vision-shooting": {
       title: "Vision-Based Shooting",

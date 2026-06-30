@@ -60,7 +60,7 @@ export default function LoggingOptions() {
                 ✅ With Comprehensive Logging
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Replay exact robot state from any match</li>
+                <li>Review exact robot state from any match</li>
                 <li>Analyze sensor data, motor outputs, and commands</li>
                 <li>Identify root causes of failures quickly</li>
                 <li>Optimize performance with data-driven decisions</li>
@@ -268,9 +268,10 @@ export default function LoggingOptions() {
                 AdvantageKit
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Comprehensive logging and replay framework developed by Team
-                6328 (Mechanical Advantage). Industry-leading solution for
-                advanced teams.
+                Logging, telemetry, and replay framework developed by Team 6328
+                (Mechanical Advantage). The <strong>Logger</strong> can be used
+                on its own as a drop-in telemetry sink, or with the optional IO
+                layer to unlock deterministic replay.
               </p>
             </div>
           </div>
@@ -282,39 +283,53 @@ export default function LoggingOptions() {
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  <strong>Deterministic replay:</strong> Re-run robot code with
-                  logged data
+                  <strong>One API, two outputs:</strong>{" "}
+                  <code>Logger.recordOutput(...)</code> writes to both
+                  NetworkTables and a <code>.wpilog</code> file
                 </li>
                 <li>
-                  <strong>Hardware abstraction:</strong> IO layer separation for
-                  testability
+                  <strong>Free built-in capture:</strong> DriverStation,
+                  joysticks, alerts, console, PDP/PDH, CAN, battery, and loop
+                  timing — no code required
                 </li>
                 <li>
-                  <strong>Comprehensive capture:</strong> All inputs/outputs
-                  logged automatically
+                  <strong>Rich type support:</strong> Pose2d/3d, ChassisSpeeds,
+                  SwerveModuleState, units, custom record structs
                 </li>
                 <li>
-                  <strong>Time-travel debugging:</strong> Step through logged
-                  matches
+                  <strong>@AutoLogOutput annotation</strong> for
+                  zero-boilerplate logging of fields and getters
                 </li>
                 <li>
-                  <strong>Simulation support:</strong> Test code without
-                  hardware
+                  <strong>Optional replay path:</strong> add the IO layer later
+                  to unlock deterministic match replay in simulation
                 </li>
-                <li>Integrates with AdvantageScope for visualization</li>
+                <li>First-class integration with AdvantageScope</li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ⚠️ Limitations
+                ⚠️ Considerations
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Significant code restructuring required</li>
-                <li>Steeper learning curve for implementation</li>
-                <li>Requires understanding of IO layer pattern</li>
-                <li>More complex setup and maintenance</li>
-                <li>Best adopted at start of season, not mid-season</li>
+                <li>
+                  Requires extending <code>LoggedRobot</code> instead of{" "}
+                  <code>TimedRobot</code>
+                </li>
+                <li>
+                  Vendordep + one annotation processor entry in{" "}
+                  <code>build.gradle</code>
+                </li>
+                <li>
+                  USB logging on a real robot needs a FAT32-formatted USB stick
+                  plugged into the roboRIO
+                </li>
+                <li>
+                  Full deterministic replay <em>does</em> require restructuring
+                  subsystems around the IO layer — that piece is optional and
+                  not covered in this workshop
+                </li>
               </ul>
             </div>
           </div>
@@ -324,16 +339,16 @@ export default function LoggingOptions() {
               🎯 Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Advanced teams who want deterministic replay, time-travel
-              debugging, and comprehensive testing capabilities. Requires
-              significant investment in code architecture.
+              Teams who want the cleanest logging API in FRC today, strong
+              type-aware output recording, and the option to grow into
+              deterministic replay later without rewriting their telemetry.
             </p>
           </div>
 
           <div className="mt-6">
             <DocumentationButton
-              href="https://github.com/Mechanical-Advantage/AdvantageKit"
-              title="AdvantageKit GitHub Repository"
+              href="https://docs.advantagekit.org/"
+              title="AdvantageKit Documentation"
               icon={<Book className="w-5 h-5" />}
             />
           </div>
@@ -513,7 +528,7 @@ export default function LoggingOptions() {
                   Very Easy - Annotations
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Complex - Major restructure
+                  Easy (logging-only) / Complex (with replay)
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
                   Easy - Simple integration
@@ -530,7 +545,7 @@ export default function LoggingOptions() {
                   Minimal
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Steep
+                  Low (logging-only) / Steep (with replay)
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
                   Moderate
@@ -626,13 +641,13 @@ export default function LoggingOptions() {
                   Best Use Case
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Most teams, simple logging
+                  Workshop choice — simple, captures all NT
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
                   Java teams, minimal boilerplate
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Advanced teams, comprehensive testing
+                  Rich types, optional deterministic replay
                 </td>
                 <td className="p-4 text-slate-600 dark:text-slate-300">
                   CTRE-focused teams
@@ -651,13 +666,17 @@ export default function LoggingOptions() {
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            📊 Using DataLogManager + Epilogue
+            📊 Using WPILib DataLogManager
           </h3>
 
           <p className="text-slate-600 dark:text-slate-300 mb-6">
-            For this workshop, we&apos;ll use a combination of WPILib&apos;s
-            DataLogManager and Epilogue for structured annotation-based logging.
-            This provides:
+            For this workshop we mirror the 2027 template and use WPILib&apos;s
+            built-in <code>DataLogManager</code>. It records every NetworkTables
+            value change — including everything the drivetrain&apos;s telemetry
+            publishes — to a binary <code>.wpilog</code> file, plus console
+            output and (via <code>DriverStation.startDataLog</code>) the
+            Driver-Station and joystick data. There&apos;s no extra vendordep,
+            no <code>LoggedRobot</code>, and no replay layer to learn.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -666,36 +685,62 @@ export default function LoggingOptions() {
                 Why DataLogManager?
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Simple setup with minimal code changes</li>
-                <li>Automatic capture of NetworkTables data</li>
-                <li>Official WPILib support and maintenance</li>
-                <li>Works with AdvantageScope for visualization</li>
+                <li>
+                  Built into WPILib — no vendordep; two lines in{" "}
+                  <code>Robot</code>&apos;s constructor turn it on
+                </li>
+                <li>
+                  Captures all NetworkTables data automatically — your telemetry
+                  plus DS/joystick state — to an efficient <code>.wpilog</code>
+                </li>
+                <li>
+                  Opens directly in AdvantageScope for graphing and review
+                </li>
+                <li>
+                  Phoenix 6 devices <em>also</em> log to a <code>.hoot</code>{" "}
+                  file (readable in Tuner X / AdvantageScope) — extra signal
+                  data for free
+                </li>
+                <li>Fewest moving parts — ideal for a teaching codebase</li>
               </ul>
             </div>
 
             <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-bold text-green-600 dark:text-green-400 mb-3">
-                Why Add Epilogue?
+                What we&apos;re NOT using (and why)
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Zero boilerplate with @Logged annotations</li>
-                <li>Automatic structured logging of subsystems</li>
-                <li>Compile-time code generation (no runtime overhead)</li>
-                <li>Built into WPILib 2025 - no extra dependencies</li>
+                <li>
+                  <strong>AdvantageKit</strong> — powerful, but its IO-layer /
+                  replay model is more than this workshop needs; DataLogManager
+                  covers record-and-review
+                </li>
+                <li>
+                  <strong>Epilogue (@Logged)</strong> — a fine alternative, but
+                  DataLogManager + plain NetworkTables publishing keeps the
+                  mental model smallest
+                </li>
+                <li>
+                  <strong>Deterministic log replay</strong> — out of scope; we
+                  record and review logs, we don&apos;t re-run them through the
+                  code
+                </li>
               </ul>
             </div>
           </div>
 
           <Box
             variant="alert-info"
-            title="Future Considerations"
+            title="How it looks"
             icon={<Lightbulb className="w-5 h-5" />}
           >
             <p>
-              As your team&apos;s sophistication grows, consider migrating to
-              AdvantageKit for deterministic replay and comprehensive testing.
-              However, start simple with DataLogManager + Epilogue to build good
-              logging habits before adopting more complex frameworks.
+              Two lines in <code>Robot</code>&apos;s constructor start it (
+              <code>DataLogManager.start()</code> +{" "}
+              <code>DriverStation.startDataLog(DataLogManager.getLog())</code>);
+              after that you just publish the values you care about to
+              NetworkTables — the swerve telemetry helper already does this for
+              the drivetrain. The next lesson wires it all up.
             </p>
           </Box>
         </div>
@@ -742,41 +787,41 @@ export default function LoggingOptions() {
                 "What is the primary advantage of comprehensive data logging in FRC?",
               options: [
                 "It makes the robot drive faster",
-                "It allows you to replay exact robot state from any match and debug issues quickly",
+                "It lets you review exact robot state from any match and debug issues quickly",
                 "It reduces battery consumption",
                 "It improves WiFi connection",
               ],
               correctAnswer: 1,
               explanation:
-                "Comprehensive logging captures all robot telemetry during matches, allowing teams to replay exact robot state, analyze performance, identify root causes of failures, and make data-driven tuning decisions - all critical for debugging between matches.",
+                "Comprehensive logging captures all robot telemetry during matches, letting teams review exact robot state, analyze performance, identify root causes of failures, and make data-driven tuning decisions - all critical for debugging between matches.",
             },
             {
               id: 2,
               question:
-                "What is the main difference between DataLogManager and AdvantageKit?",
+                "How does this workshop's logging approach (DataLogManager) capture data?",
               options: [
-                "DataLogManager is faster than AdvantageKit",
-                "AdvantageKit provides deterministic replay capability while DataLogManager only provides visualization",
-                "DataLogManager requires more code than AdvantageKit",
-                "AdvantageKit only works with Python",
+                "You annotate every field with @Logged",
+                "It records every NetworkTables value change to a .wpilog file, so you publish your robot state to NetworkTables and it's captured automatically",
+                "It writes a CSV file you open in a spreadsheet",
+                "It streams video of the match",
               ],
               correctAnswer: 1,
               explanation:
-                "AdvantageKit provides deterministic replay capabilities - you can re-run robot code with logged data for time-travel debugging. DataLogManager only captures data for post-match visualization, without replay functionality.",
+                "DataLogManager records all NetworkTables value changes (plus console output and, via DriverStation.startDataLog, DS/joystick data) to a binary .wpilog. You get logging by publishing the values you care about to NetworkTables — the swerve telemetry helper already does this for the drivetrain.",
             },
             {
               id: 3,
               question:
-                "What makes WPILib Epilogue different from manual logging with SmartDashboard?",
+                "How do you turn on DataLogManager in the 2027 template?",
               options: [
-                "Epilogue requires more boilerplate code",
-                "Epilogue uses @Logged annotations to automatically generate logging code at compile time",
-                "Epilogue is slower than SmartDashboard",
-                "Epilogue only works with vision systems",
+                "Extend LoggedRobot instead of OpModeRobot",
+                "Call DataLogManager.start() (and DriverStation.startDataLog(...)) in Robot's constructor",
+                "Add the AdvantageKit vendordep and an annotation processor",
+                "Enable it from the Driver Station settings",
               ],
               correctAnswer: 1,
               explanation:
-                "Epilogue uses @Logged annotations to automatically generate logging code at compile time, eliminating boilerplate SmartDashboard.put() calls while maintaining zero runtime overhead through compile-time code generation.",
+                "Two lines in Robot's constructor do it: DataLogManager.start() begins logging NetworkTables + console output, and DriverStation.startDataLog(DataLogManager.getLog()) adds the Driver-Station and joystick data. No vendordep and no LoggedRobot.",
             },
             {
               id: 4,
@@ -816,9 +861,10 @@ export default function LoggingOptions() {
         </h2>
 
         <Box variant="alert-success" title="Up Next: Implementing Logging">
-          Now that you understand the logging framework options, you&apos;ll
-          implement DataLogManager and Epilogue in your robot code to capture
-          telemetry.
+          Now that you&apos;ve picked DataLogManager, you&apos;ll start it in{" "}
+          <code>Robot</code>&apos;s constructor and publish your robot state to
+          NetworkTables so it lands in the <code>.wpilog</code> — then open the
+          result in AdvantageScope.
         </Box>
       </section>
     </PageTemplate>

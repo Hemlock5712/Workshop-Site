@@ -16,10 +16,7 @@ export default function PrivacyPage() {
           &ldquo;our&rdquo;)
         </li>
         <li>
-          Website: frc5712.com -{" "}
-          <a href="https://ctre-workshop-site.vercel.app">
-            https://ctre-workshop-site.vercel.app
-          </a>
+          Website: <a href="https://frc5712.com">https://frc5712.com</a>
         </li>
         <li>
           Contact: graymatter@hemlockps.com | 700 N Pine St, Hemlock, MI, 48626,
@@ -29,10 +26,10 @@ export default function PrivacyPage() {
 
       <h2>2. Scope</h2>
       <p>
-        This policy explains what data we collect when you use
-        ctre-workshop-site.vercel.app, how we use it, how we share it, and the
-        choices you have. Our audience is primarily in the United States,
-        including FRC teams, with occasional international visitors.
+        This policy explains what data we collect when you use frc5712.com, how
+        we use it, how we share it, and the choices you have. Our audience is
+        primarily in the United States, including FRC teams, with occasional
+        international visitors.
       </p>
 
       <h2>3. What we collect</h2>

@@ -17,7 +17,7 @@ The user will handle server management themselves.
 
 Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 15, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
 
-**Live Site:** [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)  
+**Live Site:** [frc5712.com](https://frc5712.com)  
 **Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)  
 **Workshop Code:** [https://github.com/Hemlock5712/Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)
 

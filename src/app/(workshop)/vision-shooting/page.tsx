@@ -189,24 +189,16 @@ export default function DynamicFlywheel() {
 
           <CodeBlock
             language="java"
-            title="Flywheel Subsystem Constructor"
-            code={`public class Flywheel extends SubsystemBase {
-    // Interpolating map: distance (meters) -> velocity (RPS)
-    private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
-    private final Translation2d target = new Translation2d(3, 5); // Fixed target position
-    private double distance = 0.0;
+            title="Flywheel constructor — populating the lookup table"
+            code={`// distance (meters) -> velocity (RPS), with linear interpolation between rows.
+private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
 
-    public Flywheel(CommandSwerveDrivetrain drivetrain) {
-        m_drivetrain = drivetrain;
-
-        // Populate lookup table with tested values
-        table.put(0.0, 0.0);    // At target: no velocity needed
-        table.put(1.0, 10.0);   // 1 meter away: 10 RPS
-        table.put(2.0, 30.0);   // 2 meters away: 30 RPS
-        table.put(3.0, 60.0);   // 3 meters away: 60 RPS
-        // Add more points as needed from real-world testing
-    }
-}`}
+// Fill the table from real-world testing — measure at a few distances,
+// the map handles the in-between values for you.
+table.put(0.0, 0.0);    // At target: no velocity needed
+table.put(1.0, 10.0);   // 1 meter away: 10 RPS
+table.put(2.0, 30.0);
+table.put(3.0, 60.0);`}
           />
 
           <Box
@@ -240,19 +232,15 @@ export default function DynamicFlywheel() {
 
           <CodeBlock
             language="java"
-            title="Periodic Distance Update"
-            code={`@Override
-public void periodic() {
-    // Get current robot pose from swerve odometry
-    Pose2d robotPose = m_drivetrain.getState().Pose;
+            title="Distance to target (computed on demand)"
+            code={`// v3 mechanisms have no periodic() — compute the distance on demand from odometry.
+private double distanceToTarget() {
+    // Current robot pose from swerve odometry (blue-origin frame).
+    Pose2d robotPose = m_drivetrain.getPose();
     Translation2d robotXY = robotPose.getTranslation();
 
-    // Calculate Euclidean distance to fixed target
-    distance = robotXY.getDistance(target);
-
-    // Log for debugging (optional)
-    SmartDashboard.putNumber("Distance to Target", distance);
-    SmartDashboard.putNumber("Target Velocity", table.get(distance));
+    // Euclidean distance to the fixed target.
+    return robotXY.getDistance(target);
 }`}
           />
 
@@ -285,11 +273,17 @@ public void periodic() {
             language="java"
             title="Dynamic Velocity Command"
             code={`/**
- * Continuously adjusts flywheel velocity based on distance to target.
- * The velocity updates automatically as the robot moves around the field.
+ * Continuously sets flywheel velocity from the live distance to the target.
+ * runRepeatedly re-runs the body every loop, so the velocity tracks the robot
+ * as it moves around the field. .named(...) is required in v3.
  */
 public Command distanceShoot() {
-    return run(() -> setVelocity(table.get(distance)));
+    return runRepeatedly(() -> {
+          double distance = distanceToTarget();
+          setVelocity(table.get(distance));
+          SmartDashboard.putNumber("Flywheel/DistanceToTarget", distance); // -> NT -> .wpilog
+        })
+        .named("distanceShoot");
 }`}
           />
 
@@ -298,9 +292,9 @@ public Command distanceShoot() {
               ✨ Automatic Adjustment
             </h4>
             <p className="text-sm text-slate-700 dark:text-slate-300">
-              As the robot drives around, the <code>periodic()</code> method
-              updates <code>distance</code>, and the command automatically
-              queries the new velocity. No manual intervention required!
+              As the robot drives around, <code>runRepeatedly</code> re-runs the
+              command body every loop — it recomputes the distance and queries
+              the new velocity automatically. No manual intervention required!
             </p>
           </div>
         </ContentCard>

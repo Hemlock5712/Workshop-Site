@@ -404,7 +404,7 @@ export default function OdometryCalibration() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Update DriveRequestType (RobotContainer.java)
+                Update DriveRequestType (Teleop OpMode)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
                 Configure the drive system to use velocity-based control for
@@ -463,7 +463,7 @@ export default function OdometryCalibration() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Find kSlipCurrent (RobotContainer.java)
+                Find kSlipCurrent (TunerConstants.java)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
                 Determine the stator current limit that prevents wheel slip
@@ -721,7 +721,7 @@ export default function OdometryCalibration() {
                 "Measure wheel diameter with calipers",
                 "Tune drive and turning motors",
                 "Calibrate the camera",
-                "Create PathPlanner paths",
+                "Write the autonomous routine",
               ],
               correctAnswer: 1,
               explanation:

@@ -1,6 +1,6 @@
 # Gray Matter Coding Workshop Website
 
-🌐 **Live Site: [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)**
+🌐 **Live Site: [frc5712.com](https://frc5712.com)**
 
 A responsive website built with Next.js and Tailwind CSS that converts the Gray Matter Coding Workshop Canva presentation into an accessible markdown-based learning platform.
 
@@ -166,11 +166,11 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically:
 ### Status Badges
 
 [![CI/CD Pipeline](https://github.com/Hemlock5712/Workshop-Site/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/Hemlock5712/Workshop-Site/actions)
-[![Deploy with Vercel](https://vercel.com/button)](https://ctre-workshop-site.vercel.app)
+[![Deploy with Vercel](https://vercel.com/button)](https://frc5712.com)
 
 ## 🌐 Live Deployment
 
-**🚀 Live Site:** [ctre-workshop-site.vercel.app](https://ctre-workshop-site.vercel.app)
+**🚀 Live Site:** [frc5712.com](https://frc5712.com)
 
 ### Automatic Deployment
 

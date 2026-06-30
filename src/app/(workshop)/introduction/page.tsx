@@ -173,7 +173,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    Subsystems
+                    Mechanisms
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →
@@ -325,7 +325,7 @@ export default function Introduction() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-primary-700 dark:group-hover:text-primary-300">
-                    PathPlanner
+                    Autonomous: Driving to a Pose
                   </span>
                   <span className="text-slate-400 dark:text-slate-500 group-hover:text-primary-500 dark:group-hover:text-primary-300">
                     →

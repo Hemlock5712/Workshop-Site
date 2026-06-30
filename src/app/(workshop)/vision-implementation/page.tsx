@@ -93,12 +93,16 @@ export default function VisionImplementation() {
                 </div>
                 <div>
                   <h4 className="font-bold text-primary-950 dark:text-white">
-                    RobotContainer Setup
+                    Wire it up in Robot
                   </h4>
                   <p className="text-primary-900 dark:text-primary-100 text-sm">
-                    At this point we have the pose estimator in drivetrain and
-                    now can create a vision subsystem that takes in drivetrain
-                    to add values to it.
+                    The drivetrain owns the pose estimator. In the OpMode model
+                    you wire the camera up once in <code>Robot</code>&apos;s
+                    constructor — e.g.{" "}
+                    <code>
+                      Limelight.registerAll(drivetrain, &quot;limelight&quot;)
+                    </code>{" "}
+                    — passing it the drivetrain so it can add measurements.
                   </p>
                 </div>
               </div>
@@ -338,19 +342,50 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
             description="Subsystem that pulls robot pose from LimelightHelpers, validates the estimate, models measurement noise from tag distance/count, and feeds pose+timestamp+std devs to a consumer (e.g., your drivetrain pose estimator). Caches the last valid estimate and exposes getters for logging."
           />
         </CollapsibleSection>
-        <CollapsibleSection title="RobotContainer.java">
+        <CollapsibleSection title="Robot.java (vision wiring)">
           <p className="text-slate-600 dark:text-slate-300 mb-4">
-            RobotContainer includes the setup for vision integration, showing
-            how the Limelight subsystem connects with the swerve drivetrain and
-            command bindings.
+            Vision is wired up once in <code>Robot</code>&apos;s constructor:{" "}
+            <code>Limelight.registerAll(drivetrain, ...)</code> creates each
+            camera and registers its per-loop <code>update()</code> on the
+            scheduler. Shared subsystems like the drivetrain live on{" "}
+            <code>Robot</code> as <code>public final</code> fields, and each
+            OpMode reaches them through the <code>Robot</code> reference it is
+            constructed with.
           </p>
           <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             branch="3-Limelight"
-            filePath="src/main/java/frc/robot/RobotContainer.java"
-            pr={{ number: 9, focusFile: "RobotContainer.java" }}
+            filePath="src/main/java/frc/robot/Robot.java"
+            pr={{ number: 9, focusFile: "Robot.java" }}
           />
         </CollapsibleSection>
+
+        <Box
+          variant="alert-info"
+          tag="NOTE · VISION ARCHITECTURE"
+          title="The camera isn't a Mechanism"
+        >
+          <p>
+            The Limelight owns no actuators, so it isn&apos;t a{" "}
+            <code>Mechanism</code> — it&apos;s a plain class whose{" "}
+            <code>update()</code> is registered on the scheduler with{" "}
+            <code>Scheduler.getDefault().addPeriodic(camera::update)</code>,
+            wired up once from <code>Robot</code>&apos;s constructor via{" "}
+            <code>Limelight.registerAll(drivetrain, ...)</code>. Its job is to
+            read <code>LimelightHelpers</code> / NetworkTables, validate the
+            pose estimate, model the measurement noise (std devs) from tag
+            distance and count, and feed{" "}
+            <code>
+              drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
+            </code>
+            .
+          </p>
+          <p style={{ marginTop: 8 }}>
+            <code>Utils.fpgaToCurrentTime(...)</code> was removed (Phoenix 6 now
+            shares the WPILib timebase), so vision timestamps go straight to the
+            pose estimator without any conversion.
+          </p>
+        </Box>
       </section>
 
       <section className="flex flex-col gap-8">

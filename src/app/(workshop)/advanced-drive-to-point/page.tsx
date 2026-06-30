@@ -4,8 +4,8 @@ import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import GitHubContent from "@/components/GitHubContent";
-import Quiz from "@/components/Quiz";
 import Box from "@/components/Box";
+import Quiz from "@/components/Quiz";
 
 export default function AdvancedDriveToPoint() {
   return (
@@ -169,8 +169,8 @@ export default function AdvancedDriveToPoint() {
               </p>
               <ol className="list-decimal ml-6 space-y-2">
                 <li>
-                  Enable logging for both <code>setpoint.speeds</code> (planned)
-                  and actual chassis speeds
+                  Enable logging for both <code>setpoint.velocity</code>{" "}
+                  (planned) and the robot&apos;s actual chassis velocity
                 </li>
                 <li>
                   Run your DriveToPoint command and capture data using
@@ -353,15 +353,15 @@ double yError = targetY - currentY;
                 ✅ Advanced Approach
               </h4>
               <CodeBlock
-                code={`// Get current setpoint from trajectory
-Setpoint setpoint = path.calculate(time);
+                code={`// Sample CTRE's LinearPath for the moving setpoint at elapsed time t.
+LinearPath.State setpoint = path.calculate(t, startState, goal);
 
-// PID compares current to SETPOINT
-double xError = setpoint.x - currentX;
-double yError = setpoint.y - currentY;
+// Compare to the moving setpoint's pose, not the final target.
+// (Was: targetX - currentX / targetY - currentY)
+double xError = setpoint.pose.getX() - currentX;
+double yError = setpoint.pose.getY() - currentY;
 
-// Small errors (just track the path)
-// Smoother, less oscillation`}
+// Small errors (just track the path) — smoother, less oscillation`}
                 language="java"
               />
             </div>
@@ -455,8 +455,8 @@ double yError = setpoint.y - currentY;
               </p>
               <CodeBlock
                 code={`driveRequest
-  .withSpeeds(correctedSpeeds)
-  .withWheelForceFeedforwardsX(forces.x)
+  .withVelocity(correctedVelocities)     // ChassisVelocities via ApplyFieldVelocity.withVelocity(...)
+  .withWheelForceFeedforwardsX(forces.x) // Phoenix 6 force feedforwards
   .withWheelForceFeedforwardsY(forces.y)`}
                 language="java"
               />
@@ -510,6 +510,81 @@ double yError = setpoint.y - currentY;
             pr={{ number: 12, focusFile: "DriveToPoint.java" }}
           />
         </ContentCard>
+
+        <Box variant="alert-info" tag="NOTE" title="The profiled command shape">
+          <p>
+            The profiled loop lives in a command that{" "}
+            <code>extends ClassicCommand</code>, which gives you the explicit
+            initialize / execute / isFinished / end lifecycle — the same shape
+            the template&apos;s own <code>DriveToPose</code> uses. CTRE&apos;s
+            straight-line profile generator is <code>LinearPath</code>, sampled
+            each loop with <code>path.calculate(t, startState, goal)</code>, and
+            the field-relative velocity request is{" "}
+            <code>SwerveRequest.ApplyFieldVelocity</code> taking a{" "}
+            <code>ChassisVelocities</code>.
+          </p>
+          <CodeBlock
+            language="java"
+            title="Profiled DriveToPoint (sketch, mirrors the template's DriveToPose)"
+            code={`public class ProfiledDriveToPoint extends ClassicCommand {
+  private final DriveMechanism drivetrain;
+  private final Pose2d goal;
+
+  // CTRE's straight-line profile generator: translation + rotation constraints.
+  private final LinearPath path =
+      new LinearPath(
+          new TrapezoidProfile.Constraints(MAX_V, MAX_A),
+          new TrapezoidProfile.Constraints(Math.PI, 2.0 * Math.PI));
+
+  // Field-relative velocity request in the blue-origin frame (same frame as odometry).
+  private final SwerveRequest.ApplyFieldVelocity driveRequest =
+      new SwerveRequest.ApplyFieldVelocity()
+          .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance);
+
+  private LinearPath.State startState = new LinearPath.State();
+  private LinearPath.State prev = new LinearPath.State();
+  private double startTime;
+
+  public ProfiledDriveToPoint(DriveMechanism drivetrain, Pose2d goal) {
+    super("ProfiledDriveToPoint", drivetrain); // name + requirement
+    this.drivetrain = drivetrain;
+    this.goal = goal;
+  }
+
+  @Override protected void initialize() {
+    // Capture the start pose + field velocity the trajectory is generated from.
+    startState = new LinearPath.State(drivetrain.getPose(), drivetrain.getFieldVelocity());
+    startTime = Utils.getCurrentTimeSeconds();
+    prev = startState;
+  }
+
+  @Override protected void execute() {
+    double t = Utils.getCurrentTimeSeconds() - startTime;
+    LinearPath.State setpoint = path.calculate(t, startState, goal);
+
+    // Feedback (PID) trims measured pose back onto the profiled pose...
+    ChassisVelocities corrected = applyPidCorrections(setpoint, drivetrain.getPose());
+    // ...and the optional wheel-force feedforward anticipates the accel.
+    WheelForces forces = wheelForceCalculator.compute(prev, setpoint, DT);
+
+    drivetrain.setControl(
+        driveRequest
+            .withVelocity(corrected)
+            .withWheelForceFeedforwardsX(forces.x)
+            .withWheelForceFeedforwardsY(forces.y));
+    prev = setpoint;
+  }
+
+  @Override protected boolean isFinished() {
+    return path.isFinished(Utils.getCurrentTimeSeconds() - startTime);
+  }
+
+  @Override protected void end(boolean interrupted) {
+    drivetrain.setControl(new SwerveRequest.Idle()); // runs on finish and cancel
+  }
+}`}
+          />
+        </Box>
       </section>
 
       {/* Practical Applications */}

@@ -207,7 +207,9 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> National Instruments&apos; embedded
               controller designed for FRC, running a real-time Linux operating
-              system and WPILib framework.
+              system and WPILib framework. Note: the WPILib 2027 stack this
+              workshop targets deploys to <strong>SystemCore</strong>, the
+              roboRIO&apos;s successor, instead.
             </p>
           </div>
         </div>
@@ -239,9 +241,9 @@ export default function Glossary() {
               how to move, knows where it is, and has specific jobs it can do.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
-              <strong>Technical:</strong> A class extending SubsystemBase that
-              encapsulates hardware (motors, sensors) and provides methods to
-              control a specific robot mechanism.
+              <strong>Technical:</strong> In Commands v3 (WPILib 2027) this is
+              called a <strong>Mechanism</strong> — a class you extend that owns
+              hardware (motors, sensors) and exposes commands.
             </p>
           </div>
 
@@ -265,8 +267,14 @@ export default function Glossary() {
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A schedulable unit of robot behavior
-              that declares subsystem requirements and implements initialize(),
-              execute(), isFinished(), and end() methods.
+              that declares its mechanism requirements. In Commands v3 a command
+              is a single coroutine body (e.g.{" "}
+              <code>
+                mechanism.run(coroutine -&gt; ...).named(&quot;...&quot;)
+              </code>
+              ). A step-by-step initialize / execute / isFinished / end
+              lifecycle is also available by extending{" "}
+              <code>ClassicCommand</code>.
             </p>
           </div>
 
@@ -331,9 +339,10 @@ export default function Glossary() {
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A generated class that extends
-              CTRE&apos;s SwerveDrivetrain and implements the Subsystem
-              interface, allowing it to be used as a subsystem in WPILib
-              command-based robot code.
+              CTRE&apos;s SwerveDrivetrain. In the v3 template it isn&apos;t a
+              Mechanism itself — a hand-written <code>DriveMechanism</code>{" "}
+              (extends Mechanism) wraps it and exposes the drive commands to
+              command-based code.
             </p>
           </div>
 
@@ -345,14 +354,84 @@ export default function Glossary() {
               Periodic Method
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
-              <strong>Simple:</strong> A method that runs automatically every 20
+              <strong>Simple:</strong> Code that runs automatically every 20
               milliseconds (50 times per second). Used for displaying data or
               monitoring sensors, NOT for controlling motors directly.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
-              <strong>Technical:</strong> A method called by the command
-              scheduler every robot loop iteration (20ms) for telemetry updates
-              and state monitoring.
+              <strong>Technical:</strong> A callback the scheduler runs every
+              robot loop (20ms) for telemetry/monitoring. Commands v3 mechanisms
+              don&apos;t have a <code>periodic()</code> method — use a{" "}
+              <code>runRepeatedly(...)</code> default command, or register a
+              callback with <code>Scheduler.getDefault().addPeriodic(...)</code>
+              .
+            </p>
+          </div>
+
+          <div
+            id="mechanism"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Mechanism
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> The Commands v3 (WPILib 2027) name for a
+              subsystem — one physical part of the robot (arm, flywheel,
+              drivetrain). It owns the hardware and hands out commands.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong> A base class you extend (
+              <code>extends Mechanism</code>). It supplies command factories (
+              <code>run</code>, <code>runRepeatedly</code>, <code>idle</code>)
+              and automatically holds a low-priority idle default command until
+              something else commands it.
+            </p>
+          </div>
+
+          <div
+            id="opmode"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              OpMode
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> A &quot;mode&quot; the robot can be in —
+              driver teleop, an autonomous routine, or a calibration task. Each
+              one is its own class, and the driver station lists them by name.
+              The Commands v3 stack organizes robot setup around OpModes.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong> A class extending{" "}
+              <code>PeriodicOpMode</code> tagged <code>@Teleop</code>,{" "}
+              <code>@Autonomous</code>, or <code>@Utility</code>. Selecting it
+              constructs it (building its button bindings); switching away tears
+              it down. There is no RobotContainer and no SendableChooser.
+            </p>
+          </div>
+
+          <div
+            id="coroutine"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Coroutine
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> The thing that lets a Commands v3 command
+              body pause and resume. Inside a command you call{" "}
+              <code>coroutine.wait(...)</code>, <code>waitUntil(...)</code>, or{" "}
+              <code>await(...)</code> to pause until something happens — then
+              the code keeps going from where it left off.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong> The <code>Coroutine</code> handle
+              passed to a command body. It lets a single method suspend at{" "}
+              <code>yield</code>/<code>wait</code>/<code>waitUntil</code>/
+              <code>await</code>/<code>park</code>/<code>fork</code> and resume
+              on a later scheduler tick, so the whole command reads as one
+              straight-line method.
             </p>
           </div>
         </div>

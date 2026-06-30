@@ -1,6 +1,7 @@
 import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
+import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
 
 export default function RunningProgram() {
@@ -13,7 +14,7 @@ export default function RunningProgram() {
           "WPILib provides a powerful tool called Hardware Simulation. This allows you to run your code in the simulator, while also running motors that are connected to the CANivore.",
           "Using a CANivore also allows you to build robot applications that run directly on Windows or Linux machines.",
         ]}
-        concept="Hardware simulation eliminates the need to use a roboRIO for testing, while still allowing you to test your code on hardware."
+        concept="Hardware simulation eliminates the need for a robot controller (roboRIO or SystemCore) during testing, while still letting you drive real motors over a CANivore."
       />
 
       {/* CANivore USB Warning */}
@@ -60,6 +61,55 @@ export default function RunningProgram() {
           allowFullScreen
           className="w-full h-full aspect-video rounded-lg"
         />
+      </section>
+
+      {/* Running on the 2027 stack */}
+      <section className="flex flex-col gap-6">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          Running on the 2027 stack: OpModes + the simulator
+        </h2>
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          You start the simulator (or deploy to the robot) and the driver
+          station lists every <code>@Teleop</code> / <code>@Autonomous</code> /{" "}
+          <code>@Utility</code> class <em>by name</em>. Selecting one{" "}
+          <strong>constructs</strong> that OpMode — that&apos;s when its button
+          bindings are built — and <code>Robot.robotPeriodic()</code> ticks{" "}
+          <code>Scheduler.getDefault().run()</code> every loop no matter which
+          mode is active.
+        </p>
+
+        <CodeBlock
+          language="bash"
+          title="Launching the simulator (Gradle)"
+          code={`# GUI simulation — opens the sim driver station; a human clicks Enable.
+./gradlew simulateJava
+
+# Headless (CI / agent) — auto-enables the robot. Pick the starting mode:
+./gradlew simulateJavaAgent                          # autonomous (default)
+./gradlew simulateJavaAgent -Pmode=teleop            # teleop
+./gradlew simulateJavaAgent -Pmode=auto:"Drive To Pose"   # a specific @Autonomous`}
+        />
+
+        <Box
+          variant="alert-info"
+          tag="NOTE"
+          title="Where the code actually runs"
+        >
+          <p>
+            The stack runs on <strong>Java 25</strong> and deploys to{" "}
+            <strong>SystemCore</strong> — <code>./gradlew deploy</code> targets{" "}
+            <code>/home/systemcore</code>. OpModes are discovered by scanning
+            classes at runtime, so a missing one is <em>not</em> a compile error
+            — if your mode doesn&apos;t show up on the driver station, check
+            that the class is <code>public</code>, non-<code>abstract</code>,
+            annotated with a <code>name</code>, in <code>frc.robot</code> (or a
+            subpackage), and has a public <code>(Robot)</code> constructor.
+          </p>
+        </Box>
       </section>
 
       {/* Quiz Section */}
@@ -122,6 +172,20 @@ export default function RunningProgram() {
               correctAnswer: 2,
               explanation:
                 "Hardware Simulation with CANivore can run on both Windows and Linux machines, allowing for flexible development environments without a roboRIO.",
+            },
+            {
+              id: 5,
+              question:
+                "On the 2027 OpMode stack, how do you choose whether teleop or an autonomous routine runs?",
+              options: [
+                "Call teleopInit() or autonomousInit() from RobotContainer",
+                "Select the @Teleop or @Autonomous class by name on the driver station — picking it constructs that OpMode",
+                "Set a boolean flag in Robot.robotPeriodic()",
+                "Use a SendableChooser populated in RobotContainer",
+              ],
+              correctAnswer: 1,
+              explanation:
+                "Each mode is its own annotated class. The driver station lists them by name; selecting one constructs that OpMode (building its bindings) and tears down the previous one.",
             },
           ]}
         />

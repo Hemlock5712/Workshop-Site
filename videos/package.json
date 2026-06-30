@@ -1,0 +1,31 @@
+{
+  "name": "@gray-matter/videos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Programmatic workshop videos rendered with Remotion + Kokoro TTS (fully local, free).",
+  "scripts": {
+    "tts": "tsx scripts/generate-audio.ts",
+    "verify": "tsx scripts/verify-audio.ts",
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "render:intro": "remotion render Introduction out/introduction.mp4",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.0",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "kokoro-js": "^1.2.0",
+    "prism-react-renderer": "^2.4.1",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@huggingface/transformers": "^3.8.1",
+    "@types/node": "^25.0.0",
+    "@types/react": "^19.2.15",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.0"
+  }
+}

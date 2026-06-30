@@ -168,32 +168,24 @@ export default function PIDControl() {
         <CollapsibleSection title="🔧 PID Configuration Example">
           <CodeBlock
             language="java"
-            title="PID Setup in Subsystem Constructor"
-            code={`// In your subsystem constructor
-public ArmSubsystem() {
+            title="PID Setup in Mechanism Constructor"
+            code={`public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    // PID Configuration for Slot 0
+    // PID gains — the three knobs you'll tune first.
     Slot0Configs slot0 = config.Slot0;
     slot0.kP = 24.0;    // Proportional gain
     slot0.kI = 0.0;     // Integral gain
     slot0.kD = 0.1;     // Derivative gain
 
-    // Feedforward gains
-    slot0.kS = 0.25;    // Static friction compensation
+    // Feedforward gains — help the controller predict what voltage is
+    // needed before error even shows up.
+    slot0.kS = 0.25;    // Static friction
     slot0.kG = 0.12;    // Gravity compensation
-    slot0.kV = 0.12;    // Velocity feedforward
-    slot0.kA = 0.01;    // Acceleration feedforward
+    // kV / kA also live here — useful on high-inertia mechanisms.
 
     motor.getConfigurator().apply(config);
-}
-
-// Method to set target position
-public void setTargetPosition(double positionRotations) {
-    motor.setControl(positionRequest.withPosition(positionRotations));
-}
-
-`}
+}`}
           />
         </CollapsibleSection>
 

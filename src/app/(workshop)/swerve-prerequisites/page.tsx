@@ -304,12 +304,19 @@ export default function SwervePrerequisites() {
           </p>
         </Box>
 
-        <CollapsibleSection title="🎮 Understanding Chassis Speeds">
+        <CollapsibleSection title="🎮 Understanding Chassis Velocities">
           <div className="space-y-4">
             <p className="text-slate-600 dark:text-slate-300">
-              Chassis speeds represent the desired velocity of the robot as a
-              whole:
+              Chassis velocities represent the desired velocity of the robot as
+              a whole:
             </p>
+
+            <Box variant="alert-info" title="The ChassisVelocities type">
+              The type that carries these three numbers is{" "}
+              <code>ChassisVelocities</code>, and its fields are <code>vx</code>
+              , <code>vy</code>, and <code>omega</code> — three numbers
+              describing how the whole robot moves.
+            </Box>
 
             <div className="grid md:grid-cols-3 gap-4">
               <Box variant="alert-info" title="Vx (Forward/Back)">
@@ -330,28 +337,23 @@ export default function SwervePrerequisites() {
 
             <CodeBlock
               language="java"
-              title="Creating Chassis Speeds for Control"
-              code={`// Example: Drive forward at 2 m/s while rotating CCW at 1 rad/s
-ChassisSpeeds speeds = new ChassisSpeeds(
-    2.0,  // Vx: forward velocity (m/s)
-    0.0,  // Vy: left velocity (m/s)
-    1.0   // Omega: rotation rate (rad/s)
+              title="Creating Chassis Velocities for Control"
+              code={`// Example: drive forward at 2 m/s while rotating CCW at 1 rad/s.
+// ChassisVelocities fields are vx, vy, omega.
+ChassisVelocities velocities = new ChassisVelocities(
+    2.0,  // vx: forward velocity (m/s)
+    0.0,  // vy: left velocity (m/s)
+    1.0   // omega: rotation rate (rad/s)
 );
 
-// For field-centric control, transform based on robot heading
-ChassisSpeeds fieldRelative = ChassisSpeeds.fromFieldRelativeSpeeds(
-    joystickX,     // Field X velocity
-    joystickY,     // Field Y velocity
-    joystickOmega, // Rotation rate
-    robotHeading   // Current robot angle (Rotation2d)
-);
-
-// Apply to swerve drivetrain
+// For field-centric teleop you usually DON'T transform by hand — CTRE's
+// FieldCentric request applies the field-relative rotation for you, using the
+// drivetrain's operator perspective. Feed it the joystick values directly:
 drivetrain.setControl(
     new SwerveRequest.FieldCentric()
-        .withVelocityX(fieldRelative.vxMetersPerSecond)
-        .withVelocityY(fieldRelative.vyMetersPerSecond)
-        .withRotationalRate(fieldRelative.omegaRadiansPerSecond)
+        .withVelocityX(joystickX)           // field +X (m/s)
+        .withVelocityY(joystickY)           // field +Y (m/s)
+        .withRotationalRate(joystickOmega)  // rad/s, CCW positive
 );`}
             />
           </div>

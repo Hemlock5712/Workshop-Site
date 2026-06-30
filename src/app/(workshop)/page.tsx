@@ -308,7 +308,7 @@ export default function Home() {
             }}
             items={[
               "8 TalonFX motors + 4 CANcoders",
-              "PathPlanner trajectory following",
+              "DriveToPose / LinearPath path following",
               "Pigeon 2 IMU for heading fusion",
             ]}
           />

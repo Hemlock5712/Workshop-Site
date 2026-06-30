@@ -3,6 +3,7 @@
 # workspace member to satisfy the check without changing install behavior.
 packages:
   - "."
+  - "videos"
 
 overrides:
   js-yaml@>=4.0.0 <4.1.1: '>=4.1.1'

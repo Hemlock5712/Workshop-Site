@@ -5,6 +5,7 @@ import KeyboardNavigationProvider from "@/components/KeyboardNavigationProvider"
 import KeyboardShortcutsHelp from "@/components/KeyboardShortcutsHelp";
 import AutoFocusMain from "@/components/AutoFocusMain";
 import AnalyticsBanner from "@/components/AnalyticsBanner";
+import UpdateBanner from "@/components/UpdateBanner";
 import Footer from "@/components/Footer";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import HamburgerMenu from "@/components/HamburgerMenu";
@@ -69,6 +70,7 @@ export default function WorkshopLayout({
             </a>
           </div>
         </header>
+        <UpdateBanner />
         <div className="flex flex-1 overflow-hidden">
           <Sidebar />
           <main

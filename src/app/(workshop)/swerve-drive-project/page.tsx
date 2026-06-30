@@ -73,12 +73,12 @@ export default function SwerveDriveProject() {
                 What the Generator Creates:
               </h4>
               <ul className="list-disc list-inside space-y-1 text-sm text-slate-600 dark:text-slate-300">
-                <li>Complete CommandSwerveDrivetrain subsystem</li>
+                <li>Complete CommandSwerveDrivetrain class</li>
                 <li>Tuner constants for all swerve parameters</li>
                 <li>Module configurations and CAN IDs</li>
-                <li>Field-centric and robot-centric drive commands</li>
+                <li>Field-centric and robot-centric drive requests</li>
                 <li>Simulation support for testing without hardware</li>
-                <li>PathPlanner integration for autonomous</li>
+                <li>Odometry &amp; pose estimation wired in</li>
               </ul>
             </div>
             <div>
@@ -191,6 +191,32 @@ export default function SwerveDriveProject() {
           title="CTRE Swerve Project Generator Documentation"
           icon={<Book className="w-5 h-5" />}
         />
+
+        <Box
+          variant="alert-info"
+          title="How the generated swerve code fits the v3 OpMode model"
+        >
+          <p className="mb-3">
+            The Tuner X generator emits a <code>CommandSwerveDrivetrain</code>{" "}
+            that <code>extends</code> CTRE&apos;s Tuner-generated{" "}
+            <code>TunerSwerveDrivetrain</code> (a Phoenix 6 swerve class) plus a{" "}
+            <code>TunerConstants</code> file.
+          </p>
+          <p>
+            <code>CommandSwerveDrivetrain</code> is <em>not</em> itself a{" "}
+            <code>Mechanism</code> — it&apos;s already a class. So the workshop
+            wraps it in a hand-written <code>DriveMechanism</code> that{" "}
+            <code>extends Mechanism</code>, owns the drivetrain, exposes the
+            drive commands (e.g. <code>applyRequest(...)</code>,{" "}
+            <code>seedFieldCentric()</code>), and registers telemetry + the
+            operator perspective on <code>Scheduler.getDefault()</code>. The
+            field-centric requests use the <em>Velocity</em> family:{" "}
+            <code>FieldCentric</code> for driving, with{" "}
+            <code>ApplyFieldVelocity</code> and <code>ApplyRobotVelocity</code>{" "}
+            for field- and robot-relative control. This runs on{" "}
+            <strong>Java 25</strong> / <strong>SystemCore</strong>.
+          </p>
+        </Box>
       </section>
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
@@ -231,13 +257,13 @@ export default function SwerveDriveProject() {
                 "What does the Phoenix Tuner X swerve generator automatically create?",
               options: [
                 "Only motor configurations",
-                "Complete CommandSwerveDrivetrain subsystem, tuner constants, module configs, field-centric drive commands, simulation support, and PathPlanner integration",
+                "Complete CommandSwerveDrivetrain class, tuner constants, module configs, field-centric drive requests, simulation support, and odometry/pose estimation",
                 "Only the subsystem code",
                 "Just the CAN ID mappings",
               ],
               correctAnswer: 1,
               explanation:
-                "The swerve generator creates a comprehensive package including the CommandSwerveDrivetrain subsystem, TunerConstants with all parameters, module configurations, field-centric and robot-centric drive commands, simulation support for testing, and PathPlanner integration for autonomous.",
+                "The swerve generator creates a comprehensive package including the CommandSwerveDrivetrain class, TunerConstants with all parameters, module configurations, field-centric and robot-centric drive requests, simulation support for testing, and built-in odometry/pose estimation. (This workshop drives autonomously with CTRE LinearPath/DriveToPose rather than PathPlanner.)",
             },
             {
               id: 4,
@@ -276,9 +302,11 @@ export default function SwerveDriveProject() {
           What&apos;s Next?
         </h2>
 
-        <Box variant="alert-success" title="Up Next: PathPlanner">
+        <Box variant="alert-success" title="Up Next: Driving to a Pose">
           Now that your swerve project is generated, the next step is autonomous
-          path following with PathPlanner.
+          movement — driving to field poses with CTRE&apos;s{" "}
+          <code>LinearPath</code> / <code>DriveToPose</code> (the v3 template
+          drives this way instead of PathPlanner).
         </Box>
       </section>
     </PageTemplate>

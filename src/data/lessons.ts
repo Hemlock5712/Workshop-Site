@@ -72,7 +72,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   {
     slug: "/building-subsystems",
-    title: "Subsystems",
+    title: "Mechanisms",
     section: "workshop1",
   },
   { slug: "/adding-commands", title: "Commands", section: "workshop1" },
@@ -107,8 +107,8 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   {
     slug: "/pathplanner",
-    title: "Adding PathPlanner",
-    shortLabel: "PathPlanner",
+    title: "Autonomous: Driving to a Pose",
+    shortLabel: "Auto Routines",
     section: "workshop2",
   },
   {
@@ -151,8 +151,8 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   {
     slug: "/state-based",
-    title: "State-Based Control",
-    shortLabel: "State Control",
+    title: "State Machines",
+    shortLabel: "State Machines",
     section: "advanced",
   },
   {

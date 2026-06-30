@@ -188,24 +188,30 @@ Pose2d currentPose = drivetrain.getPose();`}
           <CodeBlock
             language="java"
             title="DriveToPoint Command Setup"
-            code={`public class DriveToPoint extends Command {
-  private final CommandSwerveDrivetrain m_drivetrain;
+            code={`// ClassicCommand gives you the explicit
+// initialize / execute / isFinished / end lifecycle (see the Commands lesson).
+public class DriveToPoint extends ClassicCommand {
+  private final DriveMechanism m_drivetrain;
   private final Pose2d m_targetPose;
 
   // Three PID controllers for X, Y, and rotation
-  private PIDController xController = new PIDController(10, 0, 0);
-  private PIDController yController = new PIDController(10, 0, 0);
-  private PIDController thetaController = new PIDController(7, 0, 0);
+  private final PIDController xController = new PIDController(10, 0, 0);
+  private final PIDController yController = new PIDController(10, 0, 0);
+  private final PIDController thetaController = new PIDController(7, 0, 0);
 
-  private SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric();
+  // Field-relative velocity request in the blue-origin frame — the same frame
+  // odometry uses — so the command isn't re-rotated by alliance perspective.
+  private final SwerveRequest.ApplyFieldVelocity driveRequest =
+      new SwerveRequest.ApplyFieldVelocity()
+          .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance);
 
-  public DriveToPoint(CommandSwerveDrivetrain drivetrain, Pose2d targetPose) {
+  public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
+    super("DriveToPoint", drivetrain); // command name + the mechanism it requires
     m_drivetrain = drivetrain;
     m_targetPose = targetPose;
 
     // Enable continuous input for theta (-π to π)
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    addRequirements(drivetrain);
   }
 }`}
           />
@@ -240,31 +246,21 @@ Pose2d currentPose = drivetrain.getPose();`}
             language="java"
             title="Command Execute Method"
             code={`@Override
-public void execute() {
-  // Get current robot position from odometry
+protected void execute() {
   Pose2d currentPose = m_drivetrain.getPose();
 
-  // Calculate required velocities using PID
-  double xVelocity = xController.calculate(
-      currentPose.getX(),
-      m_targetPose.getX()
-  );
-  double yVelocity = yController.calculate(
-      currentPose.getY(),
-      m_targetPose.getY()
-  );
+  // One PID per axis. Each one asks: "how fast should I move
+  // this axis to close the gap between current and target?"
+  double xVelocity = xController.calculate(currentPose.getX(), m_targetPose.getX());
+  double yVelocity = yController.calculate(currentPose.getY(), m_targetPose.getY());
+  // Theta is the same shape — just read the rotation in radians.
   double thetaVelocity = thetaController.calculate(
       currentPose.getRotation().getRadians(),
-      m_targetPose.getRotation().getRadians()
-  );
+      m_targetPose.getRotation().getRadians());
 
-  // Apply velocities to drivetrain
+  // Hand the field-relative velocities (blue-origin) to the drivetrain.
   m_drivetrain.setControl(
-      driveRequest
-          .withVelocityX(xVelocity)
-          .withVelocityY(yVelocity)
-          .withRotationalRate(thetaVelocity)
-  );
+      driveRequest.withVelocity(new ChassisVelocities(xVelocity, yVelocity, thetaVelocity)));
 }`}
           />
 
@@ -302,19 +298,63 @@ public void execute() {
             language="java"
             title="Command End Method"
             code={`@Override
-public void end(boolean interrupted) {
-  // Stop the drivetrain when command ends
+protected void end(boolean interrupted) {
+  // Stop the drivetrain when the command ends. ClassicCommand runs this on both
+  // a natural finish and an interrupt, so it's the one place cleanup needs to be.
   m_drivetrain.setControl(new SwerveRequest.Idle());
 }
 
 @Override
-public boolean isFinished() {
-  // This command runs until interrupted
-  // Could add tolerance checking to auto-finish
+protected boolean isFinished() {
+  // This command runs until interrupted.
+  // Could add tolerance checking to auto-finish (see Tuning Tips below).
   return false;
 }`}
           />
         </ContentCard>
+
+        <Box variant="alert-info" tag="NOTE" title="The ClassicCommand shape">
+          <p>
+            The command above <code>extends ClassicCommand</code>, which gives
+            you the explicit{" "}
+            <code>initialize / execute / isFinished / end</code> lifecycle on
+            top of a coroutine. <code>super(name, drivetrain)</code> declares
+            the command name and the mechanism it requires, and{" "}
+            <code>end(interrupted)</code> runs on both a natural finish and a
+            cancel — so it&apos;s the one place to put cleanup. If you&apos;d
+            rather write it as one inline body, here&apos;s the coroutine-native
+            version:
+          </p>
+          <CodeBlock
+            language="java"
+            title="DriveToPoint — inline coroutine version"
+            code={`// A command factory on DriveMechanism. runRepeatedly loops the drive update
+// every tick and never finishes on its own (set-and-hold), so it runs until
+// something cancels it; whenCanceled idles the drivetrain.
+public Command driveToPoint(Pose2d target) {
+  PIDController xPid = new PIDController(10, 0, 0);
+  PIDController yPid = new PIDController(10, 0, 0);
+  PIDController thetaPid = new PIDController(7, 0, 0);
+  thetaPid.enableContinuousInput(-Math.PI, Math.PI);
+
+  var driveRequest =
+      new SwerveRequest.ApplyFieldVelocity()
+          .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance);
+
+  return runRepeatedly(() -> {
+        Pose2d pose = getPose();
+        setControl(driveRequest.withVelocity(new ChassisVelocities(
+            xPid.calculate(pose.getX(), target.getX()),
+            yPid.calculate(pose.getY(), target.getY()),
+            thetaPid.calculate(
+                pose.getRotation().getRadians(),
+                target.getRotation().getRadians()))));
+      })
+      .whenCanceled(() -> setControl(new SwerveRequest.Idle()))
+      .named("DriveToPoint:" + target);
+}`}
+          />
+        </Box>
       </section>
 
       {/* Button Bindings */}
@@ -325,25 +365,25 @@ public boolean isFinished() {
 
         <p className="text-slate-600 dark:text-slate-300">
           Bind the DriveToPoint command to buttons for easy testing and teleop
-          use. Hold the button to drive to the point; release to stop.
+          use. In the OpMode model these bindings live in the{" "}
+          <strong>Teleop OpMode constructor</strong>, so they&apos;re scoped to
+          teleop and removed automatically on a mode switch. Hold the button to
+          drive to the point; release to stop.
         </p>
 
         <CodeBlock
           language="java"
-          title="RobotContainer Button Bindings"
-          code={`private void configureBindings() {
-  // Hold A button: drive to origin (0, 0, 0°)
-  joystick.a().whileTrue(
-      new DriveToPoint(drivetrain, Pose2d.kZero)
-  );
+          title="Teleop OpMode Button Bindings"
+          code={`// Inside the @Teleop OpMode constructor — bindings are scoped to this OpMode.
+public TeleopOpMode(Robot robot) {
+  DriveMechanism drivetrain = robot.drivetrain;
 
-  // Hold B button: drive to (3m, 2m, 180°)
-  joystick.b().whileTrue(
-      new DriveToPoint(
-          drivetrain,
-          new Pose2d(3, 2, Rotation2d.fromDegrees(180))
-      )
-  );
+  // Hold A: drive to origin (0, 0, 0°)
+  driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
+
+  // Hold B: drive to (3 m, 2 m, 180°)
+  driver.b().whileTrue(
+      new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));
 }`}
         />
 
@@ -435,18 +475,19 @@ public boolean isFinished() {
             <CodeBlock
               language="java"
               title="Example Auto Sequence"
-              code={`// Sequential autonomous routine
-Command autoSequence = new SequentialCommandGroup(
+              code={`// Sequential autonomous routine — Command.sequence runs these in order.
+Command autoSequence = Command.sequence(
     new DriveToPoint(drivetrain, startPose),
-    new IntakeCommand(intake),
+    intake.intake(),
     new DriveToPoint(drivetrain, scoringPose),
-    new ScoreCommand(shooter),
-    new DriveToPoint(drivetrain, nextGamePiecePose)
-);`}
+    superstructure.score(),
+    new DriveToPoint(drivetrain, nextGamePiecePose));`}
             />
             <p>
               This forms the foundation for more complex autonomous navigation
-              before adding vision or PathPlanner.
+              before adding vision. (You&apos;d typically wrap a routine like
+              this in an <code>@Autonomous</code> OpMode — see the Autonomous
+              lesson.)
             </p>
           </div>
         </CollapsibleSection>
@@ -529,7 +570,7 @@ yVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, yVelocity));`}
                   language="java"
                   title="isFinished with Tolerance"
                   code={`@Override
-public boolean isFinished() {
+protected boolean isFinished() {
   Pose2d currentPose = m_drivetrain.getPose();
   double distanceError = currentPose.getTranslation()
       .getDistance(m_targetPose.getTranslation());

@@ -10,9 +10,28 @@ export default function ProjectSetup() {
       {/* Introduction */}
       <KeyConceptSection
         title="Project Setup - Launching Your Codebase"
-        description="Step-by-step guide to generating a new WPILib project using the Command framework template."
-        concept="Starting with the right template ensures organized commands and subsystems."
+        description="Step-by-step guide to creating a new WPILib project. This workshop's robot code is built on Commands v3 + OpModes, so the starting point is the team's 2026-Template, which already organizes your code into mechanisms and OpModes."
+        concept="Start from the Commands v3 / OpMode project so your code is organized into mechanisms and OpModes from day one."
       />
+
+      <Box
+        variant="alert-info"
+        tag="NOTE"
+        title="This workshop targets the 2027 alpha (Commands v3 + OpModes)"
+      >
+        <p className="mb-3">
+          The robot code uses{" "}
+          <strong>Commands v3 + the OpMode framework</strong>, runs on{" "}
+          <strong>Java 25</strong>, and deploys to <strong>SystemCore</strong>.
+          The workshop&apos;s canonical starting point is the team&apos;s{" "}
+          <strong>2026-Template</strong> repo — clone it (or use it as your
+          base) so you start with the OpMode wiring already in place, then set
+          your team number in <code>.wpilib/wpilib_preferences.json</code>. The
+          site mirrors the 2027 alpha stack (GradleRIO{" "}
+          <code>2027.0.0-alpha-6</code>, Phoenix 6 <code>26.50.0-alpha-1</code>
+          ).
+        </p>
+      </Box>
 
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">
@@ -75,7 +94,9 @@ export default function ProjectSetup() {
               </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Choose Template → Java →{" "}
-                <strong>Command Robot Skeleton (Advanced)</strong>
+                <strong>Command Robot Skeleton (Advanced)</strong>. Note: for
+                the 2027 OpMode structure this workshop teaches, start from the{" "}
+                <strong>2026-Template</strong> as noted above.
               </p>
             </div>
           </div>
@@ -180,16 +201,16 @@ export default function ProjectSetup() {
           {
             id: 1,
             question:
-              "Which WPILib project template should you use for this workshop?",
+              "What's the starting point for this workshop's robot code on the 2027 stack?",
             options: [
-              "Blank Project",
-              "Timed Robot",
-              "Command Robot Skeleton (Advanced)",
-              "Romi Robot",
+              "The stock Timed Robot template",
+              "The team's 2026-Template (Commands v3 + OpModes)",
+              "A blank project you wire up by hand",
+              "The Romi Robot template",
             ],
-            correctAnswer: 2,
+            correctAnswer: 1,
             explanation:
-              "The Command Robot Skeleton (Advanced) template provides the proper structure for command-based programming with organized subsystems and commands.",
+              "This workshop targets WPILib 2027 (Commands v3 + OpModes, Java 25, SystemCore). You start from the team's 2026-Template, which already has the OpMode wiring in place.",
           },
           {
             id: 2,

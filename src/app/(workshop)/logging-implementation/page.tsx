@@ -10,7 +10,7 @@ import {
   BarChart2,
   Book,
   Globe,
-  Wrench,
+  Zap,
   Lightbulb,
   AlertTriangle,
   Info,
@@ -21,166 +21,196 @@ export default function LoggingImplementation() {
     <PageTemplate title="Implementing Logging">
       {/* Introduction */}
       <KeyConceptSection
-        title="Setting Up Data Logging"
-        description="Implementing logging in your robot code is straightforward with WPILib's DataLogManager. This section shows you how to enable logging, publish data to NetworkTables, and view logs with AdvantageScope."
-        concept="A few lines of code unlock comprehensive data logging for debugging and analysis."
+        title="Setting Up DataLogManager"
+        description="We log with WPILib's built-in DataLogManager — no vendordep, no LoggedRobot, no replay layer. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (your telemetry plus the Driver-Station and joystick data) is captured to a .wpilog file you open in AdvantageScope."
+        concept="Turn it on in Robot's constructor, then publish what you care about to NetworkTables. DataLogManager records every NT change to disk."
       />
 
-      {/* Epilogue Basics */}
+      {/* Turning it on */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Using WPILib Epilogue
+          Turning on logging
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          WPILib 2025+ includes Epilogue, an annotation-based logging framework
-          that automatically generates logging code at compile time. Instead of
-          manually publishing data to NetworkTables, you simply annotate your
-          classes with @Logged.
+          <code>DataLogManager</code> is part of WPILib, so there&apos;s nothing
+          to install. Start it in <code>Robot</code>&apos;s constructor before
+          anything else, and add the Driver-Station data feed:
         </p>
 
         <CodeBlock
+          filename="Robot.java"
           language="java"
-          title="Subsystem with @Logged Annotation"
-          code={`import edu.wpi.first.epilogue.Logged;
+          code={`import org.wpilib.driverstation.DriverStation;
+import org.wpilib.framework.OpModeRobot;
+import org.wpilib.system.DataLogManager;
 
-@Logged  // This annotation automatically logs all public fields and methods
-public class ArmSubsystem extends SubsystemBase {
-  private final TalonFX motor;
-  private final PositionVoltage positionRequest = new PositionVoltage(0);
+public class Robot extends OpModeRobot {
+  // Subsystems live here as public final fields — see the Command-Based Framework page.
 
-  // Logged automatically: position, velocity, current, voltage, temperature
-  public double getPosition() {
-    return motor.getPosition().getValueAsDouble();
+  public Robot() {
+    // Start on-robot logging. Two lines, no vendordep:
+    DataLogManager.start();                              // records every NetworkTables change + console output
+    DriverStation.startDataLog(DataLogManager.getLog()); // adds Driver-Station state + joystick data
+
+    // ... construct subsystems and always-on bindings after this.
   }
-
-  public double getVelocity() {
-    return motor.getVelocity().getValueAsDouble();
-  }
-
-  public double getCurrent() {
-    return motor.getSupplyCurrent().getValueAsDouble();
-  }
-
-  // No periodic() method needed for logging!
-  // Epilogue automatically logs all public getters at 50Hz
 }`}
         />
 
         <Box
+          variant="alert-info"
+          title="Where the logs go"
+          icon={<Info className="w-5 h-5" />}
+        >
+          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+            <li>
+              <strong>Simulation:</strong> a <code>.wpilog</code> under{" "}
+              <code>./logs</code> in your project.
+            </li>
+            <li>
+              <strong>On SystemCore:</strong> a USB drive if one is plugged in,
+              otherwise <code>/home/systemcore/logs</code>.
+            </li>
+            <li>
+              <strong>Phoenix 6 devices</strong> additionally log to a{" "}
+              <code>.hoot</code> file (high-rate signal data) that you can open
+              in Tuner X or AdvantageScope — extra detail for free.
+            </li>
+          </ul>
+        </Box>
+      </section>
+
+      {/* What you get for free */}
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          What you get automatically
+        </h2>
+
+        <p className="text-slate-600 dark:text-slate-300">
+          The moment <code>DataLogManager.start()</code> runs, these are
+          captured with no further code:
+        </p>
+
+        <Box
           variant="alert-tip"
-          title="Epilogue Benefits"
+          title="Captured for free"
           icon={<Lightbulb className="w-5 h-5" />}
         >
           <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              <strong>Zero boilerplate:</strong> No SmartDashboard.put() calls
-              in periodic()
+              <strong>Every NetworkTables value change</strong> — including
+              everything your telemetry publishes (more below)
             </li>
             <li>
-              <strong>Compile-time generation:</strong> Efficient code with no
-              runtime overhead
+              <strong>Console output</strong> — anything printed to
+              stdout/stderr
             </li>
             <li>
-              <strong>Automatic discovery:</strong> Logs all public
-              fields/getters unless marked @NotLogged
+              <strong>Driver-Station data</strong> (via{" "}
+              <code>startDataLog</code>): alliance, mode, match time, and full
+              joystick axes/buttons
             </li>
             <li>
-              <strong>Built into WPILib 2025:</strong> No extra dependencies
-              required
+              <strong>Phoenix 6 signals</strong> in the <code>.hoot</code> file
+              — motor positions, velocities, currents, temperatures
             </li>
           </ul>
         </Box>
-
-        <DocumentationButton
-          href="https://docs.wpilib.org/en/stable/docs/software/telemetry/robot-telemetry-with-annotations.html"
-          title="WPILib Epilogue Documentation"
-        />
       </section>
 
-      {/* DataLogManager Examples */}
+      {/* Logging your own values */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          DataLogManager Examples
+          Logging your own values
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          To log data from your subsystems, publish it to NetworkTables using
-          SmartDashboard or NetworkTableInstance. DataLogManager will
-          automatically capture it.
+          To log something specific,{" "}
+          <strong>publish it to NetworkTables</strong> —{" "}
+          <code>DataLogManager</code> records the change to the{" "}
+          <code>.wpilog</code> automatically. For a quick number,{" "}
+          <code>SmartDashboard.putNumber(&quot;Arm/Position&quot;, pos)</code>{" "}
+          works. For structured types like <code>Pose2d</code> or{" "}
+          <code>ChassisVelocities</code>, use a NetworkTables{" "}
+          <em>struct publisher</em> so AdvantageScope can render them natively.
         </p>
 
-        <CollapsibleSection title="📊 Subsystem Telemetry Example">
+        <CollapsibleSection title="🗺️ The drivetrain telemetry surface (struct publishers)">
+          <p className="text-slate-600 dark:text-slate-300 mb-4">
+            The template&apos;s <code>Telemetry</code> class is the
+            project&apos;s logging surface. It publishes the swerve state to
+            NetworkTables with type-aware struct publishers; CTRE calls it from
+            the odometry thread (register with{" "}
+            <code>drivetrain.registerTelemetry(telemetry::telemeterize)</code>).
+            Because it&apos;s on NetworkTables, <code>DataLogManager</code>{" "}
+            writes it to the <code>.wpilog</code> too.
+          </p>
           <CodeBlock
+            filename="Telemetry.java"
             language="java"
-            title="Subsystem with Telemetry"
-            code={`public class ArmSubsystem extends SubsystemBase {
-  private final TalonFX motor;
-  private final PositionVoltage positionRequest = new PositionVoltage(0);
+            code={`import org.wpilib.networktables.DoublePublisher;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.networktables.NetworkTableInstance;
+import org.wpilib.networktables.StructPublisher;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.kinematics.ChassisVelocities;
 
-  public ArmSubsystem() {
-    motor = new TalonFX(1, "canivore");
-    // Configure motor...
-  }
+public class Telemetry {
+  private final NetworkTable table =
+      NetworkTableInstance.getDefault().getTable("Drivetrain");
 
-  @Override
-  public void periodic() {
-    // Publish motor telemetry to NetworkTables
-    // DataLogManager will automatically log these values
+  // Struct publishers are type-aware: AdvantageScope drops a Pose2d straight
+  // onto the field view, no manual x/y/heading wiring.
+  private final StructPublisher<Pose2d> pose =
+      table.getStructTopic("Pose", Pose2d.struct).publish();
+  private final StructPublisher<ChassisVelocities> velocity =
+      table.getStructTopic("Velocity", ChassisVelocities.struct).publish();
+  private final DoublePublisher translationSpeed =
+      table.getDoubleTopic("TranslationSpeedMps").publish();
 
-    SmartDashboard.putNumber("Arm/Position", motor.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Arm/Velocity", motor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Arm/Current", motor.getSupplyCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("Arm/Voltage", motor.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("Arm/Temperature", motor.getDeviceTemp().getValueAsDouble());
-
-    // Log target vs actual for PID analysis
-    SmartDashboard.putNumber("Arm/TargetPosition", positionRequest.Position);
-    SmartDashboard.putNumber("Arm/Error",
-        positionRequest.Position - motor.getPosition().getValueAsDouble());
-  }
-
-  public void setTargetPosition(double rotations) {
-    motor.setControl(positionRequest.withPosition(rotations));
+  // CTRE invokes this every new swerve state. Each set(...) lands on NT under
+  // Drivetrain/* and is captured to the .wpilog by DataLogManager.
+  public void telemeterize(SwerveDriveState state) {
+    pose.set(state.Pose);
+    velocity.set(state.Velocity);
+    translationSpeed.set(Math.hypot(state.Velocity.vx, state.Velocity.vy));
   }
 }`}
           />
         </CollapsibleSection>
 
-        <CollapsibleSection title="🗺️ Logging Robot Pose">
+        <CollapsibleSection title="📊 Logging from a mechanism (there's no periodic() in v3)">
+          <p className="text-slate-600 dark:text-slate-300 mb-4">
+            v3 mechanisms don&apos;t have a <code>periodic()</code> method, so
+            &quot;publish my state every loop&quot; needs a different home. The
+            simple pattern is a <code>runRepeatedly(...)</code> default command
+            that publishes each tick whenever nothing else is using the
+            mechanism:
+          </p>
           <CodeBlock
+            filename="Arm.java"
             language="java"
-            title="Swerve Drive Odometry Logging"
-            code={`public class CommandSwerveDrivetrain extends SubsystemBase {
+            code={`public class Arm extends Mechanism {
+  private final TalonFX motor = new TalonFX(31);
+  private final DoublePublisher positionPub =
+      NetworkTableInstance.getDefault().getTable("Arm").getDoubleTopic("Position").publish();
 
-  @Override
-  public void periodic() {
-    // Get current robot pose
-    Pose2d pose = getState().Pose;
+  public Arm() {
+    // Publish telemetry every loop while idle; a real command pre-empts it.
+    setDefaultCommand(runRepeatedly(this::publishTelemetry).named("Arm:telemetry"));
+  }
 
-    // Log pose components
-    SmartDashboard.putNumber("Odometry/X", pose.getX());
-    SmartDashboard.putNumber("Odometry/Y", pose.getY());
-    SmartDashboard.putNumber("Odometry/Heading", pose.getRotation().getDegrees());
-
-    // Log as array for AdvantageScope field visualization
-    SmartDashboard.putNumberArray("Odometry/Pose", new double[] {
-      pose.getX(),
-      pose.getY(),
-      pose.getRotation().getRadians()
-    });
-
-    // Log module states for detailed analysis
-    SwerveModuleState[] states = getModuleStates();
-    for (int i = 0; i < states.length; i++) {
-      SmartDashboard.putNumber("Swerve/Module" + i + "/Angle",
-          states[i].angle.getDegrees());
-      SmartDashboard.putNumber("Swerve/Module" + i + "/Speed",
-          states[i].speedMetersPerSecond);
-    }
+  private void publishTelemetry() {
+    positionPub.set(motor.getPosition().getValueAsDouble()); // -> NT Arm/Position -> .wpilog
   }
 }`}
           />
+          <p className="text-slate-600 dark:text-slate-300 mt-4">
+            You can also publish from inside a command body, right next to the
+            setpoint that produced the value — handy for logging
+            target-vs-actual during a move.
+          </p>
         </CollapsibleSection>
 
         <Box
@@ -190,20 +220,20 @@ public class ArmSubsystem extends SubsystemBase {
         >
           <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              <strong>Don&apos;t overdo it:</strong> Logging too much data can
-              impact loop timing
+              <strong>Use hierarchical keys</strong> (e.g.{" "}
+              <code>&quot;Arm/Position&quot;</code>) so the log stays organized.
             </li>
             <li>
-              <strong>Use appropriate keys:</strong> Organize data with
-              hierarchical keys (e.g., &quot;Subsystem/Parameter&quot;)
+              <strong>Prefer struct types</strong> — publish one{" "}
+              <code>Pose2d</code> rather than three separate numbers.
             </li>
             <li>
-              <strong>Avoid String spam:</strong> Strings are expensive to log
-              at high frequency
+              <strong>Avoid high-frequency strings</strong> — they&apos;re
+              expensive; log numbers and booleans.
             </li>
             <li>
-              <strong>Consider sampling rate:</strong> Not all data needs 50Hz
-              logging
+              <strong>Don&apos;t over-publish</strong> — too much NT traffic can
+              affect loop timing.
             </li>
           </ul>
         </Box>
@@ -215,47 +245,27 @@ public class ArmSubsystem extends SubsystemBase {
           Workshop Code Implementation
         </h2>
 
-        <p className="text-slate-600 dark:text-slate-300">
-          For this workshop we will use DataLogManager and Epilogue, as they
-          work perfectly together and are built into WPILib.
-        </p>
-
         <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
-          Robot.java - Adding Logging
+          Robot.java — starting DataLogManager
         </h3>
 
         <GitHubContent
           repository="Hemlock5712/Workshop-Code"
           branch="2-Logging"
           filePath="src/main/java/frc/robot/Robot.java"
-          pr={{ number: 8, focusFile: "Robot.java" }}
         />
 
-        <CollapsibleSection title="RobotContainer.java">
+        <CollapsibleSection title="🔧 Drivetrain telemetry">
           <p className="text-slate-600 dark:text-slate-300 mb-4">
-            RobotContainer.java includes logging setup for subsystems and
-            commands. This helps track which commands are running and monitor
-            subsystem state.
-          </p>
-          <GitHubContent
-            repository="Hemlock5712/Workshop-Code"
-            branch="2-Logging"
-            filePath="src/main/java/frc/robot/RobotContainer.java"
-            pr={{ number: 8, focusFile: "RobotContainer.java" }}
-          />
-        </CollapsibleSection>
-
-        <CollapsibleSection title="🔧 Subsystem Logging Example">
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
-            Subsystems use Epilogue&apos;s @Logged annotation to automatically
-            log data. This example shows the CommandSwerveDrivetrain with
-            Epilogue logging enabled.
+            The drivetrain is the canonical example: it publishes{" "}
+            <code>Pose2d</code>, velocity, and per-module states to
+            NetworkTables through its telemetry helper, and{" "}
+            <code>DataLogManager</code> records all of it.
           </p>
           <GitHubContent
             repository="Hemlock5712/Workshop-Code"
             branch="2-Logging"
             filePath="src/main/java/frc/robot/subsystems/CommandSwerveDrivetrain.java"
-            pr={{ number: 8, focusFile: "CommandSwerveDrivetrain.java" }}
           />
         </CollapsibleSection>
       </section>
@@ -267,9 +277,11 @@ public class ArmSubsystem extends SubsystemBase {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          AdvantageScope is a powerful log visualization tool that can both read
-          .wpilog files for post-match analysis and connect to your robot in
-          real-time for live data monitoring.
+          AdvantageScope is the natural viewer for the logs you&apos;re
+          producing. It reads <code>.wpilog</code> files for post-match analysis
+          and connects to your robot over NetworkTables for live monitoring.
+          (Glass and Tuner X can also read these; Tuner X opens the{" "}
+          <code>.hoot</code> files.)
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -278,21 +290,19 @@ public class ArmSubsystem extends SubsystemBase {
               📡 Real-Time Data Viewing
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-              AdvantageScope can connect to your robot while it&apos;s running
-              to view live data through NetworkTables.
+              Everything you publish to NetworkTables is visible live.
             </p>
             <ol className="list-decimal list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
               <li>Open AdvantageScope on your driver station</li>
               <li>Select &quot;Connect to Robot&quot; from the menu</li>
+              <li>Enter your team number or robot address</li>
               <li>
-                Enter your team number or robot IP address (e.g.,
-                roborio-TEAM-frc.local)
+                Browse the NetworkTables tree — your keys land under their table
+                (e.g. <code>Drivetrain/Pose</code>)
               </li>
-              <li>AdvantageScope connects via NetworkTables</li>
               <li>
-                Add graphs and visualizations to monitor data in real-time
+                Add graphs, the 3D field view, or swerve module visualizations
               </li>
-              <li>Perfect for tuning PID controllers and debugging sensors</li>
             </ol>
           </div>
 
@@ -301,45 +311,42 @@ public class ArmSubsystem extends SubsystemBase {
               📥 Post-Match Log Analysis
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-              Download and analyze logs using AdvantageScope&apos;s built-in
-              tools.
+              Pull <code>.wpilog</code> files off the USB drive or download them
+              from the robot with AdvantageScope.
             </p>
             <ol className="list-decimal list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-              <li>Open Preferences (App &gt; Show Preferences)</li>
-              <li>Update the robot address and log folder if needed</li>
+              <li>Open Preferences and set the robot address / log folder</li>
               <li>Click &quot;File&quot; &gt; &quot;Download Logs...&quot;</li>
-              <li>Select the logs you want to download (newest at top)</li>
-              <li>Click the download symbol (↓) and select a save location</li>
-              <li>Open the downloaded .wpilog file</li>
-              <li>Add line graphs or use 3D field view for analysis</li>
+              <li>Select the logs to download (newest at top)</li>
+              <li>
+                Open the downloaded <code>.wpilog</code> file
+              </li>
+              <li>Add line graphs or use the 3D field view for analysis</li>
             </ol>
           </div>
         </div>
 
         <Box
           variant="alert-info"
-          title="NetworkTables Connection"
+          title="Where the data lives in NetworkTables"
           icon={<Info className="w-5 h-5" />}
         >
-          <p className="mb-3">
-            When connecting to your robot in real-time, AdvantageScope uses
-            NetworkTables to subscribe to the data being published by your robot
-            code. This means:
+          <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
+            Your published values land under whatever table you chose, and the
+            auto-captured data sits alongside it:
           </p>
           <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              You can see live sensor values and motor outputs as your robot
-              runs
+              <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …
+              — your telemetry struct publishers
             </li>
             <li>
-              Changes to PID gains or other parameters can be tested immediately
+              <code>SmartDashboard/...</code> — anything you sent via{" "}
+              <code>SmartDashboard.put*</code>
             </li>
             <li>
-              No need to wait for match completion to download and analyze logs
-            </li>
-            <li>
-              Real-time data is <strong>not</strong> automatically saved unless
-              DataLogManager is enabled
+              Driver-Station and joystick data captured by{" "}
+              <code>startDataLog</code>
             </li>
           </ul>
         </Box>
@@ -351,22 +358,25 @@ public class ArmSubsystem extends SubsystemBase {
         >
           <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              <strong>Overlay multiple signals:</strong> Compare target vs
-              actual values on same graph
+              <strong>Overlay multiple signals:</strong> compare target vs
+              actual on the same graph
             </li>
             <li>
-              <strong>Video sync:</strong> Sync log data with match video for
-              context
+              <strong>Video sync:</strong> line log data up with match video
             </li>
             <li>
-              <strong>Save layouts:</strong> Create reusable dashboard layouts
-              for quick analysis
+              <strong>Save layouts:</strong> reusable dashboards for quick
+              analysis
+            </li>
+            <li>
+              <strong>Drag struct types in:</strong> drop a logged{" "}
+              <code>Pose2d</code> onto the 2D/3D field view directly
             </li>
           </ul>
         </Box>
 
         <DocumentationButton
-          href="https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/INDEX.md"
+          href="https://docs.advantagescope.org/"
           title="AdvantageScope Documentation"
           icon={<Book className="w-5 h-5" />}
         />
@@ -381,20 +391,37 @@ public class ArmSubsystem extends SubsystemBase {
         <div className="grid md:grid-cols-2 gap-6">
           <Box variant="alert-success" title="✅ Do">
             <ul className="list-disc list-inside space-y-2">
-              <li>Log sensor inputs and motor outputs</li>
-              <li>Use hierarchical key naming (Subsystem/Parameter)</li>
-              <li>Log target setpoints alongside actual values</li>
-              <li>Include timestamps for event logging</li>
-              <li>Download logs after every match</li>
-              <li>Review logs between matches to catch issues</li>
+              <li>
+                Log sensor inputs, motor outputs, and target setpoints together
+              </li>
+              <li>
+                Use hierarchical keys (<code>Subsystem/Parameter</code>)
+              </li>
+              <li>
+                Prefer struct types (<code>Pose2d</code>,{" "}
+                <code>SwerveModuleVelocity[]</code>) over flattened number
+                arrays
+              </li>
+              <li>
+                Start DataLogManager first thing in Robot&apos;s constructor
+              </li>
+              <li>
+                Download logs after every match and review between matches
+              </li>
             </ul>
           </Box>
 
           <Box variant="alert-danger" title="❌ Don&rsquo;t">
             <ul className="list-disc list-inside space-y-2">
-              <li>Log high-frequency strings (use numbers/booleans)</li>
-              <li>Publish the same data multiple times</li>
-              <li>Ignore loop overrun warnings from excessive logging</li>
+              <li>Log high-frequency strings (use numbers or booleans)</li>
+              <li>
+                Publish so much that NetworkTables traffic hurts loop timing
+              </li>
+              <li>
+                Forget a USB drive on the robot if you want the log off the
+                controller easily
+              </li>
+              <li>Ignore loop-overrun warnings from excessive publishing</li>
             </ul>
           </Box>
         </div>
@@ -413,19 +440,19 @@ public class ArmSubsystem extends SubsystemBase {
             icon={<Book className="w-5 h-5" />}
           />
           <DocumentationButton
-            href="https://github.com/Mechanical-Advantage/AdvantageScope"
-            title="AdvantageScope GitHub"
-            icon={<Wrench className="w-5 h-5" />}
+            href="https://docs.wpilib.org/en/stable/docs/software/networktables/networktables-intro.html"
+            title="NetworkTables (publishing values)"
+            icon={<Globe className="w-5 h-5" />}
           />
           <DocumentationButton
-            href="https://docs.wpilib.org/en/stable/docs/software/dashboards/smartdashboard/index.html"
-            title="SmartDashboard Documentation"
+            href="https://docs.advantagescope.org/"
+            title="AdvantageScope - Log Visualization"
             icon={<BarChart2 className="w-5 h-5" />}
           />
           <DocumentationButton
-            href="https://docs.wpilib.org/en/stable/docs/software/networktables/index.html"
-            title="NetworkTables Documentation"
-            icon={<Globe className="w-5 h-5" />}
+            href="https://v6.docs.ctr-electronics.com/"
+            title="Phoenix 6 (.hoot signal logging)"
+            icon={<Zap className="w-5 h-5" />}
           />
         </div>
       </section>
@@ -437,67 +464,71 @@ public class ArmSubsystem extends SubsystemBase {
           questions={[
             {
               id: 1,
-              question: "How does Epilogue's @Logged annotation work?",
+              question: "How do you turn on logging in the 2027 template?",
               options: [
-                "It logs data at runtime by checking annotations",
-                "It automatically generates logging code at compile time with no runtime overhead",
-                "It sends data directly to the driver station",
-                "It replaces the need for NetworkTables",
+                "Extend LoggedRobot and add the AdvantageKit vendordep",
+                "Call DataLogManager.start() and DriverStation.startDataLog(...) in Robot's constructor",
+                "Annotate every field with @Logged",
+                "Enable it from the Driver Station settings",
               ],
               correctAnswer: 1,
               explanation:
-                "Epilogue uses annotation processing to automatically generate efficient logging code at compile time. This means zero boilerplate in your code and no runtime performance overhead from reflection or annotation processing.",
+                "DataLogManager is built into WPILib. Two lines in Robot's constructor do it: DataLogManager.start() records NetworkTables changes and console output, and DriverStation.startDataLog(DataLogManager.getLog()) adds Driver-Station and joystick data. No vendordep and no LoggedRobot.",
             },
             {
               id: 2,
-              question:
-                "What is the primary benefit of hierarchical key naming in logging (e.g., 'Subsystem/Parameter')?",
+              question: "What does DataLogManager capture automatically?",
               options: [
-                "It makes the robot drive faster",
-                "It organizes data logically for easier analysis and debugging",
-                "It reduces file size",
-                "It prevents NetworkTables from crashing",
+                "Only values you pass to Logger.recordOutput(...)",
+                "Every NetworkTables value change, console output, and (via startDataLog) Driver-Station + joystick data",
+                "Only Phoenix 6 motor signals",
+                "Nothing until you annotate fields with @Logged",
               ],
               correctAnswer: 1,
               explanation:
-                "Hierarchical key naming (like 'Arm/Position', 'Arm/Velocity') organizes telemetry logically, making it much easier to find and analyze specific data in AdvantageScope or other log viewers.",
+                "Once started, DataLogManager records all NetworkTables value changes and console output to a .wpilog; startDataLog adds the Driver-Station state and joystick data. Phoenix 6 devices also log signals to a separate .hoot file.",
             },
             {
               id: 3,
               question:
-                "What does AdvantageScope allow you to do with .wpilog files?",
+                "How do you get a custom value (say, the arm's position) into the log?",
               options: [
-                "Compile robot code",
-                "Visualize logged data, create graphs, view 3D field positions, and scrub through match timeline",
-                "Control the robot remotely",
-                "Generate PathPlanner trajectories",
+                'Call Logger.recordOutput("Arm/Position", pos)',
+                "Publish it to NetworkTables (SmartDashboard.putNumber or a NT publisher) — DataLogManager records NT changes",
+                "Write it to a text file yourself",
+                "It can't be logged without AdvantageKit",
               ],
               correctAnswer: 1,
               explanation:
-                "AdvantageScope is a powerful log visualization tool that lets you graph numeric data, view robot pose on a 3D field, scrub through the match timeline, and analyze performance - essential for post-match debugging and tuning.",
+                "DataLogManager logs whatever changes on NetworkTables, so you log a custom value by publishing it there — SmartDashboard.putNumber for a quick number, or a NetworkTables struct publisher for types like Pose2d.",
             },
             {
               id: 4,
               question:
-                "When connecting AdvantageScope to your robot in real-time, what protocol does it use?",
-              options: ["HTTP", "FTP", "NetworkTables", "SSH"],
-              correctAnswer: 2,
+                "Why publish a Pose2d through a NetworkTables struct publisher instead of three separate doubles?",
+              options: [
+                "Three doubles aren't allowed on NetworkTables",
+                "A struct publisher keeps it as one type-aware value, so AdvantageScope can drop it straight onto the 2D/3D field view",
+                "It uses less battery",
+                "Struct publishers are required for DataLogManager to run",
+              ],
+              correctAnswer: 1,
               explanation:
-                "AdvantageScope connects to your robot via NetworkTables to view live data in real-time. This allows you to monitor sensor values and tune parameters during testing without waiting for match completion.",
+                "Pose2d (and ChassisVelocities, SwerveModuleVelocity[], etc.) are WPILib struct types. Publishing them through a StructPublisher keeps them as one coherent value that AdvantageScope reconstructs and renders natively — no manual axis wiring.",
             },
             {
               id: 5,
               question:
-                "What is a best practice when logging target setpoints?",
+                "A v3 Mechanism has no periodic() method. Where do you put per-loop telemetry publishing?",
               options: [
-                "Never log target setpoints",
-                "Log target setpoints alongside actual values for comparison",
-                "Only log setpoints in autonomous mode",
-                "Log setpoints to a separate file",
+                "Override periodic() — Mechanism still has it",
+                "In a runRepeatedly(this::publishTelemetry).named(...) default command, or from inside command bodies",
+                "Telemetry isn't possible without periodic()",
+                "In Robot.robotPeriodic() for every mechanism",
               ],
               correctAnswer: 1,
               explanation:
-                "Logging target setpoints alongside actual values (e.g., target position vs actual position) is essential for analyzing PID performance, identifying tracking errors, and tuning control loops.",
+                "Mechanism intentionally drops periodic(). Set a runRepeatedly(...) default command to publish each loop while the mechanism is idle, or publish from inside command bodies next to the setpoint. The drivetrain uses a CTRE-registered Telemetry callback instead.",
             },
           ]}
         />
@@ -510,9 +541,10 @@ public class ArmSubsystem extends SubsystemBase {
         </h2>
 
         <Box variant="alert-success" title="Up Next: Drive to Point">
-          With logging configured, you&apos;re ready to implement autonomous
-          navigation using PID controllers to drive to specific field positions
-          with precise control.
+          With DataLogManager recording your pose, velocities, and module
+          states, you&apos;re ready to implement autonomous navigation — and
+          have every PID setpoint, error, and motor output captured for tuning
+          the moment something looks off.
         </Box>
       </section>
     </PageTemplate>
