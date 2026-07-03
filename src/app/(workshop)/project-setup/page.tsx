@@ -10,7 +10,7 @@ export default function ProjectSetup() {
       {/* Introduction */}
       <KeyConceptSection
         title="Project Setup - Launching Your Codebase"
-        description="Step-by-step guide to creating a new WPILib project. This workshop's robot code is built on Commands v3 + OpModes, so the starting point is the team's 2026-Template, which already organizes your code into mechanisms and OpModes."
+        description="Step-by-step guide to creating a new WPILib project. This workshop's robot code is built on Commands v3 + OpModes, so the starting point is the team's 2027-Template, which already organizes your code into mechanisms and OpModes."
         concept="Start from the Commands v3 / OpMode project so your code is organized into mechanisms and OpModes from day one."
       />
 
@@ -26,20 +26,20 @@ export default function ProjectSetup() {
           The workshop&apos;s canonical starting point is the{" "}
           <strong>
             <a
-              href="https://github.com/Hemlock5712/2026-Template/tree/2027-dev"
+              href="https://github.com/Hemlock5712/2027-Template"
               target="_blank"
               rel="noopener noreferrer"
               className="underline"
             >
-              2027-dev branch of the team&apos;s 2026-Template
+              team&apos;s 2027-Template
             </a>
           </strong>{" "}
-          repo — clone it and check out <code>2027-dev</code> (the{" "}
-          <code>main</code> branch is still the older 2026 stack) so you start
-          with the OpMode wiring already in place, then set your team number in{" "}
-          <code>.wpilib/wpilib_preferences.json</code>. The site mirrors the
-          2027 alpha stack (GradleRIO <code>2027.0.0-alpha-6</code>, Phoenix 6{" "}
-          <code>26.50.0-alpha-1</code>).
+          repo — clone it (the default <code>2027-dev</code> branch has the 2027
+          stack; the <code>main</code> branch is still the older 2026 stack) so
+          you start with the OpMode wiring already in place, then set your team
+          number in <code>.wpilib/wpilib_preferences.json</code>. The site
+          mirrors the 2027 alpha stack (GradleRIO <code>2027.0.0-alpha-6</code>,
+          Phoenix 6 <code>26.50.0-alpha-1</code>).
         </p>
       </Box>
 
@@ -106,7 +106,7 @@ export default function ProjectSetup() {
                 Choose Template → Java →{" "}
                 <strong>Command Robot Skeleton (Advanced)</strong>. Note: for
                 the 2027 OpMode structure this workshop teaches, start from the{" "}
-                <strong>2026-Template</strong> as noted above.
+                <strong>2027-Template</strong> as noted above.
               </p>
             </div>
           </div>
@@ -213,13 +213,13 @@ export default function ProjectSetup() {
               "What's the starting point for this workshop's robot code on the 2027 stack?",
             options: [
               "The stock Timed Robot template",
-              "The team's 2026-Template (Commands v3 + OpModes)",
+              "The team's 2027-Template (Commands v3 + OpModes)",
               "A blank project you wire up by hand",
               "The Romi Robot template",
             ],
             correctAnswer: 1,
             explanation:
-              "This workshop targets WPILib 2027 (Commands v3 + OpModes, Java 25, SystemCore). You start from the team's 2026-Template, which already has the OpMode wiring in place.",
+              "This workshop targets WPILib 2027 (Commands v3 + OpModes, Java 25, SystemCore). You start from the team's 2027-Template, which already has the OpMode wiring in place.",
           },
           {
             id: 2,

@@ -43,13 +43,13 @@ export default function SwerveDriveProject() {
           `.wpilib/wpilib_preferences.json` and import your tuner constants.
         </p>
         <a
-          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/heads/1-Swerve.zip"
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.0-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium gap-2"
         >
           <Download className="w-5 h-5" />
-          Download Swerve Project (Commands v3)
+          Download Swerve Project (v3.0, Commands v3)
         </a>
       </Box>
 

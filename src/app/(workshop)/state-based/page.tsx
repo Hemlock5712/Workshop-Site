@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
+import GitHubContent from "@/components/GitHubContent";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
@@ -124,6 +125,24 @@ public Command goTo(Angle target, Angle tolerance, String label) {
 public Command low()      { return goTo(Degrees.of(0),   Degrees.of(1), "LOW"); }
 public Command high()     { return goTo(Degrees.of(90),  Degrees.of(2), "HIGH"); }
 public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWARD"); }`}
+        />
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          Here are those four steps in the workshop&apos;s real code: the{" "}
+          <code>6-StateBased</code> branch runs the whole Arm + Flywheel teleop
+          as one state machine — stowed, pickup, spin-up, and ready states,
+          button-driven transitions, a sensor-driven{" "}
+          <code>flywheel::isAtTarget</code> handoff, and a{" "}
+          <code>switchFromAny</code> panic interrupt.
+        </p>
+
+        <GitHubContent
+          repository="Hemlock5712/Workshop-Code"
+          branch="6-StateBased"
+          filePath="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
         />
       </section>
 

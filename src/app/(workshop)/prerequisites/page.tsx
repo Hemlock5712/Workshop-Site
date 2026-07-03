@@ -100,23 +100,23 @@ export default function Prerequisites() {
             <div className="border-l-4 border-orange-200 dark:border-orange-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 <a
-                  href="https://github.com/Hemlock5712/2026-Template/tree/2027-dev"
+                  href="https://github.com/Hemlock5712/2027-Template"
                   className="text-orange-600 underline hover:no-underline dark:text-orange-400"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  WPILib 2027 Alpha stack (2026-Template, 2027-dev branch)
+                  WPILib 2027 Alpha stack (2027-Template)
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 This workshop targets the WPILib <strong>2027 alpha</strong> —
                 Commands v3 + OpModes, <strong>Java 25</strong>, and the{" "}
-                <strong>SystemCore</strong> controller. Start from the{" "}
-                <code>2027-dev</code> branch of the team&apos;s 2026-Template
-                rather than a stock project (the <code>main</code> branch is
-                still the older 2026 stack). Autonomous uses CTRE&apos;s
-                built-in LinearPath / DriveToPose, so{" "}
-                <strong>PathPlanner is not required</strong>.
+                <strong>SystemCore</strong> controller. Start from the
+                team&apos;s 2027-Template rather than a stock project (the
+                default <code>2027-dev</code> branch has the 2027 stack; the{" "}
+                <code>main</code> branch is still the older 2026 stack).
+                Autonomous uses CTRE&apos;s built-in LinearPath / DriveToPose,
+                so <strong>PathPlanner is not required</strong>.
               </p>
             </div>
 
