@@ -19,9 +19,9 @@ export default function DriveToPoint() {
       />
 
       <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
-        Drive to point functionality enables your robot to move to precise field
-        positions automatically, forming the foundation for advanced autonomous
-        routines and teleop assists.
+        Drive to point moves the robot to a precise field position on its own.
+        It&apos;s the building block behind autonomous routines and teleop
+        assists.
       </p>
 
       {/* Understanding Field Coordinates */}
@@ -34,8 +34,8 @@ export default function DriveToPoint() {
           The FRC field uses a coordinate system where positions are defined as{" "}
           <strong>Pose2d</strong> objects containing X position, Y position, and
           rotation (heading). Your swerve drivetrain&apos;s odometry
-          continuously tracks your robot&apos;s current pose, allowing you to
-          navigate to any target pose using feedback control.
+          continuously tracks the robot&apos;s current pose, so you can compare
+          it against a target pose and close the gap with feedback control.
         </p>
 
         <div className="flex justify-center my-8">
@@ -120,10 +120,10 @@ Pose2d currentPose = drivetrain.getPose();`}
 
         <p className="text-slate-600 dark:text-slate-300">
           To drive to a point, we use{" "}
-          <strong>three separate PID controllers</strong>
-          —one for X position, one for Y position, and one for rotation. Each
-          controller calculates the required velocity by comparing the current
-          value to the target value.
+          <strong>three separate PID controllers</strong>: one for X position,
+          one for Y position, and one for rotation. Each controller calculates
+          the required velocity by comparing the current value to the target
+          value.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6">
@@ -155,10 +155,9 @@ Pose2d currentPose = drivetrain.getPose();`}
           icon={<Lightbulb className="w-5 h-5" />}
         >
           <p>
-            Swerve drivetrains can move in X, Y, and rotate independently. By
-            using separate PID controllers for each degree of freedom, the robot
-            can simultaneously drive to the target position while rotating to
-            the target heading.
+            Swerve drivetrains can move in X, Y, and rotate independently. One
+            PID controller per degree of freedom lets the robot drive to the
+            target position and rotate to the target heading at the same time.
           </p>
         </Box>
       </section>
@@ -219,9 +218,9 @@ public class DriveToPoint extends ClassicCommand {
           <Box variant="alert-tip" title="Continuous Input">
             <p>
               <code>enableContinuousInput(-Math.PI, Math.PI)</code> tells the
-              controller that angles wrap around. This ensures the robot rotates
-              via the shortest path (e.g., from 350° to 10° goes clockwise
-              through 0°, not counterclockwise 340°).
+              controller that angles wrap around, so the robot rotates via the
+              shortest path (e.g., from 350° to 10° goes clockwise through 0°,
+              not counterclockwise 340°).
             </p>
           </Box>
         </ContentCard>
@@ -321,7 +320,7 @@ protected boolean isFinished() {
             top of a coroutine. <code>super(name, drivetrain)</code> declares
             the command name and the mechanism it requires, and{" "}
             <code>end(interrupted)</code> runs on both a natural finish and a
-            cancel — so it&apos;s the one place to put cleanup. If you&apos;d
+            cancel, so it&apos;s the one place to put cleanup. If you&apos;d
             rather write it as one inline body, here&apos;s the coroutine-native
             version:
           </p>
@@ -397,9 +396,9 @@ public TeleopOpMode(Robot robot) {
             Make sure you have a way to disable the robot quickly if needed.
           </p>
           <p>
-            <strong>No full field? No problem!</strong> You don&apos;t need a
-            full FRC field to test this. You can pick any point just remember to
-            use the robot&apos;s starting position as the origin (0, 0, 0°).
+            You don&apos;t need a full FRC field to test this. Pick any point;
+            just remember the robot&apos;s starting position is the origin (0,
+            0, 0°).
           </p>
         </Box>
       </section>
@@ -504,7 +503,7 @@ Command autoSequence = Command.sequence(
                 </h4>
                 <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
                   The values provided (kP = 10) are just{" "}
-                  <strong>starting points</strong>. Every robot is different! If
+                  <strong>starting points</strong>; every robot is different. If
                   the robot oscillates, reduce gains. If it&apos;s too slow,
                   increase gradually.
                 </p>

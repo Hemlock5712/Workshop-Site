@@ -14,8 +14,8 @@ export default function VisionImplementation() {
     <PageTemplate title="Implementing Vision">
       <KeyConceptSection
         title="Integrating Vision into Robot Code"
-        description="Connecting vision systems to robot code involves reading NetworkTables data, integrating AprilTag measurements into odometry, and using vision feedback for control. This section demonstrates practical vision integration patterns."
-        concept="Vision data transforms autonomous accuracy and enables intelligent teleop assistance."
+        description="Vision integration means reading NetworkTables data, feeding AprilTag measurements into odometry, and using vision feedback for control."
+        concept="Vision-corrected odometry is what makes accurate autonomous and teleop assists possible."
       />
 
       <section className="flex flex-col gap-8">
@@ -24,10 +24,8 @@ export default function VisionImplementation() {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Implementing vision requires a systematic approach to ensure reliable
-          pose estimation. Follow these steps to integrate Limelight vision data
-          into your robot&apos;s odometry system while maintaining accuracy and
-          trust.
+          Four steps get Limelight data into your robot&apos;s odometry without
+          letting bad readings wreck the pose estimate.
         </p>
 
         <div className="grid md:grid-cols-1 gap-6">
@@ -62,12 +60,11 @@ export default function VisionImplementation() {
                   </h4>
                   <p className="text-primary-700 dark:text-primary-300 text-sm">
                     Next, create a new subsystem to pull values using the
-                    Limelight helper tool. In this subsystem there are three
-                    things we need in order to add them to our pose estimator:
-                    Pose, Timestamp, and Standard Deviation (how much we will
-                    trust the reading). Both pose and timestamp are provided by
-                    LimelightHelpers, however we need to create a formula for
-                    how much to trust vision.
+                    Limelight helper tool. The pose estimator needs three things
+                    from it: pose, timestamp, and standard deviation (how much
+                    we trust the reading). Pose and timestamp come straight from
+                    LimelightHelpers; the trust formula we have to write
+                    ourselves.
                   </p>
                 </div>
               </div>
@@ -77,13 +74,13 @@ export default function VisionImplementation() {
                 </div>
                 <div>
                   <h4 className="font-bold text-primary-900 dark:text-primary-100">
-                    Utilizing CTRE Pose Estimator
+                    CTRE Pose Estimator
                   </h4>
                   <p className="text-primary-800 dark:text-primary-200 text-sm">
-                    Once we have the three values above, we can pass them into
-                    the CTRE Pose Estimator. It has pre-programmed functions
-                    that accept these values. However, we need to pass this pose
-                    estimator to the vision subsystem to add measurements.
+                    Once we have those three values, pass them into the CTRE
+                    pose estimator, which has built-in methods for exactly this.
+                    The vision subsystem needs a reference to the pose estimator
+                    so it can add measurements.
                   </p>
                 </div>
               </div>
@@ -98,11 +95,11 @@ export default function VisionImplementation() {
                   <p className="text-primary-900 dark:text-primary-100 text-sm">
                     The drivetrain owns the pose estimator. In the OpMode model
                     you wire the camera up once in <code>Robot</code>&apos;s
-                    constructor — e.g.{" "}
+                    constructor (e.g.{" "}
                     <code>
                       Limelight.registerAll(drivetrain, &quot;limelight&quot;)
-                    </code>{" "}
-                    — passing it the drivetrain so it can add measurements.
+                    </code>
+                    ), passing it the drivetrain so it can add measurements.
                   </p>
                 </div>
               </div>
@@ -136,8 +133,8 @@ export default function VisionImplementation() {
 
         <p className="text-slate-600 dark:text-slate-300">
           Trusting vision data correctly is just as important as receiving it.
-          We use a combination of dynamic standard deviations and filtering to
-          ensure only high-quality data affects our odometry.
+          We use dynamic standard deviations plus a few filters so only good
+          measurements reach the odometry.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -201,8 +198,8 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Accurate camera calibration ensures vision measurements integrate
-          correctly with your odometry, providing reliable pose estimates.
+          Calibration matters: if the camera&apos;s mounting offsets or lens
+          distortion are wrong, every pose it reports is wrong too.
         </p>
 
         <ContentCard>
@@ -319,17 +316,21 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
 
         <p className="text-slate-600 dark:text-slate-300">
           Limelight publishes vision data to NetworkTables. The LimelightHelpers
-          library (provided by Limelight on GitHub) provides a clean API for
-          reading this data without direct NetworkTables access.
+          library (published by Limelight on GitHub) gives you a clean API for
+          reading this data without direct NetworkTables access. Limelight
+          distributes it against the current-season WPILib packages, so the
+          workshop repo carries a copy migrated to the 2027{" "}
+          <code>org.wpilib.*</code> packages — that copy is what the code below
+          uses.
         </p>
 
         <CollapsibleSection title="LimelightHelpers.java">
           <GitHubContent
-            repository="LimelightVision/limelightlib-wpijava"
-            branch="main"
-            filePath="LimelightHelpers.java"
+            repository="Hemlock5712/Workshop-Code"
+            branch="3-Limelight"
+            filePath="src/main/java/frc/robot/LimelightHelpers.java"
             title="LimelightHelpers"
-            description="Reference implementation for LimelightHelpers. Used by the Limelight subsystem above to retrieve pose estimates and raw vision measurements."
+            description="The workshop's copy of LimelightHelpers, migrated to the WPILib 2027 packages. This is the exact file the Limelight subsystem below uses to retrieve pose estimates and raw vision measurements."
           />
         </CollapsibleSection>
 
@@ -394,11 +395,10 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          The Workshop-Code repository includes complete vision implementation
-          on the <code>3-Limelight</code> branch, demonstrating Limelight
-          integration with swerve drive and odometry. The code examples above
-          are all taken directly from this branch, showing real working
-          implementations you can reference and adapt for your own robot.
+          Everything above comes straight from the <code>3-Limelight</code>{" "}
+          branch of the Workshop-Code repository, which integrates the Limelight
+          with the swerve drive and odometry. Reference the full working project
+          and adapt it for your own robot.
         </p>
       </section>
 

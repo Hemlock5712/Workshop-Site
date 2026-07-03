@@ -100,8 +100,7 @@ export default function MotionMagic() {
             📚 Official Motion Magic Documentation
           </h3>
           <p className="text-[var(--foreground)] mb-4">
-            For complete Motion Magic reference, configuration examples, and
-            advanced tuning techniques:
+            For the full Motion Magic reference and configuration examples:
           </p>
           <DocumentationButton
             href="https://v6.docs.ctr-electronics.com/en/latest/docs/api-reference/device-specific/talonfx/motion-magic.html"
@@ -247,12 +246,11 @@ export default function MotionMagic() {
               💡 Why This Method Works:
             </h4>
             <p className="text-[var(--foreground)] text-sm">
-              By calculating cruise velocity based on motor specifications and
-              efficiency, you set realistic motion limits that prevent
-              oscillation and ensure smooth, achievable motion profiles.
-              Starting with 2x acceleration provides smooth motion, while
-              competition applications often require 4x to 10x cruise velocity
-              for faster response.
+              Calculating cruise velocity from motor specs and efficiency gives
+              you motion limits the mechanism can actually hit, so the profile
+              stays smooth instead of oscillating. Start with 2x acceleration
+              for smooth motion; competition robots often end up at 4x to 10x
+              cruise velocity for faster response.
             </p>
           </div>
         </CollapsibleSection>
@@ -264,8 +262,8 @@ export default function MotionMagic() {
           </h3>
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] mb-4">
-              Watch this comprehensive tutorial on Motion Magic tuning
-              techniques, parameter selection, and optimization strategies:
+              This video walks through Motion Magic tuning and how to pick each
+              parameter:
             </p>
             <div className="aspect-video rounded-lg overflow-hidden">
               <iframe
@@ -335,7 +333,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               leftTitle: "Motion Magic Example Params for 25:1 Arm",
               leftItems: [
                 "• <strong>25:1 Gearing:</strong> Krakens run ~100 RPS, so 4 RPS theoretical max at output",
-                "• <strong>Cruise Velocity (2.0):</strong> Conservative start - can reach 4 RPS but load may reduces performance",
+                "• <strong>Cruise Velocity (2.0):</strong> Conservative start - can reach 4 RPS but load may reduce performance",
                 "• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed",
                 "• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes",
                 "• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control",
@@ -349,7 +347,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               ],
             },
             nextStepText:
-              "Motion Magic gives us professional-grade position control! Next, we'll explore tuning methods to get optimal performance from our control algorithms.",
+              "The arm now follows a smooth, profiled path to each target. Next, we cover tuning methods to get the best performance out of these controllers.",
           }}
           flywheelContent={{
             beforeItems: [
@@ -388,7 +386,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               ],
             },
             nextStepText:
-              "Motion Magic gives us professional-grade velocity control! Next, we'll explore tuning methods to get optimal performance from our flywheel control algorithms.",
+              "The flywheel now ramps smoothly between target speeds. Next, we cover tuning methods to get the best performance out of the flywheel controller.",
           }}
         />
 

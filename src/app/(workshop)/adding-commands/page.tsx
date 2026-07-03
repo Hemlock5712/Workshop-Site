@@ -10,7 +10,7 @@ export default function AddingCommands() {
       <KeyConceptSection
         title="Commands with WPILib Commands V3"
         description={[
-          "A coroutine Command is a single method body that the scheduler runs once. Inside the body you write plain Java; whenever the command needs to wait — for time to pass, for a condition to become true, for a sub-command to finish — you explicitly yield to the scheduler through the Coroutine parameter. There's no separate init / execute / isFinished / end to fill in — just the one body.",
+          "A coroutine Command is a single method body that the scheduler runs once. Inside the body you write plain Java; whenever the command needs to wait — for time to pass, for a condition to become true, for a sub-command to finish — you explicitly yield to the scheduler through the Coroutine parameter. There's no separate init / execute / isFinished / end to fill in, just the one body.",
           "Most commands you write will be a single line of motor setup wrapped in mech.run(...). The coroutine parameter is there when you need it (.wait, .waitUntil, .await, .park) and ignored when you don't. Roughly 80% of teaching examples never touch it.",
         ]}
         concept="A command is a body. You yield through the coroutine wherever you need to wait. Most bodies don't need to."
@@ -90,7 +90,7 @@ public Command goTo(Angle target, Angle tolerance) {
           to write a command. The other is the explicit <code>initialize</code>{" "}
           / <code>execute</code> / <code>isFinished</code> / <code>end</code>{" "}
           lifecycle: the workshop template ships{" "}
-          <code>utils/ClassicCommand</code> — a small base class that gives you
+          <code>utils/ClassicCommand</code>, a small base class that gives you
           those four methods. Extend it, override only the methods you need, and
           the instance <em>is</em> a <code>Command</code> you can schedule or
           bind to a trigger. Reach for <code>ClassicCommand</code> when a
@@ -129,7 +129,7 @@ public class DriveDistance extends ClassicCommand {
           <code>initialize()</code> once, then loops <code>execute()</code> +{" "}
           <code>isFinished()</code> with a yield each tick.{" "}
           <code>end(false)</code> runs on a natural finish;{" "}
-          <code>end(true)</code> runs on cancellation — the base class wires the
+          <code>end(true)</code> runs on cancellation. The base class wires the
           cancel hook for you, because (as with any v3 command) a cancelled
           coroutine is dropped and wouldn&apos;t otherwise reach your cleanup.
         </Box>
@@ -253,7 +253,7 @@ public class DriveDistance extends ClassicCommand {
           mechanism it <em>primarily drives</em>. From inside that
           mechanism&apos;s <code>run(coroutine -&gt; {`{ ... }`})</code> body it
           controls its own hardware directly and <code>await</code>s or{" "}
-          <code>fork</code>s the other mechanisms&apos; commands — each awaited
+          <code>fork</code>s the other mechanisms&apos; commands. Each awaited
           command carries its own requirement, so the scheduler still tracks who
           owns what.
         </p>
@@ -286,7 +286,7 @@ public Command shoot() {
             flywheel and Phoenix holds it while the arm moves, and the{" "}
             <code>await</code> / <code>wait</code> calls sequence the rest. When
             you genuinely need a background command that the routine can later
-            cancel, that&apos;s what <code>coroutine.fork(...)</code> is for — a
+            cancel, that&apos;s what <code>coroutine.fork(...)</code> is for: a
             forked command is cancelled automatically when the parent body
             exits.
           </p>
@@ -309,7 +309,7 @@ public Command shoot() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          The four shapes above cover routines that are <em>static</em> — the
+          The four shapes above cover routines that are <em>static</em>: the
           sequence is known when the command is built. The interesting case is
           when one phase&apos;s outcome decides what the next phase should be.
           v3 lets the body read a sensor, store the result in a local variable,
@@ -357,11 +357,11 @@ public Command grabAndScore() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          The powerful line is{" "}
-          <code>int weight = sensors.readPieceWeight();</code> followed by a
-          three-way <code>if/else</code> picking between different next phases.
-          Because the whole routine is one method body, a value read in one
-          phase is just a local variable the later phases can branch on.
+          The key line is <code>int weight = sensors.readPieceWeight();</code>{" "}
+          followed by a three-way <code>if/else</code> picking between different
+          next phases. Because the whole routine is one method body, a value
+          read in one phase is just a local variable the later phases can branch
+          on.
         </p>
 
         <Box
@@ -373,8 +373,8 @@ public Command grabAndScore() {
           top to bottom in plain Java: read a sensor into a local, branch with{" "}
           <code>if/else</code>, and <code>await</code> the phase you chose. The{" "}
           <code>coroutine</code> parameter suspends and resumes the body at each{" "}
-          <code>await</code> / <code>waitUntil</code>, so you maintain no phase
-          bookkeeping yourself.
+          <code>await</code> / <code>waitUntil</code>, so there&apos;s no phase
+          bookkeeping to maintain.
         </Box>
       </section>
 
@@ -397,7 +397,7 @@ public Command grabAndScore() {
           A command&apos;s normal completion is just the body falling off the
           end. Cancellation cleanup goes in a <code>.whenCanceled(...)</code>{" "}
           hook on the command builder. This matters because a cancelled
-          coroutine is simply <em>dropped</em> — any code after a{" "}
+          coroutine is simply <em>dropped</em>: any code after a{" "}
           <code>park()</code> or an unfinished <code>waitUntil</code> never
           runs, so a trailing &quot;cleanup&quot; line at the end of the body
           won&apos;t fire on cancellation.
@@ -424,8 +424,8 @@ public Command grabAndScore() {
           interrupted. Code that should run only on <em>normal</em> completion
           goes at the bottom of the body (it runs when the body returns on its
           own). Because cancellation drops the coroutine before it reaches that
-          point, interrupt cleanup has to live in <code>whenCanceled</code> —
-          two clear places, one for each way a command can end.
+          point, interrupt cleanup has to live in <code>whenCanceled</code>. Two
+          clear places, one for each way a command can end.
         </p>
       </section>
 

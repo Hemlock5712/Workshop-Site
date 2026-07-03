@@ -127,12 +127,11 @@ export default function PIDControl() {
         {/* Documentation Link */}
         <Box variant="alert-info" title="📚 Complete PID Tuning Guide">
           <p className="mb-4">
-            For detailed PID tuning instructions, step-by-step processes, and
-            mechanism-specific guidance:
+            For detailed tuning instructions and mechanism-specific guidance:
           </p>
           <DocumentationButton
-            href="https://phoenixpro-documentation--161.org.readthedocs.build/en/161/docs/application-notes/manual-pid-tuning.html"
-            title="CTRE Manual PID Tuning Guide"
+            href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/closed-loop-requests.html"
+            title="CTRE Closed-Loop Control Reference"
             icon={<Book className="w-5 h-5" />}
           />
         </Box>
@@ -144,8 +143,8 @@ export default function PIDControl() {
           </h3>
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] mb-4">
-              Watch this comprehensive tutorial on PID and feedforward tuning
-              techniques, practical tuning steps, and optimization strategies:
+              This video walks through PID and feedforward tuning, with
+              practical steps for dialing in your gains:
             </p>
             <div className="aspect-video rounded-lg overflow-hidden">
               <iframe
@@ -228,7 +227,7 @@ export default function PIDControl() {
               ],
             },
             nextStepText:
-              "PID gives us precise position control! In the next section, we'll upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.",
+              "The arm now reaches and holds a target position on its own. Next, we upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.",
           }}
           flywheelContent={{
             beforeItems: [
@@ -266,7 +265,7 @@ export default function PIDControl() {
               ],
             },
             nextStepText:
-              "PID gives us precise velocity control! In the next section, we'll upgrade to Motion Magic for smooth, profiled velocity changes with controlled acceleration.",
+              "The flywheel now reaches and holds a target velocity on its own. Next, we upgrade to Motion Magic for smooth, profiled velocity changes with controlled acceleration.",
           }}
         />
       </section>

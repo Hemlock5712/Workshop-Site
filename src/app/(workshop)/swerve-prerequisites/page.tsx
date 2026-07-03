@@ -15,7 +15,7 @@ export default function SwervePrerequisites() {
       {/* Introduction */}
       <KeyConceptSection
         title="Understanding Swerve Drive Fundamentals"
-        description="Before diving into swerve drive implementation, it's essential to understand the core concepts, hardware components, and control systems that make swerve drive possible. This foundation will prepare you for successfully creating and tuning your swerve drivetrain."
+        description="Swerve drive makes a lot more sense once you know how the hardware and control systems fit together. This page covers the concepts you'll lean on when creating and tuning your drivetrain."
         concept="Master the fundamentals of swerve drive: holonomic motion, coordinate systems, module anatomy, and field-centric control."
       />
 
@@ -25,8 +25,7 @@ export default function SwervePrerequisites() {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Each swerve module consists of three key components that work together
-          to provide independent wheel control:
+          Each swerve module has three key components:
         </p>
 
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
@@ -102,9 +101,8 @@ export default function SwervePrerequisites() {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Proper wiring and CAN ID configuration are essential for a reliable
-          swerve drive. We recommend the following standard configuration for
-          all our robots.
+          A consistent CAN ID scheme makes wiring and debugging much easier.
+          This is the standard configuration we use on all our robots.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -151,9 +149,9 @@ export default function SwervePrerequisites() {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Understanding coordinate systems is crucial for swerve drive control.
-          You need to know whether movements are relative to the robot or the
-          field.
+          Every drive command is relative to something, either the robot or the
+          field. Which one you pick changes how the robot responds to the
+          sticks.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -293,9 +291,8 @@ export default function SwervePrerequisites() {
           title="🔧 CTRE Handles Kinematics Automatically"
         >
           <p className="mb-3">
-            The good news: CTRE&apos;s swerve implementation handles all
-            kinematics calculations internally. You don&apos;t need to manually
-            compute wheel states!
+            CTRE&apos;s swerve implementation handles all kinematics
+            calculations internally, so you never compute wheel states by hand.
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             The <code>CommandSwerveDrivetrain</code> class uses Phoenix 6&apos;s
@@ -680,21 +677,13 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
 
         <Box variant="alert-success" title="Ready for Implementation">
           <p className="mb-4">
-            You now understand the fundamental concepts needed for swerve drive:
+            That covers the fundamentals: module anatomy, robot-centric vs
+            field-centric control, gyro requirements, kinematics, odometry, and
+            pose estimation.
           </p>
-          <ul className="list-disc list-inside space-y-2">
-            <li>Holonomic motion and independent module control</li>
-            <li>Module anatomy: drive motor, azimuth motor, CANcoder</li>
-            <li>Coordinate systems: robot-centric vs field-centric</li>
-            <li>Gyro requirements for field-centric control</li>
-            <li>Critical safety practices and zeroing procedures</li>
-            <li>Swerve kinematics and control</li>
-            <li>Odometry</li>
-            <li>Pose estimation</li>
-          </ul>
-          <p className="mt-4">
-            Next, you&apos;ll learn how to use Phoenix Tuner X to generate a
-            complete swerve project and bring up your drivetrain.
+          <p>
+            Next, you&apos;ll use Phoenix Tuner X to generate a complete swerve
+            project and bring up your drivetrain.
           </p>
         </Box>
       </section>

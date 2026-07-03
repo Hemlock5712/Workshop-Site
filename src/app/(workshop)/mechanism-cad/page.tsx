@@ -19,7 +19,7 @@ export default function MechanismCAD() {
       {/* Introduction */}
       <KeyConceptSection
         title="Mechanism CAD - 3D Model Exploration"
-        description="Before diving into programming, we first need a physical mechanism. If you do not have a previous robot or mechanism below are 3D models of mechanisms you can build affordably."
+        description="Before we write any code, we need a physical mechanism. If you don't have a previous robot or mechanism to use, below are 3D models of mechanisms you can build affordably."
         concept="Interactive 3D model of the Flywheel mechanism."
       />
 
@@ -46,10 +46,9 @@ export default function MechanismCAD() {
                 Flywheel Mechanism
               </h3>
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
-                This 3D model represents the mechanism you&apos;ll be
-                programming in this workshop. Use your mouse to orbit around the
-                model, zoom in/out, and examine the design from different
-                angles.
+                This is the mechanism you&apos;ll be programming in this
+                workshop. Use your mouse to orbit the model, zoom in and out,
+                and examine the design from different angles.
               </p>
 
               {/* Download Buttons */}
@@ -101,9 +100,9 @@ export default function MechanismCAD() {
                 Arm Mechanism
               </h3>
               <p className="text-slate-600 dark:text-slate-300 max-w-2xl">
-                An Arm mechanism for Workshop programming. This arm mechanism
-                demonstrates precise positioning and control concepts that are
-                essential in FRC robotics.
+                The arm version of the workshop mechanism. You&apos;ll use it to
+                practice precise positioning and control, which come up on
+                nearly every FRC robot.
               </p>
 
               {/* Download Buttons */}
@@ -206,13 +205,13 @@ export default function MechanismCAD() {
             </div>
             <div>
               <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-2">
-                Ready for Programming!!!
+                Ready for Programming
               </h3>
               <p className="text-primary-800 dark:text-primary-300">
-                Now that you have a mechanism, you&apos;re ready to move on to
-                connecting and configuring the code to make this work.
-                We&apos;ll cover motors, sensors, and controllers needed to
-                bring this CAD model to life.
+                Now that you have a mechanism, the next step is connecting the
+                hardware and writing the code to run it. We&apos;ll cover the
+                motors, sensors, and controllers needed to bring this CAD model
+                to life.
               </p>
             </div>
           </div>

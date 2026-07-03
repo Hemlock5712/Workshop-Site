@@ -22,7 +22,7 @@ export default function LoggingImplementation() {
       {/* Introduction */}
       <KeyConceptSection
         title="Setting Up DataLogManager"
-        description="We log with WPILib's built-in DataLogManager — no vendordep, no LoggedRobot, no replay layer. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (your telemetry plus the Driver-Station and joystick data) is captured to a .wpilog file you open in AdvantageScope."
+        description="We log with WPILib's built-in DataLogManager. No vendordep, no LoggedRobot, no replay layer. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (your telemetry plus the Driver-Station and joystick data) is captured to a .wpilog file you open in AdvantageScope."
         concept="Turn it on in Robot's constructor, then publish what you care about to NetworkTables. DataLogManager records every NT change to disk."
       />
 
@@ -75,7 +75,8 @@ public class Robot extends OpModeRobot {
             <li>
               <strong>Phoenix 6 devices</strong> additionally log to a{" "}
               <code>.hoot</code> file (high-rate signal data) that you can open
-              in Tuner X or AdvantageScope — extra detail for free.
+              in Tuner X or AdvantageScope, so you get that extra detail for
+              free.
             </li>
           </ul>
         </Box>
@@ -99,12 +100,11 @@ public class Robot extends OpModeRobot {
         >
           <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              <strong>Every NetworkTables value change</strong> — including
+              <strong>Every NetworkTables value change</strong>, including
               everything your telemetry publishes (more below)
             </li>
             <li>
-              <strong>Console output</strong> — anything printed to
-              stdout/stderr
+              <strong>Console output</strong>: anything printed to stdout/stderr
             </li>
             <li>
               <strong>Driver-Station data</strong> (via{" "}
@@ -112,8 +112,8 @@ public class Robot extends OpModeRobot {
               joystick axes/buttons
             </li>
             <li>
-              <strong>Phoenix 6 signals</strong> in the <code>.hoot</code> file
-              — motor positions, velocities, currents, temperatures
+              <strong>Phoenix 6 signals</strong> in the <code>.hoot</code> file:
+              motor positions, velocities, currents, temperatures
             </li>
           </ul>
         </Box>
@@ -127,7 +127,7 @@ public class Robot extends OpModeRobot {
 
         <p className="text-slate-600 dark:text-slate-300">
           To log something specific,{" "}
-          <strong>publish it to NetworkTables</strong> —{" "}
+          <strong>publish it to NetworkTables</strong>;{" "}
           <code>DataLogManager</code> records the change to the{" "}
           <code>.wpilog</code> automatically. For a quick number,{" "}
           <code>SmartDashboard.putNumber(&quot;Arm/Position&quot;, pos)</code>{" "}
@@ -224,15 +224,15 @@ public class Telemetry {
               <code>&quot;Arm/Position&quot;</code>) so the log stays organized.
             </li>
             <li>
-              <strong>Prefer struct types</strong> — publish one{" "}
+              <strong>Prefer struct types</strong>: publish one{" "}
               <code>Pose2d</code> rather than three separate numbers.
             </li>
             <li>
-              <strong>Avoid high-frequency strings</strong> — they&apos;re
+              <strong>Avoid high-frequency strings</strong>. They&apos;re
               expensive; log numbers and booleans.
             </li>
             <li>
-              <strong>Don&apos;t over-publish</strong> — too much NT traffic can
+              <strong>Don&apos;t over-publish</strong>. Too much NT traffic can
               affect loop timing.
             </li>
           </ul>
@@ -337,11 +337,11 @@ public class Telemetry {
           </p>
           <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …
-              — your telemetry struct publishers
+              <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …:
+              your telemetry struct publishers
             </li>
             <li>
-              <code>SmartDashboard/...</code> — anything you sent via{" "}
+              <code>SmartDashboard/...</code>: anything you sent via{" "}
               <code>SmartDashboard.put*</code>
             </li>
             <li>
@@ -542,9 +542,9 @@ public class Telemetry {
 
         <Box variant="alert-success" title="Up Next: Drive to Point">
           With DataLogManager recording your pose, velocities, and module
-          states, you&apos;re ready to implement autonomous navigation — and
-          have every PID setpoint, error, and motor output captured for tuning
-          the moment something looks off.
+          states, you&apos;re ready to implement autonomous navigation, with
+          every PID setpoint, error, and motor output captured for tuning the
+          moment something looks off.
         </Box>
       </section>
     </PageTemplate>

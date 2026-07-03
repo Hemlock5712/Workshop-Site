@@ -20,13 +20,13 @@ export default function LoggingOptions() {
       <KeyConceptSection
         title="Data Logging - Understanding What Happened"
         description="Data logging captures robot telemetry, sensor values, and system state during operation. This data is essential for debugging issues, analyzing performance, tuning mechanisms, and understanding what happened during a match."
-        concept="Comprehensive logging transforms debugging from guesswork into data-driven problem solving."
+        concept="Logging turns debugging from guesswork into data-driven problem solving."
       />
 
       {/* Why Logging Matters */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Why Logging is Critical in FRC
+          Why Logging Matters in FRC
         </h2>
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
@@ -57,7 +57,7 @@ export default function LoggingOptions() {
 
             <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-bold text-green-600 dark:text-green-400 mb-3 text-lg">
-                ✅ With Comprehensive Logging
+                ✅ With Logging
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Review exact robot state from any match</li>
@@ -90,14 +90,9 @@ export default function LoggingOptions() {
           title="Logging is a Competitive Advantage"
           icon={<Lightbulb className="w-5 h-5" />}
         >
-          <p className="mb-3">
-            Top FRC teams invest heavily in data logging infrastructure. Being
-            able to quickly diagnose and fix issues between matches can mean the
-            difference between winning and losing in elimination rounds.
-          </p>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            Modern logging frameworks make it easier than ever to capture
-            comprehensive data without impacting robot performance.
+          <p>
+            Top FRC teams invest heavily in logging because diagnosing and
+            fixing an issue between matches can decide an elimination round.
           </p>
         </Box>
       </section>
@@ -166,8 +161,7 @@ export default function LoggingOptions() {
           icon={<AlertTriangle className="w-5 h-5" />}
         >
           <p className="mb-3">
-            While comprehensive logging is valuable, excessive logging can
-            impact robot performance:
+            Logging has costs, and too much of it starts to hurt the robot:
           </p>
           <ul className="list-disc list-inside space-y-2 text-slate-600 dark:text-slate-300">
             <li>
@@ -293,8 +287,9 @@ export default function LoggingOptions() {
                   timing — no code required
                 </li>
                 <li>
-                  <strong>Rich type support:</strong> Pose2d/3d, ChassisSpeeds,
-                  SwerveModuleState, units, custom record structs
+                  <strong>Rich type support:</strong> Pose2d/3d,
+                  ChassisVelocities, SwerveModuleState, units, custom record
+                  structs
                 </li>
                 <li>
                   <strong>@AutoLogOutput annotation</strong> for
@@ -443,7 +438,7 @@ export default function LoggingOptions() {
                   overhead)
                 </li>
                 <li>Logs to NetworkTables and DataLog automatically</li>
-                <li>Integrates seamlessly with AdvantageScope</li>
+                <li>Works with AdvantageScope out of the box</li>
                 <li>
                   Configurable timing (defaults to 50Hz offset from robot loop)
                 </li>
@@ -473,8 +468,7 @@ export default function LoggingOptions() {
               🎯 Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Java teams using WPILib 2025+ who want comprehensive logging with
-              minimal code. Perfect for teams who want the simplicity of
+              Java teams on WPILib 2025+ who want the simplicity of
               DataLogManager with better structure and less manual code.
             </p>
           </div>
@@ -686,22 +680,22 @@ export default function LoggingOptions() {
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  Built into WPILib — no vendordep; two lines in{" "}
+                  Built into WPILib: no vendordep, and two lines in{" "}
                   <code>Robot</code>&apos;s constructor turn it on
                 </li>
                 <li>
-                  Captures all NetworkTables data automatically — your telemetry
-                  plus DS/joystick state — to an efficient <code>.wpilog</code>
+                  Captures all NetworkTables data automatically (your telemetry
+                  plus DS/joystick state) to an efficient <code>.wpilog</code>
                 </li>
                 <li>
                   Opens directly in AdvantageScope for graphing and review
                 </li>
                 <li>
                   Phoenix 6 devices <em>also</em> log to a <code>.hoot</code>{" "}
-                  file (readable in Tuner X / AdvantageScope) — extra signal
-                  data for free
+                  file readable in Tuner X or AdvantageScope, so you get extra
+                  signal data for free
                 </li>
-                <li>Fewest moving parts — ideal for a teaching codebase</li>
+                <li>Fewest moving parts, which suits a teaching codebase</li>
               </ul>
             </div>
 
@@ -711,9 +705,9 @@ export default function LoggingOptions() {
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  <strong>AdvantageKit</strong> — powerful, but its IO-layer /
-                  replay model is more than this workshop needs; DataLogManager
-                  covers record-and-review
+                  <strong>AdvantageKit</strong> — its IO-layer / replay model is
+                  more than this workshop needs; DataLogManager covers
+                  record-and-review
                 </li>
                 <li>
                   <strong>Epilogue (@Logged)</strong> — a fine alternative, but
@@ -745,6 +739,28 @@ export default function LoggingOptions() {
           </Box>
         </div>
       </section>
+
+      <Box
+        variant="alert-info"
+        tag="ON THE HORIZON"
+        title="A new WPILib Telemetry API is in development"
+      >
+        WPILib is working on a first-class telemetry framework — a static{" "}
+        <code>Telemetry.log(&quot;name&quot;, value)</code> API with pluggable
+        backends for NetworkTables and log files (
+        <a
+          href="https://github.com/wpilibsuite/allwpilib/pull/7773"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          allwpilib PR #7773
+        </a>
+        ). As of mid-2026 it is still an open draft: not merged, not in any 2027
+        alpha. If it ships, this workshop will likely adopt it in place of
+        hand-rolled NetworkTables publishing. Until then, DataLogManager is the
+        shipped, supported path.
+      </Box>
 
       {/* Resources */}
       <section className="flex flex-col gap-8">
@@ -861,10 +877,9 @@ export default function LoggingOptions() {
         </h2>
 
         <Box variant="alert-success" title="Up Next: Implementing Logging">
-          Now that you&apos;ve picked DataLogManager, you&apos;ll start it in{" "}
-          <code>Robot</code>&apos;s constructor and publish your robot state to
-          NetworkTables so it lands in the <code>.wpilog</code> — then open the
-          result in AdvantageScope.
+          Next you&apos;ll start DataLogManager in <code>Robot</code>&apos;s
+          constructor, publish your robot state to NetworkTables so it lands in
+          the <code>.wpilog</code>, and open the result in AdvantageScope.
         </Box>
       </section>
     </PageTemplate>

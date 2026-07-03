@@ -18,7 +18,7 @@ export default function Introduction() {
         >
           Review prerequisites
         </Link>{" "}
-        before starting to ensure you have everything needed.
+        before you start.
       </Box>
 
       <section className="flex flex-col gap-8">
@@ -32,9 +32,8 @@ export default function Introduction() {
               Learn FRC&apos;s Best Programming Practices
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mt-2">
-              Master industry-standard coding patterns, command-based
-              architecture, and proven development workflows that successful FRC
-              teams use.
+              Learn the coding patterns, command-based architecture, and
+              development workflows that successful FRC teams use.
             </p>
           </div>
 
@@ -62,8 +61,7 @@ export default function Introduction() {
               Who This Workshop Is For
             </h3>
             <p className="text-lg text-slate-600 dark:text-slate-300 mb-4">
-              This workshop is designed for FRC Teams using Java and CTRE
-              Hardware.
+              This workshop is for FRC teams using Java and CTRE hardware.
             </p>
           </div>
 
@@ -92,11 +90,9 @@ export default function Introduction() {
               Our Mission
             </h3>
             <p className="text-lg text-slate-600 dark:text-slate-300">
-              This site was created by Team 5712, Hemlocks Gray Matter, with
-              support from its friends as a resource to cover introductory to
-              advanced topics while providing a clear learning and
-              implementation plan. We are excited for you to learn code
-              architecture, command-based programming, and more!
+              Team 5712, Hemlocks Gray Matter, built this site with support from
+              its friends. It covers introductory through advanced topics with a
+              clear plan for learning and implementing each one.
             </p>
           </div>
         </div>

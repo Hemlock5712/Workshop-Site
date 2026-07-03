@@ -14,13 +14,12 @@ export default function DynamicFlywheel() {
       <KeyConceptSection
         title="Vision-Based Shooting with Dynamic Velocity"
         description="Using odometry data with an interpolating lookup table, your robot can shoot accurately from anywhere on the field."
-        concept="Use swerve odometry and velocity mapping to achieve consistent shooting from any position without manual adjustment."
+        concept="Use swerve odometry and a velocity map to shoot consistently from any position without manual adjustment."
       />
 
       <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
-        Instead of fixed shooting speeds, dynamic flywheel control adapts in
-        real-time, making your robot more versatile and competitive during
-        matches.
+        Instead of one fixed shooting speed, dynamic flywheel control adjusts
+        the velocity in real time based on how far the robot is from the target.
       </p>
 
       {/* Why Dynamic Velocity */}
@@ -74,7 +73,7 @@ export default function DynamicFlywheel() {
               <li className="flex items-start">
                 <span className="mr-2">•</span>
                 <span>
-                  Automatic velocity adjustment—no driver input needed
+                  Automatic velocity adjustment, no driver input needed
                 </span>
               </li>
               <li className="flex items-start">
@@ -102,7 +101,7 @@ export default function DynamicFlywheel() {
 
         <p className="text-slate-600 dark:text-slate-300">
           The core of dynamic flywheel control is an{" "}
-          <strong>InterpolatingTreeMap</strong>—a data structure that stores
+          <strong>InterpolatingTreeMap</strong>, a data structure that stores
           known distance-velocity pairs and automatically calculates velocities
           for distances in between.
         </p>
@@ -208,8 +207,8 @@ table.put(3.0, 60.0);`}
           >
             <p>
               Start with a few key distance points, then add more data through
-              testing. You don&apos;t need every possible distance—interpolation
-              handles the values in between!
+              testing. You don&apos;t need every possible distance;
+              interpolation handles the values in between.
             </p>
           </Box>
         </ContentCard>
@@ -293,8 +292,8 @@ public Command distanceShoot() {
             </h4>
             <p className="text-sm text-slate-700 dark:text-slate-300">
               As the robot drives around, <code>runRepeatedly</code> re-runs the
-              command body every loop — it recomputes the distance and queries
-              the new velocity automatically. No manual intervention required!
+              command body every loop, recomputing the distance and pulling the
+              new velocity from the table.
             </p>
           </div>
         </ContentCard>
@@ -458,8 +457,8 @@ table.put(5.0, 100.0);  // Maximum range`}
                 </p>
                 <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded mt-2 border-l-4 border-green-400 dark:border-green-900">
                   <p className="text-sm text-green-800 dark:text-green-300">
-                    <strong>Pro Tip:</strong> Try not to add too many points. It
-                    is only recommended to add points when you start missing.
+                    <strong>Pro Tip:</strong> Don&apos;t add too many points.
+                    Only add one when you start missing.
                   </p>
                 </div>
               </div>

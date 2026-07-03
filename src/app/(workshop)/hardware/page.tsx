@@ -23,7 +23,7 @@ export default function Hardware() {
       <Box
         variant="alert-info"
         icon={<Bot className="w-5 h-5" />}
-        title="New to Robot Hardware? Start Here!"
+        title="New to Robot Hardware? Start Here"
         className="mb-8"
       >
         <p className="mb-3">
@@ -56,10 +56,10 @@ export default function Hardware() {
         </ul>
         <p>
           This page explains the specific robot parts you&apos;ll use in this
-          workshop and what each one does. Don&apos;t worry if terms like &quot;
+          workshop and what each one does. If terms like &quot;
           <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>&quot; or &quot;
-          <GlossaryTerm term="encoder">encoder</GlossaryTerm>&quot; sound
-          confusing - we&apos;ll explain everything in simple terms!
+          <GlossaryTerm term="encoder">encoder</GlossaryTerm>&quot; are new to
+          you, that&apos;s fine. We&apos;ll explain each one as it comes up.
         </p>
       </Box>
 
@@ -95,13 +95,12 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
-              <strong>What it is:</strong> A powerful{" "}
+              <strong>What it is:</strong> A{" "}
               <GlossaryTerm term="motor">motor</GlossaryTerm> with a built-in
               &quot;brain&quot; (
-              <GlossaryTerm term="motor controller">controller</GlossaryTerm>)
-              that makes it smart. Instead of just spinning when you apply
-              power, it can precisely control how fast it spins and exactly
-              where it stops.
+              <GlossaryTerm term="motor controller">controller</GlossaryTerm>).
+              Instead of just spinning when you apply power, it can precisely
+              control how fast it spins and exactly where it stops.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               <strong>Why it&apos;s special:</strong> Most motors need a
@@ -114,7 +113,7 @@ export default function Hardware() {
               </p>
               <ul className="text-sm text-primary-800 dark:text-primary-300 list-disc list-inside space-y-1">
                 <li>Strong enough to lift heavy arms and spin flywheels</li>
-                <li>Spins up to 100 times per second (very fast!)</li>
+                <li>Spins up to 100 times per second</li>
                 <li>
                   Has built-in position sensing so it knows exactly where it is
                 </li>
@@ -153,9 +152,9 @@ export default function Hardware() {
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               <strong>Why you need it:</strong> The{" "}
               <GlossaryTerm term="encoder">encoder</GlossaryTerm> built into
-              your motor gets set to 0 degrees when it is turned on. This can
-              cause issues if you don&apos;t start the arm in the same position.
-              However, the CANcoder uses a magnet and is able to remember its
+              your motor gets set to 0 degrees every time it powers on, which
+              causes problems if the arm doesn&apos;t start in the same position
+              every time. The CANcoder uses a magnet, so it remembers its
               position.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
@@ -207,8 +206,8 @@ export default function Hardware() {
               people all talking at once in a small room, robot parts need an
               organized way to communicate. The CANivore gives them a fast,
               reliable connection so they can all talk to your computer without
-              getting confused. Often times needed with swerve as roboRIO would
-              be overwhelmed with data.
+              getting confused. Swerve drivetrains often need one because the
+              roboRIO alone would be overwhelmed with data.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300 mb-2">
@@ -272,10 +271,8 @@ export default function Hardware() {
                 </GlossaryTerm>
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Advanced{" "}
                 <GlossaryTerm term="motion magic">Motion Magic</GlossaryTerm>{" "}
-                and motion profiling capabilities for smooth, controlled
-                movements.
+                and motion profiling for smooth, controlled movements.
               </p>
             </div>
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
@@ -283,8 +280,8 @@ export default function Hardware() {
                 Rotations Units
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Motor positions measured in intuitive rotations instead of
-                confusing encoder ticks or radians.
+                Motor positions measured in rotations instead of encoder ticks
+                or radians.
               </p>
             </div>
           </div>
@@ -442,8 +439,7 @@ export default function Hardware() {
 
             <p className="text-slate-600 dark:text-slate-300 text-sm">
               Use Phoenix Tuner to update your motor firmware. Select devices
-              and use the batch update feature to ensure all motors are running
-              the latest firmware version.
+              and use batch update to get every motor on the latest firmware.
             </p>
           </ContentCard>
         </div>
@@ -577,7 +573,7 @@ export default function Hardware() {
 
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Let&apos;s Run Some Motors!
+          Let&apos;s Run Some Motors
         </h2>
 
         <div className="bg-primary-100 dark:bg-primary-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-6">

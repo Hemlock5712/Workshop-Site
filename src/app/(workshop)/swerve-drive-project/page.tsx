@@ -12,7 +12,7 @@ export default function SwerveDriveProject() {
       {/* Introduction */}
       <KeyConceptSection
         title="Using Phoenix Tuner X to Generate Swerve Code"
-        description="With the swerve drive fundamentals covered, we're ready to create a complete swerve drivetrain using CTRE's Phoenix Tuner X. This powerful tool generates production-ready swerve code, handling all the complexity of kinematics, odometry, and control."
+        description="With the swerve drive fundamentals covered, we're ready to create a complete swerve drivetrain using CTRE's Phoenix Tuner X. Its generator writes the swerve code for you and handles the kinematics, odometry, and control."
         concept="Phoenix Tuner X generates a complete, competition-ready swerve drivetrain with one configuration wizard."
       />
 
@@ -37,20 +37,19 @@ export default function SwerveDriveProject() {
       {/* Quick Download Section */}
       <Box variant="alert-info" title="📦 Quick Start: Download Baseline Code">
         <p className="mb-4 text-slate-600 dark:text-slate-300">
-          Need a baseline to get started? Download our complete swerve drive
-          project from the workshop code repository. This serves as an excellent
-          starting point with all the core swerve functionality already
-          implemented. After downloading just change the Team Number in the
-          `.wpilib/wpilib_preferences.json` and import tuner constants.
+          Need a baseline? Download our complete swerve drive project from the
+          workshop code repository. All the core swerve functionality is already
+          implemented. After downloading, change the team number in
+          `.wpilib/wpilib_preferences.json` and import your tuner constants.
         </p>
         <a
-          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v1.0-swerve.zip"
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/heads/1-Swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium gap-2"
         >
           <Download className="w-5 h-5" />
-          Download Swerve Project (v1.0)
+          Download Swerve Project (Commands v3)
         </a>
       </Box>
 
@@ -62,10 +61,9 @@ export default function SwerveDriveProject() {
 
         <Box variant="alert-info" title="🚀 CTRE Swerve Project Generator">
           <p className="mb-4">
-            CTRE provides a comprehensive swerve drive project generator in
-            Phoenix Tuner X that creates a complete, competition-ready swerve
-            drivetrain implementation. This is the recommended starting point
-            for all swerve projects.
+            Phoenix Tuner X includes a swerve project generator that creates a
+            complete, competition-ready drivetrain implementation. It&apos;s the
+            recommended starting point for any swerve project.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
@@ -304,7 +302,7 @@ export default function SwerveDriveProject() {
 
         <Box variant="alert-success" title="Up Next: Driving to a Pose">
           Now that your swerve project is generated, the next step is autonomous
-          movement — driving to field poses with CTRE&apos;s{" "}
+          movement: driving to field poses with CTRE&apos;s{" "}
           <code>LinearPath</code> / <code>DriveToPose</code> (the v3 template
           drives this way instead of PathPlanner).
         </Box>

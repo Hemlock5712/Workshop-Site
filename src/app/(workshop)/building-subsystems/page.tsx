@@ -10,8 +10,8 @@ export default function BuildingSubsystems() {
       <KeyConceptSection
         title="Mechanisms with WPILib Commands V3"
         description={[
-          "A mechanism models one physical part of the robot — an arm, a flywheel, the drivetrain. In Commands V3, Mechanism is a base class you extend. It gives you factory methods — run(), runRepeatedly(), idle() — that hand you a Command builder you can name, schedule, or compose.",
-          "The structure is straightforward: one class per physical thing, hardware as private fields, configuration in the constructor. Default behavior comes from an automatic idle() default (override it with setDefaultCommand) rather than a periodic() override, and the WPILib compiler plugin enforces .named(...) on every command at build time — forget it and the project won't compile.",
+          "A mechanism models one physical part of the robot: an arm, a flywheel, the drivetrain. In Commands V3, Mechanism is a base class you extend. It gives you factory methods (run(), runRepeatedly(), idle()) that hand you a Command builder you can name, schedule, or compose.",
+          "One class per physical thing, hardware as private fields, configuration in the constructor. Default behavior comes from an automatic idle() default (override it with setDefaultCommand) rather than a periodic() override, and the WPILib compiler plugin enforces .named(...) on every command at build time; forget it and the project won't compile.",
         ]}
         concept="One mechanism per physical thing. The base class gives you Command factories; you give it your hardware and the per-command behavior."
       />
@@ -95,8 +95,8 @@ export default function BuildingSubsystems() {
           style={{ color: "var(--fg-mute)" }}
         >
           The <code>Mechanism</code> base class provides three built-in
-          factories that cover the vast majority of commands you&apos;ll write.
-          Each returns a builder — chain <code>.named(&quot;...&quot;)</code> to
+          factories that cover most of the commands you&apos;ll write. Each
+          returns a builder; chain <code>.named(&quot;...&quot;)</code> to
           finish it.
         </p>
 
@@ -128,7 +128,7 @@ export default function BuildingSubsystems() {
             <p>
               Calls the runnable every scheduler tick (20 ms) for as long as the
               command is scheduled. This is the v3 spelling of &quot;put it in{" "}
-              <code>periodic()</code>&quot; — but it&apos;s scoped to a command
+              <code>periodic()</code>&quot;, but it&apos;s scoped to a command
               instead of always-on.
             </p>
           </Box>
@@ -155,9 +155,9 @@ export default function BuildingSubsystems() {
           Both <code>run(...)</code> and <code>runRepeatedly(...)</code> hand
           back a staged builder, not a finished <code>Command</code>. A WPILib
           compiler plugin watches for that builder escaping a method without a
-          matching <code>.named(...)</code> call and turns it into a build error
-          — so every command shows up in telemetry under a name you actually
-          chose.
+          matching <code>.named(...)</code> call and turns it into a build
+          error, so every command shows up in telemetry under a name you
+          actually chose.
         </Box>
       </section>
 
@@ -240,9 +240,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         >
           Multi-motor mechanisms follow the same shape. The Phoenix 6 follower
           control still lives in the constructor, the per-command behavior still
-          comes from <code>run(...)</code>, and reads stay as plain getters. The
-          workshop hardware only has one physical motor; the follower wiring
-          here demonstrates the pattern.
+          comes from <code>run(...)</code>, and reads stay as plain getters.
         </p>
 
         <CodeBlock

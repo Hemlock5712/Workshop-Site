@@ -11,8 +11,8 @@ export default function RunningProgram() {
       <KeyConceptSection
         title="Running Program - Hardware Simulation Testing"
         description={[
-          "WPILib provides a powerful tool called Hardware Simulation. This allows you to run your code in the simulator, while also running motors that are connected to the CANivore.",
-          "Using a CANivore also allows you to build robot applications that run directly on Windows or Linux machines.",
+          "WPILib's Hardware Simulation lets you run your code in the simulator while driving real motors connected to the CANivore.",
+          "A CANivore also lets you build robot applications that run directly on Windows or Linux machines.",
         ]}
         concept="Hardware simulation eliminates the need for a robot controller (roboRIO or SystemCore) during testing, while still letting you drive real motors over a CANivore."
       />
@@ -76,8 +76,8 @@ export default function RunningProgram() {
           You start the simulator (or deploy to the robot) and the driver
           station lists every <code>@Teleop</code> / <code>@Autonomous</code> /{" "}
           <code>@Utility</code> class <em>by name</em>. Selecting one{" "}
-          <strong>constructs</strong> that OpMode — that&apos;s when its button
-          bindings are built — and <code>Robot.robotPeriodic()</code> ticks{" "}
+          <strong>constructs</strong> that OpMode (that&apos;s when its button
+          bindings are built), and <code>Robot.robotPeriodic()</code> ticks{" "}
           <code>Scheduler.getDefault().run()</code> every loop no matter which
           mode is active.
         </p>
@@ -101,13 +101,14 @@ export default function RunningProgram() {
         >
           <p>
             The stack runs on <strong>Java 25</strong> and deploys to{" "}
-            <strong>SystemCore</strong> — <code>./gradlew deploy</code> targets{" "}
-            <code>/home/systemcore</code>. OpModes are discovered by scanning
-            classes at runtime, so a missing one is <em>not</em> a compile error
-            — if your mode doesn&apos;t show up on the driver station, check
-            that the class is <code>public</code>, non-<code>abstract</code>,
-            annotated with a <code>name</code>, in <code>frc.robot</code> (or a
-            subpackage), and has a public <code>(Robot)</code> constructor.
+            <strong>SystemCore</strong> (<code>./gradlew deploy</code> targets{" "}
+            <code>/home/systemcore</code>). OpModes are discovered by scanning
+            classes at runtime, so a missing one is <em>not</em> a compile
+            error. If your mode doesn&apos;t show up on the driver station,
+            check that the class is <code>public</code>, non-
+            <code>abstract</code>, annotated with a <code>name</code>, in{" "}
+            <code>frc.robot</code> (or a subpackage), and has a public{" "}
+            <code>(Robot)</code> constructor.
           </p>
         </Box>
       </section>

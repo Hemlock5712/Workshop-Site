@@ -98,10 +98,9 @@ export default function AdvancedDriveToPoint() {
             Finding the Right Constraints
           </h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6">
-            Setting appropriate velocity and acceleration constraints is crucial
-            for reliable path following. These values need to be conservative
-            enough that your robot can actually track them while still being
-            fast enough for competitive performance.
+            Your velocity and acceleration constraints need to be conservative
+            enough that the robot can actually track them, but fast enough to
+            stay competitive.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -327,7 +326,7 @@ export default function AdvancedDriveToPoint() {
             Following a Trajectory vs Targeting an Endpoint
           </h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6">
-            The key innovation in the advanced approach is using{" "}
+            The big change in the advanced approach is using{" "}
             <strong>moving setpoints</strong> from the trajectory instead of
             just the final target position.
           </p>
@@ -373,20 +372,18 @@ double yError = setpoint.pose.getY() - currentY;
             </h4>
             <ul className="space-y-2 text-slate-700 dark:text-slate-300">
               <li>
-                ✅ <strong>Smaller Errors:</strong> PID only needs to keep robot
-                on the planned path, not correct for entire distance to target
+                ✅ <strong>Smaller Errors:</strong> PID only keeps the robot on
+                the planned path instead of correcting the entire distance to
+                the target
               </li>
               <li>
-                ✅ <strong>Smoother Control:</strong> Setpoint moves gradually
-                along trajectory, creating gentle corrections
+                ✅ <strong>Smoother Control:</strong> the setpoint moves
+                gradually along the trajectory, so corrections stay gentle and
+                overshoot mostly disappears
               </li>
               <li>
-                ✅ <strong>Less Oscillation:</strong> Smaller errors mean less
-                aggressive PID corrections and overshoot
-              </li>
-              <li>
-                ✅ <strong>Predictable Behavior:</strong> Robot follows a
-                planned path instead of taking unpredictable routes
+                ✅ <strong>Predictable Behavior:</strong> the robot follows a
+                planned path instead of whatever route PID happens to take
               </li>
             </ul>
           </div>

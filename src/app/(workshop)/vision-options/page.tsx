@@ -11,8 +11,8 @@ export default function VisionOptions() {
     <PageTemplate title="Vision Options">
       <KeyConceptSection
         title="Computer Vision - See the Field"
-        description="Computer vision enables robots to detect game pieces, track targets, and localize position using cameras. AprilTag targets provide absolute field positioning, while object detection helps with game piece manipulation."
-        concept="Vision transforms robots from blind machines into field-aware systems that can adapt to dynamic conditions."
+        description="Cameras let a robot detect game pieces, track targets, and figure out where it is on the field. AprilTags provide absolute field positioning, while object detection helps with game piece manipulation."
+        concept="Without vision, your robot only knows where odometry says it is. With it, the robot can see the field and correct itself."
       />
 
       <section className="flex flex-col gap-8">
@@ -40,9 +40,9 @@ export default function VisionOptions() {
           title="💡 Vision is Essential for Competitive Play"
         >
           <p>
-            Modern FRC requires vision for autonomous accuracy and teleop
-            assistance. Top teams use multiple cameras for comprehensive field
-            awareness.
+            Modern FRC all but requires vision for accurate autonomous and
+            teleop assists. Top teams run multiple cameras to keep more of the
+            field in view.
           </p>
         </Box>
       </section>
@@ -63,8 +63,7 @@ export default function VisionOptions() {
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
                 Dedicated vision hardware with integrated processing, LEDs, and
-                NetworkTables interface. Plug-and-play solution optimized for
-                FRC.
+                a NetworkTables interface. Plug it in and it works.
               </p>
             </div>
           </div>
@@ -101,8 +100,8 @@ export default function VisionOptions() {
               🎯 Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Teams who want reliable, proven vision hardware with minimal
-              setup. Ideal for teams prioritizing ease-of-use over cost.
+              Teams that want proven vision hardware with minimal setup and are
+              willing to pay for the convenience.
             </p>
           </div>
 
@@ -126,7 +125,7 @@ export default function VisionOptions() {
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
                 Open-source vision software that runs on coprocessors (Raspberry
-                Pi, Orange Pi, etc.). Flexible and cost-effective alternative.
+                Pi, Orange Pi, etc.). The cheaper, do-it-yourself route.
               </p>
             </div>
           </div>
@@ -164,9 +163,8 @@ export default function VisionOptions() {
               🎯 Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Teams who want cost-effective vision with flexibility and
-              don&apos;t mind additional setup complexity. Great for AprilTag
-              localization.
+              Teams that want cheap, flexible vision and don&apos;t mind the
+              extra setup. Great for AprilTag localization.
             </p>
           </div>
 
@@ -200,11 +198,10 @@ export default function VisionOptions() {
                 a <strong>network switch</strong> if you have multiple devices.
               </li>
               <li>
-                <strong>Mounting:</strong> Recommendation for mounting is to
-                mount ideally where the cameras can see scoring target tags when
-                you are scoring. Also make sure not to mount at the same height
-                as tags. You want your cameras looking left or right and up or
-                down when looking at the tag.
+                <strong>Mounting:</strong> Mount cameras where they can see the
+                scoring tags while you&apos;re scoring, and not at the same
+                height as the tags. The camera should view a tag at an angle
+                (left or right, and up or down).
               </li>
             </ul>
           </ContentCard>

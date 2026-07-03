@@ -13,7 +13,7 @@ export default function CommandFramework() {
       <KeyConceptSection
         title="The Command-Based Framework"
         description={[
-          "Command-based programming organizes robot code into three pieces — Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which Mechanism owns whom so two commands never fight for the same motor.",
+          "Command-based programming organizes robot code into three pieces — Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which command owns which Mechanism so two commands never fight for the same motor.",
           "Commands V3 gives each piece a concrete type: Mechanism for hardware, Command for the coroutine-bodied actions, and Scheduler for the loop. You compose commands either with factories (Command.sequence / Command.parallel) or as a real method body, not just a tree of group objects.",
           "The top-level wiring: a Robot class owns the mechanisms, and each mode — driver teleop, an autonomous routine, a calibration task — is its own OpMode class. You'll see that on the Triggers and Running the Program pages.",
         ]}
@@ -29,7 +29,7 @@ export default function CommandFramework() {
         >
           Buttons, sensor predicates, custom expressions — anything that
           evaluates to a boolean. Bindings are scoped (global / opmode /
-          command), so they auto-clean up when the scope exits.
+          command), so they clean themselves up when the scope exits.
         </Box>
 
         <Box
@@ -38,8 +38,8 @@ export default function CommandFramework() {
           title="Mechanisms"
           subtitle={<strong>One physical thing each</strong>}
         >
-          An arm, a flywheel, the drivetrain. The type is <code>Mechanism</code>{" "}
-          — a class you <code>extends</code>. Hardware lives in private fields,
+          An arm, a flywheel, the drivetrain. The type is <code>Mechanism</code>
+          , a class you <code>extends</code>. Hardware lives in private fields,
           configuration in the constructor.
         </Box>
 
@@ -120,7 +120,7 @@ Command.sequence(arm.horizontal(), intake.grab()).named("pickup");`}
           title="A few rules worth knowing"
         >
           <p>
-            <code>.named(...)</code> is required — the WPILib compiler plugin
+            <code>.named(...)</code> is required: the WPILib compiler plugin
             makes an unnamed command a build error, so every builder chain ends
             in <code>.named(...)</code>. The interrupt-only cleanup hook is{" "}
             <code>.whenCanceled(...)</code>; it&apos;s where interrupt cleanup
@@ -150,15 +150,15 @@ Command.sequence(arm.horizontal(), intake.grab()).named("pickup");`}
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          You combine commands two ways — in sequence, or in parallel. The{" "}
+          You combine commands two ways: in sequence or in parallel. The{" "}
           <strong>composition factories</strong> (<code>Command.sequence</code>{" "}
           / <code>Command.parallel</code>) combine whole commands; the combined
           command automatically requires everything its children require. The{" "}
           <strong>coroutine helpers</strong> (<code>await</code> /{" "}
           <code>awaitAll</code> / <code>awaitAny</code> / <code>fork</code> /{" "}
           <code>wait</code> / <code>waitUntil</code>), called from inside a
-          command body, let one command coordinate steps from the inside — handy
-          when the sequence depends on runtime data.
+          command body, let one command coordinate steps from the inside, which
+          is handy when the sequence depends on runtime data.
         </p>
 
         <div className="grid gap-4 lg:grid-cols-2">

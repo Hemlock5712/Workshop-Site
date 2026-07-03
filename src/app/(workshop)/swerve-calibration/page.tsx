@@ -11,14 +11,14 @@ export default function OdometryCalibration() {
     <PageTemplate title="Swerve Calibration">
       <KeyConceptSection
         title="Swerve Calibration"
-        description="Proper calibration is the foundation of accurate autonomous performance. This includes tuning swerve motor gains, configuring drive request types, preventing wheel slip, finding effective wheel radius, configuring camera positions, and tuning PID controllers for path following."
+        description="Accurate autonomous starts with calibration: tuning swerve motor gains, configuring drive request types, preventing wheel slip, finding effective wheel radius, configuring camera positions, and tuning PID controllers for path following."
         concept="Calibration transforms theoretical parameters into real-world accuracy."
       />
 
       <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
-        Accurate calibration ensures your robot knows exactly where it is on the
-        field, enabling precise autonomous movement and vision integration.
-        Below is a graphic showing the order we follow when setting up a robot.
+        Calibration is how your robot knows where it is on the field, which is
+        what autonomous movement and vision integration depend on. Here is the
+        order we follow when setting up a robot.
       </p>
 
       {/* Pre-Season vs In-Season Timeline Visualization */}
@@ -220,10 +220,7 @@ export default function OdometryCalibration() {
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Follow these steps in order to properly tune your swerve drive motors
-          and configure optimal drive performance. Each step builds on the
-          previous one to ensure accurate odometry and reliable autonomous
-          operation.
+          Work through these steps in order; each builds on the one before it.
         </p>
 
         {/* Step 1: Tune steerGains */}
@@ -237,8 +234,7 @@ export default function OdometryCalibration() {
                 Tune steerGains (TunerConstants.java)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Before diving into code, ensure your hardware is ready. We
-                strongly recommend following the{" "}
+                First, make sure the hardware itself is ready. Follow the{" "}
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
                   className="text-primary-600 underline hover:no-underline dark:text-primary-400"
@@ -250,8 +246,8 @@ export default function OdometryCalibration() {
                 for the initial configuration using Phoenix Tuner X.
               </p>
               <p className="text-slate-600 dark:text-slate-300">
-                Configure PID gains for your swerve module steering motors to
-                ensure accurate module angle control.
+                Then tune the steering motors&apos; PID gains so each module
+                tracks its commanded angle.
               </p>
             </div>
           </div>
@@ -262,16 +258,16 @@ export default function OdometryCalibration() {
                 Tuning Procedure:
               </h4>
               <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-                Use the <strong>Turret tuning instructions</strong> from the{" "}
+                A steering motor is a rotational mechanism, like a turret, so it
+                needs position-based PID tuning. Use the{" "}
+                <strong>Turret tuning instructions</strong> from the{" "}
                 <a
                   href="/pid-control"
                   className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
                 >
                   PID Control page
                 </a>{" "}
-                to tune your steer gains. The steering motors behave like a
-                rotational mechanism (similar to a turret) and require
-                position-based PID tuning.
+                to tune your steer gains.
               </p>
             </div>
 
@@ -288,7 +284,7 @@ export default function OdometryCalibration() {
                 >
                   PID Control page
                 </a>{" "}
-                provides detailed examples of position-based PID tuning.
+                has worked examples if you get stuck.
               </p>
             </Box>
           </div>
@@ -305,8 +301,8 @@ export default function OdometryCalibration() {
                 Tune driveGains (TunerConstants.java)
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Configure velocity PID gains for your drive motors to ensure
-                accurate speed control.
+                Tune velocity PID gains for your drive motors so they hold
+                commanded speeds.
               </p>
             </div>
           </div>
@@ -389,7 +385,7 @@ export default function OdometryCalibration() {
                 >
                   PID Control page
                 </a>{" "}
-                provides detailed examples of velocity-based PID tuning with
+                has worked examples of velocity-based PID tuning with
                 VelocityVoltage control requests.
               </p>
             </Box>
@@ -416,8 +412,8 @@ export default function OdometryCalibration() {
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Configuration Changes (done if using our example code on last
-                page):
+                Configuration Changes (already done if you used our example code
+                on the last page):
               </h4>
               <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
                 <li>
@@ -431,9 +427,9 @@ export default function OdometryCalibration() {
                   </code>
                 </li>
                 <li>
-                  <strong>2. Remove deadband:</strong> Remove CTR deadband. The
-                  current implementation they have elements small input values,
-                  which hinders precise low-speed control.
+                  <strong>2. Remove deadband:</strong> Drop the CTRE deadband.
+                  It zeroes out small input values, which gets in the way of
+                  precise low-speed control.
                 </li>
               </ol>
             </div>
@@ -547,24 +543,11 @@ export default function OdometryCalibration() {
               title="Important Considerations"
               icon={<AlertTriangle className="w-5 h-5" />}
             >
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>
-                  <strong>Testing environment matters:</strong> Always test on
-                  carpet against a wall to accurately simulate match conditions
-                </li>
-                <li>
-                  <strong>Conservative tuning:</strong> Set limits below the
-                  slip point to maintain a safety margin
-                </li>
-                <li>
-                  <strong>Performance tradeoff:</strong> Stator limits restrict
-                  acceleration. Setting limits too low degrades responsiveness
-                </li>
-                <li>
-                  <strong>Monitor during testing:</strong> Watch for the
-                  characteristic velocity spike that indicates slip occurrence
-                </li>
-              </ul>
+              <p className="text-sm">
+                Stator limits also cap acceleration, so setting them too low
+                makes the robot sluggish. Stay slightly below the observed slip
+                point for a safety margin, but no lower than you need.
+              </p>
             </Box>
 
             <DocumentationButton
@@ -684,11 +667,10 @@ export default function OdometryCalibration() {
 
             <Box variant="alert-warning" title="Zeroing Procedure">
               <p>
-                Zeroing your modules is critical for straight driving. We
-                recommend using a <strong>straight edge</strong> (like a long
-                piece of metal or 2x4) pressed against the wheel modules to
-                physically align them perfectly straight before saving the zero
-                positions in Tuner X.
+                If your modules aren&apos;t zeroed well, the robot won&apos;t
+                drive straight. Press a <strong>straight edge</strong> (a long
+                piece of metal or a 2x4) against the wheel modules to physically
+                align them before saving the zero positions in Tuner X.
               </p>
             </Box>
           </div>
@@ -700,10 +682,9 @@ export default function OdometryCalibration() {
           icon={<Lightbulb className="w-5 h-5" />}
         >
           <p>
-            <strong>Highly Recommended:</strong> Glue your drive encoders in
-            place to prevent them from shifting during impacts or aggressive
-            movements. Even small encoder shifts can cause significant odometry
-            drift.
+            Glue your drive encoders in place so they can&apos;t shift during
+            impacts or aggressive movements. Even a small encoder shift causes
+            significant odometry drift.
           </p>
         </Box>
       </section>
@@ -779,10 +760,8 @@ export default function OdometryCalibration() {
         </h2>
 
         <Box variant="alert-success" title="Up Next: Logging Options">
-          With your swerve drive fully calibrated, you&apos;re ready to explore
-          data logging strategies. You&apos;ll learn about different logging
-          frameworks, what data to log, and how to use logs for debugging and
-          performance analysis.
+          Next up is data logging: comparing frameworks, deciding what to log,
+          and using logs for debugging and performance analysis.
         </Box>
       </section>
     </PageTemplate>

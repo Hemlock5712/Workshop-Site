@@ -278,7 +278,7 @@ export default function Home() {
             tag="FLYWHEEL · VELOCITY CONTROL"
             title="Shooter Flywheel"
             color="oklch(0.78 0.16 145)"
-            description="Hold a target RPM precisely for consistent shooting — velocity PID + velocity feedforward."
+            description="Hold a target RPM precisely for consistent shooting, using velocity PID + velocity feedforward."
             image={{
               src: "/images/mechanisms/flywheel.png",
               alt: "Flywheel Shooter",

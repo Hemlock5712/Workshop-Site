@@ -23,13 +23,23 @@ export default function ProjectSetup() {
           The robot code uses{" "}
           <strong>Commands v3 + the OpMode framework</strong>, runs on{" "}
           <strong>Java 25</strong>, and deploys to <strong>SystemCore</strong>.
-          The workshop&apos;s canonical starting point is the team&apos;s{" "}
-          <strong>2026-Template</strong> repo — clone it (or use it as your
-          base) so you start with the OpMode wiring already in place, then set
-          your team number in <code>.wpilib/wpilib_preferences.json</code>. The
-          site mirrors the 2027 alpha stack (GradleRIO{" "}
-          <code>2027.0.0-alpha-6</code>, Phoenix 6 <code>26.50.0-alpha-1</code>
-          ).
+          The workshop&apos;s canonical starting point is the{" "}
+          <strong>
+            <a
+              href="https://github.com/Hemlock5712/2026-Template/tree/2027-dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              2027-dev branch of the team&apos;s 2026-Template
+            </a>
+          </strong>{" "}
+          repo — clone it and check out <code>2027-dev</code> (the{" "}
+          <code>main</code> branch is still the older 2026 stack) so you start
+          with the OpMode wiring already in place, then set your team number in{" "}
+          <code>.wpilib/wpilib_preferences.json</code>. The site mirrors the
+          2027 alpha stack (GradleRIO <code>2027.0.0-alpha-6</code>, Phoenix 6{" "}
+          <code>26.50.0-alpha-1</code>).
         </p>
       </Box>
 
@@ -190,9 +200,8 @@ export default function ProjectSetup() {
         icon={<Lightbulb className="w-5 h-5" />}
         className="mt-4"
       >
-        After creating your project, you&apos;ll learn about the Command-Based
-        Framework in the next section. Your project will be ready for
-        implementing subsystems and commands!
+        After creating your project, the next section covers the Command-Based
+        Framework, where you&apos;ll start adding subsystems and commands.
       </Box>
 
       <Quiz

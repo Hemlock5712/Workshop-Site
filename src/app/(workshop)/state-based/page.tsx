@@ -4,6 +4,8 @@ import CodeBlock from "@/components/CodeBlock";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
+import DocumentationButton from "@/components/DocumentationButton";
+import { Book, GitPullRequest } from "lucide-react";
 
 export default function StateMachines() {
   return (
@@ -11,29 +13,36 @@ export default function StateMachines() {
       <KeyConceptSection
         title="State Machines with WPILib Commands V3"
         description={[
-          "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this — including entry/exit hooks and any-state interrupts — without writing scaffolding by hand.",
+          "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this, including entry/exit hooks and any-state interrupts, without writing scaffolding by hand.",
           "Reach for a StateMachine whenever a routine has phases that can repeat, skip, or back up to an earlier phase based on sensor input. Auto routines that recover from being knocked off-course, LED logic that escalates between info/warning animations, and superstructure choreography are all natural fits.",
         ]}
         concept="A state is a Command that runs while the machine is in it. Transitions are edge-triggered conditions that cancel the current state's command and move to the next state. onEnter / onExit fire around each transition."
       />
 
       <Box
-        variant="alert-warning"
-        tag="PROVISIONAL · WPILIB 2027 ALPHA"
-        title="StateMachine API is still settling"
+        variant="alert-info"
+        tag="OFFICIAL · WPILIB 2027 ALPHA-6"
+        title="StateMachine is a shipped WPILib API"
       >
-        This lesson teaches WPILib&apos;s Commands-v3 <code>StateMachine</code>{" "}
-        — the intended v3 way to model multi-state routines. It is a real 2027
-        feature, but its exact method names and behavior are{" "}
-        <strong>still being finalized in the alpha</strong>, and the
-        workshop&apos;s reference template doesn&apos;t yet ship a finished
-        StateMachine example. Treat the <code>StateMachine</code> code on this
-        page as a faithful sketch of the design intent rather than a
-        guaranteed-compiling API — we&apos;ll pin it to a verified example once
-        one lands. The surrounding pieces (the <code>Arm</code> command
-        factories, the coroutine bodies) follow the same verified v3 patterns as
-        the rest of the workshop.
+        This lesson teaches the official Commands-v3 <code>StateMachine</code>{" "}
+        class (<code>org.wpilib.command3.StateMachine</code>), released in
+        WPILib 2027 alpha-6 in May 2026. Everything on this page is checked
+        against the published source. Alpha APIs can still shift before the 2027
+        kickoff release, but this is the real class, not a preview sketch.
       </Box>
+
+      <div className="flex flex-wrap gap-4">
+        <DocumentationButton
+          href="https://github.com/wpilibsuite/allwpilib/blob/main/design-docs/commands-v3-state-machines.md"
+          title="WPILib State Machine Design Doc"
+          icon={<Book className="w-5 h-5" />}
+        />
+        <DocumentationButton
+          href="https://github.com/wpilibsuite/allwpilib/pull/8297"
+          title="StateMachine API Pull Request"
+          icon={<GitPullRequest className="w-5 h-5" />}
+        />
+      </div>
 
       <section className="flex flex-col gap-6">
         <h2
@@ -51,10 +60,10 @@ export default function StateMachines() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Building a state machine is a four-step staged process. Each state
-          wraps a single <code>Command</code>. Transitions are declared on the
-          states themselves and are checked every scheduler tick while that
-          state is active.
+          Building a state machine takes four steps. Each state wraps a single{" "}
+          <code>Command</code>. Transitions are declared on the states
+          themselves and are checked every scheduler tick while that state is
+          active.
         </p>
 
         <CodeBlock
@@ -190,7 +199,7 @@ scoring.switchTo(scoring).whenCompleteAnd(hopper::hasBall);`}
             Each state can register any number of <code>onEnter</code> and{" "}
             <code>onExit</code> callbacks. Useful when entering or leaving a
             state needs to kick off side-effects that aren&apos;t part of the
-            state&apos;s main command — schedule a background animation, stiffen
+            state&apos;s main command: schedule a background animation, stiffen
             the drivetrain, log a marker, etc.
           </p>
 
@@ -224,9 +233,9 @@ getInPosition.onExit(
             className="text-[14px] leading-relaxed"
             style={{ color: "var(--fg-mute)" }}
           >
-            For transitions that should fire regardless of which state is active
-            — emergency interrupts, mode overrides, &quot;back to idle on
-            disable&quot; — declare them on the state machine itself with{" "}
+            Some transitions should fire regardless of which state is active:
+            emergency interrupts, mode overrides, &quot;back to idle on
+            disable&quot;. Declare those on the state machine itself with{" "}
             <code>switchFromAny(...)</code>.
           </p>
 
@@ -261,6 +270,11 @@ sm.switchFromAny().to(idle).whenComplete();`}
             Listing specific states is fine too:{" "}
             <code>sm.switchFromAny(state1, state2).to(state3).when(...)</code>{" "}
             is shorthand for adding the same transition to each listed state.
+            There is also an exit variant:{" "}
+            <code>sm.switchFromAny().toExitStateMachine().when(eStop)</code>{" "}
+            ends the whole machine instead of moving to another state, and a
+            single state can do the same with{" "}
+            <code>state.exitStateMachine().when(...)</code>.
           </p>
         </div>
       </CollapsibleSection>
@@ -274,8 +288,8 @@ sm.switchFromAny().to(idle).whenComplete();`}
             Set <code>currentState</code> to the initial state.
           </li>
           <li>
-            <code>onEnter</code> callbacks fire, then the state&apos;s command
-            is forked.
+            The state&apos;s command is forked, then <code>onEnter</code>{" "}
+            callbacks fire, so they can see the command already running.
           </li>
           <li>
             Each scheduler tick, every conditional transition is checked in
@@ -358,7 +372,7 @@ public Command grabAndScore() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          The powerful line is{" "}
+          The line to notice is{" "}
           <code>int weight = sensors.readPieceWeight();</code> followed by a
           three-way <code>if/else</code> picking between different next
           sub-commands. Because the whole routine is one method body, a value
@@ -389,8 +403,8 @@ public Command grabAndScore() {
         Commands V3 and the <code>StateMachine</code> class run on{" "}
         <strong>Java 25</strong> and deploy to <strong>SystemCore</strong>. The
         stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
-        <code>2027.0.0-alpha-6</code>), where the StateMachine API is still
-        moving between builds (see the provisional note at the top).
+        <code>2027.0.0-alpha-6</code>) — the release where StateMachine first
+        shipped.
       </Box>
 
       <Quiz
@@ -436,7 +450,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 2,
             explanation:
-              "A state machine with no initial state has nothing to run, so the intent is for the build to reject it — the same compile-time enforcement Commands V3 applies to .named() on command builders. (Exact mechanism is still being finalized in the 2027 alpha; see the provisional note at the top of this page.)",
+              "setInitialState() is marked @PostConstructionInitializer, and the WPILib compiler plugin fails the build if you construct a StateMachine and never call it — the same build-time enforcement Commands V3 applies to .named() on command builders. As a backstop, a machine that reaches the scheduler without one throws IllegalStateException when it starts.",
           },
           {
             id: 4,

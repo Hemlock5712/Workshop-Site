@@ -73,10 +73,10 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                A powerful tool for viewing robot logs and visualizing data.
-                Required for debugging and tuning. A lite version comes
-                preinstalled with WPILib. However, we recommend downloading the
-                latest full version from the GitHub releases page.
+                Viewer for robot logs and data, and required for debugging and
+                tuning. A lite version comes preinstalled with WPILib, but we
+                recommend downloading the latest full version from the GitHub
+                releases page.
               </p>
             </div>
 
@@ -100,21 +100,23 @@ export default function Prerequisites() {
             <div className="border-l-4 border-orange-200 dark:border-orange-900 pl-4">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                 <a
-                  href="https://github.com/Hemlock5712/2026-Template"
+                  href="https://github.com/Hemlock5712/2026-Template/tree/2027-dev"
                   className="text-orange-600 underline hover:no-underline dark:text-orange-400"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  WPILib 2027 Alpha stack (2026-Template)
+                  WPILib 2027 Alpha stack (2026-Template, 2027-dev branch)
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 This workshop targets the WPILib <strong>2027 alpha</strong> —
                 Commands v3 + OpModes, <strong>Java 25</strong>, and the{" "}
-                <strong>SystemCore</strong> controller. Start from the
-                team&apos;s 2026-Template rather than a stock project.
-                Autonomous uses CTRE&apos;s built-in LinearPath / DriveToPose,
-                so <strong>PathPlanner is not required</strong>.
+                <strong>SystemCore</strong> controller. Start from the{" "}
+                <code>2027-dev</code> branch of the team&apos;s 2026-Template
+                rather than a stock project (the <code>main</code> branch is
+                still the older 2026 stack). Autonomous uses CTRE&apos;s
+                built-in LinearPath / DriveToPose, so{" "}
+                <strong>PathPlanner is not required</strong>.
               </p>
             </div>
 
@@ -130,8 +132,8 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Drivers use a dashboard to easily view the robot and key items,
-                such as selecting autonomous routines or viewing motor errors.
+                Drivers use a dashboard to select autonomous routines, check for
+                motor errors, and monitor the robot during a match.
               </p>
             </div>
 
@@ -147,8 +149,7 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Ideally, some basic knowledge of Java coding (optional but
-                recommended).
+                Some basic Java knowledge helps, but it isn&apos;t required.
               </p>
             </div>
           </div>
@@ -160,8 +161,8 @@ export default function Prerequisites() {
           Ready to Start?
         </h3>
         <p className="text-primary-800 dark:text-primary-300">
-          Make sure you have all the prerequisites installed before proceeding
-          to the hardware setup section.
+          Make sure everything above is installed before you move on to hardware
+          setup.
         </p>
       </div>
     </PageTemplate>

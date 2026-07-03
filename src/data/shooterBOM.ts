@@ -294,7 +294,7 @@ export const shooterBOMData: BOMItem[] = [
     vendor: "AndyMark",
     partNumber: "am-2647",
     pricePerUnit: 29.99,
-    productLink: "https://andymark.com/products/4-in-compliant-wheel",
+    productLink: "https://andymark.com/products/4-in-compliant-wheels",
     notes: "Compliant wheels for ball handling and shooting. One per side.",
     is3DPrinted: false,
   },

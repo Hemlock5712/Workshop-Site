@@ -12,7 +12,7 @@ export default function AutonomousRoutines() {
       {/* Introduction */}
       <KeyConceptSection
         title="Autonomous Without PathPlanner"
-        description="The 2027 template drives itself in autonomous with CTRE's on-board path tools — LinearPath and a DriveToPose command — instead of PathPlanner. A routine is just an @Autonomous OpMode that sequences DriveToPose legs (and mechanism commands) in code. No GUI, no vendor dependency, no AutoBuilder."
+        description="The 2027 template drives itself in autonomous with CTRE's on-board path tools, LinearPath and a DriveToPose command, instead of PathPlanner. A routine is just an @Autonomous OpMode that sequences DriveToPose legs (and mechanism commands) in code. No GUI, no vendor dependency, no AutoBuilder."
         concept="Autonomous = an @Autonomous OpMode that sequences DriveToPose legs. Each leg drives in a straight line to a field pose using CTRE LinearPath (a profiled feedforward) plus PID feedback on odometry."
       />
 
@@ -24,13 +24,12 @@ export default function AutonomousRoutines() {
 
         <p className="text-slate-600 dark:text-slate-300">
           <code>DriveToPose</code> is a command that drives the robot in a
-          straight line to a target field pose, on odometry. Under the hood it
-          uses CTRE&apos;s <code>LinearPath</code> — a trajectory generator that
-          produces a smooth trapezoid-profiled velocity toward the goal — as the{" "}
-          <em>feedforward</em>, plus three PID controllers (X, Y, heading) that
-          trim the measured pose back onto the profile to cancel drift. You give
-          it a goal <code>Pose2d</code> and it finishes when the profile is
-          done.
+          straight line to a target field pose, on odometry. The{" "}
+          <em>feedforward</em> comes from CTRE&apos;s <code>LinearPath</code>, a
+          trajectory generator that produces a smooth trapezoid-profiled
+          velocity toward the goal. Three PID controllers (X, Y, heading) trim
+          the measured pose back onto the profile to cancel drift. You give it a
+          goal <code>Pose2d</code> and it finishes when the profile is done.
         </p>
 
         <CodeBlock
@@ -47,8 +46,8 @@ Command leg = new DriveToPose(robot.drivetrain, goal);`}
         <Box variant="alert-info" title="Where the controller internals live">
           <p className="text-sm text-slate-600 dark:text-slate-300">
             This page is about <em>composing</em> autonomous routines. The
-            inside of the drive-to-a-pose command — the PID feedback, the
-            profiled feedforward, and the field-frame math — is built up step by
+            inside of the drive-to-a-pose command (the PID feedback, the
+            profiled feedforward, and the field-frame math) is built up step by
             step on the{" "}
             <Link
               href="/drive-to-point"
@@ -119,7 +118,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
         />
 
         <p className="text-slate-600 dark:text-slate-300">
-          Want a second routine? Add another <code>@Autonomous</code> class — it
+          Want a second routine? Add another <code>@Autonomous</code> class; it
           shows up as another choice on the driver station. To do something at a
           point in the path (the old &quot;event marker&quot;), put a mechanism
           command into the sequence or <code>fork</code> it inside a coroutine
@@ -160,9 +159,9 @@ public class AutonomousOpMode extends PeriodicOpMode {
         <Box variant="alert-warning" title="Poses are blue-alliance origin">
           <p className="mb-2 text-sm text-slate-600 dark:text-slate-300">
             Odometry (and therefore <code>DriveToPose</code>) works in the
-            blue-alliance-origin field frame — the origin does not flip with
-            alliance (this is the Phoenix convention). Write your poses for the
-            blue side.
+            blue-alliance-origin field frame. The origin does not flip with
+            alliance (this is the Phoenix convention), so write your poses for
+            the blue side.
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             When you&apos;re on the red alliance, flip the goal poses to the red
@@ -267,8 +266,8 @@ public class AutonomousOpMode extends PeriodicOpMode {
 
         <Box variant="alert-success" title="Up Next: Swerve Calibration">
           Accurate autonomous depends on accurate odometry. Next you&apos;ll
-          calibrate your swerve drive — tune motor gains, configure slip-current
-          limits, and measure wheel radius — so <code>DriveToPose</code> tracks
+          calibrate your swerve drive (tune motor gains, configure slip-current
+          limits, and measure wheel radius) so <code>DriveToPose</code> tracks
           your field poses precisely.
         </Box>
       </section>

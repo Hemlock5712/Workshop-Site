@@ -10,10 +10,10 @@ export default function Triggers() {
       <KeyConceptSection
         title="Triggers in Commands V3"
         description={[
-          "A Trigger is a BooleanSupplier with bind helpers — button.onTrue(cmd), sensor.whileTrue(cmd), and friends. A Trigger fires a Command.",
-          "Every binding belongs to a scope — global, opmode, or command. Exiting that scope un-registers the binding automatically, so a binding's lifetime always matches the thing it belongs to: the whole program, a single match phase, or one running command.",
+          "A Trigger is a BooleanSupplier with bind helpers: button.onTrue(cmd), sensor.whileTrue(cmd), and friends. A Trigger fires a Command.",
+          "Every binding belongs to a scope (global, opmode, or command). Exiting that scope removes the binding automatically, so a binding's lifetime always matches the thing it belongs to: the whole program, a single match phase, or one running command.",
         ]}
-        concept="A Trigger fires a Command. What matters is who owns the binding's lifetime — and therefore when it goes away."
+        concept="A Trigger fires a Command. What matters is who owns the binding's lifetime, and therefore when it goes away."
       />
 
       <section className="flex flex-col gap-6">
@@ -63,7 +63,7 @@ atSpeed.onTrue(intake.feed());`}
           The <code>Trigger</code> class and the controllers (like{" "}
           <code>CommandNiDsXboxController</code>) live under{" "}
           <code>org.wpilib.command3.button</code>. The interesting part
-          isn&apos;t what you write at the binding site — it&apos;s{" "}
+          isn&apos;t what you write at the binding site; it&apos;s{" "}
           <em>where</em> you write it, because that decides how long the binding
           lives.
         </p>
@@ -85,13 +85,12 @@ atSpeed.onTrue(intake.feed());`}
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Different phases of a match want different bindings: A might raise the
-          arm in teleop and do nothing in auto. Scoping ties a binding&apos;s
-          lifetime to the thing it belongs to. A binding made for a mode lives
-          exactly as long as that mode is active; a binding made for a running
-          command lives exactly as long as that command runs. When the mode
-          changes or the command ends, its bindings go away with it — on their
-          own.
+          Different phases of a match want different bindings: the A button
+          might raise the arm in teleop and do nothing in auto. Scoping ties a
+          binding&apos;s lifetime to the thing it belongs to. A binding made for
+          a mode lives exactly as long as that mode is active; a binding made
+          for a running command lives exactly as long as that command runs. When
+          the mode changes or the command ends, its bindings go away with it.
         </p>
 
         <p
@@ -134,10 +133,10 @@ atSpeed.onTrue(intake.feed());`}
           >
             <p>
               Created before any OpMode is selected, so they live as long as the
-              robot program runs. Good fit for genuinely-always-on bindings —
-              the template&apos;s brake-while-disabled (
+              robot program runs. Good fit for bindings that are genuinely
+              always on: the template&apos;s brake-while-disabled (
               <code>RobotModeTriggers.disabled()</code>), an emergency stop, a
-              low-battery alert — and not much else.
+              low-battery alert. Not much else qualifies.
             </p>
           </Box>
 
@@ -162,7 +161,7 @@ atSpeed.onTrue(intake.feed());`}
           >
             <p>
               Live only while the command is scheduled. Useful for &quot;while
-              this routine is running, also fire X on sensor Y&quot; — the extra
+              this routine is running, also fire X on sensor Y&quot;. The extra
               binding disappears when the routine finishes or is cancelled.
             </p>
           </Box>
@@ -231,8 +230,8 @@ public class TeleopOpMode extends PeriodicOpMode {
           Selecting auto on the driver station <em>constructs</em> the auto
           OpMode (building its bindings) and tears down the teleop OpMode along
           with its bindings. When the driver picks Teleop again, a fresh
-          TeleopOpMode is constructed and only its bindings come back — each
-          mode&apos;s bindings come and go with the mode, nothing to clean up by
+          TeleopOpMode is constructed and only its bindings come back. Each
+          mode&apos;s bindings come and go with the mode; nothing to clean up by
           hand.
         </p>
       </section>
@@ -282,7 +281,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         >
           Outside of <code>climb()</code> the operator&apos;s B button does
           whatever the opmode-level binding (or nothing) says it should. The
-          abort binding exists only for the duration of the climb — it&apos;s
+          abort binding exists only for the duration of the climb: it&apos;s
           created when the command starts and dropped the moment it ends, with
           no cleanup code of your own.
         </p>
@@ -291,15 +290,16 @@ public class TeleopOpMode extends PeriodicOpMode {
       <Box
         variant="alert-info"
         tag="NOTE · API STATUS"
-        title="Command-scoped bindings are still provisional"
+        title="All three binding scopes are shipped API"
       >
-        The global (Robot-constructor) and opmode-constructor scopes are
-        demonstrated in the template. The <em>command-scoped</em> binding shown
-        above follows the same &quot;scope-captured-at-construction&quot; rule
-        but isn&apos;t yet shown in the template, so treat that spelling as
-        provisional until the alpha settles. The stack is the WPILib 2027{" "}
-        <em>alpha</em>, on <strong>Java 25</strong> and{" "}
-        <strong>SystemCore</strong>.
+        The three scopes on this page (command, opmode, global) come straight
+        from the WPILib 2027 alpha-6 scheduler: when a binding is created, the
+        scheduler captures the <em>narrowest active scope</em> — the running
+        command if there is one, else the current opmode, else global — and
+        removes the binding when that scope ends. The template demonstrates the
+        opmode and global scopes; command-scoped bindings work the same way but
+        aren&apos;t shown there yet. The stack is the WPILib 2027 <em>alpha</em>
+        , on <strong>Java 25</strong> and <strong>SystemCore</strong>.
       </Box>
 
       <Quiz

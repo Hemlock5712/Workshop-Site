@@ -16,7 +16,7 @@ export default function MechanismSetup() {
       {/* Introduction */}
       <KeyConceptSection
         title="Mechanism Setup - Verifying Hardware Configuration"
-        description="Before implementing advanced control algorithms, we need to verify that motors and encoders are working correctly. This ensures proper direction, zeroing, and basic functionality."
+        description="Before writing any control code, verify that your motors and encoders work correctly: right direction, right zero position, basic movement."
         concept="Always verify hardware setup before adding control algorithms. Otherwise you will be debugging control issues when the problem is hardware configuration."
       />
 
@@ -114,11 +114,9 @@ export default function MechanismSetup() {
                   <div className="grid grid-cols-2 gap-6 mb-6">
                     <div>
                       <p className="text-[var(--muted-foreground)] mb-4">
-                        You&apos;ll need to make sure your encoder is configured
-                        correctly. With the device facing you, as shown in the
-                        following picture, please make sure that the encoder
-                        position increases as you rotate the arm
-                        counterclockwise.
+                        With the device facing you, as shown in the picture
+                        below, rotate the arm counterclockwise and check that
+                        the encoder position increases.
                       </p>
                     </div>
 
@@ -226,11 +224,10 @@ export default function MechanismSetup() {
 
                   <div className="grid grid-cols-2 gap-6 mb-8 items-start">
                     <p className="text-[var(--muted-foreground)]">
-                      You&apos;ll want to make sure your motor is spinning in
-                      the expected direction. If the motor is getting positive
-                      voltage, it should be spinning counterclockwise. You can
-                      check this through tuner, with the device facing you as in
-                      the following picture.
+                      Next, check that the motor spins the right way. With
+                      positive voltage, it should spin counterclockwise. You can
+                      test this in Tuner, with the device facing you as in the
+                      picture.
                     </p>
 
                     <ImageBlock
@@ -299,11 +296,10 @@ export default function MechanismSetup() {
                   <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="col-span-2">
                       <p className="text-[var(--muted-foreground)] mb-4">
-                        You&apos;ll want to make sure your flywheel motors are
-                        spinning in the expected direction. If the motor is
-                        getting positive voltage, both motors should spin in the
-                        same direction (leader-follower setup). You can check
-                        this through tuner.
+                        Check that your flywheel motors spin the right way. With
+                        positive voltage, both motors should spin in the same
+                        direction (leader-follower setup). You can test this in
+                        Tuner.
                       </p>
 
                       <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
@@ -386,14 +382,12 @@ export default function MechanismSetup() {
         <p className="text-[var(--muted-foreground)] mb-4">
           Once your mechanism moves in the correct direction and provides
           accurate feedback (encoder for arms, motor consistency for flywheels),
-          you&apos;re ready to implement advanced control algorithms.
+          you&apos;re ready to add control code.
         </p>
         <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
           <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-            <strong>💡 Next Step:</strong> With verified hardware setup, we can
-            now implement PID control for precise mechanism control. The control
-            algorithm will use sensor feedback to automatically reach target
-            positions or velocities.
+            <strong>💡 Next Step:</strong> PID control. It uses this sensor
+            feedback to reach target positions or velocities automatically.
           </p>
         </div>
       </div>
