@@ -185,6 +185,9 @@ importers:
       '@remotion/cli':
         specifier: ^4.0.0
         version: 4.0.469(@swc/helpers@0.5.15)(postcss@8.5.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@remotion/install-whisper-cpp':
+        specifier: 4.0.469
+        version: 4.0.469
       '@remotion/renderer':
         specifier: ^4.0.0
         version: 4.0.469(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
@@ -1491,6 +1494,9 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  '@remotion/captions@4.0.469':
+    resolution: {integrity: sha512-izYrOG5FB+L2/Jk9YYFxncvH2+erUgQrQwPZbAySakZ/yiRL5luAfR3xhQBpD79p5sX3OzqwGKwO4223Lsr/qQ==}
+
   '@remotion/cli@4.0.469':
     resolution: {integrity: sha512-dv3hpY0CsjzkwPVXQJcJQHikXLHzupFyJg835rp5zBuqF+i/HmhZM8VZdh4LZDEut3OHJD3vkEgAk35R18Q8iQ==}
     hasBin: true
@@ -1532,6 +1538,9 @@ packages:
     resolution: {integrity: sha512-0lEP9HvbCgQa7HxMl804DrE49kmctidNgSNHavVT7O7B4E03uxAt4kaRRy1P7SLeGMJ/1wKIYLfWtvV4sd7HKA==}
     cpu: [x64]
     os: [win32]
+
+  '@remotion/install-whisper-cpp@4.0.469':
+    resolution: {integrity: sha512-7I3zdmBTm2Ga88b82iMBJXR0yGqiCjmkXaTMvNtLTwQrbI3ggFr0huxZNPRDus1S33NRSfwEBhTetfJF/ofF/A==}
 
   '@remotion/licensing@4.0.469':
     resolution: {integrity: sha512-ZSM0no+STTcEQAYGyyarXKkpQet18kXgJR59oTmRa0iqS+nN78OMBE4Uj7totpfmhXYV98T4gWgkGHqjDjqcBg==}
@@ -6036,13 +6045,13 @@ snapshots:
       '@remotion/timeline-utils': 4.0.469
       '@rspack/core': 1.7.6(@swc/helpers@0.5.15)
       '@rspack/plugin-react-refresh': 1.6.1(react-refresh@0.18.0)
-      css-loader: 7.1.4(@rspack/core@1.7.6(@swc/helpers@0.5.15))(webpack@5.105.0(postcss@8.5.15))
+      css-loader: 7.1.4(@rspack/core@1.7.6(@swc/helpers@0.5.15))(webpack@5.105.0(esbuild@0.28.0)(postcss@8.5.15))
       esbuild: 0.28.0
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       react-refresh: 0.18.0
       remotion: 4.0.469(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-      style-loader: 4.0.0(webpack@5.105.0(postcss@8.5.15))
+      style-loader: 4.0.0(webpack@5.105.0(esbuild@0.28.0)(postcss@8.5.15))
       webpack: 5.105.0(esbuild@0.28.0)(postcss@8.5.15)
     transitivePeerDependencies:
       - '@minify-html/node'
@@ -6061,6 +6070,8 @@ snapshots:
       - utf-8-validate
       - webpack-cli
       - webpack-hot-middleware
+
+  '@remotion/captions@4.0.469': {}
 
   '@remotion/cli@4.0.469(@swc/helpers@0.5.15)(postcss@8.5.15)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)':
     dependencies:
@@ -6115,6 +6126,10 @@ snapshots:
 
   '@remotion/compositor-win32-x64-msvc@4.0.469':
     optional: true
+
+  '@remotion/install-whisper-cpp@4.0.469':
+    dependencies:
+      '@remotion/captions': 4.0.469
 
   '@remotion/licensing@4.0.469': {}
 
@@ -7144,7 +7159,7 @@ snapshots:
       semver: 7.8.0
       tinyglobby: 0.2.16
 
-  css-loader@7.1.4(@rspack/core@1.7.6(@swc/helpers@0.5.15))(webpack@5.105.0(postcss@8.5.15)):
+  css-loader@7.1.4(@rspack/core@1.7.6(@swc/helpers@0.5.15))(webpack@5.105.0(esbuild@0.28.0)(postcss@8.5.15)):
     dependencies:
       icss-utils: 5.1.0(postcss@8.5.15)
       postcss: 8.5.15
@@ -9523,7 +9538,7 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  style-loader@4.0.0(webpack@5.105.0(postcss@8.5.15)):
+  style-loader@4.0.0(webpack@5.105.0(esbuild@0.28.0)(postcss@8.5.15)):
     dependencies:
       webpack: 5.105.0(esbuild@0.28.0)(postcss@8.5.15)
 

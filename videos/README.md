@@ -1,9 +1,18 @@
-# Gray Matter Workshop Videos
+# Gray Matter Workshop Trailers
 
-Programmatic video pipeline for workshop explainers. Everything runs locally and is free:
+Programmatic ~90-second trailer videos for every workshop topic. Everything
+runs locally and is free:
 
 - **[Remotion](https://www.remotion.dev/)** — React components rendered to MP4
-- **[Kokoro TTS](https://github.com/hexgrad/kokoro)** via [`kokoro-js`](https://www.npmjs.com/package/kokoro-js) — high-quality voiceover, no API keys, runs on CPU
+- **[Kokoro TTS](https://github.com/hexgrad/kokoro)** via [`kokoro-js`](https://www.npmjs.com/package/kokoro-js) — voiceover, no API keys, runs on CPU
+- **[whisper.cpp](https://github.com/ggerganov/whisper.cpp)** (optional) — word-level timestamps for frame-accurate captions and event sync
+
+A trailer is one continuous world: artifacts (title card, physics lab, code
+panels, diagrams, images, end card) placed on a large canvas, with a camera
+that moves between them. Narration is split into short **beats**; each beat
+frames a region of the world and can fire **events** — gain changes, code
+edits, diagram reveals — anchored to the exact spoken word
+(`at: { word: "crank" }`).
 
 ## One-time setup
 
@@ -11,45 +20,28 @@ From the repo root:
 
 ```bash
 pnpm install
+pnpm --filter @gray-matter/videos whisper:setup   # optional, ~150MB, all local
 ```
 
-This installs Remotion, `kokoro-js`, and the Kokoro ONNX model is fetched lazily on the first `pnpm tts` run (~80MB, cached after).
+The Kokoro ONNX model (~80MB) downloads lazily on the first `trailer:audio`
+run and is cached. Without whisper, word timings are estimated from Kokoro's
+sentence chunks — fine for captions, slightly loose for word-anchored events.
 
-## Authoring a video
-
-Each video is described by a **script** file under `src/compositions/<Name>.script.ts`. A script is a list of segments — each has a paragraph of narration and the slide that should appear while it plays.
-
-```ts
-// src/compositions/Introduction.script.ts
-export const IntroductionScript: VideoScript = {
-  id: "Introduction",
-  voice: "af_heart",
-  segments: [
-    {
-      id: "title",
-      text: "Welcome to the Gray Matter Workshop...",
-      slide: {
-        kind: "title",
-        title: "Gray Matter Workshop",
-        subtitle: "FRC Programming",
-      },
-    },
-    // ...more segments
-  ],
-};
-```
-
-## Two-step build
+## Build & render
 
 ```bash
-# 1. Generate voiceover audio for every segment + the duration manifest
-pnpm --filter @gray-matter/videos tts
+# 1. Generate/refresh voiceover + word timings. Content-hash cached — only
+#    changed narration is re-synthesized; unchanged runs are instant.
+pnpm --filter @gray-matter/videos trailer:audio              # all trailers
+pnpm --filter @gray-matter/videos trailer:audio PidTrailer   # just one
 
-# 2. Render the MP4
-pnpm --filter @gray-matter/videos render:intro
+# 2. Render
+pnpm --filter @gray-matter/videos render PidTrailer out/pid-trailer.mp4
 ```
 
-The output lands at `videos/out/introduction.mp4`. Generated audio in `videos/public/audio/<ScriptId>/` and the rendered MP4 are gitignored.
+There are no manifest files to keep in sync: each composition reads
+`public/trailer-audio/<Id>.timeline.json` via `calculateMetadata`, and Studio
+shows a banner if narration changed since audio was generated.
 
 ## Previewing live
 
@@ -57,49 +49,50 @@ The output lands at `videos/out/introduction.mp4`. Generated audio in `videos/pu
 pnpm --filter @gray-matter/videos studio
 ```
 
-Opens the Remotion Studio at <http://localhost:3000> with hot-reload for the compositions.
+Remotion Studio at <http://localhost:3000> lists every trailer with
+hot-reload. A trailer without generated audio shows a "run trailer:audio"
+slate instead of breaking.
 
-## Adding a new video
+## Adding a trailer
 
-1. Create `src/compositions/MyVideo.script.ts` (copy `Introduction.script.ts`)
-2. Create `src/compositions/MyVideo.tsx` (copy `Introduction.tsx`)
-3. Register it in `src/Root.tsx` with a new `<Composition>`
-4. Add the script to the `SCRIPTS` array in `scripts/generate-audio.ts`
-5. Add a stub manifest at `src/manifests/MyVideo.manifest.ts` (copy the stub)
-6. Run `pnpm tts MyVideo` then `pnpm render MyVideo out/my-video.mp4`
+1. Create `src/trailer/trailers/MyTopicTrailer.ts` (copy `PidTrailer.ts` for a
+   physics/code video, `CommandFrameworkTrailer.ts` for a diagram video)
+2. Add it to `TRAILERS` in `src/trailer/registry.ts`
+3. `pnpm trailer:audio MyTopicTrailer`, then preview in Studio
+
+## Artifact kinds
+
+| Kind      | What it is                                                             |
+| --------- | ---------------------------------------------------------------------- |
+| `title`   | Opening card — gradient headline, kicker, underline sweep              |
+| `end`     | CTA card with the page URL                                             |
+| `code`    | Code panel; successive `states` animate as typed diffs                 |
+| `diagram` | Node/edge graph; nodes reveal by `step` events, ghosts until revealed  |
+| `image`   | Framed photo/render with a slow Ken Burns push                         |
+| `pid-lab` | Live arm physics sim: gains, gravity feedforward, Motion Magic profile |
 
 ## Fixing mispronunciations
 
-Edit [`scripts/pronunciations.ts`](scripts/pronunciations.ts) and add an entry to the `pronunciationOverrides` map. The TTS step applies these substitutions to narration text before Kokoro sees it — slide text stays unchanged, so what you see on screen still reads correctly.
+Add an entry to [`scripts/pronunciations.ts`](scripts/pronunciations.ts) and
+rerun `trailer:audio` — substitutions apply to narration audio only; captions
+show the original text.
 
-```ts
-// scripts/pronunciations.ts
-export const pronunciationOverrides: Record<string, string> = {
-  CTRE: "C T R E",
-  WPILib: "Whipp lib",
-  "Kraken X44": "Kraken X 44",
-};
-```
+## Music bed
 
-After editing, rerun `pnpm tts <ScriptId>` and `pnpm render <ScriptId> out/<name>.mp4` to hear the change. The seed map already covers common FRC/CTRE terms — extend it as you spot issues.
+Drop a `public/music/bed.mp3` and rerun `trailer:audio` — it mixes under the
+narration automatically (quiet, faded in/out). Camera-move whoosh SFX are
+synthesized automatically.
+
+## Swapping in a human voice
+
+Replace the cached WAV for a beat (`public/trailer-audio/cache/<hash>.wav`)
+with a recorded take (mono PCM16 WAV), delete its `<hash>.json` sidecar, and
+rerun `trailer:audio`. The pipeline times the existing take instead of
+re-synthesizing it, and whisper re-aligns word timings against the recording —
+so captions and event anchors still land.
 
 ## Voices
 
-Kokoro ships a handful of expressive English voices. Some popular ones:
-
-| Voice ID     | Description                    |
-| ------------ | ------------------------------ |
-| `af_heart`   | Warm female, narration default |
-| `af_bella`   | Confident female               |
-| `am_michael` | Calm male                      |
-| `am_adam`    | Energetic male                 |
-
-Set `voice` per script. Full list and samples at <https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX>.
-
-## Upgrading the voice later
-
-If Kokoro quality isn't good enough for a particular video, swap in ElevenLabs (or any cloud TTS) by replacing the `tts.generate(...)` call in `scripts/generate-audio.ts` — the rest of the pipeline doesn't care where the WAV came from.
-
-## Why not ElevenLabs out of the box?
-
-ElevenLabs free tier disallows commercial use and has no API access. Kokoro is fully open-weight (Apache 2.0) and runs offline. If you upgrade, the integration point is one function.
+Kokoro ships several expressive English voices (`af_heart` is the default
+narration voice). Set `voice` per trailer script. Full list and samples at
+<https://huggingface.co/onnx-community/Kokoro-82M-v1.0-ONNX>.

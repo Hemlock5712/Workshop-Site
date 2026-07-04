@@ -21,12 +21,16 @@ export const pronunciationOverrides: Record<string, string> = {
   WPILib: "Whipp lib",
   wpilib: "Whipp lib",
   roboRIO: "robo Rio",
+  SystemCore: "System Core",
   AprilTag: "April Tag",
   AdvantageScope: "Advantage Scope",
   AdvantageKit: "Advantage Kit",
   PathPlanner: "Path Planner",
+  DriveToPose: "Drive To Pose",
+  LinearPath: "Linear Path",
   SignalLogger: "Signal Logger",
   DataLogManager: "Data Log Manager",
+  DriverStation: "Driver Station",
   NetworkTables: "Network Tables",
   SmartDashboard: "Smart Dashboard",
   "Elastic Dashboard": "Elastic Dashboard",
@@ -37,10 +41,21 @@ export const pronunciationOverrides: Record<string, string> = {
   ".wpilog": "W P I log",
   wpilog: "W P I log",
 
+  // Commands v3 / OpMode framework
+  OpModeRobot: "Op Mode Robot",
+  OpModes: "Op Modes",
+  OpMode: "Op Mode",
+  Pose2d: "Pose 2 D",
+  ChassisVelocities: "Chassis Velocities",
+
   // FRC acronyms
   FRC: "F R C",
   PID: "P I D",
+  kP: "K P",
+  kI: "K I",
+  kD: "K D",
   RPM: "R P M",
+  PDH: "P D H",
   CAN: "Can",
 
   // CTRE hardware
@@ -67,20 +82,20 @@ export const pronunciationOverrides: Record<string, string> = {
   PnP: "P n P",
   Kalman: "Kahl-mun",
 
-  // CamelCase API names spoken in narration
-  RobotContainer: "Robot Container",
-  configureBindings: "configure Bindings",
-  ArmSubsystem: "Arm Subsystem",
-  CommandSwerveDrivetrain: "Command Swerve Drivetrain",
+  // CamelCase API names spoken in narration (Commands v3)
   addVisionMeasurement: "add Vision Measurement",
-  leftTrigger: "left Trigger",
+  registerAll: "register All",
+  addPeriodic: "add Periodic",
+  fpgaToCurrentTime: "F P G A to Current Time",
+  telemeterize: "tele meter ize",
+  runRepeatedly: "run Repeatedly",
+  setDefaultCommand: "set Default Command",
+  waitUntil: "wait Until",
+  whileTrue: "while True",
+  leftBumper: "left Bumper",
   onTrue: "on True",
-  onFalse: "on False",
-  moveUp: "move Up",
-  moveDown: "move Down",
-  stopArm: "stop Arm",
-  runOnce: "run Once",
-  isFinished: "is Finished",
+  "Command.sequence": "Command sequence",
+  "Command.parallel": "Command parallel",
 
   // URLs and team identifiers
   "frc5712.com/prerequisites":

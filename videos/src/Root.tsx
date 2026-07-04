@@ -1,50 +1,42 @@
-import { Composition } from "remotion";
-import { ScriptedVideo } from "./compositions/ScriptedVideo";
-import { IntroductionScript } from "./compositions/Introduction.script";
-import { PrerequisitesScript } from "./compositions/Prerequisites.script";
-import { HardwareScript } from "./compositions/Hardware.script";
-import { MechanismSelectionScript } from "./compositions/MechanismSelection.script";
-import { LoggingScript } from "./compositions/Logging.script";
-import { VisionScript } from "./compositions/Vision.script";
-import { CommandFrameworkScript } from "./compositions/CommandFramework.script";
-import { AddingCommandsScript } from "./compositions/AddingCommands.script";
-import { LoggingImplementationScript } from "./compositions/LoggingImplementation.script";
-import { VisionImplementationScript } from "./compositions/VisionImplementation.script";
+import { Composition, staticFile } from "remotion";
+import { TrailerVideo } from "./trailer/components/TrailerVideo";
+import { TRAILERS } from "./trailer/registry";
 import { brand } from "./lib/brand";
-import { loadManifest } from "./lib/loadManifest";
-import type { VideoScript } from "./lib/types";
-
-const ALL_SCRIPTS: VideoScript[] = [
-  IntroductionScript,
-  PrerequisitesScript,
-  HardwareScript,
-  MechanismSelectionScript,
-  LoggingScript,
-  VisionScript,
-  CommandFrameworkScript,
-  AddingCommandsScript,
-  LoggingImplementationScript,
-  VisionImplementationScript,
-];
+import type { TrailerTimeline } from "./trailer/lib/types";
 
 export const RemotionRoot = () => {
   return (
     <>
-      {ALL_SCRIPTS.map((script) => {
-        const manifest = loadManifest(script.id);
-        return (
-          <Composition
-            key={script.id}
-            id={script.id}
-            component={ScriptedVideo}
-            durationInFrames={manifest.totalDurationInFrames}
-            fps={brand.fps}
-            width={brand.width}
-            height={brand.height}
-            defaultProps={{ script, manifest }}
-          />
-        );
-      })}
+      {TRAILERS.map((script) => (
+        <Composition
+          key={script.id}
+          id={script.id}
+          component={TrailerVideo}
+          durationInFrames={300}
+          fps={brand.fps}
+          width={brand.width}
+          height={brand.height}
+          defaultProps={{ script, timeline: null as TrailerTimeline | null }}
+          calculateMetadata={async ({ props }) => {
+            // Duration comes straight from the generated timeline — no
+            // checked-in manifest files to go stale.
+            try {
+              const res = await fetch(
+                staticFile(`trailer-audio/${props.script.id}.timeline.json`)
+              );
+              if (!res.ok) throw new Error(`${res.status}`);
+              const timeline = (await res.json()) as TrailerTimeline;
+              return {
+                durationInFrames: Math.max(1, timeline.totalDurationInFrames),
+                props: { ...props, timeline },
+              };
+            } catch {
+              // No timeline yet — TrailerVideo renders a "run trailer:audio" slate.
+              return { durationInFrames: 300, props };
+            }
+          }}
+        />
+      ))}
     </>
   );
 };
