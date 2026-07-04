@@ -241,7 +241,7 @@ function getPageMetadata(route) {
       title: "AI Assistant",
       category: "Resources",
       description:
-        "AI-powered chat assistant for workshop questions and FRC programming help.",
+        "AI chat for workshop questions, plus how to use AI coding assistants (Claude Code, GitHub Copilot, OpenAI Codex) and the 2027-Template's Agent Skills on your own robot code.",
     },
     search: {
       title: "Search",

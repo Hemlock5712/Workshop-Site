@@ -2,10 +2,15 @@
  * Upload workshop pages to the Gemini File Search store.
  *
  * Run with:
- *   npx tsx scripts/upload-to-file-search.ts
+ *   npx tsx scripts/upload-to-file-search.ts            # add pages to the store
+ *   npx tsx scripts/upload-to-file-search.ts --replace  # purge existing docs first
  *
  * Scans src/app/(workshop)/ for page.tsx files, extracts the human-readable
  * text content, and uploads one file per page to the File Search store.
+ *
+ * Uploads always ADD documents — re-running without --replace leaves the old
+ * versions in the store alongside the new ones. Use --replace whenever page
+ * content has changed.
  *
  * File Search handles chunking + embedding internally.
  */
@@ -135,6 +140,30 @@ async function waitForOperation(
   }
 }
 
+async function purgeStore(ai: GoogleGenAI, storeName: string): Promise<void> {
+  console.log("Purging existing documents...");
+  let deleted = 0;
+  // Delete-and-relist until the store is empty; the list API caps pages at 20.
+  for (;;) {
+    const pager = await ai.fileSearchStores.documents.list({
+      parent: storeName,
+      config: { pageSize: 20 },
+    });
+    const docs = [...pager.page];
+    if (docs.length === 0) break;
+    for (const doc of docs) {
+      if (!doc.name) continue;
+      await ai.fileSearchStores.documents.delete({
+        name: doc.name,
+        config: { force: true },
+      });
+      deleted++;
+      console.log(`  ✗ deleted ${doc.displayName ?? doc.name}`);
+    }
+  }
+  console.log(`Purged ${deleted} documents.\n`);
+}
+
 async function main() {
   loadEnvLocal();
 
@@ -145,6 +174,11 @@ async function main() {
   if (!storeName) throw new Error("GEMINI_FILE_SEARCH_STORE missing");
 
   const ai = new GoogleGenAI({ apiKey });
+
+  if (process.argv.includes("--replace")) {
+    await purgeStore(ai, storeName);
+  }
+
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "workshop-upload-"));
 
   const pages = discoverWorkshopPages();
@@ -159,15 +193,14 @@ async function main() {
       const text = extractTextFromTSX(tsx);
 
       if (text.length < 100) {
-        console.log(`  ⊘ skipping ${page.url} (too short: ${text.length} chars)`);
+        console.log(
+          `  ⊘ skipping ${page.url} (too short: ${text.length} chars)`
+        );
         continue;
       }
 
       const fileContent = `# ${page.title}\nURL: ${page.url}\n\n${text}`;
-      const tmpFile = path.join(
-        tmpDir,
-        `${page.slug || "home"}.txt`
-      );
+      const tmpFile = path.join(tmpDir, `${page.slug || "home"}.txt`);
       fs.writeFileSync(tmpFile, fileContent, "utf-8");
 
       const op = await ai.fileSearchStores.uploadToFileSearchStore({

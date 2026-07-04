@@ -19,7 +19,19 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 
 **Live Site:** [frc5712.com](https://frc5712.com)  
 **Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)  
-**Workshop Code:** [https://github.com/Hemlock5712/Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)
+**Workshop Code:** [https://github.com/Hemlock5712/Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)  
+**Robot Template (ground truth for Java examples):** [https://github.com/Hemlock5712/2027-Template](https://github.com/Hemlock5712/2027-Template)
+
+## Workshop Content Stack (WPILib 2027 / Commands v3)
+
+All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpModes** — NOT the classic Commands v2 framework. When writing or editing any Java example or robot-code prose on the site:
+
+- **Ground truth is the [2027-Template](https://github.com/Hemlock5712/2027-Template) repo** (default branch `2027-dev`; renamed from 2026-Template in July 2026). If an API isn't in the template or shipped WPILib 2027 alpha source, do NOT use it — never invent v3 APIs. On any disagreement, the template wins.
+- **Stack**: `org.wpilib.*` packages (not `edu.wpi.first.*`), Java 25, deploys to **SystemCore** (not roboRIO), Commands v3 (`org.wpilib.command3`), Phoenix 6 alpha, GradleRIO 2027 alpha.
+- **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
+- **Key v3 APIs**: subsystems `extend Mechanism`; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`.
+- **Not used anywhere on the site**: PathPlanner (autonomous uses CTRE `DriveToPose`/`LinearPath` instead), AdvantageKit (logging uses `DataLogManager` only), and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
+- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches and PRs. All numbered teaching branches are v3 with linear, lesson-sized histories (rewritten July 2026); the swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
 
 ## Development Commands
 
@@ -28,12 +40,12 @@ Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/
 ### Essential Commands
 
 - **Development server**: `pnpm dev` (with Turbopack for faster builds) - **USER RUNS MANUALLY**
-- **Production build**: `pnpm build` (includes search generation and formatting)
+- **Production build**: `pnpm build` (runs `generate-search`, then `next build`)
 - **Production server**: `pnpm start` - **USER RUNS MANUALLY**
 - **Linting**: `pnpm lint` (ESLint with Next.js config)
 - **Type checking**: `pnpm type-check` (TypeScript compiler check)
 - **Code formatting**: `pnpm format` (Prettier with write), `pnpm format:check` (check only)
-- **Search data generation**: `pnpm generate-search` (updates search index)
+- **Search data generation**: `pnpm generate-search` (updates search index; regenerates `src/data/searchData.ts` unformatted — run `pnpm format` afterward or `format:check` will fail)
 - **Spell checking**: `pnpm spell` (cspell on TypeScript and markdown files)
 - **Full test suite**: `pnpm test` (runs format:check + lint + type-check + build)
 
@@ -105,33 +117,45 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
 ### Route Organization
 
+Lesson order, sidebar grouping, and prev/next navigation all come from `src/data/lessons.ts` — the single source of truth. Current structure:
+
 ```
-Workshop Content:
+Getting Started:
 ├── / (Homepage with team, mechanisms, overview)
 ├── /introduction (Workshop introduction)
 ├── /prerequisites (Required software & hardware)
-├── /mechanism-setup (Mechanism selection & setup)
-├── /mechanism-cad (CAD files and 3D modeling)
+└── /mechanism-cad (CAD files and 3D modeling)
+
+Workshop #1:
 ├── /hardware (CTRE hardware setup)
 ├── /project-setup (WPILib project creation)
-├── /building-subsystems (Creating subsystem architecture)
-├── /adding-commands (Command-based programming)
-├── /triggers (Button and trigger configuration)
-├── /command-framework (Advanced command patterns)
+├── /command-framework (Command-Based Framework — Commands v3 concepts)
+├── /building-subsystems (Mechanisms)
+├── /adding-commands (Commands)
+├── /triggers (Triggers)
 ├── /running-program (Run code with hardware sim)
-├── /state-based (State machine control)
-├── /pid-control (PID controller implementation)
-├── /motion-magic (Motion Magic profiled movement)
-├── /pathplanner (PathPlanner trajectory following)
-├── /swerve-drive-project (Swerve drive implementation)
-├── /logging-options (Data logging strategies)
+├── /mechanism-setup (Mechanism selection & setup)
+├── /pid-control (PID control + interactive playground)
+└── /motion-magic (Motion Magic profiled movement)
+
+Workshop #2:
+├── /swerve-prerequisites (Swerve drive prerequisites)
+├── /swerve-drive-project (Creating a swerve drive project)
+├── /pathplanner (Autonomous: Driving to a Pose — CTRE DriveToPose; slug is historical, page no longer teaches PathPlanner)
+├── /swerve-calibration (Swerve calibration)
+├── /logging-options (Logging strategies — DataLogManager)
 ├── /logging-implementation (Logging system setup)
 ├── /drive-to-point (Drive to point navigation with PID)
 ├── /vision-options (Computer vision approaches)
-├── /vision-implementation (Vision system integration)
-├── /vision-shooting (Vision-based shooting)
-├── /advanced-drive-to-point (Profiled path following with feedforward)
-└── /search (Search functionality page)
+└── /vision-implementation (Vision system integration)
+
+Advanced Topics:
+├── /vision-shooting (Dynamic Flywheel Control)
+├── /state-based (State Machines — command3 StateMachine)
+└── /advanced-drive-to-point (Advanced: Profiled Drive to Point — LinearPath)
+
+Utility (outside lesson navigation):
+├── /search, /glossary, /ai-assistant, /planner, /privacy
 ```
 
 ### Asset Management
@@ -158,7 +182,8 @@ Workshop Content:
 - Theme system uses next-themes with class-based dark mode
 - Sidebar state management handles responsive behavior and tooltips
 - All workshop pages should use PageTemplate for consistency
-- Navigation items are defined as static arrays in Sidebar component
+- Navigation (sidebar groups, lesson order, prev/next) is derived from `src/data/lessons.ts` — add/rename/reorder lessons there, not in Sidebar
+- After content edits, regenerate the search index with `pnpm generate-search`; page titles/descriptions for search come from the hardcoded `routeMap` in `scripts/generate-search-data.js`, so update that map when a page's title or focus changes
 - Build process includes comprehensive testing (lint + type-check + build)
 - Search system provides fast fuzzy search across all workshop content using MiniSearch
 - Theme transitions use View Transitions API for smooth animated theme switching
