@@ -22,6 +22,7 @@ import { Captions } from "./Captions";
 import { CodePanel } from "./artifacts/CodePanel";
 import { Diagram } from "./artifacts/Diagram";
 import { EndCard } from "./artifacts/EndCard";
+import { FlywheelLab } from "./artifacts/FlywheelLab";
 import { ImageCard } from "./artifacts/ImageCard";
 import { PidLab } from "./artifacts/PidLab";
 import { TitleCard } from "./artifacts/TitleCard";
@@ -167,6 +168,9 @@ function ArtifactView({
       )}
       {def.kind === "code" && <CodePanel def={def} events={resolved.events} />}
       {def.kind === "pid-lab" && <PidLab def={def} resolved={resolved} />}
+      {def.kind === "flywheel-lab" && (
+        <FlywheelLab def={def} resolved={resolved} />
+      )}
       {def.kind === "diagram" && <Diagram def={def} events={resolved.events} />}
       {def.kind === "image" && (
         <ImageCard def={def} activationFrame={activationFrame} />

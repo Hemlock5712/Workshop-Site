@@ -26,6 +26,41 @@ interface TrailerGroup {
 
 const GROUPS: TrailerGroup[] = [
   {
+    heading: "Full Lessons — the deep dives",
+    trailers: [
+      {
+        file: "commands-lesson.mp4",
+        title: "Commands Deep Dive",
+        blurb:
+          "Scheduler, three command shapes, requirement conflicts, cancellation, default commands, compositions, bindings (~5 min).",
+      },
+      {
+        file: "state-based-lesson.mp4",
+        title: "State-Based Control — Full Lesson",
+        blurb:
+          "Why not ifs, the state graph, every transition kind, adding a state, interrupts (~4 min).",
+      },
+      {
+        file: "pid-lesson.mp4",
+        title: "PID Control — Full Lesson",
+        blurb:
+          "Sag, ringing, over-damped D, the I term and windup, bump recovery, the tuning procedure, tolerance (~4.5 min).",
+      },
+      {
+        file: "feedforward-lesson.mp4",
+        title: "Feedforward — Full Lesson",
+        blurb:
+          "The whole family: kG on the arm, kS and kV on the flywheel, rapid-fire recovery, how to characterize (~4.5 min).",
+      },
+      {
+        file: "motion-magic-lesson.mp4",
+        title: "Motion Magic — Full Lesson",
+        blurb:
+          "Trapezoid anatomy, choosing cruise and acceleration, the infeasible-profile failure, velocity variant (~4 min).",
+      },
+    ],
+  },
+  {
     heading: "Workshop 1 — Foundations",
     trailers: [
       {

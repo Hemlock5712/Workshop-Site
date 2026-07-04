@@ -1,0 +1,280 @@
+import type { Rect, TrailerScript } from "../lib/types";
+
+// Full-length PID lesson (~4.5 min). Everything the 90s trailer cut: why P
+// sags, why it rings, over-damped D, the I term and its windup (and why the
+// workshop skips it), disturbance recovery, the actual tuning procedure, and
+// tolerance in the goTo command.
+
+const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
+const LAB: Rect = { x: 2560, y: 140, width: 2200, height: 1150 };
+const TUNING: Rect = { x: 5480, y: 160, width: 2200, height: 1100 };
+const CODE: Rect = { x: 8440, y: 220, width: 1620, height: 960 };
+const END: Rect = { x: 10800, y: 60, width: 1920, height: 1080 };
+const ARM_CLOSEUP: Rect = { x: 2600, y: 200, width: 980, height: 1050 };
+const SCOPE_CLOSEUP: Rect = { x: 3600, y: 200, width: 1120, height: 1040 };
+
+const GOTO_CODE = `// "There" is never exact — pick a tolerance the game allows.
+public Command goTo(Angle target, Angle tolerance) {
+  return run(coroutine -> {
+    motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
+    coroutine.waitUntil(() -> atTarget(target, tolerance));
+  }).named("Arm:goTo:" + target.in(Degrees));
+}
+
+private boolean atTarget(Angle target, Angle tolerance) {
+  return Math.abs(target.in(Degrees) - positionDegrees()) < tolerance.in(Degrees);
+}`;
+
+export const PidLesson: TrailerScript = {
+  id: "PidLesson",
+  voice: "af_heart",
+  world: [
+    {
+      kind: "title",
+      id: "title",
+      rect: TITLE,
+      title: "PID Control",
+      subtitle:
+        "The full lesson — sag, ring, damping, and how to actually tune",
+      accent: "purple",
+    },
+    {
+      kind: "pid-lab",
+      id: "lab",
+      rect: LAB,
+      startDeg: -45,
+      hardStopDeg: -45,
+      chips: ["kP", "kI", "kD", "target"],
+    },
+    {
+      kind: "diagram",
+      id: "tuning",
+      rect: TUNING,
+      title: "The tuning procedure",
+      nodes: [
+        {
+          id: "start",
+          label: "Start kP small",
+          sublabel: "so small it barely moves",
+          x: 80,
+          y: 150,
+          width: 460,
+          height: 220,
+          accent: "blue",
+          step: 1,
+        },
+        {
+          id: "double",
+          label: "Double kP",
+          sublabel: "until it overshoots and rings",
+          x: 880,
+          y: 150,
+          width: 460,
+          height: 220,
+          accent: "amber",
+          step: 2,
+        },
+        {
+          id: "backoff",
+          label: "Back off ~30%",
+          sublabel: "just below the ringing point",
+          x: 1680,
+          y: 150,
+          width: 460,
+          height: 220,
+          accent: "amber",
+          step: 3,
+        },
+        {
+          id: "addd",
+          label: "Add kD",
+          sublabel: "until the landing is crisp",
+          x: 880,
+          y: 720,
+          width: 460,
+          height: 220,
+          accent: "purple",
+          step: 4,
+        },
+        {
+          id: "verify",
+          label: "Verify",
+          sublabel: "big steps, small steps, bumps",
+          x: 1680,
+          y: 720,
+          width: 460,
+          height: 220,
+          accent: "mint",
+          step: 5,
+        },
+      ],
+      edges: [
+        { from: "start", to: "double" },
+        { from: "double", to: "backoff" },
+        { from: "backoff", to: "addd", step: 4 },
+        { from: "addd", to: "verify", step: 5 },
+      ],
+    },
+    {
+      kind: "code",
+      id: "goto-code",
+      rect: CODE,
+      fileName: "Arm.java",
+      language: "java",
+      states: ["", GOTO_CODE],
+    },
+    {
+      kind: "end",
+      id: "end",
+      rect: END,
+      title: "Tuned. Now stop fighting gravity.",
+      subtitle:
+        "Next lesson: feedforward — kS, kV, and kG carry the load so PID only trims",
+      url: "frc5712.com/pid-control",
+    },
+  ],
+  beats: [
+    {
+      id: "hook",
+      text: "This is the full PID lesson. Not just what the three letters stand for — but why an arm sags, why it shakes, what each gain actually buys you, and the exact procedure to tune a mechanism without breaking it.",
+      camera: TITLE,
+      holdAfter: 0.5,
+    },
+    {
+      id: "setup",
+      text: "Our test rig: an arm on a motor, resting on its hard stop at negative forty-five degrees. We want positive thirty. The distance between where you are and where you want to be — that's the error, and every gain works off it.",
+      camera: ARM_CLOSEUP,
+      events: [{ type: "target", deg: 30, at: { word: "thirty" } }],
+    },
+    {
+      id: "p-concept",
+      text: "P is for proportional: output voltage equals kP times the error. Big error, big push. Small error, small push. Watch it with a small gain — the arm rises, slows, and then simply stops climbing.",
+      camera: LAB,
+      events: [{ type: "gains", kP: 0.2, kD: 0, at: { word: "proportional" } }],
+    },
+    {
+      id: "p-sag",
+      text: "It stalls about nineteen degrees short. Here's why: at that angle, kP times the error makes exactly enough voltage to balance gravity. Equilibrium — below the target. Proportional control needs an error to make voltage, so it keeps one.",
+      camera: SCOPE_CLOSEUP,
+    },
+    {
+      id: "p-crank",
+      text: "The obvious fix: crank kP. Now a small error still makes serious voltage, so the arm gets much closer — but look how it arrives. It blasts through thirty at full speed and rings around the setpoint for seconds.",
+      camera: LAB,
+      events: [{ type: "gains", kP: 2.5, kD: 0, at: { word: "crank" } }],
+    },
+    {
+      id: "why-ring",
+      text: "The ringing isn't random — it's physics. P only looks at where you are, never how fast you're moving. The arm arrives at the target carrying speed, nothing tells it to slow down, and past the line the push flips sign. Over and over.",
+      camera: SCOPE_CLOSEUP,
+    },
+    {
+      id: "d-term",
+      text: "That's the D term's job. Derivative watches the speed of approach and pushes against it — a brake that gets stronger the faster you close. Same kP, a touch of kD — send it to sixty degrees and it lands like it's on rails.",
+      camera: LAB,
+      events: [
+        { type: "gains", kP: 2.5, kD: 0.2, at: { word: "derivative" } },
+        { type: "target", deg: 60, at: { word: "sixty" } },
+      ],
+    },
+    {
+      id: "d-overdone",
+      text: "But D has a failure mode too. Raise it too far and the brake overpowers the push — send it back down to ten degrees and the arm crawls, cautious and slow. Smooth is good; timid loses matches.",
+      camera: SCOPE_CLOSEUP,
+      events: [
+        { type: "gains", kP: 2.5, kD: 2.8, at: { word: "too" } },
+        { type: "target", deg: 10, at: { word: "ten" } },
+      ],
+    },
+    {
+      id: "d-right",
+      text: "Back kD off until the landing is crisp: fast approach, one clean settle, no bounce. That balance point — quick but composed — is what a tuned mechanism feels like. Up to forty-five again, just to prove it.",
+      camera: LAB,
+      events: [
+        { type: "gains", kP: 2.5, kD: 0.2, at: { word: "off" } },
+        { type: "target", deg: 45, at: { word: "forty-five" } },
+      ],
+    },
+    {
+      id: "i-intro",
+      text: "So what's the I for? Integral is the memory: it adds up error over time. If the arm sits short of the target, that leftover error accumulates, and the accumulated total pushes harder and harder until the gap closes.",
+      camera: ARM_CLOSEUP,
+      events: [
+        { type: "gains", kP: 0.35, kD: 0.15, at: { word: "Integral" } },
+        { type: "target", deg: 20, at: { word: "short" } },
+      ],
+    },
+    {
+      id: "i-demo",
+      text: "Here's the sag again with a weak P — stuck below twenty. Now add kI and watch the memory work: the error piles up, the push grows, and the arm grinds its way onto the target. But notice the cost — it built up so much memory that it overshoots first.",
+      camera: SCOPE_CLOSEUP,
+      events: [
+        { type: "gains", kP: 0.35, kD: 0.05, kI: 1.2, at: { word: "add" } },
+      ],
+    },
+    {
+      id: "i-verdict",
+      text: "That's integral windup, and it's why this workshop skips the I term. I is a slow guess at a force you could just calculate. Gravity isn't a mystery — the next lesson replaces the whole I term with feedforward, which pays that force instantly, no memory required.",
+      camera: LAB,
+      holdAfter: 0.6,
+    },
+    {
+      id: "bump",
+      text: "One more thing a controller must survive: the real world. Back on our tuned gains — now bump the arm, hard, like a collision. P sees the new error instantly, D catches the speed, and it's back on target in under a second. Tuning is about staying, not just arriving.",
+      camera: ARM_CLOSEUP,
+      events: [
+        { type: "gains", kP: 2.5, kD: 0.2, kI: 0, at: { word: "tuned" } },
+        { type: "impulse", degPerSec: -140, at: { word: "bump" } },
+      ],
+    },
+    {
+      id: "procedure-1",
+      text: "Now the procedure — the same one every time, sim first. Step one: start kP so small the mechanism barely moves. Step two: double it, and double it again, until you see overshoot and ringing on a real step.",
+      camera: { x: 5500, y: 120, width: 2160, height: 560 },
+      events: [
+        { type: "diagram", artifact: "tuning", step: 1, at: { word: "one" } },
+        {
+          type: "diagram",
+          artifact: "tuning",
+          step: 2,
+          at: { word: "double" },
+        },
+      ],
+    },
+    {
+      id: "procedure-2",
+      text: "Step three: back kP off about thirty percent, just under the ringing point. Step four: add kD in small steps until the landing is crisp. Then verify like a skeptic — big steps, small steps, and a few bumps.",
+      camera: TUNING,
+      events: [
+        { type: "diagram", artifact: "tuning", step: 3, at: { word: "three" } },
+        { type: "diagram", artifact: "tuning", step: 4, at: { word: "four" } },
+        {
+          type: "diagram",
+          artifact: "tuning",
+          step: 5,
+          at: { word: "verify" },
+        },
+      ],
+    },
+    {
+      id: "tolerance",
+      text: "Last piece: when is the arm officially there? Never exactly — a real mechanism jitters by fractions of a degree forever. So goTo takes a tolerance: command the position, wait until the error is inside it, and let the command finish. Pick the tolerance the game actually needs, not the smallest number that feels precise.",
+      camera: CODE,
+      events: [
+        {
+          type: "code-state",
+          artifact: "goto-code",
+          state: 1,
+          at: { progress: 0.03 },
+        },
+      ],
+      holdAfter: 1.4,
+    },
+    {
+      id: "cta",
+      text: "That's real PID: P for the push, D for the composure, tolerance for the finish — and a procedure you can run on any mechanism. Next lesson: feedforward, where gravity stops being P's problem. All of it at frc5712.com.",
+      camera: END,
+      holdAfter: 1.2,
+    },
+  ],
+};

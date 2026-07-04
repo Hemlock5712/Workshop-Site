@@ -8,9 +8,13 @@ export interface SimEvent {
   frame: number;
   kP?: number;
   kD?: number;
+  /** Integral gain — accumulates error, with a windup clamp. */
+  kI?: number;
   /** Gravity feedforward, volts at horizontal — applied as kG·cos(angle). */
   kG?: number;
   targetDeg?: number;
+  /** Velocity kick in deg/s — a disturbance (bump, collision, dropped load). */
+  impulseDegPerSec?: number;
   /**
    * Enable Motion Magic-style target profiling. Once set, later targetDeg
    * events glide there along a trapezoid profile instead of stepping.
@@ -58,7 +62,9 @@ export function simulateArm(options: {
   let velocity = 0;
   let kP = 0;
   let kD = 0;
+  let kI = 0;
   let kG = 0;
+  let integral = 0;
   let target = NaN;
   let nextEvent = 0;
   // Motion Magic state: when a profile is configured, `target` becomes the
@@ -76,7 +82,12 @@ export function simulateArm(options: {
       const e = sorted[nextEvent++];
       if (e.kP !== undefined) kP = e.kP;
       if (e.kD !== undefined) kD = e.kD;
+      if (e.kI !== undefined) {
+        kI = e.kI;
+        integral = 0; // gain change resets the accumulator
+      }
       if (e.kG !== undefined) kG = e.kG;
+      if (e.impulseDegPerSec !== undefined) velocity += e.impulseDegPerSec;
       if (e.profile !== undefined) {
         profileParams = e.profile;
         profileVel = 0;
@@ -120,11 +131,19 @@ export function simulateArm(options: {
 
       const gravityFF = kG * Math.cos((angle * Math.PI) / 180);
       const error = Number.isNaN(target) ? 0 : target - angle;
+      if (kI > 0) {
+        // Accumulate like a real controller — including the windup that makes
+        // the I term overshoot after long approaches. Clamped like Phoenix.
+        integral = Math.max(-40, Math.min(40, integral + error * dt));
+      }
       commanded = Number.isNaN(target)
         ? 0
         : Math.max(
             -SIM.maxVolts,
-            Math.min(SIM.maxVolts, kP * error - kD * velocity + gravityFF)
+            Math.min(
+              SIM.maxVolts,
+              kP * error + kI * integral - kD * velocity + gravityFF
+            )
           );
 
       const accel =

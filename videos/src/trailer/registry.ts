@@ -15,6 +15,12 @@ import { StateBasedTrailer } from "./trailers/StateBasedTrailer";
 import { PidTrailer } from "./trailers/PidTrailer";
 import { FeedforwardTrailer } from "./trailers/FeedforwardTrailer";
 import { MotionMagicTrailer } from "./trailers/MotionMagicTrailer";
+// Full lessons — long-form deep dives
+import { PidLesson } from "./trailers/PidLesson";
+import { FeedforwardLesson } from "./trailers/FeedforwardLesson";
+import { MotionMagicLesson } from "./trailers/MotionMagicLesson";
+import { StateBasedLesson } from "./trailers/StateBasedLesson";
+import { CommandsLesson } from "./trailers/CommandsLesson";
 // Workshop 2 — swerve, sensing, autonomy
 import { SwerveDriveTrailer } from "./trailers/SwerveDriveTrailer";
 import { LoggingOptionsTrailer } from "./trailers/LoggingOptionsTrailer";
@@ -51,4 +57,9 @@ export const TRAILERS: TrailerScript[] = [
   DriveToPointTrailer,
   VisionShootingTrailer,
   AdvancedDriveToPointTrailer,
+  PidLesson,
+  FeedforwardLesson,
+  MotionMagicLesson,
+  StateBasedLesson,
+  CommandsLesson,
 ];

@@ -1,62 +1,54 @@
 import { useMemo } from "react";
 import { useCurrentFrame } from "remotion";
 import { brand } from "../../../lib/brand";
-import { simulateArm, SIM, type SimEvent } from "../../lib/pidSim";
+import {
+  simulateFlywheel,
+  FLYWHEEL_SIM,
+  type FlywheelSimEvent,
+} from "../../lib/flywheelSim";
 import type { ResolvedTimeline } from "../../lib/timeline";
-import type { PidLabArtifact } from "../../lib/types";
+import type { FlywheelLabArtifact } from "../../lib/types";
 
-// Internal layout — the camera close-up rects in the trailer script assume it.
-const ARM_PANEL = { left: 40, top: 60, width: 980, height: 1050 };
+// Velocity-control twin of PidLab: spinning shooter wheel on the left,
+// RPM scope + gain chips on the right. Feed events shoot a game piece
+// through the wheel and the speed dip shows up on the scope.
+
+const WHEEL_PANEL = { left: 40, top: 60, width: 980, height: 1050 };
 const CHIPS = { left: 1040, top: 60, width: 1120, height: 130 };
 const SCOPE = { left: 1040, top: 220, width: 1120, height: 890 };
 
-const PIVOT = { x: 430, y: 600 };
-const ARM_LENGTH = 350;
+const HUB = { x: 490, y: 560 };
+const WHEEL_RADIUS = 260;
 const WINDOW_FRAMES = 180; // 6 s of scope history
-const Y_MAX = 85;
-const Y_MIN = -55;
+const RPM_MAX = 4800;
 
-const toRad = (deg: number) => (deg * Math.PI) / 180;
-
-export function PidLab({
+export function FlywheelLab({
   def,
   resolved,
 }: {
-  def: PidLabArtifact;
+  def: FlywheelLabArtifact;
   resolved: ResolvedTimeline;
 }) {
   const frame = useCurrentFrame();
 
-  const simEvents = useMemo<SimEvent[]>(
+  const simEvents = useMemo<FlywheelSimEvent[]>(
     () =>
-      resolved.events.flatMap((e): SimEvent[] => {
+      resolved.events.flatMap((e): FlywheelSimEvent[] => {
         if (e.event.type === "gains") {
           return [
             {
               frame: e.frame,
               kP: e.event.kP,
-              kD: e.event.kD,
-              kI: e.event.kI,
-              kG: e.event.kG,
+              kS: e.event.kS,
+              kV: e.event.kV,
             },
           ];
         }
-        if (e.event.type === "target") {
-          return [{ frame: e.frame, targetDeg: e.event.deg }];
+        if (e.event.type === "rpm") {
+          return [{ frame: e.frame, targetRps: e.event.value / 60 }];
         }
-        if (e.event.type === "impulse") {
-          return [{ frame: e.frame, impulseDegPerSec: e.event.degPerSec }];
-        }
-        if (e.event.type === "profile") {
-          return [
-            {
-              frame: e.frame,
-              profile: {
-                cruiseDegPerSec: e.event.cruiseDegPerSec,
-                accelDegPerSec2: e.event.accelDegPerSec2,
-              },
-            },
-          ];
+        if (e.event.type === "feed") {
+          return [{ frame: e.frame, feed: true }];
         }
         return [];
       }),
@@ -65,56 +57,58 @@ export function PidLab({
 
   const sim = useMemo(
     () =>
-      simulateArm({
+      simulateFlywheel({
         fps: resolved.fps,
         totalFrames: Math.max(1, resolved.totalDurationInFrames),
-        startDeg: def.startDeg,
-        hardStopDeg: def.hardStopDeg,
         events: simEvents,
       }),
-    [
-      resolved.fps,
-      resolved.totalDurationInFrames,
-      def.startDeg,
-      def.hardStopDeg,
-      simEvents,
-    ]
+    [resolved.fps, resolved.totalDurationInFrames, simEvents]
   );
 
-  const f = Math.min(frame, sim.angles.length - 1);
-  const angle = sim.angles[f];
-  const target = sim.targets[f];
+  const f = Math.min(frame, sim.speeds.length - 1);
+  const rpm = sim.speeds[f] * 60;
+  const targetRpm = sim.targets[f] * 60;
+  const hasTarget = !Number.isNaN(targetRpm);
   const volts = sim.volts[f];
-  const hasTarget = !Number.isNaN(target);
 
-  // Live gain values + the frame each control last changed (for chip pops).
+  // Wheel rotation: integrate display angle at a slowed-down rate so high RPM
+  // doesn't strobe at 30 fps. Deterministic: sum over frames via closed form
+  // is impossible with varying speed, so accumulate in a memoized pass.
+  const displayAngles = useMemo(() => {
+    const angles = new Float32Array(sim.speeds.length);
+    let a = 0;
+    for (let i = 0; i < sim.speeds.length; i++) {
+      a += (sim.speeds[i] / resolved.fps) * 14; // degrees per frame, slowed
+      angles[i] = a % 360;
+    }
+    return angles;
+  }, [sim.speeds, resolved.fps]);
+
   const hud = useMemo(() => {
     let kP = 0;
-    let kD = 0;
-    let kI = 0;
-    let kG = 0;
-    let targetDeg: number | null = null;
+    let kS = 0;
+    let kV = 0;
+    let target: number | null = null;
     let gainsChanged = -1;
     let targetChanged = -1;
     for (const e of simEvents) {
       if (e.frame > f) break;
       if (e.kP !== undefined) {
         kP = e.kP;
-        kD = e.kD ?? kD;
-        if (e.kI !== undefined) kI = e.kI;
-        if (e.kG !== undefined) kG = e.kG;
+        kS = e.kS ?? kS;
+        kV = e.kV ?? kV;
         gainsChanged = e.frame;
       }
-      if (e.targetDeg !== undefined) {
-        targetDeg = e.targetDeg;
+      if (e.targetRps !== undefined) {
+        target = e.targetRps * 60;
         targetChanged = e.frame;
       }
     }
-    return { kP, kD, kI, kG, targetDeg, gainsChanged, targetChanged };
+    return { kP, kS, kV, target, gainsChanged, targetChanged };
   }, [simEvents, f]);
 
-  const error = hasTarget ? target - angle : null;
-  const settled = error !== null && Math.abs(error) < 1.5;
+  const error = hasTarget ? targetRpm - rpm : null;
+  const settled = error !== null && Math.abs(error) < 80;
 
   return (
     <div
@@ -125,55 +119,43 @@ export function PidLab({
         fontFamily: brand.fonts.sans,
       }}
     >
-      <ArmPanel
+      <WheelPanel
         frame={frame}
-        angle={angle}
-        target={hasTarget ? target : null}
+        rpm={rpm}
+        angle={displayAngles[f]}
         volts={volts}
         error={error}
         settled={settled}
-        hardStopDeg={def.hardStopDeg}
+        feedFrames={sim.feedFrames}
       />
-      <div
-        style={{
-          position: "absolute",
-          ...CHIPS,
-          display: "flex",
-          gap: 24,
-        }}
-      >
-        {(def.chips ?? ["kP", "kD", "target"]).map((chip) => {
+      <div style={{ position: "absolute", ...CHIPS, display: "flex", gap: 24 }}>
+        {(def.chips ?? ["kP", "kS", "kV", "target"]).map((chip) => {
           const config = {
             kP: {
               value: hud.kP > 0 ? hud.kP.toFixed(2) : "—",
               color: brand.accents.blue.primary,
               changedFrame: hud.gainsChanged,
             },
-            kI: {
-              value: hud.kI > 0 ? hud.kI.toFixed(2) : "—",
+            kS: {
+              value: hud.kS > 0 ? hud.kS.toFixed(2) : "—",
               color: brand.accents.teal.primary,
               changedFrame: hud.gainsChanged,
             },
-            kD: {
-              value: hud.kD > 0 ? hud.kD.toFixed(2) : "—",
-              color: brand.accents.purple.primary,
-              changedFrame: hud.gainsChanged,
-            },
-            kG: {
-              value: hud.kG > 0 ? hud.kG.toFixed(2) : "—",
+            kV: {
+              value: hud.kV > 0 ? hud.kV.toFixed(2) : "—",
               color: brand.accents.mint.primary,
               changedFrame: hud.gainsChanged,
             },
             target: {
-              value: hud.targetDeg === null ? "—" : `${hud.targetDeg}°`,
+              value: hud.target === null ? "—" : `${Math.round(hud.target)}`,
               color: brand.accents.amber.primary,
               changedFrame: hud.targetChanged,
             },
           }[chip];
           return (
-            <HudChip
+            <Chip
               key={chip}
-              label={chip}
+              label={chip === "target" ? "target rpm" : chip}
               value={config.value}
               color={config.color}
               changedFrame={config.changedFrame}
@@ -182,41 +164,59 @@ export function PidLab({
           );
         })}
       </div>
-      <Scope frame={f} sim={sim} />
+      <RpmScope frame={f} sim={sim} />
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
 
-function ArmPanel({
+function WheelPanel({
   frame,
+  rpm,
   angle,
-  target,
   volts,
   error,
   settled,
-  hardStopDeg,
+  feedFrames,
 }: {
   frame: number;
+  rpm: number;
   angle: number;
-  target: number | null;
   volts: number;
   error: number | null;
   settled: boolean;
-  hardStopDeg: number;
+  feedFrames: number[];
 }) {
   const accent = brand.accents.blue.primary;
-  const amber = brand.accents.amber.primary;
   const mint = brand.accents.mint.primary;
-  const tipX = PIVOT.x + Math.cos(toRad(angle)) * ARM_LENGTH;
-  const tipY = PIVOT.y - Math.sin(toRad(angle)) * ARM_LENGTH;
+  const amber = brand.accents.amber.primary;
+  const speedGlow = Math.min(1, rpm / 3500);
+
+  // Ball animation: slides in from the left channel, launches out the top.
+  const activeFeed = feedFrames.find(
+    (ff) => frame >= ff - 14 && frame <= ff + 10
+  );
+  let ball: { x: number; y: number } | null = null;
+  if (activeFeed !== undefined) {
+    const t = frame - activeFeed;
+    if (t < 0) {
+      const p = (t + 14) / 14; // approach along the feed channel
+      ball = { x: 90 + p * (HUB.x - 90 - WHEEL_RADIUS - 40), y: HUB.y + 190 };
+    } else {
+      const p = t / 10; // launched
+      ball = {
+        x: HUB.x + WHEEL_RADIUS * 0.5 + p * 320,
+        y: HUB.y - WHEEL_RADIUS * 0.6 - p * 620,
+      };
+    }
+  }
 
   return (
     <div
       style={{
         position: "absolute",
-        ...ARM_PANEL,
+        ...WHEEL_PANEL,
         background: "rgba(38, 64, 96, 0.32)",
         border: `1px solid ${brand.code.border}`,
         borderRadius: 22,
@@ -238,7 +238,7 @@ function ArmPanel({
             color: brand.colors.textMuted,
           }}
         >
-          Arm — live sim
+          Flywheel — live sim
         </span>
         <span
           style={{
@@ -251,8 +251,8 @@ function ArmPanel({
           {error === null
             ? "idle"
             : settled
-              ? "on target"
-              : `error ${error.toFixed(1)}°`}
+              ? "at speed"
+              : `${error > 0 ? "-" : "+"}${Math.abs(Math.round(error))} rpm`}
         </span>
       </div>
 
@@ -260,91 +260,95 @@ function ArmPanel({
         viewBox="0 0 980 900"
         style={{ position: "absolute", top: 80, left: 0 }}
       >
-        {/* Mount */}
+        {/* Feed channel */}
         <rect
-          x={PIVOT.x - 34}
-          y={PIVOT.y}
-          width={68}
-          height={230}
-          rx={10}
+          x={40}
+          y={HUB.y + 160}
+          width={HUB.x - WHEEL_RADIUS - 60}
+          height={60}
+          rx={14}
           fill="#16293f"
         />
-        <rect
-          x={PIVOT.x - 150}
-          y={PIVOT.y + 220}
-          width={300}
-          height={24}
-          rx={8}
-          fill="#1c334f"
+        {/* Launch guide */}
+        <path
+          d={`M ${HUB.x + WHEEL_RADIUS * 0.35} ${HUB.y - WHEEL_RADIUS * 0.85} L ${
+            HUB.x + WHEEL_RADIUS * 0.95
+          } ${HUB.y - WHEEL_RADIUS * 1.55}`}
+          stroke="#16293f"
+          strokeWidth={26}
+          strokeLinecap="round"
         />
 
-        {/* Hard stop pin */}
+        {/* Speed glow */}
         <circle
-          cx={PIVOT.x + Math.cos(toRad(hardStopDeg)) * 150}
-          cy={PIVOT.y - Math.sin(toRad(hardStopDeg)) * 150}
-          r={13}
-          fill={brand.colors.textMuted}
-          opacity={0.55}
+          cx={HUB.x}
+          cy={HUB.y}
+          r={WHEEL_RADIUS + 18}
+          fill="none"
+          stroke={mint}
+          strokeWidth={10}
+          opacity={0.12 + speedGlow * 0.4}
         />
 
-        {/* Target ghost */}
-        {target !== null && (
-          <g>
+        {/* Wheel */}
+        <g transform={`rotate(${angle} ${HUB.x} ${HUB.y})`}>
+          <circle
+            cx={HUB.x}
+            cy={HUB.y}
+            r={WHEEL_RADIUS}
+            fill="#1c334f"
+            stroke={accent}
+            strokeWidth={3}
+          />
+          {[0, 60, 120, 180, 240, 300].map((spoke) => (
             <line
-              x1={PIVOT.x}
-              y1={PIVOT.y}
-              x2={PIVOT.x + Math.cos(toRad(target)) * (ARM_LENGTH + 60)}
-              y2={PIVOT.y - Math.sin(toRad(target)) * (ARM_LENGTH + 60)}
-              stroke={amber}
-              strokeWidth={5}
-              strokeDasharray="16 14"
-              opacity={0.85}
+              key={spoke}
+              x1={HUB.x}
+              y1={HUB.y}
+              x2={
+                HUB.x + WHEEL_RADIUS * 0.92 * Math.cos((spoke * Math.PI) / 180)
+              }
+              y2={
+                HUB.y + WHEEL_RADIUS * 0.92 * Math.sin((spoke * Math.PI) / 180)
+              }
+              stroke="#2c4a70"
+              strokeWidth={22}
             />
-            <text
-              x={PIVOT.x + Math.cos(toRad(target)) * (ARM_LENGTH + 100)}
-              y={PIVOT.y - Math.sin(toRad(target)) * (ARM_LENGTH + 100)}
-              fill={amber}
-              fontSize={30}
-              fontFamily={brand.fonts.mono}
-              textAnchor="middle"
-            >
-              {target}°
-            </text>
-          </g>
-        )}
-
-        {/* Arm */}
-        <g transform={`rotate(${-angle} ${PIVOT.x} ${PIVOT.y})`}>
-          <rect
-            x={PIVOT.x - 44}
-            y={PIVOT.y - 23}
-            width={ARM_LENGTH + 74}
-            height={46}
-            rx={20}
-            fill="#3a5a80"
+          ))}
+          <circle
+            cx={HUB.x + WHEEL_RADIUS * 0.92}
+            cy={HUB.y}
+            r={16}
+            fill={mint}
+          />
+          <circle
+            cx={HUB.x}
+            cy={HUB.y}
+            r={54}
+            fill="#16293f"
             stroke={accent}
             strokeWidth={2.5}
           />
-          <circle
-            cx={PIVOT.x + ARM_LENGTH + 12}
-            cy={PIVOT.y}
-            r={34}
-            fill={mint}
-            opacity={0.92}
-          />
+          <circle cx={HUB.x} cy={HUB.y} r={13} fill={accent} />
         </g>
-        <circle
-          cx={PIVOT.x}
-          cy={PIVOT.y}
-          r={56}
-          fill="#1c334f"
-          stroke={accent}
-          strokeWidth={2.5}
-        />
-        <circle cx={PIVOT.x} cy={PIVOT.y} r={14} fill={accent} />
 
-        {/* Tip trail glow when moving fast */}
-        <circle cx={tipX} cy={tipY} r={10} fill={mint} opacity={0.0} />
+        {/* Game piece */}
+        {ball && (
+          <circle cx={ball.x} cy={ball.y} r={30} fill={amber} opacity={0.95} />
+        )}
+
+        {/* RPM readout */}
+        <text
+          x={HUB.x}
+          y={HUB.y + WHEEL_RADIUS + 90}
+          fill={brand.colors.text}
+          fontSize={54}
+          fontFamily={brand.fonts.mono}
+          fontWeight={700}
+          textAnchor="middle"
+        >
+          {Math.round(rpm)} rpm
+        </text>
       </svg>
 
       {/* Output voltage bar */}
@@ -379,25 +383,11 @@ function ArmPanel({
               position: "absolute",
               top: 0,
               bottom: 0,
-              left:
-                volts >= 0
-                  ? "50%"
-                  : `${50 - (Math.abs(volts) / SIM.maxVolts) * 50}%`,
-              width: `${(Math.abs(volts) / SIM.maxVolts) * 50}%`,
+              left: 0,
+              width: `${(volts / FLYWHEEL_SIM.maxVolts) * 100}%`,
               background: amber,
               borderRadius: 999,
               boxShadow: `0 0 14px ${amber}`,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: -4,
-              bottom: -4,
-              width: 2,
-              background: brand.colors.textMuted,
-              opacity: 0.6,
             }}
           />
         </div>
@@ -408,7 +398,7 @@ function ArmPanel({
 
 // ---------------------------------------------------------------------------
 
-function HudChip({
+function Chip({
   label,
   value,
   color,
@@ -421,11 +411,10 @@ function HudChip({
   changedFrame: number;
   frame: number;
 }) {
-  const sinceChange =
+  const since =
     changedFrame >= 0 ? frame - changedFrame : Number.POSITIVE_INFINITY;
-  const pop = 1 + 0.3 * Math.exp(-sinceChange / 7);
-  const flash = Math.exp(-sinceChange / 10);
-
+  const pop = 1 + 0.3 * Math.exp(-since / 7);
+  const flash = Math.exp(-since / 10);
   return (
     <div
       style={{
@@ -455,7 +444,7 @@ function HudChip({
       <span
         style={{
           fontFamily: brand.fonts.mono,
-          fontSize: 42,
+          fontSize: 40,
           color,
           fontWeight: 700,
         }}
@@ -468,19 +457,19 @@ function HudChip({
 
 // ---------------------------------------------------------------------------
 
-function Scope({
+function RpmScope({
   frame,
   sim,
 }: {
   frame: number;
-  sim: { angles: Float32Array; targets: Float32Array };
+  sim: { speeds: Float32Array; targets: Float32Array };
 }) {
   const mint = brand.accents.mint.primary;
   const amber = brand.accents.amber.primary;
-  const plot = { left: 100, top: 84, width: 960, height: 700 };
+  const plot = { left: 110, top: 84, width: 950, height: 700 };
 
-  const yToPx = (deg: number) =>
-    plot.top + ((Y_MAX - deg) / (Y_MAX - Y_MIN)) * plot.height;
+  const yToPx = (rpm: number) =>
+    plot.top + ((RPM_MAX - rpm) / RPM_MAX) * plot.height;
   const iToPx = (i: number) =>
     plot.left + (i / (WINDOW_FRAMES - 1)) * plot.width;
 
@@ -491,23 +480,17 @@ function Scope({
     const f = frame - (WINDOW_FRAMES - 1) + i;
     if (f < 0) continue;
     const x = iToPx(i);
-    const y = yToPx(sim.angles[f]);
+    const y = yToPx(sim.speeds[f] * 60);
     tracePath += `${tracePath ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`;
     lastPoint = { x, y };
-    const t = sim.targets[f];
+    const t = sim.targets[f] * 60;
     if (!Number.isNaN(t)) {
       const ty = yToPx(t);
-      // New segment after a gap or a step change keeps the line crisp.
-      // (Threshold is generous so a gliding Motion Magic profile — which moves
-      // a few degrees per frame — stays one continuous curve.)
-      const prevT = f > 0 ? sim.targets[f - 1] : NaN;
-      const isBreak = Number.isNaN(prevT) || Math.abs(prevT - t) > 8;
+      const prevT = f > 0 ? sim.targets[f - 1] * 60 : NaN;
+      const isBreak = Number.isNaN(prevT) || Math.abs(prevT - t) > 400;
       targetPath += `${isBreak || !targetPath ? "M" : "L"}${x.toFixed(1)},${ty.toFixed(1)}`;
     }
   }
-
-  const recOn = Math.sin(frame / 9) > -0.3;
-  const currentDeg = sim.angles[frame];
 
   return (
     <div
@@ -535,7 +518,7 @@ function Scope({
             color: brand.colors.textMuted,
           }}
         >
-          Arm angle · last 6s
+          Wheel speed · last 6s
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span
@@ -544,7 +527,7 @@ function Scope({
               height: 14,
               borderRadius: 999,
               background: "#f87171",
-              opacity: recOn ? 0.95 : 0.25,
+              opacity: Math.sin(frame / 9) > -0.3 ? 0.95 : 0.25,
             }}
           />
           <span
@@ -560,27 +543,27 @@ function Scope({
       </div>
 
       <svg viewBox="0 0 1120 890" style={{ position: "absolute", inset: 0 }}>
-        {[-45, 0, 30, 60].map((deg) => (
-          <g key={deg}>
+        {[1000, 2000, 3000, 4000].map((rpm) => (
+          <g key={rpm}>
             <line
               x1={plot.left}
               x2={plot.left + plot.width}
-              y1={yToPx(deg)}
-              y2={yToPx(deg)}
+              y1={yToPx(rpm)}
+              y2={yToPx(rpm)}
               stroke={brand.colors.accent}
               strokeWidth={1}
-              opacity={deg === 0 ? 0.28 : 0.13}
+              opacity={0.13}
             />
             <text
               x={plot.left - 14}
-              y={yToPx(deg) + 9}
+              y={yToPx(rpm) + 9}
               fill={brand.colors.textMuted}
               fontSize={24}
               fontFamily={brand.fonts.mono}
               textAnchor="end"
               opacity={0.8}
             >
-              {deg}°
+              {rpm / 1000}k
             </text>
           </g>
         ))}
@@ -618,7 +601,7 @@ function Scope({
               fontFamily={brand.fonts.mono}
               textAnchor="end"
             >
-              {currentDeg.toFixed(1)}°
+              {Math.round(sim.speeds[frame] * 60)}
             </text>
           </>
         )}

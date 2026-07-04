@@ -28,8 +28,21 @@ export type EventAnchor =
   | { progress: number };
 
 export type TrailerEvent =
-  | { type: "gains"; kP: number; kD: number; kG?: number; at?: EventAnchor }
+  | {
+      type: "gains";
+      kP: number;
+      kD: number;
+      kI?: number;
+      kG?: number;
+      /** Flywheel-lab gains (ignored by the arm lab). */
+      kS?: number;
+      kV?: number;
+      at?: EventAnchor;
+    }
   | { type: "target"; deg: number; at?: EventAnchor }
+  | { type: "rpm"; value: number; at?: EventAnchor }
+  | { type: "feed"; at?: EventAnchor }
+  | { type: "impulse"; degPerSec: number; at?: EventAnchor }
   | {
       type: "profile";
       cruiseDegPerSec: number;
@@ -78,7 +91,7 @@ export interface CodeArtifact {
   states: string[];
 }
 
-export type PidLabChip = "kP" | "kD" | "kG" | "target";
+export type PidLabChip = "kP" | "kI" | "kD" | "kG" | "target";
 
 export interface PidLabArtifact {
   kind: "pid-lab";
@@ -89,6 +102,16 @@ export interface PidLabArtifact {
   hardStopDeg: number;
   /** HUD chips to show (default: kP, kD, target). */
   chips?: PidLabChip[];
+}
+
+export type FlywheelChip = "kP" | "kS" | "kV" | "target";
+
+export interface FlywheelLabArtifact {
+  kind: "flywheel-lab";
+  id: string;
+  rect: Rect;
+  /** HUD chips to show (default: kP, kS, kV, target). */
+  chips?: FlywheelChip[];
 }
 
 export interface DiagramNode {
@@ -137,6 +160,7 @@ export type ArtifactDef =
   | EndArtifact
   | CodeArtifact
   | PidLabArtifact
+  | FlywheelLabArtifact
   | DiagramArtifact
   | ImageArtifact;
 
