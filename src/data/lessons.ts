@@ -71,6 +71,18 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop1",
   },
   {
+    slug: "/commands-v3-migration",
+    title: "Commands V3 for V2 Teams",
+    shortLabel: "V2 to V3",
+    section: "workshop1",
+  },
+  {
+    slug: "/commands-v3-coroutines",
+    title: "Coroutines and Concurrency",
+    shortLabel: "Coroutines",
+    section: "workshop1",
+  },
+  {
     slug: "/building-subsystems",
     title: "Mechanisms",
     section: "workshop1",

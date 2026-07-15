@@ -111,6 +111,18 @@ function getPageMetadata(route) {
       description:
         "Triggers, Mechanisms, and Commands in v3 — decorators (.named, .until, .whenCanceled, .withPriority) and composition with Command.sequence / Command.parallel and coroutine.await/awaitAll/awaitAny/fork. Top-level wiring lives in a Robot class and per-mode OpModes.",
     },
+    "commands-v3-migration": {
+      title: "Commands V3 for V2 Teams",
+      category: "Workshop 1",
+      description:
+        "A practical Commands V2 to V3 migration guide: lifecycle-to-coroutine comparisons, Subsystem-to-Mechanism and RobotContainer-to-OpMode mappings, benefits, limitations, and a staged migration plan.",
+    },
+    "commands-v3-coroutines": {
+      title: "Coroutines and Concurrency",
+      category: "Workshop 1",
+      description:
+        "A student-friendly explanation of Commands V3 cooperative multitasking: one scheduler thread, yield points, await/fork composition, cancellation, blocking hazards, and safe thread boundaries.",
+    },
     "building-subsystems": {
       title: "Mechanisms",
       category: "Workshop 1",
