@@ -1,8 +1,9 @@
 import type { Rect, TrailerScript } from "../lib/types";
 
-// A command is one method body, and it only ever takes three shapes.
-// The camera travels: title card → three-shapes diagram → set-and-finish
-// code → park and waitUntil code → back to the diagram → end card.
+// Commands are holds. The camera travels: title card → one-hold-three-uses
+// diagram → the hold factory typed into Arm.java → a chained auto that first
+// sticks on a bare hold, then gets its finish line → back to the diagram
+// for the closing habits → end card.
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const DIAGRAM: Rect = { x: 2560, y: 160, width: 2200, height: 1100 };
@@ -12,49 +13,51 @@ const END: Rect = { x: 9800, y: 60, width: 1920, height: 1080 };
 
 const ARM_SKELETON = `public class Arm extends Mechanism {
   private final TalonFX motor = new TalonFX(31);
-  private final VoltageOut voltageOut = new VoltageOut(0);
   private final PositionVoltage positionVoltage = new PositionVoltage(0);
+
+  private void setPosition(double position) { ... }
 }`;
 
-const ARM_SET_AND_FINISH = `public class Arm extends Mechanism {
+const ARM_HOLD = `public class Arm extends Mechanism {
   private final TalonFX motor = new TalonFX(31);
-  private final VoltageOut voltageOut = new VoltageOut(0);
   private final PositionVoltage positionVoltage = new PositionVoltage(0);
 
-  // 1. Set once and finish — nothing to wait on.
-  public Command setVoltage(double volts) {
-    return run(coroutine -> motor.setControl(voltageOut.withOutput(volts)))
-        .named("Arm:setVoltage:" + volts);
-  }
-}`;
-
-const ARM_PARK = `public class Arm extends Mechanism {
-  // 2. Set once, then hold. park() yields forever.
-  public Command holdAt(Angle target) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.park();
-    }).named("Arm:holdAt:" + target.in(Degrees));
-  }
-}`;
-
-const ARM_PARK_AND_WAIT = `public class Arm extends Mechanism {
-  // 2. Set once, then hold. park() yields forever.
-  public Command holdAt(Angle target) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.park();
-    }).named("Arm:holdAt:" + target.in(Degrees));
+  // A hold: re-sends the setpoint every tick, forever.
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
 
-  // 3. Set once, wait for a condition, finish on its own.
-  public Command goTo(Angle target, Angle tolerance) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.waitUntil(() -> atTarget(target, tolerance));
-    }).named("Arm:goTo:" + target.in(Degrees));
-  }
+  // Private. Commands are the only way to move the arm.
+  private void setPosition(double position) { ... }
 }`;
+
+const AUTO_STUCK = `// Score the preload — chained in an @Autonomous OpMode.
+routine =
+    Command.sequence(
+            // BUG: spinUp() is a hold. It never finishes,
+            // so the sequence sticks here forever.
+            robot.flywheel.spinUp(),
+            robot.intake.feed())
+        .named("Score Preload");`;
+
+const AUTO_FIXED = `// Score the preload — chained in an @Autonomous OpMode.
+routine =
+    Command.sequence(
+            // The fix: a finish line, at the call site.
+            robot.flywheel.spinUp()
+                .until(robot.flywheel::isAtSpeed)
+                .withTimeout(Seconds.of(2)) // the seatbelt
+                .named("spin up"),
+
+            // Feed WHILE the hold keeps the wheel at speed.
+            Command.race(
+                    robot.intake.feed()
+                        .until(robot.intake::isEmpty)
+                        .named("feed until empty"),
+                    robot.flywheel.spinUp())
+                .named("feed holding speed"))
+        .named("Score Preload");`;
 
 export const AddingCommandsTrailer: TrailerScript = {
   id: "AddingCommandsTrailer",
@@ -65,19 +68,19 @@ export const AddingCommandsTrailer: TrailerScript = {
       id: "title",
       rect: TITLE,
       title: "Adding Commands",
-      subtitle: "One method body, three shapes",
+      subtitle: "Holds, finish lines, and races",
       accent: "amber",
     },
     {
       kind: "diagram",
       id: "shapes",
       rect: DIAGRAM,
-      title: "The three shapes of a command",
+      title: "One hold, three ways to use it",
       nodes: [
         {
           id: "body",
-          label: "One method body",
-          sublabel: "wrapped by run, sealed by .named",
+          label: "A hold",
+          sublabel: 'runRepeatedly + "(hold)" name',
           x: 80,
           y: 440,
           width: 460,
@@ -87,8 +90,8 @@ export const AddingCommandsTrailer: TrailerScript = {
         },
         {
           id: "finish",
-          label: "Set and finish",
-          sublabel: "body ends the same tick",
+          label: "Bind it",
+          sublabel: "whileTrue — release gives it back",
           x: 1660,
           y: 100,
           width: 460,
@@ -98,8 +101,8 @@ export const AddingCommandsTrailer: TrailerScript = {
         },
         {
           id: "park",
-          label: "Set and park",
-          sublabel: "coroutine.park() until cancelled",
+          label: "Chain it",
+          sublabel: ".until(...) — a finish line",
           x: 1660,
           y: 440,
           width: 460,
@@ -109,8 +112,8 @@ export const AddingCommandsTrailer: TrailerScript = {
         },
         {
           id: "wait",
-          label: "Set and waitUntil",
-          sublabel: "finishes when the condition is true",
+          label: "Race it",
+          sublabel: "do a step WHILE holding",
           x: 1660,
           y: 780,
           width: 460,
@@ -131,56 +134,56 @@ export const AddingCommandsTrailer: TrailerScript = {
       rect: CODE1,
       fileName: "Arm.java",
       language: "java",
-      states: ["", ARM_SKELETON, ARM_SET_AND_FINISH],
+      states: ["", ARM_SKELETON, ARM_HOLD],
     },
     {
       kind: "code",
       id: "wait-code",
       rect: CODE2,
-      fileName: "Arm.java",
+      fileName: "ScorePreloadOpMode.java",
       language: "java",
-      states: ["", ARM_PARK, ARM_PARK_AND_WAIT],
+      states: ["", AUTO_STUCK, AUTO_FIXED],
     },
     {
       kind: "end",
       id: "end",
       rect: END,
-      title: "Three shapes, one body",
-      subtitle: "set-and-finish, set-and-park, set-and-waitUntil",
+      title: "A hold never finishes",
+      subtitle: "runRepeatedly, .until at the call site, race to hold",
       url: "frc5712.com/adding-commands",
     },
   ],
   beats: [
     {
       id: "hook",
-      text: "In Commands version three, a command is not a class with four lifecycle methods. No initialize, no execute, no isFinished, no end. A command is one method body — and there are only three shapes it ever takes.",
+      text: "What can your robot do? Each answer is a command. A command is a named action from one robot part — a mechanism. On our team, almost every command is a hold. A hold keeps the arm at a target, and it never finishes.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "shapes",
-      text: "Every command starts the same: run wraps one coroutine body on the mechanism. Then the body picks a shape — finish right away, park until cancelled, or waitUntil a condition comes true. Three shapes cover nearly everything a robot does.",
+      text: "Every mechanism command starts the same way. One method, runRepeatedly, re-sends a target forever. That command is a hold. You can bind a hold to a button. You can chain it with a finish line. Or you can race it against a step. Three uses, one hold.",
       camera: DIAGRAM,
       events: [
-        { type: "diagram", artifact: "shapes", step: 1, at: { word: "run" } },
+        { type: "diagram", artifact: "shapes", step: 1, at: { word: "hold" } },
         {
           type: "diagram",
           artifact: "shapes",
           step: 2,
-          at: { word: "finish" },
+          at: { word: "bind" },
         },
-        { type: "diagram", artifact: "shapes", step: 3, at: { word: "park" } },
+        { type: "diagram", artifact: "shapes", step: 3, at: { word: "chain" } },
         {
           type: "diagram",
           artifact: "shapes",
           step: 4,
-          at: { word: "waitUntil" },
+          at: { word: "race" },
         },
       ],
     },
     {
       id: "set-and-finish",
-      text: "Shape one: set and finish. The body sets a voltage and ends — same tick. Nothing to wait on, nothing to clean up. It schedules, runs once, and is done before the next loop comes around.",
+      text: "Here is the recipe. runRepeatedly re-sends set position over and over, forever. The name ends with the word hold, so you can spot it on the dashboard. The setter stays private. The only way to move the arm is through a command.",
       camera: CODE1,
       events: [
         {
@@ -193,47 +196,47 @@ export const AddingCommandsTrailer: TrailerScript = {
           type: "code-state",
           artifact: "finish-code",
           state: 2,
-          at: { word: "voltage" },
+          at: { word: "runRepeatedly" },
         },
       ],
       holdAfter: 0.8,
     },
     {
       id: "set-and-park",
-      text: "Shape two: set and park. Command the position once, then coroutine dot park yields forever. The closed-loop controller keeps working on the motor while the command holds the mechanism — until something cancels it.",
+      text: "Now the one rule. A hold never finishes, so nothing may ever wait on a hold. Watch this auto. The sequence reaches spin up, a hold, and sticks there forever. On the dashboard, the stuck step's name says hold. That name is your debugging clue.",
       camera: CODE2,
       events: [
         {
           type: "code-state",
           artifact: "wait-code",
           state: 1,
-          at: { word: "park" },
+          at: { word: "watch" },
         },
       ],
     },
     {
       id: "set-and-wait",
-      text: "Shape three: set and waitUntil. Command the target, then wait until the arm actually arrives. The moment the condition turns true, the body falls off the end — and the command finishes on its own.",
+      text: "The fix happens where you use the hold, not inside it. Dot until gives the hold a finish line: until the flywheel is at speed. A timeout is the seatbelt. And race means: do this step while holding.",
       camera: { x: 7620, y: 480, width: 1500, height: 680 },
       events: [
         {
           type: "code-state",
           artifact: "wait-code",
           state: 2,
-          at: { word: "waitUntil" },
+          at: { word: "until" },
         },
       ],
       holdAfter: 1.0,
     },
     {
       id: "habits",
-      text: "Two habits keep these honest. Every factory call returns a fresh command, so two buttons never share state. And cleanup on cancellation lives in whenCanceled — never at the bottom of a body that may never reach it.",
+      text: "Two last habits. A hold only ends when something cancels it. Need cleanup on the way out? Put it in whenCanceled. And bind a hold with whileTrue. Release the button, and the mechanism's default command takes back over.",
       camera: DIAGRAM,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "Set and finish, set and park, set and waitUntil — that's the whole vocabulary. Watch each shape run on a real arm, then compose them into routines, at frc5712.com.",
+      text: "Holds, finish lines, and races. That is the whole everyday toolkit. See the full lesson, with real template code, at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

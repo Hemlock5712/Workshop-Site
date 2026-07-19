@@ -142,13 +142,13 @@ export const VisionShootingTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Fixed shooting speed works from exactly one spot on the field. Everywhere else, you miss. But your robot already knows its pose — vision keeps it honest — so let the pose pick the velocity, and shoot from anywhere.",
+      text: "A fixed shooting speed works from exactly one spot on the field. Everywhere else, you miss. But your robot already knows its pose — its position on the field. Vision keeps that pose honest. So let the pose pick the speed, and shoot from anywhere.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "pose-distance",
-      text: "The chain starts at the pose — swerve odometry, corrected by AprilTags. Subtract the target's field position and you get one number that matters: distance. Range and heading, both straight from the pose.",
+      text: "The chain starts at the pose. Odometry tracks it from the wheels. AprilTags keep it honest. Subtract the target's field spot, and you get the one number that matters: distance. How far, and which way to aim — both come straight from the pose.",
       camera: { x: 2540, y: 440, width: 1400, height: 800 },
       events: [
         { type: "diagram", artifact: "chain", step: 1, at: { word: "pose" } },
@@ -162,7 +162,7 @@ export const VisionShootingTrailer: TrailerScript = {
     },
     {
       id: "map-flywheel",
-      text: "Distance feeds a velocity map. It looks up the flywheel speed for that range, and interpolation fills every gap in between. The flywheel gets a fresh setpoint every single loop.",
+      text: "Distance feeds a velocity map. The map looks up the flywheel speed for that range. Interpolation — blending between known points — fills every gap. Every loop, the flywheel gets a fresh setpoint: its new target speed.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "chain", step: 3, at: { word: "map" } },
@@ -176,7 +176,7 @@ export const VisionShootingTrailer: TrailerScript = {
     },
     {
       id: "table",
-      text: "In code, the map is an InterpolatingDoubleTreeMap. Fill it from real testing — one meter, ten rotations per second. Two meters, thirty. Three meters, sixty. Stand at one point five meters, and the map answers twenty. No formula required.",
+      text: "In code, the map is an InterpolatingDoubleTreeMap. Fill it from real testing. One meter away? Ten rotations per second. Two meters, thirty. Three meters, sixty. Stand at one point five meters, and the map answers twenty. No formula required.",
       camera: CODE,
       events: [
         {
@@ -196,7 +196,7 @@ export const VisionShootingTrailer: TrailerScript = {
     },
     {
       id: "command",
-      text: "Distance is a one-liner: grab the pose from the drivetrain, measure to the target. Then one command ties it together — runRepeatedly recomputes distance and velocity every loop, so the setpoint tracks the robot as it drives.",
+      text: "Getting distance is a one-liner. Grab the pose from the drivetrain and measure to the target. Then one command ties it all together. runRepeatedly redoes that math every loop — distance, then speed. The setpoint tracks the robot as it drives.",
       camera: CODE2,
       events: [
         {
@@ -216,13 +216,13 @@ export const VisionShootingTrailer: TrailerScript = {
     },
     {
       id: "tuning",
-      text: "Tuning is honest work: park at three to five key distances, find the velocity that actually scores, and record it. Interpolation covers everything in between. Only add a point when you start missing.",
+      text: "Tuning is honest work. Park at three to five key distances. Find the speed that actually scores, and write it down. Interpolation covers everything in between. Only add a new point when you start missing.",
       camera: { x: 5520, y: 420, width: 1440, height: 660 },
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "One button, any distance — that's vision-based shooting. Pose to distance, distance to velocity, every loop. See the full Dynamic Flywheel build, on real hardware, at frc5712.com.",
+      text: "One button, any distance. That's vision-based shooting. Pose to distance, distance to speed, every loop. See the full Dynamic Flywheel build, on real hardware, at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },
