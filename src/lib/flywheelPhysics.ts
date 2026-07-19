@@ -52,12 +52,12 @@ export interface FlywheelGains {
 
 export const FLY_MOTOR_DEFAULT: FlywheelMotorParams = {
   vMax: 12,
-  // Kraken X44 (the workshop's demo motor). CTRE's dyno testing gives
-  // kV ≈ 0.124 V·s/rot — an effective free speed of ≈ 96.67 rot/s at
-  // 12 V. (The spec-sheet 7530 RPM free speed would predict 0.096, but
-  // the measured constant is what teams should actually type in.)
-  stallTorque: 4.05,
-  freeSpeedRps: 96.67,
+  // Kraken X44 (the workshop's demo motor), per CTRE's dyno data
+  // (motors.ctr-electronics.com, updated 2025-09-26): 4.11 N·m stall
+  // torque, 7758 RPM free speed (≈ 129.3 rot/s), kV = 646.47 RPM/V
+  // ≈ 0.093 V·s/rot. (FOC variant measures 5.01 N·m / 7368 RPM ≈ 0.098.)
+  stallTorque: 4.11,
+  freeSpeedRps: 129.3,
 };
 
 const FLY_BASE: Omit<FlywheelPhysicsParams, "targetRps"> = {

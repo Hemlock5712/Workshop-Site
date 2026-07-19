@@ -126,9 +126,8 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Motor Speed:</strong> The Kraken X44 does about
-                      100 RPS in real use (CTRE dyno data — the spec sheet says
-                      more)
+                      <strong>Motor Speed:</strong> The Kraken X44 runs about
+                      125 RPS at maximum (CTRE&apos;s dyno measures ~129)
                     </li>
                     <li>
                       <strong>Efficiency:</strong> Best used around 80%
@@ -140,7 +139,7 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        maxVel = (100 / 25) * 0.8 = 3.2 RPS
+                        maxVel = (125 / 25) * 0.8 = 4.0 RPS
                       </code>
                     </li>
                   </ul>
@@ -158,7 +157,7 @@ export default function MotionMagic() {
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
                         cruiseVel = 2.0; // conservative start (calculated max
-                        is 3.2)
+                        is 4.0)
                       </code>
                     </li>
                     <li>
@@ -193,9 +192,8 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Motor Speed:</strong> The Kraken X44 does about
-                      100 RPS in real use (CTRE dyno data — the spec sheet says
-                      more)
+                      <strong>Motor Speed:</strong> The Kraken X44 runs about
+                      125 RPS at maximum (CTRE&apos;s dyno measures ~129)
                     </li>
                     <li>
                       <strong>Efficiency:</strong> Best used around 80%
@@ -207,7 +205,7 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        maxVel = 100 * 0.8 = 80 RPS
+                        maxVel = 125 * 0.8 = 100 RPS
                       </code>
                     </li>
                   </ul>
@@ -225,7 +223,7 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        targetVel = 80.0; // based on motor efficiency
+                        targetVel = 80.0; // comfortably under that ceiling
                       </code>
                     </li>
                     <li>
@@ -338,8 +336,8 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
             walkthrough: {
               leftTitle: "Motion Magic Example Params for 25:1 Arm",
               leftItems: [
-                "• <strong>25:1 Gearing:</strong> The Kraken X44 does ~100 RPS in practice, so 4 RPS max at output",
-                "• <strong>Cruise Velocity (2.0):</strong> Conservative start - can reach 4 RPS but load may reduce performance",
+                "• <strong>25:1 Gearing:</strong> The Kraken X44 runs ~125 RPS, so 5 RPS theoretical max at output",
+                "• <strong>Cruise Velocity (2.0):</strong> Conservative start - can reach 5 RPS but load may reduce performance",
                 "• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed",
                 "• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes",
                 "• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control",
@@ -480,11 +478,11 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
             {
               id: 4,
               question:
-                "For a mechanism with 25:1 gearing and a Kraken X44 (about 100 RPS in real use), what would be the calculated cruise-velocity ceiling at 80% efficiency?",
-              options: ["100 RPS", "25 RPS", "3.2 RPS", "0.8 RPS"],
+                "For a mechanism with 25:1 gearing and a Kraken X44 (about 125 RPS max), what would be the calculated cruise-velocity ceiling at 80% efficiency?",
+              options: ["125 RPS", "25 RPS", "4.0 RPS", "0.8 RPS"],
               correctAnswer: 2,
               explanation:
-                "With 25:1 gearing, the output is 100 RPS / 25 = 4 RPS max. At 80% efficiency, this gives 4 * 0.8 = 3.2 RPS — that's the calculated ceiling. The workshop's example code starts even lower (2.0) and tunes up from there.",
+                "With 25:1 gearing, the output is 125 RPS / 25 = 5 RPS theoretical max. At 80% efficiency, this gives 5 * 0.8 = 4.0 RPS — that's the calculated ceiling. The workshop's example code starts even lower (2.0) and tunes up from there.",
             },
             {
               id: 5,
