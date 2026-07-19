@@ -128,6 +128,52 @@ export default function BuildingSubsystems() {
             letterSpacing: "-0.01em",
           }}
         >
+          Wiring it into Robot
+        </h2>
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          A mechanism class does nothing until the robot owns one. Every
+          mechanism lives on the <code>Robot</code> class as a{" "}
+          <code>public final</code> field — built once when the program starts,
+          and alive for the whole match. That&apos;s the entire wiring step: one
+          line per mechanism.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Robot.java — one field per mechanism"
+          code={`public class Robot extends OpModeRobot {
+  // One of each physical thing, built at startup.
+  // public — so OpModes can reach them (robot.arm.scoring()).
+  // final — so they exist exactly once, for the whole match.
+  public final Arm arm = new Arm();
+  public final Flywheel flywheel = new Flywheel();
+}`}
+        />
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          Everything else — button bindings, autos — receives this{" "}
+          <code>Robot</code> and reaches the mechanisms through it. When you see{" "}
+          <code>robot.arm.scoring()</code> on the Triggers page,{" "}
+          <code>robot.arm</code> is this field.
+        </p>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <h2
+          className="text-2xl font-semibold leading-tight"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--fg)",
+            letterSpacing: "-0.01em",
+          }}
+        >
           The factory methods you&apos;ll actually use
         </h2>
 

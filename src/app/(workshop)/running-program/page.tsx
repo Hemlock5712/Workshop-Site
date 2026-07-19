@@ -182,10 +182,10 @@ export default function RunningProgram() {
               question:
                 "On the 2027 OpMode stack, how do you choose whether teleop or an autonomous routine runs?",
               options: [
-                "Call teleopInit() or autonomousInit() from RobotContainer",
+                "Edit a settings file on the robot and redeploy",
                 "Select the @Teleop or @Autonomous class by name on the driver station — picking it constructs that OpMode",
-                "Set a boolean flag in Robot.robotPeriodic()",
-                "Use a SendableChooser populated in RobotContainer",
+                "Set a boolean flag in the Robot class",
+                "The robot picks automatically based on the match timer",
               ],
               correctAnswer: 1,
               explanation:

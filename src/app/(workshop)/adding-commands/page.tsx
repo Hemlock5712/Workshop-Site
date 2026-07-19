@@ -385,7 +385,7 @@ public Command feed() {
               "Attach a .whenCanceled(runnable) hook on the command builder",
               "Wrap the body in a try/catch — cancellation throws a CancelledException",
               "Put the cleanup at the bottom of the body — it runs when the command ends",
-              "Override end(boolean interrupted) like in Commands v2",
+              "Override an end(boolean interrupted) method on the hold",
             ],
             correctAnswer: 0,
             explanation:

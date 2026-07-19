@@ -65,12 +65,12 @@ atSpeed.whileTrue(intake.feed());`}
           title="Bind holds with whileTrue, so the default command can come back"
         >
           <p>
-            These bind methods are unchanged from Commands v2, but holds make
-            the choice between them matter more. A hold never finishes — so if
-            you bind one with <code>onTrue</code>, it runs <em>forever</em>, and
-            the mechanism&apos;s default command never gets the mechanism back.
-            Bind holds with <code>whileTrue</code> instead: release the button,
-            the hold is cancelled, and the default command takes over. Save{" "}
+            Holds make the choice between these two bind methods matter a lot. A
+            hold never finishes — so if you bind one with <code>onTrue</code>,
+            it runs <em>forever</em>, and the mechanism&apos;s default command
+            never gets the mechanism back. Bind holds with{" "}
+            <code>whileTrue</code> instead: release the button, the hold is
+            cancelled, and the default command takes over. Save{" "}
             <code>onTrue</code> for commands that finish on their own, like a
             heading reset.
           </p>

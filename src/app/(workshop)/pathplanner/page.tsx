@@ -76,13 +76,13 @@ Command leg = new DriveToPose(robot.drivetrain, goal);`}
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          In the OpMode model there is no <code>SendableChooser</code>. Each
-          autonomous routine is its own class tagged <code>@Autonomous</code>;
-          the driver station lists them by name, and selecting one constructs
-          it. You build the routine in the constructor with{" "}
-          <code>Command.sequence(...)</code> (legs run one after another) and{" "}
-          <code>Command.parallel(...)</code> (things happen together), schedule
-          it in <code>start()</code>, and cancel it in <code>end()</code>.
+          Each autonomous routine is its own class tagged{" "}
+          <code>@Autonomous</code>; the driver station lists them by name, and
+          selecting one constructs it. You build the routine in the constructor
+          with <code>Command.sequence(...)</code> (legs run one after another)
+          and <code>Command.parallel(...)</code> (things happen together),
+          schedule it in <code>start()</code>, and cancel it in{" "}
+          <code>end()</code>.
         </p>
 
         <CodeBlock
@@ -225,12 +225,12 @@ public class AutonomousOpMode extends PeriodicOpMode {
               options: [
                 "It still uses PathPlanner's AutoBuilder under the hood",
                 "Each routine is an @Autonomous OpMode that sequences DriveToPose legs in code",
-                "A SendableChooser picks between auto methods in RobotContainer",
+                "You pick a routine from a dropdown in the code editor before deploying",
                 "Autonomous is generated automatically by Phoenix Tuner X",
               ],
               correctAnswer: 1,
               explanation:
-                "There's no PathPlanner and no RobotContainer. Each routine is its own @Autonomous class; the driver station lists them by name. You build the routine with Command.sequence(...) of DriveToPose legs (and mechanism commands), schedule it in start(), and cancel it in end().",
+                "There's no PathPlanner here. Each routine is its own @Autonomous class; the driver station lists them by name. You build the routine with Command.sequence(...) of DriveToPose legs (and mechanism commands), schedule it in start(), and cancel it in end().",
             },
             {
               id: 2,
@@ -266,18 +266,18 @@ public class AutonomousOpMode extends PeriodicOpMode {
               options: [
                 "Register it with NamedCommands.registerCommand(...)",
                 "Place an event marker in the PathPlanner GUI",
-                "Put the mechanism command into the Command.sequence, or fork it inside a coroutine body",
+                "Chain it in: sequence the hold with a call-site .until(...), or Command.race it with a drive leg",
                 "It's not possible without PathPlanner",
               ],
               correctAnswer: 2,
               explanation:
-                "Legs are just commands, so you compose mechanism actions right into the routine: add them to the sequence, run them in parallel with a drive leg via Command.parallel(...), or fork them inside a coroutine body to run in the background.",
+                "Legs are just commands, so you compose mechanism actions right into the routine. Give a hold a finish line with .until(mech::isAtTarget) and put it in the sequence, or use Command.race(driveLeg, hold) to hold a pose WHILE driving — the drive leg finishes and cancels the hold.",
             },
             {
               id: 5,
               question: "How do you add a second autonomous routine?",
               options: [
-                "Add another option to a SendableChooser",
+                "Rename the existing routine class and redeploy",
                 "Add another @Autonomous class — it appears as another choice on the driver station",
                 "Add a new .path file in deploy/pathplanner",
                 "Pass a flag to AutoBuilder.buildAuto(...)",

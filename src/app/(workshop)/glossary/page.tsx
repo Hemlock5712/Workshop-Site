@@ -407,7 +407,7 @@ export default function Glossary() {
               <code>PeriodicOpMode</code> tagged <code>@Teleop</code>,{" "}
               <code>@Autonomous</code>, or <code>@Utility</code>. Selecting it
               constructs it (building its button bindings); switching away tears
-              it down. There is no RobotContainer and no SendableChooser.
+              it down.
             </p>
           </div>
 
