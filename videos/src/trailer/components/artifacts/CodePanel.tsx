@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { Highlight } from "prism-react-renderer";
+import "../../lib/prismJava";
 import { interpolate, useCurrentFrame } from "remotion";
 import { brand } from "../../../lib/brand";
 import { diffLines } from "../../lib/diff";
