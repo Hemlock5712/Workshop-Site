@@ -88,12 +88,13 @@ export interface ControllerGains extends PidGains, FfGains {}
 
 export const MOTOR_DEFAULT: MotorParams = {
   vMax: 12,
-  // Kraken X44 spec sheet (the workshop's demo motor): 4.05 N·m stall
-  // torque, 7530 RPM free speed.
+  // Kraken X44 (the workshop's demo motor): 4.05 N·m stall torque, and an
+  // effective free speed of ≈ 5800 RPM at 12 V per CTRE dyno testing
+  // (kV ≈ 0.124 V·s/rot; the spec sheet's 7530 RPM is optimistic).
   stallTorque: 4.05,
-  freeSpeed: (7530 * 2 * Math.PI) / 60, // 788.5 rad/s at the motor shaft
+  freeSpeed: (5800 * 2 * Math.PI) / 60, // 607.4 rad/s at the motor shaft
   // 25:1 reduction (typical FRC arm gearbox). Output stall ≈ 101 N·m,
-  // output free speed ≈ 301 RPM (5 rps). kG_ideal = mgL / (Kₜ·R) ≈ 0.93 V
+  // output free speed ≈ 232 RPM (3.9 rps). kG_ideal = mgL / (Kₜ·R) ≈ 0.93 V
   // for this 2 kg · 0.4 m arm — matches what a team would type in.
   gearRatio: 25,
 };

@@ -903,10 +903,10 @@ export default function InteractivePidPlayground() {
 
       {/* ── Footer ──────────────────────────── */}
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
-        2 kg · 0.4 m arm on a Kraken X44 + 25:1 reduction (4.05 N·m / 7530 RPM
-        motor, ≈ 101 N·m / 301 RPM at the arm; back-EMF modelled, ±12 V
-        saturation). Gains use Phoenix 6 / WPILib mechanism-side units — drop
-        these values straight into a{" "}
+        2 kg · 0.4 m arm on a Kraken X44 + 25:1 reduction (4.05 N·m stall, ≈5800
+        RPM effective per CTRE dyno data; ≈ 101 N·m / 232 RPM at the arm;
+        back-EMF modelled, ±12 V saturation). Gains use Phoenix 6 / WPILib
+        mechanism-side units — drop these values straight into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         with{" "}
         <span className="font-mono text-[var(--foreground)]">
