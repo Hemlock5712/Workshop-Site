@@ -68,13 +68,13 @@ export const MotionMagicTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Feedforward and feedback can land the arm anywhere you ask. But watch how it gets there: floor the voltage, race, brake hard. Fast — but violent. Motion Magic keeps the speed and deletes the violence.",
+      text: "Feedforward and feedback can land the arm anywhere you ask. But watch how it gets there. It floors the voltage, races, and brakes hard. That is fast, but violent. Motion Magic keeps the speed and deletes the violence.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "problem",
-      text: "Here are our tuned gains, asked to jump to sixty degrees in one step. The error is enormous for an instant, so the controller slams to twelve volts — chain-snapping acceleration, then a hard scramble to stop at the top.",
+      text: "Here are our tuned gains, the numbers from the last two lessons. Ask the arm to jump to sixty degrees in one step. For an instant, the gap to the target is huge. So the controller slams to twelve volts. That can snap a chain. Then it scrambles to stop at the top.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, kG: 3.9, at: { word: "gains" } },
@@ -83,7 +83,7 @@ export const MotionMagicTrailer: TrailerScript = {
     },
     {
       id: "idea",
-      text: "Motion Magic replaces the step with a profile: accelerate, cruise, decelerate. The setpoint itself travels — watch it glide — and the arm only ever has to chase a target that never runs away from it.",
+      text: "Motion Magic replaces the step with a profile. A profile is a plan for the trip: speed up, cruise, slow down. Now the setpoint, the target the controller chases, travels too. Watch it glide. The arm only chases a target that never runs away.",
       camera: SCOPE_CLOSEUP,
       events: [
         {
@@ -97,19 +97,19 @@ export const MotionMagicTrailer: TrailerScript = {
     },
     {
       id: "demo",
-      text: "Send it back up and look at the output bar — no slam, just a steady, planned push the whole way. Same mechanism, same gains, a much calmer robot.",
+      text: "Send it back up and look at the output bar. No slam this time. Just a steady, planned push the whole way. Same arm, same gains, a much calmer robot.",
       camera: LAB,
       events: [{ type: "target", deg: 55, at: { word: "back" } }],
     },
     {
       id: "tuning",
-      text: "Cruise velocity and acceleration are promises about your hardware: how fast the mechanism may move, and how hard it may accelerate. Tune them to what the metal can take, and the profile handles the rest.",
+      text: "You set two numbers. Cruise velocity is the top speed you allow. Acceleration is how quickly it may speed up. Both are promises about what your hardware can take. Keep them honest. The profile handles the rest.",
       camera: SCOPE_CLOSEUP,
       events: [{ type: "target", deg: 10, at: { word: "promises" } }],
     },
     {
       id: "code",
-      text: "In code, it's two settings and a different request. Set cruise velocity, set acceleration, then swap PositionVoltage for MotionMagicVoltage. The profile runs on the motor controller itself, a thousand times a second.",
+      text: "In code, this is two settings and a different request. Set the Motion Magic cruise velocity. Set the acceleration. Then swap position voltage for motion magic voltage. The profile runs on the motor controller itself, a thousand times a second.",
       camera: CODE,
       events: [
         {
@@ -129,7 +129,7 @@ export const MotionMagicTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "That's the whole control story: feedback corrects, feedforward predicts, Motion Magic plans. Your arm is competition-smooth. The full lesson is waiting at frc5712.com.",
+      text: "That's the whole control story. Feedback corrects. Feedforward predicts. Motion Magic plans. Your arm is competition-smooth. The full lesson is waiting at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

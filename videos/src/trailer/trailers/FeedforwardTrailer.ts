@@ -67,13 +67,13 @@ export const FeedforwardTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Last time, PID got our arm to the setpoint by reacting to error. But a reaction is always late. Feedforward flips the plan: compute the push you know you'll need, and apply it before the error ever shows up.",
+      text: "Last time, PID moved our arm by reacting to error. Error is the gap between the arm and its target. But a reaction is always late. Feedforward flips the plan. It figures out the push you will need. Then it applies that push before any error shows up.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "recap",
-      text: "Here's the same arm with gentle feedback gains. Send it to forty-five degrees and watch closely — it rises, then stalls just under the line. Feedback needs an error to make voltage, so it always settles for one.",
+      text: "Here is the same arm, with gentle feedback gains. Gains are the numbers that set the push. Send it to forty-five degrees. It rises, then stalls just under the line. Feedback needs an error to make voltage. So it always keeps a little error.",
       camera: LAB,
       events: [
         { type: "gains", kP: 0.6, kD: 0.15, at: { word: "gentle" } },
@@ -82,12 +82,12 @@ export const FeedforwardTrailer: TrailerScript = {
     },
     {
       id: "gravity",
-      text: "The thief is gravity. It drags on the arm every single moment — hardest when the arm is level — and the controller only answers after some angle has already been stolen. That gap is permanent.",
+      text: "The thief is gravity. It drags on the arm every single moment. It pulls hardest when the arm is level. And feedback only answers after some angle is already lost. So the gap never goes away.",
       camera: ARM_CLOSEUP,
     },
     {
       id: "kg",
-      text: "But we know that force. So cancel it: kG times the cosine of the arm's angle, added to the output on every loop. No error required. Watch the gap close on its own.",
+      text: "But we know that force. So cancel it up front. That is feedforward. A number called k G adds just enough volts to hold the arm. No error needed. Watch the gap close on its own.",
       camera: LAB,
       events: [
         { type: "gains", kP: 0.6, kD: 0.15, kG: 3.9, at: { word: "cancel" } },
@@ -95,13 +95,13 @@ export const FeedforwardTrailer: TrailerScript = {
     },
     {
       id: "proof",
-      text: "Now ask for seventy-five degrees. Same gentle gains — but with gravity pre-paid, the arm glides up and lands exactly on the line. Feedback is only sweeping up the crumbs now.",
+      text: "Now ask for seventy-five degrees. The feedback gains have not changed. But gravity is already paid for. The arm glides up and lands right on the line. Feedback only sweeps up the crumbs now.",
       camera: SCOPE_CLOSEUP,
       events: [{ type: "target", deg: 75, at: { word: "seventy-five" } }],
     },
     {
       id: "code",
-      text: "In code it's one more line in the slot config. kP and kD stay on as the cleanup crew, and kG holds the arm against gravity — configured as arm cosine, so it scales automatically as the arm moves.",
+      text: "In code, this is one more line in the slot config. k P and k D stay on as the cleanup crew. Then k G holds the arm up against gravity. We set it to arm cosine mode. That way the push shrinks as the arm points higher.",
       camera: CODE,
       events: [
         {
@@ -110,13 +110,18 @@ export const FeedforwardTrailer: TrailerScript = {
           state: 1,
           at: { progress: 0.03 },
         },
-        { type: "code-state", artifact: "code", state: 2, at: { word: "kG" } },
+        {
+          type: "code-state",
+          artifact: "code",
+          state: 2,
+          at: { word: "holds" },
+        },
       ],
       holdAfter: 1.6,
     },
     {
       id: "cta",
-      text: "Predict what you can, correct what's left — that's the whole trick. Next up: Motion Magic, where the path itself gets planned. The full lesson is at frc5712.com.",
+      text: "Predict what you can. Correct what is left. That is the whole trick. Next up is Motion Magic, where the path itself gets planned. The full lesson is at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

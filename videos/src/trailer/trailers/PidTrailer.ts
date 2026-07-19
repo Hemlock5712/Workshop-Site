@@ -69,31 +69,31 @@ export const PidTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Every rookie robot arm does one of two things. It crawls to the setpoint and gives up early — or it slams straight past and shakes. PID fixes both, and the intuition is simpler than the math.",
+      text: "Every rookie robot arm makes one of two mistakes. It crawls toward the target and stops short. Or it flies right past the target and shakes. PID fixes both. And the idea behind it is simpler than the math.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "error",
-      text: "Meet the arm. It rests at negative forty-five degrees, and we want it at positive thirty. That gap is the error — every PID controller starts right here.",
+      text: "Meet the arm. It rests at negative forty-five degrees. We want it at positive thirty. That goal is called the setpoint. The gap left to travel is the error. PID starts with the error.",
       camera: ARM_CLOSEUP,
       events: [{ type: "target", deg: 30, at: { word: "thirty" } }],
     },
     {
       id: "p-low",
-      text: "Proportional control pushes harder when the error is bigger. But with a small P gain, gravity wins the tug of war — the arm stalls out shy of the target and just hangs there.",
+      text: "P stands for proportional. It pushes harder when the error is bigger. How hard? A number called the P gain decides. With a small gain, gravity wins. The arm stalls below the target and just hangs there.",
       camera: LAB,
       events: [{ type: "gains", kP: 0.2, kD: 0, at: { word: "pushes" } }],
     },
     {
       id: "p-high",
-      text: "So crank P up. Now the arm launches — and flies straight past thirty, then rings around the setpoint. More P means more speed, but it can't see that it's arriving too fast.",
+      text: "So crank the P gain way up. Now the arm launches. It flies straight past thirty. Then it swings back and forth around the setpoint. More P gives more speed. But P can't tell it's arriving too fast.",
       camera: SCOPE_CLOSEUP,
       events: [{ type: "gains", kP: 2.5, kD: 0, at: { word: "crank" } }],
     },
     {
       id: "d-term",
-      text: "That's the D term's job. Derivative watches how fast the error is closing, and eases off before you arrive. Same P, plus a touch of D — send it to sixty degrees, and it just lands.",
+      text: "That's the D term's job. D stands for derivative. It watches how fast the error is shrinking. Then it eases off before you arrive. Keep the same P and add a little D. Now send the arm to sixty degrees. It just lands.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, at: { word: "derivative" } },
@@ -103,7 +103,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "And in code, this whole story is a slot config on the TalonFX. kP is the push. kD is the brakes. Then you ask for an angle, and the controller runs on the motor — a thousand times a second.",
+      text: "In code, this whole story is one slot config on the TalonFX. k P is the push. k D is the brakes. Then you just ask for an angle. The controller runs on the motor a thousand times a second.",
       camera: CODE,
       events: [
         {
@@ -112,13 +112,18 @@ export const PidTrailer: TrailerScript = {
           state: 1,
           at: { progress: 0.03 },
         },
-        { type: "code-state", artifact: "code", state: 2, at: { word: "kD" } },
+        {
+          type: "code-state",
+          artifact: "code",
+          state: 2,
+          at: { word: "brakes" },
+        },
       ],
       holdAfter: 1.6,
     },
     {
       id: "cta",
-      text: "There's more — gravity feedforward, Motion Magic, and how to tune a real arm without snapping it. The full PID lesson is waiting at frc5712.com.",
+      text: "There's more to learn. Gravity feedforward. Motion Magic. And how to tune a real arm without snapping it. The full PID lesson is waiting at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

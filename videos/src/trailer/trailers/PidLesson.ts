@@ -3,7 +3,7 @@ import type { Rect, TrailerScript } from "../lib/types";
 // Full-length PID lesson (~4.5 min). Everything the 90s trailer cut: why P
 // sags, why it rings, over-damped D, the I term and its windup (and why the
 // workshop skips it), disturbance recovery, the actual tuning procedure, and
-// tolerance in the goTo command.
+// tolerance via the at-target check (holds never finish; chains use .until).
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const LAB: Rect = { x: 2560, y: 140, width: 2200, height: 1150 };
@@ -14,16 +14,18 @@ const ARM_CLOSEUP: Rect = { x: 2600, y: 200, width: 980, height: 1050 };
 const SCOPE_CLOSEUP: Rect = { x: 3600, y: 200, width: 1120, height: 1040 };
 
 const GOTO_CODE = `// "There" is never exact — pick a tolerance the game allows.
-public Command goTo(Angle target, Angle tolerance) {
-  return run(coroutine -> {
-    motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-    coroutine.waitUntil(() -> atTarget(target, tolerance));
-  }).named("Arm:goTo:" + target.in(Degrees));
+private static final double TARGET = 30.0; // degrees
+private static final double TOLERANCE = 2.0; // degrees
+
+public Command goToTarget() {
+  return runRepeatedly(() -> setPosition(TARGET)).named("target (hold)");
 }
 
-private boolean atTarget(Angle target, Angle tolerance) {
-  return Math.abs(target.in(Degrees) - positionDegrees()) < tolerance.in(Degrees);
-}`;
+public boolean isAtTarget() {
+  return Math.abs(TARGET - positionDegrees()) < TOLERANCE;
+}
+
+// chains move on with: arm.goToTarget().until(arm::isAtTarget)`;
 
 export const PidLesson: TrailerScript = {
   id: "PidLesson",
@@ -136,41 +138,41 @@ export const PidLesson: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "This is the full PID lesson. Not just what the three letters stand for — but why an arm sags, why it shakes, what each gain actually buys you, and the exact procedure to tune a mechanism without breaking it.",
+      text: "This is the full PID lesson. You'll learn why an arm sags. Why it shakes. What each number in the controller really does. And the exact steps to tune a mechanism without breaking it.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "setup",
-      text: "Our test rig: an arm on a motor, resting on its hard stop at negative forty-five degrees. We want positive thirty. The distance between where you are and where you want to be — that's the error, and every gain works off it.",
+      text: "Here is our test rig. An arm on a motor, resting at negative forty-five degrees. We want it at positive thirty. That target angle is called the setpoint. The gap between the arm and the setpoint is called the error. Every part of PID works off the error.",
       camera: ARM_CLOSEUP,
       events: [{ type: "target", deg: 30, at: { word: "thirty" } }],
     },
     {
       id: "p-concept",
-      text: "P is for proportional: output voltage equals kP times the error. Big error, big push. Small error, small push. Watch it with a small gain — the arm rises, slows, and then simply stops climbing.",
+      text: "P stands for proportional. The voltage it sends is k P times the error. k P is just a number we pick, called a gain. Big error, big push. Small error, small push. Now watch a small gain. The arm rises, slows, and then stops climbing.",
       camera: LAB,
       events: [{ type: "gains", kP: 0.2, kD: 0, at: { word: "proportional" } }],
     },
     {
       id: "p-sag",
-      text: "It stalls about nineteen degrees short. Here's why: at that angle, kP times the error makes exactly enough voltage to balance gravity. Equilibrium — below the target. Proportional control needs an error to make voltage, so it keeps one.",
+      text: "It stalls about nineteen degrees short. Here is why. At that angle, k P times the error makes just enough voltage to balance gravity. The push and gravity cancel out. But the arm is still below the target. P needs an error to make any voltage. So it keeps some error forever.",
       camera: SCOPE_CLOSEUP,
     },
     {
       id: "p-crank",
-      text: "The obvious fix: crank kP. Now a small error still makes serious voltage, so the arm gets much closer — but look how it arrives. It blasts through thirty at full speed and rings around the setpoint for seconds.",
+      text: "The obvious fix? Crank k P way up. Now even a small error makes serious voltage. The arm gets much closer. But look how it arrives. It blasts through thirty at full speed. Then it swings back and forth around the setpoint. We call that ringing.",
       camera: LAB,
       events: [{ type: "gains", kP: 2.5, kD: 0, at: { word: "crank" } }],
     },
     {
       id: "why-ring",
-      text: "The ringing isn't random — it's physics. P only looks at where you are, never how fast you're moving. The arm arrives at the target carrying speed, nothing tells it to slow down, and past the line the push flips sign. Over and over.",
+      text: "The ringing is not random. It is physics. P only looks at where you are. It never looks at how fast you are moving. So the arm arrives at the target carrying speed. Nothing tells it to slow down. Past the target, the push flips direction. And that repeats, over and over.",
       camera: SCOPE_CLOSEUP,
     },
     {
       id: "d-term",
-      text: "That's the D term's job. Derivative watches the speed of approach and pushes against it — a brake that gets stronger the faster you close. Same kP, a touch of kD — send it to sixty degrees and it lands like it's on rails.",
+      text: "That's the D term's job. D stands for derivative. It watches how fast you are approaching. Then it brakes against that speed. Faster approach, harder brake. Keep the same k P and add a touch of k D. Send it to sixty degrees. It lands like it's on rails.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, at: { word: "derivative" } },
@@ -179,16 +181,16 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "d-overdone",
-      text: "But D has a failure mode too. Raise it too far and the brake overpowers the push — send it back down to ten degrees and the arm crawls, cautious and slow. Smooth is good; timid loses matches.",
+      text: "But D can fail too. Raise k D way too far. Now the brake overpowers the push. Send the arm back down to ten degrees. It crawls, cautious and slow. Smooth is good. Timid loses matches.",
       camera: SCOPE_CLOSEUP,
       events: [
-        { type: "gains", kP: 2.5, kD: 2.8, at: { word: "too" } },
+        { type: "gains", kP: 2.5, kD: 2.8, at: { word: "raise" } },
         { type: "target", deg: 10, at: { word: "ten" } },
       ],
     },
     {
       id: "d-right",
-      text: "Back kD off until the landing is crisp: fast approach, one clean settle, no bounce. That balance point — quick but composed — is what a tuned mechanism feels like. Up to forty-five again, just to prove it.",
+      text: "Now back k D off until the landing is crisp. Fast approach. One clean settle. No bounce. That balance, quick but calm, is what a tuned mechanism feels like. Send it up to forty-five again, just to prove it.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, at: { word: "off" } },
@@ -197,7 +199,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "i-intro",
-      text: "So what's the I for? Integral is the memory: it adds up error over time. If the arm sits short of the target, that leftover error accumulates, and the accumulated total pushes harder and harder until the gap closes.",
+      text: "So what is the I for? I stands for integral. It is the controller's memory. It adds up the error over time. If the arm sits short of the target, that error piles up. The bigger the pile, the harder it pushes. It keeps pushing until the gap closes.",
       camera: ARM_CLOSEUP,
       events: [
         { type: "gains", kP: 0.35, kD: 0.15, at: { word: "Integral" } },
@@ -206,7 +208,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "i-demo",
-      text: "Here's the sag again with a weak P — stuck below twenty. Now add kI and watch the memory work: the error piles up, the push grows, and the arm grinds its way onto the target. But notice the cost — it built up so much memory that it overshoots first.",
+      text: "Here is the sag again, with a weak P. The arm is stuck below twenty. Now add k I and watch the memory work. The error piles up. The push grows. The arm grinds its way onto the target. But notice the cost. It stored up so much push that it overshoots first.",
       camera: SCOPE_CLOSEUP,
       events: [
         { type: "gains", kP: 0.35, kD: 0.05, kI: 1.2, at: { word: "add" } },
@@ -214,13 +216,13 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "i-verdict",
-      text: "That's integral windup, and it's why this workshop skips the I term. I is a slow guess at a force you could just calculate. Gravity isn't a mystery — the next lesson replaces the whole I term with feedforward, which pays that force instantly, no memory required.",
+      text: "That overshoot has a name: integral windup. It is why this workshop skips the I term. I is a slow guess at a force you could just calculate. Gravity is not a mystery. The next lesson replaces the whole I term with feedforward. Feedforward adds that force right away, no memory needed.",
       camera: LAB,
       holdAfter: 0.6,
     },
     {
       id: "bump",
-      text: "One more thing a controller must survive: the real world. Back on our tuned gains — now bump the arm, hard, like a collision. P sees the new error instantly, D catches the speed, and it's back on target in under a second. Tuning is about staying, not just arriving.",
+      text: "One more thing a controller must survive: the real world. We are back on our tuned gains. Now bump the arm hard, like a collision. P sees the new error instantly. D catches the speed. The arm is back on target in under a second. Tuning is about staying there, not just arriving.",
       camera: ARM_CLOSEUP,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, kI: 0, at: { word: "tuned" } },
@@ -229,7 +231,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "procedure-1",
-      text: "Now the procedure — the same one every time, sim first. Step one: start kP so small the mechanism barely moves. Step two: double it, and double it again, until you see overshoot and ringing on a real step.",
+      text: "Now the tuning procedure. You run it the same way every time. Always in simulation first. Step one: start k P so small the mechanism barely moves. Step two: double k P, and double it again, until you see overshoot and ringing.",
       camera: { x: 5500, y: 120, width: 2160, height: 560 },
       events: [
         { type: "diagram", artifact: "tuning", step: 1, at: { word: "one" } },
@@ -243,7 +245,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "procedure-2",
-      text: "Step three: back kP off about thirty percent, just under the ringing point. Step four: add kD in small steps until the landing is crisp. Then verify like a skeptic — big steps, small steps, and a few bumps.",
+      text: "Step three: back k P off about thirty percent, just under the ringing point. Step four: add k D in small steps until the landing is crisp. Then verify like a skeptic. Try big steps, small steps, and a few bumps.",
       camera: TUNING,
       events: [
         { type: "diagram", artifact: "tuning", step: 3, at: { word: "three" } },
@@ -258,7 +260,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "tolerance",
-      text: "Last piece: when is the arm officially there? Never exactly — a real mechanism jitters by fractions of a degree forever. So goTo takes a tolerance: command the position, wait until the error is inside it, and let the command finish. Pick the tolerance the game actually needs, not the smallest number that feels precise.",
+      text: "Last piece: when is the arm officially there? Never exactly. A real arm jitters by fractions of a degree forever. So we pick a tolerance. That is how much error still counts as close enough. The go to target hold never finishes. It just keeps holding. A chain moves on by checking is at target with until. Pick the tolerance your game needs, not the tiniest number that feels precise.",
       camera: CODE,
       events: [
         {
@@ -272,7 +274,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "cta",
-      text: "That's real PID: P for the push, D for the composure, tolerance for the finish — and a procedure you can run on any mechanism. Next lesson: feedforward, where gravity stops being P's problem. All of it at frc5712.com.",
+      text: "That's real PID. P gives the push. D keeps it calm. Tolerance decides when you're close enough. And the procedure works on any mechanism. Next lesson: feedforward, where gravity stops being P's problem. All of it is at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },
