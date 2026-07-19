@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CollapsibleSection from "@/components/CollapsibleSection";
@@ -384,7 +385,17 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
           <p style={{ marginTop: 8 }}>
             <code>Utils.fpgaToCurrentTime(...)</code> was removed (Phoenix 6 now
             shares the WPILib timebase), so vision timestamps go straight to the
-            pose estimator without any conversion.
+            pose estimator without any conversion. The team&apos;s reference
+            implementation is{" "}
+            <a
+              href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/subsystems/vision/Limelight.java"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Limelight.java in the 2027-Template
+            </a>
+            .
           </p>
         </Box>
       </section>
@@ -451,6 +462,8 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[

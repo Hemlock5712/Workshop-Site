@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
@@ -639,6 +640,8 @@ double yError = setpoint.pose.getY() - currentY;
       </CollapsibleSection>
 
       {/* Quiz */}
+      <AlphaStatusNote />
+
       <Quiz
         title="Test Your Understanding"
         questions={[

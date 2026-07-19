@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
@@ -120,9 +121,38 @@ public class AutonomousOpMode extends PeriodicOpMode {
         <p className="text-slate-600 dark:text-slate-300">
           Want a second routine? Add another <code>@Autonomous</code> class; it
           shows up as another choice on the driver station. To do something at a
-          point in the path (the old &quot;event marker&quot;), put a mechanism
-          command into the sequence or <code>fork</code> it inside a coroutine
-          body.
+          point in the path (the old &quot;event marker&quot;), chain a
+          mechanism command into the sequence — a hold with a call-site{" "}
+          <code>.until(...)</code>, or <code>Command.race(leg, hold)</code> to
+          hold a pose <em>while</em> driving. The team&apos;s worked example of
+          exactly that pattern is{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            DriveStowDriveChainedOpMode.java
+          </a>{" "}
+          in the 2027-Template, alongside its{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/AutonomousOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            AutonomousOpMode.java
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/commands/DriveToPose.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            DriveToPose.java
+          </a>
+          .
         </p>
 
         <CollapsibleSection title='🧩 Mixing in mechanism actions (the old "event markers")'>
@@ -183,6 +213,8 @@ public class AutonomousOpMode extends PeriodicOpMode {
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[

@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
@@ -459,6 +460,8 @@ public class Telemetry {
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[

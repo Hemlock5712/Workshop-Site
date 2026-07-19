@@ -109,19 +109,19 @@ function getPageMetadata(route) {
       title: "Command-Based Framework",
       category: "Workshop 1",
       description:
-        "Triggers, Mechanisms, and Commands in v3 — decorators (.named, .until, .whenCanceled, .withPriority) and composition with Command.sequence / Command.parallel and coroutine.await/awaitAll/awaitAny/fork. Top-level wiring lives in a Robot class and per-mode OpModes.",
+        'Triggers, Mechanisms, and Commands in v3 — persistent holds (runRepeatedly, the "(hold)" naming rule) and chaining with Command.sequence, call-site .until, Command.race, and .withTimeout. Coroutines and StateMachine are optional advanced dialects.',
     },
     "building-subsystems": {
       title: "Mechanisms",
       category: "Workshop 1",
       description:
-        "Implementing the v3 Mechanism base class (extends Mechanism) — run(), runRepeatedly(), idle(), and setDefaultCommand for one physical part of the robot.",
+        'Implementing the v3 Mechanism base class (extends Mechanism) — hold-command factories with runRepeatedly and "(hold)" names, private setters, idle() defaults, and setDefaultCommand for one physical part of the robot.',
     },
     "adding-commands": {
       title: "Commands",
       category: "Workshop 1",
       description:
-        "Writing v3 commands as coroutine-shaped bodies — set-once, set-and-hold, set-then-wait, and multi-phase shapes, plus runtime branching with await and fork.",
+        'Writing v3 commands as holds — runRepeatedly re-sending the closed-loop request, "(hold)" naming, the one rule (a hold never finishes), and chaining routines with sequence / until / race / withTimeout.',
     },
     "running-program": {
       title: "Running Program",
@@ -163,7 +163,7 @@ function getPageMetadata(route) {
       title: "State Machines",
       category: "Advanced",
       description:
-        "WPILib Commands V3 ships a StateMachine class with first-class transitions, entry/exit hooks, and any-state interrupts. Use it when an auto routine needs to repeat, skip, or recover phases.",
+        "Optional advanced lesson: the Commands V3 StateMachine class — named states owning hold commands, declared transitions, entry/exit hooks, and any-state interrupts. Chaining covers everyday routines; reach for this when phases repeat, skip, or recover.",
     },
     "swerve-prerequisites": {
       title: "Swerve Drive Prerequisites",
@@ -199,7 +199,7 @@ function getPageMetadata(route) {
       title: "Logging Options",
       category: "Workshop 2",
       description:
-        "Comparing FRC logging frameworks; this workshop uses WPILib DataLogManager (not AdvantageKit) for robot debugging and analysis.",
+        "Why logging matters and what to log; this workshop uses WPILib DataLogManager only — AdvantageKit, Epilogue, and replay are named as vocabulary, not taught.",
     },
     "logging-implementation": {
       title: "Implementing Logging",

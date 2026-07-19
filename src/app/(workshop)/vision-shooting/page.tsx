@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
@@ -469,6 +470,8 @@ table.put(5.0, 100.0);  // Maximum range`}
 
       {/* Quiz */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[

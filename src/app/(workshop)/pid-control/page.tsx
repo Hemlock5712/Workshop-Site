@@ -1,5 +1,6 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import CodeBlock from "@/components/CodeBlock";
 import PageHero from "@/components/PageHero";
 import MechanismPlayground from "@/components/MechanismPlayground";
@@ -272,6 +273,8 @@ export default function PIDControl() {
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[
