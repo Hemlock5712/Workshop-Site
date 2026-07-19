@@ -1,11 +1,13 @@
 import type { Rect, TrailerScript } from "../lib/types";
 
-// Full-length state machine lesson (~4 min). Everything the 90s trailer cut:
-// why boolean/if spaghetti fails, each state and edge of the Auto Arm Cycle in
-// depth, conditional vs completion transitions, building the machine in typed
-// diffs, the adding-a-state checklist, and the exact interrupt semantics
-// (declaration order, rising edge, onExit → cancel → takeover, no extra yield).
-// All Java comes verbatim from src/app/(workshop)/state-based/page.tsx.
+// Full-length state machine lesson (~4 min) — the optional, advanced dialect.
+// Framing: everyday teleop is hold-per-button (whileTrue); a state machine is
+// the alternative where the robot is always in exactly one named state.
+// Covers boolean/if spaghetti, hold-backed states with .when(...) edges,
+// when vs whenComplete, building the machine in typed diffs, the
+// adding-a-state checklist, and the exact interrupt semantics (declaration
+// order, rising edge, onExit → cancel → takeover in the same tick).
+// Java mirrors the hold-backed pattern on src/app/(workshop)/state-based/page.tsx.
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const DIAGRAM: Rect = { x: 2560, y: 160, width: 2200, height: 1150 };
@@ -19,13 +21,14 @@ const EDGE_OPERATOR: Rect = { x: 2600, y: 220, width: 1520, height: 800 };
 const EDGE_SENSOR: Rect = { x: 3380, y: 220, width: 1400, height: 740 };
 const EDGE_COMPLETE: Rect = { x: 2600, y: 300, width: 2120, height: 1060 };
 
-// Verbatim from the state-based page (comments trimmed to fit).
+// States own the mechanism's ordinary "(hold)" commands; holds never finish,
+// so every transition is a .when(...) — mirroring the state-based page.
 const SM_STATES = `public Command autoArmCycle() {
   StateMachine sm = new StateMachine("Auto Arm Cycle");
 
-  State stowed  = sm.addState(arm.low());
-  State pickup  = sm.addState(arm.low());        // ready to grab
-  State scoring = sm.addState(arm.high());
+  State stowed  = sm.addState(arm.stowed());
+  State pickup  = sm.addState(arm.pickup());   // ready to grab
+  State scoring = sm.addState(arm.scoring());
   sm.setInitialState(stowed);
 
   return sm;
@@ -34,14 +37,15 @@ const SM_STATES = `public Command autoArmCycle() {
 const SM_TRANSITIONS = `public Command autoArmCycle() {
   StateMachine sm = new StateMachine("Auto Arm Cycle");
 
-  State stowed  = sm.addState(arm.low());
-  State pickup  = sm.addState(arm.low());        // ready to grab
-  State scoring = sm.addState(arm.high());
+  State stowed  = sm.addState(arm.stowed());
+  State pickup  = sm.addState(arm.pickup());   // ready to grab
+  State scoring = sm.addState(arm.scoring());
   sm.setInitialState(stowed);
 
-  stowed.switchTo(pickup).when(operator.intake);
+  // Every state runs a hold, so every transition is a .when(...).
+  stowed.switchTo(pickup).when(operator.a());
   pickup.switchTo(scoring).when(gripper::hasGamePiece);
-  scoring.switchTo(stowed).whenCompleteAnd(() -> !gripper.hasGamePiece());
+  scoring.switchTo(stowed).when(() -> !gripper.hasGamePiece());
 
   return sm;
 }`;
@@ -49,15 +53,16 @@ const SM_TRANSITIONS = `public Command autoArmCycle() {
 const SM_NEW_STATE = `public Command autoArmCycle() {
   StateMachine sm = new StateMachine("Auto Arm Cycle");
 
-  State stowed  = sm.addState(arm.low());
-  State pickup  = sm.addState(arm.low());        // ready to grab
-  State scoring = sm.addState(arm.high());
+  State stowed  = sm.addState(arm.stowed());
+  State pickup  = sm.addState(arm.pickup());   // ready to grab
+  State scoring = sm.addState(arm.scoring());
   State defense = sm.addState(arm.backward());
   sm.setInitialState(stowed);
 
-  stowed.switchTo(pickup).when(operator.intake);
+  // Every state runs a hold, so every transition is a .when(...).
+  stowed.switchTo(pickup).when(operator.a());
   pickup.switchTo(scoring).when(gripper::hasGamePiece);
-  scoring.switchTo(stowed).whenCompleteAnd(() -> !gripper.hasGamePiece());
+  scoring.switchTo(stowed).when(() -> !gripper.hasGamePiece());
 
   return sm;
 }`;
@@ -65,32 +70,34 @@ const SM_NEW_STATE = `public Command autoArmCycle() {
 const SM_FULL = `public Command autoArmCycle() {
   StateMachine sm = new StateMachine("Auto Arm Cycle");
 
-  State stowed  = sm.addState(arm.low());
-  State pickup  = sm.addState(arm.low());        // ready to grab
-  State scoring = sm.addState(arm.high());
+  State stowed  = sm.addState(arm.stowed());
+  State pickup  = sm.addState(arm.pickup());   // ready to grab
+  State scoring = sm.addState(arm.scoring());
   State defense = sm.addState(arm.backward());
   sm.setInitialState(stowed);
 
-  stowed.switchTo(pickup).when(operator.intake);
+  // Every state runs a hold, so every transition is a .when(...).
+  stowed.switchTo(pickup).when(operator.a());
   pickup.switchTo(scoring).when(gripper::hasGamePiece);
-  scoring.switchTo(stowed).whenCompleteAnd(() -> !gripper.hasGamePiece());
-  sm.switchFromAny().to(defense).when(driver.defenseMode);
+  scoring.switchTo(stowed).when(() -> !gripper.hasGamePiece());
+  sm.switchFromAny().to(defense).when(driver.b());
 
   return sm;
 }`;
 
-const ARM_FACTORIES = `/** Drive to a target angle and finish once we arrive. */
-public Command goTo(Angle target, Angle tolerance, String label) {
-  return run(coroutine -> {
-    setPosition(target);
-    coroutine.waitUntil(() -> atTarget(target, tolerance));
-  }).named("Arm:" + label);
+const ARM_HOLDS = `// The states run the arm's ordinary hold commands — the same
+// factories the button bindings use. A hold re-sends its
+// setpoint every tick and never finishes on its own.
+public Command stowed() {
+  return runRepeatedly(() -> setPosition(STOWED_POSITION))
+      .named("stowed (hold)");
 }
 
-// Thin wrappers — one per useful position.
-public Command low()      { return goTo(Degrees.of(0),   Degrees.of(1), "LOW"); }
-public Command high()     { return goTo(Degrees.of(90),  Degrees.of(2), "HIGH"); }
-public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWARD"); }`;
+public Command pickup() {
+  return runRepeatedly(() -> setPosition(PICKUP_POSITION))
+      .named("pickup (hold)");
+}
+// ...scoring() and backward(): same recipe, one hold per preset.`;
 
 export const StateBasedLesson: TrailerScript = {
   id: "StateBasedLesson",
@@ -114,7 +121,7 @@ export const StateBasedLesson: TrailerScript = {
         {
           id: "stowed",
           label: "Stowed",
-          sublabel: "arm.low()",
+          sublabel: "arm.stowed()",
           x: 80,
           y: 380,
           width: 460,
@@ -125,7 +132,7 @@ export const StateBasedLesson: TrailerScript = {
         {
           id: "pickup",
           label: "Pickup",
-          sublabel: "arm.low() — ready to grab",
+          sublabel: "arm.pickup() — ready to grab",
           x: 870,
           y: 100,
           width: 460,
@@ -136,7 +143,7 @@ export const StateBasedLesson: TrailerScript = {
         {
           id: "scoring",
           label: "Scoring",
-          sublabel: "arm.high()",
+          sublabel: "arm.scoring()",
           x: 1660,
           y: 380,
           width: 460,
@@ -157,9 +164,9 @@ export const StateBasedLesson: TrailerScript = {
         },
       ],
       edges: [
-        { from: "stowed", to: "pickup", label: "operator.intake", step: 4 },
+        { from: "stowed", to: "pickup", label: "operator.a()", step: 4 },
         { from: "pickup", to: "scoring", label: "hasGamePiece", step: 5 },
-        { from: "scoring", to: "stowed", label: "whenCompleteAnd", step: 6 },
+        { from: "scoring", to: "stowed", label: ".when(empty)", step: 6 },
         { from: "stowed", to: "defense", step: 7 },
         { from: "scoring", to: "defense", label: "switchFromAny", step: 7 },
       ],
@@ -178,7 +185,7 @@ export const StateBasedLesson: TrailerScript = {
       rect: CODE2,
       fileName: "Arm.java",
       language: "java",
-      states: ["", ARM_FACTORIES],
+      states: ["", ARM_HOLDS],
     },
     {
       kind: "end",
@@ -186,25 +193,25 @@ export const StateBasedLesson: TrailerScript = {
       rect: END,
       title: "One state alive. Every arrow declared.",
       subtitle:
-        "Entry and exit hooks, exit transitions, and coroutine branching — in the full lesson",
+        "Entry and exit hooks, exit transitions, and completion edges — in the full lesson",
       url: "frc5712.com/state-based",
     },
   ],
   beats: [
     {
       id: "hook",
-      text: "Here's how most arm code dies. One boolean for intaking, another for scoring, a flag for defense mode, and forty if statements trying to keep them all honest. It works in week one. Then the robot grows, the booleans multiply, and nobody can say what the arm is doing right now.",
+      text: "Quick heads up: this lesson is optional, and advanced. Everyday teleop needs none of it. Each button holds a preset with whileTrue, and that covers the whole workshop. But some robots outgrow buttons. Their code becomes a pile of booleans and forty if statements. Soon nobody can say what the arm is doing right now.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "why-not-ifs",
-      text: "The failure modes are always the same. Two triggers fire on the same loop and fight over the motor. A flag gets set on the way up and never cleared on the way down. Race conditions, forgotten flags, and no single source of truth — just guesses smeared across a dozen booleans.",
+      text: "The failures are always the same. Two triggers fire at once and fight over the motor. A flag gets set on the way up, and never cleared on the way down. Nothing can answer the simple question: what is the arm doing right now? There is no single source of truth. Just guesses spread across a dozen booleans.",
       camera: TITLE_PUSH,
     },
     {
       id: "state-idea",
-      text: "State-based control replaces the guessing with a name. A state is just a command that runs while you're in it, and the machine keeps exactly one alive at a time. Start with three positions. The first is Stowed — arm dot low, tucked in and safe, where every cycle begins.",
+      text: "A state machine replaces the guessing with names. The robot is always in exactly one named state. A state is just a command that runs while you are in it. The machine keeps one alive at a time, never two. Start with three states. The first is Stowed. It runs the arm's stowed hold, tucked in and safe.",
       camera: DIAGRAM,
       events: [
         {
@@ -217,7 +224,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "states-walk",
-      text: "Pickup runs the same low target, but it means something different — ready to grab. Scoring runs arm dot high. Same motor, same mechanism, three named activities. Ask the machine what the arm is doing, and it answers with exactly one of these — never a shrug.",
+      text: "Pickup runs the pickup hold, down low and ready to grab. Scoring runs the scoring hold, up high. These are the mechanism's ordinary hold commands. The very same ones the button bindings use. Ask the machine what the arm is doing. It answers with exactly one name, never a shrug.",
       camera: DIAGRAM,
       events: [
         {
@@ -236,7 +243,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "edge-operator",
-      text: "Now the edges — and every edge declares its trigger. The first is operator input: stowed dot switchTo pickup, when operator dot intake. The driver presses the intake button, the machine cancels stowed's command, and pickup takes over. No flag to set, and no flag to forget.",
+      text: "Now the edges. An edge is a transition, a declared move from one state to another. The first edge is a button: stowed dot switchTo pickup, when operator dot A. Press A, and the machine cancels stowed's hold and starts pickup's. No flag to set. No flag to forget.",
       camera: EDGE_OPERATOR,
       events: [
         { type: "diagram", artifact: "states", step: 4, at: { word: "edges" } },
@@ -244,7 +251,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "edge-sensor",
-      text: "The second edge has no button at all: pickup dot switchTo scoring, when gripper hasGamePiece. A when condition is checked every scheduler tick while the state's command is running, and it's rising-edge guarded — it has to go false and then true again before it can fire twice.",
+      text: "The second edge has no button at all: pickup dot switchTo scoring, when gripper hasGamePiece. Grab a game piece, and the sensor moves the machine for you. A when condition is checked every tick while the state runs. It fires when the answer flips from false to true. To fire again, it must go false first.",
       camera: EDGE_SENSOR,
       events: [
         {
@@ -257,7 +264,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "edge-completion",
-      text: "The third edge waits for completion: scoring dot switchTo stowed, whenCompleteAnd the gripper is empty. Plain whenComplete fires once, after the state's command finishes on its own. whenCompleteAnd chains one extra check onto that — and it takes precedence over a plain whenComplete when both apply.",
+      text: "The third edge closes the loop: scoring dot switchTo stowed, when the gripper is empty. Score the piece, and the arm heads home. Why a when, and not whenComplete? Because scoring runs a hold, and a hold never finishes. A whenComplete on a hold-backed state would never fire.",
       camera: EDGE_COMPLETE,
       events: [
         { type: "diagram", artifact: "states", step: 6, at: { word: "third" } },
@@ -265,13 +272,13 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "two-kinds",
-      text: "Which flavor you use depends on the command underneath. A when condition is only checked while the command is looping, so a one-shot that never yields will never see it. Looping states leave on when. One-shot states leave on whenComplete. Pick the transition to match the state.",
+      text: "So there are two kinds of transitions. Hold-backed states leave on when. The condition is watched while the hold runs. whenComplete waits for the state's command to finish by itself. Save it for self-finishing commands, like a one-shot fire command. Always match the transition to the command underneath.",
       camera: DIAGRAM,
       holdAfter: 0.6,
     },
     {
       id: "code-construct",
-      text: "Time to build it. Construct the StateMachine with a name — required, and it shows up in telemetry. addState wraps each command and hands back a State. Then setInitialState. That one is enforced at compile time — leave it out and you get a build error, not a runtime surprise.",
+      text: "Time to build it. Construct the StateMachine with a name. The name is required, and it shows up in telemetry. addState wraps each hold and hands back a State. Then setInitialState. That one is checked at compile time. Leave it out, and you get a build error, not a runtime surprise.",
       camera: CODE,
       events: [
         {
@@ -285,7 +292,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "code-transitions",
-      text: "Now wire the transitions, and notice the shape: three declarative lines, one per arrow in the diagram. Button edge, sensor edge, completion edge. There's no update loop to write and no phase variable to check — the graph you drew on the whiteboard is literally the code you ship.",
+      text: "Now wire the transitions. Three short lines, one per arrow in the diagram. Button edge, sensor edge, gripper-empty edge. Every state runs a hold, so every transition is a when. And notice what does not exist: illegal jumps. Stowed can never teleport to scoring, because no transition was declared for it.",
       camera: CODE,
       events: [
         {
@@ -299,7 +306,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "adding-a-state",
-      text: "Mid-season the game demands a fourth position: defense, arm swung backward. Here's the entire checklist. Add the state — one addState line wrapping arm dot backward. Then wire its transitions in, and out if it ever hands control back. Nothing else changes. The other states never even know.",
+      text: "Mid-season, the game demands a fourth position: defense, with the arm swung backward. Here is the whole checklist. Add one addState line wrapping the backward hold. Then declare its transitions in, and out again if it ever hands control back. Nothing else changes. The other states never even know.",
       camera: CODE,
       events: [
         {
@@ -313,7 +320,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "interrupt",
-      text: "And defense can't wait for a tidy edge from wherever the arm happens to be, so it gets an any-state interrupt: sm dot switchFromAny, to defense, when driver dot defenseMode. One line covers every state in the machine at the time you call it — so declare it after your last addState.",
+      text: "Defense cannot wait for a tidy path through the graph. It needs to fire from anywhere. So it gets an any-state interrupt: sm dot switchFromAny, to defense, when driver dot B. One line covers every state in the machine at the time you call it. So declare it after your last addState.",
       camera: CODE,
       events: [
         {
@@ -327,7 +334,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "lifecycle",
-      text: "Here's exactly what happens when defenseMode fires mid-cycle. Transitions are checked in declaration order, and the first rising edge wins. The old state's onExit callbacks run, its command is canceled, and defense takes over in the same scheduler tick, without an extra yield. onEnter fires with the new command already running.",
+      text: "Here is exactly what happens when that button fires mid-cycle. Transitions are checked in the order you declared them. The first one to trip wins. The old state's onExit hooks run. Its hold is cancelled. Defense takes over in the same scheduler tick. Then onEnter fires, with the new command already running.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "states", step: 7, at: { word: "fires" } },
@@ -336,7 +343,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "factories",
-      text: "So what do the states actually run? Factory methods on the Arm mechanism. goTo sets the position, then waits until the arm reports atTarget within a tolerance, so the command genuinely finishes. low, high, and backward are one-line wrappers — one per useful position, each named for telemetry.",
+      text: "So what do the states actually run? The arm's ordinary hold commands. The same factories your button bindings use. runRepeatedly re-sends the setpoint every tick, forever. A hold never finishes, and here that is fine. Nothing ever waits on these holds. The transitions watch buttons and sensors instead.",
       camera: CODE2,
       events: [
         {
@@ -350,7 +357,7 @@ export const StateBasedLesson: TrailerScript = {
     },
     {
       id: "cta",
-      text: "That's state-based control: named positions, declared edges, one command alive at a time — a single source of truth you can read straight out of telemetry. The full lesson adds entry and exit hooks, exiting the machine entirely, and branching mid-command in plain Java, all at frc5712.com.",
+      text: "That is state-based control. Named states. Declared edges. One command alive at a time. A single source of truth you can read straight out of telemetry. And remember, it is optional. Hold-per-button covers most robots just fine. When you outgrow it, the full lesson is waiting at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },
