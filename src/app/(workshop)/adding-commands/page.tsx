@@ -13,7 +13,7 @@ export default function AddingCommands() {
         title="Commands with WPILib Commands V3"
         description={[
           "A command is what a mechanism can do: a factory method that returns a named Command the scheduler can run. Anything that wants to move the arm does it through a command — the setters stay private, which is how the scheduler prevents two things fighting over the same motor.",
-          "On this team almost every mechanism command is a hold: it keeps re-sending its closed-loop setpoint forever, so the motor stays actively commanded until another command takes the mechanism over. Press a button, the arm goes to the angle and stays there.",
+          "On this team almost every mechanism command is a hold: it keeps re-sending its closed-loop setpoint forever, so the motor stays actively commanded until another command takes the mechanism over. Hold a button (whileTrue), the arm goes to the angle and stays there; release it, and the default command comes back.",
         ]}
         concept="A command is a named action from a mechanism factory. Most of ours are holds — and a hold never finishes."
       />
@@ -244,8 +244,8 @@ public class DriveDistance extends ClassicCommand {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          A hold only ever ends by being cancelled — a button binding schedules
-          a different preset, a race&apos;s step finishes, an{" "}
+          A hold only ever ends by being cancelled — the driver releases a{" "}
+          <code>whileTrue</code> button, a race&apos;s step finishes, an{" "}
           <code>.until(...)</code> condition trips. Usually that&apos;s fine
           as-is: the motor keeps its last closed-loop request in firmware until
           the next command sends a new one. When a command <em>does</em> need

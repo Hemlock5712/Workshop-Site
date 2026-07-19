@@ -45,34 +45,34 @@ export default function Triggers() {
           title="Binding a trigger"
           code={`CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
-// Button → command. Fires once at the rising edge. Because scoring() is a
-// hold, one tap is all it takes: the arm goes to the scoring angle and
-// STAYS there until another preset takes the arm over.
-driver.a().onTrue(arm.scoring());
+// Button → command. This is the team's default binding: while A is held,
+// the scoring hold keeps the arm at the scoring angle. Release A and the
+// hold is cancelled — the arm's DEFAULT COMMAND takes back over.
+driver.a().whileTrue(arm.scoring());
 
-// Hold the button to keep the command scheduled; release cancels it.
-driver.leftBumper().whileTrue(arm.stowed());
+// onTrue fires once at the rising edge. Use it for self-finishing
+// commands — never for a bare hold (see the tip below).
+driver.start().onTrue(drivetrain.resetHeading());
 
 // Sensor → command. Same shape, just a different boolean source.
 Trigger atSpeed = new Trigger(flywheel::isAtSpeed);
-atSpeed.onTrue(intake.feed());`}
+atSpeed.whileTrue(intake.feed());`}
         />
 
         <Box
           variant="alert-tip"
-          tag="TIP · HOLDS + onTrue"
-          title="Tap once, the hold does the rest"
+          tag="RULE · HOLDS + whileTrue"
+          title="Bind holds with whileTrue, so the default command can come back"
         >
           <p>
-            These bind methods are unchanged from Commands v2 — and persistent
-            holds make <code>onTrue</code> <em>nicer</em> than it used to be. In
-            v2 you often needed <code>whileTrue</code> so the setpoint stayed
-            commanded while the driver held the button. Here{" "}
-            <code>arm.scoring()</code> never finishes on its own, so{" "}
-            <code>onTrue</code> is enough: tap A, the arm goes to the pose and
-            holds it; tap B, the next preset takes over. Save{" "}
-            <code>whileTrue</code> for things that should genuinely stop on
-            release, like an intake roller.
+            These bind methods are unchanged from Commands v2, but holds make
+            the choice between them matter more. A hold never finishes — so if
+            you bind one with <code>onTrue</code>, it runs <em>forever</em>, and
+            the mechanism&apos;s default command never gets the mechanism back.
+            Bind holds with <code>whileTrue</code> instead: release the button,
+            the hold is cancelled, and the default command takes over. Save{" "}
+            <code>onTrue</code> for commands that finish on their own, like a
+            heading reset.
           </p>
         </Box>
 
@@ -234,13 +234,13 @@ public class TeleopOpMode extends PeriodicOpMode {
     final Arm arm = robot.arm;
     final DriveMechanism drivetrain = robot.drivetrain;
 
-    // Presets are holds: each tap schedules a new "(hold)" that pre-empts
-    // the previous one. The arm is always actively commanded somewhere.
-    driver.a().onTrue(arm.scoring());
-    driver.b().onTrue(arm.horizontal());
-    driver.leftBumper().onTrue(arm.stowed());
+    // Presets are holds, so they're bound with whileTrue: hold the button,
+    // the arm holds the preset; release it, the arm's default command takes
+    // back over. (onTrue on a hold would never give the mechanism back.)
+    driver.a().whileTrue(arm.scoring());
+    driver.b().whileTrue(arm.horizontal());
+    driver.leftBumper().whileTrue(arm.stowed());
 
-    // whileTrue for things that should stop on release.
     operator.rightTrigger().whileTrue(drivetrain.brake());
   }
 }`}
@@ -345,9 +345,9 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 1,
             question:
-              "You write driver.a().onTrue(arm.high()) inside a TeleopOpMode's constructor. When does this binding go away?",
+              "You write driver.a().whileTrue(arm.scoring()) inside a TeleopOpMode's constructor. When does this binding go away?",
             options: [
-              "Never — onTrue bindings are always global",
+              "Never — button bindings are always global",
               "When the teleop OpMode exits (e.g., auto starts, the robot disables, the mode changes)",
               "Only when you manually call binding.remove()",
               "When arm.high() finishes",

@@ -81,9 +81,10 @@ export default function CommandFramework() {
           Our mechanism commands — <code>arm.scoring()</code>,{" "}
           <code>flywheel.spinUp()</code>, <code>robot.stow()</code> — are{" "}
           <strong>holds</strong>: they keep re-sending their setpoint forever,
-          so the motor stays actively commanded. The plain-words version: press
-          a button, the arm goes to the scoring angle <em>and stays there</em>,
-          fighting gravity, until another command takes the arm over.
+          so the motor stays actively commanded. The plain-words version: hold
+          the A button, the arm goes to the scoring angle{" "}
+          <em>and stays there</em>, fighting gravity; let go, and the arm&apos;s
+          default command takes back over.
         </p>
 
         <CodeBlock

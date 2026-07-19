@@ -15,7 +15,7 @@ export default function StateMachines() {
         title="State Machines with WPILib Commands V3"
         description={[
           "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this, including entry/exit hooks and any-state interrupts, without writing scaffolding by hand.",
-          "This is an optional, advanced dialect. In everyday teleop, each button holds a superstructure preset — tap A, the scoring hold takes over. With a state machine, the robot is instead always in exactly one named state, and buttons/sensors move it between states. The machine cancels the old state's command and starts the new one for you; illegal jumps simply don't exist because no transition was declared for them.",
+          "This is an optional, advanced dialect. In everyday teleop, each button holds a superstructure preset (whileTrue) — hold A, the scoring hold runs; let go, the default command comes back. With a state machine, the robot is instead always in exactly one named state, and buttons/sensors move it between states. The machine cancels the old state's command and starts the new one for you; illegal jumps simply don't exist because no transition was declared for them.",
         ]}
         concept="A state is a Command that runs while the machine is in it. Transitions are edge-triggered conditions that cancel the current state's command and move to the next state. onEnter / onExit fire around each transition."
       />

@@ -445,10 +445,10 @@ export default function Glossary() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A command that takes a mechanism to a
-              setpoint and <em>stays there</em> — press a button and the arm
-              goes to the scoring angle and keeps fighting gravity until another
-              command takes over. Almost every mechanism command in this
-              workshop is a hold.
+              setpoint and <em>stays there</em> — hold a button (
+              <code>whileTrue</code>) and the arm goes to the scoring angle and
+              keeps fighting gravity; let go and the default command comes back.
+              Almost every mechanism command in this workshop is a hold.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>The one rule:</strong> a hold never finishes, so nothing
