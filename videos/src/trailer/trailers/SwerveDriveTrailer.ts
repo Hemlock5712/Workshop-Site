@@ -125,13 +125,13 @@ export const SwerveDriveTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Writing swerve code by hand is a rite of passage nobody needs. Kinematics, odometry, module control — CTRE's generator writes all of it. Here's the fastest path from four modules on a chassis to a robot you can actually drive.",
+      text: "Writing swerve code by hand is a mountain of tricky math. Wheel angles, wheel speeds, position tracking. CTRE's generator writes all of it for you. Four modules on a chassis. Here's the fastest path to a robot you can actually drive.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "tuner",
-      text: "Start in Phoenix Tuner X. Connect to the robot, make sure every drive motor, steer motor, and encoder has a unique CAN ID, then open Mechanisms — and the swerve wizard takes over.",
+      text: "Start in Phoenix Tuner X, CTRE's setup app. Connect to the robot. Give every drive motor, steer motor, and encoder its own CAN ID — that's its name on the network. Then open Mechanisms. The swerve wizard takes over.",
       camera: TUNER_CLOSEUP,
       events: [
         {
@@ -144,7 +144,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "generate",
-      text: "Feed it your wheelbase, trackwidth, wheel diameter, and gear ratio, and it generates a complete CommandSwerveDrivetrain — field-centric drive requests, simulation support, and odometry with pose estimation already wired in.",
+      text: "Feed it your robot's measurements: wheelbase, trackwidth, wheel diameter, and gear ratio. It generates a complete CommandSwerveDrivetrain class. Drive code, simulation, and odometry — position tracking — are already wired in.",
       camera: GENERATED_CLOSEUP,
       events: [
         {
@@ -157,7 +157,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "wrap-calibrate",
-      text: "In Commands v3, you wrap that class in a DriveMechanism that owns the drivetrain and exposes the drive commands. Then calibration — motor gains, slip current, wheel radius — turns generated code into a drivetrain you can trust.",
+      text: "In Commands v3, you wrap that class in a DriveMechanism. It owns the drivetrain and hands out the drive commands. Then you calibrate. Calibration means measuring the real robot: motor gains, slip current, wheel radius. That turns generated code into a drivetrain you can trust.",
       camera: DIAGRAM,
       events: [
         {
@@ -176,7 +176,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "drive",
-      text: "Driving it is one request. FieldCentric takes your joystick values — velocity X, velocity Y, rotational rate — and the drivetrain solves every module angle and every wheel speed for you, on every loop.",
+      text: "Driving it takes one request. FieldCentric means you steer relative to the field, not the robot's nose. Give it your joystick values — velocity X, velocity Y, and turn rate. The drivetrain solves every module angle and wheel speed, every loop.",
       camera: CODE,
       events: [
         {
@@ -190,7 +190,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "precision",
-      text: "One calibration change makes it precise. Switch the drive request to closed-loop Velocity and drop the deadband — now the wheels track commanded speed instead of guessing from voltage, and low-speed control gets crisp.",
+      text: "One change makes it precise. Switch the drive request to closed-loop Velocity. Closed-loop means each wheel checks its real speed and fixes it. You can drop the deadband too — that dead zone near the stick's center. Low-speed control gets crisp.",
       camera: CODE,
       events: [
         {
@@ -204,7 +204,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Generate it, wrap it, calibrate it, drive it. The full walkthrough — plus a complete baseline project you can download — is waiting at frc5712.com. Your swerve drivetrain is one wizard away.",
+      text: "Generate it, wrap it, calibrate it, drive it. The full walkthrough is waiting at frc5712.com. There's a complete baseline project you can download too. Your swerve drivetrain is one wizard away.",
       camera: END,
       holdAfter: 1.2,
     },

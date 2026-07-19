@@ -121,13 +121,13 @@ export const RunningProgramTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your code compiles. Your mechanism works on paper. And the robot does not exist yet. Good news: with WPILib 2027 you can run the whole program tonight, on your laptop, and watch it move.",
+      text: "Your code builds with no errors. Your mechanism works on paper. But the robot does not exist yet. Good news: WPILib twenty twenty-seven can run your whole program tonight. Right on your laptop. You can even watch it move.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "launch",
-      text: "One Gradle command: simulateJava. It boots your actual robot code on your desktop and opens the sim GUI with a driver station — no controller, no SystemCore, nothing wired up.",
+      text: "One Gradle command does it: simulateJava. Gradle is the build tool. It runs your robot code right on your laptop. A simulator window opens with a driver station — the panel that starts the robot. Nothing is wired up.",
       camera: { x: 2580, y: 340, width: 1500, height: 820 },
       events: [
         {
@@ -140,7 +140,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "opmodes",
-      text: "That driver station lists every OpMode by name — each Teleop, Autonomous, and Utility class you wrote. They're discovered by scanning classes at runtime, so the list is whatever your code actually contains.",
+      text: "That driver station lists every OpMode by name. An OpMode is one mode your robot can run. Teleop means a driver controls it. Autonomous means the robot drives itself. The list comes straight from your code. Write a new mode, and it shows up.",
       camera: { x: 3040, y: 320, width: 1560, height: 860 },
       events: [
         {
@@ -153,7 +153,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "select",
-      text: "Select one, and that OpMode is constructed right there — that's the moment its button bindings are built. And every loop, robotPeriodic ticks the scheduler, no matter which mode is active. Your mechanism starts moving on screen.",
+      text: "Pick one, and that OpMode is constructed — built fresh, right then. That's when its buttons get connected to actions. Then, every loop, the scheduler ticks. The scheduler is the part that runs your commands. Your mechanism starts moving on screen.",
       camera: { x: 3600, y: 160, width: 1800, height: 1060 },
       events: [
         {
@@ -172,7 +172,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here's the whole launch surface. simulateJava for the GUI — a human clicks Enable. simulateJavaAgent runs headless, auto-enables the robot, and a flag picks the starting mode — even a specific autonomous by name.",
+      text: "Here are both ways to launch the sim. simulateJava opens the window. You click Enable yourself. simulateJavaAgent runs headless — no window at all. It enables the robot for you. You can even pick the exact starting mode by name.",
       camera: CODE,
       events: [
         {
@@ -192,7 +192,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "hardware-sim",
-      text: "Want real motion? CTRE hardware simulation drives real motors over a CANivore while your code runs on Windows or Linux. One catch: turn off the CANivore USB setting in TunerX first, or the two will fight.",
+      text: "Want real motion? CTRE hardware sim can spin real motors from your laptop. The code reaches them through a CANivore — a USB hub for robot parts. One catch: turn off the CANivore USB setting in the TunerX app first. Otherwise the two programs fight.",
       camera: { x: 3820, y: 400, width: 1560, height: 860 },
       events: [
         {
@@ -206,7 +206,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "So before a single part is bolted on, you can drive your mechanism, test your bindings, and break nothing. See the full running program walkthrough at frc5712.com.",
+      text: "So before a single part is bolted on, you can test everything. Drive your mechanism. Try every button. Break nothing. See the full running program guide at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

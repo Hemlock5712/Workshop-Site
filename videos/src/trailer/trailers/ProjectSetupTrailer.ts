@@ -142,13 +142,13 @@ export const ProjectSetupTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Every season starts the same way: a blank project, a blinking cursor, and a robot that does nothing. Skip all of it. This workshop starts from a template that is already a working robot program.",
+      text: "Every season starts the same way. A blank project. A blinking cursor. A robot that does nothing. Skip all of it. This workshop starts from a template — a robot program that already works.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "stack",
-      text: "The twenty twenty-seven stack looks like this. Commands version three with OpModes is the framework. Java twenty-five is the language. GradleRIO does the building. And everything deploys to SystemCore — the new robot controller.",
+      text: "Here's the twenty twenty-seven stack. Commands version three with OpModes is the framework. It organizes your robot code. Java twenty-five is the language. GradleRIO is the build tool. It packs your code up for the robot. And it all runs on SystemCore — the new robot controller.",
       camera: STACK,
       events: [
         {
@@ -174,7 +174,7 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "clone",
-      text: "Getting the code is one clone away — the team's twenty twenty-seven template, Phoenix six vendordeps already in place. One catch: check your branch. The default, twenty twenty-seven dev, is the new stack; main is still last season.",
+      text: "Getting the code takes one step: clone the twenty twenty-seven template. Cloning means copying the project from GitHub. One catch: pick the right branch. A branch is one version of the code. Use twenty twenty-seven dev. The main branch is still last season.",
       camera: { x: 5500, y: 140, width: 1560, height: 600 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "clone" } },
@@ -183,7 +183,7 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "team-number",
-      text: "Then make it yours. Your team number lives in one file — wpilib preferences dot json. Set it once, and every build and every deploy knows exactly which robot it belongs to.",
+      text: "Then make it yours. Your team number lives in one file, called wpilib preferences dot json. Set it once. From then on, every build knows exactly which robot the code belongs to.",
       camera: { x: 6100, y: 620, width: 1000, height: 580 },
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "number" } },
@@ -191,7 +191,7 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "deploy",
-      text: "Now plug in and deploy. Gradle compiles Java twenty-five, ships it over the network, and SystemCore boots your program — mechanisms, OpModes, and scheduler running before you've written a single line yourself.",
+      text: "Now plug in and deploy. Deploy just means sending your code to the robot. Gradle builds the program and ships it over the network. SystemCore boots it up and runs it. And you haven't written a single line yet.",
       camera: { x: 6900, y: 620, width: 1000, height: 580 },
       events: [
         { type: "diagram", artifact: "flow", step: 4, at: { word: "deploy" } },
@@ -200,13 +200,13 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "payoff",
-      text: "That's the whole pitch of a template: no scheduler to wire, no boilerplate marathon, no blank Robot dot java staring back. Setup becomes a fifteen-minute checklist, and the real work — your mechanisms — starts today.",
+      text: "That's the whole point of a template. No empty files. No setup code to write by hand. No blank screen staring back at you. Setup becomes a fifteen-minute checklist. Then the real work starts today: building your mechanisms.",
       camera: FLOW,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "The full walkthrough covers every click: WPILib VS Code, project options, desktop support so you can test without a robot in front of you. Start your project at frc5712.com.",
+      text: "The full walkthrough covers every click. You'll open the project in WPILib VS Code — the editor for robot code. You'll even test on your laptop, with no robot at all. Start your project at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

@@ -101,12 +101,12 @@ const GROUPS: TrailerGroup[] = [
       {
         file: "adding-commands-trailer.mp4",
         title: "Adding Commands",
-        blurb: "Three command shapes: finish, park, waitUntil.",
+        blurb: "Holds, the one rule, and chaining a routine.",
       },
       {
         file: "triggers-trailer.mp4",
         title: "Triggers",
-        blurb: "OpMode bindings: onTrue, whileTrue, automatic teardown.",
+        blurb: "whileTrue holds, onTrue one-shots, automatic teardown.",
       },
       {
         file: "running-program-trailer.mp4",

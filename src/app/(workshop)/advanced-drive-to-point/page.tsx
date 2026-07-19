@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
@@ -470,16 +471,22 @@ double yError = setpoint.pose.getY() - currentY;
               rotational changes.
             </p>
             <p className="text-green-800 dark:text-green-200 text-sm">
-              For guidance on estimating your robot&apos;s MOI, see{" "}
+              A reasonable starting estimate is{" "}
+              <code>MOI ≈ mass × (trackwidth / 2) × (wheelbase / 2)</code> —
+              treat the robot as a uniform box and refine from there. For a
+              measured value, CTRE&apos;s{" "}
               <a
-                href="https://choreo.autos/usage/estimating-moi/"
+                href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/mechanisms/swerve/swerve-builder-api.html"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-green-600 dark:hover:text-green-400"
               >
-                Choreo&apos;s MOI estimation guide
-              </a>
-              .
+                swerve API documentation
+              </a>{" "}
+              covers characterizing the drivetrain. For a measured number, run
+              WPILib&apos;s SysId tool (it wiggles the robot and records how it
+              responds) while spinning in place — the rotation data it collects
+              lets you calculate the MOI.
             </p>
           </div>
         </ContentCard>
@@ -634,6 +641,8 @@ double yError = setpoint.pose.getY() - currentY;
       </CollapsibleSection>
 
       {/* Quiz */}
+      <AlphaStatusNote />
+
       <Quiz
         title="Test Your Understanding"
         questions={[

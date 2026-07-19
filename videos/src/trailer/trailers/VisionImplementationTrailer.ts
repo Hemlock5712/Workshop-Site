@@ -140,13 +140,13 @@ export const VisionImplementationTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your drivetrain's odometry drifts. The fix is four steps of code — a wrapper, a camera class, a pose estimator, and one line in the Robot constructor. By the end, every AprilTag your camera sees corrects your position.",
+      text: "Your drivetrain's odometry drifts — its position guess slides away from the truth. The fix is four steps of code. A wrapper, a camera class, a pose estimator, and one line in the Robot constructor. By the end, every AprilTag your camera sees corrects your position.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "steps-one-two",
-      text: "Step one: LimelightHelpers, a clean wrapper over NetworkTables. Step two: a Limelight class that turns raw tag data into three things — a pose, a timestamp, and standard deviations that say how much to trust it.",
+      text: "Step one: LimelightHelpers. It reads the camera's NetworkTables data — the numbers it broadcasts. Step two: a Limelight class. It turns raw tag data into three things — a pose, a timestamp, and standard deviations. Those say how much to trust the measurement.",
       camera: { x: 2540, y: 400, width: 1400, height: 800 },
       events: [
         {
@@ -160,7 +160,7 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "steps-three-four",
-      text: "Step three: a CTRE pose estimator living inside the drivetrain fuses those measurements with your wheel odometry. Step four: register every camera in the Robot constructor — one call, and the pipeline runs itself.",
+      text: "Step three: a CTRE pose estimator inside the drivetrain. It blends camera measurements with your wheel odometry. Step four: register every camera in the Robot constructor. One call, and the pipeline runs itself.",
       camera: DIAGRAM,
       events: [
         {
@@ -179,7 +179,7 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "plain-class",
-      text: "The Limelight is not a Mechanism — it owns no motors. It's a plain class. Its update method reads a fresh estimate, computes trust, and feeds the drivetrain. One registerAll call in the Robot constructor hooks every camera into Scheduler addPeriodic.",
+      text: "The Limelight is not a Mechanism, because it owns no motors. It's a plain class. Its update method reads a fresh estimate, computes trust, and feeds the drivetrain. One registerAll call hooks every camera into Scheduler addPeriodic — update then runs every loop.",
       camera: CODE,
       events: [
         {
@@ -199,7 +199,7 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "trust-math",
-      text: "How much do you trust a measurement? Distance hurts — standard deviation grows with distance squared. More tags help — divide by the tag count. And rotation gets a larger base than translation, because heading from one tag is shaky.",
+      text: "How much should you trust one measurement? Distance hurts. Trust falls with the distance squared. Far tags count for less. More tags help. You divide by the tag count. And rotation gets the least trust of all. Heading read from a single tag is shaky.",
       camera: CODE2,
       events: [
         {
@@ -213,13 +213,13 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "filters",
-      text: "Before any measurement counts, three pre-flight filters run: is the pose inside the field boundary, is the tag ambiguous, is the z-height sane. And Phoenix 6 now shares the WPILib timebase — no timestamp conversion, it goes straight in.",
+      text: "Before any measurement counts, three quick checks run. Is the pose inside the field? Is the tag ambiguous — could the math flip it? Is the height sane? And Phoenix 6 now shares WPILib's clock, so the timestamp goes straight in. No conversion needed.",
       camera: { x: 5520, y: 520, width: 1480, height: 700 },
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "That's the whole pipeline: helpers, camera class, estimator, one registration line. Your robot now knows where it is, even after a hit. Build it step by step at frc5712.com.",
+      text: "That's the whole pipeline: helpers, camera class, estimator, one registration line. Now your robot knows where it is, even after taking a hit. Build it step by step at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

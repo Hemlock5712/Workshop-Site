@@ -10,7 +10,7 @@ export default function Triggers() {
       <KeyConceptSection
         title="Triggers in Commands V3"
         description={[
-          "A Trigger is a BooleanSupplier with bind helpers: button.onTrue(cmd), sensor.whileTrue(cmd), and friends. A Trigger fires a Command.",
+          "A Trigger is a yes/no signal — a button, a sensor reading, any true-or-false question — with bind helpers attached: button.whileTrue(cmd), sensor.onTrue(cmd), and friends. A Trigger fires a Command.",
           "Every binding belongs to a scope (global, opmode, or command). Exiting that scope removes the binding automatically, so a binding's lifetime always matches the thing it belongs to: the whole program, a single match phase, or one running command.",
         ]}
         concept="A Trigger fires a Command. What matters is who owns the binding's lifetime, and therefore when it goes away."
@@ -45,16 +45,37 @@ export default function Triggers() {
           title="Binding a trigger"
           code={`CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
-// Button → command. Fires once at the rising edge.
-driver.a().onTrue(arm.goTo(HIGH, TOL));
+// Button → command. This is the team's default binding: while A is held,
+// the scoring hold keeps the arm at the scoring angle. Release A and the
+// hold is cancelled — the arm's DEFAULT COMMAND takes back over.
+driver.a().whileTrue(arm.scoring());
 
-// Hold the button to keep the command scheduled; release cancels it.
-driver.leftBumper().whileTrue(arm.holdAt(LOW));
+// onTrue fires once at the rising edge. Use it for self-finishing
+// commands — never for a bare hold (see the tip below).
+driver.start().onTrue(drivetrain.resetHeading());
 
-// Sensor → command. Same shape, just a different boolean source.
-Trigger atSpeed = new Trigger(flywheel::atTarget);
-atSpeed.onTrue(intake.feed());`}
+// Sensor → command. Same shape, just a different boolean source:
+// while we're carrying a game piece, keep the arm stowed.
+Trigger hasPiece = new Trigger(intake::hasPiece);
+hasPiece.whileTrue(arm.stowed());`}
         />
+
+        <Box
+          variant="alert-tip"
+          tag="RULE · HOLDS + whileTrue"
+          title="Bind holds with whileTrue, so the default command can come back"
+        >
+          <p>
+            Holds make the choice between these two bind methods matter a lot. A
+            hold never finishes — so if you bind one with <code>onTrue</code>,
+            it runs <em>forever</em>, and the mechanism&apos;s default command
+            never gets the mechanism back. Bind holds with{" "}
+            <code>whileTrue</code> instead: release the button, the hold is
+            cancelled, and the default command takes over. Save{" "}
+            <code>onTrue</code> for commands that finish on their own, like a
+            heading reset.
+          </p>
+        </Box>
 
         <p
           className="text-[14px] leading-relaxed"
@@ -214,9 +235,12 @@ public class TeleopOpMode extends PeriodicOpMode {
     final Arm arm = robot.arm;
     final DriveMechanism drivetrain = robot.drivetrain;
 
-    driver.a().onTrue(arm.goTo(HIGH, TOL));
-    driver.b().onTrue(arm.goTo(LOW, TOL));
-    driver.leftBumper().whileTrue(arm.holdAt(STOWED));
+    // Presets are holds, so they're bound with whileTrue: hold the button,
+    // the arm holds the preset; release it, the arm's default command takes
+    // back over. (onTrue on a hold would never give the mechanism back.)
+    driver.a().whileTrue(arm.scoring());
+    driver.b().whileTrue(arm.horizontal());
+    driver.leftBumper().whileTrue(arm.stowed());
 
     operator.rightTrigger().whileTrue(drivetrain.brake());
   }
@@ -232,7 +256,16 @@ public class TeleopOpMode extends PeriodicOpMode {
           with its bindings. When the driver picks Teleop again, a fresh
           TeleopOpMode is constructed and only its bindings come back. Each
           mode&apos;s bindings come and go with the mode; nothing to clean up by
-          hand.
+          hand. The team&apos;s working example is{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            TeleopOpMode.java in the 2027-Template
+          </a>
+          .
         </p>
       </section>
 
@@ -265,8 +298,9 @@ public class TeleopOpMode extends PeriodicOpMode {
   return climber.run(coroutine -> {
     // While the climb is in progress, the operator can abort with B. The
     // Trigger is constructed here, so it's scoped to this command — it
-    // disappears the moment the command ends. Pressing B schedules lower(),
-    // which requires the climber and so interrupts this climb.
+    // disappears the moment the command ends. lower() is self-finishing
+    // (drive to the bottom, then end), which is why onTrue is right here.
+    // It requires the climber, so scheduling it interrupts this climb.
     operator.b().onTrue(climber.lower());
 
     setHeight(TOP);                       // command the climber up
@@ -283,7 +317,10 @@ public class TeleopOpMode extends PeriodicOpMode {
           whatever the opmode-level binding (or nothing) says it should. The
           abort binding exists only for the duration of the climb: it&apos;s
           created when the command starts and dropped the moment it ends, with
-          no cleanup code of your own.
+          no cleanup code of your own. (The body here uses the coroutine dialect
+          — the optional advanced form from the Commands page — because a
+          command-scoped binding can only be made from inside a running command
+          body.)
         </p>
       </section>
 
@@ -299,7 +336,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         removes the binding when that scope ends. The template demonstrates the
         opmode and global scopes; command-scoped bindings work the same way but
         aren&apos;t shown there yet. The stack is the WPILib 2027 <em>alpha</em>
-        , on <strong>Java 25</strong> and <strong>SystemCore</strong>.
+        , on <strong>Java 25</strong> and <strong>SystemCore</strong>, so the
+        exact APIs are still moving between alpha builds. This page was last
+        verified against alpha-6 in July 2026.
       </Box>
 
       <Quiz
@@ -308,12 +347,12 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 1,
             question:
-              "You write driver.a().onTrue(arm.high()) inside a TeleopOpMode's constructor. When does this binding go away?",
+              "You write driver.a().whileTrue(arm.scoring()) inside a TeleopOpMode's constructor. When does this binding go away?",
             options: [
-              "Never — onTrue bindings are always global",
+              "Never — button bindings are always global",
               "When the teleop OpMode exits (e.g., auto starts, the robot disables, the mode changes)",
               "Only when you manually call binding.remove()",
-              "When arm.high() finishes",
+              "When the bound command is cancelled",
             ],
             correctAnswer: 1,
             explanation:

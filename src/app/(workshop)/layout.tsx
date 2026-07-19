@@ -5,6 +5,7 @@ import KeyboardNavigationProvider from "@/components/KeyboardNavigationProvider"
 import KeyboardShortcutsHelp from "@/components/KeyboardShortcutsHelp";
 import AutoFocusMain from "@/components/AutoFocusMain";
 import AnalyticsBanner from "@/components/AnalyticsBanner";
+import AlphaBanner from "@/components/AlphaBanner";
 import Footer from "@/components/Footer";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import HamburgerMenu from "@/components/HamburgerMenu";
@@ -19,6 +20,7 @@ export default function WorkshopLayout({
       <div className="flex flex-col h-screen">
         <KeyboardNavigationProvider />
         <AutoFocusMain />
+        <AlphaBanner />
         <header
           className="flex-shrink-0 flex justify-between items-center z-10 px-6 py-3.5"
           style={{

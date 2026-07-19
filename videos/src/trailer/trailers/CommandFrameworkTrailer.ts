@@ -2,7 +2,7 @@ import type { Rect, TrailerScript } from "../lib/types";
 
 // The framework video: triggers (WHEN), mechanisms (WHAT), commands (HOW),
 // and the scheduler that ties them together — shown as a living diagram,
-// then as real Commands v3 code.
+// then as real Commands v3 code: a hold factory, and a chained routine.
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const DIAGRAM: Rect = { x: 2560, y: 160, width: 2200, height: 1100 };
@@ -14,30 +14,32 @@ const MECHANISM_CODE = `public class Arm extends Mechanism {
   private final TalonFX motor = new TalonFX(31);
   private final PositionVoltage positionVoltage = new PositionVoltage(0);
 
-  // A command is a coroutine body wrapped by run(...).
-  public Command setVoltage(double volts) {
-    return run(coroutine -> motor.setControl(voltageOut.withOutput(volts)))
-        .named("Arm:setVoltage:" + volts);
+  // A hold: re-sends the closed-loop request every tick, forever.
+  // It never finishes on its own — that's what makes it a hold.
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
 
-  // Set a target, wait until we arrive, then finish on our own.
-  public Command goTo(Angle target, Angle tolerance) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.waitUntil(() -> atTarget(target, tolerance));
-    }).named("Arm:goTo:" + target.in(Degrees));
+  // A plain question. Routines use it as a finish line.
+  public boolean isAtTarget() {
+    return Math.abs(getPosition() - getTargetPosition()) < TOLERANCE;
   }
+
+  private void setPosition(double position) { ... } // private on purpose
 }`;
 
-const COMPOSE_CODE = `// The result requires everything its children require,
-// so the scheduler knows the plan before it starts.
-public Command scoreSequence() {
-  return Command.sequence(
-      arm.goTo(SCORING, TOL),
-      Command.parallel(flywheel.spinUp(), intake.feed()),
-      arm.goTo(STOWED, TOL)
-  ).named("scoreSequence");
-}`;
+const COMPOSE_CODE = `routine =
+    Command.sequence(
+            new DriveToPose(drivetrain, pose1),
+            // The hold gets a finish line at the call site.
+            robot.stow()
+                .until(robot.arm::isAtTarget)
+                .named("stow until stowed"),
+            // Leg two runs WHILE the stow hold keeps the pose.
+            Command.race(new DriveToPose(drivetrain, pose2), robot.stow())
+                .named("drive holding stow"))
+        .named("Drive Stow Drive");`;
 
 export const CommandFrameworkTrailer: TrailerScript = {
   id: "CommandFrameworkTrailer",
@@ -82,7 +84,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
         {
           id: "command",
           label: "Command",
-          sublabel: "goTo(SCORING) — the HOW",
+          sublabel: "arm.scoring() — the HOW",
           x: 1680,
           y: 150,
           width: 460,
@@ -120,7 +122,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
       kind: "code",
       id: "compose-code",
       rect: CODE2,
-      fileName: "Routines.java",
+      fileName: "AutoOpMode.java",
       language: "java",
       states: ["", COMPOSE_CODE],
     },
@@ -136,13 +138,13 @@ export const CommandFrameworkTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Robot code has one hard problem: everything wants to happen at once. Commands version three untangles it with three small ideas and one loop — and it's the framework behind every step of this workshop.",
+      text: "Robot code has one hard problem. Everything wants to happen at once. Commands version three untangles it with three small ideas and one loop. Every step of this workshop builds on that framework.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "trigger",
-      text: "First idea: the trigger. A button, a sensor, any boolean expression. A trigger is the WHEN — the moment something should start.",
+      text: "First idea: the trigger. A trigger is a yes-or-no signal, like a button. When it turns true, something should start. The trigger is the WHEN.",
       camera: { x: 2580, y: 400, width: 1500, height: 820 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "trigger" } },
@@ -150,7 +152,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "scheduler",
-      text: "Watching every trigger is the scheduler — the loop at the heart of the robot. Each tick, it decides what runs, what keeps running, and what gets cancelled.",
+      text: "Watching every trigger is the scheduler. The scheduler is the loop at the heart of the robot. Each tick of the loop, it decides what starts, what keeps running, and what stops.",
       camera: { x: 3100, y: 380, width: 1600, height: 860 },
       events: [
         {
@@ -163,7 +165,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "command-mechanism",
-      text: "What it schedules is a command — the HOW. And every command declares the mechanism it needs — the WHAT, one class per physical thing. The scheduler tracks that ownership, so two commands can never fight over the same motor.",
+      text: "When a trigger fires, the scheduler starts a command. A command is one action the robot can do — the HOW. Every command names the mechanism it needs — the WHAT, one physical part like the arm. The scheduler tracks who owns what. So two commands can never fight over one motor.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "command" } },
@@ -177,7 +179,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here's a real mechanism. Hardware lives in private fields, and every command is a factory method: run wraps a coroutine body, and the chain must end in dot named — the compiler refuses an unnamed command. Need to wait? Yield, like waitUntil the arm arrives.",
+      text: "Here is a real mechanism. Look at the command called scoring. It is built with runRepeatedly. That re-sends the arm's target every tick, forever. A command like this never finishes on its own. We call it a hold. That is why its name ends in hold.",
       camera: CODE,
       events: [
         {
@@ -191,7 +193,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "compose",
-      text: "And whole commands compose. Sequence them, run them in parallel — the result automatically requires everything its children require. One factory method, and a full scoring routine is a schedulable command.",
+      text: "Routines are chains of commands. Command dot sequence runs steps one after another. But here is the one rule. A hold never finishes, so nothing may wait on a hold. Dot until gives a hold a finish line. And a race means: do this step while holding.",
       camera: CODE2,
       events: [
         {
@@ -205,7 +207,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Mechanisms first, then commands, then triggers — that's the order the whole workshop builds in. See the full framework lesson at frc5712.com.",
+      text: "Mechanisms first, then commands, then triggers. That is the order the whole workshop builds in. See the full framework lesson at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

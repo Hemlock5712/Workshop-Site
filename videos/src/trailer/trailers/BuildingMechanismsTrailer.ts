@@ -1,8 +1,8 @@
 import type { Rect, TrailerScript } from "../lib/types";
 
 // One class per physical thing. The camera travels:
-// title card → anatomy diagram → Arm.java built up in stages →
-// the default-command habit → end card.
+// title card → anatomy diagram → Arm.java built up in stages (fields,
+// config, hold factory) → the default-command habit → end card.
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const DIAGRAM: Rect = { x: 2560, y: 140, width: 2200, height: 1100 };
@@ -36,22 +36,24 @@ const ARM_FULL = `public class Arm extends Mechanism {
     motor.getConfigurator().apply(config);
   }
 
-  public Command goTo(Angle target, Angle tolerance) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.waitUntil(() -> atTarget(target, tolerance));
-    }).named("Arm:goTo:" + target.in(Degrees));
+  // A hold: re-sends the setpoint every tick, forever.
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
+
+  private void setPosition(double position) { ... } // private on purpose
 }`;
 
 const ELEVATOR_HOLD = `public class Elevator extends Mechanism {
   public Elevator() {
-    setDefaultCommand(
-      run(coroutine -> {
-        motor.setControl(positionVoltage.withPosition(getPosition().in(Rotations)));
-        coroutine.park();
-      }).named("Elevator:hold")
-    );
+    // The default is one of the mechanism's own holds.
+    setDefaultCommand(stowed());
+  }
+
+  public Command stowed() {
+    return runRepeatedly(() -> setPosition(STOWED_POSITION))
+        .named("stowed (hold)");
   }
 }`;
 
@@ -109,7 +111,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
         {
           id: "factories",
           label: "Command factories",
-          sublabel: "methods that return Command",
+          sublabel: "holds that return Command",
           x: 1680,
           y: 440,
           width: 460,
@@ -146,20 +148,20 @@ export const BuildingMechanismsTrailer: TrailerScript = {
       id: "end",
       rect: END,
       title: "One class per physical thing",
-      subtitle: "Factories, defaults, and the full Mechanism anatomy",
+      subtitle: "Private hardware, hold factories, default commands",
       url: "frc5712.com/building-subsystems",
     },
   ],
   beats: [
     {
       id: "hook",
-      text: "Your robot is a collection of physical things — an arm, a flywheel, a drivetrain. Commands version three gives each one a home: a class that extends Mechanism. Get this shape right, and the rest of the workshop clicks into place.",
+      text: "Your robot is a pile of physical parts. An arm. A flywheel. A drivetrain. Commands version three gives each part one home: a class that extends Mechanism. Get this class right, and the rest of the workshop clicks into place.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "one-class",
-      text: "The rule is one class per physical thing. The arm gets an Arm class, it extends Mechanism, and it alone owns that hardware. No other file in the project touches this motor.",
+      text: "The rule is one class per physical thing. The arm gets an Arm class that extends Mechanism. That class alone owns the arm's hardware. No other file in the project touches this motor.",
       camera: { x: 2560, y: 380, width: 1400, height: 790 },
       events: [
         {
@@ -172,7 +174,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "fields-config",
-      text: "Inside, hardware lives in private fields — the TalonFX, the control requests. Configuration happens once, in the constructor: brake mode, current limits, applied at startup instead of scattered across the codebase.",
+      text: "Inside, hardware lives in private fields: the motor and its control requests. Private means only this class can touch them. Setup happens once, in the constructor. Brake mode and current limits get applied at startup.",
       camera: { x: 3280, y: 200, width: 1500, height: 1040 },
       events: [
         {
@@ -191,7 +193,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "factories",
-      text: "And the behavior? Public factory methods that return Commands. There is no periodic method to override in version three — every action is a command the scheduler can start, cancel, and compose with others.",
+      text: "And the actions? Public factory methods that return Commands. A factory is a method that builds a command for you. There is no periodic method in version three. Every action is a command the scheduler can start and cancel.",
       camera: DIAGRAM,
       events: [
         {
@@ -204,7 +206,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here it is for real. Hardware sits in private fields. The constructor applies the config once. Then a factory wraps a coroutine body with run, chains dot named — and the compiler enforces that name at build time.",
+      text: "Here it is for real. Hardware sits in private fields. The constructor applies the config once. Then scoring uses runRepeatedly: re-send the target every tick, forever. That command is a hold, so its name says hold. Forget dot named, and the build fails.",
       camera: CODE,
       events: [
         {
@@ -223,14 +225,14 @@ export const BuildingMechanismsTrailer: TrailerScript = {
           type: "code-state",
           artifact: "arm-code",
           state: 3,
-          at: { word: "wraps" },
+          at: { word: "runRepeatedly" },
         },
       ],
       holdAfter: 1.2,
     },
     {
       id: "defaults",
-      text: "One more habit: there is no periodic. Every mechanism starts with an automatic idle default, and when you want a real resting behavior — an elevator holding its position — you set a default command that parks.",
+      text: "One more habit. Every mechanism has a default command. It runs whenever nothing else owns the mechanism. Out of the box, that default is idle: do nothing. Want a resting pose instead? This elevator sets its own stowed hold as the default.",
       camera: CODE2,
       events: [
         {
@@ -244,7 +246,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Mechanisms are step one of the whole framework — commands and triggers build straight on top of this class. See the full anatomy, the three factories, and default commands at frc5712.com.",
+      text: "Mechanisms are step one of the whole framework. Commands and triggers build right on top of this class. See the full anatomy, the factories, and default commands at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

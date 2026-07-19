@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
@@ -73,13 +74,13 @@ export default function RunningProgram() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          You start the simulator (or deploy to the robot) and the driver
-          station lists every <code>@Teleop</code> / <code>@Autonomous</code> /{" "}
-          <code>@Utility</code> class <em>by name</em>. Selecting one{" "}
-          <strong>constructs</strong> that OpMode (that&apos;s when its button
-          bindings are built), and <code>Robot.robotPeriodic()</code> ticks{" "}
-          <code>Scheduler.getDefault().run()</code> every loop no matter which
-          mode is active.
+          Start the simulator, or deploy to the robot. The driver station then
+          lists every mode class <em>by name</em> — each <code>@Teleop</code>,{" "}
+          <code>@Autonomous</code>, and <code>@Utility</code> class you wrote.
+          Pick one, and that OpMode is <strong>constructed</strong> — built
+          fresh, right then, along with its button bindings. Underneath, the
+          scheduler (<code>Scheduler.getDefault().run()</code>) keeps ticking
+          every loop no matter which mode is active.
         </p>
 
         <CodeBlock
@@ -99,22 +100,36 @@ export default function RunningProgram() {
           tag="NOTE"
           title="Where the code actually runs"
         >
-          <p>
+          <p className="mb-2">
             The stack runs on <strong>Java 25</strong> and deploys to{" "}
             <strong>SystemCore</strong> (<code>./gradlew deploy</code> targets{" "}
-            <code>/home/systemcore</code>). OpModes are discovered by scanning
-            classes at runtime, so a missing one is <em>not</em> a compile
-            error. If your mode doesn&apos;t show up on the driver station,
-            check that the class is <code>public</code>, non-
-            <code>abstract</code>, annotated with a <code>name</code>, in{" "}
-            <code>frc.robot</code> (or a subpackage), and has a public{" "}
-            <code>(Robot)</code> constructor.
+            <code>/home/systemcore</code>). The mode list comes straight from
+            your code — a missing OpMode is <em>not</em> a compile error. If
+            your mode doesn&apos;t show up on the driver station, check that the
+            class:
           </p>
+          <ul className="list-disc list-inside space-y-1">
+            <li>
+              is <code>public</code> and not <code>abstract</code>
+            </li>
+            <li>
+              has its annotation with a <code>name</code> (like{" "}
+              <code>@Teleop(name = &quot;Teleop&quot;)</code>)
+            </li>
+            <li>
+              lives in <code>frc.robot</code> or a subpackage
+            </li>
+            <li>
+              has a public constructor that takes a <code>Robot</code>
+            </li>
+          </ul>
         </Box>
       </section>
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[
@@ -123,14 +138,14 @@ export default function RunningProgram() {
               question:
                 "What is the primary benefit of Hardware Simulation in WPILib?",
               options: [
-                "It makes code run faster than on a roboRIO",
-                "It allows testing code with physical hardware without using a roboRIO",
+                "It makes code run faster than on a robot controller",
+                "It allows testing code with physical hardware without a robot controller",
                 "It automatically fixes bugs in your code",
                 "It provides better PID tuning than on real hardware",
               ],
               correctAnswer: 1,
               explanation:
-                "Hardware Simulation allows you to run your code in the simulator while controlling real motors connected to the CANivore, eliminating the need for a roboRIO during testing.",
+                "Hardware Simulation runs your code in the simulator while controlling real motors connected to the CANivore — no robot controller (SystemCore or roboRIO) needed during testing.",
             },
             {
               id: 2,
@@ -172,17 +187,17 @@ export default function RunningProgram() {
               ],
               correctAnswer: 2,
               explanation:
-                "Hardware Simulation with CANivore can run on both Windows and Linux machines, allowing for flexible development environments without a roboRIO.",
+                "Hardware Simulation with CANivore can run on both Windows and Linux machines, allowing for flexible development environments without a robot controller.",
             },
             {
               id: 5,
               question:
                 "On the 2027 OpMode stack, how do you choose whether teleop or an autonomous routine runs?",
               options: [
-                "Call teleopInit() or autonomousInit() from RobotContainer",
+                "Edit a settings file on the robot and redeploy",
                 "Select the @Teleop or @Autonomous class by name on the driver station — picking it constructs that OpMode",
-                "Set a boolean flag in Robot.robotPeriodic()",
-                "Use a SendableChooser populated in RobotContainer",
+                "Set a boolean flag in the Robot class",
+                "The robot picks automatically based on the match timer",
               ],
               correctAnswer: 1,
               explanation:

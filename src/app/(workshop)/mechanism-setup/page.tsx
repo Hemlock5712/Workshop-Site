@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import PageTemplate from "@/components/PageTemplate";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -386,8 +387,12 @@ export default function MechanismSetup() {
         </p>
         <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
           <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-            <strong>💡 Next Step:</strong> PID control. It uses this sensor
-            feedback to reach target positions or velocities automatically.
+            <strong>💡 Next Step:</strong>{" "}
+            <Link href="/pid-control" className="underline font-medium">
+              PID control
+            </Link>
+            . It uses this sensor feedback to reach target positions or
+            velocities automatically.
           </p>
         </div>
       </div>

@@ -2,9 +2,11 @@ import type { Rect, TrailerScript } from "../lib/types";
 
 // Full-length commands lesson (~5 min). Consolidates the CommandFramework,
 // AddingCommands, and Triggers trailers and goes past them: the scheduler
-// tick, mechanism anatomy, the three command shapes, the requirements
-// conflict and takeover, cancellation via whenCanceled, default commands,
-// composition factories and coroutine helpers, and OpMode-scoped bindings.
+// tick, mechanism anatomy, holds and THE ONE RULE, the requirements conflict
+// and takeover, priority, whenCanceled cleanup, default commands, chained
+// routines (sequence / .until / race / withTimeout), and OpMode-scoped
+// whileTrue bindings. Mirrors the settled conventions on the site's
+// command-framework, adding-commands, and triggers pages.
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const FLOW: Rect = { x: 2560, y: 160, width: 2200, height: 1100 };
@@ -21,94 +23,101 @@ const ARM_SKELETON = `public class Arm extends Mechanism {
   private final PositionVoltage positionVoltage = new PositionVoltage(0);
 }`;
 
-const ARM_SET_AND_FINISH = `public class Arm extends Mechanism {
+const ARM_HOLD = `public class Arm extends Mechanism {
   private final TalonFX motor = new TalonFX(31);
   private final VoltageOut voltageOut = new VoltageOut(0);
   private final PositionVoltage positionVoltage = new PositionVoltage(0);
 
-  // 1. Set once and finish — nothing to wait on.
-  public Command setVoltage(double volts) {
-    return run(coroutine -> motor.setControl(voltageOut.withOutput(volts)))
-        .named("Arm:setVoltage:" + volts);
+  // The everyday shape: a hold. runRepeatedly re-sends the
+  // setpoint every tick, forever. It never finishes on its own.
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
 }`;
 
-const ARM_PARK = `public class Arm extends Mechanism {
-  // 2. Set once, then hold. park() yields forever.
-  public Command holdAt(Angle target) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.park();
-    }).named("Arm:holdAt:" + target.in(Degrees));
+const ARM_ONE_RULE = `public class Arm extends Mechanism {
+  // THE ONE RULE: a hold never finishes, so nothing may
+  // ever wait on a hold. A bare hold inside
+  // Command.sequence(...) sticks there forever — and the
+  // "(hold)" name on the dashboard is your debugging clue.
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
 }`;
 
-const ARM_PARK_AND_WAIT = `public class Arm extends Mechanism {
-  // 2. Set once, then hold. park() yields forever.
-  public Command holdAt(Angle target) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.park();
-    }).named("Arm:holdAt:" + target.in(Degrees));
+const ARM_QUESTION = `public class Arm extends Mechanism {
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
 
-  // 3. Set once, wait for a condition, finish on its own.
-  public Command goTo(Angle target, Angle tolerance) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.waitUntil(() -> atTarget(target, tolerance));
-    }).named("Arm:goTo:" + target.in(Degrees));
+  // Not a command — a question other code can ask. Chains
+  // use it as a finish line, always at the call site:
+  //   arm.scoring().until(arm::isAtTarget)
+  public boolean isAtTarget() {
+    return Math.abs(getPosition() - getTargetPosition()) < TOLERANCE;
   }
+
+  // Private. The only way to move the arm is a command.
+  private void setPosition(double position) { ... }
 }`;
 
-const GOTO_WHEN_CANCELED = `public Command goTo(Angle target, Angle tolerance) {
-  return run(coroutine -> {
-        motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-        coroutine.waitUntil(() -> atTarget(target, tolerance));
-      })
+const SCORING_WHEN_CANCELED = `// Most holds need no cleanup: the motor keeps its last
+// closed-loop request until the next command replaces it.
+// When cleanup IS needed, whenCanceled is the hook —
+// it fires only when the command is cancelled.
+public Command scoring() {
+  return runRepeatedly(() -> setPosition(SCORING_POSITION))
       .whenCanceled(() -> motor.setControl(voltageOut.withOutput(0)))
-      .named("Arm:goTo:" + target.in(Degrees));
+      .named("scoring (hold)");
 }`;
 
-const GOTO_WITH_DEFAULT = `public Arm() {
-  // Publish telemetry every loop while idle; a real command pre-empts it.
-  setDefaultCommand(runRepeatedly(this::publishTelemetry).named("Arm:telemetry"));
+const SCORING_WITH_DEFAULT = `public Arm() {
+  // When nothing claims the arm, fall back to the stowed hold.
+  // Out of the box the default is idle(); override it with one
+  // of the mechanism's own holds.
+  setDefaultCommand(stowed());
 }
 
-public Command goTo(Angle target, Angle tolerance) {
-  return run(coroutine -> {
-        motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-        coroutine.waitUntil(() -> atTarget(target, tolerance));
-      })
+public Command scoring() {
+  return runRepeatedly(() -> setPosition(SCORING_POSITION))
       .whenCanceled(() -> motor.setControl(voltageOut.withOutput(0)))
-      .named("Arm:goTo:" + target.in(Degrees));
+      .named("scoring (hold)");
 }`;
 
-const COMPOSE = `// The result requires everything its children require,
-// so the scheduler knows the plan before it starts.
-public Command scoreSequence() {
-  return Command.sequence(
-      arm.goTo(SCORING, TOL),
-      Command.parallel(flywheel.spinUp(), intake.feed()),
-      arm.goTo(STOWED, TOL)
-  ).named("scoreSequence");
-}`;
+const CHAIN_SEQUENCE = `// An auto routine, chained: drive out, then stow the arm.
+routine =
+    Command.sequence(
+            // DriveToPose finishes on its own — it can
+            // sit in a sequence as-is.
+            new DriveToPose(robot.drivetrain, pose1),
+            // stow() is a hold. .until(...) gives it a
+            // finish line, right at the call site.
+            robot.stow().until(robot.arm::isAtTarget)
+                .named("stow until stowed"))
+        .named("Drive Then Stow");`;
 
-const PARALLEL_SHAPES = `// "Run both, finish when both finish."
-//   Command.parallel(a, b)                       // factory flavor
-//   coroutine.awaitAll(a, b)                     // coroutine flavor
-
-// "Run both, finish when the first one finishes; cancel the loser."
-//   coroutine.awaitAny(a, b)
-
-// "Run both, finish when the deadline (first arg) finishes; cancel the rest."
-//   coroutine -> { coroutine.fork(background); coroutine.await(deadline); }
-//        (fork starts background, await blocks on deadline,
-//         coroutine exit cancels the still-running fork)`;
-
-const COMPOSE_WITH_PARALLEL = `${COMPOSE}
-
-${PARALLEL_SHAPES}`;
+const CHAIN_FULL = `// The full routine: drive out, stow, drive back.
+routine =
+    Command.sequence(
+            // DriveToPose finishes on its own — it can
+            // sit in a sequence as-is.
+            new DriveToPose(robot.drivetrain, pose1),
+            // stow() is a hold. .until(...) gives it a
+            // finish line; .withTimeout(...) is the seatbelt.
+            robot.stow().until(robot.arm::isAtTarget)
+                .withTimeout(Seconds.of(2))
+                .named("stow until stowed"),
+            // Leg 2 WHILE holding the stow pose. The hold
+            // never finishes, so the drive always decides —
+            // then the race cancels the hold.
+            Command.race(
+                    new DriveToPose(robot.drivetrain, pose2),
+                    robot.stow())
+                .named("drive holding stow"))
+        .named("Drive Stow Drive (Chained)");`;
 
 const OPMODE_SKELETON = `@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
@@ -116,7 +125,7 @@ public class TeleopOpMode extends PeriodicOpMode {
       new CommandNiDsXboxController(0);
 }`;
 
-const OPMODE_ONTRUE = `@Teleop(name = "Teleop")
+const OPMODE_WHILETRUE = `@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   private final CommandNiDsXboxController driver =
       new CommandNiDsXboxController(0);
@@ -124,8 +133,9 @@ public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     final Arm arm = robot.arm;
 
-    // Button -> command, fired at the rising edge.
-    driver.a().onTrue(arm.goTo(HIGH, TOL));
+    // Holds are bound with whileTrue: hold A, the hold runs;
+    // release A, the arm's default command takes back over.
+    driver.a().whileTrue(arm.scoring());
   }
 }`;
 
@@ -137,11 +147,13 @@ public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     final Arm arm = robot.arm;
 
-    // Button -> command, fired at the rising edge.
-    driver.a().onTrue(arm.goTo(HIGH, TOL));
+    // Holds are bound with whileTrue: hold A, the hold runs;
+    // release A, the arm's default command takes back over.
+    driver.a().whileTrue(arm.scoring());
 
-    // Hold to keep it scheduled; release cancels it.
-    driver.leftBumper().whileTrue(arm.holdAt(STOWED));
+    // onTrue is for self-finishing commands ONLY — a hold
+    // bound with onTrue would run forever.
+    driver.start().onTrue(robot.drivetrain.resetHeading());
   }
 }`;
 
@@ -155,7 +167,7 @@ export const CommandsLesson: TrailerScript = {
       rect: TITLE,
       title: "Commands, In Full",
       subtitle:
-        "The deep dive — shapes, conflicts, cancellation, and the loop that runs them",
+        "The deep dive — holds, the one rule, chaining, and the loop that runs them",
       accent: "purple",
     },
     {
@@ -189,7 +201,7 @@ export const CommandsLesson: TrailerScript = {
         {
           id: "command",
           label: "Command",
-          sublabel: "goTo(SCORING) — the HOW",
+          sublabel: "arm.scoring() — the HOW",
           x: 1680,
           y: 150,
           width: 460,
@@ -221,13 +233,7 @@ export const CommandsLesson: TrailerScript = {
       rect: SHAPES_CODE,
       fileName: "Arm.java",
       language: "java",
-      states: [
-        "",
-        ARM_SKELETON,
-        ARM_SET_AND_FINISH,
-        ARM_PARK,
-        ARM_PARK_AND_WAIT,
-      ],
+      states: ["", ARM_SKELETON, ARM_HOLD, ARM_ONE_RULE, ARM_QUESTION],
     },
     {
       kind: "diagram",
@@ -237,8 +243,8 @@ export const CommandsLesson: TrailerScript = {
       nodes: [
         {
           id: "holdat",
-          label: "holdAt(STOWED)",
-          sublabel: "running — parked on the Arm",
+          label: "arm.stowed()",
+          sublabel: "running — it owns the Arm",
           x: 80,
           y: 150,
           width: 460,
@@ -248,7 +254,7 @@ export const CommandsLesson: TrailerScript = {
         },
         {
           id: "goto",
-          label: "goTo(HIGH)",
+          label: "arm.scoring()",
           sublabel: "just scheduled — needs the Arm",
           x: 80,
           y: 730,
@@ -291,15 +297,15 @@ export const CommandsLesson: TrailerScript = {
       rect: SAFETY_CODE,
       fileName: "Arm.java",
       language: "java",
-      states: ["", GOTO_WHEN_CANCELED, GOTO_WITH_DEFAULT],
+      states: ["", SCORING_WHEN_CANCELED, SCORING_WITH_DEFAULT],
     },
     {
       kind: "code",
       id: "compose-code",
       rect: COMPOSE_CODE,
-      fileName: "Routines.java",
+      fileName: "AutoOpMode.java",
       language: "java",
-      states: ["", COMPOSE, COMPOSE_WITH_PARALLEL],
+      states: ["", CHAIN_SEQUENCE, CHAIN_FULL],
     },
     {
       kind: "code",
@@ -307,7 +313,7 @@ export const CommandsLesson: TrailerScript = {
       rect: OPMODE_CODE,
       fileName: "TeleopOpMode.java",
       language: "java",
-      states: ["", OPMODE_SKELETON, OPMODE_ONTRUE, OPMODE_FULL],
+      states: ["", OPMODE_SKELETON, OPMODE_WHILETRUE, OPMODE_FULL],
     },
     {
       kind: "end",
@@ -322,13 +328,13 @@ export const CommandsLesson: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "This is the full command framework lesson. One loop schedules everything a robot does — and this time we go past the trailer: the three shapes of a command, what happens when two commands want one mechanism, cancellation, default commands, compositions, and bindings that clean up after themselves.",
+      text: "This is the full command framework lesson. One loop runs everything a robot does. Today we go deep. You will learn holds, the commands that never finish. You will learn the one rule that keeps holds safe. Then conflicts, cancellation, default commands, chained routines, and bindings that clean up after themselves.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "tick-when",
-      text: "Everything hangs off one tick of the loop. A trigger — a button, a sensor, any boolean expression — is the WHEN, the moment something should start. And watching every trigger is the scheduler: each tick, it decides what runs, what keeps running, and what gets cancelled.",
+      text: "Everything starts with one tick of the loop. First piece: the trigger. A trigger is anything that answers true or false. A button. A sensor. The trigger is the WHEN. It marks the moment something should start. Watching every trigger is the scheduler. Each tick, it decides what runs, what keeps running, and what gets cancelled.",
       camera: { x: 2580, y: 380, width: 1600, height: 880 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "trigger" } },
@@ -342,7 +348,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "tick-how-what",
-      text: "When a trigger fires, the scheduler starts a command — the HOW. And every command declares the mechanism it needs — the WHAT, one class per physical thing. The scheduler tracks that ownership constantly, and that single rule means two commands can never fight over the same motor.",
+      text: "When a trigger fires, the scheduler starts a command. A command is one action the robot can do. That is the HOW. Every command names the mechanism it needs. A mechanism is one physical thing, like the arm. That is the WHAT. The scheduler tracks who owns what. One owner per mechanism. So two commands can never fight over the same motor.",
       camera: FLOW,
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "command" } },
@@ -356,7 +362,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "anatomy",
-      text: "Here's what a mechanism looks like. Arm extends Mechanism, and the hardware lives in private fields. Every command is a factory method on the class: run wraps one coroutine body, and the chain must end in dot named, because the compiler refuses an unnamed command.",
+      text: "Here's what a mechanism looks like in code. Arm extends Mechanism. The hardware lives in private fields. Private means only the Arm can touch the motor. Everything else must go through a command, a factory method on this class. And every command must end in dot named. An unnamed command will not even compile.",
       camera: SHAPES_CODE,
       events: [
         {
@@ -370,68 +376,68 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "shape-finish",
-      text: "Shape one: set and finish. The body sets a voltage and ends — same tick. Nothing to wait on, nothing to clean up, and the coroutine parameter sits unused. It schedules, runs once, and is done before the next loop comes around.",
+      text: "Now the everyday shape: a hold. runRepeatedly runs its body every scheduler tick. So this command re-sends the target position forever. The arm goes to the angle and stays there, fighting gravity. And the name ends in hold, in parentheses. That suffix is the team's convention.",
       camera: SHAPES_CODE,
       events: [
         {
           type: "code-state",
           artifact: "shapes-code",
           state: 2,
-          at: { word: "voltage" },
+          at: { word: "hold" },
         },
       ],
       holdAfter: 0.6,
     },
     {
       id: "shape-park",
-      text: "Shape two: set and park. Command the position once, then coroutine dot park yields forever. The closed-loop controller keeps working the motor while the command holds the mechanism — it stays scheduled until something else pre-empts it. This is the shape behind every hold-in-place behavior.",
+      text: "Here is the one rule, and it is the big one. A hold never finishes. So nothing may ever wait on a hold. Put a bare hold in a sequence, and the sequence sticks there forever. The next step never starts. The name is your clue: a stuck routine sitting on a hold command is the bug.",
       camera: SHAPES_CODE,
       events: [
         {
           type: "code-state",
           artifact: "shapes-code",
           state: 3,
-          at: { word: "park" },
+          at: { word: "rule" },
         },
       ],
     },
     {
       id: "shape-wait",
-      text: "Shape three: set and waitUntil. Command the target, then wait until the arm actually arrives. The moment the condition turns true, the body falls off the end, and the command finishes on its own. Ask what a command has to wait for — that answer picks its shape.",
+      text: "So how does a routine wait for the arm? Never inside the factory. There is no scoring-and-wait method. Instead, the mechanism answers a question: am I at my target yet? At the call site you write dot until, arm is at target. That gives the hold a finish line, right where you need it.",
       camera: { x: 5540, y: 460, width: 1500, height: 700 },
       events: [
         {
           type: "code-state",
           artifact: "shapes-code",
           state: 4,
-          at: { word: "waitUntil" },
+          at: { word: "question" },
         },
       ],
       holdAfter: 1.0,
     },
     {
       id: "conflict-setup",
-      text: "Now the question the whole framework turns on: two commands want the arm at once. Say holdAt STOWED is running — it parked, and it owns the Arm. The scheduler tracks which command owns which mechanism, and ownership is exclusive. One owner per mechanism, always.",
+      text: "Now the big question. Two commands want the arm at the same time. Say the stowed hold is running. It owns the Arm. The scheduler keeps track of which command owns which mechanism. Ownership is exclusive. One owner per mechanism, always. So what happens when a second command shows up?",
       camera: CONFLICT,
       events: [
         {
           type: "diagram",
           artifact: "conflict",
           step: 1,
-          at: { word: "holdAt" },
+          at: { word: "stowed" },
         },
       ],
     },
     {
       id: "conflict-takeover",
-      text: "Press a button and goTo HIGH gets scheduled — and it requires the Arm too. The scheduler settles it immediately: it cancels the older command, dropping holdAt mid-park, and goTo takes over the mechanism. No negotiation, no shared control — the newer command simply owns the arm now.",
+      text: "Press a button, and the scoring hold gets scheduled. It needs the Arm too. The scheduler settles it right away. It cancels the older command. The stowed hold is dropped. Then scoring takes over the mechanism. No sharing. No negotiation. The newer command simply owns the arm now.",
       camera: CONFLICT,
       events: [
         {
           type: "diagram",
           artifact: "conflict",
           step: 2,
-          at: { word: "goTo" },
+          at: { word: "scoring" },
         },
         {
           type: "diagram",
@@ -450,13 +456,13 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "conflict-priority",
-      text: "One knob changes that outcome: priority. Default priority is zero, and idle is the lowest. Raise a command with withPriority and it pre-empts a lower-priority command that's already running on the same mechanism — which is exactly how an emergency stop refuses to lose the argument.",
+      text: "One setting can change that outcome: priority. Every command has a priority number. The default is zero. Idle is the lowest of all. Raise a command with withPriority, and it can pre-empt lower-priority commands on the same mechanism. That is how an emergency stop refuses to lose the argument.",
       camera: { x: 8300, y: 330, width: 1280, height: 760 },
       holdAfter: 0.5,
     },
     {
       id: "cancellation",
-      text: "Cancellation has a sharp edge. A cancelled coroutine is simply dropped — code after a park or an unfinished waitUntil never runs, so a cleanup line at the bottom of the body won't fire. Interrupt cleanup lives in whenCanceled, a hook that fires only on cancellation. Two endings, two places.",
+      text: "How does a hold end? Only by being cancelled. A driver lets go of a button, or a finish line trips. Usually that is fine, because the motor keeps its last request. But some mechanisms need cleanup when their command is taken away. That cleanup goes in whenCanceled. It is a hook that fires only on cancellation.",
       camera: SAFETY_CODE,
       events: [
         {
@@ -470,7 +476,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "defaults",
-      text: "So what runs when nothing claims a mechanism? Every mechanism has a default command. The scheduler runs it whenever no higher-priority command requires that mechanism, and pre-empts it the moment one does. Out of the box that's idle — or set your own, like runRepeatedly publishing telemetry every loop.",
+      text: "So what runs when nothing claims a mechanism? The default command. Every mechanism has one. Out of the box it is idle, which means do nothing. Or pick your own. Here the arm falls back to its stowed hold. Release every button, and the arm tucks itself away. Press one, and that button's command takes over again.",
       camera: SAFETY_CODE,
       events: [
         {
@@ -484,7 +490,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "compose",
-      text: "Whole commands compose. Command dot sequence chains them, Command dot parallel runs them together, and the result automatically requires everything its children require — the scheduler knows the full plan before it starts. One factory method, and a complete scoring routine is a schedulable command.",
+      text: "Now let's chain a routine: drive out, then stow the arm. Command dot sequence runs steps in order. The drive step finishes on its own, so it sits in the sequence as is. But stow is a hold. It gets a finish line at the call site: dot until, arm is at target. Remember the one rule. Never a bare hold in a sequence.",
       camera: COMPOSE_CODE,
       events: [
         {
@@ -498,21 +504,21 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "parallel-flavors",
-      text: "Parallel comes in three flavors. Run both, finish when both finish — the parallel factory, or awaitAll inside a body. Run both, first one to finish wins, cancel the loser — awaitAny. And fork plus await builds a deadline: a fork still running when the body exits is cancelled automatically.",
+      text: "Two more tools. Command dot race means: do this step WHILE holding. A race ends when its first member finishes, and it cancels the rest. The hold never finishes. So the step always decides. Then withTimeout, the seatbelt. Cap any step that waits on a sensor. A stuck auto moves on, instead of burning the whole period.",
       camera: { x: 13040, y: 520, width: 1500, height: 660 },
       events: [
         {
           type: "code-state",
           artifact: "compose-code",
           state: 2,
-          at: { word: "flavors" },
+          at: { word: "race" },
         },
       ],
       holdAfter: 1.0,
     },
     {
       id: "ontrue",
-      text: "Last layer: the bindings. Teleop is a class — an OpMode — and its bindings live in the constructor. Bind driver dot a onTrue, and pressing the button fires the command once, at the rising edge. goTo takes it from there and finishes on its own.",
+      text: "Last layer: the bindings. Teleop is its own class, called an OpMode. Its bindings live in the constructor. Holds get bound with whileTrue. Hold the A button, and the scoring hold runs. Let go, and the scheduler cancels it. The arm's default command takes back over.",
       camera: OPMODE_CODE,
       events: [
         {
@@ -525,33 +531,33 @@ export const CommandsLesson: TrailerScript = {
           type: "code-state",
           artifact: "opmode-code",
           state: 2,
-          at: { word: "onTrue" },
+          at: { word: "whileTrue" },
         },
       ],
     },
     {
       id: "whiletrue",
-      text: "whileTrue is the hold. Keep the left bumper down and holdAt stays scheduled; let go, and the scheduler cancels it for you — the same takeover machinery, driven by a button release. A press is a moment, a hold is a state — pick the verb that matches.",
+      text: "What about onTrue? onTrue fires a command once, the moment the button goes down. Save it for commands that finish on their own, like a heading reset. Never bind a bare hold with onTrue. That hold would run forever. The default command would never come back.",
       camera: { x: 15320, y: 380, width: 1440, height: 810 },
       events: [
         {
           type: "code-state",
           artifact: "opmode-code",
           state: 3,
-          at: { word: "whileTrue" },
+          at: { word: "onTrue" },
         },
       ],
       holdAfter: 0.6,
     },
     {
       id: "teardown",
-      text: "And because bindings are scoped to the OpMode constructor, they clean up after themselves. Switch modes and the old OpMode's bindings are torn down automatically; pick teleop again and a fresh OpMode constructs fresh bindings. You never unregister anything by hand.",
+      text: "And bindings clean up after themselves. Every binding belongs to its OpMode. Switch modes, and the old OpMode's bindings are torn down automatically. Pick teleop again, and a fresh OpMode builds fresh bindings. You never unregister anything by hand.",
       camera: OPMODE_CODE,
       holdAfter: 0.5,
     },
     {
       id: "cta",
-      text: "That's the framework in full: three shapes for a body, one owner per mechanism, whenCanceled for the exits, defaults for the quiet ticks, factories for the routines, and bindings that die with their mode. Every piece, with runnable code, at frc5712.com.",
+      text: "That is the framework in full. Holds that never finish. One rule: never wait on a hold. One owner per mechanism. Defaults for the quiet ticks. Chains for the routines. whileTrue for the buttons. Coroutines? That is the advanced dialect. You can skip it. Every piece, with runnable code, at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

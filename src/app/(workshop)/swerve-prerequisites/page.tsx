@@ -16,7 +16,7 @@ export default function SwervePrerequisites() {
       <KeyConceptSection
         title="Understanding Swerve Drive Fundamentals"
         description="Swerve drive makes a lot more sense once you know how the hardware and control systems fit together. This page covers the concepts you'll lean on when creating and tuning your drivetrain."
-        concept="Master the fundamentals of swerve drive: holonomic motion, coordinate systems, module anatomy, and field-centric control."
+        concept="Master the fundamentals of swerve drive: holonomic motion (moving any direction while rotating — the two are independent), coordinate systems, module anatomy, and field-centric control."
       />
 
       <section className="flex flex-col gap-8">
@@ -296,8 +296,9 @@ export default function SwervePrerequisites() {
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             The <code>CommandSwerveDrivetrain</code> class uses Phoenix 6&apos;s
-            built-in kinematics to convert your desired chassis speeds (Vx, Vy,
-            omega) into the appropriate module states automatically.
+            built-in kinematics to convert your desired{" "}
+            <code>ChassisVelocities</code> (vx, vy, omega) into the appropriate
+            module states automatically.
           </p>
         </Box>
 
@@ -520,7 +521,9 @@ drivetrain.setControl(
             <CodeBlock
               language="java"
               title="Getting Current Robot Pose"
-              code={`// In your subsystem or command
+              code={`// In your mechanism or command. This is the raw CTRE call —
+// the workshop's DriveMechanism wraps it as drivetrain.getPose(),
+// which is what you'll see on later pages.
 Pose2d currentPose = drivetrain.getState().Pose;
 
 // Extract components
@@ -613,7 +616,7 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
             {
               id: 5,
               question:
-                "What are the three components of chassis speeds in swerve drive?",
+                "What are the three components of ChassisVelocities in swerve drive?",
               options: [
                 "Left speed, right speed, rotation",
                 "Forward speed, backward speed, turning speed",
@@ -622,7 +625,7 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
               ],
               correctAnswer: 2,
               explanation:
-                "Chassis speeds consist of Vx (linear velocity in X direction), Vy (linear velocity in Y direction), and Omega (angular velocity for rotation).",
+                "ChassisVelocities consist of vx (linear velocity in X direction), vy (linear velocity in Y direction), and omega (angular velocity for rotation). (WPILib 2027 renamed the old ChassisSpeeds type to ChassisVelocities.)",
             },
             {
               id: 6,

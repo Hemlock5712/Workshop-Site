@@ -266,7 +266,7 @@ export default function Home() {
             tag="ARM · POSITION CONTROL"
             title="Robot Arm"
             color="oklch(0.78 0.16 25)"
-            description="Move a single-jointed arm to specific angles using closed-loop position control with gravity compensation."
+            description="Move a single-jointed arm to exact angles — the motor checks a sensor and corrects itself (closed-loop control), with extra push to fight gravity."
             image={{ src: "/images/mechanisms/arm.png", alt: "Robot Arm" }}
             items={[
               "TalonFX + integrated encoder",
@@ -278,7 +278,7 @@ export default function Home() {
             tag="FLYWHEEL · VELOCITY CONTROL"
             title="Shooter Flywheel"
             color="oklch(0.78 0.16 145)"
-            description="Hold a target RPM precisely for consistent shooting, using velocity PID + velocity feedforward."
+            description="Spin a wheel at an exact speed and keep it there for consistent shooting — velocity PID plus a feedforward that predicts the voltage needed."
             image={{
               src: "/images/mechanisms/flywheel.png",
               alt: "Flywheel Shooter",
@@ -301,7 +301,7 @@ export default function Home() {
             tag="SWERVE · HOLONOMIC DRIVE"
             title="CTR Swerve Drive"
             color="oklch(0.78 0.14 235)"
-            description="Holonomic drive with field-oriented control, real-time odometry, and trajectory following."
+            description="Drive any direction while rotating (holonomic), steer relative to the field instead of the robot, and track position in real time."
             image={{
               src: "/images/mechanisms/swerve.png",
               alt: "CTR Swerve Drive",
