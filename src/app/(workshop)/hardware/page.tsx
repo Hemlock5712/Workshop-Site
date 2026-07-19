@@ -113,7 +113,7 @@ export default function Hardware() {
               </p>
               <ul className="text-sm text-primary-800 dark:text-primary-300 list-disc list-inside space-y-1">
                 <li>Strong enough to lift heavy arms and spin flywheels</li>
-                <li>Spins up to 100 times per second</li>
+                <li>Spins up to about 125 times per second</li>
                 <li>
                   Has built-in position sensing so it knows exactly where it is
                 </li>
