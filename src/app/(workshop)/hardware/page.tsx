@@ -148,7 +148,7 @@ export default function Hardware() {
               <GlossaryTerm term="sensor">sensor</GlossaryTerm> that measures
               exactly where a rotating part is positioned. It can tell you
               &quot;the arm is at 45 degrees&quot; with high precision. (The
-              part on the parts list is WCP&apos;s ThroughBore — it&apos;s a
+              part on the parts list is the WCP ThroughBore — it&apos;s a
               CANcoder inside, so the code calls it a CANcoder.)
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
