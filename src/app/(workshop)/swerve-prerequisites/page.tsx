@@ -16,7 +16,7 @@ export default function SwervePrerequisites() {
       <KeyConceptSection
         title="Understanding Swerve Drive Fundamentals"
         description="Swerve drive makes a lot more sense once you know how the hardware and control systems fit together. This page covers the concepts you'll lean on when creating and tuning your drivetrain."
-        concept="Master the fundamentals of swerve drive: holonomic motion, coordinate systems, module anatomy, and field-centric control."
+        concept="Master the fundamentals of swerve drive: holonomic motion (moving any direction while rotating — the two are independent), coordinate systems, module anatomy, and field-centric control."
       />
 
       <section className="flex flex-col gap-8">
@@ -521,7 +521,9 @@ drivetrain.setControl(
             <CodeBlock
               language="java"
               title="Getting Current Robot Pose"
-              code={`// In your subsystem or command
+              code={`// In your mechanism or command. This is the raw CTRE call —
+// the workshop's DriveMechanism wraps it as drivetrain.getPose(),
+// which is what you'll see on later pages.
 Pose2d currentPose = drivetrain.getState().Pose;
 
 // Extract components

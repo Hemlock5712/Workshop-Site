@@ -483,9 +483,10 @@ double yError = setpoint.pose.getY() - currentY;
               >
                 swerve API documentation
               </a>{" "}
-              covers characterizing the drivetrain, and a spin-in-place SysId
-              test against the Pigeon 2 yaw gives you the rotational constants
-              to back it out.
+              covers characterizing the drivetrain. For a measured number, run
+              WPILib&apos;s SysId tool (it wiggles the robot and records how it
+              responds) while spinning in place — the rotation data it collects
+              lets you calculate the MOI.
             </p>
           </div>
         </ContentCard>

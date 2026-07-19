@@ -149,7 +149,7 @@ sm.switchFromAny().to(stowed).when(operator.b());`}
           <code>6-StateBased</code> branch runs the whole Arm + Flywheel teleop
           as one state machine — stowed, pickup, spin-up, and ready states,
           button-driven transitions, a sensor-driven{" "}
-          <code>flywheel::isAtTarget</code> handoff, and a{" "}
+          <code>flywheel::isAtSpeed</code> handoff, and a{" "}
           <code>switchFromAny</code> panic interrupt.
         </p>
 

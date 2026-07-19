@@ -159,21 +159,28 @@ public class AutonomousOpMode extends PeriodicOpMode {
           <div className="space-y-4">
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Because legs are just commands, you can interleave superstructure
-              actions with drive legs. Run the flywheel spin-up <em>while</em>{" "}
-              driving, then score:
+              actions with drive legs. Run the intake <em>while</em> driving,
+              then score — remember the intake and scoring presets are holds, so
+              each one needs the right chaining tool:
             </p>
             <CodeBlock
               language="java"
               title="Drive + act, composed in code"
               code={`routine =
     Command.sequence(
-            // Drive to the pickup pose while the intake runs.
-            Command.parallel(
+            // Drive to the pickup pose WHILE the intake hold runs. A race
+            // ends when its first member finishes — the hold never does, so
+            // DriveToPose decides, and the race cancels the intake for us.
+            Command.race(
                 new DriveToPose(robot.drivetrain, pickupPose),
                 robot.superstructure.intake()),
-            // Drive to the scoring pose, then score.
+            // Drive to the scoring pose...
             new DriveToPose(robot.drivetrain, scorePose),
-            robot.superstructure.score())
+            // ...then score: the hold gets a finish line at the call site,
+            // plus a timeout seatbelt so a jam can't burn the whole period.
+            robot.superstructure.score()
+                .until(robot.superstructure::isDone)
+                .withTimeout(Seconds.of(2)))
         .named("Pickup + Score Auto");`}
             />
           </div>

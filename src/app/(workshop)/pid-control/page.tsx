@@ -15,7 +15,7 @@ export default function PIDControl() {
     <PageTemplate title="PID Control">
       {/* Introduction */}
       <PageHero
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Toggle between an arm (position) and a flywheel (velocity) below — the gains in each map directly to a TalonFX Slot0Configs."
+        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Toggle between an arm (position) and a flywheel (velocity) below — the gains in each map directly to the motor's PID settings (a TalonFX Slot0Configs)."
         concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the voltage needed before any error has accumulated."
       />
 

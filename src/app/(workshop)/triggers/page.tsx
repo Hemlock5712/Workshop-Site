@@ -10,7 +10,7 @@ export default function Triggers() {
       <KeyConceptSection
         title="Triggers in Commands V3"
         description={[
-          "A Trigger is a BooleanSupplier with bind helpers: button.onTrue(cmd), sensor.whileTrue(cmd), and friends. A Trigger fires a Command.",
+          "A Trigger is a yes/no signal — a button, a sensor reading, any true-or-false question — with bind helpers attached: button.whileTrue(cmd), sensor.onTrue(cmd), and friends. A Trigger fires a Command.",
           "Every binding belongs to a scope (global, opmode, or command). Exiting that scope removes the binding automatically, so a binding's lifetime always matches the thing it belongs to: the whole program, a single match phase, or one running command.",
         ]}
         concept="A Trigger fires a Command. What matters is who owns the binding's lifetime, and therefore when it goes away."
@@ -54,9 +54,10 @@ driver.a().whileTrue(arm.scoring());
 // commands — never for a bare hold (see the tip below).
 driver.start().onTrue(drivetrain.resetHeading());
 
-// Sensor → command. Same shape, just a different boolean source.
-Trigger atSpeed = new Trigger(flywheel::isAtSpeed);
-atSpeed.whileTrue(intake.feed());`}
+// Sensor → command. Same shape, just a different boolean source:
+// while we're carrying a game piece, keep the arm stowed.
+Trigger hasPiece = new Trigger(intake::hasPiece);
+hasPiece.whileTrue(arm.stowed());`}
         />
 
         <Box
@@ -297,8 +298,9 @@ public class TeleopOpMode extends PeriodicOpMode {
   return climber.run(coroutine -> {
     // While the climb is in progress, the operator can abort with B. The
     // Trigger is constructed here, so it's scoped to this command — it
-    // disappears the moment the command ends. Pressing B schedules lower(),
-    // which requires the climber and so interrupts this climb.
+    // disappears the moment the command ends. lower() is self-finishing
+    // (drive to the bottom, then end), which is why onTrue is right here.
+    // It requires the climber, so scheduling it interrupts this climb.
     operator.b().onTrue(climber.lower());
 
     setHeight(TOP);                       // command the climber up
@@ -350,7 +352,7 @@ public class TeleopOpMode extends PeriodicOpMode {
               "Never — button bindings are always global",
               "When the teleop OpMode exits (e.g., auto starts, the robot disables, the mode changes)",
               "Only when you manually call binding.remove()",
-              "When arm.high() finishes",
+              "When the bound command is cancelled",
             ],
             correctAnswer: 1,
             explanation:

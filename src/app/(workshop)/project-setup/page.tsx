@@ -323,24 +323,30 @@ export default function ProjectSetup() {
           {
             id: 3,
             question:
-              "What is the purpose of enabling 'Desktop Support' when creating your project?",
+              "Which branch of the 2027-Template should you clone, and why?",
             options: [
-              "It makes the code run faster on the robot",
-              "It allows you to test your robot code on your computer without a robot",
-              "It enables wireless deployment to the robot",
-              "It automatically generates all your robot code",
+              "main — the default branch is always the newest",
+              "2027-dev — it has the 2027 stack; main is still last season's code",
+              "Either one — they're kept identical",
+              "release — templates always ship from a release branch",
             ],
             correctAnswer: 1,
             explanation:
-              "Desktop Support allows you to run and test your robot code on your computer without needing physical robot hardware, which is essential for development and testing.",
+              "Clone with git clone -b 2027-dev. The 2027-dev branch carries the Commands v3 + OpModes stack this workshop teaches; the main branch is still the older 2026 stack.",
           },
           {
             id: 4,
-            question: "What should you name your project for this workshop?",
-            options: ["MyRobot", "FRC2024", "Workshop", "CommandRobot"],
-            correctAnswer: 2,
+            question:
+              "After cloning and setting your team number, how do you check the project is healthy?",
+            options: [
+              "Deploy straight to the robot and see what happens",
+              "Run ./gradlew build (or WPILib: Build Robot Code) — a clean build means the toolchain and dependencies are in place",
+              "Open every file and look for red squiggles",
+              "You can't check without robot hardware",
+            ],
+            correctAnswer: 1,
             explanation:
-              "The workshop instructions specify naming your project 'Workshop' for consistency throughout the tutorial.",
+              "One clean build verifies Java 25, the vendor libraries, and the alpha toolchain all work before you write any code. Then read the template's ONBOARDING.md — it's the tour of what you cloned.",
           },
         ]}
       />

@@ -140,14 +140,16 @@ export default function Hardware() {
                 rel="noopener noreferrer"
                 className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
               >
-                CANcoder – Position Sensor
+                WCP ThroughBore Encoder (CANcoder) – Position Sensor
               </a>
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               <strong>What it is:</strong> A{" "}
               <GlossaryTerm term="sensor">sensor</GlossaryTerm> that measures
               exactly where a rotating part is positioned. It can tell you
-              &quot;the arm is at 45 degrees&quot; with high precision.
+              &quot;the arm is at 45 degrees&quot; with high precision. (The
+              part on the parts list is WCP&apos;s ThroughBore — it&apos;s a
+              CANcoder inside, so the code calls it a CANcoder.)
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               <strong>Why you need it:</strong> The{" "}
@@ -204,10 +206,11 @@ export default function Hardware() {
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               <strong>Why you need it:</strong> Just like you can&apos;t have 10
               people all talking at once in a small room, robot parts need an
-              organized way to communicate. The CANivore gives them a fast,
-              reliable connection so they can all talk to your computer without
-              getting confused. Swerve drivetrains often need one because the
-              roboRIO alone would be overwhelmed with data.
+              organized way to communicate. The CANivore runs{" "}
+              <strong>CAN FD</strong> — a faster version of the CAN network with
+              room for much more data — so everything can talk without getting
+              confused. Swerve drivetrains often need one because the robot
+              controller&apos;s built-in network would be overwhelmed with data.
             </p>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
               <p className="text-sm text-primary-800 dark:text-primary-300 mb-2">
@@ -223,7 +226,8 @@ export default function Hardware() {
                   Has LED lights that show if everything is working correctly
                 </li>
                 <li>
-                  Allows for faster communication than{" "}
+                  Faster communication (CAN FD) than the robot controller&apos;s
+                  built-in CAN network — on SystemCore or the older{" "}
                   <GlossaryTerm term="roborio">roboRIO</GlossaryTerm>
                 </li>
               </ul>
@@ -650,13 +654,13 @@ export default function Hardware() {
               "What is the purpose of the CANivore in your robot's hardware setup?",
             options: [
               "It provides power to all motors",
-              "It's a backup controller for the roboRIO",
-              "It's a USB-to-CAN FD interface that adds a new CAN FD network",
+              "It's a backup robot controller",
+              "It's a USB device that adds a fast CAN FD network for motors and sensors",
               "It stores robot code and configuration files",
             ],
             correctAnswer: 2,
             explanation:
-              "CANivore is a USB-to-CAN FD interface that adds a new CAN FD network to your PC or roboRIO, enabling precise control of CTRE devices with better bus utilization (2X-8X) and supporting hardware-attached simulation.",
+              "CANivore plugs into a USB port and creates a CAN FD network — the faster version of CAN — so all the motors and sensors get a quick, reliable connection. It's also how this workshop runs real hardware from a laptop, without a robot controller.",
           },
           {
             id: 3,

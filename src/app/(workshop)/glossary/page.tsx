@@ -212,6 +212,26 @@ export default function Glossary() {
               roboRIO&apos;s successor, instead.
             </p>
           </div>
+
+          <div
+            id="swerve-drive"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Swerve Drive
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> A drivetrain where every wheel can both
+              spin and steer on its own. The robot can drive any direction while
+              rotating — like a shopping cart where all four wheels steer.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong> Four independent modules, each with a
+              drive motor and a steering motor. The workshop uses CTRE&apos;s
+              generated swerve code wrapped in a hand-written{" "}
+              <code>DriveMechanism</code>. Covered in Workshop #2.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -299,7 +319,10 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A boolean condition (from buttons,
               sensors, or custom logic) that schedules commands when its state
-              changes using methods like onTrue() and onFalse().
+              changes. <code>whileTrue()</code> is the everyday method — it runs
+              a hold while the condition is true and hands the mechanism back to
+              its default command when it goes false. <code>onTrue()</code>{" "}
+              fires once, for self-finishing commands.
             </p>
           </div>
 

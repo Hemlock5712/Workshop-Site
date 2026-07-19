@@ -476,16 +476,27 @@ public TeleopOpMode(Robot robot) {
               language="java"
               title="Example Auto Sequence"
               code={`// Sequential autonomous routine — Command.sequence runs these in order.
+// The basic DriveToPoint above never finishes on its own (isFinished
+// returns false), so each leg needs a finish line at the call site —
+// THE ONE RULE applies to any never-finishing command, not just holds.
 Command autoSequence = Command.sequence(
-    new DriveToPoint(drivetrain, startPose),
-    intake.intake(),
-    new DriveToPoint(drivetrain, scoringPose),
-    superstructure.score(),
-    new DriveToPoint(drivetrain, nextGamePiecePose));`}
+    new DriveToPoint(drivetrain, startPose)
+        .until(drivetrain::isAtTarget).withTimeout(Seconds.of(3)),
+    intake.intake().until(intake::hasPiece).withTimeout(Seconds.of(2)),
+    new DriveToPoint(drivetrain, scoringPose)
+        .until(drivetrain::isAtTarget).withTimeout(Seconds.of(3)),
+    superstructure.score().until(superstructure::isDone),
+    new DriveToPoint(drivetrain, nextGamePiecePose)
+        .until(drivetrain::isAtTarget).withTimeout(Seconds.of(3)));`}
             />
             <p>
               This forms the foundation for more complex autonomous navigation
-              before adding vision. (You&apos;d typically wrap a routine like
+              before adding vision. If you instead give{" "}
+              <code>DriveToPoint</code> the tolerance-based{" "}
+              <code>isFinished</code> from the Tuning Tips below, the legs
+              finish on their own and the <code>.until(...)</code> calls
+              aren&apos;t needed — keep the <code>.withTimeout(...)</code>{" "}
+              seatbelts either way. (You&apos;d typically wrap a routine like
               this in an <code>@Autonomous</code> OpMode — see the Autonomous
               lesson.)
             </p>
@@ -574,10 +585,11 @@ protected boolean isFinished() {
   Pose2d currentPose = m_drivetrain.getPose();
   double distanceError = currentPose.getTranslation()
       .getDistance(m_targetPose.getTranslation());
+  // Rotation2d.minus wraps the angle, so 179° vs -179° reads as a
+  // 2° error — a raw subtraction would read ~358° and never finish.
   double rotationError = Math.abs(
-      currentPose.getRotation().getRadians() -
-      m_targetPose.getRotation().getRadians()
-  );
+      currentPose.getRotation().minus(m_targetPose.getRotation())
+          .getRadians());
 
   return distanceError < 0.05 && rotationError < Math.toRadians(5);
 }`}
@@ -694,6 +706,18 @@ protected boolean isFinished() {
             },
           ]}
         />
+      </section>
+
+      <section className="flex flex-col gap-8">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
+          What&apos;s Next?
+        </h2>
+
+        <Box variant="alert-success" title="Up Next: Vision Options">
+          Driving to a pose is only as good as the robot&apos;s guess of where
+          it is — and odometry drifts. Next, cameras: the vision options for
+          correcting the robot&apos;s position with AprilTags.
+        </Box>
       </section>
     </PageTemplate>
   );

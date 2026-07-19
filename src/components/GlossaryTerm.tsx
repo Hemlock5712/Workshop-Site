@@ -37,7 +37,7 @@ const glossaryDefinitions: Record<string, string> = {
   command:
     "An action your robot performs, like 'raise arm' or 'shoot ball'. Commands use subsystems to get things done.",
   trigger:
-    "A connection between a button press (or sensor reading) and a command. When you press button A, the trigger runs a specific command - like a light switch.",
+    "A connection between a button (or sensor reading) and a command. Hold button A and the trigger runs its command; for holds, whileTrue hands the mechanism back to its default command on release.",
   "command-based programming":
     "The main way FRC teams organize robot code. You divide your robot into subsystems (parts), create commands (actions), and use triggers (buttons) to make things happen.",
   periodic:
@@ -134,7 +134,7 @@ export default function GlossaryTerm({
     subsystem: "subsystem",
     command: "command",
     trigger: "trigger",
-    "command-based programming": "command-based-programming",
+    "command-based programming": "command-based",
     periodic: "periodic",
     pid: "pid",
     "pid control": "pid",

@@ -187,7 +187,7 @@ export default function LoggingOptions() {
       {/* Logging Framework Options */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          FRC Logging Framework Options
+          The Logging Framework We Use
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
@@ -200,19 +200,16 @@ export default function LoggingOptions() {
 
         {/* DataLogManager */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="bg-primary-600 text-white rounded-lg px-4 py-2 font-bold text-lg">
-              1
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                DataLogManager (WPILib Built-in)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Official WPILib data logging system that captures all
-                NetworkTables data to binary .wpilog files.
-              </p>
-            </div>
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              DataLogManager (WPILib Built-in)
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300">
+              Official WPILib data logging system that captures all
+              NetworkTables data to binary .wpilog files. (NetworkTables is
+              WPILib&apos;s shared live-data table — the robot publishes values
+              to it, and dashboards and loggers read them.)
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -313,11 +310,11 @@ export default function LoggingOptions() {
           <p className="text-slate-600 dark:text-slate-300 mb-6">
             For this workshop we mirror the 2027 template and use WPILib&apos;s
             built-in <code>DataLogManager</code>. It records every NetworkTables
-            value change — including everything the drivetrain&apos;s telemetry
-            publishes — to a binary <code>.wpilog</code> file, plus console
-            output and (via <code>DriverStation.startDataLog</code>) the
-            Driver-Station and joystick data. There&apos;s no extra vendordep,
-            no <code>LoggedRobot</code>, and no replay layer to learn.
+            value change to a binary <code>.wpilog</code> file — including
+            everything the drivetrain&apos;s telemetry publishes. It also
+            captures console output, and <code>DriverStation.startDataLog</code>{" "}
+            adds the Driver-Station and joystick data. There&apos;s no extra
+            library to install and no replay layer to learn.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -327,7 +324,7 @@ export default function LoggingOptions() {
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  Built into WPILib: no vendordep, and two lines in{" "}
+                  Built into WPILib: nothing extra to install, and two lines in{" "}
                   <code>Robot</code>&apos;s constructor turn it on
                 </li>
                 <li>

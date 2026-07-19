@@ -540,16 +540,16 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
             {
               id: 6,
               question:
-                "What should you do after properly focusing a Limelight camera lens?",
+                "Why do the camera's position offsets (where it sits on the robot) matter for pose estimation?",
               options: [
-                "Leave it as-is for future adjustments",
-                "Glue the lens in place to prevent shifting",
-                "Cover it with tape for protection",
-                "Record the focus setting in your code",
+                "They only affect the camera's frame rate",
+                "The Limelight measures where the CAMERA is — without accurate offsets, the robot pose it reports is shifted by the camera's mounting position",
+                "They are only needed for game-piece detection, not AprilTags",
+                "They don't — the pose estimator figures them out automatically",
               ],
               correctAnswer: 1,
               explanation:
-                "Once the Limelight lens is properly focused for your AprilTag detection distance, you should glue the lens in place to prevent it from shifting due to robot vibrations during competition, which would ruin your calibration.",
+                "AprilTag solving produces the camera's pose. The configured camera-to-robot offsets translate that into the robot's pose — so if the offsets are wrong, every vision measurement you fuse into the estimator is wrong by that same amount.",
             },
           ]}
         />

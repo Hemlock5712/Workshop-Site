@@ -39,8 +39,8 @@ export default function CommandFramework() {
           subtitle={<strong>One physical thing each</strong>}
         >
           An arm, a flywheel, the drivetrain. The type is <code>Mechanism</code>
-          , a class you <code>extends</code>. Hardware lives in private fields,
-          configuration in the constructor.
+          , a class you extend. Hardware lives in private fields, configuration
+          in the constructor.
         </Box>
 
         <Box
@@ -197,6 +197,16 @@ public Command scoring() {
         .named("Drive Stow Drive (Chained)");`}
         />
 
+        <p
+          className="text-[14px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          (<code>robot.stow()</code> is a robot-level preset the template
+          defines — it drives the arm to its stowed angle, which is why the
+          finish line checks <code>robot.arm::isAtTarget</code>. Your own holds
+          will usually live on a mechanism, like <code>arm.stowed()</code>.)
+        </p>
+
         <DocumentationButton
           href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
           title="DriveStowDriveChainedOpMode.java — the full working example"
@@ -307,9 +317,9 @@ emergencyStop()
             <p>
               A command body that pauses itself from the inside. Reach for it
               when a hold must span many steps or the logic needs loops and
-              branches — it keeps everything actively commanded between steps,
-              where a chained sequence lets a mechanism sit
-              owned-but-uncommanded. See{" "}
+              branches — it keeps every mechanism actively commanded between
+              steps, where a chained sequence can leave one owned by the routine
+              but coasting on its last setpoint. See{" "}
               <a
                 href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
                 target="_blank"

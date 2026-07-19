@@ -337,8 +337,8 @@ public class TeleopOpMode extends PeriodicOpMode {
           style={{ color: "var(--fg-mute)" }}
         >
           Multi-motor mechanisms follow the same shape. The Phoenix 6 follower
-          control still lives in the constructor, the per-command behavior still
-          comes from <code>run(...)</code>, and reads stay as plain getters.
+          control still lives in the constructor, the hold commands still come
+          from <code>runRepeatedly(...)</code>, and reads stay as plain getters.
         </p>
 
         <CodeBlock

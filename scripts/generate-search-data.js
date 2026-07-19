@@ -208,10 +208,10 @@ function getPageMetadata(route) {
         "Setting up WPILib DataLogManager — start it in Robot's constructor and publish robot state to NetworkTables; view in AdvantageScope.",
     },
     "vision-shooting": {
-      title: "Vision-Based Shooting",
-      category: "Workshop 2",
+      title: "Dynamic Flywheel Control",
+      category: "Advanced",
       description:
-        "Advanced application combining vision systems with shooting mechanisms for accurate targeting.",
+        "Shoot accurately from anywhere: odometry distance drives an InterpolatingDoubleTreeMap of distance-velocity pairs to set flywheel speed in real time.",
     },
     "swerve-calibration": {
       title: "Swerve Calibration",
@@ -226,10 +226,10 @@ function getPageMetadata(route) {
         "Implementing drive-to-point navigation using PID control for precise autonomous positioning.",
     },
     "advanced-drive-to-point": {
-      title: "Advanced Drive to Point",
-      category: "Workshop 2",
+      title: "Advanced: Profiled Drive to Point",
+      category: "Advanced",
       description:
-        "Profiled path following with feedforward control for smooth autonomous movement.",
+        "Profiled path following with CTRE LinearPath feedforward plus PID for smooth autonomous movement — the internals of DriveToPose.",
     },
     glossary: {
       title: "Glossary",

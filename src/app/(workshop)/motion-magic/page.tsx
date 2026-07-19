@@ -156,12 +156,13 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = 3.0; // conservative start
+                        cruiseVel = 2.0; // conservative start (calculated max
+                        is 3.2)
                       </code>
                     </li>
                     <li>
-                      <strong>Acceleration:</strong> Start with 2x cruise
-                      velocity for smooth motion
+                      <strong>Acceleration:</strong> Start with 2x–4x cruise
+                      velocity for smooth motion (the workshop example uses 4x)
                     </li>
                     <li>
                       <strong>Competition:</strong> Typically end up with 4x to
@@ -169,7 +170,8 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        acceleration = cruiseVel * 2.0; // smooth start
+                        acceleration = cruiseVel * 4.0; // = 8.0, matches the
+                        example
                       </code>
                     </li>
                   </ul>
@@ -215,17 +217,18 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Cruise Velocity:</strong> Use calculated max
-                      velocity
+                      <strong>Target Velocity:</strong> Use calculated max
+                      velocity (for a flywheel, the setpoint IS the target speed
+                      — there&apos;s no separate cruise phase)
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = 80.0; // based on motor efficiency
+                        targetVel = 80.0; // based on motor efficiency
                       </code>
                     </li>
                     <li>
-                      <strong>Acceleration:</strong> Start with 2x cruise
-                      velocity for smooth motion
+                      <strong>Acceleration:</strong> Start with 2x target
+                      velocity for smooth spin-up
                     </li>
                     <li>
                       <strong>Competition:</strong> Typically end up with 4x to
@@ -479,7 +482,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               options: ["100 RPS", "25 RPS", "3.2 RPS", "0.8 RPS"],
               correctAnswer: 2,
               explanation:
-                "With 25:1 gearing, the output is 100 RPS / 25 = 4 RPS theoretical max. At 80% efficiency, this gives 4 * 0.8 = 3.2 RPS. A conservative start would be around 3.0 RPS.",
+                "With 25:1 gearing, the output is 100 RPS / 25 = 4 RPS theoretical max. At 80% efficiency, this gives 4 * 0.8 = 3.2 RPS — that's the calculated ceiling. The workshop's example code starts even lower (2.0) and tunes up from there.",
             },
             {
               id: 5,
@@ -487,13 +490,13 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
                 "What is the recommended starting value for Motion Magic acceleration?",
               options: [
                 "Equal to cruise velocity",
-                "2x cruise velocity for smooth motion",
+                "2x–4x cruise velocity for smooth motion",
                 "10x cruise velocity for fastest response",
                 "Half of cruise velocity for safety",
               ],
               correctAnswer: 1,
               explanation:
-                "Starting with 2x cruise velocity provides smooth motion. During competition tuning, teams typically increase this to 4x to 10x cruise velocity for faster response.",
+                "Starting around 2x–4x cruise velocity gives smooth motion (the workshop example uses 4x). During competition tuning, teams typically increase this to 4x to 10x cruise velocity for faster response.",
             },
             {
               id: 6,

@@ -37,9 +37,9 @@ export default function Prerequisites() {
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Install <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> VS
-                Code and National Instruments Game Tool (includes Driver Station
-                and <GlossaryTerm term="roborio">roboRIO</GlossaryTerm>{" "}
-                imaging).
+                Code and National Instruments Game Tools. On this stack you only
+                need Game Tools for the <strong>Driver Station</strong> — the
+                program that enables and disables the robot.
               </p>
             </div>
 
@@ -109,14 +109,16 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                This workshop targets the WPILib <strong>2027 alpha</strong> —
-                Commands v3 + OpModes, <strong>Java 25</strong>, and the{" "}
-                <strong>SystemCore</strong> controller. Start from the
-                team&apos;s 2027-Template rather than a stock project (the
-                default <code>2027-dev</code> branch has the 2027 stack; the{" "}
-                <code>main</code> branch is still the older 2026 stack).
-                Autonomous uses CTRE&apos;s built-in LinearPath / DriveToPose,
-                so <strong>PathPlanner is not required</strong>.
+                This workshop runs on the WPILib <strong>2027 alpha</strong> —
+                an early-release version of FRC&apos;s programming toolkit. It
+                uses <strong>Java 25</strong> and deploys to{" "}
+                <strong>SystemCore</strong>, the robot&apos;s onboard computer.
+                Start from the team&apos;s 2027-Template — a ready-made robot
+                project you copy. One catch: pick the <code>2027-dev</code>{" "}
+                branch (a branch is one version of the code; <code>main</code>{" "}
+                is still last season&apos;s).{" "}
+                <strong>PathPlanner is not required</strong> — driving in auto
+                is covered in Workshop #2.
               </p>
             </div>
 
