@@ -470,16 +470,21 @@ double yError = setpoint.pose.getY() - currentY;
               rotational changes.
             </p>
             <p className="text-green-800 dark:text-green-200 text-sm">
-              For guidance on estimating your robot&apos;s MOI, see{" "}
+              A reasonable starting estimate is{" "}
+              <code>MOI ≈ mass × (trackwidth / 2) × (wheelbase / 2)</code> —
+              treat the robot as a uniform box and refine from there. For a
+              measured value, CTRE&apos;s{" "}
               <a
-                href="https://choreo.autos/usage/estimating-moi/"
+                href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/mechanisms/swerve/swerve-builder-api.html"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline hover:text-green-600 dark:hover:text-green-400"
               >
-                Choreo&apos;s MOI estimation guide
-              </a>
-              .
+                swerve API documentation
+              </a>{" "}
+              covers characterizing the drivetrain, and a spin-in-place SysId
+              test against the Pigeon 2 yaw gives you the rotational constants
+              to back it out.
             </p>
           </div>
         </ContentCard>

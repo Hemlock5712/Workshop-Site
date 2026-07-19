@@ -296,8 +296,9 @@ export default function SwervePrerequisites() {
           </p>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             The <code>CommandSwerveDrivetrain</code> class uses Phoenix 6&apos;s
-            built-in kinematics to convert your desired chassis speeds (Vx, Vy,
-            omega) into the appropriate module states automatically.
+            built-in kinematics to convert your desired{" "}
+            <code>ChassisVelocities</code> (vx, vy, omega) into the appropriate
+            module states automatically.
           </p>
         </Box>
 
@@ -613,7 +614,7 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
             {
               id: 5,
               question:
-                "What are the three components of chassis speeds in swerve drive?",
+                "What are the three components of ChassisVelocities in swerve drive?",
               options: [
                 "Left speed, right speed, rotation",
                 "Forward speed, backward speed, turning speed",
@@ -622,7 +623,7 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
               ],
               correctAnswer: 2,
               explanation:
-                "Chassis speeds consist of Vx (linear velocity in X direction), Vy (linear velocity in Y direction), and Omega (angular velocity for rotation).",
+                "ChassisVelocities consist of vx (linear velocity in X direction), vy (linear velocity in Y direction), and omega (angular velocity for rotation). (WPILib 2027 renamed the old ChassisSpeeds type to ChassisVelocities.)",
             },
             {
               id: 6,
