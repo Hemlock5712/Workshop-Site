@@ -45,16 +45,36 @@ export default function Triggers() {
           title="Binding a trigger"
           code={`CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
-// Button → command. Fires once at the rising edge.
-driver.a().onTrue(arm.goTo(HIGH, TOL));
+// Button → command. Fires once at the rising edge. Because scoring() is a
+// hold, one tap is all it takes: the arm goes to the scoring angle and
+// STAYS there until another preset takes the arm over.
+driver.a().onTrue(arm.scoring());
 
 // Hold the button to keep the command scheduled; release cancels it.
-driver.leftBumper().whileTrue(arm.holdAt(LOW));
+driver.leftBumper().whileTrue(arm.stowed());
 
 // Sensor → command. Same shape, just a different boolean source.
-Trigger atSpeed = new Trigger(flywheel::atTarget);
+Trigger atSpeed = new Trigger(flywheel::isAtSpeed);
 atSpeed.onTrue(intake.feed());`}
         />
+
+        <Box
+          variant="alert-tip"
+          tag="TIP · HOLDS + onTrue"
+          title="Tap once, the hold does the rest"
+        >
+          <p>
+            These bind methods are unchanged from Commands v2 — and persistent
+            holds make <code>onTrue</code> <em>nicer</em> than it used to be. In
+            v2 you often needed <code>whileTrue</code> so the setpoint stayed
+            commanded while the driver held the button. Here{" "}
+            <code>arm.scoring()</code> never finishes on its own, so{" "}
+            <code>onTrue</code> is enough: tap A, the arm goes to the pose and
+            holds it; tap B, the next preset takes over. Save{" "}
+            <code>whileTrue</code> for things that should genuinely stop on
+            release, like an intake roller.
+          </p>
+        </Box>
 
         <p
           className="text-[14px] leading-relaxed"
@@ -214,10 +234,13 @@ public class TeleopOpMode extends PeriodicOpMode {
     final Arm arm = robot.arm;
     final DriveMechanism drivetrain = robot.drivetrain;
 
-    driver.a().onTrue(arm.goTo(HIGH, TOL));
-    driver.b().onTrue(arm.goTo(LOW, TOL));
-    driver.leftBumper().whileTrue(arm.holdAt(STOWED));
+    // Presets are holds: each tap schedules a new "(hold)" that pre-empts
+    // the previous one. The arm is always actively commanded somewhere.
+    driver.a().onTrue(arm.scoring());
+    driver.b().onTrue(arm.horizontal());
+    driver.leftBumper().onTrue(arm.stowed());
 
+    // whileTrue for things that should stop on release.
     operator.rightTrigger().whileTrue(drivetrain.brake());
   }
 }`}
@@ -232,7 +255,16 @@ public class TeleopOpMode extends PeriodicOpMode {
           with its bindings. When the driver picks Teleop again, a fresh
           TeleopOpMode is constructed and only its bindings come back. Each
           mode&apos;s bindings come and go with the mode; nothing to clean up by
-          hand.
+          hand. The team&apos;s working example is{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            TeleopOpMode.java in the 2027-Template
+          </a>
+          .
         </p>
       </section>
 
@@ -283,7 +315,10 @@ public class TeleopOpMode extends PeriodicOpMode {
           whatever the opmode-level binding (or nothing) says it should. The
           abort binding exists only for the duration of the climb: it&apos;s
           created when the command starts and dropped the moment it ends, with
-          no cleanup code of your own.
+          no cleanup code of your own. (The body here uses the coroutine dialect
+          — the optional advanced form from the Commands page — because a
+          command-scoped binding can only be made from inside a running command
+          body.)
         </p>
       </section>
 
@@ -299,7 +334,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         removes the binding when that scope ends. The template demonstrates the
         opmode and global scopes; command-scoped bindings work the same way but
         aren&apos;t shown there yet. The stack is the WPILib 2027 <em>alpha</em>
-        , on <strong>Java 25</strong> and <strong>SystemCore</strong>.
+        , on <strong>Java 25</strong> and <strong>SystemCore</strong>, so the
+        exact APIs are still moving between alpha builds. This page was last
+        verified against alpha-6 in July 2026.
       </Box>
 
       <Quiz

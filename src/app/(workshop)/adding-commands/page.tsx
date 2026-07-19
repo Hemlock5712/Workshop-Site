@@ -2,7 +2,9 @@ import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
+import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
+import { GitBranch } from "lucide-react";
 
 export default function AddingCommands() {
   return (
@@ -10,10 +12,10 @@ export default function AddingCommands() {
       <KeyConceptSection
         title="Commands with WPILib Commands V3"
         description={[
-          "A coroutine Command is a single method body that the scheduler runs once. Inside the body you write plain Java; whenever the command needs to wait — for time to pass, for a condition to become true, for a sub-command to finish — you explicitly yield to the scheduler through the Coroutine parameter. There's no separate init / execute / isFinished / end to fill in, just the one body.",
-          "Most commands you write will be a single line of motor setup wrapped in mech.run(...). The coroutine parameter is there when you need it (.wait, .waitUntil, .await, .park) and ignored when you don't. Roughly 80% of teaching examples never touch it.",
+          "A command is what a mechanism can do: a factory method that returns a named Command the scheduler can run. Anything that wants to move the arm does it through a command — the setters stay private, which is how the scheduler prevents two things fighting over the same motor.",
+          "On this team almost every mechanism command is a hold: it keeps re-sending its closed-loop setpoint forever, so the motor stays actively commanded until another command takes the mechanism over. Press a button, the arm goes to the angle and stays there.",
         ]}
-        concept="A command is a body. You yield through the coroutine wherever you need to wait. Most bodies don't need to."
+        concept="A command is a named action from a mechanism factory. Most of ours are holds — and a hold never finishes."
       />
 
       <section className="flex flex-col gap-6">
@@ -25,48 +27,145 @@ export default function AddingCommands() {
             letterSpacing: "-0.01em",
           }}
         >
-          The default command shape
+          The default command shape: a hold
         </h2>
 
         <p
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Most commands live on a mechanism as a thin factory: take some
-          arguments, configure the hardware, hand the resulting{" "}
-          <code>Command</code> back. The body runs once. If it doesn&apos;t
-          yield, the command finishes immediately. If it does, it stays
-          scheduled until the yield resolves and the body falls off the end.
+          <code>runRepeatedly(...)</code> re-runs its body every scheduler tick,
+          so the closed-loop request is re-sent forever. That&apos;s the whole
+          recipe: one line of setup, re-sent repeatedly, named with a{" "}
+          <code>(hold)</code> suffix. This is how every preset on the robot is
+          written.
         </p>
 
         <CodeBlock
           language="java"
-          title="Arm.java — three commands of escalating commitment"
-          code={`// 1. Set once and finish. The coroutine parameter is unused —
-//    the body has nothing to wait on, so it ends after the call.
-public Command setVoltage(double volts) {
-  return run(coroutine -> motor.setControl(voltageOut.withOutput(volts)))
-      .named("Arm:setVoltage:" + volts);
+          title="Arm.java — hold commands, exactly as the 2027-Template writes them"
+          code={`// The subsystem owns the hardware, keeps its setters private, and exposes
+// commands. Each factory returns a Command that re-sends its setpoint
+// forever — a hold. The "(hold)" suffix is part of the convention.
+public Command vertical() {
+  return runRepeatedly(() -> setPosition(VERTICAL_POSITION))
+      .named("vertical (hold)");
 }
 
-// 2. Set once, then hold until the command is cancelled.
-//    coroutine.park() yields forever — the scheduler keeps the
-//    command active until something else pre-empts the mechanism.
-public Command holdAt(Angle target) {
-  return run(coroutine -> {
-    motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-    coroutine.park();
-  }).named("Arm:holdAt:" + target.in(Degrees));
+public Command horizontal() {
+  return runRepeatedly(() -> setPosition(HORIZONTAL_POSITION))
+      .named("horizontal (hold)");
 }
 
-// 3. Set once, then wait until a condition becomes true,
-//    then finish on its own.
-public Command goTo(Angle target, Angle tolerance) {
-  return run(coroutine -> {
-    motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-    coroutine.waitUntil(() -> atTarget(target, tolerance));
-  }).named("Arm:goTo:" + target.in(Degrees));
-}`}
+public Command scoring() {
+  return runRepeatedly(() -> setPosition(SCORING_POSITION))
+      .named("scoring (hold)");
+}
+
+// Not a command — a question other code can ask. Chains use it as a
+// finish line: arm.scoring().until(arm::isAtTarget).
+public boolean isAtTarget() {
+  return Math.abs(getPosition() - getTargetPosition()) < TOLERANCE;
+}
+
+// Private. The only way to move the arm is through a command.
+private void setPosition(double position) { ... }`}
+        />
+
+        <Box
+          variant="alert-warning"
+          tag="THE ONE RULE"
+          title="A hold never finishes, so nothing may ever wait on a hold"
+        >
+          <p>
+            A hold has no finish line, so a sequence that contains a bare hold
+            sticks on it forever. Every hold is named with <code>(hold)</code>{" "}
+            so you can catch this: if a stuck routine is sitting on a{" "}
+            <code>(hold)</code> command on the dashboard or in the log,
+            that&apos;s the bug.
+          </p>
+        </Box>
+
+        <Box
+          variant="alert-info"
+          tag="NOTE · NO …AndWait METHODS"
+          title="Waiting happens at the call site, not in the factory"
+        >
+          <p>
+            Mechanisms never bake waiting into their commands — there is no{" "}
+            <code>scoringAndWait()</code>. When a chain needs the hold to end,
+            you give it a finish line where you use it:{" "}
+            <code>arm.scoring().until(arm::isAtTarget)</code>. One factory per
+            preset, and the caller decides whether to wait.
+          </p>
+        </Box>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <h2
+          className="text-2xl font-semibold leading-tight"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--fg)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Chaining: routines out of holds
+        </h2>
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          Routines that touch more than one mechanism are built where
+          they&apos;re used — in an OpMode — by chaining the mechanisms&apos;
+          commands. Three tools, in order: <code>Command.sequence</code> for
+          steps that finish on their own, <code>.until(...)</code> to give a
+          hold a finish line, and <code>Command.race(step, hold)</code> for
+          &quot;do this step WHILE holding.&quot; Add{" "}
+          <code>.withTimeout(...)</code> as the seatbelt on any step that waits
+          on a sensor condition.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Score the preload — built in an @Autonomous OpMode constructor"
+          code={`routine =
+    Command.sequence(
+            // spinUp() is a hold — it would stick here forever. .until(...)
+            // gives it a finish line, and .withTimeout(...) is the seatbelt:
+            // if the wheel never quite reaches speed, the auto moves on after
+            // two seconds instead of burning the whole period.
+            robot.flywheel.spinUp()
+                .until(robot.flywheel::isAtSpeed)
+                .withTimeout(Seconds.of(2))
+                .named("spin up"),
+
+            // Feed WHILE the flywheel hold keeps the wheel at speed. The
+            // feed step finishes (it has its own finish line), and the race
+            // then cancels the hold.
+            Command.race(
+                    robot.intake.feed()
+                        .until(robot.intake::isEmpty)
+                        .named("feed until empty"),
+                    robot.flywheel.spinUp())
+                .named("feed holding speed"))
+        .named("Score Preload");`}
+        />
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          A race ends when its first member finishes and cancels the rest — and
+          since a hold never finishes, the step is always what decides. The full
+          drive-stow-drive version of this pattern lives in the template:
+        </p>
+
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
+          title="DriveStowDriveChainedOpMode.java — the chaining reference"
+          icon={<GitBranch className="w-5 h-5" />}
         />
       </section>
 
@@ -79,29 +178,27 @@ public Command goTo(Angle target, Angle tolerance) {
             letterSpacing: "-0.01em",
           }}
         >
-          Two ways to write a command
+          When a command should finish on its own
         </h2>
 
         <p
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          The inline <code>run(coroutine -&gt; …)</code> style above is one way
-          to write a command. The other is the explicit <code>initialize</code>{" "}
-          / <code>execute</code> / <code>isFinished</code> / <code>end</code>{" "}
-          lifecycle: the workshop template ships{" "}
-          <code>utils/ClassicCommand</code>, a small base class that gives you
-          those four methods. Extend it, override only the methods you need, and
-          the instance <em>is</em> a <code>Command</code> you can schedule or
-          bind to a trigger. Reach for <code>ClassicCommand</code> when a
-          command has explicit, stateful steps; reach for the inline{" "}
-          <code>run(coroutine -&gt; …)</code> body when a single body reads more
-          clearly.
+          Not everything is a hold. A step with its own natural ending — drive
+          this distance, run the roller until the beam break trips — can be a
+          self-finishing command. The workshop template ships{" "}
+          <code>utils/ClassicCommand</code>, a small base class with the
+          explicit <code>initialize</code> / <code>execute</code> /{" "}
+          <code>isFinished</code> / <code>end</code> lifecycle. Extend it,
+          override what you need, and the instance <em>is</em> a{" "}
+          <code>Command</code> — you&apos;ll see it again in{" "}
+          <code>DriveToPoint</code>.
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveDistance.java — the initialize / execute / isFinished / end lifecycle"
+          title="DriveDistance.java — a self-finishing step"
           code={`// utils/ClassicCommand gives you an explicit initialize/execute/isFinished/end lifecycle.
 public class DriveDistance extends ClassicCommand {
   private final Drive drive;
@@ -120,262 +217,15 @@ public class DriveDistance extends ClassicCommand {
 }`}
         />
 
-        <Box
-          variant="alert-tip"
-          tag="HOW IT MAPS"
-          title="How the lifecycle runs on the scheduler"
-        >
-          Under the hood <code>ClassicCommand</code> runs{" "}
-          <code>initialize()</code> once, then loops <code>execute()</code> +{" "}
-          <code>isFinished()</code> with a yield each tick.{" "}
-          <code>end(false)</code> runs on a natural finish;{" "}
-          <code>end(true)</code> runs on cancellation. The base class wires the
-          cancel hook for you, because (as with any v3 command) a cancelled
-          coroutine is dropped and wouldn&apos;t otherwise reach your cleanup.
-        </Box>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Four shapes cover almost everything
-        </h2>
-
         <p
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          When you&apos;re writing a new command, the question to answer first
-          is <em>what does it have to wait for?</em> That answer picks the
-          shape.
+          Because it finishes on its own, a step like this can sit in a{" "}
+          <code>Command.sequence</code> as-is — no <code>.until(...)</code>{" "}
+          needed. That&apos;s the dividing line: holds get finish lines at the
+          call site; steps bring their own.
         </p>
-
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Box
-            variant="concept"
-            tag="SHAPE 1 · SET ONCE"
-            title="Body sets a value and falls off"
-            code={<code>run(coroutine -&gt; setVoltage(6)).named(...)</code>}
-          >
-            <p>
-              No yield, no wait. The command finishes the same tick it&apos;s
-              scheduled. Good for fire-and-forget actions where the next command
-              in a chain is responsible for whatever comes next.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="SHAPE 2 · SET AND HOLD"
-            title="Body sets a value then parks"
-            code={
-              <code>
-                run(coroutine -&gt; {"{"} setVoltage(6); coroutine.park(); {"}"}
-                )
-              </code>
-            }
-          >
-            <p>
-              Yields forever after the setup. The command stays scheduled until
-              something cancels it (a default-command return, a higher-priority
-              command, a button release). Good for &quot;run while held&quot;
-              bindings.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="SHAPE 3 · SET THEN WAIT"
-            title="Body sets a value then waits on a condition"
-            code={
-              <code>
-                run(coroutine -&gt; {"{"} setPosition(t);
-                coroutine.waitUntil(atTarget); {"}"})
-              </code>
-            }
-          >
-            <p>
-              Yields until the predicate goes true. Falls off on its own when
-              the condition is met. The bread-and-butter shape for &quot;move
-              there&quot; commands that need to report when they&apos;ve
-              arrived.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="SHAPE 4 · MULTI-PHASE"
-            title="Body awaits child commands in order"
-            code={<code>coroutine.await(a); coroutine.await(b);</code>}
-          >
-            <p>
-              Yields for the full duration of each child. The body reads top to
-              bottom like a script. Good when the sequence is fixed and each
-              phase&apos;s setup depends only on what came before it.
-            </p>
-          </Box>
-        </div>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          For shapes 1, 2, and 3 the <code>coroutine</code> parameter is the
-          only thing that lets the scheduler know when to yield. For shape 4 you
-          chain commands together by awaiting them on the same coroutine,
-          inheriting all of their requirements.
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Composing across mechanisms
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          A routine that touches more than one mechanism is hosted on the
-          mechanism it <em>primarily drives</em>. From inside that
-          mechanism&apos;s <code>run(coroutine -&gt; {`{ ... }`})</code> body it
-          controls its own hardware directly and <code>await</code>s or{" "}
-          <code>fork</code>s the other mechanisms&apos; commands. Each awaited
-          command carries its own requirement, so the scheduler still tracks who
-          owns what.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="A two-mechanism shoot routine (a method on Flywheel)"
-          code={`/** Spin the flywheel up, then drop the arm to feed for half a second. */
-// Lives on the flywheel — it drives the flywheel directly and awaits the
-// arm's commands. The flywheel keeps spinning while the arm moves because
-// Phoenix holds the last velocity request we sent.
-public Command shoot() {
-  return run(coroutine -> {
-    setVelocity(SHOOT_RPM);                       // start spinning this flywheel
-    coroutine.await(arm.goTo(HANDOFF, TOL));      // drive arm to handoff
-    coroutine.waitUntil(this::atTarget);          // make sure we're spun up
-    coroutine.await(arm.goTo(FEED, TOL));         // drop into the feed roller
-    coroutine.wait(Seconds.of(0.5));              // give it time to clear
-  }).named("shoot");
-}`}
-        />
-
-        <Box
-          variant="alert-info"
-          tag="NOTE"
-          title="One body coordinates the whole sequence"
-        >
-          <p>
-            The body reads top to bottom: <code>setVelocity</code> starts the
-            flywheel and Phoenix holds it while the arm moves, and the{" "}
-            <code>await</code> / <code>wait</code> calls sequence the rest. When
-            you genuinely need a background command that the routine can later
-            cancel, that&apos;s what <code>coroutine.fork(...)</code> is for: a
-            forked command is cancelled automatically when the parent body
-            exits.
-          </p>
-        </Box>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Beyond static sequences: runtime decisions in command bodies
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The four shapes above cover routines that are <em>static</em>: the
-          sequence is known when the command is built. The interesting case is
-          when one phase&apos;s outcome decides what the next phase should be.
-          v3 lets the body read a sensor, store the result in a local variable,
-          and branch with plain Java.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="Pick a scoring height based on what the intake actually grabbed"
-          code={`/**
- * Drive arm to pickup, grab, then decide where to score based on
- * what we picked up.
- */
-// A method on Arm: it drives the arm directly and awaits the intake's
-// commands. Because the body runs on one mechanism, it can read a sensor and
-// branch with plain Java between phases.
-public Command grabAndScore() {
-  return run(coroutine -> {
-    setPosition(GROUND_PICKUP);
-    coroutine.waitUntil(this::atTarget);
-    coroutine.await(intake.grab());
-
-    // Plain local variable. Read once, branch on it.
-    int weight = sensors.readPieceWeight();
-
-    if (weight == 0) {
-      // Got nothing — bail quietly to stowed.
-      setPosition(STOWED);
-      coroutine.waitUntil(this::atTarget);
-    } else if (weight > HEAVY_THRESHOLD) {
-      // Too heavy for the high goal — score low.
-      setPosition(LOW_GOAL);
-      coroutine.waitUntil(this::atTarget);
-      coroutine.await(intake.release());
-    } else {
-      setPosition(HIGH_GOAL);
-      coroutine.waitUntil(this::atTarget);
-      coroutine.await(intake.release());
-    }
-  }).named("grabAndScore");
-}`}
-        />
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The key line is <code>int weight = sensors.readPieceWeight();</code>{" "}
-          followed by a three-way <code>if/else</code> picking between different
-          next phases. Because the whole routine is one method body, a value
-          read in one phase is just a local variable the later phases can branch
-          on.
-        </p>
-
-        <Box
-          variant="concept"
-          tag="WHY THIS MATTERS"
-          title="Write control flow as control flow"
-        >
-          Because the routine is a single method body, multi-phase logic reads
-          top to bottom in plain Java: read a sensor into a local, branch with{" "}
-          <code>if/else</code>, and <code>await</code> the phase you chose. The{" "}
-          <code>coroutine</code> parameter suspends and resumes the body at each{" "}
-          <code>await</code> / <code>waitUntil</code>, so there&apos;s no phase
-          bookkeeping to maintain.
-        </Box>
       </section>
 
       <section className="flex flex-col gap-6">
@@ -394,25 +244,23 @@ public Command grabAndScore() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          A command&apos;s normal completion is just the body falling off the
-          end. Cancellation cleanup goes in a <code>.whenCanceled(...)</code>{" "}
-          hook on the command builder. This matters because a cancelled
-          coroutine is simply <em>dropped</em>: any code after a{" "}
-          <code>park()</code> or an unfinished <code>waitUntil</code> never
-          runs, so a trailing &quot;cleanup&quot; line at the end of the body
-          won&apos;t fire on cancellation.
+          A hold only ever ends by being cancelled — a button binding schedules
+          a different preset, a race&apos;s step finishes, an{" "}
+          <code>.until(...)</code> condition trips. Usually that&apos;s fine
+          as-is: the motor keeps its last closed-loop request in firmware until
+          the next command sends a new one. When a command <em>does</em> need
+          cleanup on interruption — stop the rollers, zero a voltage — that goes
+          in a <code>.whenCanceled(...)</code> hook on the builder.
         </p>
 
         <CodeBlock
           language="java"
-          title="Drop the arm voltage if we get cancelled mid-move"
-          code={`public Command goTo(Angle target, Angle tolerance) {
-  return run(coroutine -> {
-        motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-        coroutine.waitUntil(() -> atTarget(target, tolerance));
-      })
-      .whenCanceled(() -> motor.setControl(voltageOut.withOutput(0)))
-      .named("Arm:goTo:" + target.in(Degrees));
+          title="A hold that cleans up after itself"
+          code={`// The intake should never keep spinning after its command is taken away.
+public Command feed() {
+  return runRepeatedly(() -> setVelocity(FEED_SPEED))
+      .whenCanceled(() -> roller.stopMotor())
+      .named("feed (hold)");
 }`}
         />
 
@@ -420,13 +268,42 @@ public Command grabAndScore() {
           className="text-[14px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          The <code>whenCanceled</code> callback only fires when the command is
-          interrupted. Code that should run only on <em>normal</em> completion
-          goes at the bottom of the body (it runs when the body returns on its
-          own). Because cancellation drops the coroutine before it reaches that
-          point, interrupt cleanup has to live in <code>whenCanceled</code>. Two
-          clear places, one for each way a command can end.
+          The <code>whenCanceled</code> callback fires only when the command is
+          interrupted, which for a hold is the only way it ends — so it&apos;s
+          effectively the hold&apos;s &quot;on the way out&quot; hook.
         </p>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <h2
+          className="text-2xl font-semibold leading-tight"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--fg)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          The advanced dialect: coroutines (optional)
+        </h2>
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          v3 commands can also be written as a single body that pauses itself
+          from the inside — <code>run(coroutine -&gt; {`{ ... }`})</code> with{" "}
+          <code>coroutine.await(command)</code>, <code>fork(command)</code>, and{" "}
+          <code>waitUntil(condition)</code>. Reach for it only when a hold must
+          span many steps or the logic needs loops and branches; you won&apos;t
+          need it in this workshop. The template keeps a worked example of the
+          same drive-stow-drive routine in that dialect:
+        </p>
+
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
+          title="DriveStowDriveOpMode.java — the coroutine dialect (optional)"
+          icon={<GitBranch className="w-5 h-5" />}
+        />
       </section>
 
       <Box
@@ -434,11 +311,12 @@ public Command grabAndScore() {
         tag="NOTE · API STATUS"
         title="This is the WPILib 2027 alpha"
       >
-        The <code>Coroutine</code> API, the staged builder, and the compile-time
+        <code>runRepeatedly</code>, the staged builder, and the compile-time
         enforcement of <code>.named(...)</code> run on <strong>Java 25</strong>{" "}
         and deploy to <strong>SystemCore</strong>. The stack is the WPILib 2027{" "}
         <em>alpha</em> (GradleRIO <code>2027.0.0-alpha-6</code>), so the exact
-        APIs are still moving between alpha builds.
+        APIs are still moving between alpha builds. This page was last verified
+        against alpha-6 in July 2026.
       </Box>
 
       <Quiz
@@ -447,58 +325,71 @@ public Command grabAndScore() {
           {
             id: 1,
             question:
-              'You write run(coroutine -> motor.setControl(voltageOut.withOutput(6))).named("setHigh"). The body never yields. When does this command finish?',
+              "What makes a mechanism command a hold, and how do you spell it in v3?",
             options: [
-              "Immediately, the same scheduler tick it's scheduled — the body has nothing to wait on",
-              "Never — without a yield, the scheduler treats it as a hold-forever command",
-              "On the next tick, after one mandatory yield is inserted by the framework",
-              "When the mechanism's default command pre-empts it",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "A v3 command finishes as soon as its body returns. If you never call coroutine.yield(), waitUntil, await, or park, the body runs straight through to the end on the same tick and the command is done. Use coroutine.park() if you want a set-then-hold command instead.",
-          },
-          {
-            id: 2,
-            question:
-              'What\'s the v3 spelling of "set this value once, then hold it until the command is cancelled"?',
-            options: [
-              "runOnce(() -> setValue(x))",
-              "run(coroutine -> { setValue(x); coroutine.park(); })",
-              "runRepeatedly(() -> setValue(x)) on its own — there's no other way",
-              "idle() on its own — it already holds the last value",
+              "It sets the motor once and exits — run(coroutine -> setControl(...))",
+              'It re-sends its closed-loop setpoint every tick and never finishes — runRepeatedly(() -> setPosition(TARGET)).named("target (hold)")',
+              "It runs at maximum priority so nothing can interrupt it",
+              "It waits on a condition — coroutine.waitUntil(this::atTarget)",
             ],
             correctAnswer: 1,
             explanation:
-              "Setting once and then parking gives you a command that does its setup, then yields forever waiting for cancellation. runRepeatedly works too but re-applies the setpoint every 20 ms which is usually wasteful. The park form sets the value exactly once.",
+              'A hold keeps re-sending its setpoint forever, so the motor stays actively commanded and the command that issued the request keeps running as long as the request is active. runRepeatedly(...) is the spelling, and the "(hold)" suffix in the name is part of the convention.',
+          },
+          {
+            id: 2,
+            question: 'Why does every hold\'s name end in "(hold)"?',
+            options: [
+              "The compiler plugin requires the suffix for runRepeatedly commands",
+              'So that when a routine gets stuck waiting on one, the dashboard and logs show a "(hold)" name — which tells you exactly what the bug is',
+              "The scheduler uses the suffix to assign holds the lowest priority",
+              "It's purely cosmetic — any name works the same",
+            ],
+            correctAnswer: 1,
+            explanation:
+              'THE ONE RULE is that a hold never finishes, so nothing may wait on one. Mistakes still happen — and when they do, the stuck routine sits on a command whose name literally says "(hold)". The naming convention turns a mystery hang into a one-glance diagnosis.',
           },
           {
             id: 3,
             question:
-              "About what fraction of teaching-level commands actually use the coroutine parameter?",
+              "An auto needs the arm at scoring angle before the next step. The mechanism only exposes scoring(), a hold. What do you write?",
             options: [
-              "All of them — the parameter is required",
-              "Most of them — almost every command yields at least once",
-              "Roughly 20% — most commands are set-once factories that ignore the parameter",
-              "Only the multi-phase composers — even waitUntil commands skip it",
+              "arm.scoringAndWait() — mechanisms provide a waiting variant of each preset",
+              "arm.scoring().until(arm::isAtTarget), with .withTimeout(...) as a seatbelt — the finish line is applied at the call site",
+              "arm.scoring() directly — sequences detect holds and skip ahead automatically",
+              "coroutine.await(arm.scoring()) — awaiting adds a finish line",
             ],
-            correctAnswer: 2,
+            correctAnswer: 1,
             explanation:
-              "Single set-once factories — setVoltage, runIntake, openClaw — never need to wait, so they never touch the coroutine. The coroutine matters when a command holds (park), waits (waitUntil / wait), or composes children (await / awaitAll / awaitAny / fork). That's roughly 20% of the commands a working robot project tends to define.",
+              'There are no "...AndWait" methods — waiting is always spelled at the call site with .until(...). Awaiting or sequencing a bare hold just moves the forever-wait somewhere else. The timeout keeps an unreachable setpoint from burning the rest of the period.',
           },
           {
             id: 4,
             question:
-              "v3 has no end(boolean interrupted). How do you run cleanup code only when a command is cancelled?",
+              "In Command.race(robot.intake.feed().until(robot.intake::isEmpty), robot.flywheel.spinUp()), what ends the race?",
+            options: [
+              "Whichever member finishes first — it's unpredictable",
+              "The feed step — the flywheel hold never finishes, so the step always decides, and the race then cancels the hold",
+              "The flywheel hold, once the wheel reaches speed",
+              "The race never ends — one member is a hold",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "A race ends when its first member finishes and cancels the rest. The hold can't finish, so the self-finishing step is always the decider — that's what makes race the tool for \"do this step WHILE holding.\"",
+          },
+          {
+            id: 5,
+            question:
+              "How do you run cleanup code when a hold is interrupted (which is the only way a hold ends)?",
             options: [
               "Attach a .whenCanceled(runnable) hook on the command builder",
               "Wrap the body in a try/catch — cancellation throws a CancelledException",
-              "Override the inherited end() from Command — it still takes a boolean",
-              "Add a coroutine.onInterrupt() call at the start of the body",
+              "Put the cleanup at the bottom of the body — it runs when the command ends",
+              "Override end(boolean interrupted) like in Commands v2",
             ],
             correctAnswer: 0,
             explanation:
-              ".whenCanceled(...) on the builder registers a Runnable that fires only on cancellation. There's no exception to catch — the scheduler just drops the coroutine, so code after a park()/waitUntil never runs. Cleanup that should happen only on normal completion goes at the bottom of the body; interrupt cleanup goes in .whenCanceled.",
+              '.whenCanceled(...) registers a Runnable that fires only on cancellation. A cancelled command is simply dropped, so trailing code in the body never runs on interruption — for a hold, whenCanceled is effectively the "on the way out" hook.',
           },
         ]}
       />
