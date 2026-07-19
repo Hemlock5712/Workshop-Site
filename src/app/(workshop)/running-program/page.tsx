@@ -9,7 +9,7 @@ export default function RunningProgram() {
     <PageTemplate title="Running Program">
       {/* Introduction */}
       <KeyConceptSection
-        title="Running Program - Hardware Simulation Testing"
+        title="Running Program: Hardware Simulation Testing"
         description={[
           "WPILib's Hardware Simulation lets you run your code in the simulator while driving real motors connected to the CANivore.",
           "A CANivore also lets you build robot applications that run directly on Windows or Linux machines.",
@@ -40,11 +40,11 @@ export default function RunningProgram() {
         <p className="mb-3">
           Before running Hardware Simulation code, you <strong>must</strong>{" "}
           turn <strong>OFF</strong> the &quot;CANivore USB&quot; setting in
-          TunerX. This prevents conflicts between the simulation environment and
-          physical hardware communication.
+          Tuner X. This prevents conflicts between the simulation environment
+          and physical hardware communication.
         </p>
         <Box variant="alert-warning" title="Steps" className="mt-3">
-          Open TunerX → Go to CANivore settings → Disable &quot;CANivore
+          Open Tuner X → Go to CANivore settings → Disable &quot;CANivore
           USB&quot;
         </Box>
       </Box>
@@ -73,7 +73,7 @@ export default function RunningProgram() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          You start the simulator (or deploy to the robot) and the driver
+          You start the simulator (or deploy to the robot), and the driver
           station lists every <code>@Teleop</code> / <code>@Autonomous</code> /{" "}
           <code>@Utility</code> class <em>by name</em>. Selecting one{" "}
           <strong>constructs</strong> that OpMode (that&apos;s when its button
@@ -135,7 +135,7 @@ export default function RunningProgram() {
             {
               id: 2,
               question:
-                "What setting must be turned OFF in TunerX before running Hardware Simulation code?",
+                "What setting must be turned OFF in Tuner X before running Hardware Simulation code?",
               options: [
                 "Motor Control",
                 "CANivore USB",
@@ -144,7 +144,7 @@ export default function RunningProgram() {
               ],
               correctAnswer: 1,
               explanation:
-                "The 'CANivore USB' setting must be turned OFF in TunerX to prevent conflicts between the simulation environment and physical hardware communication.",
+                "The 'CANivore USB' setting must be turned OFF in Tuner X to prevent conflicts between the simulation environment and physical hardware communication.",
             },
             {
               id: 3,

@@ -18,7 +18,7 @@ export default function MechanismCAD() {
     <PageTemplate title="Mechanism CAD">
       {/* Introduction */}
       <KeyConceptSection
-        title="Mechanism CAD - 3D Model Exploration"
+        title="Mechanism CAD: 3D Model Exploration"
         description="Before we write any code, we need a physical mechanism. If you don't have a previous robot or mechanism to use, below are 3D models of mechanisms you can build affordably."
         concept="Interactive 3D model of the Flywheel mechanism."
       />

@@ -10,7 +10,7 @@ export default function VisionOptions() {
   return (
     <PageTemplate title="Vision Options">
       <KeyConceptSection
-        title="Computer Vision - See the Field"
+        title="Computer Vision: See the Field"
         description="Cameras let a robot detect game pieces, track targets, and figure out where it is on the field. AprilTags provide absolute field positioning, while object detection helps with game piece manipulation."
         concept="Without vision, your robot only knows where odometry says it is. With it, the robot can see the field and correct itself."
       />
@@ -31,14 +31,11 @@ export default function VisionOptions() {
           </Box>
           <Box variant="concept" title="Target Tracking">
             Aim and shoot at targets dynamically, adjusting for robot and target
-            movement in real-time.
+            movement in real time.
           </Box>
         </div>
 
-        <Box
-          variant="alert-info"
-          title="💡 Vision is Essential for Competitive Play"
-        >
+        <Box variant="alert-info" title="Vision in Modern FRC">
           <p>
             Modern FRC all but requires vision for accurate autonomous and
             teleop assists. Top teams run multiple cameras to keep more of the
@@ -71,21 +68,21 @@ export default function VisionOptions() {
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ✅ Advantages
+                Advantages
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Zero code required for basic detection</li>
                 <li>Built-in LED ring for consistent lighting</li>
                 <li>Hardware-accelerated processing</li>
                 <li>Web interface for tuning pipelines</li>
-                <li>NetworkTables integration out-of-box</li>
+                <li>NetworkTables integration out of the box</li>
                 <li>Proven reliability in competition</li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ⚠️ Limitations
+                Limitations
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Higher cost (~$400-500)</li>
@@ -97,7 +94,7 @@ export default function VisionOptions() {
 
           <div className="mt-6">
             <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              🎯 Best For
+              Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Teams that want proven vision hardware with minimal setup and are
@@ -133,7 +130,7 @@ export default function VisionOptions() {
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ✅ Advantages
+                Advantages
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Free and open source</li>
@@ -147,7 +144,7 @@ export default function VisionOptions() {
 
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ⚠️ Limitations
+                Limitations
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Requires coprocessor setup</li>
@@ -160,7 +157,7 @@ export default function VisionOptions() {
 
           <div className="mt-6">
             <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              🎯 Best For
+              Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Teams that want cheap, flexible vision and don&apos;t mind the
@@ -186,7 +183,7 @@ export default function VisionOptions() {
         <div className="grid md:grid-cols-2 gap-6">
           <ContentCard>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              🔌 Power & Connectivity
+              Power & Connectivity
             </h3>
             <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
               <li>
@@ -208,7 +205,7 @@ export default function VisionOptions() {
 
           <ContentCard>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              🏷️ AprilTag Configuration
+              AprilTag Configuration
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
               Ensure your Limelight is up to date and configured for the current
@@ -400,7 +397,7 @@ export default function VisionOptions() {
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            📷 Using Limelight
+            Using Limelight
           </h3>
 
           <p className="text-slate-600 dark:text-slate-300 mb-6">

@@ -142,7 +142,7 @@ export default function BuildingSubsystems() {
             <p>
               Returns a ready-made command that yields forever at{" "}
               <code>LOWEST_PRIORITY</code>. Every mechanism already has this
-              wired as its default — set your own default to override.
+              wired as its default; set your own to override.
             </p>
           </Box>
         </div>
@@ -180,8 +180,8 @@ export default function BuildingSubsystems() {
           Every mechanism has a default command. The scheduler runs it whenever
           no higher-priority command requires that mechanism, and pre-empts it
           the moment one does. Out of the box, the default is{" "}
-          <code>idle()</code> — a no-op park at <code>LOWEST_PRIORITY</code> —
-          so a fresh mechanism just sits there safely. Call{" "}
+          <code>idle()</code>, a no-op park at <code>LOWEST_PRIORITY</code>, so
+          a fresh mechanism just sits there safely. Call{" "}
           <code>setDefaultCommand(...)</code> to override it. A default that
           needs no controller (like hold-in-place) can be set right in the
           mechanism&apos;s constructor; a default that depends on a joystick is
@@ -278,9 +278,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         tag="NOTE · API STATUS"
         title="This is the WPILib 2027 alpha"
       >
-        Commands V3 — including the <code>Mechanism</code> base class, the
+        Commands V3 (including the <code>Mechanism</code> base class, the
         builder-chain factories, and the compile-time <code>.named(...)</code>{" "}
-        enforcement — run on <strong>Java 25</strong> and deploy to{" "}
+        enforcement) run on <strong>Java 25</strong> and deploy to{" "}
         <strong>SystemCore</strong>. The stack is the WPILib 2027 <em>alpha</em>{" "}
         (GradleRIO <code>2027.0.0-alpha-6</code>).
       </Box>
@@ -300,7 +300,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "Mechanism is a base class you extend. There's no periodic() override — use a runRepeatedly(...) default or publish from inside command bodies. It supplies the run()/runRepeatedly()/idle() factories, and every mechanism automatically holds a low-priority idle() default until something else commands it.",
+              "Mechanism is a base class you extend. There's no periodic() override; use a runRepeatedly(...) default or publish from inside command bodies. It supplies the run()/runRepeatedly()/idle() factories, and every mechanism automatically holds a low-priority idle() default until something else commands it.",
           },
           {
             id: 2,
@@ -342,7 +342,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "idle() returns a command whose body parks (yields forever) at LOWEST_PRIORITY. Anything scheduled on the mechanism — a teleop default, a trigger-bound command, an auto routine — outranks it and takes over immediately. Override setDefaultCommand(...) to swap idle() for a hold-in-place or teleop-drive default of your own.",
+              "idle() returns a command whose body parks (yields forever) at LOWEST_PRIORITY. Anything scheduled on the mechanism (a teleop default, a trigger-bound command, an auto routine) outranks it and takes over immediately. Override setDefaultCommand(...) to swap idle() for a hold-in-place or teleop-drive default of your own.",
           },
           {
             id: 5,
@@ -356,7 +356,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 2,
             explanation:
-              "The Mechanism base class intentionally doesn't define periodic(). When you want every-tick behavior, set a runRepeatedly(...) command as the default — the scheduler runs it whenever nothing else owns the mechanism. For pure telemetry that should always publish, instantiate NetworkTables publishers in the constructor and push to them from inside the command bodies that produce the values.",
+              "The Mechanism base class intentionally doesn't define periodic(). When you want every-tick behavior, set a runRepeatedly(...) command as the default; the scheduler runs it whenever nothing else owns the mechanism. For pure telemetry that should always publish, instantiate NetworkTables publishers in the constructor and push to them from inside the command bodies that produce the values.",
           },
         ]}
       />

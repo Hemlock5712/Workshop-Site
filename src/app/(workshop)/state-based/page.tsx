@@ -15,7 +15,7 @@ export default function StateMachines() {
         title="State Machines with WPILib Commands V3"
         description={[
           "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this, including entry/exit hooks and any-state interrupts, without writing scaffolding by hand.",
-          "Reach for a StateMachine whenever a routine has phases that can repeat, skip, or back up to an earlier phase based on sensor input. Auto routines that recover from being knocked off-course, LED logic that escalates between info/warning animations, and superstructure choreography are all natural fits.",
+          "Reach for a StateMachine whenever a routine has phases that can repeat, skip, or back up to an earlier phase based on sensor input. Auto routines that recover from being knocked off course, LED logic that escalates between info/warning animations, and superstructure choreography are all natural fits.",
         ]}
         concept="A state is a Command that runs while the machine is in it. Transitions are edge-triggered conditions that cancel the current state's command and move to the next state. onEnter / onExit fire around each transition."
       />
@@ -107,7 +107,7 @@ public Command autoArmCycle() {
           <code>arm.low()</code> and friends are factory methods on the{" "}
           <code>Arm</code> mechanism that return a configured{" "}
           <code>Command</code>. The state machine itself doesn&apos;t care how
-          they&apos;re built — only that each state has one command to run.
+          they&apos;re built, only that each state has one command to run.
         </p>
 
         <CodeBlock
@@ -133,7 +133,7 @@ public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWAR
         >
           Here are those four steps in the workshop&apos;s real code: the{" "}
           <code>6-StateBased</code> branch runs the whole Arm + Flywheel teleop
-          as one state machine — stowed, pickup, spin-up, and ready states,
+          as one state machine, with stowed, pickup, spin-up, and ready states,
           button-driven transitions, a sensor-driven{" "}
           <code>flywheel::isAtTarget</code> handoff, and a{" "}
           <code>switchFromAny</code> panic interrupt.
@@ -166,12 +166,12 @@ public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWAR
                 Checked every scheduler tick{" "}
                 <em>while the state&apos;s command is running</em>. Rising-edge
                 guarded, so <code>state.switchTo(state).when(...)</code> never
-                infinite loops — the condition has to go false and then true
+                infinite loops: the condition has to go false and then true
                 again to fire a second time.
               </p>
               <p style={{ marginTop: 8 }}>
                 Does <strong>not</strong> fire for one-shot commands that never
-                yield — the loop checking it never runs.
+                yield, because the loop checking it never runs.
               </p>
             </Box>
 
@@ -217,7 +217,7 @@ scoring.switchTo(scoring).whenCompleteAnd(hopper::hasBall);`}
           >
             Each state can register any number of <code>onEnter</code> and{" "}
             <code>onExit</code> callbacks. Useful when entering or leaving a
-            state needs to kick off side-effects that aren&apos;t part of the
+            state needs to kick off side effects that aren&apos;t part of the
             state&apos;s main command: schedule a background animation, stiffen
             the drivetrain, log a marker, etc.
           </p>
@@ -346,8 +346,8 @@ sm.switchFromAny().to(idle).whenComplete();`}
           style={{ color: "var(--fg-mute)" }}
         >
           The <code>StateMachine</code> class is the headline v3 feature for
-          this page, but the underlying coroutine model also unlocks command
-          shapes that would otherwise need a custom <code>Command</code>{" "}
+          this page, but the underlying coroutine model also lets you write
+          command shapes that would otherwise need a custom <code>Command</code>{" "}
           subclass. The classic case: a command that reads a sensor value
           mid-sequence and picks a different next step based on what it saw.
         </p>
@@ -407,7 +407,7 @@ public Command grabAndScore() {
           Because the routine is a single method body, multi-phase logic reads
           top to bottom in plain Java: read a sensor into a local, branch with{" "}
           <code>if</code>/<code>else</code>, and <code>await</code> the step you
-          chose — no phase field, no manual child scheduling. The{" "}
+          chose. No phase field, no manual child scheduling. The{" "}
           <code>StateMachine</code> class earlier in this lesson is a structured
           version of the same idea: declarative transitions between phases
           without writing the scaffolding by hand.
@@ -422,7 +422,7 @@ public Command grabAndScore() {
         Commands V3 and the <code>StateMachine</code> class run on{" "}
         <strong>Java 25</strong> and deploy to <strong>SystemCore</strong>. The
         stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
-        <code>2027.0.0-alpha-6</code>) — the release where StateMachine first
+        <code>2027.0.0-alpha-6</code>), the release where StateMachine first
         shipped.
       </Box>
 
@@ -441,7 +441,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 1,
             explanation:
-              "Conditional transitions (.when) are checked inside the loop that runs while the state's command is active. A one-shot never enters that loop, so the condition is never checked. Use whenComplete() (or whenCompleteAnd()) for one-shot states — it's checked exactly once after the command finishes.",
+              "Conditional transitions (.when) are checked inside the loop that runs while the state's command is active. A one-shot never enters that loop, so the condition is never checked. Use whenComplete() (or whenCompleteAnd()) for one-shot states. It's checked exactly once after the command finishes.",
           },
           {
             id: 2,
@@ -469,7 +469,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 2,
             explanation:
-              "setInitialState() is marked @PostConstructionInitializer, and the WPILib compiler plugin fails the build if you construct a StateMachine and never call it — the same build-time enforcement Commands V3 applies to .named() on command builders. As a backstop, a machine that reaches the scheduler without one throws IllegalStateException when it starts.",
+              "setInitialState() is marked @PostConstructionInitializer, and the WPILib compiler plugin fails the build if you construct a StateMachine and never call it. That's the same build-time enforcement Commands V3 applies to .named() on command builders. As a backstop, a machine that reaches the scheduler without one throws IllegalStateException when it starts.",
           },
           {
             id: 4,
@@ -483,7 +483,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 1,
             explanation:
-              "Transitions are synchronous within a single scheduler iteration. onExit runs first, then the current command is canceled, then the next state becomes current and its command is forked — all without an extra yield. This is intentional so a chain of fast transitions doesn't waste scheduler cycles.",
+              "Transitions are synchronous within a single scheduler iteration. onExit runs first, then the current command is canceled, then the next state becomes current and its command is forked, all without an extra yield. This is intentional so a chain of fast transitions doesn't waste scheduler cycles.",
           },
           {
             id: 5,
@@ -497,7 +497,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 1,
             explanation:
-              "Command.sequence(...) is a linear pipeline — A then B then C. A StateMachine is a graph: any state can transition to any other state at any time, with onEnter/onExit hooks and switchFromAny interrupts. If your routine can repeat phases, skip phases, or recover by jumping back, you want a state machine, not a sequence.",
+              "Command.sequence(...) is a linear pipeline: A then B then C. A StateMachine is a graph: any state can transition to any other state at any time, with onEnter/onExit hooks and switchFromAny interrupts. If your routine can repeat phases, skip phases, or recover by jumping back, you want a state machine, not a sequence.",
           },
         ]}
       />

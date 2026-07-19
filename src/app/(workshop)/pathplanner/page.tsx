@@ -125,7 +125,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           body.
         </p>
 
-        <CollapsibleSection title='🧩 Mixing in mechanism actions (the old "event markers")'>
+        <CollapsibleSection title='Mixing in mechanism actions (the old "event markers")'>
           <div className="space-y-4">
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Because legs are just commands, you can interleave superstructure

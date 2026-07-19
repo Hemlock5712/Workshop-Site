@@ -102,7 +102,10 @@ export default function SearchPageContent() {
               &quot;{query}&quot;
             </span>
             <span>•</span>
-            <span>{results.length} results found</span>
+            <span>
+              {results.length} {results.length === 1 ? "result" : "results"}{" "}
+              found
+            </span>
           </div>
         )}
       </div>
@@ -236,9 +239,9 @@ export default function SearchPageContent() {
             <div>
               <p className="font-medium mb-1">Keywords to try:</p>
               <ul className="space-y-1">
-                <li>• &quot;PID control&quot; - Control theory</li>
-                <li>• &quot;subsystem&quot; - Code architecture</li>
-                <li>• &quot;motor&quot; - Hardware setup</li>
+                <li>• &quot;PID control&quot; for control theory</li>
+                <li>• &quot;subsystem&quot; for code architecture</li>
+                <li>• &quot;motor&quot; for hardware setup</li>
               </ul>
             </div>
             <div>

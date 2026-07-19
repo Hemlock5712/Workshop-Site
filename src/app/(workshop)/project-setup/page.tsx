@@ -9,7 +9,7 @@ export default function ProjectSetup() {
     <PageTemplate title="Project Setup">
       {/* Introduction */}
       <KeyConceptSection
-        title="Project Setup - Launching Your Codebase"
+        title="Project Setup: Launching Your Codebase"
         description="Step-by-step guide to creating a new WPILib project. This workshop's robot code is built on Commands v3 + OpModes, so the starting point is the team's 2027-Template, which already organizes your code into mechanisms and OpModes."
         concept="Start from the Commands v3 / OpMode project so your code is organized into mechanisms and OpModes from day one."
       />
@@ -34,7 +34,7 @@ export default function ProjectSetup() {
               team&apos;s 2027-Template
             </a>
           </strong>{" "}
-          repo — clone it (the default <code>2027-dev</code> branch has the 2027
+          repo. Clone it (the default <code>2027-dev</code> branch has the 2027
           stack; the <code>main</code> branch is still the older 2026 stack) so
           you start with the OpMode wiring already in place, then set your team
           number in <code>.wpilib/wpilib_preferences.json</code>. The site
@@ -104,8 +104,8 @@ export default function ProjectSetup() {
               </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Choose Template → Java →{" "}
-                <strong>Command Robot Skeleton (Advanced)</strong>. Note: for
-                the 2027 OpMode structure this workshop teaches, start from the{" "}
+                <strong>Command Robot Skeleton (Advanced)</strong>. For the 2027
+                OpMode structure this workshop teaches, start from the{" "}
                 <strong>2027-Template</strong> as noted above.
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">
-                Base folder select &quot;Downloads&quot;
+                Base folder: select &quot;Downloads&quot;
               </p>
               <Box
                 variant="alert-warning"

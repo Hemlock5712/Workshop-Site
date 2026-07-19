@@ -258,7 +258,7 @@ export default function Home() {
 
         <WorkshopBanner
           number="01"
-          description="Control fundamentals — single-motor mechanisms"
+          description="Control fundamentals: single-motor mechanisms"
           tone="primary"
         />
         <div className="mb-8 grid gap-4 md:grid-cols-2">
@@ -293,7 +293,7 @@ export default function Home() {
 
         <WorkshopBanner
           number="02"
-          description="Drive & perception — full-robot autonomy"
+          description="Drive & perception: full-robot autonomy"
           tone="accent"
         />
         <div className="grid gap-4 md:grid-cols-2">

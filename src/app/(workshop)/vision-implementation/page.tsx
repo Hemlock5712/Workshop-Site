@@ -31,7 +31,7 @@ export default function VisionImplementation() {
         <div className="grid md:grid-cols-1 gap-6">
           <ContentCard>
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              🚀 Implementation Sequence
+              Implementation Sequence
             </h3>
             <div className="space-y-4">
               <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
@@ -95,7 +95,7 @@ export default function VisionImplementation() {
                   <p className="text-primary-900 dark:text-primary-100 text-sm">
                     The drivetrain owns the pose estimator. In the OpMode model
                     you wire the camera up once in <code>Robot</code>&apos;s
-                    constructor (e.g.{" "}
+                    constructor (e.g.,{" "}
                     <code>
                       Limelight.registerAll(drivetrain, &quot;limelight&quot;)
                     </code>
@@ -115,12 +115,12 @@ export default function VisionImplementation() {
             </li>
             <li>
               <strong>Validation Layer:</strong> The Limelight subsystem filters
-              bad measurements before they make it to your pose estimate
+              bad measurements before they make it to your pose estimate.
             </li>
             <li>
               <strong>Dynamic Trust:</strong> Standard deviations adjust based
               on measurement quality, preventing bad data from degrading
-              odometry
+              odometry.
             </li>
           </ul>
         </Box>
@@ -144,8 +144,8 @@ export default function VisionImplementation() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm">
               We use a simple formula based on tag count and distance. As the
-              robot gets further from tags, the standard deviation increases
-              (trust decreases). More tags visible decreases the standard
+              robot gets farther from tags, the standard deviation increases
+              (trust decreases). Seeing more tags decreases the standard
               deviation (trust increases).
             </p>
             <CodeBlock
@@ -229,9 +229,9 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
                     Change Pipeline to AprilTag
                   </h4>
                   <p className="text-primary-600 dark:text-primary-400 text-sm">
-                    Access the Limelight web interface and switch the active
+                    Open the Limelight web interface and switch the active
                     pipeline to AprilTag mode. This enables 3D pose estimation
-                    using AprilTags for accurate robot localization.
+                    for accurate robot localization.
                   </p>
                 </div>
               </div>
@@ -245,10 +245,10 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
                     Adjust Exposure
                   </h4>
                   <p className="text-primary-700 dark:text-primary-300 text-sm">
-                    In the camera settings, reduce the exposure as low as
-                    possible while still reliably detecting AprilTags. Lower
-                    exposure reduces motion blur and improves tag detection
-                    accuracy during fast robot movement.
+                    In the camera settings, set the exposure as low as possible
+                    while still reliably detecting AprilTags. Lower exposure
+                    reduces motion blur and improves tag detection accuracy
+                    during fast robot movement.
                   </p>
                 </div>
               </div>
@@ -320,7 +320,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
           reading this data without direct NetworkTables access. Limelight
           distributes it against the current-season WPILib packages, so the
           workshop repo carries a copy migrated to the 2027{" "}
-          <code>org.wpilib.*</code> packages — that copy is what the code below
+          <code>org.wpilib.*</code> packages. That copy is what the code below
           uses.
         </p>
 
@@ -368,7 +368,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         >
           <p>
             The Limelight owns no actuators, so it isn&apos;t a{" "}
-            <code>Mechanism</code> — it&apos;s a plain class whose{" "}
+            <code>Mechanism</code>. It&apos;s a plain class whose{" "}
             <code>update()</code> is registered on the scheduler with{" "}
             <code>Scheduler.getDefault().addPeriodic(camera::update)</code>,
             wired up once from <code>Robot</code>&apos;s constructor via{" "}
@@ -397,8 +397,8 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         <p className="text-slate-600 dark:text-slate-300">
           Everything above comes straight from the <code>3-Limelight</code>{" "}
           branch of the Workshop-Code repository, which integrates the Limelight
-          with the swerve drive and odometry. Reference the full working project
-          and adapt it for your own robot.
+          with the swerve drive and odometry. Use the full working project as a
+          reference and adapt it for your own robot.
         </p>
       </section>
 
@@ -411,7 +411,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
           <Box variant="alert-success" title="Do">
             <ul className="list-disc list-inside space-y-2">
               <li>Validate vision data before using it</li>
-              <li>Account for latency (automatically done)</li>
+              <li>Account for latency (handled automatically)</li>
               <li>Use appropriate standard deviations</li>
               <li>Test different exposures (lower is better)</li>
               <li>Log vision data for debugging</li>
@@ -422,7 +422,7 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
             <ul className="list-disc list-inside space-y-2">
               <li>Trust vision measurements blindly</li>
               <li>Ignore latency compensation</li>
-              <li>Use vision as only odometry source</li>
+              <li>Use vision as your only odometry source</li>
               <li>Forget to tune camera settings</li>
               <li>Skip testing in match conditions</li>
             </ul>
@@ -549,9 +549,8 @@ double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / pose
         </h2>
 
         <Box variant="alert-success" title="Up Next: Dynamic Flywheel">
-          With vision integrated into your odometry, you&apos;re ready to
-          implement dynamic flywheel control using vision-based distance
-          measurements to shoot accurately from anywhere on the field.
+          You&apos;ll implement dynamic flywheel control using vision-based
+          distance measurements to shoot accurately from anywhere on the field.
         </Box>
       </section>
     </PageTemplate>

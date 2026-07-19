@@ -34,23 +34,23 @@ export default function Hardware() {
           <li>
             <strong>
               <GlossaryTerm term="motor">Motors</GlossaryTerm>
-            </strong>{" "}
-            - like the wheels that make it move
+            </strong>
+            : like the wheels that make it move
           </li>
           <li>
             <strong>
               <GlossaryTerm term="motor controller">Controllers</GlossaryTerm>
-            </strong>{" "}
-            - like the remote control that tells motors what to do
+            </strong>
+            : like the remote control that tells motors what to do
           </li>
           <li>
             <strong>
               <GlossaryTerm term="sensor">Sensors</GlossaryTerm>
-            </strong>{" "}
-            - like a speedometer that tells you how fast you&apos;re going
+            </strong>
+            : like a speedometer that tells you how fast you&apos;re going
           </li>
           <li>
-            <strong>A brain</strong> - like the electronics inside that process
+            <strong>A brain</strong>: like the electronics inside that process
             everything
           </li>
         </ul>
@@ -65,7 +65,7 @@ export default function Hardware() {
 
       {/* Introduction */}
       <KeyConceptSection
-        title="Hardware Setup - Building the Foundation"
+        title="Hardware Setup: Building the Foundation"
         description="Overview of the motors, sensors, and controllers you'll connect for this workshop."
         concept="Solid hardware configuration enables precise and reliable robot control."
       />
@@ -147,7 +147,7 @@ export default function Hardware() {
               <strong>What it is:</strong> A{" "}
               <GlossaryTerm term="sensor">sensor</GlossaryTerm> that measures
               exactly where a rotating part is positioned. It can tell you
-              &quot;the arm is at 45 degrees&quot; with high precision.
+              &quot;the arm is at 45 degrees.&quot;
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-3">
               <strong>Why you need it:</strong> The{" "}
@@ -163,7 +163,7 @@ export default function Hardware() {
               </p>
               <ul className="text-sm text-primary-800 dark:text-primary-300 list-disc list-inside space-y-1">
                 <li>
-                  Remembers position even when robot is turned off (absolute
+                  Remembers position even when the robot is turned off (absolute
                   position)
                 </li>
                 <li>Mounts directly on rotating shafts</li>
@@ -223,7 +223,7 @@ export default function Hardware() {
                   Has LED lights that show if everything is working correctly
                 </li>
                 <li>
-                  Allows for faster communication than{" "}
+                  Allows for faster communication than the{" "}
                   <GlossaryTerm term="roborio">roboRIO</GlossaryTerm>
                 </li>
               </ul>
@@ -343,12 +343,12 @@ export default function Hardware() {
           icon={<AlertTriangle className="w-5 h-5" />}
         >
           <ol className="list-decimal list-inside space-y-2">
-            <li>Plug the computer into CANivore</li>
-            <li>Make sure the &quot;CANivore USB&quot; is checked</li>
+            <li>Plug the computer into the CANivore</li>
+            <li>Make sure &quot;CANivore USB&quot; is checked</li>
             <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
             <li>Your CANivore should now appear in Phoenix Tuner</li>
             <li>
-              For this workshop, please name your CANivore: &quot;canivore&quot;
+              For this workshop, please name your CANivore &quot;canivore&quot;
             </li>
           </ol>
         </Box>
@@ -450,8 +450,8 @@ export default function Hardware() {
           icon={<Palette className="w-5 h-5" />}
         >
           <p className="mb-3">
-            The color of the device cards is helpful as a visual indicator of
-            device state. The meaning of the card color is also shown as text
+            The color of the device cards is a quick visual indicator of device
+            state. The meaning of the card color is also shown as text
             underneath the device title.
           </p>
 
@@ -546,8 +546,8 @@ export default function Hardware() {
             className="mt-4"
           >
             Always update all motors to the same firmware version for
-            consistency and use batch update to save time when updating multiple
-            devices.
+            consistency, and use batch update to save time when updating
+            multiple devices.
           </Box>
         </Box>
       </section>
@@ -642,7 +642,7 @@ export default function Hardware() {
             ],
             correctAnswer: 1,
             explanation:
-              "CTRE hardware offers complete PID implementation with kP, kI, kD, built-in feedforward control for gravity and velocity compensation, advanced Motion Magic profiling, and uses intuitive rotation units instead of encoder ticks or radians.",
+              "CTRE hardware offers a complete PID implementation with kP, kI, kD, built-in feedforward control for gravity and velocity compensation, advanced Motion Magic profiling, and intuitive rotation units instead of encoder ticks or radians.",
           },
           {
             id: 2,

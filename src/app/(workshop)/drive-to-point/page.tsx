@@ -155,7 +155,7 @@ Pose2d currentPose = drivetrain.getPose();`}
           icon={<Lightbulb className="w-5 h-5" />}
         >
           <p>
-            Swerve drivetrains can move in X, Y, and rotate independently. One
+            Swerve drivetrains can control X, Y, and rotation independently. One
             PID controller per degree of freedom lets the robot drive to the
             target position and rotate to the target heading at the same time.
           </p>
@@ -326,7 +326,7 @@ protected boolean isFinished() {
           </p>
           <CodeBlock
             language="java"
-            title="DriveToPoint — inline coroutine version"
+            title="DriveToPoint: inline coroutine version"
             code={`// A command factory on DriveMechanism. runRepeatedly loops the drive update
 // every tick and never finishes on its own (set-and-hold), so it runs until
 // something cancels it; whenCanceled idles the drivetrain.
@@ -393,7 +393,7 @@ public TeleopOpMode(Robot robot) {
           <p className="mb-2">
             Start with conservative PID gains (kP = 1-2) and test in a clear
             area. The robot will move automatically when you press the button.
-            Make sure you have a way to disable the robot quickly if needed.
+            Make sure you have a way to disable the robot quickly.
           </p>
           <p>
             You don&apos;t need a full FRC field to test this. Pick any point;
@@ -429,7 +429,7 @@ public TeleopOpMode(Robot robot) {
           Practical Applications
         </h2>
 
-        <CollapsibleSection title="🎮 Teleop Assists" variant="info">
+        <CollapsibleSection title="Teleop Assists" variant="info">
           <div className="space-y-4 text-slate-600 dark:text-slate-300">
             <p>
               Bind preset positions to buttons to help drivers quickly position
@@ -468,9 +468,11 @@ public TeleopOpMode(Robot robot) {
           </div>
         </CollapsibleSection>
 
-        <CollapsibleSection title="🤖 Autonomous Routines" variant="info">
+        <CollapsibleSection title="Autonomous Routines" variant="info">
           <div className="space-y-4 text-slate-600 dark:text-slate-300">
-            <p>Use DriveToPoint as building blocks for autonomous sequences:</p>
+            <p>
+              Use DriveToPoint as a building block for autonomous sequences:
+            </p>
             <CodeBlock
               language="java"
               title="Example Auto Sequence"
@@ -485,13 +487,13 @@ Command autoSequence = Command.sequence(
             <p>
               This forms the foundation for more complex autonomous navigation
               before adding vision. (You&apos;d typically wrap a routine like
-              this in an <code>@Autonomous</code> OpMode — see the Autonomous
+              this in an <code>@Autonomous</code> OpMode; see the Autonomous
               lesson.)
             </p>
           </div>
         </CollapsibleSection>
 
-        <CollapsibleSection title="⚙️ Tuning Tips" variant="warning">
+        <CollapsibleSection title="Tuning Tips" variant="warning">
           <div className="space-y-4">
             <div className="flex gap-4">
               <span className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
@@ -617,7 +619,7 @@ protected boolean isFinished() {
               ],
               correctAnswer: 1,
               explanation:
-                "Swerve drivetrains have three independent degrees of freedom (X translation, Y translation, and rotation). Using separate PID controllers for each allows the robot to simultaneously drive to a position while rotating to the target heading.",
+                "Swerve drivetrains have three independent degrees of freedom (X translation, Y translation, and rotation). Using separate PID controllers for each allows the robot to drive to a position while rotating to the target heading.",
             },
             {
               id: 3,
@@ -631,7 +633,7 @@ protected boolean isFinished() {
               ],
               correctAnswer: 1,
               explanation:
-                "enableContinuousInput tells the controller that the input wraps around (angles are circular). This ensures the robot rotates via the shortest path—for example, from 350° to 10° goes through 0° (20° clockwise) rather than going backwards 340° counterclockwise.",
+                "enableContinuousInput tells the controller that the input wraps around (angles are circular), so the robot rotates via the shortest path. For example, from 350° to 10° goes through 0° (20° clockwise) rather than going backwards 340° counterclockwise.",
             },
             {
               id: 4,

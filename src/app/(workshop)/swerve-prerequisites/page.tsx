@@ -223,9 +223,9 @@ export default function SwervePrerequisites() {
               <strong>Common gyros in FRC:</strong>
             </p>
             <ul className="list-disc list-inside space-y-1">
-              <li>Pigeon 2 (CTRE) - CAN-based, highly accurate</li>
-              <li>NavX (Kauai Labs) - USB/SPI, popular choice</li>
-              <li>ADIS16470 (Analog Devices) - SPI, WPILib support</li>
+              <li>Pigeon 2 (CTRE): CAN-based, highly accurate</li>
+              <li>NavX (Kauai Labs): USB/SPI, popular choice</li>
+              <li>ADIS16470 (Analog Devices): SPI, WPILib support</li>
             </ul>
           </div>
         </Box>
@@ -245,7 +245,7 @@ export default function SwervePrerequisites() {
         <div className="grid md:grid-cols-2 gap-8">
           <ContentCard>
             <h3 className="text-xl font-bold text-primary-900 dark:text-primary-300 mb-4">
-              📐 Forward Kinematics
+              Forward Kinematics
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-4">
               Converts individual wheel states into overall robot velocity. Used
@@ -266,7 +266,7 @@ export default function SwervePrerequisites() {
 
           <ContentCard>
             <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">
-              📐 Inverse Kinematics
+              Inverse Kinematics
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-4">
               Converts desired robot velocity into individual wheel states. Used
@@ -286,10 +286,7 @@ export default function SwervePrerequisites() {
           </ContentCard>
         </div>
 
-        <Box
-          variant="alert-info"
-          title="🔧 CTRE Handles Kinematics Automatically"
-        >
+        <Box variant="alert-info" title="CTRE Handles Kinematics Automatically">
           <p className="mb-3">
             CTRE&apos;s swerve implementation handles all kinematics
             calculations internally, so you never compute wheel states by hand.
@@ -301,7 +298,7 @@ export default function SwervePrerequisites() {
           </p>
         </Box>
 
-        <CollapsibleSection title="🎮 Understanding Chassis Velocities">
+        <CollapsibleSection title="Understanding Chassis Velocities">
           <div className="space-y-4">
             <p className="text-slate-600 dark:text-slate-300">
               Chassis velocities represent the desired velocity of the robot as
@@ -311,8 +308,7 @@ export default function SwervePrerequisites() {
             <Box variant="alert-info" title="The ChassisVelocities type">
               The type that carries these three numbers is{" "}
               <code>ChassisVelocities</code>, and its fields are <code>vx</code>
-              , <code>vy</code>, and <code>omega</code> — three numbers
-              describing how the whole robot moves.
+              , <code>vy</code>, and <code>omega</code>.
             </Box>
 
             <div className="grid md:grid-cols-3 gap-4">
@@ -366,8 +362,8 @@ drivetrain.setControl(
         <p className="text-slate-600 dark:text-slate-300">
           Odometry is the process of tracking the robot&apos;s position and
           orientation on the field by integrating wheel movements over time.
-          Accurate odometry is essential for autonomous navigation and
-          field-aware control.
+          Autonomous navigation and field-aware control both depend on it being
+          accurate.
         </p>
 
         <div className="flex justify-center my-8">
@@ -382,7 +378,7 @@ drivetrain.setControl(
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            🗺️ Pose2d: Robot Position on the Field
+            Pose2d: Robot Position on the Field
           </h3>
 
           <p className="text-slate-600 dark:text-slate-300 mb-4">
@@ -443,7 +439,7 @@ drivetrain.setControl(
           <div className="grid md:grid-cols-2 gap-6">
             <ContentCard>
               <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                📊 Wheel Odometry
+                Wheel Odometry
               </h4>
               <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Primary odometry source using encoder readings from swerve
@@ -471,7 +467,7 @@ drivetrain.setControl(
 
             <ContentCard>
               <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                📸 Vision Odometry
+                Vision Odometry
               </h4>
               <p className="text-slate-600 dark:text-slate-300 mb-4">
                 Secondary odometry source using camera and AprilTag vision
@@ -498,10 +494,7 @@ drivetrain.setControl(
             </ContentCard>
           </div>
 
-          <Box
-            variant="alert-info"
-            title="🔀 Pose Estimation with Sensor Fusion"
-          >
+          <Box variant="alert-info" title="Pose Estimation with Sensor Fusion">
             <p className="mb-3">
               CTRE&apos;s <code>CommandSwerveDrivetrain</code> includes built-in
               pose estimation that fuses wheel odometry with vision measurements
@@ -515,7 +508,7 @@ drivetrain.setControl(
           </Box>
         </div>
 
-        <CollapsibleSection title="📝 Odometry Code Examples">
+        <CollapsibleSection title="Odometry Code Examples">
           <div className="space-y-6">
             <CodeBlock
               language="java"
@@ -636,7 +629,7 @@ SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
               ],
               correctAnswer: 1,
               explanation:
-                "Odometry tracks the robot's position (X, Y) and orientation (heading) on the field by integrating wheel movements over time, essential for autonomous navigation.",
+                "Odometry tracks the robot's position (X, Y) and orientation (heading) on the field by integrating wheel movements over time, which is essential for autonomous navigation.",
             },
             {
               id: 7,

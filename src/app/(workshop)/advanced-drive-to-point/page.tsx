@@ -37,7 +37,7 @@ export default function AdvancedDriveToPoint() {
           <div className="grid md:grid-cols-3 gap-6 mb-6">
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-                ⚡ Acceleration Phase
+                Acceleration Phase
               </h4>
               <p className="text-blue-800 dark:text-blue-200 text-sm">
                 Ramps up from current velocity to maximum velocity using
@@ -47,17 +47,17 @@ export default function AdvancedDriveToPoint() {
 
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-                🚀 Cruise Phase
+                Cruise Phase
               </h4>
               <p className="text-green-800 dark:text-green-200 text-sm">
-                Maintains maximum velocity (4.3 m/s) for the bulk of the journey
+                Maintains maximum velocity (4.3 m/s) for most of the distance
                 when possible
               </p>
             </div>
 
             <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-orange-900 dark:text-orange-300 mb-3">
-                🎯 Deceleration Phase
+                Deceleration Phase
               </h4>
               <p className="text-orange-800 dark:text-orange-200 text-sm">
                 Smoothly brakes to reach the target position with zero velocity
@@ -80,7 +80,7 @@ export default function AdvancedDriveToPoint() {
               </li>
               <li>
                 <strong>Benefits:</strong> Prevents wheel slip, reduces
-                mechanical stress, more predictable behavior
+                mechanical stress, and makes behavior more predictable
               </li>
             </ul>
           </div>
@@ -106,7 +106,7 @@ export default function AdvancedDriveToPoint() {
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-                🏎️ Maximum Velocity (kMaxV)
+                Maximum Velocity (kMaxV)
               </h4>
               <div className="space-y-3 text-blue-800 dark:text-blue-200 text-sm">
                 <p>
@@ -115,10 +115,9 @@ export default function AdvancedDriveToPoint() {
                   </strong>
                 </p>
                 <p>
-                  Why not 100%? This headroom allows your feedback controller to
+                  Why not 100%? This headroom lets your feedback controller
                   &quot;catch up&quot; if the robot falls behind the planned
-                  trajectory. Without this margin, you can&apos;t correct
-                  tracking errors.
+                  trajectory.
                 </p>
                 <div className="bg-blue-100 dark:bg-blue-950 p-3 rounded mt-3">
                   <p className="font-mono text-xs">
@@ -132,7 +131,7 @@ export default function AdvancedDriveToPoint() {
 
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-                ⚡ Maximum Acceleration (kMaxAccel)
+                Maximum Acceleration (kMaxAccel)
               </h4>
               <div className="space-y-3 text-green-800 dark:text-green-200 text-sm">
                 <p>
@@ -158,7 +157,7 @@ export default function AdvancedDriveToPoint() {
 
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
             <h4 className="text-lg font-bold text-yellow-900 dark:text-yellow-300 mb-3">
-              📊 Validation Method: Graph Velocity Tracking
+              Validation Method: Graph Velocity Tracking
             </h4>
             <div className="space-y-3 text-yellow-800 dark:text-yellow-200 text-sm">
               <p>
@@ -176,7 +175,7 @@ export default function AdvancedDriveToPoint() {
                   AdvantageScope
                 </li>
                 <li>
-                  Graph both velocities over time - they should track closely
+                  Graph both velocities over time; they should track closely
                 </li>
                 <li>
                   If actual velocity lags significantly behind planned velocity,
@@ -208,9 +207,9 @@ export default function AdvancedDriveToPoint() {
           </h3>
           <p className="text-slate-700 dark:text-slate-300 mb-6">
             The basic DriveToPoint command uses only{" "}
-            <strong>feedback control</strong> (PID) - it measures error and
+            <strong>feedback control</strong> (PID): it measures error and
             reacts to it. The advanced version adds{" "}
-            <strong>feedforward control</strong> - it anticipates what forces
+            <strong>feedforward control</strong>, which anticipates what forces
             are needed before errors occur.
           </p>
 
@@ -235,10 +234,10 @@ export default function AdvancedDriveToPoint() {
                     Control Type
                   </td>
                   <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Reactive - responds after error occurs
+                    Reactive: responds after error occurs
                   </td>
                   <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Proactive + Reactive - anticipates needs and corrects
+                    Proactive + Reactive: anticipates needs and corrects
                     disturbances
                   </td>
                 </tr>
@@ -247,7 +246,7 @@ export default function AdvancedDriveToPoint() {
                     Path Planning
                   </td>
                   <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    None - direct to target
+                    None: direct to target
                   </td>
                   <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
                     Generates smooth trajectory with velocity profiles
@@ -280,7 +279,7 @@ export default function AdvancedDriveToPoint() {
                     Motion Quality
                   </td>
                   <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Can be jerky, oscillation prone
+                    Can be jerky and oscillation-prone
                   </td>
                   <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
                     Smooth, predictable, minimal oscillation
@@ -292,7 +291,7 @@ export default function AdvancedDriveToPoint() {
 
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
             <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-              🚗 Car Driving Analogy
+              Car Driving Analogy
             </h4>
             <div className="space-y-3 text-blue-800 dark:text-blue-200 text-sm">
               <p>
@@ -334,7 +333,7 @@ export default function AdvancedDriveToPoint() {
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-red-900 dark:text-red-300 mb-3">
-                ❌ Basic Approach
+                Basic Approach
               </h4>
               <CodeBlock
                 code={`// PID compares current to FINAL target
@@ -349,7 +348,7 @@ double yError = targetY - currentY;
 
             <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
               <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-                ✅ Advanced Approach
+                Advanced Approach
               </h4>
               <CodeBlock
                 code={`// Sample CTRE's LinearPath for the moving setpoint at elapsed time t.
@@ -372,17 +371,17 @@ double yError = setpoint.pose.getY() - currentY;
             </h4>
             <ul className="space-y-2 text-slate-700 dark:text-slate-300">
               <li>
-                ✅ <strong>Smaller Errors:</strong> PID only keeps the robot on
-                the planned path instead of correcting the entire distance to
-                the target
+                <strong>Smaller Errors:</strong> PID only keeps the robot on the
+                planned path instead of correcting the entire distance to the
+                target
               </li>
               <li>
-                ✅ <strong>Smoother Control:</strong> the setpoint moves
-                gradually along the trajectory, so corrections stay gentle and
-                overshoot mostly disappears
+                <strong>Smoother Control:</strong> the setpoint moves gradually
+                along the trajectory, so corrections stay gentle and overshoot
+                mostly disappears
               </li>
               <li>
-                ✅ <strong>Predictable Behavior:</strong> the robot follows a
+                <strong>Predictable Behavior:</strong> the robot follows a
                 planned path instead of whatever route PID happens to take
               </li>
             </ul>
@@ -412,7 +411,7 @@ double yError = setpoint.pose.getY() - currentY;
             </h4>
             <p className="text-blue-800 dark:text-blue-200 text-sm mb-3">
               When you command a swerve drivetrain to accelerate or turn, each
-              individual wheel module needs to apply specific forces. The
+              wheel module needs to apply specific forces. The
               WheelForceCalculator determines exactly how much force each wheel
               should generate based on:
             </p>
@@ -462,7 +461,7 @@ double yError = setpoint.pose.getY() - currentY;
 
           <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
             <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-              💡 Tuning: The MOI Parameter
+              Tuning: The MOI Parameter
             </h4>
             <p className="text-green-800 dark:text-green-200 text-sm mb-3">
               The moment of inertia (MOI) parameter represents your robot&apos;s
@@ -512,7 +511,7 @@ double yError = setpoint.pose.getY() - currentY;
           <p>
             The profiled loop lives in a command that{" "}
             <code>extends ClassicCommand</code>, which gives you the explicit
-            initialize / execute / isFinished / end lifecycle — the same shape
+            initialize / execute / isFinished / end lifecycle, the same shape
             the template&apos;s own <code>DriveToPose</code> uses. CTRE&apos;s
             straight-line profile generator is <code>LinearPath</code>, sampled
             each loop with <code>path.calculate(t, startState, goal)</code>, and
@@ -585,11 +584,11 @@ double yError = setpoint.pose.getY() - currentY;
       </section>
 
       {/* Practical Applications */}
-      <CollapsibleSection title="🎯 When to Use Profiled Paths" variant="info">
+      <CollapsibleSection title="When to Use Profiled Paths" variant="info">
         <div className="space-y-4">
           <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
             <h4 className="font-bold text-green-900 dark:text-green-300 mb-2">
-              ✅ Best Use Cases
+              Best Use Cases
             </h4>
             <ul className="space-y-2 text-green-800 dark:text-green-200 text-sm">
               <li>
@@ -613,11 +612,11 @@ double yError = setpoint.pose.getY() - currentY;
 
           <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
             <h4 className="font-bold text-yellow-900 dark:text-yellow-300 mb-2">
-              ⚠️ When Basic Might Be Enough
+              When Basic Might Be Enough
             </h4>
             <ul className="space-y-2 text-yellow-800 dark:text-yellow-200 text-sm">
               <li>
-                • <strong>Short Distances:</strong> Quick corrections where
+                • <strong>Short Distances:</strong> Quick corrections where the
                 acceleration phase is minimal
               </li>
               <li>
@@ -663,7 +662,7 @@ double yError = setpoint.pose.getY() - currentY;
             ],
             correctAnswer: 1,
             explanation:
-              "Feedforward control is proactive - it anticipates what forces are needed based on the planned trajectory. Feedback control is reactive - it responds to errors after they occur. The best systems combine both approaches.",
+              "Feedforward control is proactive: it anticipates what forces are needed based on the planned trajectory. Feedback control is reactive: it responds to errors after they occur. The best systems combine both approaches.",
           },
           {
             id: 3,
@@ -677,7 +676,7 @@ double yError = setpoint.pose.getY() - currentY;
             ],
             correctAnswer: 2,
             explanation:
-              "The advanced version uses setpoint tracking - PID compares the current position to the moving setpoint on the planned trajectory, not the final target. This creates smaller errors and smoother control.",
+              "The advanced version uses setpoint tracking: PID compares the current position to the moving setpoint on the planned trajectory, not the final target. This creates smaller errors and smoother control.",
           },
           {
             id: 4,

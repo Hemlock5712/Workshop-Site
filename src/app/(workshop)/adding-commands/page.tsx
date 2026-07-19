@@ -10,7 +10,7 @@ export default function AddingCommands() {
       <KeyConceptSection
         title="Commands with WPILib Commands V3"
         description={[
-          "A coroutine Command is a single method body that the scheduler runs once. Inside the body you write plain Java; whenever the command needs to wait — for time to pass, for a condition to become true, for a sub-command to finish — you explicitly yield to the scheduler through the Coroutine parameter. There's no separate init / execute / isFinished / end to fill in, just the one body.",
+          "A coroutine Command is a single method body that the scheduler runs once. Inside the body you write plain Java; whenever the command needs to wait (for time to pass, for a condition to become true, for a sub-command to finish), you explicitly yield to the scheduler through the Coroutine parameter. There's no separate init / execute / isFinished / end to fill in, just the one body.",
           "Most commands you write will be a single line of motor setup wrapped in mech.run(...). The coroutine parameter is there when you need it (.wait, .waitUntil, .await, .park) and ignored when you don't. Roughly 80% of teaching examples never touch it.",
         ]}
         concept="A command is a body. You yield through the coroutine wherever you need to wait. Most bodies don't need to."
@@ -470,7 +470,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 1,
             explanation:
-              "Setting once and then parking gives you a command that does its setup, then yields forever waiting for cancellation. runRepeatedly works too but re-applies the setpoint every 20 ms which is usually wasteful. The park form sets the value exactly once.",
+              "Setting once and then parking gives you a command that does its setup, then yields forever waiting for cancellation. runRepeatedly works too but re-applies the setpoint every 20 ms, which is usually wasteful. The park form sets the value exactly once.",
           },
           {
             id: 3,
@@ -484,7 +484,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 2,
             explanation:
-              "Single set-once factories — setVoltage, runIntake, openClaw — never need to wait, so they never touch the coroutine. The coroutine matters when a command holds (park), waits (waitUntil / wait), or composes children (await / awaitAll / awaitAny / fork). That's roughly 20% of the commands a working robot project tends to define.",
+              "Single set-once factories (setVoltage, runIntake, openClaw) never need to wait, so they never touch the coroutine. The coroutine matters when a command holds (park), waits (waitUntil / wait), or composes children (await / awaitAll / awaitAny / fork). That's roughly 20% of the commands a working robot project tends to define.",
           },
           {
             id: 4,
@@ -498,7 +498,7 @@ public Command grabAndScore() {
             ],
             correctAnswer: 0,
             explanation:
-              ".whenCanceled(...) on the builder registers a Runnable that fires only on cancellation. There's no exception to catch — the scheduler just drops the coroutine, so code after a park()/waitUntil never runs. Cleanup that should happen only on normal completion goes at the bottom of the body; interrupt cleanup goes in .whenCanceled.",
+              ".whenCanceled(...) on the builder registers a Runnable that fires only on cancellation. There's no exception to catch: the scheduler just drops the coroutine, so code after a park()/waitUntil never runs. Cleanup that should happen only on normal completion goes at the bottom of the body; interrupt cleanup goes in .whenCanceled.",
           },
         ]}
       />

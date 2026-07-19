@@ -13,9 +13,9 @@ export default function CommandFramework() {
       <KeyConceptSection
         title="The Command-Based Framework"
         description={[
-          "Command-based programming organizes robot code into three pieces — Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which command owns which Mechanism so two commands never fight for the same motor.",
+          "Command-based programming organizes robot code into three pieces: Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which command owns which Mechanism so two commands never fight for the same motor.",
           "Commands V3 gives each piece a concrete type: Mechanism for hardware, Command for the coroutine-bodied actions, and Scheduler for the loop. You compose commands either with factories (Command.sequence / Command.parallel) or as a real method body, not just a tree of group objects.",
-          "The top-level wiring: a Robot class owns the mechanisms, and each mode — driver teleop, an autonomous routine, a calibration task — is its own OpMode class. You'll see that on the Triggers and Running the Program pages.",
+          "The top-level wiring: a Robot class owns the mechanisms, and each mode (driver teleop, an autonomous routine, a calibration task) is its own OpMode class. You'll see that on the Triggers and Running the Program pages.",
         ]}
         concept="Triggers schedule Commands. Commands operate on Mechanisms. The Scheduler enforces who-owns-what so nothing collides."
       />
@@ -302,27 +302,27 @@ public Command nudgeForward() {
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
-            <strong>Mechanisms</strong> — hardware fields, configuration,{" "}
+            <strong>Mechanisms</strong>: hardware fields, configuration,{" "}
             <code>setDefaultCommand</code>.
           </li>
           <li>
-            <strong>Commands</strong> — coroutine-bodied factory methods on each
+            <strong>Commands</strong>: coroutine-bodied factory methods on each
             mechanism (and cross-mechanism routines).
           </li>
           <li>
-            <strong>Triggers</strong> — controller bindings + the scoping rules
+            <strong>Triggers</strong>: controller bindings + the scoping rules
             (global / opmode / command).
           </li>
           <li>
-            <strong>PID control</strong> — closed-loop commands wrapping CTRE
+            <strong>PID control</strong>: closed-loop commands wrapping CTRE
             position / velocity requests.
           </li>
           <li>
-            <strong>Motion Magic</strong> — profiled-position commands with
+            <strong>Motion Magic</strong>: profiled-position commands with
             acceleration and cruise-velocity bounds.
           </li>
           <li>
-            <strong>State machines &amp; auto routines</strong> — the V3{" "}
+            <strong>State machines &amp; auto routines</strong>: the V3{" "}
             <code>StateMachine</code> class for anything with phases that can
             repeat, skip, or interrupt.
           </li>
@@ -349,13 +349,12 @@ public Command nudgeForward() {
         tag="NOTE · API STATUS"
         title="This is the WPILib 2027 alpha"
       >
-        Commands V3 — the staged builder, the coroutine helpers, the
-        compile-time naming enforcement, and the <code>StateMachine</code> class
-        — run on <strong>Java 25</strong> and deploy to{" "}
-        <strong>SystemCore</strong>. The stack is the WPILib 2027 <em>alpha</em>{" "}
-        (GradleRIO <code>2027.0.0-alpha-6</code>, Phoenix 6{" "}
-        <code>26.50.0-alpha-1</code>), so the exact APIs are still moving
-        between alpha builds.
+        Commands V3 (the staged builder, the coroutine helpers, the compile-time
+        naming enforcement, and the <code>StateMachine</code> class) runs on{" "}
+        <strong>Java 25</strong> and deploys to <strong>SystemCore</strong>. The
+        stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
+        <code>2027.0.0-alpha-6</code>, Phoenix 6 <code>26.50.0-alpha-1</code>),
+        so the exact APIs are still moving between alpha builds.
       </Box>
 
       <Quiz
@@ -387,7 +386,7 @@ public Command nudgeForward() {
             ],
             correctAnswer: 1,
             explanation:
-              ".named(...) is enforced — every command-builder chain has to end with a name call or the project won't compile, so every command shows up in telemetry under a name you actually chose.",
+              ".named(...) is enforced: every command-builder chain has to end with a name call or the project won't compile, so every command shows up in telemetry under a name you actually chose.",
           },
           {
             id: 3,
@@ -401,7 +400,7 @@ public Command nudgeForward() {
             ],
             correctAnswer: 1,
             explanation:
-              "coroutine.awaitAny(a, b) schedules both together; the first to finish returns control to the caller and the rest are cancelled. The deadline shape — a background task guarded by one command — is fork + await.",
+              "coroutine.awaitAny(a, b) schedules both together; the first to finish returns control to the caller and the rest are cancelled. The deadline shape (a background task guarded by one command) is fork + await.",
           },
           {
             id: 4,
@@ -415,7 +414,7 @@ public Command nudgeForward() {
             ],
             correctAnswer: 1,
             explanation:
-              'Both express "a then b." Command.sequence automatically requires everything its children require, so it\'s the clean way to combine commands across several mechanisms. A coroutine body runs on (and requires) the mechanism whose run(...) created it and awaits work from the inside — reach for it when the sequence depends on runtime data. Pick the factory for fixed, multi-mechanism routines; pick the body when the steps branch on sensor readings.',
+              'Both express "a then b." Command.sequence automatically requires everything its children require, so it\'s the clean way to combine commands across several mechanisms. A coroutine body runs on (and requires) the mechanism whose run(...) created it and awaits work from the inside. Reach for it when the sequence depends on runtime data. Pick the factory for fixed, multi-mechanism routines; pick the body when the steps branch on sensor readings.',
           },
           {
             id: 5,
@@ -429,7 +428,7 @@ public Command nudgeForward() {
             ],
             correctAnswer: 1,
             explanation:
-              "coroutine.fork ties the child's lifetime to the parent's. When the body returns (normally or via cancellation), still-running forks are cancelled — so a forked background task can't outlive the routine that started it.",
+              "coroutine.fork ties the child's lifetime to the parent's. When the body returns (normally or via cancellation), still-running forks are cancelled, so a forked background task can't outlive the routine that started it.",
           },
         ]}
       />

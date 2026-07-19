@@ -37,8 +37,8 @@ export default function Prerequisites() {
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Install <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> VS
-                Code and National Instruments Game Tool (includes Driver Station
-                and <GlossaryTerm term="roborio">roboRIO</GlossaryTerm>{" "}
+                Code and National Instruments Game Tools (includes Driver
+                Station and <GlossaryTerm term="roborio">roboRIO</GlossaryTerm>{" "}
                 imaging).
               </p>
             </div>
@@ -55,7 +55,7 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Essential for configuring and tuning{" "}
+                You&apos;ll use this to configure and tune{" "}
                 <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm> and
                 other CTRE hardware.
               </p>
@@ -73,10 +73,10 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Viewer for robot logs and data, and required for debugging and
-                tuning. A lite version comes preinstalled with WPILib, but we
-                recommend downloading the latest full version from the GitHub
-                releases page.
+                A viewer for robot logs and data. You&apos;ll need it for
+                debugging and tuning. A lite version comes preinstalled with
+                WPILib, but we recommend downloading the latest full version
+                from the GitHub releases page.
               </p>
             </div>
 
@@ -109,7 +109,7 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                This workshop targets the WPILib <strong>2027 alpha</strong> —
+                This workshop targets the WPILib <strong>2027 alpha</strong>:
                 Commands v3 + OpModes, <strong>Java 25</strong>, and the{" "}
                 <strong>SystemCore</strong> controller. Start from the
                 team&apos;s 2027-Template rather than a stock project (the

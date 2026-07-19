@@ -13,7 +13,7 @@ export default function SwerveDriveProject() {
       <KeyConceptSection
         title="Using Phoenix Tuner X to Generate Swerve Code"
         description="With the swerve drive fundamentals covered, we're ready to create a complete swerve drivetrain using CTRE's Phoenix Tuner X. Its generator writes the swerve code for you and handles the kinematics, odometry, and control."
-        concept="Phoenix Tuner X generates a complete, competition-ready swerve drivetrain with one configuration wizard."
+        concept="Phoenix Tuner X generates a complete swerve drivetrain with one configuration wizard."
       />
 
       <Box variant="alert-info" title="Prerequisites Complete?">
@@ -35,12 +35,13 @@ export default function SwerveDriveProject() {
       </Box>
 
       {/* Quick Download Section */}
-      <Box variant="alert-info" title="📦 Quick Start: Download Baseline Code">
+      <Box variant="alert-info" title="Quick Start: Download Baseline Code">
         <p className="mb-4 text-slate-600 dark:text-slate-300">
           Need a baseline? Download our complete swerve drive project from the
           workshop code repository. All the core swerve functionality is already
-          implemented. After downloading, change the team number in
-          `.wpilib/wpilib_preferences.json` and import your tuner constants.
+          implemented. After downloading, change the team number in{" "}
+          <code>.wpilib/wpilib_preferences.json</code> and import your tuner
+          constants.
         </p>
         <a
           href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.0-swerve.zip"
@@ -59,11 +60,11 @@ export default function SwerveDriveProject() {
           Creating a Swerve Project with Phoenix Tuner X
         </h2>
 
-        <Box variant="alert-info" title="🚀 CTRE Swerve Project Generator">
+        <Box variant="alert-info" title="CTRE Swerve Project Generator">
           <p className="mb-4">
             Phoenix Tuner X includes a swerve project generator that creates a
-            complete, competition-ready drivetrain implementation. It&apos;s the
-            recommended starting point for any swerve project.
+            complete drivetrain implementation. It&apos;s the recommended
+            starting point for any swerve project.
           </p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
@@ -202,7 +203,7 @@ export default function SwerveDriveProject() {
           </p>
           <p>
             <code>CommandSwerveDrivetrain</code> is <em>not</em> itself a{" "}
-            <code>Mechanism</code> — it&apos;s already a class. So the workshop
+            <code>Mechanism</code>; it&apos;s already a class. So the workshop
             wraps it in a hand-written <code>DriveMechanism</code> that{" "}
             <code>extends Mechanism</code>, owns the drivetrain, exposes the
             drive commands (e.g. <code>applyRequest(...)</code>,{" "}
@@ -233,7 +234,7 @@ export default function SwerveDriveProject() {
               ],
               correctAnswer: 1,
               explanation:
-                "Phoenix Tuner X includes a comprehensive swerve project generator that creates a complete, competition-ready swerve drivetrain implementation with CommandSwerveDrivetrain, tuner constants, module configurations, and simulation support.",
+                "Phoenix Tuner X includes a swerve project generator that creates a complete swerve drivetrain implementation with CommandSwerveDrivetrain, tuner constants, module configurations, and simulation support.",
             },
             {
               id: 2,
@@ -247,7 +248,7 @@ export default function SwerveDriveProject() {
               ],
               correctAnswer: 2,
               explanation:
-                "The Phoenix Tuner X swerve generator requires comprehensive robot parameters including all CAN IDs (drive motors, steer motors, encoders), physical dimensions (wheelbase and trackwidth), wheel diameter, drive gear ratio, and CANivore name if applicable.",
+                "The Phoenix Tuner X swerve generator requires all CAN IDs (drive motors, steer motors, encoders), physical dimensions (wheelbase and trackwidth), wheel diameter, drive gear ratio, and the CANivore name if applicable.",
             },
             {
               id: 3,
@@ -261,7 +262,7 @@ export default function SwerveDriveProject() {
               ],
               correctAnswer: 1,
               explanation:
-                "The swerve generator creates a comprehensive package including the CommandSwerveDrivetrain class, TunerConstants with all parameters, module configurations, field-centric and robot-centric drive requests, simulation support for testing, and built-in odometry/pose estimation. (This workshop drives autonomously with CTRE LinearPath/DriveToPose rather than PathPlanner.)",
+                "The swerve generator creates the CommandSwerveDrivetrain class, TunerConstants with all parameters, module configurations, field-centric and robot-centric drive requests, simulation support for testing, and built-in odometry/pose estimation. (This workshop drives autonomously with CTRE LinearPath/DriveToPose rather than PathPlanner.)",
             },
             {
               id: 4,

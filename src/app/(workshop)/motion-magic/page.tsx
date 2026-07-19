@@ -12,7 +12,7 @@ export default function MotionMagic() {
     <PageTemplate title="Motion Magic">
       {/* Introduction */}
       <KeyConceptSection
-        title="Motion Magic - Profiled Motion Control"
+        title="Motion Magic: Profiled Motion Control"
         description="Motion Magic builds on PID control by adding smooth acceleration and deceleration profiles. This prevents jerky movements and reduces mechanical stress while maintaining precise positioning."
         concept="Motion Magic automatically generates smooth velocity profiles to reach target positions with controlled acceleration."
       />
@@ -26,7 +26,7 @@ export default function MotionMagic() {
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              📈 Trapezoidal Profile
+              Trapezoidal Profile
             </h3>
             <p className="text-[var(--foreground)] mb-4 text-sm">
               Motion Magic creates a trapezoidal velocity profile with three
@@ -63,7 +63,7 @@ export default function MotionMagic() {
 
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-blue-500">
             <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              ⚙️ Key Parameters
+              Key Parameters
             </h3>
             <div className="space-y-3">
               <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded">
@@ -97,7 +97,7 @@ export default function MotionMagic() {
         {/* Documentation Link */}
         <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
           <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-            📚 Official Motion Magic Documentation
+            Official Motion Magic Documentation
           </h3>
           <p className="text-[var(--foreground)] mb-4">
             For the full Motion Magic reference and configuration examples:
@@ -110,12 +110,12 @@ export default function MotionMagic() {
         </div>
 
         {/* Motion Magic Tuning Steps */}
-        <CollapsibleSection title="⚙️ Motion Magic Tuning Steps" variant="info">
+        <CollapsibleSection title="Motion Magic Tuning Steps" variant="info">
           <div className="grid md:grid-cols-2 gap-6">
             {/* Arm/Elevator Position Mechanisms */}
             <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
               <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-3 flex items-center">
-                🦾 Position Mechanisms (Arms, Elevators)
+                Position Mechanisms (Arms, Elevators)
               </h4>
 
               <div className="space-y-4">
@@ -179,7 +179,7 @@ export default function MotionMagic() {
             {/* Flywheel Velocity Mechanisms */}
             <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg border border-green-200 dark:border-green-800">
               <h4 className="font-semibold text-green-800 dark:text-green-200 mb-3 flex items-center">
-                🌪️ Velocity Mechanisms (Flywheels, Shooters)
+                Velocity Mechanisms (Flywheels, Shooters)
               </h4>
 
               <div className="space-y-4">
@@ -243,7 +243,7 @@ export default function MotionMagic() {
 
           <div className="bg-[var(--muted)] p-4 rounded mt-4 border-l-4 border-[var(--border)]">
             <h4 className="font-semibold text-[var(--foreground)] mb-2">
-              💡 Why This Method Works:
+              Why This Method Works:
             </h4>
             <p className="text-[var(--foreground)] text-sm">
               Calculating cruise velocity from motor specs and efficiency gives
@@ -258,7 +258,7 @@ export default function MotionMagic() {
         {/* Motion Magic Tuning Video */}
         <section className="flex flex-col gap-6">
           <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            📹 Motion Magic Tuning Tutorial
+            Motion Magic Tuning Tutorial
           </h3>
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] mb-4">
@@ -283,7 +283,7 @@ export default function MotionMagic() {
           Motion Magic Implementation in Code
         </h2>
 
-        <CollapsibleSection title="🔧 Motion Magic Configuration Example">
+        <CollapsibleSection title="Motion Magic Configuration Example">
           <CodeBlock
             language="java"
             title="Motion Magic Setup — just the new lines"
@@ -322,7 +322,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               "• Smooth acceleration and deceleration curves",
               "• Reduced mechanical stress and wear",
               "• Configurable cruise velocity and acceleration",
-              "• Professional, smooth motion profiles",
+              "• Smooth, predictable motion profiles",
             ],
             repository: "Hemlock5712/Workshop-Code",
             filePath: "src/main/java/frc/robot/subsystems/Arm.java",
@@ -333,7 +333,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               leftTitle: "Motion Magic Example Params for 25:1 Arm",
               leftItems: [
                 "• <strong>25:1 Gearing:</strong> Krakens run ~100 RPS, so 4 RPS theoretical max at output",
-                "• <strong>Cruise Velocity (2.0):</strong> Conservative start - can reach 4 RPS but load may reduce performance",
+                "• <strong>Cruise Velocity (2.0):</strong> Conservative start: can reach 4 RPS but load may reduce performance",
                 "• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed",
                 "• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes",
                 "• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control",
@@ -362,7 +362,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
               "• Smooth acceleration and deceleration curves",
               "• Reduced mechanical stress and wear",
               "• Configurable acceleration and jerk for velocity changes",
-              "• Professional, smooth velocity transitions",
+              "• Smooth, predictable velocity transitions",
             ],
             repository: "Hemlock5712/Workshop-Code",
             filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
@@ -391,10 +391,7 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
         />
 
         {/* Motion Magic vs PID Comparison */}
-        <CollapsibleSection
-          title="⚖️ Motion Magic vs Basic PID"
-          variant="warning"
-        >
+        <CollapsibleSection title="Motion Magic vs Basic PID" variant="warning">
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-[var(--foreground)] mb-2">

@@ -14,11 +14,11 @@ export default function PIDControl() {
     <PageTemplate title="PID Control">
       {/* Introduction */}
       <PageHero
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven position control. Toggle between an arm (position) and a flywheel (velocity) below — the gains in each map directly to a TalonFX Slot0Configs."
+        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven control. Toggle between an arm (position), a flywheel (velocity), and an elevator (position) below. The gains in each map directly to a TalonFX Slot0Configs."
         concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the voltage needed before any error has accumulated."
       />
 
-      {/* Live playground — arm + flywheel toggle */}
+      {/* Live playground — arm + flywheel + elevator toggle */}
       <MechanismPlayground />
 
       {/* PID Theory */}
@@ -88,16 +88,16 @@ export default function PIDControl() {
             </div>
             <p className="text-[var(--foreground)] text-sm">
               <strong>Behavior:</strong> Reduces overshoot by predicting future
-              error trends and dampening response.
+              error trends and damping the response.
             </p>
           </div>
         </div>
 
         {/* Feedforward Components */}
-        <Box variant="alert-info" title="⚡ Feedforward Gains">
+        <Box variant="alert-info" title="Feedforward Gains">
           <p className="mb-4">
-            Feedforward gains help the system by predicting the required output
-            based on the target, rather than reacting to error.
+            Feedforward gains predict the required output based on the target,
+            rather than reacting to error.
           </p>
 
           <div className="grid md:grid-cols-4 gap-4">
@@ -125,7 +125,7 @@ export default function PIDControl() {
         </Box>
 
         {/* Documentation Link */}
-        <Box variant="alert-info" title="📚 Complete PID Tuning Guide">
+        <Box variant="alert-info" title="Complete PID Tuning Guide">
           <p className="mb-4">
             For detailed tuning instructions and mechanism-specific guidance:
           </p>
@@ -139,7 +139,7 @@ export default function PIDControl() {
         {/* PID Tuning Video */}
         <section className="flex flex-col gap-6">
           <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            📹 PID and Feedforward Tuning Tutorial
+            PID and Feedforward Tuning Tutorial
           </h3>
           <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
             <p className="text-[var(--foreground)] mb-4">
@@ -164,7 +164,7 @@ export default function PIDControl() {
           PID Implementation in Code
         </h2>
 
-        <CollapsibleSection title="🔧 PID Configuration Example">
+        <CollapsibleSection title="PID Configuration Example">
           <CodeBlock
             language="java"
             title="PID Setup in Mechanism Constructor"
@@ -315,7 +315,7 @@ export default function PIDControl() {
               ],
               correctAnswer: 2,
               explanation:
-                "The Derivative term responds to the rate of change of error, helping reduce overshoot by dampening the response as the system approaches the target.",
+                "The Derivative term responds to the rate of change of error, helping reduce overshoot by damping the response as the system approaches the target.",
             },
             {
               id: 4,

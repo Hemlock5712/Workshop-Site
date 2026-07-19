@@ -182,7 +182,7 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
     key: "kV",
     label: "kV",
     axisColor: "#0891b2",
-    ariaDescription: "Velocity feedforward — back-EMF compensation.",
+    ariaDescription: "Velocity feedforward: back-EMF compensation.",
   },
 ];
 
@@ -751,7 +751,7 @@ export default function InteractiveFlywheelPlayground() {
         <p>
           Every loop the wheel sits idle for 1&nbsp;s, then the setpoint steps
           to your slider target. Tune <span className="font-mono">kV</span>{" "}
-          first to predict the back-EMF voltage at speed —{" "}
+          first to predict the back-EMF voltage at speed:{" "}
           <span className="font-mono">V_max / free_rps</span> for this Kraken
           X60 works out to ≈{" "}
           <span className="font-mono">0.124&nbsp;V·s/rot</span>. Add{" "}
@@ -787,7 +787,7 @@ export default function InteractiveFlywheelPlayground() {
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         0.01&nbsp;kg·m² flywheel on a Kraken&nbsp;X60 motor (7.09&nbsp;N·m
         stall, 5800&nbsp;RPM free; back-EMF modelled, ±12&nbsp;V saturation).
-        Gains use Phoenix 6 / WPILib velocity-control units — drop them straight
+        Gains use Phoenix 6 / WPILib velocity-control units. Drop them straight
         into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         on a{" "}

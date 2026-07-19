@@ -148,9 +148,9 @@ atSpeed.onTrue(intake.feed());`}
             <p>
               Live while the opmode is active; cleaned up when it exits.
               Teleop&apos;s driver-controller bindings, auto&apos;s
-              sensor-trigger bindings, test mode&apos;s diagnostic toggles —
-              each opmode declares its own and the framework swaps the active
-              set when the mode changes.
+              sensor-trigger bindings, test mode&apos;s diagnostic toggles: each
+              opmode declares its own, and the framework swaps the active set
+              when the mode changes.
             </p>
           </Box>
 
@@ -186,7 +186,7 @@ atSpeed.onTrue(intake.feed());`}
         >
           &quot;The mode the robot is in&quot; is a first-class concept: the{" "}
           <strong>OpMode</strong>. Where a <code>Mechanism</code> owns hardware,
-          an OpMode owns the <em>policy</em> for a phase of the match — which
+          an OpMode owns the <em>policy</em> for a phase of the match: which
           bindings are live, which default commands are in force, what auto
           routine to run. Teleop, auto, and a utility/calibration mode each
           become their own class: you <code>extends PeriodicOpMode</code> and
@@ -294,8 +294,8 @@ public class TeleopOpMode extends PeriodicOpMode {
       >
         The three scopes on this page (command, opmode, global) come straight
         from the WPILib 2027 alpha-6 scheduler: when a binding is created, the
-        scheduler captures the <em>narrowest active scope</em> — the running
-        command if there is one, else the current opmode, else global — and
+        scheduler captures the <em>narrowest active scope</em> (the running
+        command if there is one, else the current opmode, else global) and
         removes the binding when that scope ends. The template demonstrates the
         opmode and global scopes; command-scoped bindings work the same way but
         aren&apos;t shown there yet. The stack is the WPILib 2027 <em>alpha</em>
@@ -317,7 +317,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "Bindings registered inside an OpMode are opmode-scoped. They live for the lifetime of the opmode and are torn down automatically when it exits. This is the whole point of scoping — the binding lifetime matches the lifetime of the policy it's part of.",
+              "Bindings registered inside an OpMode are opmode-scoped. They live for the lifetime of the opmode and are torn down automatically when it exits. This is the whole point of scoping: the binding lifetime matches the lifetime of the policy it's part of.",
           },
           {
             id: 2,
@@ -345,7 +345,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "Mechanism owns hardware and the commands that act on it. OpMode owns policy — which bindings are live during a phase, what default commands are in force, what auto routine to run. They're the two structural classes you write in a v3 codebase: a Mechanism you extend (one per physical thing), and an OpMode you annotate @Teleop/@Autonomous/@Utility (one per phase of the match).",
+              "Mechanism owns hardware and the commands that act on it. OpMode owns policy: which bindings are live during a phase, what default commands are in force, what auto routine to run. They're the two structural classes you write in a v3 codebase: a Mechanism you extend (one per physical thing), and an OpMode you annotate @Teleop/@Autonomous/@Utility (one per phase of the match).",
           },
           {
             id: 4,
@@ -359,7 +359,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 0,
             explanation:
-              "Global scope is the right home for genuinely always-on bindings — emergency stops, low-battery alerts, anything that has to fire regardless of mode. Most other bindings should be opmode- or command-scoped so they don't pollute modes they shouldn't apply to.",
+              "Global scope is the right home for genuinely always-on bindings: emergency stops, low-battery alerts, anything that has to fire regardless of mode. Most other bindings should be opmode- or command-scoped so they don't pollute modes they shouldn't apply to.",
           },
         ]}
       />

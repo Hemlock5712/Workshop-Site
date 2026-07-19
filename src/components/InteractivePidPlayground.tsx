@@ -784,7 +784,7 @@ export default function InteractivePidPlayground() {
           step={TARGET_RANGE_DEG.step}
           value={targetDeg}
           onChange={(e) => setTargetDeg(parseFloat(e.target.value))}
-          aria-label="Target angle in degrees. The arm starts at this angle; the controller has to hold it there against gravity."
+          aria-label="Target angle in degrees. The arm starts at zero, holds for one second, then steps to this angle."
           aria-valuemin={TARGET_RANGE_DEG.min}
           aria-valuemax={TARGET_RANGE_DEG.max}
           aria-valuenow={targetDeg}
@@ -821,7 +821,7 @@ export default function InteractivePidPlayground() {
             ref={containerRef}
             className="pid-plot w-full"
             style={{ minHeight: 220 }}
-            aria-label={`Response plot for the hold scenario at ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (flat since the arm starts at target), solid is the actual arm angle over two seconds.`}
+            aria-label={`Response plot for a step to ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (stepping from zero to the target at one second), solid is the actual arm angle over five seconds.`}
             role="img"
           />
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
@@ -866,14 +866,14 @@ export default function InteractivePidPlayground() {
         <p>
           Each loop the arm starts at <span className="font-mono">0°</span>{" "}
           (horizontal). For the first second the setpoint stays at{" "}
-          <span className="font-mono">0°</span> — use that window to tune{" "}
+          <span className="font-mono">0°</span>. Use that window to tune{" "}
           <span className="font-mono">kG</span> until the arm holds. For a
           Kraken X60 + 25:1 driving a 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm, the
           spec-sheet math gives{" "}
           <span className="font-mono">kG = mgL / (Kₜ·R) ≈ 0.53&nbsp;V</span>.
           Add <span className="font-mono">kS</span> to overcome residual static
           friction. At <span className="font-mono">t&nbsp;=&nbsp;1&nbsp;s</span>{" "}
-          the setpoint steps to your slider target —{" "}
+          the setpoint steps to your slider target;{" "}
           <span className="font-mono">kP</span> and{" "}
           <span className="font-mono">kD</span> chase the arm there and damp the
           overshoot. Order: <span className="font-mono">kG → kS → kP → kD</span>
@@ -905,7 +905,7 @@ export default function InteractivePidPlayground() {
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         2 kg · 0.4 m arm on a Kraken X60 + 25:1 reduction (7.09 N·m / 6000 RPM
         motor, ≈ 177 N·m / 240 RPM at the arm; back-EMF modelled, ±12 V
-        saturation). Gains use Phoenix 6 / WPILib mechanism-side units — drop
+        saturation). Gains use Phoenix 6 / WPILib mechanism-side units. Drop
         these values straight into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         with{" "}
