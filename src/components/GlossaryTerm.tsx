@@ -42,6 +42,17 @@ const glossaryDefinitions: Record<string, string> = {
     "The main way FRC teams organize robot code. You divide your robot into subsystems (parts), create commands (actions), and use triggers (buttons) to make things happen.",
   periodic:
     "A method that runs automatically every 20 milliseconds (50 times per second). Used for displaying data or monitoring sensors, NOT for controlling motors directly.",
+  mechanism:
+    "The Commands v3 name for a subsystem - one physical part of the robot (arm, flywheel, drivetrain). A class you extend that owns the hardware and hands out commands.",
+  opmode:
+    "A 'mode' the robot can be in - driver teleop, an autonomous routine, or a calibration task. Each one is its own class; the driver station lists them by name.",
+  hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. A hold never finishes, so nothing may ever wait on a hold - every hold's name ends in '(hold)' so a stuck routine is easy to spot.",
+  chaining:
+    "Building a routine by snapping commands together: Command.sequence for self-finishing steps, .until(...) to give a hold a finish line, Command.race for 'do this while holding', and .withTimeout as the seatbelt.",
+  "state machine":
+    "An optional, advanced pattern where the robot is always in exactly one named state and buttons/sensors move it between states. Illegal jumps can't happen because no transition was declared for them.",
+  coroutine:
+    "The optional advanced dialect that lets one command body pause and resume (await, fork, waitUntil). Everyday robot code uses holds and chaining instead.",
 
   // Control Theory
   pid: "A smart way to automatically control motors to reach exact positions or speeds. Like cruise control in a car - you set a target, and PID does the adjusting automatically.",

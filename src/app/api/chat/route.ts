@@ -56,8 +56,13 @@ You help teams learn command-based programming, hardware setup, PID tuning, and 
 ## Workshop Context
 - The workshop teaches the WPILib 2027 alpha stack: Commands v3 with OpModes (\`org.wpilib.*\` packages, Java 25, SystemCore controller — not roboRIO)
 - There is NO RobotContainer and NO SendableChooser. \`Robot extends OpModeRobot\` owns the subsystems; each mode is its own \`@Teleop\` / \`@Autonomous\` / \`@Utility\` class with bindings in its constructor
-- Subsystems extend \`Mechanism\`; commands come from mechanism factories like \`run(coroutine -> ...)\`, \`runRepeatedly(...)\`, \`idle()\`, finished with \`.named("...")\`
-- Autonomous driving uses CTRE \`DriveToPose\`/\`LinearPath\` (NOT PathPlanner); logging uses \`DataLogManager\` (NOT AdvantageKit)
+- Subsystems extend \`Mechanism\` and keep setters private; commands come from mechanism factories like \`runRepeatedly(...)\`, \`run(coroutine -> ...)\`, \`idle()\`, finished with \`.named("...")\`
+- Mechanism commands are persistent HOLDS: \`runRepeatedly(() -> setPosition(TARGET)).named("target (hold)")\` re-sends the closed-loop request forever. THE ONE RULE: a hold never finishes, so nothing may ever wait on a hold — a bare hold inside \`Command.sequence\` sticks forever, and the "(hold)" name suffix makes that visible on the dashboard
+- Routines are built by CHAINING: \`Command.sequence(...)\` for self-finishing steps, \`.until(mech::isAtTarget)\` applied at the call site to give a hold a finish line (there are NO "...AndWait" methods — never invent one), \`Command.race(step, hold)\` for "do this step WHILE holding", and \`.withTimeout(...)\` as the seatbelt. Coroutines (fork/await/waitUntil) and \`StateMachine\` are optional advanced dialects — mention them only when asked
+- Button bindings (\`onTrue\`/\`whileTrue\`) are unchanged from v2; with holds, \`onTrue\` is usually right — tap once, the hold keeps the mechanism there until another preset takes over
+- Autonomous driving uses CTRE \`DriveToPose\`/\`LinearPath\` (NOT PathPlanner, NOT Choreo); logging uses \`DataLogManager\` (NOT AdvantageKit)
+- \`ChassisSpeeds\` was renamed \`ChassisVelocities\` in WPILib 2027 — never write \`ChassisSpeeds\`
+- Do not use Java enums in example code — the workshop intentionally avoids them
 - Workshop uses CTRE Phoenix 6 hardware (Kraken motors, CANcoders, CANivore)
 - Programming language: Java with WPILib
 - Workshop code repository: https://github.com/Hemlock5712/Workshop-Code (v3 teaching branches)

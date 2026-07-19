@@ -6,7 +6,7 @@ import GitHubContent from "@/components/GitHubContent";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
-import { Book, GitPullRequest } from "lucide-react";
+import { Book, GitBranch, GitPullRequest } from "lucide-react";
 
 export default function StateMachines() {
   return (
@@ -15,10 +15,33 @@ export default function StateMachines() {
         title="State Machines with WPILib Commands V3"
         description={[
           "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this, including entry/exit hooks and any-state interrupts, without writing scaffolding by hand.",
-          "Reach for a StateMachine whenever a routine has phases that can repeat, skip, or back up to an earlier phase based on sensor input. Auto routines that recover from being knocked off-course, LED logic that escalates between info/warning animations, and superstructure choreography are all natural fits.",
+          "This is an optional, advanced dialect. In everyday teleop, each button holds a superstructure preset — tap A, the scoring hold takes over. With a state machine, the robot is instead always in exactly one named state, and buttons/sensors move it between states. The machine cancels the old state's command and starts the new one for you; illegal jumps simply don't exist because no transition was declared for them.",
         ]}
         concept="A state is a Command that runs while the machine is in it. Transitions are edge-triggered conditions that cancel the current state's command and move to the next state. onEnter / onExit fire around each transition."
       />
+
+      <Box
+        variant="alert-tip"
+        tag="OPTIONAL · ADVANCED"
+        title="You don't need this lesson to build a working robot"
+      >
+        Everything in the workshop — teleop presets, autos — is covered by
+        holds, button bindings, and chaining. Reach for a{" "}
+        <code>StateMachine</code> only when button-per-preset stops being
+        enough: sequences that must repeat, skip, or recover by jumping back a
+        phase, or a superstructure where illegal combinations need to be
+        impossible by construction. The team&apos;s worked example is{" "}
+        <a
+          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline"
+        >
+          StateMachineTeleop.java in the 2027-Template
+        </a>{" "}
+        — the same teleop as the ordinary hold-per-button OpMode, rebuilt as a
+        four-state machine.
+      </Box>
 
       <Box
         variant="alert-info"
@@ -33,6 +56,11 @@ export default function StateMachines() {
       </Box>
 
       <div className="flex flex-wrap gap-4">
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
+          title="StateMachineTeleop.java — the team's reference example"
+          icon={<GitBranch className="w-5 h-5" />}
+        />
         <DocumentationButton
           href="https://github.com/wpilibsuite/allwpilib/blob/main/design-docs/commands-v3-state-machines.md"
           title="WPILib State Machine Design Doc"
@@ -69,63 +97,49 @@ export default function StateMachines() {
 
         <CodeBlock
           language="java"
-          title="Arm cycle as a state machine"
+          title="Superstructure as a state machine (the StateMachineTeleop pattern)"
           code={`import org.wpilib.command3.Command;
 import org.wpilib.command3.StateMachine;
 import org.wpilib.command3.StateMachine.State;
 
-public Command autoArmCycle() {
-  // 1. Construct — name is required and shows up in telemetry.
-  StateMachine sm = new StateMachine("Auto Arm Cycle");
+// 1. Construct — name is required and shows up in telemetry.
+StateMachine sm = new StateMachine("Superstructure");
 
-  // 2. Add states. Each state owns a Command.
-  State stowed  = sm.addState(arm.low());
-  State pickup  = sm.addState(arm.low());        // ready to grab
-  State scoring = sm.addState(arm.high());
-  State defense = sm.addState(arm.backward());
+// 2. Add states. Each state owns a Command — here they're the mechanism's
+//    ordinary "(hold)" commands, the same ones the button bindings use.
+State stowed  = sm.addState(arm.stowed());
+State pickup  = sm.addState(arm.pickup());
+State scoring = sm.addState(arm.scoring());
 
-  // 3. Set the initial state. setInitialState() is enforced at compile time —
-  //    leaving it out is a build error, not a runtime surprise.
-  sm.setInitialState(stowed);
+// 3. Set the initial state. setInitialState() is enforced at compile time —
+//    leaving it out is a build error, not a runtime surprise.
+sm.setInitialState(stowed);
 
-  // 4. Wire transitions.
-  stowed.switchTo(pickup).when(operator.intake);
-  pickup.switchTo(scoring).when(gripper::hasGamePiece);
-  scoring.switchTo(stowed).whenCompleteAnd(() -> !gripper.hasGamePiece());
+// 4. Wire transitions. Because every state's command is a hold (it never
+//    finishes), every transition here is a .when(...) — checked each tick
+//    while the state runs. Declaring the graph is what makes illegal jumps
+//    impossible: stowed can't teleport to scoring, because no transition says so.
+stowed.switchTo(pickup).when(operator.a());
+pickup.switchTo(scoring).when(gripper::hasGamePiece);
+scoring.switchTo(stowed).when(() -> !gripper.hasGamePiece());
 
-  // Any-state interrupt: defense mode wins from anywhere.
-  sm.switchFromAny().to(defense).when(driver.defenseMode);
-
-  return sm;
-}`}
+// Any-state interrupt: "get safe now" wins from anywhere.
+sm.switchFromAny().to(stowed).when(operator.b());`}
         />
 
         <p
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          <code>arm.low()</code> and friends are factory methods on the{" "}
-          <code>Arm</code> mechanism that return a configured{" "}
-          <code>Command</code>. The state machine itself doesn&apos;t care how
-          they&apos;re built — only that each state has one command to run.
+          <code>arm.stowed()</code> and friends are the same hold factories you
+          built on the Mechanisms page — <code>runRepeatedly</code> re-sending a
+          setpoint, named <code>&quot;stowed (hold)&quot;</code>. The state
+          machine doesn&apos;t care how a state&apos;s command is built, but
+          holds fit it naturally: the machine cancels the old state&apos;s hold
+          and starts the new one on each transition, so the mechanism is always
+          actively commanded and THE ONE RULE is never violated — nothing ever{" "}
+          <em>waits</em> on the hold; transitions watch conditions instead.
         </p>
-
-        <CodeBlock
-          language="java"
-          title="Arm.java — one factory per target position"
-          code={`/** Drive to a target angle and finish once we arrive. */
-public Command goTo(Angle target, Angle tolerance, String label) {
-  return run(coroutine -> {
-    setPosition(target);
-    coroutine.waitUntil(() -> atTarget(target, tolerance));
-  }).named("Arm:" + label);
-}
-
-// Thin wrappers — one per useful position.
-public Command low()      { return goTo(Degrees.of(0),   Degrees.of(1), "LOW"); }
-public Command high()     { return goTo(Degrees.of(90),  Degrees.of(2), "HIGH"); }
-public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWARD"); }`}
-        />
 
         <p
           className="text-[15px] leading-relaxed"
@@ -182,9 +196,10 @@ public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWAR
             >
               <p>
                 Checked once, <em>after</em> the state&apos;s command finishes
-                on its own. Use this for one-shot states that don&apos;t loop,
-                or for &quot;and then move on&quot; transitions at the end of a
-                phase.
+                on its own. Use this for self-finishing state commands (like a
+                one-shot <code>fireOnce()</code>). A hold never finishes, so a{" "}
+                <code>whenComplete()</code> on a hold-backed state will never
+                fire — use <code>.when(...)</code> there instead.
               </p>
               <p style={{ marginTop: 8 }}>
                 <code>whenCompleteAnd(cond)</code> is the same idea with an
@@ -197,13 +212,13 @@ public Command backward() { return goTo(Degrees.of(180), Degrees.of(3), "BACKWAR
           <CodeBlock
             language="java"
             title="Mixing conditional and completion transitions"
-            code={`State aiming  = sm.addState(turret.aimAtGoal());
-State scoring = sm.addState(shooter.fireOnce());
+            code={`State aiming  = sm.addState(turret.aimAtGoal());   // a hold — never finishes
+State scoring = sm.addState(shooter.fireOnce());   // self-finishing one-shot
 
-// Conditional: fire as soon as the turret reports it's on-target.
+// Conditional: the aiming hold runs until the turret reports on-target.
 aiming.switchTo(scoring).when(turret::aimedAtGoal);
 
-// Completion: loop the scoring state as long as we have a ball.
+// Completion: fireOnce() finishes on its own; loop it while we have a ball.
 scoring.switchTo(scoring).whenCompleteAnd(hopper::hasBall);`}
           />
         </div>
@@ -338,80 +353,52 @@ sm.switchFromAny().to(idle).whenComplete();`}
             letterSpacing: "-0.01em",
           }}
         >
-          Beyond state machines: where v3 changes what you can write
+          Where this sits next to the other dialects
         </h2>
 
         <p
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          The <code>StateMachine</code> class is the headline v3 feature for
-          this page, but the underlying coroutine model also unlocks command
-          shapes that would otherwise need a custom <code>Command</code>{" "}
-          subclass. The classic case: a command that reads a sensor value
-          mid-sequence and picks a different next step based on what it saw.
+          Commands V3 gives you three ways to express a routine, and this team
+          teaches them in this order: <strong>chaining</strong> (
+          <code>Command.sequence</code> + call-site <code>.until</code> +{" "}
+          <code>race</code>) is the everyday tool and as far as most routines
+          ever need to go; <strong>coroutines</strong> (
+          <code>fork / await / waitUntil</code>) handle logic with loops and
+          branches inside one command body; and the{" "}
+          <strong>StateMachine</strong> on this page handles behavior that jumps
+          between named phases. The second two are optional dialects — worth
+          recognizing in the template, not required learning. Compare the three
+          side by side in the template&apos;s opmodes folder:{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            DriveStowDriveChainedOpMode.java
+          </a>{" "}
+          (chaining),{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            DriveStowDriveOpMode.java
+          </a>{" "}
+          (coroutines), and{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            StateMachineTeleop.java
+          </a>{" "}
+          (this page).
         </p>
-
-        <CodeBlock
-          language="java"
-          title="Grab a piece, then choose where to score based on what we got"
-          code={`/**
- * A method on the Arm mechanism: it drives the arm directly and awaits the
- * intake's commands. Running the body on one mechanism lets it read a sensor
- * and branch with plain Java between steps.
- */
-public Command grabAndScore() {
-  return run(coroutine -> {
-    setPosition(GROUND_PICKUP);
-    coroutine.waitUntil(() -> atTarget(GROUND_PICKUP, TOL));
-    coroutine.await(intake.grab());
-
-    // Read sensor state into a local variable.
-    int weight = sensors.readPieceWeight();
-
-    if (weight == 0) {
-      // Got nothing — bail quietly to stowed.
-      setPosition(STOWED);
-      coroutine.waitUntil(() -> atTarget(STOWED, TOL));
-    } else if (weight > HEAVY_THRESHOLD) {
-      // Too heavy for the high goal — score low.
-      setPosition(LOW_GOAL);
-      coroutine.waitUntil(() -> atTarget(LOW_GOAL, TOL));
-      coroutine.await(intake.release());
-    } else {
-      setPosition(HIGH_GOAL);
-      coroutine.waitUntil(() -> atTarget(HIGH_GOAL, TOL));
-      coroutine.await(intake.release());
-    }
-  }).named("Grab & Score");
-}`}
-        />
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The line to notice is{" "}
-          <code>int weight = sensors.readPieceWeight();</code> followed by a
-          three-way <code>if/else</code> picking between different next
-          sub-commands. Because the whole routine is one method body, a value
-          read in one phase is just a local variable the later phases can branch
-          on.
-        </p>
-
-        <Box
-          variant="concept"
-          tag="WHY THIS MATTERS"
-          title="Write control flow as control flow"
-        >
-          Because the routine is a single method body, multi-phase logic reads
-          top to bottom in plain Java: read a sensor into a local, branch with{" "}
-          <code>if</code>/<code>else</code>, and <code>await</code> the step you
-          chose — no phase field, no manual child scheduling. The{" "}
-          <code>StateMachine</code> class earlier in this lesson is a structured
-          version of the same idea: declarative transitions between phases
-          without writing the scaffolding by hand.
-        </Box>
       </section>
 
       <Box
@@ -423,7 +410,7 @@ public Command grabAndScore() {
         <strong>Java 25</strong> and deploy to <strong>SystemCore</strong>. The
         stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
         <code>2027.0.0-alpha-6</code>) — the release where StateMachine first
-        shipped.
+        shipped. This page was last verified against alpha-6 in July 2026.
       </Box>
 
       <Quiz
