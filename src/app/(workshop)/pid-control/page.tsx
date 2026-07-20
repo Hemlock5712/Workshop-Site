@@ -1,5 +1,6 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import CodeBlock from "@/components/CodeBlock";
 import PageHero from "@/components/PageHero";
 import MechanismPlayground from "@/components/MechanismPlayground";
@@ -14,7 +15,7 @@ export default function PIDControl() {
     <PageTemplate title="PID Control">
       {/* Introduction */}
       <PageHero
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven control. Toggle between an arm (position), a flywheel (velocity), and an elevator (position) below. The gains in each map directly to a TalonFX Slot0Configs."
+        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven control. Toggle between an arm (position), a flywheel (velocity), and an elevator (position) below. The gains in each map directly to the motor's PID settings (a TalonFX Slot0Configs)."
         concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the voltage needed before any error has accumulated."
       />
 
@@ -272,6 +273,8 @@ export default function PIDControl() {
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[

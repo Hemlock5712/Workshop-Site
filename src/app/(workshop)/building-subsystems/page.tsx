@@ -12,8 +12,9 @@ export default function BuildingSubsystems() {
         description={[
           "A mechanism models one physical part of the robot: an arm, a flywheel, the drivetrain. In Commands V3, Mechanism is a base class you extend. It gives you factory methods (run(), runRepeatedly(), idle()) that hand you a Command builder you can name, schedule, or compose.",
           "One class per physical thing, hardware as private fields, configuration in the constructor. Default behavior comes from an automatic idle() default (override it with setDefaultCommand) rather than a periodic() override, and the WPILib compiler plugin enforces .named(...) on every command at build time; forget it and the project won't compile.",
+          'The commands a mechanism exposes are holds: runRepeatedly(...) re-sending the closed-loop setpoint forever, named with a "(hold)" suffix. The setters stay private: anything that wants to move the arm does it through a command, which is how the scheduler prevents two things fighting over the motor.',
         ]}
-        concept="One mechanism per physical thing. The base class gives you Command factories; you give it your hardware and the per-command behavior."
+        concept="One mechanism per physical thing. The base class gives you Command factories; you give it your hardware and hold commands for each preset."
       />
 
       <section className="flex flex-col gap-6">
@@ -59,23 +60,109 @@ export default function BuildingSubsystems() {
   }
 
   // 3. Public methods return Commands built from the base-class factories.
+  //    Each preset is a hold: runRepeatedly re-sends the closed-loop request
+  //    every tick, so the command never finishes and the motor stays actively
+  //    commanded. The "(hold)" suffix is part of the convention.
   //    .named(...) is enforced at compile time — leave it off, build breaks.
-  public Command goTo(Angle target, Angle tolerance) {
-    return run(coroutine -> {
-      motor.setControl(positionVoltage.withPosition(target.in(Degrees)));
-      coroutine.waitUntil(() -> atTarget(target, tolerance));
-    }).named("Arm:goTo:" + target.in(Degrees));
+  public Command scoring() {
+    return runRepeatedly(() -> setPosition(SCORING_POSITION))
+        .named("scoring (hold)");
   }
 
-  // 4. Plain reader methods stay plain — only schedulable behavior
-  //    needs to return a Command.
+  public Command stowed() {
+    return runRepeatedly(() -> setPosition(STOWED_POSITION))
+        .named("stowed (hold)");
+  }
+
+  // 4. Plain reader methods stay plain — chains use isAtTarget() as a
+  //    finish line: arm.scoring().until(arm::isAtTarget).
+  public boolean isAtTarget() {
+    return Math.abs(getPosition() - getTargetPosition()) < TOLERANCE;
+  }
+
   public Angle getPosition() {
     return Degrees.of(motor.getPosition().getValueAsDouble());
   }
 
-  // atTarget(...) — simple |current − target| < tolerance check.
+  // 5. The setter is PRIVATE. The only way to move the arm is through
+  //    one of the commands above.
+  private void setPosition(double position) {
+    motor.setControl(positionVoltage.withPosition(position));
+  }
 }`}
         />
+
+        <Box
+          variant="alert-warning"
+          tag="THE ONE RULE"
+          title="A hold never finishes, so nothing may ever wait on a hold"
+        >
+          <p>
+            The holds above keep re-sending their setpoint forever. Put one bare
+            in a <code>Command.sequence</code> and the routine sticks there,
+            which is why every hold&apos;s name ends in <code>(hold)</code>: a
+            stuck routine sitting on a <code>(hold)</code> command on the
+            dashboard is the bug. Give a hold a finish line at the call site (
+            <code>arm.scoring().until(arm::isAtTarget)</code>); never bake an{" "}
+            <code>...AndWait</code> variant into the mechanism. This class
+            follows{" "}
+            <a
+              href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/subsystems/arm/Arm.java"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Arm.java in the 2027-Template
+            </a>{" "}
+            line for line.
+          </p>
+        </Box>
+      </section>
+
+      <section className="flex flex-col gap-6">
+        <h2
+          className="text-2xl font-semibold leading-tight"
+          style={{
+            fontFamily: "var(--font-serif)",
+            color: "var(--fg)",
+            letterSpacing: "-0.01em",
+          }}
+        >
+          Wiring it into Robot
+        </h2>
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          A mechanism class does nothing until the robot owns one. Every
+          mechanism lives on the <code>Robot</code> class as a{" "}
+          <code>public final</code> field, built once when the program starts,
+          and alive for the whole match. That&apos;s the entire wiring step: one
+          line per mechanism.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Robot.java — one field per mechanism"
+          code={`public class Robot extends OpModeRobot {
+  // One of each physical thing, built at startup.
+  // public — so OpModes can reach them (robot.arm.scoring()).
+  // final — so they exist exactly once, for the whole match.
+  public final Arm arm = new Arm();
+  public final Flywheel flywheel = new Flywheel();
+}`}
+        />
+
+        <p
+          className="text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          Everything else (button bindings, autos) receives this{" "}
+          <code>Robot</code> and reaches the mechanisms through it. When you see{" "}
+          <code>robot.arm.scoring()</code> on the Triggers page,{" "}
+          <code>robot.arm</code> is this field.
+        </p>
       </section>
 
       <section className="flex flex-col gap-6">
@@ -103,7 +190,28 @@ export default function BuildingSubsystems() {
         <div className="grid gap-4 lg:grid-cols-3">
           <Box
             variant="concept"
-            tag="ONCE THEN HOLD"
+            tag="THE HOLD FACTORY"
+            title="mech.runRepeatedly(runnable)"
+            code={
+              <code>
+                runRepeatedly(() -&gt; setPosition(X)).named(&quot;x
+                (hold)&quot;)
+              </code>
+            }
+          >
+            <p>
+              Calls the runnable every scheduler tick (20 ms) for as long as the
+              command is scheduled, which re-sends a closed-loop request
+              forever. <strong>This is how holds are written</strong>, and
+              it&apos;s the factory behind nearly every command in the workshop.
+              (It also covers every-tick work like telemetry: the v3 stand-in
+              for <code>periodic()</code>, scoped to a command.)
+            </p>
+          </Box>
+
+          <Box
+            variant="concept"
+            tag="RUN ONCE"
             title="mech.run(coroutine -> { ... })"
             code={
               <code>
@@ -112,24 +220,10 @@ export default function BuildingSubsystems() {
             }
           >
             <p>
-              Runs the lambda once. If the body uses{" "}
-              <code>coroutine.yield()</code>, <code>waitUntil(...)</code>, or
-              <code> await(...)</code>, the command stays scheduled until the
-              body falls off. Most teaching examples use this.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="EVERY TICK"
-            title="mech.runRepeatedly(runnable)"
-            code={<code>runRepeatedly(this::tick).named(...)</code>}
-          >
-            <p>
-              Calls the runnable every scheduler tick (20 ms) for as long as the
-              command is scheduled. This is the v3 spelling of &quot;put it in{" "}
-              <code>periodic()</code>&quot;, but it&apos;s scoped to a command
-              instead of always-on.
+              Runs the lambda once; the command finishes when the body returns.
+              The <code>coroutine</code> parameter is the advanced dialect
+              (covered on the Commands page); for workshop code you&apos;ll
+              rarely need <code>run</code> at all.
             </p>
           </Box>
 
@@ -197,25 +291,29 @@ export default function BuildingSubsystems() {
   // ... motors
 
   public Elevator() {
-    // No controller needed, so set it here: hold position instead of going limp.
-    setDefaultCommand(
-      run(coroutine -> {
-        motor.setControl(positionVoltage.withPosition(getPosition().in(Rotations)));
-        coroutine.park();
-      }).named("Elevator:hold")
-    );
+    // No controller needed, so set it here: return to the stowed preset
+    // whenever nothing else owns the elevator. The default is just one of
+    // the mechanism's own holds.
+    setDefaultCommand(stowed());
+  }
+
+  public Command stowed() {
+    return runRepeatedly(() -> setPosition(STOWED_POSITION))
+        .named("stowed (hold)");
   }
 }
 
 // The drivetrain's teleop drive default needs the controller, so it's set from
 // the Teleop OpMode's constructor — not the mechanism's. (More on the Triggers page.)
+// It's a hold too: it re-sends the driver's request forever and only ever
+// ends by being pre-empted.
 @Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     robot.drivetrain.setDefaultCommand(
       robot.drivetrain
         .runRepeatedly(() -> robot.drivetrain.drive(driver.getLeftX(), driver.getLeftY(), driver.getRightX()))
-        .named("Drivetrain:teleopDrive")
+        .named("teleop drive (hold)")
     );
   }
 }`}
@@ -239,8 +337,8 @@ public class TeleopOpMode extends PeriodicOpMode {
           style={{ color: "var(--fg-mute)" }}
         >
           Multi-motor mechanisms follow the same shape. The Phoenix 6 follower
-          control still lives in the constructor, the per-command behavior still
-          comes from <code>run(...)</code>, and reads stay as plain getters.
+          control still lives in the constructor, the hold commands still come
+          from <code>runRepeatedly(...)</code>, and reads stay as plain getters.
         </p>
 
         <CodeBlock
@@ -260,8 +358,8 @@ public class TeleopOpMode extends PeriodicOpMode {
     follower.setControl(new Follower(leader.getDeviceID(), true));
   }
 
-  // setVoltage(...) and spinTo(...) — same shape as the Arm's commands,
-  // just calling leader.setControl(...) instead of motor.setControl(...).
+  // spinUp() and stop() — the same hold shape as the Arm's commands
+  // (runRepeatedly + "(hold)"), just calling leader.setControl(...).
 }`}
         />
 
@@ -282,7 +380,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         builder-chain factories, and the compile-time <code>.named(...)</code>{" "}
         enforcement) run on <strong>Java 25</strong> and deploy to{" "}
         <strong>SystemCore</strong>. The stack is the WPILib 2027 <em>alpha</em>{" "}
-        (GradleRIO <code>2027.0.0-alpha-6</code>).
+        (GradleRIO <code>2027.0.0-alpha-6</code>), so the exact APIs are still
+        moving between alpha builds. This page was last verified against alpha-6
+        in July 2026.
       </Box>
 
       <Quiz

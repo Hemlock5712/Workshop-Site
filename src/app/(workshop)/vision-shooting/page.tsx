@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import ContentCard from "@/components/ContentCard";
@@ -101,9 +102,9 @@ export default function DynamicFlywheel() {
 
         <p className="text-slate-600 dark:text-slate-300">
           The core of dynamic flywheel control is an{" "}
-          <strong>InterpolatingTreeMap</strong>, a data structure that stores
-          known distance-velocity pairs and automatically calculates velocities
-          for distances in between.
+          <strong>InterpolatingDoubleTreeMap</strong>, a data structure that
+          stores known distance-velocity pairs and automatically calculates
+          velocities for distances in between.
         </p>
 
         <ContentCard>
@@ -113,7 +114,7 @@ export default function DynamicFlywheel() {
             </div>
             <div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                How InterpolatingTreeMap Works
+                How InterpolatingDoubleTreeMap Works
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
                 You provide key distance-velocity pairs, and the map fills in
@@ -180,7 +181,7 @@ export default function DynamicFlywheel() {
                 Set Up the Lookup Table
               </h3>
               <p className="text-slate-600 dark:text-slate-300">
-                Create an InterpolatingTreeMap and populate it with
+                Create an InterpolatingDoubleTreeMap and populate it with
                 distance-velocity pairs based on testing.
               </p>
             </div>
@@ -466,6 +467,8 @@ table.put(5.0, 100.0);  // Maximum range`}
 
       {/* Quiz */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[
@@ -485,7 +488,7 @@ table.put(5.0, 100.0);  // Maximum range`}
             },
             {
               id: 2,
-              question: "What does an InterpolatingTreeMap do?",
+              question: "What does an InterpolatingDoubleTreeMap do?",
               options: [
                 "It stores only exact distance-velocity pairs with no calculation",
                 "It automatically calculates velocities for distances between stored data points",
@@ -494,7 +497,7 @@ table.put(5.0, 100.0);  // Maximum range`}
               ],
               correctAnswer: 1,
               explanation:
-                "An InterpolatingTreeMap stores known distance-velocity pairs and uses linear interpolation to automatically calculate appropriate velocities for distances that fall between your stored data points.",
+                "An InterpolatingDoubleTreeMap stores known distance-velocity pairs and uses linear interpolation to automatically calculate appropriate velocities for distances that fall between your stored data points.",
             },
             {
               id: 3,
@@ -531,7 +534,7 @@ table.put(5.0, 100.0);  // Maximum range`}
               ],
               correctAnswer: 2,
               explanation:
-                "The most efficient approach is to test at 3-5 key distances throughout your shooting range. The InterpolatingTreeMap will automatically calculate appropriate velocities for intermediate distances through linear interpolation.",
+                "The most efficient approach is to test at 3-5 key distances throughout your shooting range. The InterpolatingDoubleTreeMap will automatically calculate appropriate velocities for intermediate distances through linear interpolation.",
             },
             {
               id: 6,

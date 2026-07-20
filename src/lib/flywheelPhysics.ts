@@ -52,11 +52,12 @@ export interface FlywheelGains {
 
 export const FLY_MOTOR_DEFAULT: FlywheelMotorParams = {
   vMax: 12,
-  // Kraken X60 spec sheet: 7.09 N·m stall torque, 5800 RPM free speed
-  // (≈ 96.67 rotations/second). Picked so kV_ideal = V_max / free_rps
-  // works out to the 0.124 V·s/rot every Kraken-based team computes.
-  stallTorque: 7.09,
-  freeSpeedRps: 96.67,
+  // Kraken X44 (the workshop's demo motor), per CTRE's dyno data
+  // (motors.ctr-electronics.com, updated 2025-09-26): 4.11 N·m stall
+  // torque, 7758 RPM free speed (≈ 129.3 rot/s), kV = 646.47 RPM/V
+  // ≈ 0.093 V·s/rot. (FOC variant measures 5.01 N·m / 7368 RPM ≈ 0.098.)
+  stallTorque: 4.11,
+  freeSpeedRps: 129.3,
 };
 
 const FLY_BASE: Omit<FlywheelPhysicsParams, "targetRps"> = {

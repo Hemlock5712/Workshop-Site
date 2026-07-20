@@ -101,13 +101,13 @@ export const FeedforwardLesson: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "This is the full feedforward lesson. PID got our arm to the setpoint by reacting to error — but a reaction is always late. Feedforward flips the plan: compute the push you already know you'll need, and apply it before the error ever exists. Four gains, one idea.",
+      text: "This is the full feedforward lesson. PID moved our arm by reacting to error. Error is the gap between you and the target. But a reaction is always late. Feedforward flips the plan. Work out the push you know you will need. Apply it before the error even exists. Four numbers, one idea.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "recap-sag",
-      text: "Start with the arm and gentle feedback gains. Send it to forty-five degrees and watch the landing — it rises, slows, and stalls just under the line. Feedback needs an error to make voltage, so it always settles for one.",
+      text: "Start with the arm, using gentle feedback gains. A gain is a number that sets how hard we push. Send the arm to forty-five degrees. It rises, slows, and stalls just under the line. Feedback needs an error to make voltage. So it always keeps a little error.",
       camera: ARM_LAB,
       events: [
         { type: "gains", kP: 0.6, kD: 0.15, at: { word: "gentle" } },
@@ -116,12 +116,12 @@ export const FeedforwardLesson: TrailerScript = {
     },
     {
       id: "gravity",
-      text: "The thief is gravity. It drags on the arm every single moment — hardest when the arm is level — and the controller only answers after some angle has already been stolen. That gap is permanent, because closing it would erase the very error that pays for the holding voltage.",
+      text: "The thief is gravity. It drags on the arm every single moment. It pulls hardest when the arm is level. And feedback only answers after some angle is already lost. The gap can never close. If it closed, the error would vanish. And with no error, there is no voltage left to hold the arm.",
       camera: ARM_CLOSEUP,
     },
     {
       id: "kg",
-      text: "But gravity is not a mystery — it's a formula. So cancel it: kG times the cosine of the arm's angle, added to the output on every loop, error or not. Watch the gap close on its own. Same gentle gains — the feedforward is doing the holding now.",
+      text: "But gravity is not a mystery. It is a formula. So cancel it up front. A number called k G adds the exact volts that gravity steals. More volts when the arm is level. Fewer when it points up. No error needed. Watch the gap close on its own. Feedforward is doing the holding now.",
       camera: ARM_LAB,
       events: [
         { type: "gains", kP: 0.6, kD: 0.15, kG: 3.9, at: { word: "cancel" } },
@@ -129,24 +129,24 @@ export const FeedforwardLesson: TrailerScript = {
     },
     {
       id: "kg-proof",
-      text: "Now ask for seventy-five degrees. With gravity pre-paid, the arm glides up and lands exactly on the line — no sag, no ringing, and the scope shows it. Feedback is only sweeping up crumbs. That gain has a name: kG, feedforward for gravity.",
+      text: "Now ask for seventy-five degrees. Gravity is already paid for. The arm glides up and lands right on the line. No sag. No ringing. The scope proves it. Feedback only sweeps up crumbs. That gain has a name: k G, the feedforward for gravity.",
       camera: ARM_SCOPE_CLOSEUP,
       events: [{ type: "target", deg: 75, at: { word: "seventy-five" } }],
     },
     {
       id: "family",
-      text: "And kG has a whole family. Every predictable cost gets its own gain: kS pays for friction, kV pays for speed, kA pays for acceleration. Each one is a physical measurement of your mechanism, not a knob you fiddle with. To meet the rest, we need a new rig.",
+      text: "And k G has a whole family. Every cost you can predict gets its own gain. k S pays for friction. k V pays for speed. k A pays for speeding up. Each one is a real measurement of your mechanism. It is not a knob you fiddle with. To meet the rest, we need a new rig.",
       camera: ARM_LAB,
       holdAfter: 0.5,
     },
     {
       id: "ks",
-      text: "A shooter flywheel. Try to spin it with a whisper of voltage and nothing happens — static friction holds the wheel still until roughly half a volt. That's kS: the volts it takes to make anything move at all. Below kS, your commands are just wishes.",
+      text: "Meet a shooter flywheel. Give it a whisper of voltage. Nothing happens. Friction grips the wheel until about half a volt. That first cost is k S. It is the volts it takes to make anything move at all. Below k S, your commands are just wishes.",
       camera: WHEEL_CLOSEUP,
     },
     {
       id: "velocity-problem",
-      text: "Velocity control looks different, but watch the same disease. Proportional feedback only, and a target of thirty-six hundred RPM. The wheel spins up fast — then flattens out around two thousand and parks there, forty percent short of the shot we asked for.",
+      text: "Now for velocity control: holding a speed instead of a position. Watch the same disease. Proportional feedback only. The target is thirty-six hundred RPM. RPM means rotations per minute. The wheel spins up fast. Then it flattens out near two thousand and parks there. That is forty percent short.",
       camera: FLY_LAB,
       events: [
         { type: "gains", kP: 0.15, kD: 0, at: { word: "proportional" } },
@@ -155,12 +155,12 @@ export const FeedforwardLesson: TrailerScript = {
     },
     {
       id: "sag-explain",
-      text: "Sixteen hundred RPM short — this is the flywheel version of the sagging arm. Cruising at speed costs steady voltage, and proportional control can only make voltage out of error, so it keeps a huge error on the books forever just to stay spinning at all.",
+      text: "Sixteen hundred RPM short. This is the flywheel version of the sagging arm. Staying at speed costs steady voltage. But proportional control can only make voltage out of error. So it holds on to a huge error forever, just to keep spinning at all.",
       camera: FLY_SCOPE_CLOSEUP,
     },
     {
       id: "kv",
-      text: "But the cruise voltage is predictable too. kV: volts per rotation per second — measure it once and pay it up front, plus kS to break the friction. Add both and the wheel climbs straight to thirty-six hundred and holds it. Feedback is down to trimming leftovers.",
+      text: "But the cruising voltage is predictable too. That gain is k V: volts for each rotation per second. Measure it once and pay it up front. Include k S to break the friction. Now add both. The wheel climbs straight to thirty-six hundred and holds. Feedback only trims the leftovers.",
       camera: FLY_LAB,
       events: [
         {
@@ -175,7 +175,7 @@ export const FeedforwardLesson: TrailerScript = {
     },
     {
       id: "feed",
-      text: "Now the real test: game pieces. Each ball through the wheel steals speed on contact — watch the scope. One. Two. Three. Every dip is over four hundred RPM, and every recovery is nearly instant, because feedforward never stopped paying the cruise voltage while feedback caught the difference.",
+      text: "Now the real test: game pieces. Each ball that goes through steals speed from the wheel. Watch the scope. One. Two. Three. Every dip is over four hundred RPM. And every recovery is almost instant. Feedforward never stopped paying the cruise voltage. Feedback just catches the small difference.",
       camera: FLY_LAB,
       events: [
         { type: "feed", at: { word: "one" } },
@@ -185,17 +185,17 @@ export const FeedforwardLesson: TrailerScript = {
     },
     {
       id: "ka",
-      text: "There's one more relative: kA, feedforward for acceleration. Changing speed takes extra voltage beyond cruising, and kA pays that bill during spin-up, or whenever a motion profile demands acceleration. Most mechanisms barely need it — but when Motion Magic arrives next lesson, kA will already be waiting.",
+      text: "There is one more relative: k A, the feedforward for acceleration. Acceleration means changing speed. Changing speed takes extra voltage, beyond cruising. k A pays that extra bill during spin-up. Most mechanisms barely need it. But when Motion Magic arrives next lesson, k A will already be waiting.",
       camera: WHEEL_CLOSEUP,
     },
     {
       id: "characterize",
-      text: "So where do these numbers come from? Measurement, not guessing. Apply a known voltage — say six volts — let the wheel settle, and read the steady speed. Divide volts by speed and that's kV. The voltage where the wheel first budges — that's kS. Your robot tells you its own constants.",
+      text: "So where do these numbers come from? You measure them. No guessing. Apply a known voltage, like six volts. Let the wheel settle. Read the steady speed. Divide the volts by that speed. That answer is k V. Then find the voltage where the wheel first budges. That is k S. Your robot tells you its own numbers.",
       camera: FLY_LAB,
     },
     {
       id: "code-arm",
-      text: "In code, feedforward lives right next to the feedback gains. Here's the arm's slot config — kP and kD stay on as the cleanup crew, and one new line, kG, holds the arm against gravity, configured as arm cosine so it scales as the arm moves.",
+      text: "In code, feedforward lives right next to the feedback gains. Here is the arm's slot config. k P and k D stay on as the cleanup crew. One new line, k G, holds the arm against gravity. We set it to arm cosine mode. Then the volts scale as the arm moves.",
       camera: ARM_CODE,
       events: [
         {
@@ -208,14 +208,14 @@ export const FeedforwardLesson: TrailerScript = {
           type: "code-state",
           artifact: "arm-code",
           state: 2,
-          at: { word: "kG" },
+          at: { word: "holds" },
         },
       ],
       holdAfter: 1.4,
     },
     {
       id: "code-fly",
-      text: "And the flywheel is two lines more. kS covers the friction, kV pays the cruise voltage per rotation per second, and a small kP trims the leftovers. Then a velocity request instead of a position request — setControl with a velocity voltage and the target in rotations per second.",
+      text: "And the flywheel needs two lines more. k S covers the friction. k V pays the cruise voltage for each rotation per second. A small k P trims the leftovers. Then we send a velocity request instead of a position request. That is set control with a velocity voltage, and the target in rotations per second.",
       camera: FLY_CODE,
       events: [
         {
@@ -228,20 +228,20 @@ export const FeedforwardLesson: TrailerScript = {
           type: "code-state",
           artifact: "fly-code",
           state: 2,
-          at: { word: "kS" },
+          at: { word: "covers" },
         },
       ],
       holdAfter: 1.4,
     },
     {
       id: "recipe",
-      text: "Step back and the whole lesson is one sentence: predict what you can, correct what's left. kS breaks the friction, kG cancels gravity, kV pays for speed, kA pays for change — and feedback shrinks from doing the work to merely checking it.",
+      text: "Zoom out. The whole lesson is one sentence. Predict what you can. Correct what is left. k S breaks the friction. k G cancels gravity. k V pays for speed. k A pays for speeding up. Feedback stops doing the heavy work. It just checks the result.",
       camera: FLY_LAB,
       holdAfter: 0.5,
     },
     {
       id: "cta",
-      text: "Next lesson: Motion Magic. Instead of asking a mechanism to teleport, we plan the whole path — and with feedforward paying the way, it follows that plan almost perfectly. The write-up, the sim, and the code are at frc5712.com. Stop reacting. Start predicting.",
+      text: "Next lesson: Motion Magic. Instead of asking a mechanism to teleport, we plan the whole path. Feedforward pays the way. The mechanism follows the plan almost perfectly. The write-up, the sim, and the code are at frc5712.com. Stop reacting. Start predicting.",
       camera: END,
       holdAfter: 1.2,
     },

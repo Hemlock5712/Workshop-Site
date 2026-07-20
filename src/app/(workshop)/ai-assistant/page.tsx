@@ -588,7 +588,7 @@ export default function AIAssistantPage() {
           >
             An AI assistant is a teammate, not an autopilot. Read every change
             it makes, run it in simulation first, and make sure <em>you</em> can
-            explain what the code does — &quot;the AI wrote it&quot; won&apos;t
+            explain what the code does; &quot;the AI wrote it&quot; won&apos;t
             help you debug at a competition. Remember the 2027 stack is alpha
             software, so APIs can shift between releases; when the assistant and
             the compiler disagree, trust the compiler.

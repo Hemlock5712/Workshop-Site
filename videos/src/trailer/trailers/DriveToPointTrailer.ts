@@ -142,13 +142,13 @@ export const DriveToPointTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your driver lines up the same scoring position forty times a match. What if one button drove the robot to the exact spot — x, y, and heading — every time? That's drive to point, and it's about thirty lines of code.",
+      text: "Your driver lines up at the same scoring spot forty times a match. What if one button drove there for you? Exact spot, exact angle, every time. That's drive to point. It's about thirty lines of code.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "poses",
-      text: "Every field position is a Pose2d — x in meters, y in meters, and a rotation. Odometry already tracks yours. So the robot always knows two poses: where it is, and where you want it.",
+      text: "Every spot on the field is a Pose2d. That's an x, a y, and a facing angle. Odometry — the robot's running guess of its position — already tracks yours. So the robot knows two poses: where it is, and where you want it.",
       camera: POSES_CLOSEUP,
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "Pose2d" } },
@@ -162,7 +162,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "pids",
-      text: "The gap between those poses is just error — and you already know what closes error. Three PID controllers, one per axis: x, y, and rotation, because a swerve drive moves all three independently.",
+      text: "The gap between those poses is called error. You already know what shrinks error: PID. Use three controllers — one for x, one for y, one for rotation. A swerve drive can move all three at once, each on its own.",
       camera: PID_CLOSEUP,
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "PID" } },
@@ -170,7 +170,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "velocities",
-      text: "Each controller answers one question — how fast should my axis move to close my gap? The three outputs become field-relative velocities, handed to the drivetrain and recalculated every twenty milliseconds until the robot settles on the target.",
+      text: "Each controller answers one question. How fast should my axis move to close my gap? The three answers become field-relative velocities — speeds measured against the field. The drivetrain gets a fresh set every twenty milliseconds. That repeats until the robot settles on the target.",
       camera: DIAGRAM,
       events: [
         {
@@ -183,7 +183,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here's the whole loop. Read the current pose from odometry, run calculate on each controller against the target, and send the three results as one field-relative velocity request. As the error shrinks, the robot slows — and lands.",
+      text: "Here's the whole loop. Read the current pose from odometry. Run calculate on each controller against the target. Send the three answers as one velocity request. As the error shrinks, the robot slows. Then it lands.",
       camera: CODE,
       events: [
         {
@@ -197,7 +197,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "bindings",
-      text: "Then give it to your driver. In the Teleop OpMode, hold A to drive to the origin, hold B to drive to a scoring pose. Release the button and the command cancels — the drivetrain just stops.",
+      text: "Then give it to your driver. The bindings live in the Teleop OpMode. Hold A to drive to the origin — the field's zero spot. Hold B to drive to a scoring pose. Let go, and the command cancels. The drivetrain just stops.",
       camera: CODE2,
       events: [
         {
@@ -211,7 +211,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Preset scoring positions, tuning tips, tolerance checks, and the autonomous sequences built from this single command — the full drive to point lesson is at frc5712.com. Your button is waiting.",
+      text: "There's more in the full lesson. Preset scoring spots, tuning tips, and tolerance checks. Plus the autonomous routines built from this one command. It's all at frc5712.com. Your button is waiting.",
       camera: END,
       holdAfter: 1.2,
     },

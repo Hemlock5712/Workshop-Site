@@ -89,18 +89,18 @@ export const IntroductionTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Most robot code is a pile of if statements written the night before competition. This workshop teaches your team a better way — the full WPILib twenty twenty-seven stack, Commands version three, and the new OpMode framework.",
+      text: "Most robot code is a pile of if statements written the night before competition. This workshop teaches your team a better way. You'll learn the newest tools: WPILib twenty twenty-seven, Commands version three, and the new OpMode framework.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "audience",
-      text: "It's built for FRC teams writing Java on CTRE hardware. No toy examples — you wire up real devices, run real code, and learn the habits the top teams use every single week.",
+      text: "It's built for FRC teams writing Java on CTRE motors and sensors. No toy examples here. You wire up real devices. You run real code. And you learn the habits top teams use every single week.",
       camera: { x: 120, y: 120, width: 1680, height: 945 },
     },
     {
       id: "mechanism",
-      text: "Everything starts with one real mechanism. You pick an arm or a flywheel, bolt on the motors, and every lesson after that runs on the thing you built.",
+      text: "Everything starts with one real mechanism — one moving part you build yourself. You pick an arm or a flywheel and bolt on the motors. Every lesson after that runs on the thing you built.",
       camera: { x: 2580, y: 180, width: 1400, height: 800 },
       events: [
         {
@@ -113,7 +113,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "commands",
-      text: "Then you learn command-based programming — mechanisms, commands, and triggers in Commands version three. Your code stops being a tangle and starts reading like a plan the whole team can follow.",
+      text: "Then you learn command-based programming. You split your code into mechanisms, commands, and triggers. Your code stops being a tangle. It starts reading like a plan the whole team can follow.",
       camera: { x: 3120, y: 180, width: 1500, height: 820 },
       events: [
         {
@@ -126,7 +126,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "control",
-      text: "Next comes closed-loop control. PID, Motion Magic, and logging that shows you what the robot actually did — so tuning becomes measurement, not guesswork. That's Workshop One, from bare hardware to full control.",
+      text: "Next comes closed-loop control. That means the robot reads its sensors and fixes its own mistakes. You learn PID, Motion Magic, and logging that shows what the robot really did. That's Workshop One — bare hardware to full control.",
       camera: { x: 3560, y: 160, width: 1440, height: 820 },
       events: [
         { type: "diagram", artifact: "path", step: 3, at: { word: "control" } },
@@ -134,7 +134,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "advanced",
-      text: "Workshop Two takes the same robot further — swerve drive, vision, and autonomous routines that string it all together. Each step builds on the last, so nothing you learn gets thrown away.",
+      text: "Workshop Two takes the same robot further. You add swerve drive — wheels that steer in any direction. Then vision and autonomous routines tie it all together. Each step builds on the last. Nothing you learn gets thrown away.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "path", step: 4, at: { word: "swerve" } },

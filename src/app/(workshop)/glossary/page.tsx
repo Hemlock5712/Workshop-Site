@@ -210,6 +210,26 @@ export default function Glossary() {
               roboRIO&apos;s successor, instead.
             </p>
           </div>
+
+          <div
+            id="swerve-drive"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Swerve Drive
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> A drivetrain where every wheel can both
+              spin and steer on its own. The robot can drive any direction while
+              rotating, like a shopping cart where all four wheels steer.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong> Four independent modules, each with a
+              drive motor and a steering motor. The workshop uses CTRE&apos;s
+              generated swerve code wrapped in a hand-written{" "}
+              <code>DriveMechanism</code>. Covered in Workshop #2.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -265,14 +285,14 @@ export default function Glossary() {
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A schedulable unit of robot behavior
-              that declares its mechanism requirements. In Commands v3 a command
-              is a single coroutine body (e.g.{" "}
-              <code>
-                mechanism.run(coroutine -&gt; ...).named(&quot;...&quot;)
-              </code>
-              ). A step-by-step initialize / execute / isFinished / end
-              lifecycle is also available by extending{" "}
-              <code>ClassicCommand</code>.
+              that declares its mechanism requirements, built from a mechanism
+              factory and finished with <code>.named(&quot;...&quot;)</code>.
+              Most commands on this team are <strong>holds</strong> (
+              <code>runRepeatedly</code> re-sending a setpoint). A step-by-step
+              initialize / execute / isFinished / end lifecycle is also
+              available by extending <code>ClassicCommand</code>, and advanced
+              routines can be a single coroutine body via{" "}
+              <code>mechanism.run(coroutine -&gt; ...)</code>.
             </p>
           </div>
 
@@ -297,7 +317,10 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A boolean condition (from buttons,
               sensors, or custom logic) that schedules commands when its state
-              changes using methods like onTrue() and onFalse().
+              changes. <code>whileTrue()</code> is the everyday method: it runs
+              a hold while the condition is true and hands the mechanism back to
+              its default command when it goes false. <code>onTrue()</code>{" "}
+              fires once, for self-finishing commands.
             </p>
           </div>
 
@@ -405,7 +428,7 @@ export default function Glossary() {
               <code>PeriodicOpMode</code> tagged <code>@Teleop</code>,{" "}
               <code>@Autonomous</code>, or <code>@Utility</code>. Selecting it
               constructs it (building its button bindings); switching away tears
-              it down. There is no RobotContainer and no SendableChooser.
+              it down.
             </p>
           </div>
 
@@ -429,7 +452,95 @@ export default function Glossary() {
               <code>yield</code>/<code>wait</code>/<code>waitUntil</code>/
               <code>await</code>/<code>park</code>/<code>fork</code> and resume
               on a later scheduler tick, so the whole command reads as one
-              straight-line method.
+              straight-line method. On this team it&apos;s an optional advanced
+              dialect; everyday robot code uses holds and chaining instead.
+            </p>
+          </div>
+
+          <div
+            id="hold"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Hold
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> A command that takes a mechanism to a
+              setpoint and <em>stays there</em>: hold a button (
+              <code>whileTrue</code>) and the arm goes to the scoring angle and
+              keeps fighting gravity; let go and the default command comes back.
+              Almost every mechanism command in this workshop is a hold.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>The one rule:</strong> a hold never finishes, so nothing
+              may ever wait on a hold. A bare hold inside{" "}
+              <code>Command.sequence</code> sticks there forever. Every hold is
+              named with a <code>(hold)</code> suffix so a stuck routine is
+              visible on the dashboard.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong>{" "}
+              <code>
+                runRepeatedly(() -&gt; setPosition(TARGET)).named(&quot;target
+                (hold)&quot;)
+              </code>{" "}
+              — the closed-loop request is re-sent every scheduler tick. Give a
+              hold a finish line at the call site with{" "}
+              <code>.until(mech::isAtTarget)</code>; never bake an{" "}
+              <code>...AndWait</code> variant into the mechanism.
+            </p>
+          </div>
+
+          <div
+            id="chaining"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              Chaining
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> Building a routine (like an auto) by
+              snapping commands together, one after another. This is the
+              team&apos;s recommended style, as far as most routines ever need
+              to go.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong> Three tools:{" "}
+              <code>Command.sequence(...)</code> for steps that finish on their
+              own, <code>.until(mech::isAtTarget)</code> to give a hold a finish
+              line at the call site, and <code>Command.race(step, hold)</code>{" "}
+              for &quot;do this step WHILE holding&quot; (the hold never
+              finishes, so the step always decides).{" "}
+              <code>.withTimeout(...)</code> is the seatbelt so an auto never
+              burns the period stuck at a setpoint. Reference:{" "}
+              <code>DriveStowDriveChainedOpMode.java</code> in the
+              2027-Template.
+            </p>
+          </div>
+
+          <div
+            id="state-machine"
+            className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800 scroll-mt-24"
+          >
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              StateMachine
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-2">
+              <strong>Simple:</strong> An optional, advanced way to organize
+              robot behavior where the robot is always in exactly one named
+              state (stowed, pickup, scoring…) and buttons or sensors move it
+              between states. Illegal jumps can&apos;t happen because no
+              transition was declared for them.
+            </p>
+            <p className="text-slate-600 dark:text-slate-300">
+              <strong>Technical:</strong>{" "}
+              <code>org.wpilib.command3.StateMachine</code>, shipped in WPILib
+              2027 alpha-6. Each state owns a command (typically one of the
+              mechanism&apos;s holds); transitions are declared with{" "}
+              <code>when(...)</code> (checked every tick) or{" "}
+              <code>whenComplete()</code> (for self-finishing state commands).
+              See the State Machines lesson and{" "}
+              <code>StateMachineTeleop.java</code> in the 2027-Template.
             </p>
           </div>
         </div>

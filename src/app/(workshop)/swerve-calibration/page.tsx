@@ -762,8 +762,9 @@ export default function OdometryCalibration() {
         </h2>
 
         <Box variant="alert-success" title="Up Next: Logging Options">
-          Next up is data logging: comparing frameworks, deciding what to log,
-          and using logs for debugging and performance analysis.
+          Next up is data logging: why it matters, what to record, and how the
+          workshop&apos;s one-framework setup (DataLogManager) turns match
+          debugging into reviewing a file instead of guessing.
         </Box>
       </section>
     </PageTemplate>

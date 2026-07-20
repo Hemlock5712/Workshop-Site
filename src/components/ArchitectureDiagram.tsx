@@ -44,7 +44,7 @@ export default function ArchitectureDiagram({
                 Controller buttons, sensors, or custom conditions
               </p>
               <p className="text-xs text-blue-700 dark:text-blue-500 mt-2 italic">
-                &quot;When button A is pressed...&quot;
+                &quot;While button A is held...&quot;
               </p>
             </div>
           </div>
@@ -64,10 +64,10 @@ export default function ArchitectureDiagram({
                 Commands
               </h4>
               <p className="text-sm text-green-800 dark:text-green-400">
-                Actions the robot performs
+                Actions the robot performs — most are holds
               </p>
               <p className="text-xs text-green-700 dark:text-green-500 mt-2 italic">
-                &quot;...run the &apos;Raise Arm&apos; command&quot;
+                &quot;...run the &apos;scoring (hold)&apos; command&quot;
               </p>
             </div>
           </div>
@@ -84,13 +84,13 @@ export default function ArchitectureDiagram({
                 <Cog className="w-8 h-8 text-purple-600 dark:text-purple-400" />
               </div>
               <h4 className="font-bold text-purple-900 dark:text-purple-300 mb-1">
-                Subsystems
+                Mechanisms
               </h4>
               <p className="text-sm text-purple-800 dark:text-purple-400">
-                Robot mechanisms (arm, shooter, etc.)
+                One class per physical thing (arm, flywheel, etc.)
               </p>
               <p className="text-xs text-purple-700 dark:text-purple-500 mt-2 italic">
-                &quot;...which controls the Arm subsystem&apos;s motors&quot;
+                &quot;...which controls the Arm mechanism&apos;s motor&quot;
               </p>
             </div>
           </div>
@@ -141,23 +141,24 @@ export default function ArchitectureDiagram({
           </h4>
           <div className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
             <p>
-              1. <strong>Trigger:</strong> Driver presses button A
+              1. <strong>Trigger:</strong> Driver holds button A (
+              <code>whileTrue</code>)
             </p>
             <p>
-              2. <strong>Command:</strong> &quot;RaiseArm&quot; command starts
-              running
+              2. <strong>Command:</strong> the arm&apos;s &quot;scoring
+              (hold)&quot; command starts running
             </p>
             <p>
-              3. <strong>Subsystem:</strong> Arm subsystem receives target
-              position
+              3. <strong>Mechanism:</strong> the Arm re-sends the scoring target
+              every tick — the arm reaches it and <em>stays</em> there
             </p>
             <p>
-              4. <strong>Hardware:</strong> Motor spins, encoder measures
-              position
+              4. <strong>Hardware:</strong> Motor holds the angle, encoder
+              measures position
             </p>
             <p>
-              5. <strong>Feedback:</strong> Encoder reports &quot;target
-              reached!&quot; → Command ends
+              5. <strong>Release A:</strong> the hold is cancelled and the
+              arm&apos;s default command takes back over
             </p>
           </div>
         </div>
@@ -187,7 +188,7 @@ export default function ArchitectureDiagram({
               <div className="bg-white dark:bg-slate-800 p-2 rounded">
                 <strong>Button Triggers:</strong>
                 <p className="text-xs text-slate-600 dark:text-slate-400">
-                  controller.a().onTrue()
+                  controller.a().whileTrue(...)
                 </p>
               </div>
               <div className="bg-white dark:bg-slate-800 p-2 rounded">

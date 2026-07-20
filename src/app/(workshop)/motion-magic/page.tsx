@@ -1,5 +1,6 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import CodeBlock from "@/components/CodeBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CollapsibleSection from "@/components/CollapsibleSection";
@@ -125,8 +126,8 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Motor Speed:</strong> Krakens run around 100 RPS
-                      at maximum
+                      <strong>Motor Speed:</strong> The Kraken X44 runs about
+                      125 RPS at maximum (CTRE&apos;s dyno measures ~129)
                     </li>
                     <li>
                       <strong>Efficiency:</strong> Best used around 80%
@@ -138,7 +139,7 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        maxVel = (100 / 25) * 0.8 = 3.2 RPS
+                        maxVel = (125 / 25) * 0.8 = 4.0 RPS
                       </code>
                     </li>
                   </ul>
@@ -155,12 +156,13 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = 3.0; // conservative start
+                        cruiseVel = 2.0; // conservative start (calculated max
+                        is 4.0)
                       </code>
                     </li>
                     <li>
-                      <strong>Acceleration:</strong> Start with 2x cruise
-                      velocity for smooth motion
+                      <strong>Acceleration:</strong> Start with 2x–4x cruise
+                      velocity for smooth motion (the workshop example uses 4x)
                     </li>
                     <li>
                       <strong>Competition:</strong> Typically end up with 4x to
@@ -168,7 +170,8 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        acceleration = cruiseVel * 2.0; // smooth start
+                        acceleration = cruiseVel * 4.0; // = 8.0, matches the
+                        example
                       </code>
                     </li>
                   </ul>
@@ -189,8 +192,8 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Motor Speed:</strong> Krakens run around 100 RPS
-                      at maximum
+                      <strong>Motor Speed:</strong> The Kraken X44 runs about
+                      125 RPS at maximum (CTRE&apos;s dyno measures ~129)
                     </li>
                     <li>
                       <strong>Efficiency:</strong> Best used around 80%
@@ -202,7 +205,7 @@ export default function MotionMagic() {
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = 100 * 0.8 = 80 RPS
+                        maxVel = 125 * 0.8 = 100 RPS
                       </code>
                     </li>
                   </ul>
@@ -214,17 +217,18 @@ export default function MotionMagic() {
                   </h5>
                   <ul className="text-sm text-[var(--foreground)] space-y-2 list-disc list-inside">
                     <li>
-                      <strong>Cruise Velocity:</strong> Use calculated max
-                      velocity
+                      <strong>Target Velocity:</strong> Use calculated max
+                      velocity (for a flywheel, the setpoint IS the target
+                      speed; there&apos;s no separate cruise phase)
                     </li>
                     <li>
                       <code className="bg-slate-50 dark:bg-slate-800 px-1 rounded">
-                        cruiseVel = 80.0; // based on motor efficiency
+                        targetVel = 80.0; // comfortably under that ceiling
                       </code>
                     </li>
                     <li>
-                      <strong>Acceleration:</strong> Start with 2x cruise
-                      velocity for smooth motion
+                      <strong>Acceleration:</strong> Start with 2x target
+                      velocity for smooth spin-up
                     </li>
                     <li>
                       <strong>Competition:</strong> Typically end up with 4x to
@@ -332,8 +336,8 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
             walkthrough: {
               leftTitle: "Motion Magic Example Params for 25:1 Arm",
               leftItems: [
-                "• <strong>25:1 Gearing:</strong> Krakens run ~100 RPS, so 4 RPS theoretical max at output",
-                "• <strong>Cruise Velocity (2.0):</strong> Conservative start: can reach 4 RPS but load may reduce performance",
+                "• <strong>25:1 Gearing:</strong> The Kraken X44 runs ~125 RPS, so 5 RPS theoretical max at output",
+                "• <strong>Cruise Velocity (2.0):</strong> Conservative start: can reach 5 RPS but load may reduce performance",
                 "• <strong>Acceleration (8.0):</strong> How quickly to reach cruise speed",
                 "• <strong>Jerk (80.0):</strong> Smoothness of acceleration changes",
                 "• <strong>MotionMagicVoltage:</strong> Replaces PositionVoltage for profiled control",
@@ -421,6 +425,8 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[
@@ -469,11 +475,11 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
             {
               id: 4,
               question:
-                "For a mechanism with 25:1 gearing and a Kraken motor (100 RPS max), what would be a conservative starting cruise velocity at 80% efficiency?",
-              options: ["100 RPS", "25 RPS", "3.2 RPS", "0.8 RPS"],
+                "For a mechanism with 25:1 gearing and a Kraken X44 (about 125 RPS max), what would be the calculated cruise-velocity ceiling at 80% efficiency?",
+              options: ["125 RPS", "25 RPS", "4.0 RPS", "0.8 RPS"],
               correctAnswer: 2,
               explanation:
-                "With 25:1 gearing, the output is 100 RPS / 25 = 4 RPS theoretical max. At 80% efficiency, this gives 4 * 0.8 = 3.2 RPS. A conservative start would be around 3.0 RPS.",
+                "With 25:1 gearing, the output is 125 RPS / 25 = 5 RPS theoretical max. At 80% efficiency, this gives 5 * 0.8 = 4.0 RPS. That's the calculated ceiling. The workshop's example code starts even lower (2.0) and tunes up from there.",
             },
             {
               id: 5,
@@ -481,13 +487,13 @@ motor.setControl(motionMagicRequest.withPosition(positionRotations));`}
                 "What is the recommended starting value for Motion Magic acceleration?",
               options: [
                 "Equal to cruise velocity",
-                "2x cruise velocity for smooth motion",
+                "2x–4x cruise velocity for smooth motion",
                 "10x cruise velocity for fastest response",
                 "Half of cruise velocity for safety",
               ],
               correctAnswer: 1,
               explanation:
-                "Starting with 2x cruise velocity provides smooth motion. During competition tuning, teams typically increase this to 4x to 10x cruise velocity for faster response.",
+                "Starting around 2x–4x cruise velocity gives smooth motion (the workshop example uses 4x). During competition tuning, teams typically increase this to 4x to 10x cruise velocity for faster response.",
             },
             {
               id: 6,

@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
@@ -22,7 +23,7 @@ export default function LoggingImplementation() {
       {/* Introduction */}
       <KeyConceptSection
         title="Setting Up DataLogManager"
-        description="We log with WPILib's built-in DataLogManager. No vendordep, no LoggedRobot, no replay layer. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (your telemetry plus the Driver-Station and joystick data) is captured to a .wpilog file you open in AdvantageScope."
+        description="We log with WPILib's built-in DataLogManager: nothing extra to install. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (WPILib's shared live-data table) is captured to a .wpilog file you open in AdvantageScope, along with the Driver-Station and joystick data."
         concept="Turn it on in Robot's constructor, then publish what you care about to NetworkTables. DataLogManager records every NT change to disk."
       />
 
@@ -459,6 +460,8 @@ public class Telemetry {
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[

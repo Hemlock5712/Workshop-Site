@@ -124,13 +124,13 @@ export const LoggingOptionsTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "The match ends, the robot did something weird, and nobody knows why. Logging turns arguments into data. And in WPILib 2027 the recorder is already built in — you just have to turn it on.",
+      text: "The match ends. The robot did something weird. Nobody knows why. Everyone argues. Logging turns those arguments into data. And in WPILib 2027, the recorder is already built in. You just have to turn it on.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "publish",
-      text: "Here's the pipeline. Your robot code publishes everything interesting to NetworkTables — positions, setpoints, velocities. That part you're doing anyway; every dashboard value you've ever sent is already on the wire.",
+      text: "Here's the pipeline. Your robot code publishes its numbers to NetworkTables — a shared table every tool can read. Positions, targets, speeds. You're doing that part already. Every dashboard value you've ever sent is on that wire.",
       camera: { x: 2580, y: 200, width: 1500, height: 800 },
       events: [
         {
@@ -149,7 +149,7 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "capture",
-      text: "DataLogManager sits underneath and records it all. Every NetworkTables change, plus console output, streams into a binary wpilog file. It's built into WPILib — no vendordep, no framework, no replay layer to adopt.",
+      text: "DataLogManager sits underneath and records it all. Every NetworkTables change, plus console prints, streams into one wpilog file — the robot's flight recorder. It's built into WPILib. No extra library. No framework to adopt.",
       camera: { x: 3280, y: 420, width: 1560, height: 860 },
       events: [
         {
@@ -168,7 +168,7 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "The whole setup is two lines in your Robot constructor. Start DataLogManager, then tell DriverStation to log its data too. Do it before anything else, and every run of your robot records itself.",
+      text: "The whole setup is two lines in your Robot constructor. Start DataLogManager. Then tell DriverStation to log its data too. Put those lines before anything else. Now every run of your robot records itself.",
       camera: CODE,
       events: [
         {
@@ -188,7 +188,7 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "scope",
-      text: "After the match, drag the wpilog into AdvantageScope. Or connect live over NetworkTables while you tune. Struct types like Pose2d drop straight onto the 3D field view — you watch your robot replay its own match.",
+      text: "After the match, drag the wpilog file into AdvantageScope — the free viewer app. Or connect live while you tune. Whole poses drop straight onto the 3D field view. You watch your robot replay its own match.",
       camera: { x: 3560, y: 180, width: 1560, height: 860 },
       events: [
         {
@@ -201,13 +201,13 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "alternatives",
-      text: "There are alternatives — Epilogue generates logging from annotations at compile time, AdvantageKit records everything for deterministic replay, Hoot captures Phoenix device signals automatically. This workshop picks DataLogManager: two lines, zero ceremony, and it ships with WPILib.",
+      text: "Other tools exist. Epilogue writes logging code for you at compile time. AdvantageKit records every input, so teams can replay a match in code. Hoot captures Phoenix device signals on its own. Some teams love these. This workshop picks DataLogManager: two lines, and it ships with WPILib.",
       camera: DIAGRAM,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "Stop guessing what the robot did. The full comparison of logging options — and when the heavier tools earn their keep — is waiting at frc5712.com. Turn the recorder on before your next practice match.",
+      text: "Stop guessing what the robot did. The full comparison of logging options is waiting at frc5712.com. It also covers when the heavier tools earn their keep. Turn the recorder on before your next practice match.",
       camera: END,
       holdAfter: 1.2,
     },

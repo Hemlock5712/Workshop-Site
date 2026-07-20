@@ -98,19 +98,19 @@ export const HardwareTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Before a single line of code, your robot is three CTRE devices and one network. A motor that thinks, a sensor that never forgets, and a hub that ties them together — meet the hardware.",
+      text: "Before you write any code, meet the hardware. Your robot needs three devices and one network. The devices come from a company called CTRE. A motor that thinks. A sensor that never forgets. And a hub that ties them all together.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "kraken-photo",
-      text: "This is the Kraken X44 — a motor with a TalonFX controller built right in. Voltage control, position sensing, and PID all run onboard the motor, and it talks to your code over the CAN bus.",
+      text: "This is the Kraken X44. It's a motor with a controller built in — the TalonFX. That controller is a tiny computer. It controls the motor's power and tracks its position. Your code talks to it over one shared wire — the CAN bus.",
       camera: { x: 2520, y: 180, width: 1480, height: 1080 },
       holdAfter: 0.6,
     },
     {
       id: "canivore",
-      text: "Now follow the wiring. Your code — on a laptop or the robot controller — plugs into a CANivore over USB. It's a small hub with one job: turn that USB port into a real robot network.",
+      text: "Now follow the wiring. Your code runs on a laptop or on the robot's controller. It plugs into a CANivore with a USB cable. The CANivore is a small hub with one job. It turns that USB port into a real robot network.",
       camera: { x: 5500, y: 400, width: 1500, height: 820 },
       events: [
         { type: "diagram", artifact: "bus", step: 1, at: { word: "code" } },
@@ -119,7 +119,7 @@ export const HardwareTrailer: TrailerScript = {
     },
     {
       id: "kraken-node",
-      text: "On the far side, the CANivore creates a dedicated CAN FD network — faster than the robot controller's built-in bus. The Kraken hangs off it, streaming position and taking commands at full speed.",
+      text: "On the far side, the CANivore creates its own network, called CAN FD. It's even faster than the bus built into the robot controller. The Kraken connects to this network. It sends its position and takes commands at full speed.",
       camera: { x: 6200, y: 160, width: 1480, height: 840 },
       events: [
         { type: "diagram", artifact: "bus", step: 3, at: { word: "Kraken" } },
@@ -127,7 +127,7 @@ export const HardwareTrailer: TrailerScript = {
     },
     {
       id: "cancoder-node",
-      text: "Next to it sits the CANcoder — an absolute position sensor that reads a magnet on the rotating shaft. Power the robot off, power it back on, and it still knows exactly where the mechanism is.",
+      text: "Next to it sits the CANcoder. It's a sensor that reads a magnet on the spinning shaft. That's how it knows the shaft's exact position. Turn the robot off and back on. The CANcoder still knows exactly where everything is.",
       camera: { x: 6200, y: 420, width: 1480, height: 840 },
       events: [
         { type: "diagram", artifact: "bus", step: 4, at: { word: "CANcoder" } },
@@ -135,13 +135,13 @@ export const HardwareTrailer: TrailerScript = {
     },
     {
       id: "whole-bus",
-      text: "That's the whole stack. Every device connects to the CANivore, every message rides the same high-speed bus, and your code sees all of it. Three devices, one network, zero mystery wiring.",
+      text: "That's the whole setup. Every device plugs into the CANivore. Every message rides the same fast network. And your code sees all of it. Three devices. One network. No mystery wiring.",
       camera: DIAGRAM,
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "Next step: wire these three devices for real and bring them online on your own robot. The full hardware walkthrough, device by device, is waiting at frc5712.com.",
+      text: "Next step: wire these three devices for real. Bring them online on your own robot. The full hardware guide, device by device, is waiting at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

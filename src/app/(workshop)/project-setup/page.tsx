@@ -45,11 +45,94 @@ export default function ProjectSetup() {
 
       <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">
-          Creating a New WPILib Project
+          The Workshop Path: Clone the 2027-Template
         </h2>
         <p className="text-slate-600 dark:text-slate-300 mb-6">
-          Follow these step-by-step instructions to create a new FRC robot
-          project using the Command Robot Skeleton (Advanced) template.
+          This is the path the workshop follows. Four steps and you have a
+          building project with the OpMode wiring, mechanisms folder, and
+          GradleRIO 2027 alpha configuration already in place.
+        </p>
+
+        <div className="space-y-4">
+          <div className="flex items-start space-x-3">
+            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              1
+            </span>
+            <div>
+              <p className="font-medium">Clone the template</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
+                <code>
+                  git clone -b 2027-dev
+                  https://github.com/Hemlock5712/2027-Template.git Workshop
+                </code>{" "}
+                (the <code>2027-dev</code> branch is the 2027 stack; the{" "}
+                <code>main</code> branch is still the older 2026 stack).
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-3">
+            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              2
+            </span>
+            <div>
+              <p className="font-medium">Open the folder in VS Code</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
+                Use the WPILib 2027 alpha VS Code install from the Prerequisites
+                page. Avoid OneDrive-synced locations; they break Gradle builds.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-3">
+            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              3
+            </span>
+            <div>
+              <p className="font-medium">Set your team number</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
+                Edit <code>.wpilib/wpilib_preferences.json</code> and set{" "}
+                <code>teamNumber</code> to your FRC team number. Deploys
+                won&apos;t find your robot without it.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-3">
+            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              4
+            </span>
+            <div>
+              <p className="font-medium">Build once to verify</p>
+              <p className="text-slate-600 dark:text-slate-300 text-sm">
+                Run <code>./gradlew build</code> (or WPILib: Build Robot Code).
+                A clean build means Java 25, the vendordeps, and the alpha
+                toolchain are all in place. Then read the template&apos;s{" "}
+                <a
+                  href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/ONBOARDING.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  ONBOARDING.md
+                </a>{" "}
+                (it&apos;s the tour of what you just cloned).
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+          Alternative: Creating a Blank WPILib Project
+        </h2>
+        <p className="text-slate-600 dark:text-slate-300 mb-6">
+          For reference, this is how you&apos;d create a project from
+          WPILib&apos;s built-in generator. Note that the generated skeleton
+          does <em>not</em> include the OpMode structure this workshop teaches;
+          you&apos;d be wiring mechanisms and OpModes up by hand, which is
+          exactly why we clone the template instead.
         </p>
 
         <div className="space-y-4">
@@ -104,9 +187,9 @@ export default function ProjectSetup() {
               </p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Choose Template → Java →{" "}
-                <strong>Command Robot Skeleton (Advanced)</strong>. For the 2027
-                OpMode structure this workshop teaches, start from the{" "}
-                <strong>2027-Template</strong> as noted above.
+                <strong>Command Robot Skeleton (Advanced)</strong>. This
+                generates the classic project layout; the workshop path above
+                starts from the <strong>2027-Template</strong> instead.
               </p>
             </div>
           </div>
@@ -201,7 +284,7 @@ export default function ProjectSetup() {
         className="mt-4"
       >
         After creating your project, the next section covers the Command-Based
-        Framework, where you&apos;ll start adding subsystems and commands.
+        Framework, where you&apos;ll start adding mechanisms and commands.
       </Box>
 
       <Quiz
@@ -238,24 +321,30 @@ export default function ProjectSetup() {
           {
             id: 3,
             question:
-              "What is the purpose of enabling 'Desktop Support' when creating your project?",
+              "Which branch of the 2027-Template should you clone, and why?",
             options: [
-              "It makes the code run faster on the robot",
-              "It allows you to test your robot code on your computer without a robot",
-              "It enables wireless deployment to the robot",
-              "It automatically generates all your robot code",
+              "main — the default branch is always the newest",
+              "2027-dev — it has the 2027 stack; main is still last season's code",
+              "Either one — they're kept identical",
+              "release — templates always ship from a release branch",
             ],
             correctAnswer: 1,
             explanation:
-              "Desktop Support allows you to run and test your robot code on your computer without needing physical robot hardware, which is essential for development and testing.",
+              "Clone with git clone -b 2027-dev. The 2027-dev branch carries the Commands v3 + OpModes stack this workshop teaches; the main branch is still the older 2026 stack.",
           },
           {
             id: 4,
-            question: "What should you name your project for this workshop?",
-            options: ["MyRobot", "FRC2024", "Workshop", "CommandRobot"],
-            correctAnswer: 2,
+            question:
+              "After cloning and setting your team number, how do you check the project is healthy?",
+            options: [
+              "Deploy straight to the robot and see what happens",
+              "Run ./gradlew build (or WPILib: Build Robot Code) — a clean build means the toolchain and dependencies are in place",
+              "Open every file and look for red squiggles",
+              "You can't check without robot hardware",
+            ],
+            correctAnswer: 1,
             explanation:
-              "The workshop instructions specify naming your project 'Workshop' for consistency throughout the tutorial.",
+              "One clean build verifies Java 25, the vendor libraries, and the alpha toolchain all work before you write any code. Then read the template's ONBOARDING.md; it's the tour of what you cloned.",
           },
         ]}
       />

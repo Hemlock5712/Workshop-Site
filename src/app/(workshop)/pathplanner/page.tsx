@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
@@ -75,13 +76,13 @@ Command leg = new DriveToPose(robot.drivetrain, goal);`}
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          In the OpMode model there is no <code>SendableChooser</code>. Each
-          autonomous routine is its own class tagged <code>@Autonomous</code>;
-          the driver station lists them by name, and selecting one constructs
-          it. You build the routine in the constructor with{" "}
-          <code>Command.sequence(...)</code> (legs run one after another) and{" "}
-          <code>Command.parallel(...)</code> (things happen together), schedule
-          it in <code>start()</code>, and cancel it in <code>end()</code>.
+          Each autonomous routine is its own class tagged{" "}
+          <code>@Autonomous</code>; the driver station lists them by name, and
+          selecting one constructs it. You build the routine in the constructor
+          with <code>Command.sequence(...)</code> (legs run one after another)
+          and <code>Command.parallel(...)</code> (things happen together),
+          schedule it in <code>start()</code>, and cancel it in{" "}
+          <code>end()</code>.
         </p>
 
         <CodeBlock
@@ -120,30 +121,66 @@ public class AutonomousOpMode extends PeriodicOpMode {
         <p className="text-slate-600 dark:text-slate-300">
           Want a second routine? Add another <code>@Autonomous</code> class; it
           shows up as another choice on the driver station. To do something at a
-          point in the path (the old &quot;event marker&quot;), put a mechanism
-          command into the sequence or <code>fork</code> it inside a coroutine
-          body.
+          point in the path (the old &quot;event marker&quot;), chain a
+          mechanism command into the sequence: a hold with a call-site{" "}
+          <code>.until(...)</code>, or <code>Command.race(leg, hold)</code> to
+          hold a pose <em>while</em> driving. The team&apos;s worked example of
+          exactly that pattern is{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            DriveStowDriveChainedOpMode.java
+          </a>{" "}
+          in the 2027-Template, alongside its{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/AutonomousOpMode.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            AutonomousOpMode.java
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/commands/DriveToPose.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            DriveToPose.java
+          </a>
+          .
         </p>
 
         <CollapsibleSection title='Mixing in mechanism actions (the old "event markers")'>
           <div className="space-y-4">
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Because legs are just commands, you can interleave superstructure
-              actions with drive legs. Run the flywheel spin-up <em>while</em>{" "}
-              driving, then score:
+              actions with drive legs. Run the intake <em>while</em> driving,
+              then score. Remember the intake and scoring presets are holds, so
+              each one needs the right chaining tool:
             </p>
             <CodeBlock
               language="java"
               title="Drive + act, composed in code"
               code={`routine =
     Command.sequence(
-            // Drive to the pickup pose while the intake runs.
-            Command.parallel(
+            // Drive to the pickup pose WHILE the intake hold runs. A race
+            // ends when its first member finishes — the hold never does, so
+            // DriveToPose decides, and the race cancels the intake for us.
+            Command.race(
                 new DriveToPose(robot.drivetrain, pickupPose),
                 robot.superstructure.intake()),
-            // Drive to the scoring pose, then score.
+            // Drive to the scoring pose...
             new DriveToPose(robot.drivetrain, scorePose),
-            robot.superstructure.score())
+            // ...then score: the hold gets a finish line at the call site,
+            // plus a timeout seatbelt so a jam can't burn the whole period.
+            robot.superstructure.score()
+                .until(robot.superstructure::isDone)
+                .withTimeout(Seconds.of(2)))
         .named("Pickup + Score Auto");`}
             />
           </div>
@@ -183,6 +220,8 @@ public class AutonomousOpMode extends PeriodicOpMode {
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
+        <AlphaStatusNote />
+
         <Quiz
           title="Knowledge Check"
           questions={[
@@ -193,12 +232,12 @@ public class AutonomousOpMode extends PeriodicOpMode {
               options: [
                 "It still uses PathPlanner's AutoBuilder under the hood",
                 "Each routine is an @Autonomous OpMode that sequences DriveToPose legs in code",
-                "A SendableChooser picks between auto methods in RobotContainer",
+                "You pick a routine from a dropdown in the code editor before deploying",
                 "Autonomous is generated automatically by Phoenix Tuner X",
               ],
               correctAnswer: 1,
               explanation:
-                "There's no PathPlanner and no RobotContainer. Each routine is its own @Autonomous class; the driver station lists them by name. You build the routine with Command.sequence(...) of DriveToPose legs (and mechanism commands), schedule it in start(), and cancel it in end().",
+                "There's no PathPlanner here. Each routine is its own @Autonomous class; the driver station lists them by name. You build the routine with Command.sequence(...) of DriveToPose legs (and mechanism commands), schedule it in start(), and cancel it in end().",
             },
             {
               id: 2,
@@ -234,18 +273,18 @@ public class AutonomousOpMode extends PeriodicOpMode {
               options: [
                 "Register it with NamedCommands.registerCommand(...)",
                 "Place an event marker in the PathPlanner GUI",
-                "Put the mechanism command into the Command.sequence, or fork it inside a coroutine body",
+                "Chain it in: sequence the hold with a call-site .until(...), or Command.race it with a drive leg",
                 "It's not possible without PathPlanner",
               ],
               correctAnswer: 2,
               explanation:
-                "Legs are just commands, so you compose mechanism actions right into the routine: add them to the sequence, run them in parallel with a drive leg via Command.parallel(...), or fork them inside a coroutine body to run in the background.",
+                "Legs are just commands, so you compose mechanism actions right into the routine. Give a hold a finish line with .until(mech::isAtTarget) and put it in the sequence, or use Command.race(driveLeg, hold) to hold a pose WHILE driving; the drive leg finishes and cancels the hold.",
             },
             {
               id: 5,
               question: "How do you add a second autonomous routine?",
               options: [
-                "Add another option to a SendableChooser",
+                "Rename the existing routine class and redeploy",
                 "Add another @Autonomous class — it appears as another choice on the driver station",
                 "Add a new .path file in deploy/pathplanner",
                 "Pass a flag to AutoBuilder.buildAuto(...)",

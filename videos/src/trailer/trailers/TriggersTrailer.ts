@@ -1,8 +1,9 @@
 import type { Rect, TrailerScript } from "../lib/types";
 
 // Bindings that clean up after themselves. The camera travels:
-// title card → TeleopOpMode code built up in stages → the three-scopes
-// diagram → sensor-trigger code → end card.
+// title card → TeleopOpMode code built up in stages (whileTrue for holds,
+// onTrue for self-finishing commands) → the three-scopes diagram →
+// sensor-trigger code → end card.
 
 const TITLE: Rect = { x: 0, y: 0, width: 1920, height: 1080 };
 const CODE: Rect = { x: 2560, y: 200, width: 1560, height: 1000 };
@@ -16,7 +17,7 @@ public class TeleopOpMode extends PeriodicOpMode {
       new CommandNiDsXboxController(0);
 }`;
 
-const OPMODE_ONTRUE = `@Teleop(name = "Teleop")
+const OPMODE_WHILETRUE = `@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   private final CommandNiDsXboxController driver =
       new CommandNiDsXboxController(0);
@@ -24,8 +25,9 @@ public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     final Arm arm = robot.arm;
 
-    // Button -> command, fired at the rising edge.
-    driver.a().onTrue(arm.goTo(HIGH, TOL));
+    // Hold A: the scoring hold runs. Release A: the hold is
+    // cancelled and the arm's default command takes back over.
+    driver.a().whileTrue(arm.scoring());
   }
 }`;
 
@@ -37,17 +39,19 @@ public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     final Arm arm = robot.arm;
 
-    // Button -> command, fired at the rising edge.
-    driver.a().onTrue(arm.goTo(HIGH, TOL));
+    // Hold A: the scoring hold runs. Release A: the hold is
+    // cancelled and the arm's default command takes back over.
+    driver.a().whileTrue(arm.scoring());
 
-    // Hold to keep it scheduled; release cancels it.
-    driver.leftBumper().whileTrue(arm.holdAt(STOWED));
+    // onTrue is for self-finishing commands only.
+    // Never bind a bare hold with onTrue — it would run forever.
+    driver.start().onTrue(robot.drivetrain.resetHeading());
   }
 }`;
 
 const SENSOR_TRIGGER = `// Sensor -> command. Same shape, just a different boolean source.
-Trigger atSpeed = new Trigger(flywheel::atTarget);
-atSpeed.onTrue(intake.feed());`;
+Trigger atSpeed = new Trigger(flywheel::isAtSpeed);
+atSpeed.whileTrue(intake.feed());`;
 
 export const TriggersTrailer: TrailerScript = {
   id: "TriggersTrailer",
@@ -67,7 +71,7 @@ export const TriggersTrailer: TrailerScript = {
       rect: CODE,
       fileName: "TeleopOpMode.java",
       language: "java",
-      states: ["", OPMODE_SKELETON, OPMODE_ONTRUE, OPMODE_FULL],
+      states: ["", OPMODE_SKELETON, OPMODE_WHILETRUE, OPMODE_FULL],
     },
     {
       kind: "diagram",
@@ -78,7 +82,7 @@ export const TriggersTrailer: TrailerScript = {
         {
           id: "binding",
           label: "A binding",
-          sublabel: "trigger.onTrue(command)",
+          sublabel: "trigger.whileTrue(command)",
           x: 80,
           y: 440,
           width: 460,
@@ -138,7 +142,7 @@ export const TriggersTrailer: TrailerScript = {
       kind: "end",
       id: "end",
       rect: END,
-      title: "onTrue, whileTrue, and the three scopes",
+      title: "whileTrue, onTrue, and the three scopes",
       subtitle: "Bindings whose lifetime always matches their owner",
       url: "frc5712.com/triggers",
     },
@@ -146,13 +150,13 @@ export const TriggersTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Press A, raise the arm. Every robot needs bindings — and Commands version three finally answers the question old code never did: when should a binding stop existing? There is no RobotContainer here. Bindings belong to modes.",
+      text: "Press A, raise the arm. That link is called a binding. Every binding has one big question to answer: when should it stop existing? In Commands version three, the answer is simple. Bindings belong to modes.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "ontrue",
-      text: "Teleop is a class now — an OpMode. The controller is a field, and the bindings go in the constructor. Bind driver dot a onTrue, and pressing the button fires the command once, at the rising edge.",
+      text: "Teleop is a class now, called an OpMode. The controller is a field. Bindings go in the constructor. Bind driver dot a whileTrue arm dot scoring. Scoring is a hold: a command that keeps the arm at one angle. Hold A, and the hold runs.",
       camera: CODE,
       events: [
         {
@@ -171,21 +175,21 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "whiletrue",
-      text: "whileTrue is the hold. Keep the left bumper down and the command stays scheduled. Let go, and the scheduler cancels it for you. A press is a moment, a hold is a state — pick the verb that matches.",
+      text: "Why whileTrue? A hold never finishes. Release the button, and the arm goes back to its normal job — its default command. onTrue is different. Save it for commands that end on their own, like a heading reset. Never bind a hold with onTrue.",
       camera: { x: 2620, y: 380, width: 1440, height: 810 },
       events: [
         {
           type: "code-state",
           artifact: "opmode-code",
           state: 3,
-          at: { word: "whileTrue" },
+          at: { word: "onTrue" },
         },
       ],
       holdAfter: 0.8,
     },
     {
       id: "scopes",
-      text: "Here's the part that kills boilerplate: every binding has a scope. Bind it in the Robot constructor and it's global. Bind it in an OpMode and it lives with the mode. Bind it inside a command body and it dies with the command.",
+      text: "Here is the part that kills boilerplate. Every binding has a scope. A scope decides how long the binding lives. Bind in the Robot constructor, and it is global. Bind in an OpMode, and it lives with the mode. Bind inside a command body, and it dies with the command.",
       camera: DIAGRAM,
       events: [
         {
@@ -216,12 +220,12 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "teardown",
-      text: "Watch a mode switch. Selecting auto constructs the auto OpMode with its bindings and tears teleop's down automatically. Pick teleop again and you get a fresh OpMode with fresh bindings. You never unregister anything by hand.",
+      text: "Watch a mode switch. Pick auto, and the framework builds the auto OpMode with its bindings. Teleop's bindings are torn down for you. Pick teleop again, and fresh bindings come back. You never unregister anything by hand.",
       camera: { x: 6960, y: 180, width: 1560, height: 1020 },
     },
     {
       id: "sensors",
-      text: "And triggers are not just buttons. Any boolean supplier wraps in a Trigger — a flywheel at speed, a beam break, the match timer. A sensor binds exactly like the A button: condition turns true, command fires.",
+      text: "Triggers are not just buttons. Any yes-or-no reading wraps in a Trigger. A flywheel at speed. A beam break. A sensor binds just like the A button. While the flywheel is at speed, the feed hold runs.",
       camera: CODE2,
       events: [
         {
@@ -235,7 +239,7 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Command-scoped bindings get wilder — a climb routine that carries its own abort button, torn down the moment the climb ends. See all three scopes, with runnable code, at frc5712.com.",
+      text: "Command-scoped bindings go further. A climb routine can carry its own abort button. The binding dies the moment the climb ends. See all three scopes, with runnable code, at frc5712.com.",
       camera: END,
       holdAfter: 1.2,
     },

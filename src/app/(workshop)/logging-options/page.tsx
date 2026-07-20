@@ -186,29 +186,29 @@ export default function LoggingOptions() {
       {/* Logging Framework Options */}
       <section className="flex flex-col gap-8">
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          FRC Logging Framework Options
+          The Logging Framework We Use
         </h2>
 
         <p className="text-slate-600 dark:text-slate-300">
-          Several logging frameworks are available for FRC teams. Each has
-          different features, complexity, and use cases:
+          This workshop uses exactly one: WPILib&apos;s built-in{" "}
+          <code>DataLogManager</code>, mirroring the 2027 template. Here&apos;s
+          what it does, followed by a short vocabulary list of the other
+          framework names you&apos;ll hear around FRC, and why we don&apos;t use
+          them.
         </p>
 
         {/* DataLogManager */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="bg-primary-600 text-white rounded-lg px-4 py-2 font-bold text-lg">
-              1
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                DataLogManager (WPILib Built-in)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Official WPILib data logging system that captures all
-                NetworkTables data to binary .wpilog files.
-              </p>
-            </div>
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+              DataLogManager (WPILib Built-in)
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300">
+              Official WPILib data logging system that captures all
+              NetworkTables data to binary .wpilog files. (NetworkTables is
+              WPILib&apos;s shared live-data table: the robot publishes values
+              to it, and dashboards and loggers read them.)
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -250,404 +250,48 @@ export default function LoggingOptions() {
           </div>
         </div>
 
-        {/* AdvantageKit */}
+        {/* Other frameworks — evaluated, not used */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="bg-green-600 text-white rounded-lg px-4 py-2 font-bold text-lg">
-              2
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                AdvantageKit
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Logging, telemetry, and replay framework developed by Team 6328
-                (Mechanical Advantage). The <strong>Logger</strong> can be used
-                on its own as a drop-in telemetry sink, or with the optional IO
-                layer for deterministic replay.
-              </p>
-            </div>
-          </div>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+            Names you&apos;ll hear (evaluated, not used here)
+          </h3>
+          <p className="text-slate-600 dark:text-slate-300 mb-6">
+            Plenty of good teams use these tools, so you should recognize the
+            names, but the workshop and the 2027 template don&apos;t use them.
+            Treat this list as vocabulary, not required learning.
+          </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Advantages
-              </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>One API, two outputs:</strong>{" "}
-                  <code>Logger.recordOutput(...)</code> writes to both
-                  NetworkTables and a <code>.wpilog</code> file
-                </li>
-                <li>
-                  <strong>Free built-in capture:</strong> DriverStation,
-                  joysticks, alerts, console, PDP/PDH, CAN, battery, and loop
-                  timing, with no code required
-                </li>
-                <li>
-                  <strong>Rich type support:</strong> Pose2d/3d,
-                  ChassisVelocities, SwerveModuleState, units, custom record
-                  structs
-                </li>
-                <li>
-                  <strong>@AutoLogOutput annotation</strong> for
-                  zero-boilerplate logging of fields and getters
-                </li>
-                <li>
-                  <strong>Optional replay path:</strong> add the IO layer later
-                  for deterministic match replay in simulation
-                </li>
-                <li>First-class integration with AdvantageScope</li>
-              </ul>
-            </div>
+          <ul className="list-disc list-inside space-y-4 text-sm text-slate-600 dark:text-slate-300">
+            <li>
+              <strong>AdvantageKit</strong> (Team 6328): a logging framework
+              whose headline feature is <em>deterministic replay</em>,
+              re-running a match log through your robot code in simulation.
+              Getting that requires extending <code>LoggedRobot</code> and
+              restructuring every subsystem around an IO layer. We record and
+              review logs; we don&apos;t re-run them through the code, so the
+              extra machinery would buy us nothing here.
+            </li>
+            <li>
+              <strong>Epilogue (@Logged)</strong>: WPILib&apos;s
+              annotation-based logging (2025+). A reasonable alternative, but
+              DataLogManager plus plain NetworkTables publishing keeps the
+              mental model smallest for a teaching codebase.
+            </li>
+            <li>
+              <strong>Hoot logging</strong>: CTRE&apos;s device-side signal log.
+              You already have this one without doing anything: Phoenix 6
+              devices write a <code>.hoot</code> file automatically alongside
+              DataLogManager&apos;s <code>.wpilog</code>, viewable in Tuner X or
+              AdvantageScope.
+            </li>
+          </ul>
 
-            <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Considerations
-              </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  Requires extending <code>LoggedRobot</code> instead of{" "}
-                  <code>TimedRobot</code>
-                </li>
-                <li>
-                  Vendordep + one annotation processor entry in{" "}
-                  <code>build.gradle</code>
-                </li>
-                <li>
-                  USB logging on a real robot needs a FAT32-formatted USB stick
-                  plugged into the roboRIO
-                </li>
-                <li>
-                  Full deterministic replay <em>does</em> require restructuring
-                  subsystems around the IO layer. That piece is optional and not
-                  covered in this workshop
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              Best For
-            </h4>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Teams who want the cleanest logging API in FRC today, strong
-              type-aware output recording, and the option to grow into
-              deterministic replay later without rewriting their telemetry.
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <DocumentationButton
-              href="https://docs.advantagekit.org/"
-              title="AdvantageKit Documentation"
-              icon={<Book className="w-5 h-5" />}
-            />
-          </div>
-        </div>
-
-        {/* Hoot Logging */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="bg-orange-600 text-white rounded-lg px-4 py-2 font-bold text-lg">
-              3
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Hoot Logging
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Lightweight logging framework designed for CTRE Phoenix 6 and
-                modern FRC hardware.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Advantages
-              </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Optimized for Phoenix 6 signals and CTRE hardware</li>
-                <li>Automatic capture of motor controller telemetry</li>
-                <li>Low overhead with efficient signal logging</li>
-                <li>Simple API for custom logging</li>
-                <li>Outputs to .wpilog format</li>
-                <li>Works well with CANivore high-frequency data</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Limitations
-              </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Focused primarily on CTRE ecosystem</li>
-                <li>Captures less than AdvantageKit</li>
-                <li>Smaller community and documentation</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              Best For
-            </h4>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Teams using CTRE Phoenix 6 hardware who want optimized logging for
-              motor controllers and CANivore devices.
-            </p>
-          </div>
-        </div>
-
-        {/* WPILib Epilogue */}
-        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <div className="flex items-start gap-4 mb-6">
-            <div className="bg-blue-600 text-white rounded-lg px-4 py-2 font-bold text-lg">
-              4
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                WPILib Epilogue (Java Only)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Annotation-based logging framework built into WPILib 2025+.
-                Automatically generates logging code at compile time using the
-                @Logged annotation.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Advantages
-              </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>Zero boilerplate:</strong> Add @Logged annotation, get
-                  automatic logging
-                </li>
-                <li>Built into WPILib, no additional dependencies</li>
-                <li>
-                  Generates efficient logging code at compile time (no runtime
-                  overhead)
-                </li>
-                <li>Logs to NetworkTables and DataLog automatically</li>
-                <li>Works with AdvantageScope out of the box</li>
-                <li>
-                  Configurable timing (defaults to 50Hz offset from robot loop)
-                </li>
-                <li>Performance metrics logged to NetworkTables</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Limitations
-              </h4>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Java only (not available for C++ or Python)</li>
-                <li>Requires WPILib 2025 or later</li>
-                <li>
-                  Only available for teams using annotation processing (Gradle
-                  default)
-                </li>
-                <li>Less control than manual logging approaches</li>
-                <li>New in 2025, still maturing</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              Best For
-            </h4>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Java teams on WPILib 2025+ who want the simplicity of
-              DataLogManager with better structure and less manual code.
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <DocumentationButton
-              href="https://docs.wpilib.org/en/stable/docs/software/telemetry/robot-telemetry-with-annotations.html"
-              title="WPILib Epilogue Documentation"
-              icon={<Book className="w-5 h-5" />}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Table */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Logging Framework Comparison
-        </h2>
-
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b-2 border-slate-300 dark:border-slate-700">
-                <th className="text-left p-4 font-semibold text-slate-900 dark:text-slate-100">
-                  Feature
-                </th>
-                <th className="text-left p-4 font-semibold text-slate-900 dark:text-slate-100">
-                  DataLogManager
-                </th>
-                <th className="text-left p-4 font-semibold text-slate-900 dark:text-slate-100">
-                  Epilogue
-                </th>
-                <th className="text-left p-4 font-semibold text-slate-900 dark:text-slate-100">
-                  AdvantageKit
-                </th>
-                <th className="text-left p-4 font-semibold text-slate-900 dark:text-slate-100">
-                  Hoot Logging
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Setup Complexity
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Very Easy (one line)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Very Easy (annotations)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Easy (logging-only) / Complex (with replay)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Easy (simple integration)
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Learning Curve
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Minimal
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Minimal
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Low (logging-only) / Steep (with replay)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Moderate
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Performance Impact
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Very Low
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Very Low (compile-time)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Low (when properly configured)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Very Low
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Data Capture
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  NetworkTables only
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Annotated classes
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  All I/O
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Focused on CTRE devices
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Replay Capability
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  No (visualization only)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  No (visualization only)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Yes (deterministic)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Yes (limited)
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Visualization
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  AdvantageScope
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  AdvantageScope
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  AdvantageScope
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  AdvantageScope or Tuner X
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Community Support
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  WPILib official
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  WPILib official
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Strong (Team 6328)
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Growing
-                </td>
-              </tr>
-              <tr className="border-b border-slate-200 dark:border-slate-800">
-                <td className="p-4 font-medium text-slate-900 dark:text-slate-100">
-                  Best Use Case
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Workshop choice: simple, captures all NT
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Java teams, minimal boilerplate
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  Rich types, optional deterministic replay
-                </td>
-                <td className="p-4 text-slate-600 dark:text-slate-300">
-                  CTRE-focused teams
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <p className="text-sm text-slate-600 dark:text-slate-300 mt-6">
+            One name that is <em>not</em> a logging framework:{" "}
+            <strong>AdvantageScope</strong> is the log <em>viewer</em> we do
+            use. It opens <code>.wpilog</code> and <code>.hoot</code> files
+            regardless of which framework wrote them.
+          </p>
         </div>
       </section>
 
@@ -665,11 +309,11 @@ export default function LoggingOptions() {
           <p className="text-slate-600 dark:text-slate-300 mb-6">
             For this workshop we mirror the 2027 template and use WPILib&apos;s
             built-in <code>DataLogManager</code>. It records every NetworkTables
-            value change (including everything the drivetrain&apos;s telemetry
-            publishes) to a binary <code>.wpilog</code> file, plus console
-            output and (via <code>DriverStation.startDataLog</code>) the
-            Driver-Station and joystick data. There&apos;s no extra vendordep,
-            no <code>LoggedRobot</code>, and no replay layer to learn.
+            value change to a binary <code>.wpilog</code> file, including
+            everything the drivetrain&apos;s telemetry publishes. It also
+            captures console output, and <code>DriverStation.startDataLog</code>{" "}
+            adds the Driver-Station and joystick data. There&apos;s no extra
+            library to install and no replay layer to learn.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -679,7 +323,7 @@ export default function LoggingOptions() {
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  Built into WPILib: no vendordep, and two lines in{" "}
+                  Built into WPILib: nothing extra to install, and two lines in{" "}
                   <code>Robot</code>&apos;s constructor turn it on
                 </li>
                 <li>
@@ -774,8 +418,8 @@ export default function LoggingOptions() {
             icon={<Book className="w-5 h-5" />}
           />
           <DocumentationButton
-            href="https://github.com/Mechanical-Advantage/AdvantageKit"
-            title="AdvantageKit GitHub"
+            href="https://github.com/Hemlock5712/2027-Template"
+            title="2027-Template — the logging setup we mirror"
             icon={<Wrench className="w-5 h-5" />}
           />
           <DocumentationButton

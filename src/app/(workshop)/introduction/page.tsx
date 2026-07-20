@@ -282,7 +282,7 @@ export default function Introduction() {
 
             <p className="text-slate-600 dark:text-slate-300 mb-6">
               Advanced topics including swerve drive, vision systems, autonomous
-              navigation, and data logging.
+              driving to a pose, and data logging.
             </p>
 
             <div className="space-y-3 mb-6">
