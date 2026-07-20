@@ -258,7 +258,7 @@ export default function Home() {
 
         <WorkshopBanner
           number="01"
-          description="Control fundamentals — single-motor mechanisms"
+          description="Control fundamentals: single-motor mechanisms"
           tone="primary"
         />
         <div className="mb-8 grid gap-4 md:grid-cols-2">
@@ -266,7 +266,7 @@ export default function Home() {
             tag="ARM · POSITION CONTROL"
             title="Robot Arm"
             color="oklch(0.78 0.16 25)"
-            description="Move a single-jointed arm to exact angles — the motor checks a sensor and corrects itself (closed-loop control), with extra push to fight gravity."
+            description="Move a single-jointed arm to exact angles: the motor checks a sensor and corrects itself (closed-loop control), with extra push to fight gravity."
             image={{ src: "/images/mechanisms/arm.png", alt: "Robot Arm" }}
             items={[
               "TalonFX + integrated encoder",
@@ -278,7 +278,7 @@ export default function Home() {
             tag="FLYWHEEL · VELOCITY CONTROL"
             title="Shooter Flywheel"
             color="oklch(0.78 0.16 145)"
-            description="Spin a wheel at an exact speed and keep it there for consistent shooting — velocity PID plus a feedforward that predicts the voltage needed."
+            description="Spin a wheel at an exact speed and keep it there for consistent shooting: velocity PID plus a feedforward that predicts the voltage needed."
             image={{
               src: "/images/mechanisms/flywheel.png",
               alt: "Flywheel Shooter",
@@ -293,7 +293,7 @@ export default function Home() {
 
         <WorkshopBanner
           number="02"
-          description="Drive & perception — full-robot autonomy"
+          description="Drive & perception: full-robot autonomy"
           tone="accent"
         />
         <div className="grid gap-4 md:grid-cols-2">

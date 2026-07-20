@@ -16,19 +16,19 @@ const OPTIONS: ReadonlyArray<{
     value: "arm",
     label: "Arm",
     icon: <Bot className="h-3.5 w-3.5" aria-hidden />,
-    desc: "1-DOF arm with gravity — position control",
+    desc: "1-DOF arm with gravity (position control)",
   },
   {
     value: "flywheel",
     label: "Flywheel",
     icon: <Disc3 className="h-3.5 w-3.5" aria-hidden />,
-    desc: "Spinning wheel with inertia — velocity control",
+    desc: "Spinning wheel with inertia (velocity control)",
   },
   {
     value: "elevator",
     label: "Elevator",
     icon: <ArrowUpDown className="h-3.5 w-3.5" aria-hidden />,
-    desc: "Carriage on a vertical rail — position control with constant gravity",
+    desc: "Carriage on a vertical rail (position control with constant gravity)",
   },
 ];
 

@@ -12,7 +12,7 @@ export default function AddingCommands() {
       <KeyConceptSection
         title="Commands with WPILib Commands V3"
         description={[
-          "A command is what a mechanism can do: a factory method that returns a named Command the scheduler can run. Anything that wants to move the arm does it through a command — the setters stay private, which is how the scheduler prevents two things fighting over the same motor.",
+          "A command is what a mechanism can do: a factory method that returns a named Command the scheduler can run. Anything that wants to move the arm does it through a command; the setters stay private, which is how the scheduler prevents two things fighting over the same motor.",
           "On this team almost every mechanism command is a hold: it keeps re-sending its closed-loop setpoint forever, so the motor stays actively commanded until another command takes the mechanism over. Hold a button (whileTrue), the arm goes to the angle and stays there; release it, and the default command comes back.",
         ]}
         concept="A command is a named action from a mechanism factory. Most of ours are holds — and a hold never finishes."
@@ -92,7 +92,7 @@ private void setPosition(double position) { ... }`}
           title="Waiting happens at the call site, not in the factory"
         >
           <p>
-            Mechanisms never bake waiting into their commands — there is no{" "}
+            Mechanisms never bake waiting into their commands: there is no{" "}
             <code>scoringAndWait()</code>. When a chain needs the hold to end,
             you give it a finish line where you use it:{" "}
             <code>arm.scoring().until(arm::isAtTarget)</code>. One factory per
@@ -118,7 +118,7 @@ private void setPosition(double position) { ... }`}
           style={{ color: "var(--fg-mute)" }}
         >
           Routines that touch more than one mechanism are built where
-          they&apos;re used — in an OpMode — by chaining the mechanisms&apos;
+          they&apos;re used (in an OpMode) by chaining the mechanisms&apos;
           commands. Three tools, in order: <code>Command.sequence</code> for
           steps that finish on their own, <code>.until(...)</code> to give a
           hold a finish line, and <code>Command.race(step, hold)</code> for
@@ -157,7 +157,7 @@ private void setPosition(double position) { ... }`}
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          A race ends when its first member finishes and cancels the rest — and
+          A race ends when its first member finishes and cancels the rest. And
           since a hold never finishes, the step is always what decides. The full
           drive-stow-drive version of this pattern lives in the template:
         </p>
@@ -185,14 +185,14 @@ private void setPosition(double position) { ... }`}
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Not everything is a hold. A step with its own natural ending — drive
-          this distance, run the roller until the beam break trips — can be a
+          Not everything is a hold. A step with its own natural ending (drive
+          this distance, run the roller until the beam break trips) can be a
           self-finishing command. The workshop template ships{" "}
           <code>utils/ClassicCommand</code>, a small base class with the
           explicit <code>initialize</code> / <code>execute</code> /{" "}
           <code>isFinished</code> / <code>end</code> lifecycle. Extend it,
           override what you need, and the instance <em>is</em> a{" "}
-          <code>Command</code> — you&apos;ll see it again in{" "}
+          <code>Command</code>. You&apos;ll see it again in{" "}
           <code>DriveToPoint</code>.
         </p>
 
@@ -222,8 +222,8 @@ public class DriveDistance extends ClassicCommand {
           style={{ color: "var(--fg-mute)" }}
         >
           Because it finishes on its own, a step like this can sit in a{" "}
-          <code>Command.sequence</code> as-is — no <code>.until(...)</code>{" "}
-          needed. That&apos;s the dividing line: holds get finish lines at the
+          <code>Command.sequence</code> as-is (no <code>.until(...)</code>{" "}
+          needed). That&apos;s the dividing line: holds get finish lines at the
           call site; steps bring their own.
         </p>
       </section>
@@ -244,12 +244,12 @@ public class DriveDistance extends ClassicCommand {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          A hold only ever ends by being cancelled — the driver releases a{" "}
+          A hold only ever ends by being cancelled: the driver releases a{" "}
           <code>whileTrue</code> button, a race&apos;s step finishes, an{" "}
           <code>.until(...)</code> condition trips. Usually that&apos;s fine
           as-is: the motor keeps its last closed-loop request in firmware until
           the next command sends a new one. When a command <em>does</em> need
-          cleanup on interruption — stop the rollers, zero a voltage — that goes
+          cleanup on interruption (stop the rollers, zero a voltage), that goes
           in a <code>.whenCanceled(...)</code> hook on the builder.
         </p>
 
@@ -269,7 +269,7 @@ public Command feed() {
           style={{ color: "var(--fg-mute)" }}
         >
           The <code>whenCanceled</code> callback fires only when the command is
-          interrupted, which for a hold is the only way it ends — so it&apos;s
+          interrupted, which for a hold is the only way it ends, so it&apos;s
           effectively the hold&apos;s &quot;on the way out&quot; hook.
         </p>
       </section>
@@ -291,7 +291,7 @@ public Command feed() {
           style={{ color: "var(--fg-mute)" }}
         >
           v3 commands can also be written as a single body that pauses itself
-          from the inside — <code>run(coroutine -&gt; {`{ ... }`})</code> with{" "}
+          from the inside: <code>run(coroutine -&gt; {`{ ... }`})</code> with{" "}
           <code>coroutine.await(command)</code>, <code>fork(command)</code>, and{" "}
           <code>waitUntil(condition)</code>. Reach for it only when a hold must
           span many steps or the logic needs loops and branches; you won&apos;t
@@ -347,7 +347,7 @@ public Command feed() {
             ],
             correctAnswer: 1,
             explanation:
-              'THE ONE RULE is that a hold never finishes, so nothing may wait on one. Mistakes still happen — and when they do, the stuck routine sits on a command whose name literally says "(hold)". The naming convention turns a mystery hang into a one-glance diagnosis.',
+              'THE ONE RULE is that a hold never finishes, so nothing may wait on one. Mistakes still happen, and when they do, the stuck routine sits on a command whose name literally says "(hold)". The naming convention turns a mystery hang into a one-glance diagnosis.',
           },
           {
             id: 3,
@@ -361,7 +361,7 @@ public Command feed() {
             ],
             correctAnswer: 1,
             explanation:
-              'There are no "...AndWait" methods — waiting is always spelled at the call site with .until(...). Awaiting or sequencing a bare hold just moves the forever-wait somewhere else. The timeout keeps an unreachable setpoint from burning the rest of the period.',
+              'There are no "...AndWait" methods; waiting is always spelled at the call site with .until(...). Awaiting or sequencing a bare hold just moves the forever-wait somewhere else. The timeout keeps an unreachable setpoint from burning the rest of the period.',
           },
           {
             id: 4,
@@ -375,7 +375,7 @@ public Command feed() {
             ],
             correctAnswer: 1,
             explanation:
-              "A race ends when its first member finishes and cancels the rest. The hold can't finish, so the self-finishing step is always the decider — that's what makes race the tool for \"do this step WHILE holding.\"",
+              "A race ends when its first member finishes and cancels the rest. The hold can't finish, so the self-finishing step is always the decider; that's what makes race the tool for \"do this step WHILE holding.\"",
           },
           {
             id: 5,
@@ -389,7 +389,7 @@ public Command feed() {
             ],
             correctAnswer: 0,
             explanation:
-              '.whenCanceled(...) registers a Runnable that fires only on cancellation. A cancelled command is simply dropped, so trailing code in the body never runs on interruption — for a hold, whenCanceled is effectively the "on the way out" hook.',
+              '.whenCanceled(...) registers a Runnable that fires only on cancellation. A cancelled command is simply dropped, so trailing code in the body never runs on interruption. For a hold, whenCanceled is effectively the "on the way out" hook.',
           },
         ]}
       />

@@ -38,7 +38,7 @@ export default function Prerequisites() {
               <p className="text-slate-600 dark:text-slate-300 mt-2">
                 Install <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> VS
                 Code and National Instruments Game Tools. On this stack you only
-                need Game Tools for the <strong>Driver Station</strong> — the
+                need Game Tools for the <strong>Driver Station</strong>, the
                 program that enables and disables the robot.
               </p>
             </div>
@@ -55,7 +55,7 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Essential for configuring and tuning{" "}
+                You&apos;ll use this to configure and tune{" "}
                 <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm> and
                 other CTRE hardware.
               </p>
@@ -73,10 +73,10 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Viewer for robot logs and data, and required for debugging and
-                tuning. A lite version comes preinstalled with WPILib, but we
-                recommend downloading the latest full version from the GitHub
-                releases page.
+                A viewer for robot logs and data. You&apos;ll need it for
+                debugging and tuning. A lite version comes preinstalled with
+                WPILib, but we recommend downloading the latest full version
+                from the GitHub releases page.
               </p>
             </div>
 
@@ -109,16 +109,16 @@ export default function Prerequisites() {
                 </a>
               </h3>
               <p className="text-slate-600 dark:text-slate-300 mt-2">
-                This workshop runs on the WPILib <strong>2027 alpha</strong> —
-                an early-release version of FRC&apos;s programming toolkit. It
-                uses <strong>Java 25</strong> and deploys to{" "}
+                This workshop runs on the WPILib <strong>2027 alpha</strong>, an
+                early-release version of FRC&apos;s programming toolkit. It uses{" "}
+                <strong>Java 25</strong> and deploys to{" "}
                 <strong>SystemCore</strong>, the robot&apos;s onboard computer.
-                Start from the team&apos;s 2027-Template — a ready-made robot
+                Start from the team&apos;s 2027-Template, a ready-made robot
                 project you copy. One catch: pick the <code>2027-dev</code>{" "}
                 branch (a branch is one version of the code; <code>main</code>{" "}
                 is still last season&apos;s).{" "}
-                <strong>PathPlanner is not required</strong> — driving in auto
-                is covered in Workshop #2.
+                <strong>PathPlanner is not required</strong>; driving in auto is
+                covered in Workshop #2.
               </p>
             </div>
 

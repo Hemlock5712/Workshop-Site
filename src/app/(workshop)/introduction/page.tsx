@@ -6,8 +6,7 @@ export default function Introduction() {
   return (
     <PageTemplate title="Gray Matter Coding Workshop">
       <Box variant="alert-info" title="Quick Note">
-        All underlined text and images of code or products will have built-in
-        links to resources.
+        All underlined text and images of code or products link to resources.
       </Box>
 
       <Box variant="alert-warning" title="Before You Begin">
@@ -39,11 +38,11 @@ export default function Introduction() {
 
           <div className="border-l-4 border-green-200 dark:border-green-900 pl-4">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              Build Competition-Winning Robots
+              Build Robots That Hold Up at Competition
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mt-2">
               Develop reliable, maintainable code that performs under pressure
-              and helps your team succeed at districts, regionals and FIRST
+              and helps your team succeed at districts, regionals, and FIRST
               Championship.
             </p>
           </div>
@@ -72,12 +71,12 @@ export default function Introduction() {
             <div className="grid md:grid-cols-2 gap-4">
               <ul className="space-y-2 text-slate-600 dark:text-slate-300">
                 <li>• Code architecture and best practices</li>
-                <li>• Subsystems structure and organization</li>
+                <li>• Subsystem structure and organization</li>
                 <li>• Command-based programming framework</li>
                 <li>• PID tuning techniques</li>
               </ul>
               <ul className="space-y-2 text-slate-600 dark:text-slate-300">
-                <li>• Libraries and framework usage</li>
+                <li>• Library and framework usage</li>
                 <li>• Hardware integration with CTRE devices</li>
                 <li>• Motion profiling and control</li>
                 <li>• Real-world competition implementation</li>
@@ -90,9 +89,9 @@ export default function Introduction() {
               Our Mission
             </h3>
             <p className="text-lg text-slate-600 dark:text-slate-300">
-              Team 5712, Hemlocks Gray Matter, built this site with support from
-              its friends. It covers introductory through advanced topics with a
-              clear plan for learning and implementing each one.
+              Team 5712, Hemlock&apos;s Gray Matter, built this site with
+              support from its friends. It covers introductory through advanced
+              topics with a clear plan for learning and implementing each one.
             </p>
           </div>
         </div>
@@ -116,7 +115,7 @@ export default function Introduction() {
             </div>
 
             <p className="text-slate-600 dark:text-slate-300 mb-6">
-              Fundamentals of FRC programming with command-based framework,
+              Fundamentals of FRC programming with the command-based framework,
               subsystems, and PID control.
             </p>
 

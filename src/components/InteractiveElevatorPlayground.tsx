@@ -187,7 +187,7 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
     key: "kG",
     label: "kG",
     axisColor: "#16a34a",
-    ariaDescription: "Gravity feedforward — constant lift voltage.",
+    ariaDescription: "Gravity feedforward: constant lift voltage.",
   },
 ];
 
@@ -822,8 +822,8 @@ export default function InteractiveElevatorPlayground() {
         />
         <p>
           The carriage starts at the ground and holds there for 1&nbsp;s, then
-          steps up to your slider target. Gravity is constant so{" "}
-          <span className="font-mono">kG</span> is just a fixed voltage —{" "}
+          steps up to your slider target. Gravity is constant, so{" "}
+          <span className="font-mono">kG</span> is just a fixed voltage:{" "}
           <span className="font-mono">kG = m·g·r_spool / (Kₜ·R)</span> ≈{" "}
           <span className="font-mono">0.22&nbsp;V</span> for this 8&nbsp;kg
           carriage on a Kraken X60 + 15:1 + 1&quot; spool. Add{" "}
@@ -858,8 +858,8 @@ export default function InteractiveElevatorPlayground() {
       <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         8&nbsp;kg carriage on a Kraken X60 + 15:1 reduction + 1&quot;-radius
         spool (back-EMF + stick-slip friction modelled, ±12&nbsp;V saturation,
-        max travel 1.5&nbsp;m). Gains use Phoenix 6 / WPILib elevator units —
-        drop these into a{" "}
+        max travel 1.5&nbsp;m). Gains use Phoenix 6 / WPILib elevator units.
+        Drop these into a{" "}
         <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
         with{" "}
         <span className="font-mono text-[var(--foreground)]">

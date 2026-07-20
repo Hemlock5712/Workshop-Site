@@ -53,8 +53,8 @@ export default function AIAssistantPage() {
           </div>
           <p className="text-slate-600 dark:text-slate-300">
             Ask questions about the FRC Programming Workshop. The AI assistant
-            has access to all workshop content and remembers your conversation
-            history for contextual follow-up questions.
+            has access to all workshop content and remembers your conversation,
+            so you can ask follow-up questions.
           </p>
         </div>
 
@@ -67,8 +67,9 @@ export default function AIAssistantPage() {
               </h3>
               <p className="text-slate-500 dark:text-slate-400 max-w-md">
                 Ask me anything about FRC programming, command-based
-                architecture, PID tuning, or any workshop topics! I remember our
-                conversation, so feel free to ask follow-up questions.
+                architecture, PID tuning, or any other workshop topic. I
+                remember our conversation, so feel free to ask follow-up
+                questions.
               </p>
             </div>
           ) : (
@@ -273,8 +274,8 @@ export default function AIAssistantPage() {
             style={{ color: "var(--fg-mute)" }}
           >
             The chat above answers questions about the workshop. But modern AI
-            coding assistants can go further: they work directly inside your
-            robot project — reading your code, writing new commands, running the
+            coding assistants can go further. They work directly inside your
+            robot project, reading your code, writing new commands, running the
             simulator, and analyzing logs. The{" "}
             <a
               href="https://github.com/Hemlock5712/2027-Template"
@@ -296,8 +297,8 @@ export default function AIAssistantPage() {
           >
             WPILib 2027 and Commands v3 are newer than most AI models&apos;
             training data. Without guidance, an assistant will confidently write{" "}
-            <em>Commands v2</em> code — <code>RobotContainer</code>,{" "}
-            <code>SendableChooser</code>, <code>edu.wpi.first</code> imports —
+            <em>Commands v2</em> code: <code>RobotContainer</code>,{" "}
+            <code>SendableChooser</code>, <code>edu.wpi.first</code> imports,
             none of which exist in this stack. The template&apos;s{" "}
             <code>CLAUDE.md</code> and skills ground the assistant in how the
             project actually works, so it writes v3 code that compiles.
@@ -311,7 +312,7 @@ export default function AIAssistantPage() {
             className="text-[15px] leading-relaxed"
             style={{ color: "var(--fg-mute)" }}
           >
-            Any agentic coding tool works — these are the three we see teams use
+            Any agentic coding tool works. These are the three we see teams use
             most. All of them can read the template&apos;s skill files.
           </p>
 
@@ -327,10 +328,10 @@ export default function AIAssistantPage() {
                 </h4>
               </div>
               <p className="text-sm flex-1" style={{ color: "var(--fg-mute)" }}>
-                Anthropic&apos;s coding agent — runs in the terminal or as a VS
-                Code extension. Reads <code>CLAUDE.md</code> and discovers the
-                template&apos;s skills automatically, so it works with the
-                template out of the box.
+                Anthropic&apos;s coding agent, which runs in the terminal or as
+                a VS Code extension. It reads <code>CLAUDE.md</code> and
+                discovers the template&apos;s skills automatically, so it works
+                out of the box.
               </p>
               <a
                 href="https://claude.com/claude-code"
@@ -415,7 +416,7 @@ export default function AIAssistantPage() {
             style={{ color: "var(--fg-mute)" }}
           >
             A <strong>skill</strong> is a folder containing a{" "}
-            <code>SKILL.md</code> file — plain Markdown with a short description
+            <code>SKILL.md</code> file: plain Markdown with a short description
             at the top that tells the assistant <em>when</em> to read it. When
             your question matches (&quot;why did my auto miss the pose?&quot;),
             the assistant loads that skill and follows it. Because skills are
@@ -444,7 +445,7 @@ export default function AIAssistantPage() {
               </h4>
               <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
                 The map of the code: OpModes, Mechanisms, commands, and where
-                everything lives — including the biggest surprise for anyone
+                everything lives. That includes the biggest surprise for anyone
                 coming from Commands v2, the &quot;there is no
                 RobotContainer&quot; wiring model. The skill an assistant should
                 read before touching any code.
@@ -468,7 +469,7 @@ export default function AIAssistantPage() {
                 <code>run-sim</code>
               </h4>
               <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
-                How to run the robot in simulation — including a headless{" "}
+                How to run the robot in simulation, including a headless{" "}
                 <code>simulateJavaAgent</code> Gradle task that auto-enables the
                 robot, so the assistant can run your autonomous routine by
                 itself and check whether it worked.
@@ -482,7 +483,7 @@ export default function AIAssistantPage() {
               <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
                 Where <code>.wpilog</code> and <code>.hoot</code> logs live,
                 exactly which telemetry keys the robot publishes, and how to
-                analyze a run — in AdvantageScope or with a script the assistant
+                analyze a run in AdvantageScope or with a script the assistant
                 writes itself.
               </p>
             </ContentCard>
@@ -495,10 +496,10 @@ export default function AIAssistantPage() {
                 <code>teaching</code>
               </h4>
               <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
-                Teacher mode — <strong>on by default</strong>. Tells the
+                Teacher mode is <strong>on by default</strong>. It tells the
                 assistant to explain code the way a student needs it: simple
                 words, short answers, one idea at a time, with links to learn
-                more. The code it writes is still real, correct code — only the
+                more. The code it writes is still real, correct code. Only the
                 explanations change. A mentor doing focused development can say
                 &quot;teacher mode off&quot; to drop the teaching layer for the
                 session.
@@ -528,15 +529,15 @@ export default function AIAssistantPage() {
               <strong style={{ color: "var(--fg)" }}>
                 Start your robot project from the 2027-Template.
               </strong>{" "}
-              The skills come along in <code>.claude/skills/</code> — no extra
-              setup.
+              The skills come along in <code>.claude/skills/</code>, no extra
+              setup needed.
             </li>
             <li>
               <strong style={{ color: "var(--fg)" }}>
                 Claude Code: just open the project and ask.
               </strong>{" "}
-              It reads <code>CLAUDE.md</code> on startup and loads whichever
-              skill matches your request automatically.
+              It reads <code>CLAUDE.md</code> on startup and automatically loads
+              whichever skill matches your request.
             </li>
             <li>
               <strong style={{ color: "var(--fg)" }}>
@@ -544,7 +545,7 @@ export default function AIAssistantPage() {
               </strong>{" "}
               Ask something like &quot;Read{" "}
               <code>.claude/skills/run-sim/SKILL.md</code>, then run the
-              autonomous in sim&quot; — or reference the skills folder from your{" "}
+              autonomous in sim&quot;, or reference the skills folder from your{" "}
               <code>.github/copilot-instructions.md</code> or{" "}
               <code>AGENTS.md</code> so it happens automatically.
             </li>
@@ -587,7 +588,7 @@ export default function AIAssistantPage() {
           >
             An AI assistant is a teammate, not an autopilot. Read every change
             it makes, run it in simulation first, and make sure <em>you</em> can
-            explain what the code does — &quot;the AI wrote it&quot; won&apos;t
+            explain what the code does; &quot;the AI wrote it&quot; won&apos;t
             help you debug at a competition. Remember the 2027 stack is alpha
             software, so APIs can shift between releases; when the assistant and
             the compiler disagree, trust the compiler.

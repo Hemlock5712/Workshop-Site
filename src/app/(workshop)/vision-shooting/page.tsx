@@ -7,7 +7,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import CodeBlock from "@/components/CodeBlock";
 import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
-import { Lightbulb, AlertTriangle, TrendingUp } from "lucide-react";
+import { Lightbulb, AlertTriangle, TrendingUp, X, Check } from "lucide-react";
 
 export default function DynamicFlywheel() {
   return (
@@ -32,7 +32,7 @@ export default function DynamicFlywheel() {
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-red-50 dark:bg-red-950/30 rounded-lg p-6 border-l-4 border-red-400 dark:border-red-900">
             <h3 className="text-xl font-bold text-red-800 dark:text-red-300 mb-4 flex items-center gap-2">
-              <span>❌</span>
+              <X className="w-5 h-5" aria-hidden="true" />
               Fixed Velocity Problems
             </h3>
             <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
@@ -63,7 +63,7 @@ export default function DynamicFlywheel() {
 
           <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border-l-4 border-green-400 dark:border-green-900">
             <h3 className="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center gap-2">
-              <span>✅</span>
+              <Check className="w-5 h-5" aria-hidden="true" />
               Dynamic Velocity Benefits
             </h3>
             <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
@@ -87,7 +87,7 @@ export default function DynamicFlywheel() {
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>Single button command handles all distances</span>
+                <span>Single-button command handles all distances</span>
               </li>
             </ul>
           </div>
@@ -146,7 +146,7 @@ export default function DynamicFlywheel() {
 
             <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg border border-primary-200 dark:border-primary-800">
               <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
-                📊 Automatic Interpolation:
+                Automatic Interpolation:
               </h4>
               <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
                 If your robot is at <strong>1.5 meters</strong> (between 1.0 and
@@ -189,7 +189,7 @@ export default function DynamicFlywheel() {
 
           <CodeBlock
             language="java"
-            title="Flywheel constructor — populating the lookup table"
+            title="Flywheel constructor: populating the lookup table"
             code={`// distance (meters) -> velocity (RPS), with linear interpolation between rows.
 private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
 
@@ -244,7 +244,7 @@ private double distanceToTarget() {
 }`}
           />
 
-          <Box variant="alert-info" title="🎯 Target Position">
+          <Box variant="alert-info" title="Target Position">
             <p>
               The <code>target</code> is a fixed field position (e.g., speaker
               center). In this example, it&apos;s at coordinates (3, 5). Update
@@ -289,7 +289,7 @@ public Command distanceShoot() {
 
           <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border-l-4 border-green-400 dark:border-green-900 mt-4">
             <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">
-              ✨ Automatic Adjustment
+              Automatic Adjustment
             </h4>
             <p className="text-sm text-slate-700 dark:text-slate-300">
               As the robot drives around, <code>runRepeatedly</code> re-runs the
@@ -326,10 +326,7 @@ public Command distanceShoot() {
           Tuning Your Velocity Map
         </h2>
 
-        <CollapsibleSection
-          title="📋 Step-by-Step Tuning Process"
-          variant="info"
-        >
+        <CollapsibleSection title="Step-by-Step Tuning Process" variant="info">
           <div className="space-y-6">
             <div className="flex gap-4">
               <span className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">

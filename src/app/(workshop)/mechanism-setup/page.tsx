@@ -16,7 +16,7 @@ export default function MechanismSetup() {
     <PageTemplate title="Mechanism Setup">
       {/* Introduction */}
       <KeyConceptSection
-        title="Mechanism Setup - Verifying Hardware Configuration"
+        title="Mechanism Setup: Verifying Hardware Configuration"
         description="Before writing any control code, verify that your motors and encoders work correctly: right direction, right zero position, basic movement."
         concept="Always verify hardware setup before adding control algorithms. Otherwise you will be debugging control issues when the problem is hardware configuration."
       />
@@ -44,15 +44,14 @@ export default function MechanismSetup() {
             <p className="text-red-700 dark:text-red-300 mb-3">
               Before performing hardware setup tasks,{" "}
               <strong>stop any running code</strong> and turn{" "}
-              <strong>ON</strong> the &quot;CANivore USB&quot; setting in
-              TunerX. This ensures proper communication with physical hardware
-              during testing and configuration.
+              <strong>ON</strong> the &quot;CANivore USB&quot; setting in Tuner
+              X. This ensures proper communication with physical hardware during
+              testing and configuration.
             </p>
             <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded border border-red-200 dark:border-red-700">
               <p className="text-red-800 dark:text-red-200 text-sm">
-                <strong>Steps:</strong> Stop any running robot code → Open
-                TunerX → Go to CANivore settings → Enable &quot;CANivore
-                USB&quot;
+                <strong>Steps:</strong> Stop any running robot code → Open Tuner
+                X → Go to CANivore settings → Enable &quot;CANivore USB&quot;
               </p>
             </div>
           </div>
@@ -77,7 +76,7 @@ export default function MechanismSetup() {
                     : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                 }`}
               >
-                🦾 Arm Mechanism
+                Arm Mechanism
               </button>
               <button
                 onClick={() => setActiveTab("flywheel")}
@@ -87,7 +86,7 @@ export default function MechanismSetup() {
                     : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                 }`}
               >
-                ⚡ Flywheel Mechanism
+                Flywheel Mechanism
               </button>
             </div>
           </div>
@@ -99,17 +98,17 @@ export default function MechanismSetup() {
                 {/* Encoder Replacement Warning - Top Level */}
                 <Box
                   variant="alert-info"
-                  title="📝 Important Note: Encoder Replacement"
+                  title="Important Note: Encoder Replacement"
                 >
                   If you replace your encoder with a new one, you will need to{" "}
-                  <strong>repeat these setup steps</strong> to ensure proper
-                  direction and zero position configuration.
+                  <strong>repeat these setup steps</strong> to set the direction
+                  and zero position again.
                 </Box>
 
                 {/* Step 1: Encoder Direction */}
                 <div className="card p-8">
                   <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    1️⃣ Encoder Direction
+                    1. Encoder Direction
                   </h3>
 
                   <div className="grid grid-cols-2 gap-6 mb-6">
@@ -154,7 +153,7 @@ export default function MechanismSetup() {
                   {/* Implementation Sequence */}
                   <ContentCard>
                     <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">
-                      🔧 Implementation Sequence
+                      Implementation Sequence
                     </h4>
 
                     <div className="space-y-4">
@@ -199,8 +198,8 @@ export default function MechanismSetup() {
                             Zero the Encoder
                           </h4>
                           <p className="text-primary-800 dark:text-primary-200 text-sm">
-                            Put arm to zero position, then in TunerX go to
-                            &quot;Info&quot; → press &quot;0 encoder&quot;
+                            Move the arm to the zero position, then in Tuner X
+                            go to &quot;Info&quot; → press &quot;0 encoder&quot;
                             button → press &quot;Apply&quot; button.
                           </p>
                         </div>
@@ -220,7 +219,7 @@ export default function MechanismSetup() {
                 {/* Step 2: Verifying Motor Setup */}
                 <div className="card p-8">
                   <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    2️⃣ Verifying Motor Setup
+                    2. Verifying Motor Setup
                   </h3>
 
                   <div className="grid grid-cols-2 gap-6 mb-8 items-start">
@@ -251,7 +250,7 @@ export default function MechanismSetup() {
                   {/* Motor Direction Verification */}
                   <div className="mt-8">
                     <h4 className="text-xl font-bold text-learn-600 mb-4">
-                      🔧 Motor Direction Verification
+                      Motor Direction Verification
                     </h4>
 
                     <div className="grid md:grid-cols-2 gap-6">
@@ -291,7 +290,7 @@ export default function MechanismSetup() {
                 {/* Flywheel Only Step: Verifying Motor Setup */}
                 <div className="card p-8">
                   <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    1️⃣ Verifying Motor Setup
+                    1. Verifying Motor Setup
                   </h3>
 
                   <div className="grid grid-cols-3 gap-6 mb-8">
@@ -336,7 +335,7 @@ export default function MechanismSetup() {
                   {/* Motor Direction Verification */}
                   <div className="mt-8">
                     <h4 className="text-xl font-bold text-learn-600 mb-4">
-                      🔧 Motor Direction Verification
+                      Motor Direction Verification
                     </h4>
 
                     <div className="grid md:grid-cols-2 gap-6">
@@ -378,7 +377,7 @@ export default function MechanismSetup() {
       {/* Next Step */}
       <div className="bg-[var(--muted)] border border-[var(--border)] rounded-lg p-6">
         <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-          ✅ Ready for Control
+          Ready for Control
         </h3>
         <p className="text-[var(--muted-foreground)] mb-4">
           Once your mechanism moves in the correct direction and provides
@@ -387,7 +386,7 @@ export default function MechanismSetup() {
         </p>
         <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
           <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-            <strong>💡 Next Step:</strong>{" "}
+            <strong>Next Step:</strong>{" "}
             <Link href="/pid-control" className="underline font-medium">
               PID control
             </Link>
@@ -414,7 +413,7 @@ export default function MechanismSetup() {
               ],
               correctAnswer: 1,
               explanation:
-                "Counter-clockwise rotation should cause the encoder position to increase. If it decreases instead, you need to invert the encoder direction in TunerX.",
+                "Counter-clockwise rotation should cause the encoder position to increase. If it decreases instead, you need to invert the encoder direction in Tuner X.",
             },
             {
               id: 2,
@@ -433,7 +432,7 @@ export default function MechanismSetup() {
             {
               id: 3,
               question:
-                "What should you do BEFORE performing hardware setup tasks in TunerX?",
+                "What should you do BEFORE performing hardware setup tasks in Tuner X?",
               options: [
                 "Calibrate the motors at full speed",
                 "Stop any running code and turn ON 'CANivore USB' setting",
@@ -442,7 +441,7 @@ export default function MechanismSetup() {
               ],
               correctAnswer: 1,
               explanation:
-                "Before hardware setup, you must stop any running robot code and turn ON the 'CANivore USB' setting in TunerX. This ensures proper communication with physical hardware during testing and configuration.",
+                "Before hardware setup, you must stop any running robot code and turn ON the 'CANivore USB' setting in Tuner X. This ensures proper communication with physical hardware during testing and configuration.",
             },
             {
               id: 4,

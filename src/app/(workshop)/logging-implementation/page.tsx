@@ -23,7 +23,7 @@ export default function LoggingImplementation() {
       {/* Introduction */}
       <KeyConceptSection
         title="Setting Up DataLogManager"
-        description="We log with WPILib's built-in DataLogManager — nothing extra to install. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (WPILib's shared live-data table) is captured to a .wpilog file you open in AdvantageScope, along with the Driver-Station and joystick data."
+        description="We log with WPILib's built-in DataLogManager: nothing extra to install. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (WPILib's shared live-data table) is captured to a .wpilog file you open in AdvantageScope, along with the Driver-Station and joystick data."
         concept="Turn it on in Robot's constructor, then publish what you care about to NetworkTables. DataLogManager records every NT change to disk."
       />
 
@@ -137,7 +137,7 @@ public class Robot extends OpModeRobot {
           <em>struct publisher</em> so AdvantageScope can render them natively.
         </p>
 
-        <CollapsibleSection title="🗺️ The drivetrain telemetry surface (struct publishers)">
+        <CollapsibleSection title="The drivetrain telemetry surface (struct publishers)">
           <p className="text-slate-600 dark:text-slate-300 mb-4">
             The template&apos;s <code>Telemetry</code> class is the
             project&apos;s logging surface. It publishes the swerve state to
@@ -181,7 +181,7 @@ public class Telemetry {
           />
         </CollapsibleSection>
 
-        <CollapsibleSection title="📊 Logging from a mechanism (there's no periodic() in v3)">
+        <CollapsibleSection title="Logging from a mechanism (there's no periodic() in v3)">
           <p className="text-slate-600 dark:text-slate-300 mb-4">
             v3 mechanisms don&apos;t have a <code>periodic()</code> method, so
             &quot;publish my state every loop&quot; needs a different home. The
@@ -209,7 +209,7 @@ public class Telemetry {
           />
           <p className="text-slate-600 dark:text-slate-300 mt-4">
             You can also publish from inside a command body, right next to the
-            setpoint that produced the value — handy for logging
+            setpoint that produced the value. That&apos;s handy for logging
             target-vs-actual during a move.
           </p>
         </CollapsibleSection>
@@ -247,7 +247,7 @@ public class Telemetry {
         </h2>
 
         <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
-          Robot.java — starting DataLogManager
+          Robot.java: starting DataLogManager
         </h3>
 
         <GitHubContent
@@ -256,7 +256,7 @@ public class Telemetry {
           filePath="src/main/java/frc/robot/Robot.java"
         />
 
-        <CollapsibleSection title="🔧 Drivetrain telemetry">
+        <CollapsibleSection title="Drivetrain telemetry">
           <p className="text-slate-600 dark:text-slate-300 mb-4">
             The drivetrain is the canonical example: it publishes{" "}
             <code>Pose2d</code>, velocity, and per-module states to
@@ -288,7 +288,7 @@ public class Telemetry {
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-              📡 Real-Time Data Viewing
+              Real-Time Data Viewing
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
               Everything you publish to NetworkTables is visible live.
@@ -298,7 +298,7 @@ public class Telemetry {
               <li>Select &quot;Connect to Robot&quot; from the menu</li>
               <li>Enter your team number or robot address</li>
               <li>
-                Browse the NetworkTables tree — your keys land under their table
+                Browse the NetworkTables tree; your keys land under their table
                 (e.g. <code>Drivetrain/Pose</code>)
               </li>
               <li>
@@ -309,7 +309,7 @@ public class Telemetry {
 
           <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
             <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
-              📥 Post-Match Log Analysis
+              Post-Match Log Analysis
             </h3>
             <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
               Pull <code>.wpilog</code> files off the USB drive or download them
@@ -390,7 +390,7 @@ public class Telemetry {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <Box variant="alert-success" title="✅ Do">
+          <Box variant="alert-success" title="Do">
             <ul className="list-disc list-inside space-y-2">
               <li>
                 Log sensor inputs, motor outputs, and target setpoints together
@@ -412,7 +412,7 @@ public class Telemetry {
             </ul>
           </Box>
 
-          <Box variant="alert-danger" title="❌ Don&rsquo;t">
+          <Box variant="alert-danger" title="Don&rsquo;t">
             <ul className="list-disc list-inside space-y-2">
               <li>Log high-frequency strings (use numbers or booleans)</li>
               <li>
@@ -447,7 +447,7 @@ public class Telemetry {
           />
           <DocumentationButton
             href="https://docs.advantagescope.org/"
-            title="AdvantageScope - Log Visualization"
+            title="AdvantageScope: Log Visualization"
             icon={<BarChart2 className="w-5 h-5" />}
           />
           <DocumentationButton
@@ -503,7 +503,7 @@ public class Telemetry {
               ],
               correctAnswer: 1,
               explanation:
-                "DataLogManager logs whatever changes on NetworkTables, so you log a custom value by publishing it there — SmartDashboard.putNumber for a quick number, or a NetworkTables struct publisher for types like Pose2d.",
+                "DataLogManager logs whatever changes on NetworkTables, so you log a custom value by publishing it there: SmartDashboard.putNumber for a quick number, or a NetworkTables struct publisher for types like Pose2d.",
             },
             {
               id: 4,
@@ -517,7 +517,7 @@ public class Telemetry {
               ],
               correctAnswer: 1,
               explanation:
-                "Pose2d (and ChassisVelocities, SwerveModuleVelocity[], etc.) are WPILib struct types. Publishing them through a StructPublisher keeps them as one coherent value that AdvantageScope reconstructs and renders natively — no manual axis wiring.",
+                "Pose2d (and ChassisVelocities, SwerveModuleVelocity[], etc.) are WPILib struct types. Publishing them through a StructPublisher keeps them as one coherent value that AdvantageScope reconstructs and renders natively, with no manual axis wiring.",
             },
             {
               id: 5,
@@ -544,10 +544,10 @@ public class Telemetry {
         </h2>
 
         <Box variant="alert-success" title="Up Next: Drive to Point">
-          With DataLogManager recording your pose, velocities, and module
-          states, you&apos;re ready to implement autonomous navigation, with
-          every PID setpoint, error, and motor output captured for tuning the
-          moment something looks off.
+          DataLogManager is now recording your pose, velocities, and module
+          states. That pays off in the next lesson: when a drive-to-point run
+          looks wrong, the PID setpoints, errors, and motor outputs are already
+          in the log.
         </Box>
       </section>
     </PageTemplate>

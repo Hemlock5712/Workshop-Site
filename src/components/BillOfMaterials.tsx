@@ -360,10 +360,9 @@ export default function BillOfMaterials({
         {/* Cost-Saving Tip - Always Visible */}
         <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
           <p className="text-blue-800 dark:text-blue-300 font-medium">
-            💡 <strong>Cost-Saving Tip:</strong> Many parts listed below can
-            likely be built from scrap material or parts you already own from
-            previous projects, significantly reducing the actual cost of this
-            mechanism.
+            <strong>Cost-Saving Tip:</strong> Many parts listed below can likely
+            be built from scrap material or parts you already own from previous
+            projects, significantly reducing the actual cost of this mechanism.
           </p>
         </div>
 

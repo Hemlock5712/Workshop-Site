@@ -14,10 +14,9 @@ export default function Glossary() {
           About This Glossary
         </p>
         <p className="text-primary-800 dark:text-primary-300">
-          New to FRC programming? This glossary explains technical terms used
-          throughout the workshop in simple, beginner-friendly language. Each
-          term includes an easy-to-understand definition and, where helpful, a
-          real-world analogy.
+          New to FRC programming? This glossary explains the technical terms
+          used throughout the workshop in plain language. Each term gets a
+          simple definition and, where helpful, a real-world analogy.
         </p>
       </div>
 
@@ -39,7 +38,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A smart device that controls how a motor
               spins. Think of it like a dimmer switch for lights, but much
-              smarter - it can control speed, direction, and precisely how far
+              smarter: it can control speed, direction, and precisely how far
               the motor turns.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
@@ -59,7 +58,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A specific type of motor controller made
               by CTRE. The Kraken X44 is a motor with a TalonFX controller built
-              right into it - like having an engine and transmission in one
+              right into it, like having an engine and transmission in one
               package.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
@@ -83,8 +82,8 @@ export default function Glossary() {
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Real-world analogy:</strong> Imagine trying to park a car
-              blindfolded - impossible! An encoder is like opening your eyes so
-              you can see exactly where you are and how fast you&apos;re moving.
+              blindfolded. An encoder is like opening your eyes so you can see
+              exactly where you are and how fast you&apos;re moving.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A rotary position sensor that provides
@@ -167,7 +166,7 @@ export default function Glossary() {
               wire.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
-              <strong>Technical:</strong> Controller Area Network - a robust
+              <strong>Technical:</strong> Controller Area Network, a
               communication protocol that allows multiple devices to communicate
               over a shared bus using unique device IDs.
             </p>
@@ -183,7 +182,6 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A unique number (like a name tag) given
               to each motor or sensor so your code knows which one to control.
-              Like how each house has a different address.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A unique integer identifier (typically
@@ -223,7 +221,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A drivetrain where every wheel can both
               spin and steer on its own. The robot can drive any direction while
-              rotating — like a shopping cart where all four wheels steer.
+              rotating, like a shopping cart where all four wheels steer.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> Four independent modules, each with a
@@ -257,12 +255,12 @@ export default function Glossary() {
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Real-world analogy:</strong> Think of your robot like a
-              human body. The arm subsystem is like your actual arm - it knows
+              human body. The arm subsystem is like your actual arm: it knows
               how to move, knows where it is, and has specific jobs it can do.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> In Commands v3 (WPILib 2027) this is
-              called a <strong>Mechanism</strong> — a class you extend that owns
+              called a <strong>Mechanism</strong>: a class you extend that owns
               hardware (motors, sensors) and exposes commands.
             </p>
           </div>
@@ -311,15 +309,15 @@ export default function Glossary() {
               trigger runs a specific command.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
-              <strong>Real-world analogy:</strong> Like a light switch - when
-              you flip it (trigger), the light turns on (command runs). The
-              switch doesn&apos;t create light itself, it just tells the light
-              what to do.
+              <strong>Real-world analogy:</strong> Like a light switch: when you
+              flip it (trigger), the light turns on (command runs). The switch
+              doesn&apos;t create light itself, it just tells the light what to
+              do.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A boolean condition (from buttons,
               sensors, or custom logic) that schedules commands when its state
-              changes. <code>whileTrue()</code> is the everyday method — it runs
+              changes. <code>whileTrue()</code> is the everyday method: it runs
               a hold while the condition is true and hands the mechanism back to
               its default command when it goes false. <code>onTrue()</code>{" "}
               fires once, for self-finishing commands.
@@ -363,7 +361,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A generated class that extends
               CTRE&apos;s SwerveDrivetrain. In the v3 template it isn&apos;t a
-              Mechanism itself — a hand-written <code>DriveMechanism</code>{" "}
+              Mechanism itself. A hand-written <code>DriveMechanism</code>{" "}
               (extends Mechanism) wraps it and exposes the drive commands to
               command-based code.
             </p>
@@ -384,7 +382,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> A callback the scheduler runs every
               robot loop (20ms) for telemetry/monitoring. Commands v3 mechanisms
-              don&apos;t have a <code>periodic()</code> method — use a{" "}
+              don&apos;t have a <code>periodic()</code> method. Use a{" "}
               <code>runRepeatedly(...)</code> default command, or register a
               callback with <code>Scheduler.getDefault().addPeriodic(...)</code>
               .
@@ -400,7 +398,7 @@ export default function Glossary() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> The Commands v3 (WPILib 2027) name for a
-              subsystem — one physical part of the robot (arm, flywheel,
+              subsystem: one physical part of the robot (arm, flywheel,
               drivetrain). It owns the hardware and hands out commands.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
@@ -420,7 +418,7 @@ export default function Glossary() {
               OpMode
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
-              <strong>Simple:</strong> A &quot;mode&quot; the robot can be in —
+              <strong>Simple:</strong> A &quot;mode&quot; the robot can be in:
               driver teleop, an autonomous routine, or a calibration task. Each
               one is its own class, and the driver station lists them by name.
               The Commands v3 stack organizes robot setup around OpModes.
@@ -445,8 +443,8 @@ export default function Glossary() {
               <strong>Simple:</strong> The thing that lets a Commands v3 command
               body pause and resume. Inside a command you call{" "}
               <code>coroutine.wait(...)</code>, <code>waitUntil(...)</code>, or{" "}
-              <code>await(...)</code> to pause until something happens — then
-              the code keeps going from where it left off.
+              <code>await(...)</code> to pause until something happens. Then the
+              code keeps going from where it left off.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> The <code>Coroutine</code> handle
@@ -455,7 +453,7 @@ export default function Glossary() {
               <code>await</code>/<code>park</code>/<code>fork</code> and resume
               on a later scheduler tick, so the whole command reads as one
               straight-line method. On this team it&apos;s an optional advanced
-              dialect — everyday robot code uses holds and chaining instead.
+              dialect; everyday robot code uses holds and chaining instead.
             </p>
           </div>
 
@@ -468,7 +466,7 @@ export default function Glossary() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A command that takes a mechanism to a
-              setpoint and <em>stays there</em> — hold a button (
+              setpoint and <em>stays there</em>: hold a button (
               <code>whileTrue</code>) and the arm goes to the scoring angle and
               keeps fighting gravity; let go and the default command comes back.
               Almost every mechanism command in this workshop is a hold.
@@ -503,7 +501,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> Building a routine (like an auto) by
               snapping commands together, one after another. This is the
-              team&apos;s recommended style — as far as most routines ever need
+              team&apos;s recommended style, as far as most routines ever need
               to go.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
@@ -566,8 +564,7 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> A smart way to automatically control
               motors to reach exact positions or speeds. Instead of you
-              constantly adjusting, PID does it automatically by measuring the
-              error and correcting it.
+              constantly adjusting, PID measures the error and corrects it.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Real-world analogy:</strong> Like cruise control in a car.
@@ -661,8 +658,8 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Real-world analogy:</strong> When carrying a heavy
               backpack upstairs, you automatically use more effort than on flat
-              ground. You don&apos;t wait to slow down and then push harder -
-              you predict you&apos;ll need more force.
+              ground. You don&apos;t wait to slow down and then push harder. You
+              predict you&apos;ll need more force.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> Model-based control that predicts
@@ -684,7 +681,7 @@ export default function Glossary() {
               initial push needed to get a heavy door to start opening.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
-              <strong>Technical:</strong> Static friction compensation -
+              <strong>Technical:</strong> Static friction compensation, a
               constant voltage applied to overcome static friction regardless of
               desired velocity.
             </p>
@@ -699,7 +696,7 @@ export default function Glossary() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> Extra power needed to hold up an arm or
-              elevator against gravity. The voltage changes based on the angle -
+              elevator against gravity. The voltage changes based on the angle:
               horizontal arms need more help than vertical ones.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
@@ -747,7 +744,7 @@ export default function Glossary() {
               accelerates smoothly, cruises, then slows down smoothly.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
-              <strong>Real-world analogy:</strong> Like an elevator - it
+              <strong>Real-world analogy:</strong> Like an elevator: it
               doesn&apos;t instantly jump to full speed and slam to a stop. It
               accelerates smoothly when starting, maintains speed, then
               decelerates smoothly to arrive gently.
@@ -796,9 +793,8 @@ export default function Glossary() {
               running an intake).
             </p>
             <p className="text-slate-600 dark:text-slate-300">
-              <strong>Technical:</strong> Control without feedback - motor
-              output is set directly without measuring actual performance or
-              position.
+              <strong>Technical:</strong> Control without feedback. Motor output
+              is set directly without measuring actual performance or position.
             </p>
           </div>
         </div>
@@ -821,8 +817,8 @@ export default function Glossary() {
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> The main programming toolkit for FRC
-              robots. It includes everything you need to write robot code - like
-              Microsoft Word for documents, but WPILib is for robot code.
+              robots. It includes everything you need to write robot code, like
+              Microsoft Word does for documents.
             </p>
             <p className="text-slate-600 dark:text-slate-300">
               <strong>Technical:</strong> FRC&apos;s official software library
@@ -950,7 +946,7 @@ export default function Glossary() {
               Rotations
             </h3>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
-              <strong>Simple:</strong> How CTRE motors measure position - one
+              <strong>Simple:</strong> How CTRE motors measure position: one
               full spin = 1 rotation. Much easier than degrees (360°) or radians
               (2π).
             </p>
@@ -1019,11 +1015,11 @@ export default function Glossary() {
             <p className="text-slate-600 dark:text-slate-300 mb-2">
               <strong>Simple:</strong> How much the motor&apos;s speed is
               reduced to increase power. A 25:1 gear ratio means the motor spins
-              25 times for the output to spin once - slower but 25x stronger.
+              25 times for the output to spin once: slower but 25x stronger.
             </p>
             <p className="text-slate-600 dark:text-slate-300 mb-2">
-              <strong>Real-world analogy:</strong> Like bicycle gears - low gear
-              (high ratio) is slow but powerful for hills, high gear (low ratio)
+              <strong>Real-world analogy:</strong> Like bicycle gears: low gear
+              (high ratio) is slow but powerful for hills; high gear (low ratio)
               is fast but weak for flat roads.
             </p>
             <p className="text-slate-600 dark:text-slate-300">

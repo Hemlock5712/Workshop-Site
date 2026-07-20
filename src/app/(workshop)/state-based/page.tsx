@@ -15,7 +15,7 @@ export default function StateMachines() {
         title="State Machines with WPILib Commands V3"
         description={[
           "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this, including entry/exit hooks and any-state interrupts, without writing scaffolding by hand.",
-          "This is an optional, advanced dialect. In everyday teleop, each button holds a superstructure preset (whileTrue) — hold A, the scoring hold runs; let go, the default command comes back. With a state machine, the robot is instead always in exactly one named state, and buttons/sensors move it between states. The machine cancels the old state's command and starts the new one for you; illegal jumps simply don't exist because no transition was declared for them.",
+          "This is an optional, advanced dialect. In everyday teleop, each button holds a superstructure preset (whileTrue): hold A, the scoring hold runs; let go, the default command comes back. With a state machine, the robot is instead always in exactly one named state, and buttons/sensors move it between states. The machine cancels the old state's command and starts the new one for you; illegal jumps simply don't exist because no transition was declared for them.",
         ]}
         concept="A state is a Command that runs while the machine is in it. Transitions are edge-triggered conditions that cancel the current state's command and move to the next state. onEnter / onExit fire around each transition."
       />
@@ -25,12 +25,12 @@ export default function StateMachines() {
         tag="OPTIONAL · ADVANCED"
         title="You don't need this lesson to build a working robot"
       >
-        Everything in the workshop — teleop presets, autos — is covered by
-        holds, button bindings, and chaining. Reach for a{" "}
-        <code>StateMachine</code> only when button-per-preset stops being
-        enough: sequences that must repeat, skip, or recover by jumping back a
-        phase, or a superstructure where illegal combinations need to be
-        impossible by construction. The team&apos;s worked example is{" "}
+        Everything in the workshop (teleop presets, autos) is covered by holds,
+        button bindings, and chaining. Reach for a <code>StateMachine</code>{" "}
+        only when button-per-preset stops being enough: sequences that must
+        repeat, skip, or recover by jumping back a phase, or a superstructure
+        where illegal combinations need to be impossible by construction. The
+        team&apos;s worked example is{" "}
         <a
           href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
           target="_blank"
@@ -39,8 +39,8 @@ export default function StateMachines() {
         >
           StateMachineTeleop.java in the 2027-Template
         </a>{" "}
-        — the same teleop as the ordinary hold-per-button OpMode, rebuilt as a
-        four-state machine.
+        (the same teleop as the ordinary hold-per-button OpMode, rebuilt as a
+        four-state machine).
       </Box>
 
       <Box
@@ -132,12 +132,12 @@ sm.switchFromAny().to(stowed).when(operator.b());`}
           style={{ color: "var(--fg-mute)" }}
         >
           <code>arm.stowed()</code> and friends are the same hold factories you
-          built on the Mechanisms page — <code>runRepeatedly</code> re-sending a
+          built on the Mechanisms page: <code>runRepeatedly</code> re-sending a
           setpoint, named <code>&quot;stowed (hold)&quot;</code>. The state
           machine doesn&apos;t care how a state&apos;s command is built, but
           holds fit it naturally: the machine cancels the old state&apos;s hold
           and starts the new one on each transition, so the mechanism is always
-          actively commanded and THE ONE RULE is never violated — nothing ever{" "}
+          actively commanded and THE ONE RULE is never violated. Nothing ever{" "}
           <em>waits</em> on the hold; transitions watch conditions instead.
         </p>
 
@@ -147,7 +147,7 @@ sm.switchFromAny().to(stowed).when(operator.b());`}
         >
           Here are those four steps in the workshop&apos;s real code: the{" "}
           <code>6-StateBased</code> branch runs the whole Arm + Flywheel teleop
-          as one state machine — stowed, pickup, spin-up, and ready states,
+          as one state machine, with stowed, pickup, spin-up, and ready states,
           button-driven transitions, a sensor-driven{" "}
           <code>flywheel::isAtSpeed</code> handoff, and a{" "}
           <code>switchFromAny</code> panic interrupt.
@@ -180,12 +180,12 @@ sm.switchFromAny().to(stowed).when(operator.b());`}
                 Checked every scheduler tick{" "}
                 <em>while the state&apos;s command is running</em>. Rising-edge
                 guarded, so <code>state.switchTo(state).when(...)</code> never
-                infinite loops — the condition has to go false and then true
+                infinite loops: the condition has to go false and then true
                 again to fire a second time.
               </p>
               <p style={{ marginTop: 8 }}>
                 Does <strong>not</strong> fire for one-shot commands that never
-                yield — the loop checking it never runs.
+                yield, because the loop checking it never runs.
               </p>
             </Box>
 
@@ -199,7 +199,7 @@ sm.switchFromAny().to(stowed).when(operator.b());`}
                 on its own. Use this for self-finishing state commands (like a
                 one-shot <code>fireOnce()</code>). A hold never finishes, so a{" "}
                 <code>whenComplete()</code> on a hold-backed state will never
-                fire — use <code>.when(...)</code> there instead.
+                fire; use <code>.when(...)</code> there instead.
               </p>
               <p style={{ marginTop: 8 }}>
                 <code>whenCompleteAnd(cond)</code> is the same idea with an
@@ -232,7 +232,7 @@ scoring.switchTo(scoring).whenCompleteAnd(hopper::hasBall);`}
           >
             Each state can register any number of <code>onEnter</code> and{" "}
             <code>onExit</code> callbacks. Useful when entering or leaving a
-            state needs to kick off side-effects that aren&apos;t part of the
+            state needs to kick off side effects that aren&apos;t part of the
             state&apos;s main command: schedule a background animation, stiffen
             the drivetrain, log a marker, etc.
           </p>
@@ -368,9 +368,9 @@ sm.switchFromAny().to(idle).whenComplete();`}
           <code>fork / await / waitUntil</code>) handle logic with loops and
           branches inside one command body; and the{" "}
           <strong>StateMachine</strong> on this page handles behavior that jumps
-          between named phases. The second two are optional dialects — worth
-          recognizing in the template, not required learning. Compare the three
-          side by side in the template&apos;s opmodes folder:{" "}
+          between named phases. The second two are optional dialects, worth
+          recognizing in the template but not required learning. Compare the
+          three side by side in the template&apos;s opmodes folder:{" "}
           <a
             href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
             target="_blank"
@@ -409,7 +409,7 @@ sm.switchFromAny().to(idle).whenComplete();`}
         Commands V3 and the <code>StateMachine</code> class run on{" "}
         <strong>Java 25</strong> and deploy to <strong>SystemCore</strong>. The
         stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
-        <code>2027.0.0-alpha-6</code>) — the release where StateMachine first
+        <code>2027.0.0-alpha-6</code>), the release where StateMachine first
         shipped. This page was last verified against alpha-6 in July 2026.
       </Box>
 
@@ -428,7 +428,7 @@ sm.switchFromAny().to(idle).whenComplete();`}
             ],
             correctAnswer: 1,
             explanation:
-              "Conditional transitions (.when) are checked inside the loop that runs while the state's command is active. A one-shot never enters that loop, so the condition is never checked. Use whenComplete() (or whenCompleteAnd()) for one-shot states — it's checked exactly once after the command finishes.",
+              "Conditional transitions (.when) are checked inside the loop that runs while the state's command is active. A one-shot never enters that loop, so the condition is never checked. Use whenComplete() (or whenCompleteAnd()) for one-shot states. It's checked exactly once after the command finishes.",
           },
           {
             id: 2,
@@ -456,7 +456,7 @@ sm.switchFromAny().to(idle).whenComplete();`}
             ],
             correctAnswer: 2,
             explanation:
-              "setInitialState() is marked @PostConstructionInitializer, and the WPILib compiler plugin fails the build if you construct a StateMachine and never call it — the same build-time enforcement Commands V3 applies to .named() on command builders. As a backstop, a machine that reaches the scheduler without one throws IllegalStateException when it starts.",
+              "setInitialState() is marked @PostConstructionInitializer, and the WPILib compiler plugin fails the build if you construct a StateMachine and never call it. That's the same build-time enforcement Commands V3 applies to .named() on command builders. As a backstop, a machine that reaches the scheduler without one throws IllegalStateException when it starts.",
           },
           {
             id: 4,
@@ -470,7 +470,7 @@ sm.switchFromAny().to(idle).whenComplete();`}
             ],
             correctAnswer: 1,
             explanation:
-              "Transitions are synchronous within a single scheduler iteration. onExit runs first, then the current command is canceled, then the next state becomes current and its command is forked — all without an extra yield. This is intentional so a chain of fast transitions doesn't waste scheduler cycles.",
+              "Transitions are synchronous within a single scheduler iteration. onExit runs first, then the current command is canceled, then the next state becomes current and its command is forked, all without an extra yield. This is intentional so a chain of fast transitions doesn't waste scheduler cycles.",
           },
           {
             id: 5,
@@ -484,7 +484,7 @@ sm.switchFromAny().to(idle).whenComplete();`}
             ],
             correctAnswer: 1,
             explanation:
-              "Command.sequence(...) is a linear pipeline — A then B then C. A StateMachine is a graph: any state can transition to any other state at any time, with onEnter/onExit hooks and switchFromAny interrupts. If your routine can repeat phases, skip phases, or recover by jumping back, you want a state machine, not a sequence.",
+              "Command.sequence(...) is a linear pipeline: A then B then C. A StateMachine is a graph: any state can transition to any other state at any time, with onEnter/onExit hooks and switchFromAny interrupts. If your routine can repeat phases, skip phases, or recover by jumping back, you want a state machine, not a sequence.",
           },
         ]}
       />

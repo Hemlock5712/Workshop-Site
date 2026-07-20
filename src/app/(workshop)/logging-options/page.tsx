@@ -18,8 +18,8 @@ export default function LoggingOptions() {
     <PageTemplate title="Logging Options">
       {/* Introduction */}
       <KeyConceptSection
-        title="Data Logging - Understanding What Happened"
-        description="Data logging captures robot telemetry, sensor values, and system state during operation. This data is essential for debugging issues, analyzing performance, tuning mechanisms, and understanding what happened during a match."
+        title="Data Logging: Understanding What Happened"
+        description="Data logging captures robot telemetry, sensor values, and system state during operation. You'll use that data to debug issues, analyze performance, tune mechanisms, and figure out what happened during a match."
         concept="Logging turns debugging from guesswork into data-driven problem solving."
       />
 
@@ -31,20 +31,19 @@ export default function LoggingOptions() {
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            🎯 The Logging Challenge
+            The Logging Challenge
           </h3>
 
           <p className="text-slate-600 dark:text-slate-300 mb-6">
-            During a match, your robot operates for only 2-3 minutes. When
-            something goes wrong, you need to quickly understand what happened
-            and fix it before the next match. Without logging, you&apos;re
-            debugging blind.
+            During a match, your robot runs for only 2-3 minutes. When something
+            goes wrong, you need to quickly understand what happened and fix it
+            before the next match. Without logging, you&apos;re debugging blind.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-bold text-red-600 dark:text-red-400 mb-3 text-lg">
-                ❌ Without Logging
+                Without Logging
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Guess what went wrong based on driver observation</li>
@@ -57,7 +56,7 @@ export default function LoggingOptions() {
 
             <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
               <h4 className="font-bold text-green-600 dark:text-green-400 mb-3 text-lg">
-                ✅ With Logging
+                With Logging
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Review exact robot state from any match</li>
@@ -80,8 +79,8 @@ export default function LoggingOptions() {
             mechanism performance with real match data.
           </Box>
           <Box variant="concept" title="Improve Continuously">
-            Track performance metrics across matches to identify trends and
-            opportunities for improvement.
+            Track performance metrics across matches to spot trends and places
+            to improve.
           </Box>
         </div>
 
@@ -112,7 +111,7 @@ export default function LoggingOptions() {
           <ContentCard>
             <div className="bg-primary-100 dark:bg-primary-900/20 p-4 rounded-lg mb-4">
               <h3 className="text-xl font-bold text-primary-900 dark:text-primary-300">
-                🎮 Inputs
+                Inputs
               </h3>
             </div>
             <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
@@ -127,7 +126,7 @@ export default function LoggingOptions() {
           <ContentCard>
             <div className="bg-green-100 dark:bg-green-900/20 p-4 rounded-lg mb-4">
               <h3 className="text-xl font-bold text-green-900 dark:text-green-300">
-                🤖 Robot State
+                Robot State
               </h3>
             </div>
             <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
@@ -142,7 +141,7 @@ export default function LoggingOptions() {
           <ContentCard>
             <div className="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg mb-4">
               <h3 className="text-xl font-bold text-orange-900 dark:text-orange-300">
-                ⚙️ Control Signals
+                Control Signals
               </h3>
             </div>
             <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
@@ -193,7 +192,7 @@ export default function LoggingOptions() {
         <p className="text-slate-600 dark:text-slate-300">
           This workshop uses exactly one: WPILib&apos;s built-in{" "}
           <code>DataLogManager</code>, mirroring the 2027 template. Here&apos;s
-          what it does — followed by a short vocabulary list of the other
+          what it does, followed by a short vocabulary list of the other
           framework names you&apos;ll hear around FRC, and why we don&apos;t use
           them.
         </p>
@@ -207,7 +206,7 @@ export default function LoggingOptions() {
             <p className="text-slate-600 dark:text-slate-300">
               Official WPILib data logging system that captures all
               NetworkTables data to binary .wpilog files. (NetworkTables is
-              WPILib&apos;s shared live-data table — the robot publishes values
+              WPILib&apos;s shared live-data table: the robot publishes values
               to it, and dashboards and loggers read them.)
             </p>
           </div>
@@ -215,10 +214,10 @@ export default function LoggingOptions() {
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ✅ Advantages
+                Advantages
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>Built into WPILib - no additional dependencies</li>
+                <li>Built into WPILib, no additional dependencies</li>
                 <li>Automatically logs all NetworkTables data</li>
                 <li>Efficient binary format (.wpilog) for compact storage</li>
                 <li>Integrated with AdvantageScope for visualization</li>
@@ -229,7 +228,7 @@ export default function LoggingOptions() {
 
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                ⚠️ Limitations
+                Limitations
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>Only logs data published to NetworkTables</li>
@@ -242,7 +241,7 @@ export default function LoggingOptions() {
 
           <div className="mt-6">
             <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              🎯 Best For
+              Best For
             </h4>
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Teams who want simple, effective logging without additional
@@ -258,29 +257,29 @@ export default function LoggingOptions() {
           </h3>
           <p className="text-slate-600 dark:text-slate-300 mb-6">
             Plenty of good teams use these tools, so you should recognize the
-            names — but the workshop and the 2027 template don&apos;t use them.
+            names, but the workshop and the 2027 template don&apos;t use them.
             Treat this list as vocabulary, not required learning.
           </p>
 
           <ul className="list-disc list-inside space-y-4 text-sm text-slate-600 dark:text-slate-300">
             <li>
-              <strong>AdvantageKit</strong> (Team 6328) — a logging framework
-              whose headline feature is <em>deterministic replay</em>:
+              <strong>AdvantageKit</strong> (Team 6328): a logging framework
+              whose headline feature is <em>deterministic replay</em>,
               re-running a match log through your robot code in simulation.
               Getting that requires extending <code>LoggedRobot</code> and
               restructuring every subsystem around an IO layer. We record and
-              review logs; we don&apos;t re-run them through the code — so the
+              review logs; we don&apos;t re-run them through the code, so the
               extra machinery would buy us nothing here.
             </li>
             <li>
-              <strong>Epilogue (@Logged)</strong> — WPILib&apos;s
+              <strong>Epilogue (@Logged)</strong>: WPILib&apos;s
               annotation-based logging (2025+). A reasonable alternative, but
               DataLogManager plus plain NetworkTables publishing keeps the
               mental model smallest for a teaching codebase.
             </li>
             <li>
-              <strong>Hoot logging</strong> — CTRE&apos;s device-side signal
-              log. You already have this one without doing anything: Phoenix 6
+              <strong>Hoot logging</strong>: CTRE&apos;s device-side signal log.
+              You already have this one without doing anything: Phoenix 6
               devices write a <code>.hoot</code> file automatically alongside
               DataLogManager&apos;s <code>.wpilog</code>, viewable in Tuner X or
               AdvantageScope.
@@ -289,8 +288,8 @@ export default function LoggingOptions() {
 
           <p className="text-sm text-slate-600 dark:text-slate-300 mt-6">
             One name that is <em>not</em> a logging framework:{" "}
-            <strong>AdvantageScope</strong> is the log <em>viewer</em> we do use
-            — it opens <code>.wpilog</code> and <code>.hoot</code> files
+            <strong>AdvantageScope</strong> is the log <em>viewer</em> we do
+            use. It opens <code>.wpilog</code> and <code>.hoot</code> files
             regardless of which framework wrote them.
           </p>
         </div>
@@ -304,13 +303,13 @@ export default function LoggingOptions() {
 
         <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
           <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            📊 Using WPILib DataLogManager
+            Using WPILib DataLogManager
           </h3>
 
           <p className="text-slate-600 dark:text-slate-300 mb-6">
             For this workshop we mirror the 2027 template and use WPILib&apos;s
             built-in <code>DataLogManager</code>. It records every NetworkTables
-            value change to a binary <code>.wpilog</code> file — including
+            value change to a binary <code>.wpilog</code> file, including
             everything the drivetrain&apos;s telemetry publishes. It also
             captures console output, and <code>DriverStation.startDataLog</code>{" "}
             adds the Driver-Station and joystick data. There&apos;s no extra
@@ -349,17 +348,17 @@ export default function LoggingOptions() {
               </h4>
               <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
                 <li>
-                  <strong>AdvantageKit</strong> — its IO-layer / replay model is
+                  <strong>AdvantageKit:</strong> its IO-layer / replay model is
                   more than this workshop needs; DataLogManager covers
                   record-and-review
                 </li>
                 <li>
-                  <strong>Epilogue (@Logged)</strong> — a fine alternative, but
+                  <strong>Epilogue (@Logged):</strong> a fine alternative, but
                   DataLogManager + plain NetworkTables publishing keeps the
                   mental model smallest
                 </li>
                 <li>
-                  <strong>Deterministic log replay</strong> — out of scope; we
+                  <strong>Deterministic log replay:</strong> out of scope; we
                   record and review logs, we don&apos;t re-run them through the
                   code
                 </li>
@@ -377,7 +376,7 @@ export default function LoggingOptions() {
               <code>DataLogManager.start()</code> +{" "}
               <code>DriverStation.startDataLog(DataLogManager.getLog())</code>);
               after that you just publish the values you care about to
-              NetworkTables — the swerve telemetry helper already does this for
+              NetworkTables. The swerve telemetry helper already does this for
               the drivetrain. The next lesson wires it all up.
             </p>
           </Box>
@@ -389,7 +388,7 @@ export default function LoggingOptions() {
         tag="ON THE HORIZON"
         title="A new WPILib Telemetry API is in development"
       >
-        WPILib is working on a first-class telemetry framework — a static{" "}
+        WPILib is working on a first-class telemetry framework: a static{" "}
         <code>Telemetry.log(&quot;name&quot;, value)</code> API with pluggable
         backends for NetworkTables and log files (
         <a
@@ -425,7 +424,7 @@ export default function LoggingOptions() {
           />
           <DocumentationButton
             href="https://github.com/Mechanical-Advantage/AdvantageScope"
-            title="AdvantageScope - Log Visualization"
+            title="AdvantageScope: Log Visualization"
             icon={<BarChart2 className="w-5 h-5" />}
           />
           <DocumentationButton
@@ -443,8 +442,7 @@ export default function LoggingOptions() {
           questions={[
             {
               id: 1,
-              question:
-                "What is the primary advantage of comprehensive data logging in FRC?",
+              question: "What is the primary advantage of data logging in FRC?",
               options: [
                 "It makes the robot drive faster",
                 "It lets you review exact robot state from any match and debug issues quickly",
@@ -453,7 +451,7 @@ export default function LoggingOptions() {
               ],
               correctAnswer: 1,
               explanation:
-                "Comprehensive logging captures all robot telemetry during matches, letting teams review exact robot state, analyze performance, identify root causes of failures, and make data-driven tuning decisions - all critical for debugging between matches.",
+                "Logging captures all robot telemetry during matches, letting teams review exact robot state, analyze performance, identify root causes of failures, and make data-driven tuning decisions, all critical for debugging between matches.",
             },
             {
               id: 2,
@@ -467,7 +465,7 @@ export default function LoggingOptions() {
               ],
               correctAnswer: 1,
               explanation:
-                "DataLogManager records all NetworkTables value changes (plus console output and, via DriverStation.startDataLog, DS/joystick data) to a binary .wpilog. You get logging by publishing the values you care about to NetworkTables — the swerve telemetry helper already does this for the drivetrain.",
+                "DataLogManager records all NetworkTables value changes (plus console output and, via DriverStation.startDataLog, DS/joystick data) to a binary .wpilog. You get logging by publishing the values you care about to NetworkTables. The swerve telemetry helper already does this for the drivetrain.",
             },
             {
               id: 3,
@@ -495,7 +493,7 @@ export default function LoggingOptions() {
               ],
               correctAnswer: 2,
               explanation:
-                "Effective logging captures sensor inputs (encoders, gyros, vision), motor outputs (voltage, current), robot state (pose, subsystem states), and control signals (PID setpoints, errors) - providing complete context for debugging.",
+                "Effective logging captures sensor inputs (encoders, gyros, vision), motor outputs (voltage, current), robot state (pose, subsystem states), and control signals (PID setpoints, errors), providing complete context for debugging.",
             },
             {
               id: 5,
@@ -508,7 +506,7 @@ export default function LoggingOptions() {
               ],
               correctAnswer: 1,
               explanation:
-                "Excessive logging (especially high-frequency strings or large data) can spam NetworkTables bandwidth, increase CPU overhead in control loops, and create very large log files. Efficient binary formats and appropriate sample rates are essential.",
+                "Excessive logging (especially high-frequency strings or large data) can spam NetworkTables bandwidth, increase CPU overhead in control loops, and create very large log files. Use efficient binary formats and appropriate sample rates.",
             },
           ]}
         />

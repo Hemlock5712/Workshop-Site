@@ -70,10 +70,10 @@ export default function PrivacyPage() {
           avoid storing them long term.
         </li>
         <li>
-          You can reject analytics cookies via our banner, the preferences
-          section at the top of the Privacy Policy page, or block cookies in
-          your browser. Essential cookies (if any) are required for core
-          functionality.
+          You can reject analytics cookies via our banner or the preferences
+          section at the top of the Privacy Policy page, or you can block
+          cookies in your browser. Essential cookies (if any) are required for
+          core functionality.
         </li>
       </ul>
 
@@ -97,8 +97,8 @@ export default function PrivacyPage() {
       <ul>
         <li>
           <strong>Service providers:</strong> PostHog (analytics),
-          hosting/CDN/DDoS, and error/performance monitoring. These providers
-          process data on our behalf under contracts.
+          hosting/CDN/DDoS protection, and error/performance monitoring. These
+          providers process data on our behalf under contracts.
         </li>
         <li>
           <strong>Legal/security:</strong> If required by law, or to protect our
@@ -165,7 +165,7 @@ export default function PrivacyPage() {
         Our services are based in the United States (PostHog Cloud US). If you
         access the site from outside the US, your information may be processed
         in the US, which may have different data protection laws than your
-        country.
+        country does.
       </p>
 
       <h2>12. Third parties and links</h2>

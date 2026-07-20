@@ -654,14 +654,16 @@ export default function OdometryCalibration() {
               <ul className="list-disc list-inside space-y-1 text-sm">
                 <li>
                   <strong>Preferred:</strong> Test on the ground (carpet or
-                  competition surface) for most accurate results
+                  competition surface) for the most accurate results
                 </li>
                 <li>
                   <strong>Alternative:</strong> Testing in the air (wheels off
-                  ground) is acceptable for initial testing, but may yield
-                  slightly different results
+                  ground) works for a first pass, but may yield slightly
+                  different results
                 </li>
-                <li>Use the on-ground measurement for final competition</li>
+                <li>
+                  Use the on-ground measurement as your final competition value
+                </li>
               </ul>
             </Box>
 

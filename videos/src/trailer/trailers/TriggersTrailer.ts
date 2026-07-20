@@ -150,7 +150,7 @@ export const TriggersTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Press A, raise the arm. That link is called a binding. Commands version three asks a new question: when should a binding stop existing? There is no RobotContainer anymore. Bindings belong to modes.",
+      text: "Press A, raise the arm. That link is called a binding. Every binding has one big question to answer: when should it stop existing? In Commands version three, the answer is simple. Bindings belong to modes.",
       camera: TITLE,
       holdAfter: 0.5,
     },

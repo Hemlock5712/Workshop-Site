@@ -9,7 +9,7 @@ export default function ProjectSetup() {
     <PageTemplate title="Project Setup">
       {/* Introduction */}
       <KeyConceptSection
-        title="Project Setup - Launching Your Codebase"
+        title="Project Setup: Launching Your Codebase"
         description="Step-by-step guide to creating a new WPILib project. This workshop's robot code is built on Commands v3 + OpModes, so the starting point is the team's 2027-Template, which already organizes your code into mechanisms and OpModes."
         concept="Start from the Commands v3 / OpMode project so your code is organized into mechanisms and OpModes from day one."
       />
@@ -34,7 +34,7 @@ export default function ProjectSetup() {
               team&apos;s 2027-Template
             </a>
           </strong>{" "}
-          repo — clone it (the default <code>2027-dev</code> branch has the 2027
+          repo. Clone it (the default <code>2027-dev</code> branch has the 2027
           stack; the <code>main</code> branch is still the older 2026 stack) so
           you start with the OpMode wiring already in place, then set your team
           number in <code>.wpilib/wpilib_preferences.json</code>. The site
@@ -65,7 +65,7 @@ export default function ProjectSetup() {
                   git clone -b 2027-dev
                   https://github.com/Hemlock5712/2027-Template.git Workshop
                 </code>{" "}
-                — the <code>2027-dev</code> branch is the 2027 stack (the{" "}
+                (the <code>2027-dev</code> branch is the 2027 stack; the{" "}
                 <code>main</code> branch is still the older 2026 stack).
               </p>
             </div>
@@ -79,8 +79,7 @@ export default function ProjectSetup() {
               <p className="font-medium">Open the folder in VS Code</p>
               <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Use the WPILib 2027 alpha VS Code install from the Prerequisites
-                page. Avoid OneDrive-synced locations — they break Gradle
-                builds.
+                page. Avoid OneDrive-synced locations; they break Gradle builds.
               </p>
             </div>
           </div>
@@ -117,7 +116,7 @@ export default function ProjectSetup() {
                 >
                   ONBOARDING.md
                 </a>{" "}
-                — it&apos;s the tour of what you just cloned.
+                (it&apos;s the tour of what you just cloned).
               </p>
             </div>
           </div>
@@ -131,7 +130,7 @@ export default function ProjectSetup() {
         <p className="text-slate-600 dark:text-slate-300 mb-6">
           For reference, this is how you&apos;d create a project from
           WPILib&apos;s built-in generator. Note that the generated skeleton
-          does <em>not</em> include the OpMode structure this workshop teaches —
+          does <em>not</em> include the OpMode structure this workshop teaches;
           you&apos;d be wiring mechanisms and OpModes up by hand, which is
           exactly why we clone the template instead.
         </p>
@@ -189,9 +188,8 @@ export default function ProjectSetup() {
               <p className="text-slate-600 dark:text-slate-300 text-sm">
                 Choose Template → Java →{" "}
                 <strong>Command Robot Skeleton (Advanced)</strong>. This
-                generates the classic project layout — remember the workshop
-                path above starts from the <strong>2027-Template</strong>{" "}
-                instead.
+                generates the classic project layout; the workshop path above
+                starts from the <strong>2027-Template</strong> instead.
               </p>
             </div>
           </div>
@@ -202,7 +200,7 @@ export default function ProjectSetup() {
             </span>
             <div>
               <p className="font-medium">
-                Base folder select &quot;Downloads&quot;
+                Base folder: select &quot;Downloads&quot;
               </p>
               <Box
                 variant="alert-warning"
@@ -346,7 +344,7 @@ export default function ProjectSetup() {
             ],
             correctAnswer: 1,
             explanation:
-              "One clean build verifies Java 25, the vendor libraries, and the alpha toolchain all work before you write any code. Then read the template's ONBOARDING.md — it's the tour of what you cloned.",
+              "One clean build verifies Java 25, the vendor libraries, and the alpha toolchain all work before you write any code. Then read the template's ONBOARDING.md; it's the tour of what you cloned.",
           },
         ]}
       />

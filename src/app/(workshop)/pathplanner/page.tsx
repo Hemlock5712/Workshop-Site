@@ -122,7 +122,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           Want a second routine? Add another <code>@Autonomous</code> class; it
           shows up as another choice on the driver station. To do something at a
           point in the path (the old &quot;event marker&quot;), chain a
-          mechanism command into the sequence — a hold with a call-site{" "}
+          mechanism command into the sequence: a hold with a call-site{" "}
           <code>.until(...)</code>, or <code>Command.race(leg, hold)</code> to
           hold a pose <em>while</em> driving. The team&apos;s worked example of
           exactly that pattern is{" "}
@@ -155,12 +155,12 @@ public class AutonomousOpMode extends PeriodicOpMode {
           .
         </p>
 
-        <CollapsibleSection title='🧩 Mixing in mechanism actions (the old "event markers")'>
+        <CollapsibleSection title='Mixing in mechanism actions (the old "event markers")'>
           <div className="space-y-4">
             <p className="text-sm text-slate-600 dark:text-slate-300">
               Because legs are just commands, you can interleave superstructure
               actions with drive legs. Run the intake <em>while</em> driving,
-              then score — remember the intake and scoring presets are holds, so
+              then score. Remember the intake and scoring presets are holds, so
               each one needs the right chaining tool:
             </p>
             <CodeBlock
@@ -278,7 +278,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
               ],
               correctAnswer: 2,
               explanation:
-                "Legs are just commands, so you compose mechanism actions right into the routine. Give a hold a finish line with .until(mech::isAtTarget) and put it in the sequence, or use Command.race(driveLeg, hold) to hold a pose WHILE driving — the drive leg finishes and cancels the hold.",
+                "Legs are just commands, so you compose mechanism actions right into the routine. Give a hold a finish line with .until(mech::isAtTarget) and put it in the sequence, or use Command.race(driveLeg, hold) to hold a pose WHILE driving; the drive leg finishes and cancels the hold.",
             },
             {
               id: 5,

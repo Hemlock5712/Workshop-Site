@@ -13,9 +13,9 @@ export default function CommandFramework() {
       <KeyConceptSection
         title="The Command-Based Framework"
         description={[
-          "Command-based programming organizes robot code into three pieces — Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which command owns which Mechanism so two commands never fight for the same motor.",
-          "Commands V3 gives each piece a concrete type: Mechanism for hardware, Command for the actions, and Scheduler for the loop. On this team, most commands are holds — they keep re-sending a setpoint so the motor stays actively commanded — and routines are built by chaining commands together.",
-          "The top-level wiring: a Robot class owns the mechanisms, and each mode — driver teleop, an autonomous routine, a calibration task — is its own OpMode class. You'll see that on the Triggers and Running the Program pages.",
+          "Command-based programming organizes robot code into three pieces: Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which command owns which Mechanism so two commands never fight for the same motor.",
+          "Commands V3 gives each piece a concrete type: Mechanism for hardware, Command for the actions, and Scheduler for the loop. On this team, most commands are holds (they keep re-sending a setpoint so the motor stays actively commanded) and routines are built by chaining commands together.",
+          "The top-level wiring: a Robot class owns the mechanisms, and each mode (driver teleop, an autonomous routine, a calibration task) is its own OpMode class. You'll see that on the Triggers and Running the Program pages.",
         ]}
         concept="Triggers schedule Commands. Commands operate on Mechanisms. The Scheduler enforces who-owns-what so nothing collides."
       />
@@ -27,7 +27,7 @@ export default function CommandFramework() {
           title="Triggers"
           subtitle={<strong>BooleanSuppliers wired to commands</strong>}
         >
-          Buttons, sensor predicates, custom expressions — anything that
+          Buttons, sensor predicates, custom expressions: anything that
           evaluates to a boolean. Bindings are scoped (global / opmode /
           command), so they clean themselves up when the scope exits.
         </Box>
@@ -50,7 +50,7 @@ export default function CommandFramework() {
           subtitle={<strong>Named actions, mostly holds</strong>}
         >
           Factory methods on a mechanism, each returning a named{" "}
-          <code>Command</code>. Most of ours are <em>holds</em> — they keep the
+          <code>Command</code>. Most of ours are <em>holds</em>: they keep the
           motor at a setpoint until something else takes over.
         </Box>
       </div>
@@ -78,8 +78,8 @@ export default function CommandFramework() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Our mechanism commands — <code>arm.scoring()</code>,{" "}
-          <code>flywheel.spinUp()</code>, <code>robot.stow()</code> — are{" "}
+          Our mechanism commands (<code>arm.scoring()</code>,{" "}
+          <code>flywheel.spinUp()</code>, <code>robot.stow()</code>) are{" "}
           <strong>holds</strong>: they keep re-sending their setpoint forever,
           so the motor stays actively commanded. The plain-words version: hold
           the A button, the arm goes to the scoring angle{" "}
@@ -106,8 +106,8 @@ public Command scoring() {
         >
           <p>
             Put a hold inside <code>Command.sequence(...)</code> and the
-            sequence sticks on it <em>forever</em> — the hold has no finish
-            line, so the next step never starts. Every hold is named with{" "}
+            sequence sticks on it <em>forever</em>: the hold has no finish line,
+            so the next step never starts. Every hold is named with{" "}
             <code>(hold)</code> so you can catch this: if a stuck routine is
             sitting on a <code>(hold)</code> command on the dashboard or in the
             log, that&apos;s the bug. The fix is to give the hold a finish line
@@ -132,7 +132,7 @@ public Command scoring() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Routines — especially autos — are built by <strong>chaining</strong>.
+          Routines, especially autos, are built by <strong>chaining</strong>.
           Chaining is as far as most routines ever need to go, and it takes just
           three tools, learned in this order:
         </p>
@@ -144,24 +144,24 @@ public Command scoring() {
           <li>
             <strong>
               <code>Command.sequence(a, b, c)</code>
-            </strong>{" "}
-            — steps that finish on their own (a <code>DriveToPose</code> leg,
+            </strong>
+            : steps that finish on their own (a <code>DriveToPose</code> leg,
             for example) can sit in a sequence as-is.
           </li>
           <li>
             <strong>
               <code>.until(mech::isAtTarget)</code>
-            </strong>{" "}
-            — gives a hold a finish line, right where you need one. This is
+            </strong>
+            : gives a hold a finish line, right where you need one. This is
             always applied at the call site; mechanisms never bake waiting into
             their command factories.
           </li>
           <li>
             <strong>
               <code>Command.race(step, hold)</code>
-            </strong>{" "}
-            — &quot;do this step WHILE holding that pose.&quot; A race ends when
-            its first member finishes and cancels the rest — and since a hold
+            </strong>
+            : &quot;do this step WHILE holding that pose.&quot; A race ends when
+            its first member finishes and cancels the rest. And since a hold
             never finishes, the step is always what decides.
           </li>
         </ol>
@@ -202,7 +202,7 @@ public Command scoring() {
           style={{ color: "var(--fg-mute)" }}
         >
           (<code>robot.stow()</code> is a robot-level preset the template
-          defines — it drives the arm to its stowed angle, which is why the
+          defines: it drives the arm to its stowed angle, which is why the
           finish line checks <code>robot.arm::isAtTarget</code>. Your own holds
           will usually live on a mechanism, like <code>arm.stowed()</code>.)
         </p>
@@ -279,7 +279,7 @@ emergencyStop()
             <code>Time</code> (e.g. <code>Seconds.of(...)</code>), not a raw{" "}
             <code>double</code>, in keeping with v3&apos;s units-everywhere
             policy. And note what is <em>not</em> here: there are no{" "}
-            <code>...AndWait</code> variants on mechanisms — waiting is always
+            <code>...AndWait</code> variants on mechanisms; waiting is always
             spelled <code>.until(...)</code> at the call site.
           </p>
         </Box>
@@ -302,7 +302,7 @@ emergencyStop()
           style={{ color: "var(--fg-mute)" }}
         >
           Commands V3 has two more ways to write routines. You don&apos;t need
-          either one for this workshop — chaining covers everything we build —
+          either one for this workshop (chaining covers everything we build),
           but you should know they exist so the template code doesn&apos;t
           surprise you.
         </p>
@@ -317,7 +317,7 @@ emergencyStop()
             <p>
               A command body that pauses itself from the inside. Reach for it
               when a hold must span many steps or the logic needs loops and
-              branches — it keeps every mechanism actively commanded between
+              branches: it keeps every mechanism actively commanded between
               steps, where a chained sequence can leave one owned by the routine
               but coasting on its last setpoint. See{" "}
               <a
@@ -328,7 +328,7 @@ emergencyStop()
               >
                 DriveStowDriveOpMode.java
               </a>{" "}
-              — the same routine as above, written in this dialect.
+              (the same routine as above, written in this dialect).
             </p>
           </Box>
 
@@ -374,27 +374,27 @@ emergencyStop()
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
-            <strong>Mechanisms</strong> — hardware fields, configuration,{" "}
+            <strong>Mechanisms</strong>: hardware fields, configuration,{" "}
             <code>setDefaultCommand</code>.
           </li>
           <li>
-            <strong>Commands</strong> — hold factories on each mechanism, named
+            <strong>Commands</strong>: hold factories on each mechanism, named
             with a <code>(hold)</code> suffix.
           </li>
           <li>
-            <strong>Triggers</strong> — controller bindings + the scoping rules
+            <strong>Triggers</strong>: controller bindings + the scoping rules
             (global / opmode / command).
           </li>
           <li>
-            <strong>PID control</strong> — closed-loop requests for the holds to
+            <strong>PID control</strong>: closed-loop requests for the holds to
             re-send.
           </li>
           <li>
-            <strong>Motion Magic</strong> — profiled-position requests with
+            <strong>Motion Magic</strong>: profiled-position requests with
             acceleration and cruise-velocity bounds.
           </li>
           <li>
-            <strong>Auto routines</strong> — chained sequences of drive legs and
+            <strong>Auto routines</strong>: chained sequences of drive legs and
             holds, exactly the pattern above.
           </li>
         </ol>
@@ -428,8 +428,8 @@ emergencyStop()
         tag="NOTE · API STATUS"
         title="This is the WPILib 2027 alpha"
       >
-        Commands V3 — the staged builder, the compile-time naming enforcement,
-        and the <code>StateMachine</code> class — runs on{" "}
+        Commands V3 (the staged builder, the compile-time naming enforcement,
+        and the <code>StateMachine</code> class) runs on{" "}
         <strong>Java 25</strong> and deploys to <strong>SystemCore</strong>. The
         stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
         <code>2027.0.0-alpha-6</code>, Phoenix 6 <code>26.50.0-alpha-1</code>),
@@ -466,7 +466,7 @@ emergencyStop()
             ],
             correctAnswer: 1,
             explanation:
-              ".named(...) is enforced — every command-builder chain has to end with a name call or the project won't compile. That's also why every hold carries a \"(hold)\" suffix: the name is what you'll see on the dashboard when a routine gets stuck.",
+              ".named(...) is enforced: every command-builder chain has to end with a name call or the project won't compile. That's also why every hold carries a \"(hold)\" suffix: the name is what you'll see on the dashboard when a routine gets stuck.",
           },
           {
             id: 3,
@@ -480,7 +480,7 @@ emergencyStop()
             ],
             correctAnswer: 1,
             explanation:
-              'THE ONE RULE: a hold never finishes, so nothing may ever wait on a hold. The sequence waits on scoring (hold) forever. On the dashboard you\'d see the routine sitting on a "(hold)"-named command — that name is the debugging clue.',
+              'THE ONE RULE: a hold never finishes, so nothing may ever wait on a hold. The sequence waits on scoring (hold) forever. On the dashboard you\'d see the routine sitting on a "(hold)"-named command; that name is the debugging clue.',
           },
           {
             id: 4,
@@ -494,7 +494,7 @@ emergencyStop()
             ],
             correctAnswer: 1,
             explanation:
-              'Waiting is always spelled at the call site with .until(...) — there are no "...AndWait" methods on mechanisms. Add .withTimeout(...) as a seatbelt if the target might be unreachable.',
+              'Waiting is always spelled at the call site with .until(...); there are no "...AndWait" methods on mechanisms. Add .withTimeout(...) as a seatbelt if the target might be unreachable.',
           },
           {
             id: 5,
@@ -508,7 +508,7 @@ emergencyStop()
             ],
             correctAnswer: 1,
             explanation:
-              'A race ends when its first member finishes and cancels the rest. Since a hold never finishes, the self-finishing step is always the decider — that\'s why race is the tool for "do this step WHILE holding that pose."',
+              'A race ends when its first member finishes and cancels the rest. Since a hold never finishes, the self-finishing step is always the decider; that\'s why race is the tool for "do this step WHILE holding that pose."',
           },
         ]}
       />

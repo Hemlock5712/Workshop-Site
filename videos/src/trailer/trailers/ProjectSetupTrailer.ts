@@ -92,8 +92,8 @@ export const ProjectSetupTrailer: TrailerScript = {
         },
         {
           id: "branch",
-          label: "2027-dev branch",
-          sublabel: "main is still the 2026 stack",
+          label: "Open in VS Code",
+          sublabel: "the WPILib 2027 alpha install",
           x: 880,
           y: 140,
           width: 460,
@@ -174,11 +174,11 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "clone",
-      text: "Getting the code takes one step: clone the twenty twenty-seven template. Cloning means copying the project from GitHub. One catch: pick the right branch. A branch is one version of the code. Use twenty twenty-seven dev. The main branch is still last season.",
+      text: "Getting the code takes one step: clone the twenty twenty-seven template. Cloning means copying the project from GitHub. Then open the folder in VS Code — the WPILib install from the prerequisites page. The whole robot program is already there.",
       camera: { x: 5500, y: 140, width: 1560, height: 600 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "clone" } },
-        { type: "diagram", artifact: "flow", step: 2, at: { word: "branch" } },
+        { type: "diagram", artifact: "flow", step: 2, at: { word: "open" } },
       ],
     },
     {

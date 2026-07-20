@@ -12,7 +12,7 @@ export default function BuildingSubsystems() {
         description={[
           "A mechanism models one physical part of the robot: an arm, a flywheel, the drivetrain. In Commands V3, Mechanism is a base class you extend. It gives you factory methods (run(), runRepeatedly(), idle()) that hand you a Command builder you can name, schedule, or compose.",
           "One class per physical thing, hardware as private fields, configuration in the constructor. Default behavior comes from an automatic idle() default (override it with setDefaultCommand) rather than a periodic() override, and the WPILib compiler plugin enforces .named(...) on every command at build time; forget it and the project won't compile.",
-          'The commands a mechanism exposes are holds: runRepeatedly(...) re-sending the closed-loop setpoint forever, named with a "(hold)" suffix. The setters stay private — anything that wants to move the arm does it through a command, which is how the scheduler prevents two things fighting over the motor.',
+          'The commands a mechanism exposes are holds: runRepeatedly(...) re-sending the closed-loop setpoint forever, named with a "(hold)" suffix. The setters stay private: anything that wants to move the arm does it through a command, which is how the scheduler prevents two things fighting over the motor.',
         ]}
         concept="One mechanism per physical thing. The base class gives you Command factories; you give it your hardware and hold commands for each preset."
       />
@@ -99,11 +99,11 @@ export default function BuildingSubsystems() {
         >
           <p>
             The holds above keep re-sending their setpoint forever. Put one bare
-            in a <code>Command.sequence</code> and the routine sticks there —
+            in a <code>Command.sequence</code> and the routine sticks there,
             which is why every hold&apos;s name ends in <code>(hold)</code>: a
             stuck routine sitting on a <code>(hold)</code> command on the
             dashboard is the bug. Give a hold a finish line at the call site (
-            <code>arm.scoring().until(arm::isAtTarget)</code>) — never bake an{" "}
+            <code>arm.scoring().until(arm::isAtTarget)</code>); never bake an{" "}
             <code>...AndWait</code> variant into the mechanism. This class
             follows{" "}
             <a
@@ -137,7 +137,7 @@ export default function BuildingSubsystems() {
         >
           A mechanism class does nothing until the robot owns one. Every
           mechanism lives on the <code>Robot</code> class as a{" "}
-          <code>public final</code> field — built once when the program starts,
+          <code>public final</code> field, built once when the program starts,
           and alive for the whole match. That&apos;s the entire wiring step: one
           line per mechanism.
         </p>
@@ -158,7 +158,7 @@ export default function BuildingSubsystems() {
           className="text-[15px] leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
-          Everything else — button bindings, autos — receives this{" "}
+          Everything else (button bindings, autos) receives this{" "}
           <code>Robot</code> and reaches the mechanisms through it. When you see{" "}
           <code>robot.arm.scoring()</code> on the Triggers page,{" "}
           <code>robot.arm</code> is this field.
@@ -201,10 +201,10 @@ export default function BuildingSubsystems() {
           >
             <p>
               Calls the runnable every scheduler tick (20 ms) for as long as the
-              command is scheduled — which re-sends a closed-loop request
+              command is scheduled, which re-sends a closed-loop request
               forever. <strong>This is how holds are written</strong>, and
               it&apos;s the factory behind nearly every command in the workshop.
-              (It also covers every-tick work like telemetry — the v3 stand-in
+              (It also covers every-tick work like telemetry: the v3 stand-in
               for <code>periodic()</code>, scoped to a command.)
             </p>
           </Box>
@@ -222,7 +222,7 @@ export default function BuildingSubsystems() {
             <p>
               Runs the lambda once; the command finishes when the body returns.
               The <code>coroutine</code> parameter is the advanced dialect
-              (covered on the Commands page) — for workshop code you&apos;ll
+              (covered on the Commands page); for workshop code you&apos;ll
               rarely need <code>run</code> at all.
             </p>
           </Box>
@@ -236,7 +236,7 @@ export default function BuildingSubsystems() {
             <p>
               Returns a ready-made command that yields forever at{" "}
               <code>LOWEST_PRIORITY</code>. Every mechanism already has this
-              wired as its default — set your own default to override.
+              wired as its default; set your own to override.
             </p>
           </Box>
         </div>
@@ -274,8 +274,8 @@ export default function BuildingSubsystems() {
           Every mechanism has a default command. The scheduler runs it whenever
           no higher-priority command requires that mechanism, and pre-empts it
           the moment one does. Out of the box, the default is{" "}
-          <code>idle()</code> — a no-op park at <code>LOWEST_PRIORITY</code> —
-          so a fresh mechanism just sits there safely. Call{" "}
+          <code>idle()</code>, a no-op park at <code>LOWEST_PRIORITY</code>, so
+          a fresh mechanism just sits there safely. Call{" "}
           <code>setDefaultCommand(...)</code> to override it. A default that
           needs no controller (like hold-in-place) can be set right in the
           mechanism&apos;s constructor; a default that depends on a joystick is
@@ -376,9 +376,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         tag="NOTE · API STATUS"
         title="This is the WPILib 2027 alpha"
       >
-        Commands V3 — including the <code>Mechanism</code> base class, the
+        Commands V3 (including the <code>Mechanism</code> base class, the
         builder-chain factories, and the compile-time <code>.named(...)</code>{" "}
-        enforcement — run on <strong>Java 25</strong> and deploy to{" "}
+        enforcement) run on <strong>Java 25</strong> and deploy to{" "}
         <strong>SystemCore</strong>. The stack is the WPILib 2027 <em>alpha</em>{" "}
         (GradleRIO <code>2027.0.0-alpha-6</code>), so the exact APIs are still
         moving between alpha builds. This page was last verified against alpha-6
@@ -400,7 +400,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "Mechanism is a base class you extend. There's no periodic() override — use a runRepeatedly(...) default or publish from inside command bodies. It supplies the run()/runRepeatedly()/idle() factories, and every mechanism automatically holds a low-priority idle() default until something else commands it.",
+              "Mechanism is a base class you extend. There's no periodic() override; use a runRepeatedly(...) default or publish from inside command bodies. It supplies the run()/runRepeatedly()/idle() factories, and every mechanism automatically holds a low-priority idle() default until something else commands it.",
           },
           {
             id: 2,
@@ -442,7 +442,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "idle() returns a command whose body parks (yields forever) at LOWEST_PRIORITY. Anything scheduled on the mechanism — a teleop default, a trigger-bound command, an auto routine — outranks it and takes over immediately. Override setDefaultCommand(...) to swap idle() for a hold-in-place or teleop-drive default of your own.",
+              "idle() returns a command whose body parks (yields forever) at LOWEST_PRIORITY. Anything scheduled on the mechanism (a teleop default, a trigger-bound command, an auto routine) outranks it and takes over immediately. Override setDefaultCommand(...) to swap idle() for a hold-in-place or teleop-drive default of your own.",
           },
           {
             id: 5,
@@ -456,7 +456,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 2,
             explanation:
-              "The Mechanism base class intentionally doesn't define periodic(). When you want every-tick behavior, set a runRepeatedly(...) command as the default — the scheduler runs it whenever nothing else owns the mechanism. For pure telemetry that should always publish, instantiate NetworkTables publishers in the constructor and push to them from inside the command bodies that produce the values.",
+              "The Mechanism base class intentionally doesn't define periodic(). When you want every-tick behavior, set a runRepeatedly(...) command as the default; the scheduler runs it whenever nothing else owns the mechanism. For pure telemetry that should always publish, instantiate NetworkTables publishers in the constructor and push to them from inside the command bodies that produce the values.",
           },
         ]}
       />
