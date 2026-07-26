@@ -5,13 +5,29 @@ Config.setOverwriteOutput(true);
 Config.setEntryPoint("./src/index.ts");
 Config.setDelayRenderTimeoutInMilliseconds(120000);
 
-// Remotion's own default here is round(min(8, cores / 2)) — 8 on a 16-thread
-// box. The old value of 2 was leaving most of the machine idle. Tune with:
-//   npx remotion benchmark src/index.ts PidTrailer CommandsLesson \
-//     --runs=3 --concurrencies=2,4,8,12 --frames=0-599
-// and pick the knee of the curve, not the max: each unit is a 1080p Chromium
-// tab at roughly 0.6-0.9 GB.
-Config.setConcurrency(8);
+// MEASURED on this box (Ryzen 7 5800H, 8C/16T, 16 GB), full 3262-frame
+// PidTrailer render, wall clock:
+//
+//                         concurrency 2   concurrency 12
+//   moving feGaussianBlur      318s            266s
+//   static gradients           185s            144s
+//
+// Two things to take from that, because they are the opposite of what you would
+// guess. First, concurrency is the SMALL lever here: 2 -> 12 buys 1.28x, not
+// the 4x its thread ratio suggests, because ~50s of a 144s render is encode,
+// audio mixing and browser launch, none of which parallelize, and 12 tabs
+// contend on 8 physical cores. Second, the per-frame paint cost dominated
+// everything: removing the animated full-frame SVG blur from
+// src/components/AnimatedBackground.tsx was worth 1.85x on its own, nearly 3x
+// more than the concurrency change. Look at what each frame paints before
+// reaching for more threads.
+//
+// 12 measured fastest and completed without OOM, but it makes the machine
+// unresponsive while rendering; drop to 8 (about 10% slower) if you need to use
+// the box. Re-measure after any change to what a frame paints:
+//   SECONDS=0; npx remotion render src/index.ts PidTrailer out/t.mp4 \
+//     --concurrency=12 --log=error; echo ${SECONDS}s
+Config.setConcurrency(12);
 
 // The intermediate JPEGs are transient (deleted after stitching), so quality
 // here is nearly free and q80 was visibly quantizing the thin saturated code
