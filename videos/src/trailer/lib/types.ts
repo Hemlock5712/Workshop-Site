@@ -52,12 +52,55 @@ export type TrailerEvent =
   | { type: "code-state"; artifact: string; state: number; at?: EventAnchor }
   | { type: "diagram"; artifact: string; step: number; at?: EventAnchor };
 
+/**
+ * How the camera gets from the previous shot to this one.
+ * - `cut`     — instant. Cheapest and the loudest signal that this was *edited*
+ *               rather than *advanced*. Requires `at` so it lands on a word.
+ * - `snap`    — ~10 frames, hard deceleration. Punchy.
+ * - `smooth`  — ~20 frames. The default.
+ * - `settle`  — ~32 frames with a long tail. For arrivals.
+ * - `glide`   — linear, no in/out. For a continuous pan that keeps going.
+ */
+export type MoveKind = "cut" | "snap" | "smooth" | "settle" | "glide";
+
+/** Residual motion while a shot is held, so the frame never sits still. */
+export interface Drift {
+  /** Fractional scale gained per second. 0.03 = a 3%/s push. */
+  dolly?: number;
+  /** World px per second. */
+  panX?: number;
+  panY?: number;
+}
+
+export interface Shot {
+  /** World rect to frame. */
+  rect: Rect;
+  /**
+   * When during the beat this shot takes over, using the same word/progress
+   * anchors as events. Omit on the first shot of a beat.
+   */
+  at?: EventAnchor;
+  move?: { kind: MoveKind; frames?: number };
+  drift?: Drift;
+}
+
 export interface Beat {
   id: string;
   /** Narration for this beat. Displayed in captions; pronunciations applied for TTS only. */
   text: string;
-  /** World rect the camera should frame while this beat plays. */
-  camera: Rect;
+  /**
+   * World rect the camera frames for the whole beat. Sugar for
+   * `shots: [{ rect: camera }]` — every script started out written this way.
+   * Provide this or `shots`, not neither.
+   */
+  camera?: Rect;
+  /**
+   * Multiple framings within one beat. A beat is typically 10-25 seconds, which
+   * is far too long for a single static framing: no drift rate can rescue it
+   * (reaching a perceptible ~1px/frame over a 460-frame hold would need a 48%
+   * zoom), so carrying real pace means 2-4 shots per beat.
+   */
+  shots?: Shot[];
   events?: TrailerEvent[];
   /** Seconds of hold after the narration ends (default 0.4). */
   holdAfter?: number;

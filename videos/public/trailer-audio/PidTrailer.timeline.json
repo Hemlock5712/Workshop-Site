@@ -1,0 +1,1364 @@
+{
+  "id": "PidTrailer",
+  "fps": 30,
+  "beats": [
+    {
+      "id": "hook",
+      "textHash": "d15cb6424714f878",
+      "audioFile": "trailer-audio/cache/1f2114f419787aa8.wav",
+      "audioFrames": 451,
+      "durationInFrames": 466,
+      "words": [
+        {
+          "text": "Every",
+          "startFrame": 0,
+          "endFrame": 13
+        },
+        {
+          "text": "rookie",
+          "startFrame": 13,
+          "endFrame": 28
+        },
+        {
+          "text": "robot",
+          "startFrame": 28,
+          "endFrame": 40
+        },
+        {
+          "text": "arm",
+          "startFrame": 40,
+          "endFrame": 49
+        },
+        {
+          "text": "makes",
+          "startFrame": 49,
+          "endFrame": 62
+        },
+        {
+          "text": "one",
+          "startFrame": 62,
+          "endFrame": 71
+        },
+        {
+          "text": "of",
+          "startFrame": 71,
+          "endFrame": 78
+        },
+        {
+          "text": "two",
+          "startFrame": 78,
+          "endFrame": 87
+        },
+        {
+          "text": "mistakes.",
+          "startFrame": 87,
+          "endFrame": 107
+        },
+        {
+          "text": "It",
+          "startFrame": 107,
+          "endFrame": 114
+        },
+        {
+          "text": "crawls",
+          "startFrame": 114,
+          "endFrame": 127
+        },
+        {
+          "text": "toward",
+          "startFrame": 127,
+          "endFrame": 141
+        },
+        {
+          "text": "the",
+          "startFrame": 141,
+          "endFrame": 149
+        },
+        {
+          "text": "target",
+          "startFrame": 149,
+          "endFrame": 162
+        },
+        {
+          "text": "and",
+          "startFrame": 162,
+          "endFrame": 170
+        },
+        {
+          "text": "stops",
+          "startFrame": 170,
+          "endFrame": 182
+        },
+        {
+          "text": "short.",
+          "startFrame": 182,
+          "endFrame": 196
+        },
+        {
+          "text": "Or",
+          "startFrame": 196,
+          "endFrame": 202
+        },
+        {
+          "text": "it",
+          "startFrame": 202,
+          "endFrame": 209
+        },
+        {
+          "text": "flies",
+          "startFrame": 209,
+          "endFrame": 221
+        },
+        {
+          "text": "right",
+          "startFrame": 221,
+          "endFrame": 233
+        },
+        {
+          "text": "past",
+          "startFrame": 233,
+          "endFrame": 243
+        },
+        {
+          "text": "the",
+          "startFrame": 243,
+          "endFrame": 251
+        },
+        {
+          "text": "target",
+          "startFrame": 251,
+          "endFrame": 265
+        },
+        {
+          "text": "and",
+          "startFrame": 265,
+          "endFrame": 273
+        },
+        {
+          "text": "shakes.",
+          "startFrame": 273,
+          "endFrame": 289
+        },
+        {
+          "text": "PID",
+          "startFrame": 289,
+          "endFrame": 305
+        },
+        {
+          "text": "fixes",
+          "startFrame": 305,
+          "endFrame": 328
+        },
+        {
+          "text": "both.",
+          "startFrame": 328,
+          "endFrame": 351
+        },
+        {
+          "text": "And",
+          "startFrame": 351,
+          "endFrame": 359
+        },
+        {
+          "text": "the",
+          "startFrame": 359,
+          "endFrame": 368
+        },
+        {
+          "text": "idea",
+          "startFrame": 368,
+          "endFrame": 378
+        },
+        {
+          "text": "behind",
+          "startFrame": 378,
+          "endFrame": 392
+        },
+        {
+          "text": "it",
+          "startFrame": 392,
+          "endFrame": 398
+        },
+        {
+          "text": "is",
+          "startFrame": 398,
+          "endFrame": 405
+        },
+        {
+          "text": "simpler",
+          "startFrame": 405,
+          "endFrame": 420
+        },
+        {
+          "text": "than",
+          "startFrame": 420,
+          "endFrame": 430
+        },
+        {
+          "text": "the",
+          "startFrame": 430,
+          "endFrame": 439
+        },
+        {
+          "text": "math.",
+          "startFrame": 439,
+          "endFrame": 451
+        }
+      ],
+      "refined": false
+    },
+    {
+      "id": "error",
+      "textHash": "970587b6c6e8557b",
+      "audioFile": "trailer-audio/cache/a0c78e8e1e56bc0f.wav",
+      "audioFrames": 429,
+      "durationInFrames": 441,
+      "words": [
+        {
+          "text": "Meet",
+          "startFrame": 0,
+          "endFrame": 17
+        },
+        {
+          "text": "the",
+          "startFrame": 17,
+          "endFrame": 31
+        },
+        {
+          "text": "arm.",
+          "startFrame": 31,
+          "endFrame": 49
+        },
+        {
+          "text": "It",
+          "startFrame": 49,
+          "endFrame": 56
+        },
+        {
+          "text": "rests",
+          "startFrame": 56,
+          "endFrame": 70
+        },
+        {
+          "text": "at",
+          "startFrame": 70,
+          "endFrame": 77
+        },
+        {
+          "text": "negative",
+          "startFrame": 77,
+          "endFrame": 97
+        },
+        {
+          "text": "forty-five",
+          "startFrame": 97,
+          "endFrame": 122
+        },
+        {
+          "text": "degrees.",
+          "startFrame": 122,
+          "endFrame": 142
+        },
+        {
+          "text": "We",
+          "startFrame": 142,
+          "endFrame": 149
+        },
+        {
+          "text": "want",
+          "startFrame": 149,
+          "endFrame": 160
+        },
+        {
+          "text": "it",
+          "startFrame": 160,
+          "endFrame": 167
+        },
+        {
+          "text": "at",
+          "startFrame": 167,
+          "endFrame": 174
+        },
+        {
+          "text": "positive",
+          "startFrame": 174,
+          "endFrame": 194
+        },
+        {
+          "text": "thirty.",
+          "startFrame": 194,
+          "endFrame": 211
+        },
+        {
+          "text": "That",
+          "startFrame": 211,
+          "endFrame": 221
+        },
+        {
+          "text": "goal",
+          "startFrame": 221,
+          "endFrame": 231
+        },
+        {
+          "text": "is",
+          "startFrame": 231,
+          "endFrame": 237
+        },
+        {
+          "text": "called",
+          "startFrame": 237,
+          "endFrame": 251
+        },
+        {
+          "text": "the",
+          "startFrame": 251,
+          "endFrame": 259
+        },
+        {
+          "text": "setpoint.",
+          "startFrame": 259,
+          "endFrame": 278
+        },
+        {
+          "text": "The",
+          "startFrame": 278,
+          "endFrame": 287
+        },
+        {
+          "text": "gap",
+          "startFrame": 287,
+          "endFrame": 296
+        },
+        {
+          "text": "left",
+          "startFrame": 296,
+          "endFrame": 306
+        },
+        {
+          "text": "to",
+          "startFrame": 306,
+          "endFrame": 313
+        },
+        {
+          "text": "travel",
+          "startFrame": 313,
+          "endFrame": 328
+        },
+        {
+          "text": "is",
+          "startFrame": 328,
+          "endFrame": 334
+        },
+        {
+          "text": "the",
+          "startFrame": 334,
+          "endFrame": 343
+        },
+        {
+          "text": "error.",
+          "startFrame": 343,
+          "endFrame": 358
+        },
+        {
+          "text": "PID",
+          "startFrame": 358,
+          "endFrame": 369
+        },
+        {
+          "text": "starts",
+          "startFrame": 369,
+          "endFrame": 386
+        },
+        {
+          "text": "with",
+          "startFrame": 386,
+          "endFrame": 400
+        },
+        {
+          "text": "the",
+          "startFrame": 400,
+          "endFrame": 410
+        },
+        {
+          "text": "error.",
+          "startFrame": 410,
+          "endFrame": 428
+        }
+      ],
+      "refined": false
+    },
+    {
+      "id": "p-low",
+      "textHash": "ace006bdbaacbb87",
+      "audioFile": "trailer-audio/cache/ddac76042d42d69d.wav",
+      "audioFrames": 453,
+      "durationInFrames": 465,
+      "words": [
+        {
+          "text": "P",
+          "startFrame": 0,
+          "endFrame": 6
+        },
+        {
+          "text": "stands",
+          "startFrame": 6,
+          "endFrame": 22
+        },
+        {
+          "text": "for",
+          "startFrame": 22,
+          "endFrame": 32
+        },
+        {
+          "text": "proportional.",
+          "startFrame": 32,
+          "endFrame": 65
+        },
+        {
+          "text": "It",
+          "startFrame": 65,
+          "endFrame": 71
+        },
+        {
+          "text": "pushes",
+          "startFrame": 71,
+          "endFrame": 84
+        },
+        {
+          "text": "harder",
+          "startFrame": 84,
+          "endFrame": 97
+        },
+        {
+          "text": "when",
+          "startFrame": 97,
+          "endFrame": 107
+        },
+        {
+          "text": "the",
+          "startFrame": 107,
+          "endFrame": 115
+        },
+        {
+          "text": "error",
+          "startFrame": 115,
+          "endFrame": 126
+        },
+        {
+          "text": "is",
+          "startFrame": 126,
+          "endFrame": 132
+        },
+        {
+          "text": "bigger.",
+          "startFrame": 132,
+          "endFrame": 147
+        },
+        {
+          "text": "How",
+          "startFrame": 147,
+          "endFrame": 166
+        },
+        {
+          "text": "hard?",
+          "startFrame": 166,
+          "endFrame": 193
+        },
+        {
+          "text": "A",
+          "startFrame": 193,
+          "endFrame": 197
+        },
+        {
+          "text": "number",
+          "startFrame": 197,
+          "endFrame": 212
+        },
+        {
+          "text": "called",
+          "startFrame": 212,
+          "endFrame": 226
+        },
+        {
+          "text": "the",
+          "startFrame": 226,
+          "endFrame": 235
+        },
+        {
+          "text": "P",
+          "startFrame": 235,
+          "endFrame": 239
+        },
+        {
+          "text": "gain",
+          "startFrame": 239,
+          "endFrame": 250
+        },
+        {
+          "text": "decides.",
+          "startFrame": 250,
+          "endFrame": 268
+        },
+        {
+          "text": "With",
+          "startFrame": 268,
+          "endFrame": 279
+        },
+        {
+          "text": "a",
+          "startFrame": 279,
+          "endFrame": 284
+        },
+        {
+          "text": "small",
+          "startFrame": 284,
+          "endFrame": 297
+        },
+        {
+          "text": "gain,",
+          "startFrame": 297,
+          "endFrame": 315
+        },
+        {
+          "text": "gravity",
+          "startFrame": 315,
+          "endFrame": 332
+        },
+        {
+          "text": "wins.",
+          "startFrame": 332,
+          "endFrame": 345
+        },
+        {
+          "text": "The",
+          "startFrame": 345,
+          "endFrame": 353
+        },
+        {
+          "text": "arm",
+          "startFrame": 353,
+          "endFrame": 361
+        },
+        {
+          "text": "stalls",
+          "startFrame": 361,
+          "endFrame": 375
+        },
+        {
+          "text": "below",
+          "startFrame": 375,
+          "endFrame": 387
+        },
+        {
+          "text": "the",
+          "startFrame": 387,
+          "endFrame": 395
+        },
+        {
+          "text": "target",
+          "startFrame": 395,
+          "endFrame": 409
+        },
+        {
+          "text": "and",
+          "startFrame": 409,
+          "endFrame": 417
+        },
+        {
+          "text": "just",
+          "startFrame": 417,
+          "endFrame": 427
+        },
+        {
+          "text": "hangs",
+          "startFrame": 427,
+          "endFrame": 439
+        },
+        {
+          "text": "there.",
+          "startFrame": 439,
+          "endFrame": 452
+        }
+      ],
+      "refined": false
+    },
+    {
+      "id": "p-high",
+      "textHash": "7af921f73d7521df",
+      "audioFile": "trailer-audio/cache/106da34c3583a8a9.wav",
+      "audioFrames": 426,
+      "durationInFrames": 438,
+      "words": [
+        {
+          "text": "So",
+          "startFrame": 0,
+          "endFrame": 7
+        },
+        {
+          "text": "crank",
+          "startFrame": 7,
+          "endFrame": 21
+        },
+        {
+          "text": "the",
+          "startFrame": 21,
+          "endFrame": 30
+        },
+        {
+          "text": "P",
+          "startFrame": 30,
+          "endFrame": 36
+        },
+        {
+          "text": "gain",
+          "startFrame": 36,
+          "endFrame": 47
+        },
+        {
+          "text": "way",
+          "startFrame": 47,
+          "endFrame": 57
+        },
+        {
+          "text": "up.",
+          "startFrame": 57,
+          "endFrame": 66
+        },
+        {
+          "text": "Now",
+          "startFrame": 66,
+          "endFrame": 77
+        },
+        {
+          "text": "the",
+          "startFrame": 77,
+          "endFrame": 88
+        },
+        {
+          "text": "arm",
+          "startFrame": 88,
+          "endFrame": 99
+        },
+        {
+          "text": "launches.",
+          "startFrame": 99,
+          "endFrame": 125
+        },
+        {
+          "text": "It",
+          "startFrame": 125,
+          "endFrame": 132
+        },
+        {
+          "text": "flies",
+          "startFrame": 132,
+          "endFrame": 145
+        },
+        {
+          "text": "straight",
+          "startFrame": 145,
+          "endFrame": 163
+        },
+        {
+          "text": "past",
+          "startFrame": 163,
+          "endFrame": 174
+        },
+        {
+          "text": "thirty.",
+          "startFrame": 174,
+          "endFrame": 191
+        },
+        {
+          "text": "Then",
+          "startFrame": 191,
+          "endFrame": 199
+        },
+        {
+          "text": "it",
+          "startFrame": 199,
+          "endFrame": 205
+        },
+        {
+          "text": "swings",
+          "startFrame": 205,
+          "endFrame": 217
+        },
+        {
+          "text": "back",
+          "startFrame": 217,
+          "endFrame": 226
+        },
+        {
+          "text": "and",
+          "startFrame": 226,
+          "endFrame": 233
+        },
+        {
+          "text": "forth",
+          "startFrame": 233,
+          "endFrame": 243
+        },
+        {
+          "text": "around",
+          "startFrame": 243,
+          "endFrame": 255
+        },
+        {
+          "text": "the",
+          "startFrame": 255,
+          "endFrame": 262
+        },
+        {
+          "text": "setpoint.",
+          "startFrame": 262,
+          "endFrame": 279
+        },
+        {
+          "text": "More",
+          "startFrame": 279,
+          "endFrame": 292
+        },
+        {
+          "text": "P",
+          "startFrame": 292,
+          "endFrame": 297
+        },
+        {
+          "text": "gives",
+          "startFrame": 297,
+          "endFrame": 312
+        },
+        {
+          "text": "more",
+          "startFrame": 312,
+          "endFrame": 325
+        },
+        {
+          "text": "speed.",
+          "startFrame": 325,
+          "endFrame": 342
+        },
+        {
+          "text": "But",
+          "startFrame": 342,
+          "endFrame": 350
+        },
+        {
+          "text": "P",
+          "startFrame": 350,
+          "endFrame": 355
+        },
+        {
+          "text": "can't",
+          "startFrame": 355,
+          "endFrame": 367
+        },
+        {
+          "text": "tell",
+          "startFrame": 367,
+          "endFrame": 377
+        },
+        {
+          "text": "it's",
+          "startFrame": 377,
+          "endFrame": 387
+        },
+        {
+          "text": "arriving",
+          "startFrame": 387,
+          "endFrame": 405
+        },
+        {
+          "text": "too",
+          "startFrame": 405,
+          "endFrame": 413
+        },
+        {
+          "text": "fast.",
+          "startFrame": 413,
+          "endFrame": 425
+        }
+      ],
+      "refined": false
+    },
+    {
+      "id": "d-term",
+      "textHash": "bfe0c680714b965e",
+      "audioFile": "trailer-audio/cache/6ab64fc5a52ec3d0.wav",
+      "audioFrames": 487,
+      "durationInFrames": 523,
+      "words": [
+        {
+          "text": "That's",
+          "startFrame": 0,
+          "endFrame": 15
+        },
+        {
+          "text": "the",
+          "startFrame": 15,
+          "endFrame": 24
+        },
+        {
+          "text": "D",
+          "startFrame": 24,
+          "endFrame": 30
+        },
+        {
+          "text": "term's",
+          "startFrame": 30,
+          "endFrame": 45
+        },
+        {
+          "text": "job.",
+          "startFrame": 45,
+          "endFrame": 56
+        },
+        {
+          "text": "D",
+          "startFrame": 56,
+          "endFrame": 61
+        },
+        {
+          "text": "stands",
+          "startFrame": 61,
+          "endFrame": 77
+        },
+        {
+          "text": "for",
+          "startFrame": 77,
+          "endFrame": 86
+        },
+        {
+          "text": "derivative.",
+          "startFrame": 86,
+          "endFrame": 111
+        },
+        {
+          "text": "It",
+          "startFrame": 111,
+          "endFrame": 118
+        },
+        {
+          "text": "watches",
+          "startFrame": 118,
+          "endFrame": 136
+        },
+        {
+          "text": "how",
+          "startFrame": 136,
+          "endFrame": 145
+        },
+        {
+          "text": "fast",
+          "startFrame": 145,
+          "endFrame": 156
+        },
+        {
+          "text": "the",
+          "startFrame": 156,
+          "endFrame": 165
+        },
+        {
+          "text": "error",
+          "startFrame": 165,
+          "endFrame": 179
+        },
+        {
+          "text": "is",
+          "startFrame": 179,
+          "endFrame": 186
+        },
+        {
+          "text": "shrinking.",
+          "startFrame": 186,
+          "endFrame": 209
+        },
+        {
+          "text": "Then",
+          "startFrame": 209,
+          "endFrame": 220
+        },
+        {
+          "text": "it",
+          "startFrame": 220,
+          "endFrame": 228
+        },
+        {
+          "text": "eases",
+          "startFrame": 228,
+          "endFrame": 241
+        },
+        {
+          "text": "off",
+          "startFrame": 241,
+          "endFrame": 250
+        },
+        {
+          "text": "before",
+          "startFrame": 250,
+          "endFrame": 265
+        },
+        {
+          "text": "you",
+          "startFrame": 265,
+          "endFrame": 274
+        },
+        {
+          "text": "arrive.",
+          "startFrame": 274,
+          "endFrame": 292
+        },
+        {
+          "text": "Keep",
+          "startFrame": 292,
+          "endFrame": 303
+        },
+        {
+          "text": "the",
+          "startFrame": 303,
+          "endFrame": 312
+        },
+        {
+          "text": "same",
+          "startFrame": 312,
+          "endFrame": 323
+        },
+        {
+          "text": "P",
+          "startFrame": 323,
+          "endFrame": 329
+        },
+        {
+          "text": "and",
+          "startFrame": 329,
+          "endFrame": 338
+        },
+        {
+          "text": "add",
+          "startFrame": 338,
+          "endFrame": 347
+        },
+        {
+          "text": "a",
+          "startFrame": 347,
+          "endFrame": 352
+        },
+        {
+          "text": "little",
+          "startFrame": 352,
+          "endFrame": 367
+        },
+        {
+          "text": "D.",
+          "startFrame": 367,
+          "endFrame": 375
+        },
+        {
+          "text": "Now",
+          "startFrame": 375,
+          "endFrame": 384
+        },
+        {
+          "text": "send",
+          "startFrame": 384,
+          "endFrame": 395
+        },
+        {
+          "text": "the",
+          "startFrame": 395,
+          "endFrame": 404
+        },
+        {
+          "text": "arm",
+          "startFrame": 404,
+          "endFrame": 413
+        },
+        {
+          "text": "to",
+          "startFrame": 413,
+          "endFrame": 420
+        },
+        {
+          "text": "sixty",
+          "startFrame": 420,
+          "endFrame": 434
+        },
+        {
+          "text": "degrees.",
+          "startFrame": 434,
+          "endFrame": 453
+        },
+        {
+          "text": "It",
+          "startFrame": 453,
+          "endFrame": 460
+        },
+        {
+          "text": "just",
+          "startFrame": 460,
+          "endFrame": 471
+        },
+        {
+          "text": "lands.",
+          "startFrame": 471,
+          "endFrame": 487
+        }
+      ],
+      "refined": false
+    },
+    {
+      "id": "code",
+      "textHash": "45357c0d0328f055",
+      "audioFile": "trailer-audio/cache/98508f9f9889688f.wav",
+      "audioFrames": 417,
+      "durationInFrames": 465,
+      "words": [
+        {
+          "text": "In",
+          "startFrame": 0,
+          "endFrame": 7
+        },
+        {
+          "text": "code,",
+          "startFrame": 7,
+          "endFrame": 25
+        },
+        {
+          "text": "this",
+          "startFrame": 25,
+          "endFrame": 35
+        },
+        {
+          "text": "whole",
+          "startFrame": 35,
+          "endFrame": 48
+        },
+        {
+          "text": "story",
+          "startFrame": 48,
+          "endFrame": 61
+        },
+        {
+          "text": "is",
+          "startFrame": 61,
+          "endFrame": 68
+        },
+        {
+          "text": "one",
+          "startFrame": 68,
+          "endFrame": 77
+        },
+        {
+          "text": "slot",
+          "startFrame": 77,
+          "endFrame": 88
+        },
+        {
+          "text": "config",
+          "startFrame": 88,
+          "endFrame": 103
+        },
+        {
+          "text": "on",
+          "startFrame": 103,
+          "endFrame": 109
+        },
+        {
+          "text": "the",
+          "startFrame": 109,
+          "endFrame": 118
+        },
+        {
+          "text": "TalonFX.",
+          "startFrame": 118,
+          "endFrame": 137
+        },
+        {
+          "text": "k",
+          "startFrame": 137,
+          "endFrame": 142
+        },
+        {
+          "text": "P",
+          "startFrame": 142,
+          "endFrame": 147
+        },
+        {
+          "text": "is",
+          "startFrame": 147,
+          "endFrame": 154
+        },
+        {
+          "text": "the",
+          "startFrame": 154,
+          "endFrame": 163
+        },
+        {
+          "text": "push.",
+          "startFrame": 163,
+          "endFrame": 175
+        },
+        {
+          "text": "k",
+          "startFrame": 175,
+          "endFrame": 180
+        },
+        {
+          "text": "D",
+          "startFrame": 180,
+          "endFrame": 185
+        },
+        {
+          "text": "is",
+          "startFrame": 185,
+          "endFrame": 192
+        },
+        {
+          "text": "the",
+          "startFrame": 192,
+          "endFrame": 201
+        },
+        {
+          "text": "brakes.",
+          "startFrame": 201,
+          "endFrame": 218
+        },
+        {
+          "text": "Then",
+          "startFrame": 218,
+          "endFrame": 229
+        },
+        {
+          "text": "you",
+          "startFrame": 229,
+          "endFrame": 238
+        },
+        {
+          "text": "just",
+          "startFrame": 238,
+          "endFrame": 248
+        },
+        {
+          "text": "ask",
+          "startFrame": 248,
+          "endFrame": 257
+        },
+        {
+          "text": "for",
+          "startFrame": 257,
+          "endFrame": 266
+        },
+        {
+          "text": "an",
+          "startFrame": 266,
+          "endFrame": 273
+        },
+        {
+          "text": "angle.",
+          "startFrame": 273,
+          "endFrame": 288
+        },
+        {
+          "text": "The",
+          "startFrame": 288,
+          "endFrame": 297
+        },
+        {
+          "text": "controller",
+          "startFrame": 297,
+          "endFrame": 319
+        },
+        {
+          "text": "runs",
+          "startFrame": 319,
+          "endFrame": 330
+        },
+        {
+          "text": "on",
+          "startFrame": 330,
+          "endFrame": 337
+        },
+        {
+          "text": "the",
+          "startFrame": 337,
+          "endFrame": 346
+        },
+        {
+          "text": "motor",
+          "startFrame": 346,
+          "endFrame": 359
+        },
+        {
+          "text": "a",
+          "startFrame": 359,
+          "endFrame": 364
+        },
+        {
+          "text": "thousand",
+          "startFrame": 364,
+          "endFrame": 382
+        },
+        {
+          "text": "times",
+          "startFrame": 382,
+          "endFrame": 395
+        },
+        {
+          "text": "a",
+          "startFrame": 395,
+          "endFrame": 400
+        },
+        {
+          "text": "second.",
+          "startFrame": 400,
+          "endFrame": 417
+        }
+      ],
+      "refined": false
+    },
+    {
+      "id": "cta",
+      "textHash": "539a0cf190666b0f",
+      "audioFile": "trailer-audio/cache/c5de4c3102675fc6.wav",
+      "audioFrames": 428,
+      "durationInFrames": 464,
+      "words": [
+        {
+          "text": "There's",
+          "startFrame": 0,
+          "endFrame": 22
+        },
+        {
+          "text": "more",
+          "startFrame": 22,
+          "endFrame": 36
+        },
+        {
+          "text": "to",
+          "startFrame": 36,
+          "endFrame": 45
+        },
+        {
+          "text": "learn.",
+          "startFrame": 45,
+          "endFrame": 64
+        },
+        {
+          "text": "Gravity",
+          "startFrame": 64,
+          "endFrame": 86
+        },
+        {
+          "text": "feedforward.",
+          "startFrame": 86,
+          "endFrame": 121
+        },
+        {
+          "text": "Motion",
+          "startFrame": 121,
+          "endFrame": 140
+        },
+        {
+          "text": "Magic.",
+          "startFrame": 140,
+          "endFrame": 160
+        },
+        {
+          "text": "And",
+          "startFrame": 160,
+          "endFrame": 171
+        },
+        {
+          "text": "how",
+          "startFrame": 171,
+          "endFrame": 183
+        },
+        {
+          "text": "to",
+          "startFrame": 183,
+          "endFrame": 192
+        },
+        {
+          "text": "tune",
+          "startFrame": 192,
+          "endFrame": 206
+        },
+        {
+          "text": "a",
+          "startFrame": 206,
+          "endFrame": 212
+        },
+        {
+          "text": "real",
+          "startFrame": 212,
+          "endFrame": 227
+        },
+        {
+          "text": "arm",
+          "startFrame": 227,
+          "endFrame": 238
+        },
+        {
+          "text": "without",
+          "startFrame": 238,
+          "endFrame": 260
+        },
+        {
+          "text": "snapping",
+          "startFrame": 260,
+          "endFrame": 285
+        },
+        {
+          "text": "it.",
+          "startFrame": 285,
+          "endFrame": 296
+        },
+        {
+          "text": "The",
+          "startFrame": 296,
+          "endFrame": 308
+        },
+        {
+          "text": "full",
+          "startFrame": 308,
+          "endFrame": 322
+        },
+        {
+          "text": "PID",
+          "startFrame": 322,
+          "endFrame": 334
+        },
+        {
+          "text": "lesson",
+          "startFrame": 334,
+          "endFrame": 353
+        },
+        {
+          "text": "is",
+          "startFrame": 353,
+          "endFrame": 362
+        },
+        {
+          "text": "waiting",
+          "startFrame": 362,
+          "endFrame": 384
+        },
+        {
+          "text": "at",
+          "startFrame": 384,
+          "endFrame": 393
+        },
+        {
+          "text": "frc5712.com.",
+          "startFrame": 393,
+          "endFrame": 427
+        }
+      ],
+      "refined": false
+    }
+  ],
+  "totalDurationInFrames": 3262,
+  "musicFile": null,
+  "whooshFile": "trailer-audio/whoosh.wav"
+}

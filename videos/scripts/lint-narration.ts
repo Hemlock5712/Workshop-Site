@@ -118,6 +118,15 @@ function artifactText(def: ArtifactDef): string[] {
 
 const isLesson = (scriptId: string) => /Lesson$/.test(scriptId);
 
+/**
+ * Every world rect this beat's camera frames. A beat declares either a single
+ * `camera` rect or a list of `shots`; both shapes are legal.
+ */
+function beatRects(beat: TrailerScript["beats"][number]): Rect[] {
+  if (beat.shots?.length) return beat.shots.map((s) => s.rect);
+  return beat.camera ? [beat.camera] : [];
+}
+
 /** Best-effort source line for a beat, for clickable output. */
 function beatLines(scriptId: string): Map<string, number> {
   const path = join(TRAILER_DIR, `${scriptId}.ts`);
@@ -197,12 +206,12 @@ function checkAnchors(script: TrailerScript, lines: Map<string, number>) {
   const out: Violation[] = [];
   for (const beat of script.beats) {
     const toks = normalizedTokens(beat.text);
-    for (const event of beat.events ?? []) {
-      const at = event.at;
-      if (!at || !("word" in at)) continue;
-      const target = normalizeWord(at.word);
+    const check = (at: unknown, label: string) => {
+      if (!at || typeof at !== "object" || !("word" in at)) return;
+      const anchor = at as { word: string; occurrence?: number };
+      const target = normalizeWord(anchor.word);
       const occurrences = toks.filter((t) => t === target).length;
-      const needed = at.occurrence ?? 1;
+      const needed = anchor.occurrence ?? 1;
       if (occurrences < needed) {
         out.push({
           check: "anchor-integrity",
@@ -211,12 +220,32 @@ function checkAnchors(script: TrailerScript, lines: Map<string, number>) {
           beatId: beat.id,
           line: lines.get(beat.id),
           message:
-            `${event.type} event anchored to "${at.word}"` +
-            (at.occurrence ? ` (occurrence ${at.occurrence})` : "") +
+            `${label} anchored to "${anchor.word}"` +
+            (anchor.occurrence ? ` (occurrence ${anchor.occurrence})` : "") +
             ` but the narration has ${occurrences} — it will fire at 30% of the beat instead`,
         });
       }
-    }
+    };
+
+    for (const event of beat.events ?? [])
+      check(event.at, `${event.type} event`);
+    // Shot boundaries anchor the same way and fail the same way: a shot whose
+    // anchor word is gone silently slides to 30% of the beat, so a cut that was
+    // timed to a word lands somewhere arbitrary.
+    (beat.shots ?? []).forEach((shot, i) => {
+      if (i === 0) return; // the first shot owns the start of the beat
+      check(shot.at, `shot ${i} (${shot.move?.kind ?? "smooth"})`);
+      if (!shot.at) {
+        out.push({
+          check: "anchor-integrity",
+          severity: "error",
+          scriptId: script.id,
+          beatId: beat.id,
+          line: lines.get(beat.id),
+          message: `shot ${i} has no \`at\` — every shot after the first needs one, or it starts on the same frame as the beat`,
+        });
+      }
+    });
   }
   return out;
 }
@@ -250,8 +279,9 @@ function checkBeatLength(
 function checkScreenEcho(script: TrailerScript, lines: Map<string, number>) {
   const out: Violation[] = [];
   for (const beat of script.beats) {
+    const rects = beatRects(beat);
     const visible = script.world.filter((def) =>
-      rectsOverlap(def.rect, beat.camera)
+      rects.some((rect) => rectsOverlap(def.rect, rect))
     );
     const onScreen = new Set<string>();
     for (const def of visible) {
@@ -369,8 +399,12 @@ function checkStaticBeats(script: TrailerScript, lines: Map<string, number>) {
   script.beats.forEach((beat, i) => {
     const n = words(beat.text).length;
     const prev = script.beats[i - 1];
+    // A beat with more than one shot is never static, however long it is.
+    const singleShot = beatRects(beat).length <= 1;
     const frozen =
-      prev && JSON.stringify(prev.camera) === JSON.stringify(beat.camera);
+      prev &&
+      singleShot &&
+      JSON.stringify(beatRects(prev)) === JSON.stringify(beatRects(beat));
     if (n > 40 && (beat.events ?? []).length === 0 && frozen) {
       out.push({
         check: "static-beat",

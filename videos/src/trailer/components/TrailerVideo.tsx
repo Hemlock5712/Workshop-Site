@@ -12,9 +12,11 @@ import { AnimatedBackground } from "../../components/AnimatedBackground";
 import { brand } from "../../lib/brand";
 import {
   artifactActivationFrame,
+  buildCameraTrack,
   cameraAtFrame,
-  cameraMoveFrames,
+  cameraMoves,
   resolveTimeline,
+  type ResolvedShot,
   type ResolvedTimeline,
 } from "../lib/timeline";
 import type { ArtifactDef, TrailerScript, TrailerTimeline } from "../lib/types";
@@ -49,13 +51,38 @@ function TrailerContent({
   timeline: TrailerTimeline;
 }) {
   const frame = useCurrentFrame();
-  const { width, height } = useVideoConfig();
+  const { width, height, fps } = useVideoConfig();
   const resolved = useMemo(
     () => resolveTimeline(script, timeline),
     [script, timeline]
   );
-  const whooshFrames = useMemo(() => cameraMoveFrames(resolved), [resolved]);
-  const camera = cameraAtFrame(resolved, frame, width, height);
+  const track = useMemo(() => buildCameraTrack(resolved), [resolved]);
+  const moves = useMemo(
+    () => cameraMoves(track, fps, width, height),
+    [track, fps, width, height]
+  );
+  const camera = cameraAtFrame(track, frame, fps, width, height);
+
+  // Only cull off-screen artifacts, never <Sequence> them: inside a Sequence
+  // useCurrentFrame() becomes Sequence-relative, which would silently break
+  // every absolute-frame calculation in here (event frames, activation frames,
+  // sim.angles[frame]). Worlds run up to 19,400px wide against a ≤2,200px
+  // framing, so most artifacts are off-screen at any instant and were doing
+  // per-frame path-building work behind the clip.
+  const visible = useMemo(() => {
+    const viewW = width / camera.scale;
+    const viewH = height / camera.scale;
+    const vx = camera.cx - viewW / 2;
+    const vy = camera.cy - viewH / 2;
+    const MARGIN = 200;
+    return script.world.filter(
+      (def) =>
+        def.rect.x < vx + viewW + MARGIN &&
+        def.rect.x + def.rect.width > vx - MARGIN &&
+        def.rect.y < vy + viewH + MARGIN &&
+        def.rect.y + def.rect.height > vy - MARGIN
+    );
+  }, [script.world, camera.cx, camera.cy, camera.scale, width, height]);
 
   return (
     <AbsoluteFill
@@ -80,8 +107,13 @@ function TrailerContent({
             }px) scale(${camera.scale})`,
           }}
         >
-          {script.world.map((def) => (
-            <ArtifactView key={def.id} def={def} resolved={resolved} />
+          {visible.map((def) => (
+            <ArtifactView
+              key={def.id}
+              def={def}
+              resolved={resolved}
+              track={track}
+            />
           ))}
         </div>
       </AbsoluteFill>
@@ -99,17 +131,23 @@ function TrailerContent({
         ) : null
       )}
 
+      {/*
+        One identical sample at a flat 0.16 fired on every move reads as a tic
+        rather than a camera. Scale it to the size and intent of the move
+        instead: a snap is a punch, a settle is barely there. Cuts get nothing —
+        cameraMoves() already excludes them.
+      */}
       {resolved.whooshFile &&
-        whooshFrames.map((moveFrame) => (
+        moves.map((move) => (
           <Sequence
-            key={`whoosh-${moveFrame}`}
-            from={moveFrame}
+            key={`whoosh-${move.frame}`}
+            from={move.frame}
             durationInFrames={20}
-            name="whoosh"
+            name={`whoosh:${move.kind}`}
           >
             <Audio
               src={staticFile(resolved.whooshFile as string)}
-              volume={0.16}
+              volume={whooshVolume(move.kind, move.travel)}
             />
           </Sequence>
         ))}
@@ -144,13 +182,15 @@ function TrailerContent({
 function ArtifactView({
   def,
   resolved,
+  track,
 }: {
   def: ArtifactDef;
   resolved: ResolvedTimeline;
+  track: ResolvedShot[];
 }) {
   const activationFrame = useMemo(
-    () => artifactActivationFrame(resolved, def.rect),
-    [resolved, def.rect]
+    () => artifactActivationFrame(track, def.rect),
+    [track, def.rect]
   );
   return (
     <div
@@ -177,6 +217,21 @@ function ArtifactView({
       )}
     </div>
   );
+}
+
+/** Louder for punchy moves, quieter for long settles, scaled by screen travel. */
+function whooshVolume(kind: ResolvedShot["kind"], travel: number): number {
+  const base =
+    kind === "snap"
+      ? 0.22
+      : kind === "settle"
+        ? 0.1
+        : kind === "glide"
+          ? 0.08
+          : 0.16;
+  // A move across two viewport widths should be more audible than a nudge.
+  const reach = Math.min(1, travel / 1920);
+  return base * (0.6 + 0.4 * reach);
 }
 
 function Footer() {
