@@ -18,6 +18,12 @@ const SHAPES: Shape[] = [
   { x: 0.5, y: 0.5, radius: 180, speed: 0.3, hueShift: 0.25 },
 ];
 
+/**
+ * Roughly 3 sigma of the Gaussian this used to be, baked into the element size
+ * so the soft edge lives inside a static gradient instead of a live filter.
+ */
+const BLUR_BLEED = 240;
+
 export function AnimatedBackground({
   accent = "blue",
 }: {
@@ -33,40 +39,55 @@ export function AnimatedBackground({
         background: `radial-gradient(circle at 30% 20%, ${brand.colors.surface} 0%, ${brand.colors.background} 45%, ${brand.colors.backgroundDeep} 100%)`,
       }}
     >
-      <svg
-        width={width}
-        height={height}
-        style={{ position: "absolute", inset: 0 }}
-      >
-        <defs>
-          <filter id="soft-blur" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="40" />
-          </filter>
-        </defs>
-        {SHAPES.map((shape, i) => {
-          const t =
-            (frame / brand.fps) * shape.speed + shape.hueShift * Math.PI;
-          const dx = Math.cos(t) * 80;
-          const dy = Math.sin(t * 0.7) * 60;
-          const radiusFlex = 1 + Math.sin(t * 0.5) * 0.08;
-          return (
-            <circle
-              key={i}
-              cx={shape.x * width + dx}
-              cy={shape.y * height + dy}
-              r={shape.radius * radiusFlex}
-              fill={accentColor.glow}
-              filter="url(#soft-blur)"
-              opacity={0.55}
-            />
-          );
-        })}
-      </svg>
+      {/*
+        These blobs used to be SVG <circle>s pushed through a single
+        `feGaussianBlur stdDeviation="40"`. Because cx/cy/r were all functions of
+        the frame, the primitives moved AND resized every frame, so Skia's
+        image-filter cache (keyed on the source picture plus filter params)
+        missed on 100% of frames and re-blurred ~3.0 Mpx of offscreen surface
+        every single frame of every trailer.
+
+        A Gaussian-blurred disc is visually just a radial falloff, so the
+        gradient below is the same picture with the blur pre-baked. The size is
+        fixed and only `translate` moves, which keeps the rasterization
+        cacheable. The old ±8% `radiusFlex` breathing is now opacity instead:
+        changing the size would defeat the entire point.
+      */}
+      {SHAPES.map((shape, i) => {
+        const t = (frame / brand.fps) * shape.speed + shape.hueShift * Math.PI;
+        const size = shape.radius * 2 + BLUR_BLEED;
+        // Whole-pixel offsets so slow drift never forces a sub-pixel resample.
+        const dx = Math.round(Math.cos(t) * 80);
+        const dy = Math.round(Math.sin(t * 0.7) * 60);
+        return (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              width: size,
+              height: size,
+              left: shape.x * width - size / 2,
+              top: shape.y * height - size / 2,
+              background: `radial-gradient(circle, ${accentColor.glow} 0%, rgba(0, 0, 0, 0) 68%)`,
+              transform: `translate(${dx}px, ${dy}px)`,
+              // Breathing moved off `r` and onto opacity — composite-only.
+              opacity: 0.55 * (1 + Math.sin(t * 0.5) * 0.08),
+            }}
+          />
+        );
+      })}
       <Grid />
     </AbsoluteFill>
   );
 }
 
+/**
+ * Frame-independent: no useCurrentFrame(), so this rasterizes to the same
+ * pixels on every frame of every trailer. Kept as CSS rather than a baked PNG
+ * to avoid committing a binary, but it is the next thing to bake if a benchmark
+ * still shows the background as hot — three of Remotion's named-expensive
+ * properties (two linear-gradients plus a radial-gradient mask) live here.
+ */
 function Grid() {
   return (
     <div
