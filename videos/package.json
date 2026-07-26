@@ -5,6 +5,7 @@
   "description": "Programmatic workshop videos rendered with Remotion + Kokoro TTS (fully local, free).",
   "scripts": {
     "trailer:audio": "tsx scripts/prepare-trailer.ts",
+    "narration:lint": "tsx scripts/lint-narration.ts",
     "whisper:setup": "tsx scripts/setup-whisper.ts",
     "studio": "remotion studio",
     "render": "remotion render",
