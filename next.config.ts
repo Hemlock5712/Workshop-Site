@@ -7,6 +7,26 @@ const nextConfig: NextConfig = {
   // actually exist, so a renamed folder or a typo'd slug shipped as a 404 that
   // only a reader would find. Stable since 15.5; this makes it a build error.
   typedRoutes: true,
+  // cacheComponents (Next 16's merge of Dynamic IO, `use cache` and PPR) is
+  // NOT on yet, and turning it on is a two-line change that needs one thing
+  // first.
+  //
+  // Every lesson page renders a dozen `<CodeBlock>`s, and CodeBlock is now an
+  // async Server Component that highlights with Shiki. Under cacheComponents
+  // that reads as uncached data outside a Suspense boundary, and the build
+  // fails on every code-bearing route — which is nearly all of them. The fix
+  // is `"use cache"` inside CodeBlock so the highlighted markup is produced
+  // once at build rather than treated as dynamic; Shiki output is a pure
+  // function of (code, language, theme), so it is about as cacheable as
+  // anything gets.
+  //
+  // Worth knowing before spending time on it: the site already prerenders all
+  // 38 routes as static, so PPR has no dynamic holes to fill here. The gain is
+  // the stricter correctness checking, not speed. It already earned its keep
+  // once — it is what caught `new Date()` being called during the prerender of
+  // the footer copyright, which would have frozen the year into static HTML.
+  //
+  //   cacheComponents: true,
   // Dev-only. Next blocks /_next/* requests whose Origin isn't localhost,
   // which silently breaks client chunks, the image optimiser and HMR when you
   // open the dev server from another device on the LAN (phone, second laptop).

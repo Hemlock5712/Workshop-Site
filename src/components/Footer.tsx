@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BUILD_YEAR } from "@/lib/buildInfo";
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
       }}
     >
       <div className="container mx-auto flex flex-col items-center gap-1.5">
-        <span>{`© ${new Date().getFullYear()} Hemlock's Gray Matter`}</span>
+        <span>{`© ${BUILD_YEAR} Hemlock's Gray Matter`}</span>
         <Link
           href="/privacy"
           className="text-sm underline-offset-2 hover:underline"

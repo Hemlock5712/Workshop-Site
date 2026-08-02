@@ -1,3 +1,4 @@
+import { BUILD_YEAR } from "@/lib/buildInfo";
 import Link from "next/link";
 import Image from "next/image";
 import MechanismStrip from "@/components/home/MechanismStrip";
@@ -278,12 +279,17 @@ export default function Home() {
                   background: "var(--bg2)",
                 }}
               >
+                {/* `style` height/width auto alongside the CSS max-height:
+                    next/image warns when one dimension is constrained by CSS
+                    and the other isn't, because the aspect ratio silently
+                    distorts. The logos are all different shapes. */}
                 <Image
                   src={sponsor.logo}
                   alt={sponsor.name}
                   width={180}
                   height={72}
-                  className="max-h-[72px] w-auto max-w-full object-contain opacity-70 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+                  style={{ width: "auto", height: "auto" }}
+                  className="max-h-[72px] max-w-full object-contain opacity-70 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
                 />
               </a>
             ))}
@@ -335,7 +341,7 @@ export default function Home() {
               color: "var(--tx3)",
             }}
           >
-            © {new Date().getFullYear()} Hemlock&rsquo;s Gray Matter
+            © {BUILD_YEAR} Hemlock&rsquo;s Gray Matter
             <br />
             <Link href="/privacy" style={{ color: "var(--accent)" }}>
               Privacy
