@@ -76,3 +76,18 @@ review_*.png
 # local claude-code harness state
 .claude/
 
+
+# Local reference copies of WPILib source, pulled down to check an API against
+# ground truth while writing a lesson. Useful to keep on disk, not ours to
+# version — the 2027-Template repo is the source of truth, not a stale paste.
+/sched.java
+/*.java
+
+# Packed npm tarballs from trying a package out locally (pnpm pack / npm pack).
+/*.tgz
+
+# Scratch benchmark and sweep scripts. They exist for one measurement and then
+# lie about being current; the numbers that mattered get written into the
+# comment on the code they justify instead — see videos/remotion.config.ts.
+/*.tmp.ts
+/*.tmp.mjs
