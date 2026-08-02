@@ -7,6 +7,28 @@ const nextConfig: NextConfig = {
   // actually exist, so a renamed folder or a typo'd slug shipped as a 404 that
   // only a reader would find. Stable since 15.5; this makes it a build error.
   typedRoutes: true,
+  // Stable in Next 16. Matters here because the three playgrounds and the
+  // planner carry ~60 hand-written useMemo / useCallback / memo calls between
+  // them, written by hand precisely because those components re-render on
+  // every slider drag.
+  //
+  // `react-compiler-healthcheck` reports 121 of 121 components compiling with
+  // no bailouts, including the playgrounds that mutate SVG through refs at
+  // 60 Hz — which was the thing most likely to defeat it.
+  //
+  // Verifying this is harder than it should be. React 19 has useMemoCache
+  // built in, so the emitted calls minify into a property access and grepping
+  // the bundle for `_c(` or `compiler-runtime` finds nothing whether it ran or
+  // not. The check that actually works is building both ways: client JS is
+  // 15,061,017 bytes on versus 14,970,029 off, and the chunk digests differ.
+  // The ~91 KB is the memoization bookkeeping.
+  //
+  // One caveat while ESLint is off (see the note in package.json / the lint
+  // script): the compiler's diagnostics ship as an eslint-plugin-react-hooks
+  // rule, so nothing warns in the normal loop if a future edit makes a
+  // component un-compilable. `pnpm dlx react-compiler-healthcheck` is the
+  // standalone way to check, and it needs no linting.
+  reactCompiler: true,
   experimental: {
     // TypeScript 7 is the Go port and does not ship the programmatic compiler
     // API Next reaches for by default; without this the build stops with
