@@ -1,12 +1,7 @@
 import type { ReactNode } from "react";
-import NavFooter from "@/components/NavFooter";
+import NavFooter, { type NavOverride } from "@/components/NavFooter";
 import LessonOutline from "@/components/lesson/LessonOutline";
 import LessonKicker from "@/components/lesson/LessonKicker";
-
-interface NavOverride {
-  href: string;
-  title: string;
-}
 
 interface PageTemplateProps {
   /**
@@ -74,7 +69,12 @@ export default function PageTemplate({
       : [title, null];
 
   return (
-    <div className="grid justify-center gap-14 px-6 pt-14 md:px-10 min-[1240px]:grid-cols-[184px_auto]">
+    // `minmax(0, …)` on both breakpoints is load-bearing. With a bare `auto`
+    // column plus `justify-center`, the grid track sizes to max-content — so
+    // the article stayed as wide as its 660px measure inside a 290px phone
+    // viewport and every lesson scrolled sideways. `justify-center` only
+    // applies once there are actually two tracks to centre.
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-6 pt-14 md:px-10 min-[1240px]:grid-cols-[184px_minmax(0,auto)] min-[1240px]:justify-center">
       <LessonOutline branch={branch} time={time} />
 
       <article className="lesson-body measure-wide pb-[120px]">

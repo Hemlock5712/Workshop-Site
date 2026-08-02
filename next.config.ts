@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Lesson order, prev/next, the drawer and the syllabus are all derived from
+  // one hand-maintained list in src/data/lessons.ts, and every entry there is
+  // a route string. Nothing checked those strings against the routes that
+  // actually exist, so a renamed folder or a typo'd slug shipped as a 404 that
+  // only a reader would find. Stable since 15.5; this makes it a build error.
+  typedRoutes: true,
   // Dev-only. Next blocks /_next/* requests whose Origin isn't localhost,
   // which silently breaks client chunks, the image optimiser and HMR when you
   // open the dev server from another device on the LAN (phone, second laptop).

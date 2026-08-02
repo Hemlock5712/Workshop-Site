@@ -32,6 +32,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import type { Route } from "next";
 import MiniSearch from "minisearch";
 import * as ts from "typescript";
 
@@ -540,12 +541,18 @@ function build(): void {
         continue;
       }
 
-      const url = chunk.anchor ? `${route}#${chunk.anchor}` : route;
+      // `route` is built from the directory name, so it is a string as far as
+      // the compiler is concerned. It is a real route as far as everything
+      // else is concerned: assertRoutesMatchLessons has already thrown above
+      // if any page on disk is absent from lessons.ts or vice versa, which is
+      // a stronger check than `Route` performs. Assert once, here, rather than
+      // widening SearchDoc and losing the guarantee at every consumer.
+      const url = (chunk.anchor ? `${route}#${chunk.anchor}` : route) as Route;
       docs.push({
         id: url,
         title: meta.title,
         heading: chunk.heading,
-        slug: route,
+        slug: route as Route,
         anchor: chunk.anchor,
         url,
         content,

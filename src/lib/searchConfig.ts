@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import type MiniSearch from "minisearch";
 import {
   SEARCH_BOOST,
@@ -191,9 +192,13 @@ export const searchIndex = (
     id: String(result.id),
     title: result.title as string,
     heading: result.heading as string,
-    slug: result.slug as string,
+    // MiniSearch types stored fields as `any` — everything here is an
+    // assertion, not a check. `slug` and `url` were written by
+    // generate-search-data.ts from routes it had already validated against
+    // lessons.ts, so they are routes; the rest are plain strings.
+    slug: result.slug as Route,
     anchor: result.anchor as string,
-    url: result.url as string,
+    url: result.url as Route,
     excerpt: result.excerpt as string,
     lessonNum: result.lessonNum as string,
     section: result.section as string,
@@ -210,7 +215,7 @@ export const searchIndex = (
  * apart at a glance.
  */
 export interface GroupedResult {
-  slug: string;
+  slug: Route;
   title: string;
   lessonNum: string;
   section: string;

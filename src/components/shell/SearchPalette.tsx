@@ -11,6 +11,7 @@
  * 20,000-character page.
  */
 
+import type { Route } from "next";
 import { useEffect, useState } from "react";
 import type MiniSearch from "minisearch";
 import { useRouter } from "next/navigation";
@@ -71,7 +72,7 @@ export default function SearchPalette() {
 
   if (!searchOpen) return null;
 
-  const go = (url: string) => {
+  const go = (url: Route) => {
     router.push(url);
     closeSearch();
   };

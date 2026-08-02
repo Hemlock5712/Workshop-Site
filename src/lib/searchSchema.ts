@@ -10,8 +10,14 @@
  * `pnpm generate-search` runs again.
  *
  * This module is imported by a Node build script as well as by client code,
- * so it must stay dependency-free and free of any browser or Next.js API.
+ * so it must stay dependency-free and free of any browser or Next.js API. The
+ * `Route` import below is the one exception and not really one: it is
+ * type-only, erased before the build script ever runs, and it is what makes a
+ * result URL checkable against the routes that exist rather than being any
+ * string at all.
  */
+
+import type { Route } from "next";
 
 /** Where the prebuilt index is served from. Written into `public/`. */
 export const SEARCH_INDEX_URL = "/search-index.json";
@@ -30,11 +36,11 @@ export interface SearchDoc {
   /** Section heading within the lesson, e.g. "Picking a cruise velocity". */
   heading: string;
   /** Lesson route with no anchor, e.g. "/motion-magic". */
-  slug: string;
+  slug: Route;
   /** Fragment id, or "" for a page-level intro doc. */
   anchor: string;
   /** Full link — `slug` plus `#anchor` when there is one. */
-  url: string;
+  url: Route;
   /** Prose, with code blocks and quiz answers excluded. */
   content: string;
   /** Identifiers, filenames and branch names. Matched, but weakly. */

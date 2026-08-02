@@ -14,11 +14,21 @@
  * Pages that don't define one fall back to `title`.
  */
 
+import type { Route } from "next";
+
 export type LessonSectionId = "main" | "workshop1" | "workshop2" | "advanced";
 
 export interface Lesson {
-  /** Route path, always with a leading slash and no trailing slash. */
-  slug: string;
+  /**
+   * Route path, always with a leading slash and no trailing slash.
+   *
+   * Typed as `Route` rather than `string` so `typedRoutes` checks every entry
+   * against the routes that actually exist under `src/app/`. This list drives
+   * prev/next, the drawer, the syllabus and the search index, so a slug that
+   * does not resolve is a 404 in four places at once — and nothing caught it
+   * before, because a wrong string is still a string.
+   */
+  slug: Route;
   /** Long-form page title (matches the H1 in PageTemplate). */
   title: string;
   /** Short label for the sidebar when space is tight. */

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MarkCompleteToggle from "@/components/MarkCompleteToggle";
@@ -11,8 +12,15 @@ import {
   type Lesson,
 } from "@/data/lessons";
 
-interface NavOverride {
-  href: string;
+/**
+ * An explicit prev/next link, for the few pages that are not a plain step in
+ * the lesson sequence. Exported because `PageTemplate` accepts the same shape
+ * and passes it straight through — it used to declare its own copy, which
+ * silently drifted the moment `href` became a `Route` here.
+ */
+export interface NavOverride {
+  /** Route, not a bare string — see the note on `Lesson.slug`. */
+  href: Route;
   title: string;
   /** Course position, zero-padded. Derived when the link comes from LESSONS. */
   num?: string;
