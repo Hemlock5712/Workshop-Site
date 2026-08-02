@@ -4,11 +4,11 @@
  * ⌘K / Ctrl-K palette. Opened from the topbar button, the keyboard, or
  * anything else that calls `openSearch()` on the shell context.
  *
- * Search itself is unchanged — the same lazily-loaded MiniSearch index the
- * site has always used. What changed is the result row: a lesson number, the
- * title in the reading face, and the group it belongs to. A student searching
- * "kP" gets back "16 · 01 Control Fundamentals · PID Control", which tells
- * them where the answer lives in the course, not just that a page matched.
+ * A result row is a lesson with the sections inside it that matched. The
+ * index is built per `<LessonSection>`, so "kP" comes back as "14 · PID
+ * Control" with "The six numbers, and what each one is measured in" under it,
+ * and selecting that row lands on the anchor rather than the top of a
+ * 20,000-character page.
  */
 
 import { useEffect, useState } from "react";
@@ -18,16 +18,13 @@ import { Command } from "cmdk";
 import { Search } from "lucide-react";
 import {
   getSearchInstance,
-  mapMiniSearchResults,
-  type SearchResult,
+  groupBySlug,
+  searchIndex,
+  type GroupedResult,
 } from "@/lib/searchConfig";
+import type { SearchDoc } from "@/lib/searchSchema";
 import { useShell } from "@/contexts/ShellContext";
 import { useProgress } from "@/lib/useProgress";
-import {
-  findLessonBySlug,
-  getLessonNumber,
-  getSectionOf,
-} from "@/data/lessons";
 
 const microLabel = {
   fontSize: 9.5,
@@ -35,26 +32,28 @@ const microLabel = {
   textTransform: "uppercase",
 } as const;
 
-/** Strip a query string / hash so a search URL still matches a lesson slug. */
-function toSlug(url: string): string {
-  return url.split(/[?#]/)[0].replace(/\/$/, "") || "/";
-}
+/** Lessons shown at once. Each contributes up to three matching sections. */
+const MAX_LESSONS = 6;
 
 export default function SearchPalette() {
   const router = useRouter();
   const { searchOpen, closeSearch } = useShell();
   const { completed } = useProgress();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [instance, setInstance] = useState<MiniSearch | null>(null);
+  const [groups, setGroups] = useState<GroupedResult[]>([]);
+  const [instance, setInstance] = useState<MiniSearch<SearchDoc> | null>(null);
 
-  // Build the index the first time the palette is opened, not on mount — the
-  // index is ~188 KB and most sessions never search.
+  // Fetch the index the first time the palette is opened, not on mount — most
+  // sessions never search, and this way they never pay for it.
   useEffect(() => {
-    if (searchOpen && !instance) getSearchInstance().then(setInstance);
+    if (searchOpen && !instance) {
+      getSearchInstance()
+        .then(setInstance)
+        .catch((error) => console.error("Search unavailable:", error));
+    }
     if (!searchOpen) {
       setQuery("");
-      setResults([]);
+      setGroups([]);
     }
   }, [searchOpen, instance]);
 
@@ -62,9 +61,11 @@ export default function SearchPalette() {
     if (!instance) return;
     const trimmed = query.trim();
     if (trimmed.length > 1) {
-      setResults(mapMiniSearchResults(instance.search(trimmed)).slice(0, 12));
+      setGroups(
+        groupBySlug(searchIndex(instance, trimmed)).slice(0, MAX_LESSONS)
+      );
     } else {
-      setResults([]);
+      setGroups([]);
     }
   }, [query, instance]);
 
@@ -77,6 +78,10 @@ export default function SearchPalette() {
 
   const trimmed = query.trim();
   const searching = trimmed.length > 1;
+  const hitCount = groups.reduce(
+    (total, group) => total + group.hits.length,
+    0
+  );
 
   return (
     <div
@@ -139,7 +144,7 @@ export default function SearchPalette() {
           </label>
 
           <Command.List className="flex-1 overflow-y-auto px-3 py-2.5">
-            {searching && results.length === 0 && (
+            {searching && groups.length === 0 && (
               <Command.Empty className="px-3.5 py-[34px] text-center">
                 <div
                   className="display mb-2"
@@ -175,66 +180,90 @@ export default function SearchPalette() {
               </div>
             )}
 
-            {results.map((item) => {
-              const slug = toSlug(item.url);
-              const lesson = findLessonBySlug(slug);
-              const num = getLessonNumber(slug);
-              const section = getSectionOf(slug);
-              const done = completed.has(slug);
-              const context = section
-                ? `${section.num} · ${section.title}`
-                : item.category;
+            {groups.map((group) => {
+              const done = completed.has(group.slug);
+              const context = group.section
+                ? group.sectionNum
+                  ? `${group.sectionNum} · ${group.section}`
+                  : group.section
+                : "";
 
               return (
-                <Command.Item
-                  key={item.id}
-                  value={item.id}
-                  onSelect={() => go(item.url)}
-                  className="flex cursor-pointer items-center gap-4 rounded-[5px] px-3.5 py-[11px] aria-selected:bg-[var(--accent-soft)]"
-                >
-                  <span
-                    className="mono tabular w-[22px] shrink-0"
-                    style={{
-                      fontSize: 10,
-                      letterSpacing: "0.08em",
-                      color: num ? "var(--accent)" : "var(--tx3)",
-                    }}
-                  >
-                    {num ?? "··"}
-                  </span>
-                  <span className="flex min-w-0 flex-col gap-[3px]">
+                <div key={group.slug} className="mb-1.5">
+                  {/* The lesson is the heading; its matching sections below are
+                      what you actually navigate to. */}
+                  <div className="flex items-center gap-4 px-3.5 pb-1 pt-2.5">
+                    <span
+                      className="mono tabular w-[22px] shrink-0"
+                      style={{
+                        fontSize: 10,
+                        letterSpacing: "0.08em",
+                        color: group.lessonNum ? "var(--accent)" : "var(--tx3)",
+                      }}
+                    >
+                      {group.lessonNum || "··"}
+                    </span>
                     <span
                       className="truncate"
                       style={{
                         fontFamily: "var(--font-serif)",
-                        fontSize: 18,
+                        fontSize: 17,
                         lineHeight: 1.2,
                         color: "var(--tx)",
                       }}
                     >
-                      {lesson?.title ?? item.title}
+                      {group.title}
                     </span>
-                    <span
-                      className="mono truncate"
-                      style={{ ...microLabel, color: "var(--tx3)" }}
+                    {context && (
+                      <span
+                        className="mono hidden shrink-0 truncate sm:inline"
+                        style={{ ...microLabel, color: "var(--tx3)" }}
+                      >
+                        {context}
+                      </span>
+                    )}
+                    {done && (
+                      <span
+                        className="mono ml-auto shrink-0"
+                        style={{ ...microLabel, color: "var(--accent)" }}
+                      >
+                        done
+                      </span>
+                    )}
+                  </div>
+
+                  {group.hits.map((hit) => (
+                    <Command.Item
+                      key={hit.id}
+                      value={hit.id}
+                      onSelect={() => go(hit.url)}
+                      className="ml-[38px] flex cursor-pointer items-center gap-2.5 rounded-[5px] px-3.5 py-[7px] aria-selected:bg-[var(--accent-soft)]"
+                      style={{ borderLeft: "1px solid var(--rule-soft)" }}
                     >
-                      {context}
-                    </span>
-                  </span>
-                  {done && (
-                    <span
-                      className="mono ml-auto shrink-0"
-                      style={{
-                        fontSize: 9,
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        color: "var(--accent)",
-                      }}
-                    >
-                      done
-                    </span>
-                  )}
-                </Command.Item>
+                      <span
+                        className="min-w-0 flex-1 truncate"
+                        style={{
+                          fontFamily: "var(--font-serif)",
+                          fontSize: 15,
+                          lineHeight: 1.3,
+                          color: "var(--tx2)",
+                        }}
+                      >
+                        {/* An intro doc has no heading — it is the page opening. */}
+                        {hit.heading || "Opening"}
+                      </span>
+                      {hit.anchor && (
+                        <span
+                          className="mono shrink-0"
+                          style={{ ...microLabel, color: "var(--tx3)" }}
+                          aria-hidden="true"
+                        >
+                          #
+                        </span>
+                      )}
+                    </Command.Item>
+                  ))}
+                </div>
               );
             })}
 
@@ -280,7 +309,7 @@ export default function SearchPalette() {
               style={{ ...microLabel, color: "var(--accent)" }}
             >
               {searching
-                ? `${results.length} ${results.length === 1 ? "result" : "results"}`
+                ? `${hitCount} ${hitCount === 1 ? "section" : "sections"}`
                 : "Type to search"}
             </span>
           </div>

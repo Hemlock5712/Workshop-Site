@@ -1,265 +1,265 @@
 "use client";
 
+/**
+ * The full search page, reached from the palette's "open the full search page"
+ * row or by linking `/search?q=…` directly.
+ *
+ * It shows the same results as the palette, at more length: every lesson that
+ * matched, the sections inside it that matched, and an excerpt with the terms
+ * that actually matched marked. It is deliberately the same shape as the
+ * palette — the two used to be separate designs with separate notions of what
+ * a result was, and the page carried a hardcoded category-colour table that
+ * drifted from `lessons.ts`.
+ */
+
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import type MiniSearch from "minisearch";
 import {
   getSearchInstance,
-  SearchResult,
-  mapMiniSearchResults,
+  groupBySlug,
+  searchIndex,
+  type GroupedResult,
 } from "@/lib/searchConfig";
+import type { SearchDoc } from "@/lib/searchSchema";
+import { useProgress } from "@/lib/useProgress";
+
+const microLabel = {
+  fontSize: 9.5,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+} as const;
+
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * Mark the terms MiniSearch actually matched.
+ *
+ * Highlighting used to run the raw query through `dangerouslySetInnerHTML`,
+ * which meant a fuzzy or prefix hit — the whole point of the search — showed
+ * up unmarked, because the typed text was not the matched text. Using
+ * `result.terms` marks what the engine really found, and returning React
+ * nodes means no HTML is ever assembled from a string.
+ */
+function markTerms(text: string, terms: string[]): ReactNode {
+  if (terms.length === 0) return text;
+
+  const pattern = new RegExp(
+    `(${terms
+      .slice()
+      .sort((a, b) => b.length - a.length)
+      .map(escapeRegExp)
+      .join("|")})`,
+    "gi"
+  );
+
+  return text.split(pattern).map((part, index) =>
+    // String.split with a capturing group puts the captures at odd indices.
+    index % 2 === 1 ? (
+      <mark
+        key={index}
+        style={{
+          background: "var(--accent-soft)",
+          color: "var(--tx)",
+          borderRadius: 2,
+          padding: "0 2px",
+        }}
+      >
+        {part}
+      </mark>
+    ) : (
+      part
+    )
+  );
+}
 
 export default function SearchPageContent() {
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [searchInstance, setSearchInstance] = useState<MiniSearch | null>(null);
+  const { completed } = useProgress();
+  const [instance, setInstance] = useState<MiniSearch<SearchDoc> | null>(null);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    getSearchInstance().then(setSearchInstance);
+    getSearchInstance()
+      .then(setInstance)
+      .catch((error) => {
+        console.error("Search unavailable:", error);
+        setFailed(true);
+      });
   }, []);
 
-  useEffect(() => {
-    if (!searchInstance) {
-      setIsLoading(true);
-      return;
-    }
-    setIsLoading(true);
-    if (query.trim()) {
-      const searchResults = searchInstance.search(query.trim());
-      const mappedResults = mapMiniSearchResults(searchResults);
-      setResults(mappedResults);
-    } else {
-      setResults([]);
-    }
-    setIsLoading(false);
-  }, [query, searchInstance]);
+  const groups: GroupedResult[] = useMemo(() => {
+    if (!instance || !query.trim()) return [];
+    return groupBySlug(searchIndex(instance, query.trim(), 60), 5);
+  }, [instance, query]);
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "Workshop 1":
-        return "bg-[var(--bg2)] text-[var(--accent)] text-[var(--accent)]";
-      case "Workshop 2":
-        return "bg-[var(--bg2)] text-[var(--accent)] text-[var(--accent)]";
-      case "Getting Started":
-        return "bg-[var(--bg2)] text-[var(--ok)] text-[var(--ok)]";
-      case "Resources":
-        return "bg-[var(--bg2)] text-[var(--accent)] text-[var(--accent)]";
-      case "Advanced":
-        return "bg-[var(--bg2)] text-[var(--err)] text-[var(--err)]";
-      case "General":
-        return "bg-[var(--bg3)] text-[var(--tx)] text-[var(--tx3)]";
-      default:
-        // Every category the index emits is handled above. If a new one shows
-        // up here it renders gray, which is the tell that this switch and
-        // `routeMap` in scripts/generate-search-data.js have drifted apart.
-        return "bg-[var(--bg2)] text-[var(--tx)] text-[var(--tx3)]";
-    }
-  };
-
-  const highlightMatch = (text: string, queryTerm: string) => {
-    if (!queryTerm.trim()) return text;
-
-    const regex = new RegExp(
-      `(${queryTerm.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`,
-      "gi"
-    );
-    return text.replace(
-      regex,
-      '<mark class="bg-[var(--bg2)] px-1 rounded">$1</mark>'
-    );
-  };
-
-  const getMatchPreview = (item: SearchResult, queryTerm: string) => {
-    // Check if query appears in content for a preview
-    const lowerContent = item.content.toLowerCase();
-    const lowerQuery = queryTerm.toLowerCase();
-    const matchIndex = lowerContent.indexOf(lowerQuery);
-
-    if (matchIndex !== -1) {
-      const contextStart = Math.max(0, matchIndex - 50);
-      const contextEnd = Math.min(
-        item.content.length,
-        matchIndex + queryTerm.length + 50
-      );
-      let preview = item.content.slice(contextStart, contextEnd);
-
-      if (contextStart > 0) preview = "..." + preview;
-      if (contextEnd < item.content.length) preview = preview + "...";
-
-      return preview;
-    }
-
-    return item.description;
-  };
+  const hitCount = groups.reduce((total, g) => total + g.hits.length, 0);
+  const loading = !instance && !failed && query.trim().length > 0;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      {/* Search Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[var(--tx)] mb-4">
-          Search Results
+    <div className="mx-auto w-full max-w-3xl">
+      <header className="mb-9">
+        <h1
+          className="display mb-2"
+          style={{ fontSize: "clamp(30px, 4vw, 42px)", lineHeight: 1.08 }}
+        >
+          {query ? <>Results for “{query}”</> : "Search"}
         </h1>
-        {query && (
-          <div className="flex items-center gap-2 text-[var(--tx2)]">
-            <span>Searching for:</span>
-            <span className="bg-[var(--muted)] px-2 py-1 rounded font-mono text-sm">
-              &quot;{query}&quot;
-            </span>
-            <span>•</span>
-            <span>
-              {results.length} {results.length === 1 ? "result" : "results"}{" "}
-              found
-            </span>
-          </div>
+        {query && !loading && !failed && (
+          <p className="mono" style={{ ...microLabel, color: "var(--tx3)" }}>
+            {hitCount} {hitCount === 1 ? "section" : "sections"} in{" "}
+            {groups.length} {groups.length === 1 ? "lesson" : "lessons"}
+          </p>
         )}
-      </div>
+      </header>
 
-      {/* Loading State */}
-      {isLoading && (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)]"></div>
-          <span className="ml-2 text-[var(--tx2)]">Searching...</span>
-        </div>
+      {failed && (
+        <p
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 17,
+            color: "var(--tx2)",
+          }}
+        >
+          The search index could not be loaded. Reload the page to try again.
+        </p>
       )}
 
-      {/* No Query */}
-      {!query && !isLoading && (
-        <div className="text-center py-12">
-          <svg
-            className="mx-auto h-12 w-12 text-[var(--tx3)] mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      {loading && (
+        <p className="mono" style={{ ...microLabel, color: "var(--tx3)" }}>
+          Loading the index…
+        </p>
+      )}
+
+      {!query && !failed && (
+        <p
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: 17,
+            lineHeight: 1.55,
+            color: "var(--tx2)",
+          }}
+        >
+          Press <kbd className="mono">⌘K</kbd> anywhere on the site, or type a
+          query into the address bar as <code>/search?q=…</code>. Try a
+          mechanism (arm, flywheel, swerve), a concept (PID, odometry,
+          AprilTag), or a gain name.
+        </p>
+      )}
+
+      {query && !loading && !failed && groups.length === 0 && (
+        <div>
+          <p
+            className="display mb-3"
+            style={{ fontSize: 26, lineHeight: 1.2, color: "var(--tx2)" }}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-          <h3 className="text-xl font-medium text-[var(--tx)] mb-2">
-            No search query
-          </h3>
-          <p className="text-[var(--tx2)]">
-            Use the search bar above to find workshop content
+            Nothing matches that
+          </p>
+          <p
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 17,
+              lineHeight: 1.55,
+              color: "var(--tx3)",
+            }}
+          >
+            Try fewer words, or the name of the thing rather than a description
+            of it — <em>cruise velocity</em> rather than{" "}
+            <em>how do I make the arm move smoothly</em>.
           </p>
         </div>
       )}
 
-      {/* No Results */}
-      {query && !isLoading && results.length === 0 && (
-        <div className="text-center py-12">
-          <svg
-            className="mx-auto h-12 w-12 text-[var(--tx3)] mb-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-          <h3 className="text-xl font-medium text-[var(--tx)] mb-2">
-            No results found
-          </h3>
-          <p className="text-[var(--tx2)] mb-4">
-            We couldn&apos;t find anything matching &quot;{query}&quot;
-          </p>
-          <div className="text-sm text-[var(--tx2)]">
-            <p>Try:</p>
-            <ul className="list-disc list-inside mt-2 space-y-1">
-              <li>
-                Different keywords (e.g., &quot;PID&quot;, &quot;motor&quot;,
-                &quot;subsystem&quot;)
-              </li>
-              <li>More general terms</li>
-              <li>Checking for typos</li>
-            </ul>
-          </div>
-        </div>
-      )}
+      <div className="flex flex-col gap-8">
+        {groups.map((group) => {
+          const done = completed.has(group.slug);
+          const context = group.sectionNum
+            ? `${group.sectionNum} · ${group.section}`
+            : group.section;
 
-      {/* Search Results */}
-      {!isLoading && results.length > 0 && (
-        <div className="space-y-6">
-          {results.map((result) => (
-            <div
-              key={result.id}
-              className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <Link href={result.url} className="group flex-1">
-                  <h2
-                    className="text-xl font-semibold text-[var(--accent)] group-hover:text-[var(--accent)] mb-2 leading-tight"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightMatch(result.title, query),
-                    }}
-                  />
-                </Link>
+          return (
+            <section key={group.slug}>
+              <div
+                className="mb-3 flex items-baseline gap-4 pb-2"
+                style={{ borderBottom: "1px solid var(--rule-soft)" }}
+              >
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-4 ${getCategoryColor(result.category)}`}
+                  className="mono tabular w-[22px] shrink-0"
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: "0.08em",
+                    color: group.lessonNum ? "var(--accent)" : "var(--tx3)",
+                  }}
                 >
-                  {result.category}
+                  {group.lessonNum || "··"}
                 </span>
+                <Link
+                  href={group.slug}
+                  className="min-w-0 flex-1 truncate hover:underline"
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: 22,
+                    lineHeight: 1.2,
+                    color: "var(--tx)",
+                  }}
+                >
+                  {group.title}
+                </Link>
+                {context && (
+                  <span
+                    className="mono hidden shrink-0 sm:inline"
+                    style={{ ...microLabel, color: "var(--tx3)" }}
+                  >
+                    {context}
+                  </span>
+                )}
+                {done && (
+                  <span
+                    className="mono shrink-0"
+                    style={{ ...microLabel, color: "var(--accent)" }}
+                  >
+                    done
+                  </span>
+                )}
               </div>
 
-              <p className="text-[var(--tx2)] mb-4 leading-relaxed">
-                {getMatchPreview(result, query)}
-              </p>
-
-              <div className="flex items-center justify-between">
-                <div className="flex flex-wrap gap-2">
-                  {result.tags.slice(0, 5).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 text-xs bg-[var(--muted)] text-[var(--muted-foreground)] rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="text-xs text-[var(--tx2)]">
-                  Score: {Math.round(result.score * 100) / 100}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Search Tips */}
-      {results.length > 0 && (
-        <div className="mt-12 bg-[var(--muted)] rounded-lg p-6">
-          <h3 className="font-semibold text-[var(--foreground)] mb-3">
-            Search Tips
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-[var(--muted-foreground)]">
-            <div>
-              <p className="font-medium mb-1">Keywords to try:</p>
-              <ul className="space-y-1">
-                <li>• &quot;PID control&quot; for control theory</li>
-                <li>• &quot;subsystem&quot; for code architecture</li>
-                <li>• &quot;motor&quot; for hardware setup</li>
+              <ul className="ml-[38px] flex flex-col gap-[18px]">
+                {group.hits.map((hit) => (
+                  <li key={hit.id}>
+                    <Link href={hit.url} className="group block">
+                      <span
+                        className="mb-1 block group-hover:underline"
+                        style={{
+                          fontFamily: "var(--font-serif)",
+                          fontSize: 17,
+                          lineHeight: 1.3,
+                          color: "var(--accent)",
+                        }}
+                      >
+                        {hit.heading || "Opening"}
+                      </span>
+                      <span
+                        className="block"
+                        style={{
+                          fontFamily: "var(--font-serif)",
+                          fontSize: 15,
+                          lineHeight: 1.55,
+                          color: "var(--tx2)",
+                        }}
+                      >
+                        {markTerms(hit.excerpt, hit.terms)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
               </ul>
-            </div>
-            <div>
-              <p className="font-medium mb-1">Advanced search:</p>
-              <ul className="space-y-1">
-                <li>• Use quotes for exact phrases</li>
-                <li>• Try related terms</li>
-                <li>• Check different categories</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
+            </section>
+          );
+        })}
+      </div>
     </div>
   );
 }

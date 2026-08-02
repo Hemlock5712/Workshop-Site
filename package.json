@@ -10,7 +10,7 @@
     "type-check": "tsc --noEmit",
     "test": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run build",
     "spell": "cspell \"src/**/*.{ts,tsx}\" *.md",
-    "generate-search": "node scripts/generate-search-data.js",
+    "generate-search": "tsx scripts/generate-search-data.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "prepare": "simple-git-hooks"
