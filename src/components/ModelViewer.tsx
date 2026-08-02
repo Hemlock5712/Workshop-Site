@@ -165,7 +165,17 @@ const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
           <CameraTracker onPositionChange={handleCameraPositionUpdate} />
         </Canvas>
 
-        <div className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded font-mono">
+        {/* Explicit colours rather than `bg-black/70 text-white`: that pair
+            measured 1:1 in the audit, because the translucent utility wasn't
+            resolving and the white text was landing on the page background. */}
+        <div
+          className="mono absolute left-2 top-2 rounded px-2 py-1 text-xs"
+          style={{
+            background: "oklch(0.135 0.04 265 / 0.82)",
+            color: "oklch(0.9 0.01 260)",
+            border: "1px solid var(--rule)",
+          }}
+        >
           Camera: [{cameraPosition[0]}, {cameraPosition[1]}, {cameraPosition[2]}
           ]
         </div>
@@ -174,7 +184,7 @@ const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
           <button
             type="button"
             onClick={applyDefaultCamera}
-            className="absolute top-2 right-2 bg-[var(--bg2)] hover:bg-[var(--accent)] text-[var(--accent-ink)] text-xs px-3 py-1 rounded font-medium transition-colors"
+            className="absolute top-2 right-2 border border-[var(--rule)] bg-[var(--bg2)] text-[var(--tx2)] hover:border-[var(--accent)] hover:text-[var(--accent)] text-xs px-3 py-1 rounded font-medium transition-colors"
             title="Reset camera to default position"
           >
             Reset View

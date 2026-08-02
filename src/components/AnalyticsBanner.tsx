@@ -25,7 +25,7 @@ const CookieBanner: React.FC = () => {
   if (!showBanner) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white bg-[var(--bg2)] border-t border-[var(--rule)] shadow-lg z-50 p-4">
+    <div className="fixed bottom-0 left-0 right-0 bg-[var(--bg2)] border-t border-[var(--rule)] shadow-lg z-50 p-4">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex-1">
           <p className="text-sm text-[var(--tx2)]">

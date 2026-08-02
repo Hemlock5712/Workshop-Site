@@ -149,7 +149,11 @@ html:not(.dark) {
 
   --tx: oklch(0.235 0.045 265);
   --tx2: oklch(0.415 0.032 265);
-  --tx3: oklch(0.565 0.025 265);
+  /* 0.525, not the design's 0.565. `--tx3` carries a lot of real reading on
+     this site — syllabus blurbs, mechanism captions, every micro-label — and
+     at 0.565 it measured 4.27:1 on paper, just under AA. Dark mode's --tx3 is
+     comfortably over, so only this side moves. */
+  --tx3: oklch(0.525 0.028 265);
 
   --rule: oklch(0.875 0.012 85);
   --rule-soft: oklch(0.935 0.008 85);
@@ -400,10 +404,17 @@ h3,
 }
 
 /* Inline code inside lesson prose. Mono, one step down in size so it
-   sits on the serif baseline instead of towering over it. */
+   sits on the serif baseline instead of towering over it.
+
+   `overflow-wrap: anywhere` is load-bearing, not cosmetic. Identifiers like
+   `withWheelForceFeedforwardsX` are single unbreakable words wider than the
+   text column; one of them pushed /java-basics 40px past the viewport and the
+   whole page scrolled sideways. Breaking mid-token is ugly; a page that
+   scrolls horizontally is worse. */
 .prose-body code,
 .prose-body-sm code,
-.lesson-prose code {
+.lesson-prose code,
+.lesson-body :is(p, li, td, th, aside, figcaption) code {
   font-family: var(--font-mono);
   font-size: 0.82em;
   color: var(--tx);
@@ -411,6 +422,21 @@ h3,
   border: 1px solid var(--rule-soft);
   border-radius: 2px;
   padding: 0.1em 0.34em;
+  overflow-wrap: anywhere;
+}
+
+/* Same reasoning one level up: a long bare URL or identifier in body copy is
+   the other way a lesson page ends up wider than the screen. */
+.lesson-body :is(p, li, td, th, figcaption) {
+  overflow-wrap: break-word;
+}
+
+/* Tables get the measure-plus-rail width, and scroll inside it if they still
+   don't fit — but they never widen the page. */
+.lesson-body table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 /* Lists in lesson prose.

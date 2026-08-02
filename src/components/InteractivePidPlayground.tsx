@@ -75,10 +75,19 @@ function Slider({
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-2">
         <div className="flex items-baseline gap-1.5">
+          {/* The gain colour lives on the swatch and the slider track, not
+              on the label text. As text it was 2.9:1 against the panel for kI
+              and 3.3:1 for kG — the colour has to survive being read, and
+              these are 13px. The swatch keeps the slider-to-trace mapping. */}
+          <span
+            aria-hidden="true"
+            className="inline-block h-2 w-2 shrink-0 rounded-full"
+            style={{ background: axisColor }}
+          />
           <label
             htmlFor={id}
             className="font-mono text-[13px] font-semibold"
-            style={{ color: axisColor }}
+            style={{ color: "var(--tx)" }}
           >
             {label}
           </label>

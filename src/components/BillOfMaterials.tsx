@@ -20,11 +20,7 @@ interface BillOfMaterialsProps {
 }
 
 type SortField =
-  | "partDescription"
-  | "vendor"
-  | "pricePerUnit"
-  | "quantity"
-  | "partNumber";
+  "partDescription" | "vendor" | "pricePerUnit" | "quantity" | "partNumber";
 type SortDirection = "asc" | "desc";
 type FilterType = "all" | "3d-printed" | "purchased";
 type PrintFilter = "all" | "yes" | "no";
@@ -416,13 +412,13 @@ export default function BillOfMaterials({
                   placeholder="Search parts, vendors, or part numbers..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
+                  className="w-full px-4 py-2 border border-[var(--rule)] rounded-lg bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
                 />
               </div>
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as FilterType)}
-                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
+                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
               >
                 <option value="all">All Parts</option>
                 <option value="3d-printed">3D Printed Only</option>
@@ -431,7 +427,7 @@ export default function BillOfMaterials({
               <select
                 value={vendorFilter}
                 onChange={(e) => setVendorFilter(e.target.value)}
-                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
+                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
               >
                 <option value="all">All Vendors</option>
                 {vendors.map((vendor) => (
@@ -443,7 +439,7 @@ export default function BillOfMaterials({
               <select
                 value={printFilter}
                 onChange={(e) => setPrintFilter(e.target.value as PrintFilter)}
-                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
+                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
               >
                 <option value="all">All 3D Print</option>
                 <option value="yes">3D Printed</option>
@@ -618,7 +614,7 @@ export default function BillOfMaterials({
                         key={index}
                         className={`${
                           index % 2 === 0
-                            ? "bg-white bg-[var(--bg2)]"
+                            ? "bg-[var(--bg2)]"
                             : "bg-[var(--bg2)]"
                         } hover:bg-[var(--bg2)] transition-colors`}
                       >

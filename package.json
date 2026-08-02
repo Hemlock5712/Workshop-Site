@@ -53,6 +53,7 @@
     "posthog-js": "^1.409.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "shiki": "^4.4.1",
     "tailwind-merge": "^3.6.0",
     "three": "^0.185.1",
     "three-stdlib": "^2.36.1",

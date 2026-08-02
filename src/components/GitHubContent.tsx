@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { DiffEditor } from "@monaco-editor/react";
+import dynamic from "next/dynamic";
 import {
   Code,
   ExternalLink,
@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import CodeBlock from "@/components/CodeBlock";
+import CodeBlockLive from "@/components/CodeBlockLive";
 import {
   GitHubFileContentSchema,
   GitHubFilesArraySchema,
@@ -37,6 +37,32 @@ interface GitHubContentProps {
   description?: string;
   className?: string;
 }
+
+/**
+ * Monaco, kept for exactly one job: the side-by-side PR diff.
+ *
+ * Everything else on the site moved to Shiki, which highlights server-side and
+ * ships no JavaScript — but Shiki has no diff engine, and a real two-pane diff
+ * with aligned gutters is what makes the "GitHub Changes" tab worth having.
+ *
+ * Dynamically imported so the ~3 MB only downloads when a student actually
+ * opens that tab. Most never do; before this it was a static import and rode
+ * along on all sixteen pages carrying an embed.
+ */
+const DiffEditor = dynamic(
+  () => import("@monaco-editor/react").then((m) => m.DiffEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="mono flex h-32 items-center justify-center"
+        style={{ fontSize: 10, letterSpacing: "0.1em", color: "#464d5b" }}
+      >
+        loading diff…
+      </div>
+    ),
+  }
+);
 
 const LANGUAGE_MAP: Record<string, string> = {
   java: "java",
@@ -301,7 +327,7 @@ function FileView({
         </div>
 
         <div className="p-0">
-          <CodeBlock
+          <CodeBlockLive
             code={fileContent}
             filename={filename}
             language={language}
@@ -594,7 +620,7 @@ function PRView({
                 key={index}
                 className="border border-[var(--border)] rounded-lg overflow-hidden mb-4 last:mb-0"
               >
-                <div className="bg-white dark:bg-[#2d2d30] px-4 py-3 border-b border-[var(--rule)] flex items-center justify-between">
+                <div className="bg-[var(--bg2)] dark:bg-[#2d2d30] px-4 py-3 border-b border-[var(--rule)] flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <span className="font-mono text-sm font-medium text-[var(--tx)]">
                       {file.filename}

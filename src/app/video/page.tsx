@@ -205,7 +205,7 @@ export default function VideoPreviewPage() {
             {group.trailers.map((trailer) => (
               <div
                 key={trailer.file}
-                className="rounded-xl border border-[var(--rule)] bg-white p-4 shadow-sm border-[var(--rule)]"
+                className="rounded-xl border border-[var(--rule)] bg-[var(--bg2)] p-4 shadow-sm border-[var(--rule)]"
               >
                 <video
                   controls

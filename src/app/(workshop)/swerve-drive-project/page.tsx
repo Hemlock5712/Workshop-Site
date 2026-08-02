@@ -77,7 +77,7 @@ export default function SwerveDriveProject() {
           href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.0-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center px-6 py-3 bg-[var(--bg2)] hover:bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg transition-colors font-medium gap-2"
+          className="inline-flex items-center px-6 py-3 border border-[var(--rule)] bg-[var(--bg2)] text-[var(--tx2)] hover:border-[var(--accent)] hover:text-[var(--accent)] rounded-lg transition-colors font-medium gap-2"
         >
           <Download className="w-5 h-5" />
           Download Swerve Project (v3.0, Commands v3)

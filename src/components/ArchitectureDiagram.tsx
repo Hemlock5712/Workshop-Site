@@ -186,19 +186,19 @@ export default function ArchitectureDiagram({
               Triggers
             </h4>
             <div className="text-xs text-[var(--tx2)] space-y-2">
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Button Triggers:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   controller.a().whileTrue(...)
                 </p>
               </div>
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Sensor Triggers:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   new Trigger(() → sensor.get())
                 </p>
               </div>
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>State Triggers:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   Based on robot state
@@ -218,19 +218,19 @@ export default function ArchitectureDiagram({
               Commands
             </h4>
             <div className="text-xs text-[var(--ok)] space-y-2">
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Lifecycle:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   initialize() → execute() → isFinished() → end()
                 </p>
               </div>
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Requirements:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   Declares needed subsystems
                 </p>
               </div>
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Scheduling:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   Command scheduler manages execution
@@ -250,19 +250,19 @@ export default function ArchitectureDiagram({
               Subsystems
             </h4>
             <div className="text-xs text-[var(--tx2)] space-y-2">
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Hardware:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   Motors, sensors, pneumatics
                 </p>
               </div>
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>State:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   Current position, velocity, etc.
                 </p>
               </div>
-              <div className="bg-white bg-[var(--bg2)] p-2 rounded">
+              <div className="bg-[var(--bg2)] p-2 rounded">
                 <strong>Methods:</strong>
                 <p className="text-xs text-[var(--tx2)]">
                   Control and query functions

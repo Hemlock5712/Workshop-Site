@@ -54,7 +54,9 @@ export default function Topbar() {
           >
             Workshop
           </Link>
-          <span style={{ color: "var(--rule)" }}>/</span>
+          <span aria-hidden="true" style={{ color: "var(--tx3)" }}>
+            /
+          </span>
           {section && (
             <>
               <span
@@ -64,8 +66,9 @@ export default function Topbar() {
                 {section.num} {section.title}
               </span>
               <span
+                aria-hidden="true"
                 className="hidden xl:inline"
-                style={{ color: "var(--rule)" }}
+                style={{ color: "var(--tx3)" }}
               >
                 /
               </span>
@@ -106,7 +109,11 @@ export default function Topbar() {
         type="button"
         onClick={openSearch}
         title="Search the workshop — Ctrl K"
-        className="ml-auto flex min-w-0 max-w-[330px] flex-1 cursor-pointer items-center gap-2.5 rounded-[4px] px-3 py-[7px] transition-colors hover:border-[var(--accent)] hover:text-[var(--tx2)]"
+        // `min-w-0` and no floor on the width: the rail already takes 70px, so
+        // at a 360px viewport this button and the breadcrumb are sharing a
+        // 290px column. A `min-w-[150px]` here pushed the bar wider than the
+        // page and the whole lesson scrolled sideways.
+        className="ml-auto flex min-w-0 shrink-0 items-center gap-2.5 rounded-[4px] px-3 py-[7px] transition-colors hover:border-[var(--accent)] hover:text-[var(--tx2)] sm:max-w-[330px] sm:flex-1 sm:shrink"
         style={{
           border: "1px solid var(--rule)",
           background: "var(--bg2)",
