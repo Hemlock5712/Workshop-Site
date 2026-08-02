@@ -30,7 +30,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import * as ts from "typescript";
+import * as ts from "typescript-6";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = path.join(ROOT, "src");

@@ -40,7 +40,10 @@ jobs:
       - name: Format check
         run: pnpm run format:check
 
-      - name: Lint
+      # Prints why ESLint is off and re-tests the blocker on every run — see
+      # scripts/lint-disabled.mjs. Becomes `eslint src/` again the moment
+      # typescript-eslint supports TypeScript 7.
+      - name: Lint (disabled — TypeScript 7)
         run: pnpm run lint
 
       - name: Type check

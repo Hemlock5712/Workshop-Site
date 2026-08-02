@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
   // actually exist, so a renamed folder or a typo'd slug shipped as a 404 that
   // only a reader would find. Stable since 15.5; this makes it a build error.
   typedRoutes: true,
+  experimental: {
+    // TypeScript 7 is the Go port and does not ship the programmatic compiler
+    // API Next reaches for by default; without this the build stops with
+    // "TypeScript 7.0.2 does not provide the compiler API required by
+    // Next.js". This makes Next shell out to the project's own tsc instead —
+    // the same check, run a different way.
+    useTypeScriptCli: true,
+  },
   // cacheComponents (Next 16's merge of Dynamic IO, `use cache` and PPR) is
   // NOT on yet, and turning it on is a two-line change that needs one thing
   // first.

@@ -34,7 +34,7 @@ import { fileURLToPath } from "node:url";
 
 import type { Route } from "next";
 import MiniSearch from "minisearch";
-import * as ts from "typescript";
+import * as ts from "typescript-6";
 
 import {
   LESSONS,
