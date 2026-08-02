@@ -9,222 +9,201 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
-  /* ── Legacy Tailwind color scales ──────────────────────────────────
-     Many existing components reference `bg-primary-700`, `text-blue-300`,
-     etc. These scales stay registered so those classes don't silently
-     lose styling during the redesign. Phase 3 sweeps usages onto the
-     new --accent / --primary-lifted / --ok / --warn token system, after
-     which most of this block can be deleted.
-     ─────────────────────────────────────────────────────────────── */
+  /* ── Radius ───────────────────────────────────────────────────────
+     This design is nearly square: 2-3px, not 8-16px. Redefining
+     Tailwind's scale rather than editing ~280 `rounded-lg` call sites
+     means every surface lands on the same corner without a sweep, and a
+     future change stays a single edit. `rounded-full` is untouched — the
+     pills (mark-complete, syllabus chips) are meant to be pills. */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+  --radius-2xl: 8px;
+  --radius-3xl: 8px;
 
-  /* Primary — Deep Academic Blue (#0D233F) */
-  --color-primary-50: #f2f6fa;
-  --color-primary-100: #e3ecf4;
-  --color-primary-200: #c1d4e7;
-  --color-primary-300: #9fbcd9;
-  --color-primary-400: #7da4cb;
-  --color-primary-500: #5b8cbe;
-  --color-primary-600: #4a73a0;
-  --color-primary-700: #385a80;
-  --color-primary-800: #264060;
-  --color-primary-900: #0d233f;
-  --color-primary-950: #081829;
-
-  /* Slate — neutral surface scale */
-  --color-slate-50: #fafbfc;
-  --color-slate-100: #f5f7fa;
-  --color-slate-200: #ebeef3;
-  --color-slate-300: #dde2e8;
-  --color-slate-400: #a5b3c1;
-  --color-slate-500: #6b7d8f;
-  --color-slate-600: #4a5765;
-  --color-slate-700: #343d49;
-  --color-slate-800: #1e242b;
-  --color-slate-900: #151a1f;
-
-  /* Blue — used in Key Concept containers */
-  --color-blue-50: #eff6ff;
-  --color-blue-100: #dbeafe;
-  --color-blue-200: #bfdbfe;
-  --color-blue-300: #93c5fd;
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-700: #1d4ed8;
-  --color-blue-800: #1e40af;
-  --color-blue-900: #1e3a8a;
-  --color-blue-950: #172554;
-
-  /* Green — Key Concept boxes */
-  --color-green-50: #f0fdf4;
-  --color-green-100: #dcfce7;
-  --color-green-200: #bbf7d0;
-  --color-green-300: #86efac;
-  --color-green-400: #4ade80;
-  --color-green-500: #22c55e;
-  --color-green-600: #16a34a;
-  --color-green-700: #15803d;
-  --color-green-800: #166534;
-  --color-green-900: #14532d;
-  --color-green-950: #052e16;
-
-  /* Yellow — Key Concept containers */
-  --color-yellow-50: #fefce8;
-  --color-yellow-100: #fef3c7;
-  --color-yellow-200: #fde68a;
-  --color-yellow-300: #fcd34d;
-  --color-yellow-400: #fbbf24;
-  --color-yellow-500: #f59e0b;
-  --color-yellow-600: #d97706;
-  --color-yellow-700: #b45309;
-  --color-yellow-800: #92400e;
-  --color-yellow-900: #78350f;
-  --color-yellow-950: #451a03;
+  /* ── Elevation ────────────────────────────────────────────────────
+     Almost nothing on this site floats. Depth comes from rules and
+     surface steps, so the shadow scale collapses to one barely-there
+     shadow; only the search palette sets a real one, inline. */
+  --shadow-2xs: 0 1px 0 var(--rule-soft);
+  --shadow-xs: 0 1px 0 var(--rule-soft);
+  --shadow-sm: 0 1px 0 var(--rule-soft);
+  --shadow-md: 0 1px 2px oklch(0 0 0 / 0.12);
+  --shadow-lg: 0 2px 6px -2px oklch(0 0 0 / 0.16);
+  --shadow-xl: 0 6px 18px -8px oklch(0 0 0 / 0.24);
+  --shadow-2xl: 0 12px 32px -14px oklch(0 0 0 / 0.3);
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Design tokens — "Engineering" theme
+   Design tokens
 
-   School navy is the brand anchor (--brand). Signal amber is the
-   accent for CTAs and live indicators. The page sits on a navy-
-   tinted dark, never pure black; light "paper" theme keeps navy as
-   primary and warms the amber for legibility on white.
+   Two naming schemes, one set of values.
 
-   Existing semantic vars (--background, --foreground, --muted,
-   --muted-foreground, --card, --border, --primary,
-   --primary-foreground) are kept as the public surface so the rest
-   of the app keeps working; they just re-map onto the new palette.
-   New design-system vars (--fg-mute, --fg-dim, --line, --line-soft,
-   --bg-elev, --bg-elev-2, --accent, --brand, --grid-dot, --r…) are
-   what the instrument-panel components consume directly.
+   The short names (--bg, --bg2, --bg3, --tx, --tx2, --tx3, --rule,
+   --rule-soft, --accent, --accent-ink, --mark, --lift, --code-bg) are
+   the design's own vocabulary and what every component written for
+   this redesign consumes.
+
+   The longer legacy names (--bg-elev, --fg-mute, --line, --card,
+   --background, …) alias onto them. Roughly thirty lesson pages and a
+   dozen older components still read those, so they resolve to the same
+   colour rather than a second, drifting palette. Add new styling in the
+   short vocabulary; the aliases are a compatibility surface, not a
+   parallel system.
+
+   Dark is the default and the design's primary state. Light is the
+   `html:not(.dark)` branch — next-themes writes `.dark` on <html>.
    ───────────────────────────────────────────────────────────────── */
 
 :root {
   color-scheme: dark;
 
-  /* Brand — school navy. Used for borders, brand marks, lesson H1s. */
-  --brand: #000759;
-  --brand-2: #1a2080;
-  --brand-fg: #ffffff;
+  /* ── Surfaces ── page, raised, raised-further */
+  --bg: oklch(0.155 0.038 265);
+  --bg2: oklch(0.196 0.042 265);
+  --bg3: oklch(0.243 0.045 265);
 
-  /* Surfaces (dark "engineering") */
-  --bg: oklch(0.17 0.035 265);
-  --bg-elev: oklch(0.21 0.038 265);
-  --bg-elev-2: oklch(0.245 0.04 265);
+  /* ── Text ── primary, secondary, tertiary */
+  --tx: oklch(0.955 0.012 85);
+  --tx2: oklch(0.795 0.016 260);
+  --tx3: oklch(0.615 0.022 260);
 
-  /* Text. fg-mute is boosted from the prototype (0.74 → 0.83) for
-     body-copy legibility on the dotted-grid backdrop. */
-  --fg: oklch(0.97 0.005 80);
-  --fg-mute: oklch(0.83 0.014 250);
-  --fg-dim: oklch(0.63 0.018 250);
+  /* ── Rules ── the visible hairline, and the one you barely see */
+  --rule: oklch(0.325 0.032 265);
+  --rule-soft: oklch(0.245 0.03 265);
 
-  /* Lines / dividers */
-  --line: oklch(0.36 0.03 265);
-  --line-soft: oklch(0.29 0.028 265);
+  /* ── Accent ── one hue, warm. `ink` is what sits ON the accent. */
+  --accent: oklch(0.755 0.155 55);
+  --accent-ink: oklch(0.19 0.06 55);
+  --accent-soft: oklch(0.755 0.155 55 / 0.14);
 
-  /* Signal amber — CTAs + live indicators. Navy lifted = primary brand
-     used for borders and lesson H1 colour. */
-  --accent: oklch(0.78 0.15 75);
-  --accent-soft: oklch(0.78 0.15 75 / 0.16);
-  --accent-fg: oklch(0.2 0.05 75);
-  --primary-lifted: oklch(0.72 0.13 265);
-  --primary-soft: oklch(0.72 0.13 265 / 0.18);
+  /* Highlighter wash behind <mark>, and the cool secondary used only
+     where a second signal is unavoidable (diagram strokes, links). */
+  --mark: oklch(0.74 0.15 58 / 0.3);
+  --lift: oklch(0.76 0.12 262);
 
-  /* Semantic */
-  --ok: oklch(0.78 0.14 155);
-  --warn: oklch(0.82 0.16 95);
-  --err: oklch(0.7 0.18 25);
-  --info: oklch(0.74 0.13 235);
+  /* Code sits a step darker than the page, in both themes. */
+  --code-bg: oklch(0.135 0.04 265);
 
-  /* Blueprint grid */
-  --grid-dot: oklch(0.32 0.03 265);
+  /* ── Measure ── the two numbers the lesson grid is built from.
+     `--measure` is the text column; `--gutter` is the margin-note rail
+     beside it. Changing these re-flows every lesson page. */
+  --measure: 660px;
+  --gutter: 250px;
+
+  /* ── Semantic signals ── kept for Box variants and diagrams. Pulled
+     toward the accent's warmth so they read as one family. */
+  --ok: oklch(0.78 0.13 155);
+  --warn: oklch(0.82 0.15 92);
+  --err: oklch(0.71 0.17 27);
+  --info: oklch(0.75 0.12 240);
+
+  /* Radii. This design is nearly square — 2-3px, not pills. */
+  --r-sm: 2px;
+  --r: 3px;
+  --r-lg: 8px;
+
+  /* ── Legacy aliases ───────────────────────────────────────────────
+     Older components read these names. They are the same colours. */
+  --bg-elev: var(--bg2);
+  --bg-elev-2: var(--bg3);
+  --fg: var(--tx);
+  --fg-mute: var(--tx2);
+  --fg-dim: var(--tx3);
+  --line: var(--rule);
+  --line-soft: var(--rule-soft);
+  --accent-fg: var(--accent-ink);
+  --primary-lifted: var(--lift);
+  --primary-soft: oklch(0.76 0.12 262 / 0.18);
+  --brand: var(--lift);
+  --brand-2: var(--lift);
+  --brand-fg: var(--accent-ink);
+  --grid-dot: var(--rule-soft);
   --grid-size: 24px;
-
-  /* Radii */
-  --r-sm: 4px;
-  --r: 6px;
-  --r-lg: 10px;
-
-  /* ── Backwards-compatible surface vars ────────────────────────────
-     The rest of the codebase reads --background, --foreground, etc.
-     We re-map them to the engineering palette so existing components
-     pick up the new look without per-file changes. */
   --background: var(--bg);
-  --foreground: var(--fg);
-  --muted: var(--bg-elev);
-  --muted-foreground: var(--fg-mute);
-  --card: var(--bg-elev);
-  --card-foreground: var(--fg);
-  --border: var(--line);
-  --primary: var(--primary-lifted);
-  --primary-foreground: #ffffff;
+  --foreground: var(--tx);
+  --muted: var(--bg2);
+  --muted-foreground: var(--tx2);
+  --card: var(--bg2);
+  --card-foreground: var(--tx);
+  --border: var(--rule);
+  --primary: var(--lift);
+  --primary-foreground: var(--tx);
 }
 
-/* Light "paper" theme — keeps navy as primary, warms amber for white. */
 .dark {
-  /* The site uses next-themes with attribute="class" on <html>, applied
-     as .dark for dark mode. Engineering = dark, which is already the
-     :root default. We keep .dark as an explicit alias so existing
-     `dark:` Tailwind variants and the .dark CSS gate continue to fire. */
+  /* next-themes writes `.dark` on <html>. Dark is already :root, so this
+     exists only so the `dark:` Tailwind variant keeps firing. */
   color-scheme: dark;
 }
 
+/* ── Light ── warm paper, not white. Same structure, inverted. */
 html:not(.dark) {
   color-scheme: light;
 
-  /* Surfaces */
-  --bg: oklch(0.98 0.006 80);
-  --bg-elev: oklch(0.995 0.004 80);
-  --bg-elev-2: oklch(1 0 0);
+  --bg: oklch(0.978 0.006 85);
+  --bg2: oklch(0.995 0.003 85);
+  --bg3: oklch(1 0 0);
 
-  /* Text — navy-tinted dark on warm white */
-  --fg: oklch(0.22 0.04 265);
-  --fg-mute: oklch(0.42 0.025 265);
-  --fg-dim: oklch(0.55 0.02 265);
+  --tx: oklch(0.235 0.045 265);
+  --tx2: oklch(0.415 0.032 265);
+  --tx3: oklch(0.565 0.025 265);
 
-  /* Lines */
-  --line: oklch(0.86 0.013 80);
-  --line-soft: oklch(0.92 0.01 80);
+  --rule: oklch(0.875 0.012 85);
+  --rule-soft: oklch(0.935 0.008 85);
 
-  /* Warmer amber on paper for legibility */
-  --accent: oklch(0.6 0.18 50);
-  --accent-soft: oklch(0.6 0.18 50 / 0.14);
-  --accent-fg: #ffffff;
+  /* Darker and more saturated than the dark-theme accent: the same hue
+     needs more weight to hold AA against paper. */
+  --accent: oklch(0.545 0.175 45);
+  --accent-ink: oklch(0.99 0.01 85);
+  --accent-soft: oklch(0.545 0.175 45 / 0.1);
 
-  /* Navy holds its school value on paper */
-  --primary-lifted: #000759;
-  --primary-soft: oklch(0.4 0.18 270 / 0.12);
+  --mark: oklch(0.72 0.17 52 / 0.22);
+  --lift: oklch(0.34 0.14 265);
 
-  --grid-dot: oklch(0.88 0.012 80);
+  /* Code stays dark in light mode — a code block is a terminal, and
+     inverting it every theme switch makes long pages flicker. */
+  --code-bg: oklch(0.155 0.038 265);
 
-  /* Re-map semantic vars for paper */
-  --background: var(--bg);
-  --foreground: var(--fg);
-  --muted: var(--bg-elev);
-  --muted-foreground: var(--fg-mute);
-  --card: var(--bg-elev);
-  --card-foreground: var(--fg);
-  --border: var(--line);
-  --primary: var(--primary-lifted);
+  --ok: oklch(0.52 0.13 155);
+  --warn: oklch(0.55 0.14 75);
+  --err: oklch(0.53 0.19 27);
+  --info: oklch(0.5 0.13 245);
+
+  --primary-soft: oklch(0.34 0.14 265 / 0.1);
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Base body + selection
+   Base
    ───────────────────────────────────────────────────────────────── */
 
 html,
 body {
+  margin: 0;
+  padding: 0;
   background: var(--bg);
-  color: var(--fg);
-  font-feature-settings: "ss01", "ss02", "cv11";
+  color: var(--tx);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Newsreader carries an optical-size axis. Letting it respond means the
+   124px home headline and the 15px margin note are the same typeface
+   without either looking like the other scaled. */
+h1,
+h2,
+h3,
+.display {
+  font-optical-sizing: auto;
 }
 
 ::selection {
   background: var(--accent);
-  color: var(--accent-fg);
+  color: var(--accent-ink);
 }
 
-/* Focus ring — amber outline, consistent with the design's signal hue */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -232,11 +211,45 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Engineering primitives — small reusable helpers
+   Motion — every animation in the design is opt-out
+   ───────────────────────────────────────────────────────────────── */
 
-   These are the building blocks of the "instrument panel" look:
-   mono micro-labels, tabular numerics, blueprint dotted grid, and
-   the .module wrapper with its top-left tag + top-right spec.
+@keyframes mark-in {
+  from {
+    background-size: 0% 100%;
+  }
+  to {
+    background-size: 100% 100%;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Primitives
+
+   Small helpers the whole site leans on. `.mono` / `.micro` /
+   `.tabular` are the mono micro-label family; `.module` is the
+   generic bordered panel older components still build on.
    ───────────────────────────────────────────────────────────────── */
 
 .mono {
@@ -244,12 +257,15 @@ body {
   font-feature-settings: "zero" 1;
 }
 
+/* The design's standard micro-label: mono, ~9.5px, wide tracking, caps.
+   It marks a thing as an instrument reading rather than something to
+   read as a sentence. */
 .micro {
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--fg-dim);
+  color: var(--tx3);
 }
 
 .tabular {
@@ -268,8 +284,8 @@ body {
 
 .module {
   position: relative;
-  background: var(--bg-elev);
-  border: 1px solid var(--line);
+  background: var(--bg2);
+  border: 1px solid var(--rule);
   border-radius: var(--r);
 }
 
@@ -279,12 +295,12 @@ body {
   left: -1px;
   padding: 4px 10px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--fg-dim);
+  color: var(--accent);
   background: var(--bg);
-  border: 1px solid var(--line);
+  border: 1px solid var(--rule);
   border-top-left-radius: var(--r);
   border-bottom-right-radius: var(--r);
   border-top: none;
@@ -296,9 +312,187 @@ body {
   top: 8px;
   right: 12px;
   font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--fg-dim);
-  letter-spacing: 0.04em;
+  font-size: 9.5px;
+  color: var(--tx3);
+  letter-spacing: 0.1em;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Lesson typography
+
+   The lesson body is Newsreader at 19px/1.72 inside `--measure`. These
+   classes exist because roughly thirty pages set the same three or four
+   declarations inline; naming them means a type change is one edit.
+   ───────────────────────────────────────────────────────────────── */
+
+/* Display and body copy are the same family (Newsreader) — the difference is
+   optical size and letter-spacing, not typeface.
+
+   `var(--font-serif)` directly, not via a `--font-display` alias. next/font
+   declares the real `--font-serif` on <body>, while Tailwind's `@theme` block
+   emits `--font-serif: var(--font-serif)` into `:root`. An alias declared in
+   `:root` resolves *there*, hits that self-reference, computes to the
+   guaranteed-invalid value, and every `.display` heading silently falls back
+   to the inherited sans. Referencing `--font-serif` at the point of use
+   resolves against <body>, where it has a real value. */
+.display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--tx);
+}
+
+/* Body copy. Lesson prose, margin notes, table cells — anything a
+   student reads as sentences rather than scans as a label. */
+.prose-body {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.72;
+  color: var(--tx);
+}
+
+.prose-body-sm {
+  font-family: var(--font-serif);
+  font-size: 16.5px;
+  line-height: 1.6;
+  color: var(--tx2);
+}
+
+/* The text column, and the column-plus-margin-rail it sits in. */
+.measure {
+  max-width: var(--measure);
+}
+
+.measure-wide {
+  max-width: calc(var(--measure) + var(--gutter) + 44px);
+}
+
+/* Two-track lesson row: prose at `--measure`, margin note in `--gutter`.
+   Collapses to one column below 1240px — see the responsive block. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, var(--measure)) var(--gutter);
+  column-gap: 44px;
+  align-items: start;
+}
+
+/* Highlighter. A hand-drawn wash rather than a rectangle, so an
+   emphasised clause reads as marked-up rather than as a UI state.
+   Animates in once; `prefers-reduced-motion` kills it above. */
+.mark {
+  background-color: transparent;
+  background-image: linear-gradient(
+    101deg,
+    transparent 0.4%,
+    var(--mark) 1.6%,
+    var(--mark) 97.5%,
+    transparent 99.2%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  color: var(--tx);
+  padding: 0.05em 0.14em;
+  border-radius: 3px 7px 4px 6px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  animation: mark-in 0.7s 0.2s ease-out backwards;
+}
+
+/* Inline code inside lesson prose. Mono, one step down in size so it
+   sits on the serif baseline instead of towering over it. */
+.prose-body code,
+.prose-body-sm code,
+.lesson-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  color: var(--tx);
+  background: var(--bg2);
+  border: 1px solid var(--rule-soft);
+  border-radius: 2px;
+  padding: 0.1em 0.34em;
+}
+
+/* Lists in lesson prose.
+   Targeting the `list-disc` / `list-decimal` utilities rather than the bare
+   element means this hits exactly the lists a student reads as prose, and
+   leaves the unstyled ones the layout uses (the "You'll need" panel, nav
+   groups) alone. Two-class specificity, so it also wins over the leftover
+   `text-sm text-slate-600` utilities on older pages without having to strip
+   them from every call site. */
+.lesson-body .list-disc,
+.lesson-body .list-decimal {
+  max-width: var(--measure);
+  padding-left: 1.35em;
+  margin-left: 0;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--tx2);
+}
+
+.lesson-body .list-disc > li::marker,
+.lesson-body .list-decimal > li::marker {
+  color: var(--accent);
+}
+
+/* Inside a Box or a card the list is already inside a measure — don't let it
+   set a second, narrower one. */
+.lesson-body .module .list-disc,
+.lesson-body .module .list-decimal,
+.lesson-body [role="note"] .list-disc,
+.lesson-body [role="note"] .list-decimal {
+  max-width: none;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+
+/* Vertical rhythm.
+
+   Inside a `.lesson-stack` the spacing is the flex `gap`, full stop. Direct
+   children still carry `mb-3` / `mt-4` / `mb-8` from the previous design, and
+   a margin adds to a flex gap rather than collapsing into it — so a page ended
+   up with 26px here, 42px there and 58px somewhere else, which reads as
+   nothing in particular. Zeroing the outer margin on direct children only
+   leaves all the internal `space-y-*` and nested margins untouched.
+
+   Unlayered on purpose: Tailwind's utilities live in `@layer utilities`, and
+   unlayered rules beat layered ones, so this wins without `!important`. */
+.lesson-stack > * {
+  margin-block: 0;
+}
+
+/* Section numbering. A CSS counter rather than a `number` prop on every
+   `<LessonSection>`: inserting a section in the middle of a lesson used to
+   mean renumbering every section below it by hand, and pages drifted into
+   having two 03s. Only titled sections carry `.sec-num`, so an untitled
+   opening passage doesn't consume a number. */
+.lesson-body {
+  counter-reset: sec;
+}
+
+.sec-num::before {
+  counter-increment: sec;
+  content: counter(sec, decimal-leading-zero);
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Responsive collapse
+
+   One breakpoint does the real work: below 1240px the margin rail has
+   nowhere to go, so every two-track grid becomes one column and the
+   margin notes fall inline beneath the prose they annotate.
+   ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1240px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 22px;
+  }
+  .measure-wide {
+    max-width: var(--measure);
+  }
 }
 
 /* Corner tick marks — used on hero modules to read as "blueprint". */
@@ -332,44 +526,28 @@ body {
    ───────────────────────────────────────────────────────────────── */
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 4px;
+  background: var(--rule);
+  border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--line-soft);
+  background: var(--tx3);
 }
 
-/* ─────────────────────────────────────────────────────────────────
-   Legacy: kept until Phase 3 reworks `.before-block` / `.after-block`
-   ───────────────────────────────────────────────────────────────── */
-
+/* Generic bordered surface. A handful of older components still reach for
+   this; new work should use `.module`, which is the same thing named for what
+   it is. */
 .card {
-  background-color: var(--card);
-  color: var(--card-foreground);
-  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--tx);
+  border: 1px solid var(--rule);
   border-radius: var(--r);
-}
-
-@layer components {
-  .before-block {
-    @apply bg-red-50 dark:bg-red-950/30 p-4 rounded-lg border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300;
-  }
-  .before-title {
-    @apply font-bold text-red-700 dark:text-red-300 mb-2;
-  }
-  .after-block {
-    @apply bg-primary-50 dark:bg-primary-900/20 p-4 rounded-lg border border-primary-200 dark:border-primary-900 text-primary-800 dark:text-primary-300;
-  }
-  .after-title {
-    @apply font-bold text-primary-700 dark:text-primary-300 mb-2;
-  }
 }
 
 ::view-transition-old(root),

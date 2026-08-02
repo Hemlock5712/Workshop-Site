@@ -328,13 +328,13 @@ export const CommandsLesson: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "This is the full command framework lesson. One loop runs everything a robot does. Today we go deep. You will learn holds, the commands that never finish. You will learn the one rule that keeps holds safe. Then conflicts, cancellation, default commands, chained routines, and bindings that clean up after themselves.",
+      text: "One loop decides everything your robot does, fifty times a second, forever. Miss how that loop makes its decisions and you get the classic symptoms: an arm that twitches, an auto that stalls on step two, and a night of print statements. So we're going slow through the part nobody explains.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "tick-when",
-      text: "Everything starts with one tick of the loop. First piece: the trigger. A trigger is anything that answers true or false. A button. A sensor. The trigger is the WHEN. It marks the moment something should start. Watching every trigger is the scheduler. Each tick, it decides what runs, what keeps running, and what gets cancelled.",
+      text: "Start with the trigger. It isn't an event and it doesn't queue anything up. It's a boolean that something keeps asking about: whether the A button is down, whether the flywheel got up to speed. Every tick, the scheduler asks all of them and decides what the answers ought to change.",
       camera: { x: 2580, y: 380, width: 1600, height: 880 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "trigger" } },
@@ -348,7 +348,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "tick-how-what",
-      text: "When a trigger fires, the scheduler starts a command. A command is one action the robot can do. That is the HOW. Every command names the mechanism it needs. A mechanism is one physical thing, like the arm. That is the WHAT. The scheduler tracks who owns what. One owner per mechanism. So two commands can never fight over the same motor.",
+      text: "When something goes true, a command gets scheduled. Every command declares the Mechanism it moves. That isn't a convention you can skip: in version three a command is a factory method on the class that owns the motor. Which is what buys you the guarantee that two commands never write to the same hardware.",
       camera: FLOW,
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "command" } },
@@ -362,7 +362,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "anatomy",
-      text: "Here's what a mechanism looks like in code. Arm extends Mechanism. The hardware lives in private fields. Private means only the Arm can touch the motor. Everything else must go through a command, a factory method on this class. And every command must end in dot named. An unnamed command will not even compile.",
+      text: "Arm extends Mechanism. The TalonFX is a private field, and that's the point: nothing outside this class can touch that motor, so teleop can't start fighting your auto over it. Everything moves through a factory method on the Arm. Each one ends with a name, or it won't compile.",
       camera: SHAPES_CODE,
       events: [
         {
@@ -376,7 +376,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "shape-finish",
-      text: "Now the everyday shape: a hold. runRepeatedly runs its body every scheduler tick. So this command re-sends the target position forever. The arm goes to the angle and stays there, fighting gravity. And the name ends in hold, in parentheses. That suffix is the team's convention.",
+      text: "Call this one a hold. It's the shape you'll write ninety percent of the time: runRepeatedly re-fires the same closed-loop request tick after tick, which is what fights gravity, so stop asking and the arm drops. The command has no ending. That's deliberate.",
       camera: SHAPES_CODE,
       events: [
         {
@@ -390,7 +390,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "shape-park",
-      text: "Here is the one rule, and it is the big one. A hold never finishes. So nothing may ever wait on a hold. Put a bare hold in a sequence, and the sequence sticks there forever. The next step never starts. The name is your clue: a stuck routine sitting on a hold command is the bug.",
+      text: "One rule falls out of that, and it's the rule that eats a Saturday. Drop a bare hold into a sequence and the sequence sits on it. Forever. Your auto drives out, raises the arm, then spends the last twelve seconds of the match doing nothing. The stuck step is named hold.",
       camera: SHAPES_CODE,
       events: [
         {
@@ -403,7 +403,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "shape-wait",
-      text: "So how does a routine wait for the arm? Never inside the factory. There is no scoring-and-wait method. Instead, the mechanism answers a question: am I at my target yet? At the call site you write dot until, arm is at target. That gives the hold a finish line, right where you need it.",
+      text: "A routine needs to know when the arm actually got there, and the tempting move is to write a scoring-and-wait factory. Don't. The Arm only answers a question: am I inside tolerance. Whoever chains the routine bolts the finish line on there, which keeps the decision next to the routine that cares about it.",
       camera: { x: 5540, y: 460, width: 1500, height: 700 },
       events: [
         {
@@ -417,7 +417,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "conflict-setup",
-      text: "Now the big question. Two commands want the arm at the same time. Say the stowed hold is running. It owns the Arm. The scheduler keeps track of which command owns which mechanism. Ownership is exclusive. One owner per mechanism, always. So what happens when a second command shows up?",
+      text: "Two commands, one arm. It happens constantly: the stowed hold is running, your driver hits the scoring button, and now two pieces of code both want that motor. Plenty of frameworks would let them both write and let whichever ran last win the tick. That's how arms twitch.",
       camera: CONFLICT,
       events: [
         {
@@ -430,7 +430,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "conflict-takeover",
-      text: "Press a button, and the scoring hold gets scheduled. It needs the Arm too. The scheduler settles it right away. It cancels the older command. The stowed hold is dropped. Then scoring takes over the mechanism. No sharing. No negotiation. The newer command simply owns the arm now.",
+      text: "Version three settles that in one tick. The scoring hold needs the Arm. The scheduler doesn't ask anybody; it cancels whichever command is older, and scoring takes the motor. No sharing, no negotiation. Newest schedule wins, which is why a driver's button always beats a routine that's still running.",
       camera: CONFLICT,
       events: [
         {
@@ -456,13 +456,13 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "conflict-priority",
-      text: "One setting can change that outcome: priority. Every command has a priority number. The default is zero. Idle is the lowest of all. Raise a command with withPriority, and it can pre-empt lower-priority commands on the same mechanism. That is how an emergency stop refuses to lose the argument.",
+      text: "There's one dial that changes the outcome: priority. Every command carries a number, zero by default, and withPriority raises it enough to shove a lower command off the mechanism. You'll use this twice: a safety stop that refuses to lose, and a climb nothing gets to interrupt.",
       camera: { x: 8300, y: 330, width: 1280, height: 760 },
       holdAfter: 0.5,
     },
     {
       id: "cancellation",
-      text: "How does a hold end? Only by being cancelled. A driver lets go of a button, or a finish line trips. Usually that is fine, because the motor keeps its last request. But some mechanisms need cleanup when their command is taken away. That cleanup goes in whenCanceled. It is a hook that fires only on cancellation.",
+      text: "A hold ends one way: something cancels it. Driver lets go, a finish line trips, a higher-priority command muscles in. Usually you don't care, because the TalonFX holds its last request until someone sends a new one. A climber under load needs a hand on the way out. That's what whenCanceled is for.",
       camera: SAFETY_CODE,
       events: [
         {
@@ -476,7 +476,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "defaults",
-      text: "So what runs when nothing claims a mechanism? The default command. Every mechanism has one. Out of the box it is idle, which means do nothing. Or pick your own. Here the arm falls back to its stowed hold. Release every button, and the arm tucks itself away. Press one, and that button's command takes over again.",
+      text: "When no command claims a mechanism, its default command runs. Ships as idle, which does nothing, and that's a perfectly good answer for a drivetrain. For an arm it's a wasted opportunity: point the default at the stowed hold, and the arm parks itself the instant your driver stops asking for anything.",
       camera: SAFETY_CODE,
       events: [
         {
@@ -490,7 +490,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "compose",
-      text: "Now let's chain a routine: drive out, then stow the arm. Command dot sequence runs steps in order. The drive step finishes on its own, so it sits in the sequence as is. But stow is a hold. It gets a finish line at the call site: dot until, arm is at target. Remember the one rule. Never a bare hold in a sequence.",
+      text: "Chaining is where the one rule earns its keep. Command.sequence runs steps in order, and DriveToPose is fine, because it ends by itself once the robot arrives. The stow step won't. So the routine attaches the finish line, asking the arm whether it's in tolerance, and moves on the moment that goes true.",
       camera: COMPOSE_CODE,
       events: [
         {
@@ -504,7 +504,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "parallel-flavors",
-      text: "Two more tools. Command dot race means: do this step WHILE holding. A race ends when its first member finishes, and it cancels the rest. The hold never finishes. So the step always decides. Then withTimeout, the seatbelt. Cap any step that waits on a sensor. A stuck auto moves on, instead of burning the whole period.",
+      text: "Two more tools. A race pairs a step with a hold and ends the instant either one finishes; the hold never will, so the step decides. That's Command.race. Then withTimeout, the seatbelt: cap anything waiting on a sensor, because a beam break that never trips shouldn't cost you the auto.",
       camera: { x: 13040, y: 520, width: 1500, height: 660 },
       events: [
         {
@@ -518,7 +518,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "ontrue",
-      text: "Last layer: the bindings. Teleop is its own class, called an OpMode. Its bindings live in the constructor. Holds get bound with whileTrue. Hold the A button, and the scoring hold runs. Let go, and the scheduler cancels it. The arm's default command takes back over.",
+      text: "Last layer. Teleop is a class in version three, an OpMode, and its bindings live in the constructor. Holds attach with whileTrue. Press and hold A, scoring runs; let go, and the scheduler drops it, so the arm goes back to whatever it does when nobody is asking.",
       camera: OPMODE_CODE,
       events: [
         {
@@ -537,7 +537,7 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "whiletrue",
-      text: "What about onTrue? onTrue fires a command once, the moment the button goes down. Save it for commands that finish on their own, like a heading reset. Never bind a bare hold with onTrue. That hold would run forever. The default command would never come back.",
+      text: "Its sibling, onTrue, fires once on the press and then walks away. Right for a heading reset, or a shot that ends when the piece is gone. Wire a hold to onTrue and nothing short of the match ending takes it back.",
       camera: { x: 15320, y: 380, width: 1440, height: 810 },
       events: [
         {
@@ -551,13 +551,13 @@ export const CommandsLesson: TrailerScript = {
     },
     {
       id: "teardown",
-      text: "And bindings clean up after themselves. Every binding belongs to its OpMode. Switch modes, and the old OpMode's bindings are torn down automatically. Pick teleop again, and a fresh OpMode builds fresh bindings. You never unregister anything by hand.",
+      text: "Bindings clean up after themselves, which is the part that used to eat a hundred lines of teardown code. Each one belongs to the OpMode that built it, so switching to autonomous takes the teleop bindings with it. Nothing to unregister.",
       camera: OPMODE_CODE,
       holdAfter: 0.5,
     },
     {
       id: "cta",
-      text: "That is the framework in full. Holds that never finish. One rule: never wait on a hold. One owner per mechanism. Defaults for the quiet ticks. Chains for the routines. whileTrue for the buttons. Coroutines? That is the advanced dialect. You can skip it. Every piece, with runnable code, at frc5712.com.",
+      text: "Coroutines are the advanced dialect underneath all of this, and you can ignore them for a season and still ship a robot that works. The one rule you cannot ignore. So go write a hold, chain it into an auto, and get a sequence stuck on purpose, where it costs you nothing.",
       camera: END,
       holdAfter: 1.2,
     },

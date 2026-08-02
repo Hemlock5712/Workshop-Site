@@ -1,744 +1,960 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
-import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import GitHubContent from "@/components/GitHubContent";
 import Box from "@/components/Box";
+import CollapsibleSection from "@/components/CollapsibleSection";
+import DocumentationButton from "@/components/DocumentationButton";
+import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
+import { GitBranch } from "lucide-react";
 
-export default function AdvancedDriveToPoint() {
+export default function ProfiledDriveToPoint() {
   return (
-    <PageTemplate title="Advanced: Profiled Drive to Point">
-      {/* Introduction */}
+    <PageTemplate
+      title="Plan the whole trip, then follow the plan"
+      emphasis="follow the plan"
+      lede="The Drive to Point command you have now points the robot at the goal and turns the distance remaining into speed. Far away it asks for an enormous speed. Close in it asks for almost none. The robot lurches off the line and then creeps in at the end."
+      needs={[
+        <>
+          <strong>Drive to Point</strong> finished, so you have{" "}
+          <code>commands/DriveToPoint.java</code> and{" "}
+          <code>utils/ClassicCommand.java</code> on disk, and A and B bound in{" "}
+          <code>TeleopOpMode</code>.
+        </>,
+        <>
+          <strong>Logging</strong>, from earlier in Workshop #2. One of the
+          checks at the bottom of this page is a graph of a NetworkTables value.
+        </>,
+        <>
+          <strong>Swerve Calibration</strong>, so odometry is trustworthy. This
+          command drives to an absolute field pose, and it can only be as
+          accurate as the pose it is comparing against.
+        </>,
+      ]}
+      branch="6-ProfiledToPoint"
+      time="Roughly 45 minutes to read and make the change"
+    >
       <KeyConceptSection
-        title="Profiled Path Following with Feedforward Control"
-        description="The advanced DriveToPoint command combines motion profiling with feedforward control to achieve smooth, predictable autonomous movement. Instead of relying solely on PID feedback, this approach plans a velocity profile and proactively applies the forces needed to follow it."
-        concept="Feedforward control anticipates what forces are needed based on the planned trajectory, while feedback (PID) handles small corrections for disturbances. Together, they create smooth, accurate autonomous navigation."
+        description={[
+          "This lesson changes one file. Before the robot moves, the command works out the entire trip — speed up, cruise, slow down — and then follows that plan. PID stops being the driver and becomes the small correction on top.",
+        ]}
+        concept="Feedforward is the speed the plan says you should be going right now. Feedback (PID) is the small nudge that covers the gap between the plan and where the robot actually is."
       />
 
-      {/* Motion Profiling Fundamentals */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Motion Profiling Fundamentals
-        </h2>
+      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
+        <p className="mt-3">
+          <strong>Branch:</strong> <code>6-ProfiledToPoint</code>, one commit
+          past <code>5-DriveToPoint</code> (PR #12). It touches{" "}
+          <strong>one file</strong> —{" "}
+          <code>src/main/java/frc/robot/commands/DriveToPoint.java</code>, which
+          grows from 87 lines to 120. Nothing else on the branch changes, not
+          even the button bindings.
+        </p>
+        <p className="mt-3">
+          <strong>What you&apos;ll build:</strong> the same class, the same
+          button, but the robot ramps up, cruises, slows down and stops on its
+          own. <strong>Roughly 45 minutes</strong> to read and make the change.
+          Tuning it on a real robot takes longer.
+        </p>
+      </Box>
 
-        <ContentCard>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            What is Motion Profiling?
-          </h3>
-          <p className="text-slate-700 dark:text-slate-300 mb-6">
-            Motion profiling generates smooth trajectories that respect your
-            robot&apos;s physical capabilities. Instead of jerky movements from
-            instant velocity changes, profiled paths smoothly accelerate, cruise
-            at maximum speed, then decelerate to the target.
-          </p>
+      {/* ── the problem ──────────────────────────────────────────────── */}
+      <LessonSection
+        id="what-is-wrong-with-the-version"
+        title="What is wrong with the version you have"
+      >
+        <p className="prose-body measure">
+          Here is the whole control loop from <code>5-DriveToPoint</code>. Three
+          controllers, three numbers, straight out to the drivetrain.
+        </p>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-                Acceleration Phase
-              </h4>
-              <p className="text-blue-800 dark:text-blue-200 text-sm">
-                Ramps up from current velocity to maximum velocity using
-                controlled acceleration (4 m/s²)
-              </p>
-            </div>
+        <CodeBlock
+          language="java"
+          title="5-DriveToPoint — DriveToPoint.java, the version you have now"
+          code={`private final PIDController xController = new PIDController(10, 0, 0);
+private final PIDController yController = new PIDController(10, 0, 0);
+private final PIDController headingController = new PIDController(7, 0, 0);
 
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-                Cruise Phase
-              </h4>
-              <p className="text-green-800 dark:text-green-200 text-sm">
-                Maintains maximum velocity (4.3 m/s) for most of the distance
-                when possible
-              </p>
-            </div>
+@Override
+protected void execute() {
+  Pose2d currentPose = drivetrain.getPose();
 
-            <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-orange-900 dark:text-orange-300 mb-3">
-                Deceleration Phase
-              </h4>
-              <p className="text-orange-800 dark:text-orange-200 text-sm">
-                Smoothly brakes to reach the target position with zero velocity
-              </p>
-            </div>
-          </div>
+  double vx = xController.calculate(currentPose.getX(), targetPose.getX());
+  double vy = yController.calculate(currentPose.getY(), targetPose.getY());
+  double omega =
+      headingController.calculate(
+          currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
 
-          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-            <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-3">
-              Key Constraints
-            </h4>
-            <ul className="space-y-2 text-slate-700 dark:text-slate-300">
-              <li>
-                <strong>Max Velocity:</strong> 4.3 m/s (translation), π rad/s
-                (rotation)
-              </li>
-              <li>
-                <strong>Max Acceleration:</strong> 4 m/s² (translation), 2π
-                rad/s² (rotation)
-              </li>
-              <li>
-                <strong>Benefits:</strong> Prevents wheel slip, reduces
-                mechanical stress, and makes behavior more predictable
-              </li>
-            </ul>
-          </div>
-        </ContentCard>
-      </section>
-
-      {/* Tuning Max Velocity and Acceleration */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Tuning Max Velocity and Acceleration
-        </h2>
-
-        <ContentCard>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Finding the Right Constraints
-          </h3>
-          <p className="text-slate-700 dark:text-slate-300 mb-6">
-            Your velocity and acceleration constraints need to be conservative
-            enough that the robot can actually track them, but fast enough to
-            stay competitive.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-                Maximum Velocity (kMaxV)
-              </h4>
-              <div className="space-y-3 text-blue-800 dark:text-blue-200 text-sm">
-                <p>
-                  <strong>
-                    Set to ~90% of your robot&apos;s maximum speed
-                  </strong>
-                </p>
-                <p>
-                  Why not 100%? This headroom lets your feedback controller
-                  &quot;catch up&quot; if the robot falls behind the planned
-                  trajectory.
-                </p>
-                <div className="bg-blue-100 dark:bg-blue-950 p-3 rounded mt-3">
-                  <p className="font-mono text-xs">
-                    Example: If max speed is 4.8 m/s
-                    <br />
-                    Set kMaxV = 4.3 m/s (90%)
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-                Maximum Acceleration (kMaxAccel)
-              </h4>
-              <div className="space-y-3 text-green-800 dark:text-green-200 text-sm">
-                <p>
-                  <strong>
-                    Set to a value that gets you close to max speed in ~1 second
-                  </strong>
-                </p>
-                <p>
-                  Start with kMaxV as your initial guess, then tune by graphing
-                  actual velocity against target velocity. Reduce if your robot
-                  can&apos;t track the trajectory.
-                </p>
-                <div className="bg-green-100 dark:bg-green-950 p-3 rounded mt-3">
-                  <p className="font-mono text-xs">
-                    Example: kMaxV = 4.3 m/s
-                    <br />
-                    Start with kMaxAccel = 4.0 m/s²
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6">
-            <h4 className="text-lg font-bold text-yellow-900 dark:text-yellow-300 mb-3">
-              Validation Method: Graph Velocity Tracking
-            </h4>
-            <div className="space-y-3 text-yellow-800 dark:text-yellow-200 text-sm">
-              <p>
-                The best way to validate your constraints is to log and graph
-                your robot&apos;s actual velocity against the planned trajectory
-                velocity:
-              </p>
-              <ol className="list-decimal ml-6 space-y-2">
-                <li>
-                  Enable logging for both <code>setpoint.velocity</code>{" "}
-                  (planned) and the robot&apos;s actual chassis velocity
-                </li>
-                <li>
-                  Run your DriveToPoint command and capture data using
-                  AdvantageScope
-                </li>
-                <li>
-                  Graph both velocities over time; they should track closely
-                </li>
-                <li>
-                  If actual velocity lags significantly behind planned velocity,
-                  reduce kMaxAccel
-                </li>
-                <li>
-                  If actual velocity consistently exceeds planned velocity, you
-                  have headroom to increase constraints
-                </li>
-              </ol>
-              <p className="mt-3 font-semibold">
-                Goal: Actual velocity should closely follow planned velocity
-                with minimal lag
-              </p>
-            </div>
-          </div>
-        </ContentCard>
-      </section>
-
-      {/* Feedforward vs Feedback Control */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Feedforward vs Feedback Control
-        </h2>
-
-        <ContentCard>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Understanding the Dual Control Strategy
-          </h3>
-          <p className="text-slate-700 dark:text-slate-300 mb-6">
-            The basic DriveToPoint command uses only{" "}
-            <strong>feedback control</strong> (PID): it measures error and
-            reacts to it. The advanced version adds{" "}
-            <strong>feedforward control</strong>, which anticipates what forces
-            are needed before errors occur.
-          </p>
-
-          <div className="overflow-x-auto mb-6">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-slate-200 dark:bg-slate-700">
-                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-left">
-                    Aspect
-                  </th>
-                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-left">
-                    Basic (Feedback Only)
-                  </th>
-                  <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-left">
-                    Advanced (Feedforward + Feedback)
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-slate-700 dark:text-slate-300">
-                <tr>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-semibold">
-                    Control Type
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Reactive: responds after error occurs
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Proactive + Reactive: anticipates needs and corrects
-                    disturbances
-                  </td>
-                </tr>
-                <tr className="bg-slate-50 dark:bg-slate-800">
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-semibold">
-                    Path Planning
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    None: direct to target
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Generates smooth trajectory with velocity profiles
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-semibold">
-                    PID Target
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Final target position (large errors)
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Moving setpoint on trajectory (small errors)
-                  </td>
-                </tr>
-                <tr className="bg-slate-50 dark:bg-slate-800">
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-semibold">
-                    Force Application
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Only from PID corrections
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Planned forces + PID corrections
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 font-semibold">
-                    Motion Quality
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Can be jerky and oscillation-prone
-                  </td>
-                  <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
-                    Smooth, predictable, minimal oscillation
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-            <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-              Car Driving Analogy
-            </h4>
-            <div className="space-y-3 text-blue-800 dark:text-blue-200 text-sm">
-              <p>
-                <strong>Feedback Only:</strong> Like driving by only looking at
-                lane lines and correcting when you drift. You&apos;re always
-                reacting to errors after they happen.
-              </p>
-              <p>
-                <strong>Feedforward:</strong> Like knowing you need to turn the
-                steering wheel before the curve based on the road ahead.
-                You&apos;re anticipating what&apos;s needed.
-              </p>
-              <p>
-                <strong>Combined Approach:</strong> You plan your steering based
-                on the road ahead (feedforward), but still make small
-                corrections if wind pushes you off course (feedback).
-              </p>
-            </div>
-          </div>
-        </ContentCard>
-      </section>
-
-      {/* Setpoint Tracking */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Setpoint Tracking
-        </h2>
-
-        <ContentCard>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Following a Trajectory vs Targeting an Endpoint
-          </h3>
-          <p className="text-slate-700 dark:text-slate-300 mb-6">
-            The big change in the advanced approach is using{" "}
-            <strong>moving setpoints</strong> from the trajectory instead of
-            just the final target position.
-          </p>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-red-900 dark:text-red-300 mb-3">
-                Basic Approach
-              </h4>
-              <CodeBlock
-                code={`// PID compares current to FINAL target
-double xError = targetX - currentX;
-double yError = targetY - currentY;
-
-// Large errors throughout journey
-// More oscillation and overshoot`}
-                language="java"
-              />
-            </div>
-
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-                Advanced Approach
-              </h4>
-              <CodeBlock
-                code={`// Sample CTRE's LinearPath for the moving setpoint at elapsed time t.
-LinearPath.State setpoint = path.calculate(t, startState, goal);
-
-// Compare to the moving setpoint's pose, not the final target.
-// (Was: targetX - currentX / targetY - currentY)
-double xError = setpoint.pose.getX() - currentX;
-double yError = setpoint.pose.getY() - currentY;
-
-// Small errors (just track the path) — smoother, less oscillation`}
-                language="java"
-              />
-            </div>
-          </div>
-
-          <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-            <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-3">
-              Why This Matters
-            </h4>
-            <ul className="space-y-2 text-slate-700 dark:text-slate-300">
-              <li>
-                <strong>Smaller Errors:</strong> PID only keeps the robot on the
-                planned path instead of correcting the entire distance to the
-                target
-              </li>
-              <li>
-                <strong>Smoother Control:</strong> the setpoint moves gradually
-                along the trajectory, so corrections stay gentle and overshoot
-                mostly disappears
-              </li>
-              <li>
-                <strong>Predictable Behavior:</strong> the robot follows a
-                planned path instead of whatever route PID happens to take
-              </li>
-            </ul>
-          </div>
-        </ContentCard>
-      </section>
-
-      {/* Wheel Force Calculations */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Wheel Force Feedforwards
-        </h2>
-
-        <ContentCard>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Understanding Force-Based Control
-          </h3>
-          <p className="text-slate-700 dark:text-slate-300 mb-6">
-            The advanced DriveToPoint calculates specific forces to apply to
-            each swerve module. This allows the robot to anticipate and execute
-            the accelerations needed to follow the planned trajectory.
-          </p>
-
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-6">
-            <h4 className="text-lg font-bold text-blue-900 dark:text-blue-300 mb-3">
-              What are Wheel Forces?
-            </h4>
-            <p className="text-blue-800 dark:text-blue-200 text-sm mb-3">
-              When you command a swerve drivetrain to accelerate or turn, each
-              wheel module needs to apply specific forces. The
-              WheelForceCalculator determines exactly how much force each wheel
-              should generate based on:
-            </p>
-            <ul className="space-y-2 text-blue-800 dark:text-blue-200 text-sm ml-4">
-              <li>• The desired change in velocity (from trajectory)</li>
-              <li>• Robot&apos;s mass and moment of inertia (MOI)</li>
-              <li>• Each wheel&apos;s position relative to robot center</li>
-              <li>• Required acceleration to stay on trajectory</li>
-            </ul>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-3">
-                How It Works
-              </h4>
-              <ol className="space-y-3 text-slate-700 dark:text-slate-300 text-sm list-decimal ml-4">
-                <li>
-                  Calculate velocity change needed (current setpoint - previous
-                  setpoint)
-                </li>
-                <li>Divide by time step (dt) to get required acceleration</li>
-                <li>
-                  Account for robot mass and moment of inertia (MOI parameter)
-                </li>
-                <li>Distribute forces across all wheel modules</li>
-                <li>Return X and Y force arrays for each wheel</li>
-              </ol>
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-6">
-              <h4 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-3">
-                Phoenix 6 Integration
-              </h4>
-              <p className="text-slate-700 dark:text-slate-300 text-sm mb-3">
-                CTRE&apos;s Phoenix 6 API accepts force feedforwards directly:
-              </p>
-              <CodeBlock
-                code={`driveRequest
-  .withVelocity(correctedVelocities)     // ChassisVelocities via ApplyFieldVelocity.withVelocity(...)
-  .withWheelForceFeedforwardsX(forces.x) // Phoenix 6 force feedforwards
-  .withWheelForceFeedforwardsY(forces.y)`}
-                language="java"
-              />
-            </div>
-          </div>
-
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
-            <h4 className="text-lg font-bold text-green-900 dark:text-green-300 mb-3">
-              Tuning: The MOI Parameter
-            </h4>
-            <p className="text-green-800 dark:text-green-200 text-sm mb-3">
-              The moment of inertia (MOI) parameter represents your robot&apos;s
-              resistance to rotation. Higher MOI means more force is needed for
-              rotational changes.
-            </p>
-            <p className="text-green-800 dark:text-green-200 text-sm">
-              A reasonable starting estimate is{" "}
-              <code>MOI ≈ mass × (trackwidth / 2) × (wheelbase / 2)</code>.
-              Treat the robot as a uniform box and refine from there. For a
-              measured value, CTRE&apos;s{" "}
-              <a
-                href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/mechanisms/swerve/swerve-builder-api.html"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-green-600 dark:hover:text-green-400"
-              >
-                swerve API documentation
-              </a>{" "}
-              covers characterizing the drivetrain. For a measured number, run
-              WPILib&apos;s SysId tool (it wiggles the robot and records how it
-              responds) while spinning in place; the rotation data it collects
-              lets you calculate the MOI.
-            </p>
-          </div>
-        </ContentCard>
-      </section>
-
-      {/* Workshop Implementation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation
-        </h2>
-
-        <ContentCard>
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-            Profiled DriveToPoint Code
-          </h3>
-          <p className="text-slate-700 dark:text-slate-300 mb-6">
-            View the complete implementation in the workshop code repository.
-            The pull request shows the profiled path following with feedforward
-            control.
-          </p>
-          <GitHubContent
-            repository="Hemlock5712/Workshop-Code"
-            filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
-            branch="6-ProfiledToPoint"
-            pr={{ number: 12, focusFile: "DriveToPoint.java" }}
-          />
-        </ContentCard>
-
-        <Box variant="alert-info" tag="NOTE" title="The profiled command shape">
-          <p>
-            The profiled loop lives in a command that{" "}
-            <code>extends ClassicCommand</code>, which gives you the explicit
-            initialize / execute / isFinished / end lifecycle, the same shape
-            the template&apos;s own <code>DriveToPose</code> uses. CTRE&apos;s
-            straight-line profile generator is <code>LinearPath</code>, sampled
-            each loop with <code>path.calculate(t, startState, goal)</code>, and
-            the field-relative velocity request is{" "}
-            <code>SwerveRequest.ApplyFieldVelocity</code> taking a{" "}
-            <code>ChassisVelocities</code>.
-          </p>
-          <CodeBlock
-            language="java"
-            title="Profiled DriveToPoint (sketch, mirrors the template's DriveToPose)"
-            code={`public class ProfiledDriveToPoint extends ClassicCommand {
-  private final DriveMechanism drivetrain;
-  private final Pose2d goal;
-
-  // CTRE's straight-line profile generator: translation + rotation constraints.
-  private final LinearPath path =
-      new LinearPath(
-          new TrapezoidProfile.Constraints(MAX_V, MAX_A),
-          new TrapezoidProfile.Constraints(Math.PI, 2.0 * Math.PI));
-
-  // Field-relative velocity request in the blue-origin frame (same frame as odometry).
-  private final SwerveRequest.ApplyFieldVelocity driveRequest =
-      new SwerveRequest.ApplyFieldVelocity()
-          .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance);
-
-  private LinearPath.State startState = new LinearPath.State();
-  private LinearPath.State prev = new LinearPath.State();
-  private double startTime;
-
-  public ProfiledDriveToPoint(DriveMechanism drivetrain, Pose2d goal) {
-    super("ProfiledDriveToPoint", drivetrain); // name + requirement
-    this.drivetrain = drivetrain;
-    this.goal = goal;
-  }
-
-  @Override protected void initialize() {
-    // Capture the start pose + field velocity the trajectory is generated from.
-    startState = new LinearPath.State(drivetrain.getPose(), drivetrain.getFieldVelocity());
-    startTime = Utils.getCurrentTimeSeconds();
-    prev = startState;
-  }
-
-  @Override protected void execute() {
-    double t = Utils.getCurrentTimeSeconds() - startTime;
-    LinearPath.State setpoint = path.calculate(t, startState, goal);
-
-    // Feedback (PID) trims measured pose back onto the profiled pose...
-    ChassisVelocities corrected = applyPidCorrections(setpoint, drivetrain.getPose());
-    // ...and the optional wheel-force feedforward anticipates the accel.
-    WheelForces forces = wheelForceCalculator.compute(prev, setpoint, DT);
-
-    drivetrain.setControl(
-        driveRequest
-            .withVelocity(corrected)
-            .withWheelForceFeedforwardsX(forces.x)
-            .withWheelForceFeedforwardsY(forces.y));
-    prev = setpoint;
-  }
-
-  @Override protected boolean isFinished() {
-    return path.isFinished(Utils.getCurrentTimeSeconds() - startTime);
-  }
-
-  @Override protected void end(boolean interrupted) {
-    drivetrain.setControl(new SwerveRequest.Idle()); // runs on finish and cancel
-  }
+  drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
 }`}
-          />
+        />
+
+        <p className="prose-body measure">
+          With <code>kP = 10</code>, the speed this asks for is ten times the
+          distance left. Three meters from the goal it asks for{" "}
+          <strong>30 m/s</strong>. Nothing in that file limits it. The
+          drivetrain in the checked-in <code>TunerConstants.java</code> is rated
+          at <code>kSpeedAt12Volts = 4.54</code> m/s, so the request is pinned
+          at full throttle for most of the trip and then falls off a cliff as
+          the error shrinks. Two things follow from that:
+        </p>
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            <strong>The motion is ugly.</strong> Full power off the line, wheels
+            near slipping, then a long slow crawl into the goal. The controller
+            has no idea how fast the robot can actually go, so it never asks for
+            something reachable.
+          </li>
+          <li>
+            <strong>It never ends.</strong> <code>isFinished()</code> returns{" "}
+            <code>false</code> on that branch. The command runs until the driver
+            releases the button. A command that never finishes cannot be a step
+            inside <code>Command.sequence(...)</code>, which is what an
+            autonomous routine is made of.
+          </li>
+        </ul>
+      </LessonSection>
+
+      {/* ── the fix ──────────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-fix-let-a-plan-decide"
+        title="The fix: let a plan decide the speed"
+      >
+        <p className="prose-body measure">
+          Phoenix 6 ships a straight-line trip planner called{" "}
+          <code>LinearPath</code>. You hand it two sets of limits — how fast and
+          how hard the robot may drive, and how fast and how hard it may turn.
+          Then, every loop, you ask it one question:
+        </p>
+
+        <Box variant="concept" title="The only question you ask the plan">
+          <p>
+            &quot;It is <em>t</em> seconds into the trip. Where should the robot
+            be right now, and how fast should it be going?&quot;
+          </p>
+          <p className="mt-3">
+            The answer comes back as a <code>LinearPath.State</code>, which
+            holds two things: a <code>pose</code> (where) and a{" "}
+            <code>velocity</code> (how fast). That pair is the whole idea of
+            this lesson.
+          </p>
         </Box>
-      </section>
 
-      {/* Practical Applications */}
-      <CollapsibleSection title="When to Use Profiled Paths" variant="info">
-        <div className="space-y-4">
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-            <h4 className="font-bold text-green-900 dark:text-green-300 mb-2">
-              Best Use Cases
-            </h4>
-            <ul className="space-y-2 text-green-800 dark:text-green-200 text-sm">
-              <li>
-                • <strong>Autonomous Routines:</strong> Smooth, predictable
-                movement without overshoot
-              </li>
-              <li>
-                • <strong>High-Speed Navigation:</strong> Safely reach maximum
-                velocity without wheel slip
-              </li>
-              <li>
-                • <strong>Precise Positioning:</strong> Minimal oscillation when
-                reaching scoring positions
-              </li>
-              <li>
-                • <strong>Teleop Assists:</strong> Drive-to-position helpers
-                that feel smooth to drivers
-              </li>
-            </ul>
-          </div>
+        <p className="prose-body measure">
+          Plot that planned speed against time and you get a trapezoid, which is
+          where the name <code>TrapezoidProfile</code> comes from. Using the
+          branch&apos;s own driving limits — <strong>2.5 m/s</strong> top speed
+          and <strong>3.0 m/s²</strong> acceleration:
+        </p>
 
-          <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-            <h4 className="font-bold text-yellow-900 dark:text-yellow-300 mb-2">
-              When Basic Might Be Enough
-            </h4>
-            <ul className="space-y-2 text-yellow-800 dark:text-yellow-200 text-sm">
-              <li>
-                • <strong>Short Distances:</strong> Quick corrections where the
-                acceleration phase is minimal
-              </li>
-              <li>
-                • <strong>Learning/Testing:</strong> Understanding PID
-                fundamentals before adding complexity
-              </li>
-              <li>
-                • <strong>Simple Teleop Assists:</strong> Driver-controlled
-                movements with minimal autonomy
-              </li>
-            </ul>
-          </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          <Box variant="alert-info" tag="PHASE 1" title="Speed up">
+            <p>
+              Gain 3.0 m/s of speed every second. Reaching 2.5 m/s takes about{" "}
+              <strong>0.83 s</strong> and covers about <strong>1.04 m</strong>.
+            </p>
+          </Box>
+          <Box variant="alert-info" tag="PHASE 2" title="Cruise">
+            <p>
+              Hold 2.5 m/s for whatever distance is left in the middle. On a
+              short trip there is no middle and this phase never happens.
+            </p>
+          </Box>
+          <Box variant="alert-info" tag="PHASE 3" title="Slow down">
+            <p>
+              Shed 3.0 m/s of speed every second, timed so the robot arrives at
+              the goal with a planned speed of zero.
+            </p>
+          </Box>
         </div>
-      </CollapsibleSection>
 
-      {/* Quiz */}
+        <p className="prose-body measure">
+          Speeding up and slowing down each need about 1.04 m, so a trip has to
+          be longer than roughly <strong>2.1 m</strong> before the robot ever
+          touches 2.5 m/s. Anything shorter is a triangle: speed up, then
+          straight into slowing down. The plan handles that on its own — there
+          is no special case for you to write.
+        </p>
+      </LessonSection>
+
+      {/* ── make the change ──────────────────────────────────────────── */}
+      <LessonSection id="make-the-change" title="Make the change">
+        <p className="prose-body measure">
+          Everything below happens inside{" "}
+          <code>src/main/java/frc/robot/commands/DriveToPoint.java</code>. The
+          class keeps its name, keeps <code>extends ClassicCommand</code>, and
+          keeps its four methods. One rename to know about before you start: the
+          branch renames the field <code>targetPose</code> to <code>goal</code>,
+          because the plan now has a start <em>and</em> a goal and{" "}
+          &quot;target&quot; had become ambiguous. Step 4 makes that rename.
+        </p>
+
+        {/* step 1 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          1. Add three imports
+        </h3>
+
+        <CodeBlock
+          language="java"
+          title="Top of DriveToPoint.java — new lines only"
+          code={`import com.ctre.phoenix6.Utils;                          // the robot's clock
+import com.ctre.phoenix6.swerve.utility.LinearPath;      // the trip planner
+import org.wpilib.math.trajectory.TrapezoidProfile;      // the shape of the plan`}
+        />
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> none yet, and your editor will
+          probably gray all three out as unused. That is expected until step 2.
+        </p>
+
+        {/* step 2 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          2. Add the plan as a field
+        </h3>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java — a new field, next to the controllers"
+          code={`// The trip planner. First pair of limits: top speed (m/s) and acceleration (m/s²) for
+// driving. Second pair: the same for turning (rad/s, rad/s²).
+// TODO: tune to what your drivetrain can do.
+private final LinearPath path =
+    new LinearPath(
+        new TrapezoidProfile.Constraints(2.5, 3.0),
+        new TrapezoidProfile.Constraints(Math.PI, 2.0 * Math.PI));`}
+        />
+
+        <p className="prose-body measure">
+          <code>Math</code> is a class Java ships with. You never build one —
+          you call things on it by name. <code>Math.PI</code> is the constant
+          3.14159…, which is half a turn in radians, so the turning limits read
+          as half a turn per second and one full turn per second squared.
+        </p>
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> the project compiles again and the
+          imports stop being grayed out. The robot behaves exactly as before —
+          nothing reads <code>path</code> yet.
+        </p>
+
+        {/* step 3 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          3. Drop the PID gains
+        </h3>
+
+        <p className="prose-body measure">
+          This is the step people skip, and it is the one that matters most. All
+          three gains come down.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java — replace the three controllers"
+          code={`// BEFORE (5-DriveToPoint): PID produced the entire commanded velocity.
+private final PIDController xController = new PIDController(10, 0, 0);
+private final PIDController yController = new PIDController(10, 0, 0);
+private final PIDController headingController = new PIDController(7, 0, 0);
+
+// AFTER (6-ProfiledToPoint): PID only trims drift off the plan. Raise kP if the robot
+// lags the plan or stops short of the goal. Lower it (or add kD) if the robot wobbles.
+// TODO: tune.
+private final PIDController xController = new PIDController(3.0, 0.0, 0.0);
+private final PIDController yController = new PIDController(3.0, 0.0, 0.0);
+private final PIDController headingController = new PIDController(4.0, 0.0, 0.0);`}
+        />
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> nothing good, yet. Run it now and the
+          robot is <em>worse</em> — the X and Y gains are about a third of what
+          they were, heading is roughly half, and nothing has replaced the speed
+          they were producing. Steps 5 to 7 put the plan in charge. Do not stop
+          here.
+        </p>
+
+        {/* step 4 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          4. Rename the field to <code>goal</code>
+        </h3>
+
+        <p className="prose-body measure">
+          Four things change together: the field, the constructor parameter, the
+          assignment and the <code>@param</code> line in the javadoc above the
+          constructor. Your editor&apos;s rename refactor does all of them at
+          once. The constructor is otherwise untouched — the{" "}
+          <code>enableContinuousInput</code> call carries over from the last
+          lesson, minus its comment.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java — the field and the constructor"
+          code={`// BEFORE (5-DriveToPoint)
+private final Pose2d targetPose;
+
+public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
+  super("DriveToPoint", drivetrain); // command name + required mechanism
+  this.drivetrain = drivetrain;
+  this.targetPose = targetPose;
+
+  // Wrap heading error to [-pi, pi] so the robot turns the short way around.
+  headingController.enableContinuousInput(-Math.PI, Math.PI);
+}
+
+// AFTER (6-ProfiledToPoint)
+private final Pose2d goal;
+
+public DriveToPoint(DriveMechanism drivetrain, Pose2d goal) {
+  super("DriveToPoint", drivetrain); // command name + required mechanism
+  this.drivetrain = drivetrain;
+  this.goal = goal;
+  headingController.enableContinuousInput(-Math.PI, Math.PI);
+}`}
+        />
+
+        <p className="prose-body measure">
+          That is the second place <code>Math</code> turns up.{" "}
+          <code>enableContinuousInput(-Math.PI, Math.PI)</code> tells the
+          heading controller that its input wraps around at half a turn either
+          way, so a robot at 179° asked to reach −179° turns 2° rather than
+          358°.
+        </p>
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> the project compiles and the robot
+          behaves exactly as it did after step 3 — a rename refactor updates{" "}
+          <code>execute()</code> for you. Miss it and step 6 will not compile,
+          because the new <code>execute()</code> asks for <code>goal</code>.
+        </p>
+
+        {/* step 5 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          5. Take a snapshot when the command starts
+        </h3>
+
+        <p className="prose-body measure">
+          The plan is generated once, from where the robot was and how fast it
+          was moving at the moment the button went down. That snapshot and a
+          start time are the two new fields.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java — two new fields, and initialize()"
+          code={`// Where the robot was, and how fast it was moving, when the command started. The whole
+// trip is planned from this one snapshot.
+private LinearPath.State startState = new LinearPath.State();
+// When the command started. (now - startTime) says how far into the trip we are.
+private double startTime;
+
+/** Takes the starting snapshot and starts the trip clock. */
+@Override
+protected void initialize() {
+  startState = new LinearPath.State(drivetrain.getPose(), drivetrain.getFieldVelocity());
+  startTime = Utils.getCurrentTimeSeconds();
+  xController.reset();
+  yController.reset();
+  headingController.reset();
+}`}
+        />
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> still nothing on the robot, but{" "}
+          <code>getFieldVelocity()</code> is worth noticing. Feeding the
+          robot&apos;s current speed into the plan means the profile starts from
+          whatever the robot is already doing, instead of assuming it is
+          stopped.
+        </p>
+
+        {/* step 6 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          6. Rewrite <code>execute()</code>
+        </h3>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java — the new control loop"
+          code={`/** Runs every robot loop while the command is active. */
+@Override
+protected void execute() {
+  // Ask the plan where we should be, this many seconds into the trip.
+  double t = Utils.getCurrentTimeSeconds() - startTime;
+  LinearPath.State setpoint = path.calculate(t, startState, goal);
+
+  Pose2d measuredPose = drivetrain.getPose();
+
+  // The plan's velocity does the driving. Each PID call below adds a small correction that
+  // pulls the measured pose back onto the planned pose.
+  ChassisVelocities feedforward = setpoint.velocity;
+  double vx = feedforward.vx + xController.calculate(measuredPose.getX(), setpoint.pose.getX());
+  double vy = feedforward.vy + yController.calculate(measuredPose.getY(), setpoint.pose.getY());
+  double omega =
+      feedforward.omega
+          + headingController.calculate(
+              measuredPose.getRotation().getRadians(), setpoint.pose.getRotation().getRadians());
+
+  drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+}`}
+        />
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> hold B in the simulator and the robot
+          now ramps smoothly instead of lurching. It will drive past the goal
+          and keep going, because <code>isFinished()</code> still returns{" "}
+          <code>false</code>. Step 7 fixes that.
+        </p>
+
+        {/* step 7 */}
+        <h3
+          className="text-lg font-semibold"
+          style={{ color: "var(--fg)", marginBottom: "-8px" }}
+        >
+          7. Give the command a finish line
+        </h3>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java — isFinished()"
+          code={`/**
+ * Done when the planned trip time is up. The plan knows how long the whole trip takes, so
+ * "am I done" is just a time check - no position tolerances needed.
+ */
+@Override
+protected boolean isFinished() {
+  return path.isFinished(Utils.getCurrentTimeSeconds() - startTime);
+}`}
+        />
+
+        <p className="prose-body-sm measure">
+          <strong>Visible result:</strong> the robot arrives and stops, without
+          you releasing the button. <code>end(boolean)</code> is unchanged — it
+          still sends <code>new SwerveRequest.Idle()</code>, and it runs whether
+          the command finished on its own or was interrupted.
+        </p>
+
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT"
+          title="This finish line is a clock, not a tape measure"
+        >
+          <p>
+            <code>path.isFinished(t)</code> asks whether the <em>plan</em> is
+            over, not whether the robot arrived. If the robot fell behind — the
+            limits were too aggressive, or the gains are too low to close the
+            gap — the command ends anyway, wherever the robot happens to be.
+            That is the trade you are making for a finish line that never hangs.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── the gains ────────────────────────────────────────────────── */}
+      <LessonSection
+        id="why-the-gains-had-to-come"
+        title="Why the gains had to come down"
+      >
+        <p className="prose-body measure">
+          A PID controller answers one question:{" "}
+          <em>how far off am I, and what speed should that be worth?</em> What
+          changed between the two branches is not the question — it is the error
+          being fed in.
+        </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-[14px]">
+            <thead>
+              <tr>
+                <th
+                  className="border px-3 py-2 text-left"
+                  style={{
+                    borderColor: "var(--line)",
+                    color: "var(--fg)",
+                    background: "var(--bg-elev)",
+                  }}
+                >
+                  &nbsp;
+                </th>
+                <th
+                  className="border px-3 py-2 text-left"
+                  style={{
+                    borderColor: "var(--line)",
+                    color: "var(--fg)",
+                    background: "var(--bg-elev)",
+                  }}
+                >
+                  <code>5-DriveToPoint</code>
+                </th>
+                <th
+                  className="border px-3 py-2 text-left"
+                  style={{
+                    borderColor: "var(--line)",
+                    color: "var(--fg)",
+                    background: "var(--bg-elev)",
+                  }}
+                >
+                  <code>6-ProfiledToPoint</code>
+                </th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--fg-mute)" }}>
+              <tr>
+                <td
+                  className="border px-3 py-2 font-semibold"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  PID compares against
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  the final goal pose
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  <code>setpoint.pose</code> — where the plan says the robot
+                  should be <em>this loop</em>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border px-3 py-2 font-semibold"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  Typical error
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  meters, for most of the trip
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  centimeters, the whole trip
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border px-3 py-2 font-semibold"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  PID&apos;s job
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  produce the entire commanded velocity
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  add a correction on top of <code>setpoint.velocity</code>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border px-3 py-2 font-semibold"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  X / Y / heading kP
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  10 / 10 / 7
+                </td>
+                <td
+                  className="border px-3 py-2"
+                  style={{ borderColor: "var(--line)" }}
+                >
+                  3.0 / 3.0 / 4.0
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p className="prose-body measure">
+          Leave the gains at 10 and the correction stacks on top of a plan that
+          was already asking for the right speed. Ten centimeters of drift buys
+          a whole extra meter per second of command. The robot hunts around the
+          planned path instead of settling onto it.
+        </p>
+
+        <Box
+          variant="alert-warning"
+          tag="NOTE · UNTUNED"
+          title="3.0 / 3.0 / 4.0 are starting points, not answers"
+        >
+          <p>
+            The branch marks both the gains and the limits{" "}
+            <code>TODO: tune</code>. Its own comment says what to look for:{" "}
+            <em>
+              raise kP if the robot lags the plan or stops short of the goal;
+              lower it, or add kD, if the robot wobbles.
+            </em>{" "}
+            These numbers are a place to start, not values anyone measured for
+            your robot.
+          </p>
+          <p className="mt-3">
+            The limits are deliberately timid for the same reason. A 2.5 m/s
+            cruise is a little over half of the{" "}
+            <code>kSpeedAt12Volts = 4.54</code> m/s in the checked-in{" "}
+            <code>TunerConstants.java</code> — and that file is itself the
+            generator&apos;s example, not a measurement of your drivetrain.
+            Leaving headroom means the PID correction has somewhere to go when
+            the robot falls behind. A plan that asks for the robot&apos;s
+            absolute top speed leaves the correction nothing to add.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── feedforward ──────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-feedforward-is-one-line"
+        title="The feedforward is one line"
+      >
+        <p className="prose-body measure">
+          &quot;Feedforward&quot; sounds like it needs a model of the robot, its
+          mass and its wheels. Here it does not. The plan already knows how fast
+          the robot should be going, so the feedforward is that number, read
+          straight off the setpoint:
+        </p>
+
+        <CodeBlock
+          language="java"
+          hideControls
+          code={`ChassisVelocities feedforward = setpoint.velocity;`}
+        />
+
+        <p className="prose-body measure">
+          <code>ChassisVelocities</code> carries three numbers: <code>vx</code>{" "}
+          (meters per second across the field, away from the blue driver
+          station), <code>vy</code> (meters per second to the left) and{" "}
+          <code>omega</code> (radians per second, counter-clockwise). Each one
+          gets its PID correction added to it, and the sum goes out as a single
+          field-relative request.
+        </p>
+
+        <Box variant="concept" title="Two jobs, cleanly split">
+          <p>
+            <strong>
+              Feedforward answers &quot;what should I be doing?&quot;
+            </strong>{" "}
+            It is open-loop: it does not look at the robot at all. On a perfect
+            robot on a perfect floor, feedforward alone would drive the whole
+            trip and PID would contribute zero.
+          </p>
+          <p className="mt-3">
+            <strong>Feedback answers &quot;how far off am I?&quot;</strong> It
+            covers everything the plan cannot know about — wheel slip, carpet, a
+            nudge from another robot, odometry drift.
+          </p>
+        </Box>
+
+        <p className="prose-body measure">
+          One detail carried over unchanged from the previous lesson: the
+          request is built with{" "}
+          <code>.withDriveRequestType(DriveRequestType.OpenLoopVoltage)</code>,
+          so the speeds you send are turned straight into motor voltage. There
+          is no second PID loop on the wheels to tune underneath this one.
+        </p>
+      </LessonSection>
+
+      {/* ── the file ─────────────────────────────────────────────────── */}
+      <LessonSection id="the-whole-file" title="The whole file">
+        <p className="prose-body measure">
+          120 lines, and you have now seen every part that changed. The{" "}
+          <strong>GitHub Changes</strong> tab is PR #12 — one file, one commit,
+          59 lines added and 26 removed. Reading it side by side is the fastest
+          way to check your own edit.
+        </p>
+
+        <GitHubContent
+          repository="Hemlock5712/Workshop-Code"
+          filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
+          branch="6-ProfiledToPoint"
+          pr={{ number: 12, focusFile: "DriveToPoint.java" }}
+        />
+      </LessonSection>
+
+      {/* ── did it work ──────────────────────────────────────────────── */}
+      <LessonSection id="did-it-work" title="Did it work?">
+        <p className="prose-body measure">
+          The bindings are already in <code>TeleopOpMode</code> from the last
+          lesson, unchanged on this branch:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java — already there, nothing to add"
+          code={`// Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
+driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
+driver
+    .b()
+    .whileTrue(new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));`}
+        />
+
+        <ol
+          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            Start the simulator and enable Teleop, the same way you have all
+            course.
+          </li>
+          <li>
+            Hold <strong>B</strong>. <strong>You should see:</strong> the robot
+            eases away instead of snapping to full power, holds a steady speed
+            through the middle, and eases off at the end. From the field origin
+            the B goal is about 3.6 m away — comfortably past the 2.1 m needed
+            to reach cruise speed, so all three phases happen.
+          </li>
+          <li>
+            Keep holding <strong>B</strong> after it arrives.{" "}
+            <strong>You should see:</strong> the robot stops and stays stopped.
+            The command finished on its own; the button no longer matters. On{" "}
+            <code>5-DriveToPoint</code> it would still be pushing.
+          </li>
+          <li>
+            Open Glass or AdvantageScope and graph{" "}
+            <code>Drivetrain/TranslationSpeedMps</code> — the key{" "}
+            <code>Telemetry.java</code> publishes.{" "}
+            <strong>You should see:</strong> a trapezoid. A ramp up, a flat top
+            near 2.5, a ramp down to zero. That flat top is the proof the plan
+            is in charge, and it is the shape the old version could never
+            produce.
+          </li>
+          <li>
+            Now graph <code>Drivetrain/Pose</code> for the same run.{" "}
+            <strong>You should see:</strong> it settle close to (3, 2) with a
+            heading near 180°. How close is the tuning conversation — see the
+            failure list below.
+          </li>
+          <li>
+            Hold <strong>A</strong> from where the robot stopped, sending it
+            back to <code>Pose2d.kZero</code>. <strong>You should see:</strong>{" "}
+            the same trapezoid in the other direction, and the robot turning
+            back to 0° as it drives rather than spinning first and driving
+            second. Keep holding until it stops on its own — a quick tap
+            releases the button, and <code>whileTrue</code> cancels the command
+            when the button comes up.
+          </li>
+        </ol>
+
+        <Box
+          variant="alert-info"
+          tag="IF IT DIDN'T WORK"
+          title="Three things that go wrong here"
+        >
+          <ul className="ml-4 list-disc space-y-3">
+            <li>
+              <strong>
+                The robot wobbles or weaves along the path instead of tracking
+                it.
+              </strong>{" "}
+              You left the gains at 10 / 10 / 7. The plan is already supplying
+              the speed, so the old correction is now piled on top of it. Go
+              back to step 3. If they are already at 3.0 / 3.0 / 4.0 and it
+              still wobbles, the branch&apos;s own advice is to lower kP further
+              or add a little kD.
+            </li>
+            <li>
+              <strong>
+                The robot lunges off in the wrong direction the moment you press
+                the button.
+              </strong>{" "}
+              The <code>startState</code> line is missing from{" "}
+              <code>initialize()</code>, so the field is still the empty{" "}
+              <code>new LinearPath.State()</code> it was given at declaration.
+              The plan is being drawn from whatever that empty state holds
+              instead of from where the robot is. Re-check step 5.
+            </li>
+            <li>
+              <strong>
+                The command ends but the robot is short of the goal.
+              </strong>{" "}
+              The finish line is the plan&apos;s clock, so the command stops
+              when the plan says the trip is over. Either the robot could not
+              keep up with the limits — lower 2.5 / 3.0 until it can — or the
+              gains are too small to close the last of the gap. Graph{" "}
+              <code>Drivetrain/TranslationSpeedMps</code> again: if the measured
+              speed never reaches the flat top, the limits are the problem, not
+              the gains.
+            </li>
+          </ul>
+        </Box>
+      </LessonSection>
+
+      {/* ── what's next ──────────────────────────────────────────────── */}
+      <LessonSection
+        id="what-you-can-do-now-that"
+        title="What you can do now that it finishes"
+      >
+        <p className="prose-body measure">
+          <code>isFinished()</code> returning something real is the quiet payoff
+          of this lesson. A command with an ending is a <strong>step</strong>,
+          and steps are what <code>Command.sequence(...)</code> takes. Two legs
+          of a route now look like this:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="What the next lesson builds on"
+          code={`Command.sequence(
+        new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))),
+        new DriveToPoint(drivetrain, Pose2d.kZero))
+    .named("Out And Back")`}
+        />
+
+        <p className="prose-body measure">
+          On <code>5-DriveToPoint</code> that sequence would stick on the first
+          leg forever — THE ONE RULE, from Chaining Commands. The next lesson,{" "}
+          <strong>Autonomous: Driving to a Pose</strong>, is where you turn that
+          into a real <code>@Autonomous</code> OpMode and deal with seeding the
+          robot&apos;s starting pose.
+        </p>
+
+        <CollapsibleSection title="One name you may run into: WheelForceCalculator">
+          <p className="text-[15px] leading-relaxed">
+            Phoenix 6 also ships a <code>WheelForceCalculator</code>, which
+            works out a force for each individual swerve module from the
+            robot&apos;s mass and its moment of inertia, and feeds those forces
+            to the drivetrain as a second kind of feedforward. It is a genuine
+            class and a genuine technique.
+          </p>
+          <p className="mt-3 text-[15px] leading-relaxed">
+            <strong>The workshop code does not use it,</strong> and you do not
+            need it. The chassis-velocity feedforward on this page is what{" "}
+            <code>6-ProfiledToPoint</code> does, and it is enough to make the
+            motion smooth. It is named here only so you recognize it if you meet
+            it in another team&apos;s code.
+          </p>
+        </CollapsibleSection>
+
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/Workshop-Code/pull/12"
+          title="PR #12 — Update Drive to point to use profiled PID"
+          icon={<GitBranch className="w-5 h-5" />}
+        />
+      </LessonSection>
+
       <AlphaStatusNote />
 
       <Quiz
-        title="Test Your Understanding"
+        title="Knowledge Check"
         questions={[
           {
             id: 1,
             question:
-              "What are the three phases of a trapezoidal motion profile?",
+              "6-ProfiledToPoint drops the PID gains from 10 / 10 / 7 to 3.0 / 3.0 / 4.0. Why?",
             options: [
-              "Acceleration, cruise, deceleration",
-              "Start, middle, end",
-              "Fast, slow, stop",
-              "Forward, turn, backward",
+              "Smaller gains are always safer, whatever the controller is doing",
+              "PID no longer produces the driving velocity — it only corrects the small gap between the plan and the measured pose",
+              "LinearPath requires gains below 5.0",
+              "The lower gains make the robot reach the goal faster",
             ],
-            correctAnswer: 0,
+            correctAnswer: 1,
             explanation:
-              "Trapezoidal profiles have three phases: acceleration (ramp up to max velocity), cruise (maintain max velocity), and deceleration (smooth brake to target).",
+              "On 5-DriveToPoint, PID output WAS the commanded velocity, so it needed a big gain to move the robot at all. On 6-ProfiledToPoint, setpoint.velocity does the driving and PID only trims centimeters of drift. Leaving the gains at 10 stacks a large correction on a plan that was already correct, and the robot hunts.",
           },
           {
             id: 2,
             question:
-              "What is the main difference between feedforward and feedback control?",
+              "What does path.calculate(t, startState, goal) hand back each loop?",
             options: [
-              "Feedforward is faster than feedback",
-              "Feedforward anticipates needed forces, feedback reacts to errors",
-              "Feedforward only works with swerve drives",
-              "Feedback is more accurate than feedforward",
+              "The distance remaining to the goal",
+              "A LinearPath.State — the pose the robot should be at right now, and the velocity it should be moving at",
+              "A finished Command you can bind to a button",
+              "The forces each swerve module should apply",
             ],
             correctAnswer: 1,
             explanation:
-              "Feedforward control is proactive: it anticipates what forces are needed based on the planned trajectory. Feedback control is reactive: it responds to errors after they occur. The best systems combine both approaches.",
+              "It returns a LinearPath.State with two parts: setpoint.pose (where the plan says you should be at time t) and setpoint.velocity (how fast). The pose becomes the PID target; the velocity becomes the feedforward.",
           },
           {
             id: 3,
-            question:
-              "In the advanced DriveToPoint, what does the PID controller compare against?",
+            question: "In this command, what exactly is the feedforward?",
             options: [
-              "The final target position",
-              "The starting position",
-              "The current setpoint from the trajectory",
-              "The previous position",
+              "A per-wheel force computed from the robot's mass and moment of inertia",
+              "The planned chassis velocity, read straight off the setpoint: ChassisVelocities feedforward = setpoint.velocity",
+              "The integral term of the three PID controllers",
+              "The driver's joystick input, blended in",
             ],
-            correctAnswer: 2,
+            correctAnswer: 1,
             explanation:
-              "The advanced version uses setpoint tracking: PID compares the current position to the moving setpoint on the planned trajectory, not the final target. This creates smaller errors and smoother control.",
+              "One line. The plan already knows the speed the robot should be going, so that speed IS the feedforward. Each of its three components — vx, vy, omega — then gets its PID correction added before the sum is sent to the drivetrain.",
           },
           {
             id: 4,
-            question: "What does the WheelForceCalculator determine?",
+            question:
+              "The command's constraints are TrapezoidProfile.Constraints(2.5, 3.0) for driving. What do those two numbers mean?",
             options: [
-              "How fast the wheels should spin",
-              "The specific forces each wheel module should apply",
-              "The trajectory path to follow",
-              "The PID controller gains",
+              "2.5 seconds to accelerate, 3.0 seconds to decelerate",
+              "A top speed of 2.5 m/s and an acceleration limit of 3.0 m/s²",
+              "kP of 2.5 and kD of 3.0",
+              "2.5 meters of travel at 3.0 volts",
             ],
             correctAnswer: 1,
             explanation:
-              "WheelForceCalculator determines the specific X and Y forces that each swerve module should apply to execute the planned trajectory. It accounts for robot mass, moment of inertia, and required accelerations.",
+              "First value is the cruise velocity (m/s), second is the acceleration (m/s²). The second Constraints in the same constructor — Math.PI and 2.0 * Math.PI — is the same pair for turning, in rad/s and rad/s². The branch marks all four TODO: tune.",
           },
           {
             id: 5,
-            question:
-              "Why does the advanced DriveToPoint create smoother motion?",
+            question: "How does isFinished() decide the command is done?",
             options: [
-              "It uses faster PID loops",
-              "It plans a trajectory with velocity constraints and uses feedforward",
-              "It has more powerful motors",
-              "It only works at slow speeds",
+              "It checks whether the measured pose is within a tolerance of the goal",
+              "It returns path.isFinished(elapsedTime) — the planned trip time is up",
+              "It never finishes; the driver releases the button",
+              "It waits for all three PID controllers to report atSetpoint()",
             ],
             correctAnswer: 1,
             explanation:
-              "The advanced version creates smooth motion by planning a trajectory that respects velocity and acceleration constraints, then proactively applying the forces needed to follow it (feedforward) while making small corrections for disturbances (feedback).",
+              "It is a clock check, not a distance check. The plan knows how long the trip takes, so no position tolerance is needed. The trade-off: if the robot fell behind the plan, the command still ends on schedule, wherever the robot actually is.",
           },
           {
             id: 6,
-            question: "What is the moment of inertia (MOI) parameter used for?",
+            question:
+              "Why can a 6-ProfiledToPoint DriveToPoint sit inside Command.sequence(...) when the 5-DriveToPoint version could not?",
             options: [
-              "Controlling maximum velocity",
-              "Determining how much force is needed for rotational changes",
-              "Setting the PID gains",
-              "Calculating the trajectory path",
+              "Because it extends ClassicCommand and the old one did not",
+              "Because it finishes on its own; the old version's isFinished() returned false, so a sequence would wait on it forever",
+              "Because Command.sequence only accepts commands that use feedforward",
+              "Because it requires the drivetrain and the old one did not",
             ],
             correctAnswer: 1,
             explanation:
-              "The MOI parameter represents the robot's resistance to rotation. It's used to calculate how much force is needed to achieve desired rotational accelerations. Higher MOI means more force is required to rotate the robot.",
-          },
-          {
-            id: 7,
-            question: "How does the advanced DriveToPoint know when to finish?",
-            options: [
-              "It runs indefinitely like the basic version",
-              "It checks if the trajectory elapsed time indicates completion",
-              "It waits for the driver to press a button",
-              "It stops after 5 seconds",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "The advanced version uses path.isFinished(elapsedTime) to check if the planned trajectory has completed. The trajectory knows its own duration based on the distance, max velocity, and acceleration constraints.",
+              "THE ONE RULE from Chaining Commands: nothing may wait on a command that never ends. The old version ran until interrupted, so it would hang a sequence on its first leg. Giving it a real finish line is what makes autonomous routines possible in the next lesson.",
           },
         ]}
       />

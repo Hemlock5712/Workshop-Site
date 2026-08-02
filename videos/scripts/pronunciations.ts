@@ -54,6 +54,10 @@ export const pronunciationOverrides: Record<string, string> = {
   kP: "K P",
   kI: "K I",
   kD: "K D",
+  kG: "K G",
+  kS: "K S",
+  kV: "K V",
+  kA: "K A",
   RPM: "R P M",
   PDH: "P D H",
   CAN: "Can",
@@ -96,6 +100,21 @@ export const pronunciationOverrides: Record<string, string> = {
   onTrue: "on True",
   "Command.sequence": "Command sequence",
   "Command.parallel": "Command parallel",
+  "Command.race": "Command race",
+  whenCanceled: "when Canceled",
+  withTimeout: "with Timeout",
+  withPriority: "with Priority",
+
+  // command3 StateMachine (state-based lesson + trailer)
+  StateMachine: "State Machine",
+  switchFromAny: "switch From Any",
+  switchTo: "switch To",
+  whenComplete: "when Complete",
+  addState: "add State",
+  onEnter: "on Enter",
+  onExit: "on Exit",
+  // Caption shows the real API punctuation; audio says it the way a mentor does.
+  ".named": "dot named",
 
   // URLs and team identifiers
   "frc5712.com/prerequisites":

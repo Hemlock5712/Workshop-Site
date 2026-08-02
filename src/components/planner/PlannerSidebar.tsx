@@ -110,7 +110,7 @@ export function PlannerSidebar({
         <div className="flex gap-2 mb-3">
           <button
             onClick={exportProject}
-            className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 bg-[var(--bg2)] hover:bg-[var(--bg2)] text-white px-3 py-2 rounded-md text-sm transition-colors"
           >
             <Save className="w-4 h-4" />
             Save
@@ -141,7 +141,7 @@ export function PlannerSidebar({
               onClick={handleToggleGrid}
               className={`px-2 py-1 text-xs rounded transition-colors ${
                 state.grid.enabled
-                  ? "bg-primary-500 text-white"
+                  ? "bg-[var(--bg2)] text-white"
                   : "bg-[var(--background)] text-[var(--muted-foreground)]"
               }`}
             >
@@ -205,7 +205,7 @@ export function PlannerSidebar({
       <div className="flex-shrink-0 p-4 border-t border-[var(--border)]">
         <button
           onClick={onOpenExport}
-          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-md font-medium transition-colors"
+          className="w-full flex items-center justify-center gap-2 bg-[var(--bg2)] hover:bg-[var(--bg2)] text-white px-4 py-3 rounded-md font-medium transition-colors"
         >
           <FileCode className="w-5 h-5" />
           Export Java

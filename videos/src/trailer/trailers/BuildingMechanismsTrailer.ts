@@ -155,13 +155,13 @@ export const BuildingMechanismsTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your robot is a pile of physical parts. An arm. A flywheel. A drivetrain. Commands version three gives each part one home: a class that extends Mechanism. Get this class right, and the rest of the workshop clicks into place.",
+      text: "An arm. A flywheel. A drivetrain. Each one gets exactly one class, and that class is the only thing in the whole project allowed to touch its motor. Get that boundary wrong and you'll spend a season chasing two files fighting over one TalonFX.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "one-class",
-      text: "The rule is one class per physical thing. The arm gets an Arm class that extends Mechanism. That class alone owns the arm's hardware. No other file in the project touches this motor.",
+      text: "The arm gets an Arm class that extends Mechanism, and the TalonFX lives inside as a private field. Nothing else reaches that motor. Not the OpMode, not another mechanism, not some helper written at midnight.",
       camera: { x: 2560, y: 380, width: 1400, height: 790 },
       events: [
         {
@@ -174,7 +174,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "fields-config",
-      text: "Inside, hardware lives in private fields: the motor and its control requests. Private means only this class can touch them. Setup happens once, in the constructor. Brake mode and current limits get applied at startup.",
+      text: "Hardware handles go in private fields, so the compiler enforces the rule instead of a code reviewer. Config happens once, in the constructor: brake mode, current limits, offsets. Re-apply it in a loop and you'll chase a stuttering motor all week.",
       camera: { x: 3280, y: 200, width: 1500, height: 1040 },
       events: [
         {
@@ -193,7 +193,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "factories",
-      text: "And the actions? Public factory methods that return Commands. A factory is a method that builds a command for you. There is no periodic method in version three. Every action is a command the scheduler can start and cancel.",
+      text: "Actions come out as public factory methods that hand back a Command. No periodic method anymore. That's on purpose: the scheduler gets something it can start, cancel, or interrupt without you tracking a single flag.",
       camera: DIAGRAM,
       events: [
         {
@@ -206,7 +206,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here it is for real. Hardware sits in private fields. The constructor applies the config once. Then scoring uses runRepeatedly: re-send the target every tick, forever. That command is a hold, so its name says hold. Forget dot named, and the build fails.",
+      text: "Private fields at the top. The constructor applies config once, then gets out of the way. Then scoring, which uses runRepeatedly to re-issue the request every single tick instead of firing once and hoping gravity cooperates. Forget .named and your logs say nothing.",
       camera: CODE,
       events: [
         {
@@ -232,7 +232,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "defaults",
-      text: "One more habit. Every mechanism has a default command. It runs whenever nothing else owns the mechanism. Out of the box, that default is idle: do nothing. Want a resting pose instead? This elevator sets its own stowed hold as the default.",
+      text: "Every mechanism gets a default command, and out of the box that default does nothing. Fine for a flywheel. Terrible for an elevator, which will sag to the bottom of its travel the second you let go. It holds stowed instead.",
       camera: CODE2,
       events: [
         {
@@ -246,7 +246,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Mechanisms are step one of the whole framework. Commands and triggers build right on top of this class. See the full anatomy, the factories, and default commands at frc5712.com.",
+      text: "Get the Arm class right. Everything after this just calls the factories you already wrote: Commands, Triggers, the whole framework.",
       camera: END,
       holdAfter: 1.2,
     },

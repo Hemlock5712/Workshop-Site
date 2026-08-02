@@ -89,18 +89,18 @@ export const IntroductionTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Most robot code is a pile of if statements written the night before competition. This workshop teaches your team a better way. You'll learn the newest tools: WPILib twenty twenty-seven, Commands version three, and the new OpMode framework.",
+      text: "Most robot code is a pile of if statements written the night before competition, and it holds up right until the one match where it doesn't. This workshop swaps that for a plan.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "audience",
-      text: "It's built for FRC teams writing Java on CTRE motors and sensors. No toy examples here. You wire up real devices. You run real code. And you learn the habits top teams use every single week.",
+      text: "It's for FRC teams writing Java on CTRE motors and sensors. None of it is a toy example. You'll wire up a real motor, deploy real code to it, and pick up habits top teams have used for years.",
       camera: { x: 120, y: 120, width: 1680, height: 945 },
     },
     {
       id: "mechanism",
-      text: "Everything starts with one real mechanism — one moving part you build yourself. You pick an arm or a flywheel and bolt on the motors. Every lesson after that runs on the thing you built.",
+      text: "Everything starts with one real mechanism you build yourself. Pick an arm, or pick a flywheel, bolt the motors on, and every lesson after this one runs on the thing sitting on your own bench.",
       camera: { x: 2580, y: 180, width: 1400, height: 800 },
       events: [
         {
@@ -113,7 +113,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "commands",
-      text: "Then you learn command-based programming. You split your code into mechanisms, commands, and triggers. Your code stops being a tangle. It starts reading like a plan the whole team can follow.",
+      text: "Then comes command-based programming. You split the code into mechanisms, commands, and triggers, and the payoff lands at eleven at night when something breaks and you already know which file to open.",
       camera: { x: 3120, y: 180, width: 1500, height: 820 },
       events: [
         {
@@ -126,7 +126,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "control",
-      text: "Next comes closed-loop control. That means the robot reads its sensors and fixes its own mistakes. You learn PID, Motion Magic, and logging that shows what the robot really did. That's Workshop One — bare hardware to full control.",
+      text: "Next, closed-loop control. The robot reads its own sensors and corrects itself, which is the difference between a mechanism that lands on the number you asked for and one that lands somewhere near it. PID first. Motion Magic and logging follow.",
       camera: { x: 3560, y: 160, width: 1440, height: 820 },
       events: [
         { type: "diagram", artifact: "path", step: 3, at: { word: "control" } },
@@ -134,7 +134,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "advanced",
-      text: "Workshop Two takes the same robot further. You add swerve drive — wheels that steer in any direction. Then vision and autonomous routines tie it all together. Each step builds on the last. Nothing you learn gets thrown away.",
+      text: "Workshop Two keeps the same robot and adds swerve drive, then vision, then autonomous routines. Nothing earlier gets thrown out. The mechanism you built in the first lesson is still the one you're tuning at the end.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "path", step: 4, at: { word: "swerve" } },
@@ -143,7 +143,7 @@ export const IntroductionTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Grab your team, pick a mechanism, and start with Workshop One. Every lesson, every line of code, and the full learning path are waiting at frc5712.com.",
+      text: "So pick your mechanism and start at lesson one. Everything after that is the same robot, one lesson smarter than it was.",
       camera: END,
       holdAfter: 1.2,
     },

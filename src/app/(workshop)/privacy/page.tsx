@@ -6,208 +6,216 @@ export default function PrivacyPage() {
       <OptInOutOfCookies />
 
       <h1>Privacy Policy</h1>
-      <p>Last updated: 2025-10-07</p>
+      <p>Last updated: 2026-08-02</p>
       <hr />
 
+      <h2>The short version</h2>
+      <ul>
+        <li>
+          No accounts, no sign-in, no ads, no payments. We never ask you for
+          your name or your email.
+        </li>
+        <li>
+          We count page views with PostHog. You can turn its cookie off in the
+          box at the top of this page.
+        </li>
+        <li>
+          Videos load from YouTube and code loads from GitHub, so those
+          companies see that you opened the page.
+        </li>
+        <li>
+          Your lesson check marks stay in your browser. We never see them.
+        </li>
+      </ul>
+      <p>
+        Some answers below say <strong>TODO(verify)</strong>. Those are things
+        we have not confirmed yet. We would rather leave a gap here than write a
+        promise we cannot back up.
+      </p>
+
       <h2>1. Who we are</h2>
-      <ul>
-        <li>
-          Hemlock&apos;s Gray Matter (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or
-          &ldquo;our&rdquo;)
-        </li>
-        <li>
-          Website: <a href="https://frc5712.com">https://frc5712.com</a>
-        </li>
-        <li>
-          Contact: graymatter@hemlockps.com | 700 N Pine St, Hemlock, MI, 48626,
-          USA
-        </li>
-      </ul>
-
-      <h2>2. Scope</h2>
       <p>
-        This policy explains what data we collect when you use frc5712.com, how
-        we use it, how we share it, and the choices you have. Our audience is
-        primarily in the United States, including FRC teams, with occasional
-        international visitors.
+        This site is run by Hemlock&apos;s Gray Matter, 700 N Pine St, Hemlock,
+        MI 48626, USA. This policy covers{" "}
+        <a href="https://frc5712.com">frc5712.com</a> and nothing else.
+        Questions go to graymatter@hemlockps.com.
       </p>
 
-      <h2>3. What we collect</h2>
-      <ul>
-        <li>
-          <strong>Server logs (essential):</strong> IP address, user agent,
-          pages visited, timestamp, referrer, and basic error/performance data.
-          Used for security, reliability, and abuse prevention.
-        </li>
-        <li>
-          <strong>Analytics (PostHog, anonymized/aggregated):</strong> Page
-          views, events, device/browser context, approximate location
-          (city/region if available), and usage metrics. We configure PostHog
-          with user-identifying features disabled. We do not use analytics to
-          identify or profile individuals.
-        </li>
-        <li>
-          <strong>Optional anonymous surveys (PostHog):</strong> If we run
-          surveys, responses are collected without names, emails, or other
-          direct identifiers. We avoid sensitive questions and aggregate
-          results.
-        </li>
-      </ul>
+      <h2>2. The Feedback button opens a Google Form</h2>
       <p>
-        We do not collect names, emails, payment details, or precise location.
-        We do not have a contact form.
+        The <strong>Feedback</strong> button in the header opens a form hosted
+        by Google Forms. That form is not part of this site. Whatever you type
+        into it goes to Google and then to us, so leave personal details out of
+        it.
+      </p>
+      <p>
+        <strong>TODO(verify):</strong> which fields that form asks for, and
+        whether it records the Google account of the person submitting it.
       </p>
 
-      <h2>4. Cookies and similar technologies</h2>
-      <ul>
-        <li>
-          We use a minimal analytics cookie (PostHog) to understand site usage
-          and improve the site.
-        </li>
-        <li>
-          We disable user-identifying features (e.g., user IDs, cross-site
-          tracking, device fingerprinting). Where available, we anonymize IPs or
-          avoid storing them long term.
-        </li>
-        <li>
-          You can reject analytics cookies via our banner or the preferences
-          section at the top of the Privacy Policy page, or you can block
-          cookies in your browser. Essential cookies (if any) are required for
-          core functionality.
-        </li>
-      </ul>
-
-      <h2>5. How we use information</h2>
-      <ul>
-        <li>Operate, secure, and maintain the website.</li>
-        <li>Monitor performance, debug issues, and prevent abuse.</li>
-        <li>
-          Generate aggregated, non-identifying statistics to improve content and
-          usability.
-        </li>
-      </ul>
-      <p>We do not use data for targeted advertising or user profiling.</p>
-
-      <h2>6. Sharing and disclosures</h2>
+      <h2>3. Analytics (PostHog)</h2>
       <p>
-        We do not sell or share personal information as those terms are defined
-        under the California Consumer Privacy Act (CCPA/CPRA).
+        We use PostHog to see which pages people read and which ones they give
+        up on. PostHog runs in your browser. Its requests leave through
+        frc5712.com/events, which forwards them to PostHog&apos;s servers in the
+        United States.
       </p>
-      <p>We may disclose information to:</p>
+      <p>PostHog records:</p>
       <ul>
+        <li>Page views, and which links and buttons you click.</li>
         <li>
-          <strong>Service providers:</strong> PostHog (analytics),
-          hosting/CDN/DDoS protection, and error/performance monitoring. These
-          providers process data on our behalf under contracts.
+          Your browser, your operating system, your screen size, and the page
+          you arrived from.
         </li>
         <li>
-          <strong>Legal/security:</strong> If required by law, or to protect our
-          rights, users, or the public.
-        </li>
-      </ul>
-
-      <h2>7. Children and students</h2>
-      <p>
-        Our site is for a general audience that may include teens involved in
-        FRC. We do not knowingly collect personal information from children
-        under 13. If you believe a child under 13 has provided personal
-        information, contact us and we will delete it.
-      </p>
-
-      <h2>8. Your choices and controls</h2>
-      <ul>
-        <li>
-          <strong>Cookies/analytics:</strong> Use the cookie banner to accept or
-          reject analytics. You can also block cookies in your browser.
+          Your IP address, which PostHog uses to work out a rough city or
+          region.
         </li>
         <li>
-          <strong>Do Not Track:</strong> We do not respond to DNT signals due to
-          a lack of standardization.
-        </li>
-        <li>
-          <strong>Access/deletion:</strong> If you believe we hold personal
-          information about you (e.g., via an inadvertent submission), email us
-          at graymatter@hemlockps.com to request access or deletion. We may need
-          to verify your request.
+          JavaScript errors: the error message, the file that threw it, and the
+          page you were on. We turned this on so broken pages get found and
+          fixed.
         </li>
       </ul>
       <p>
-        California residents: We honor applicable rights under the CCPA/CPRA
-        (access, correction, deletion, non-discrimination). We do not sell or
-        share personal information for cross-context behavioral advertising.
+        We never call PostHog&apos;s identify function, so none of this is
+        attached to a name, an email, or an account. There are none to attach.
+      </p>
+      <p>
+        <strong>About the cookie.</strong> Analytics starts when a page loads,
+        before you answer the banner. If you accept, PostHog stores a cookie and
+        a small amount of browser storage so it can tell that several page views
+        came from one visit. If you decline, PostHog keeps counting page views
+        but stops using cookies and browser storage on your machine altogether;
+        its servers work out a temporary, privacy-preserving identifier instead.
+        Declining changes what gets stored on your device. It does not switch
+        analytics off.
+      </p>
+      <p>
+        <strong>TODO(verify):</strong> how long PostHog keeps this data, and
+        whether session replay and surveys are turned on. Those are settings on
+        our PostHog account rather than in the site code, and the site code
+        neither turns them on nor off. An earlier version of this page said
+        replay was off and data was kept for one year; we could not confirm
+        either, so both claims are gone.
       </p>
 
-      <h2>9. Data retention</h2>
+      <h2>4. Hosting, server logs, and two more trackers</h2>
+      <p>
+        The site is hosted on Vercel. Every page you open passes through
+        Vercel&apos;s servers, which keep ordinary web server logs: your IP
+        address, the page you asked for, the time, and the version string your
+        browser sends.
+      </p>
+      <p>
+        Every page also loads <strong>Vercel Analytics</strong> and{" "}
+        <strong>Vercel Speed Insights</strong>. The first counts page views. The
+        second measures how fast pages load and draw on your device. Both run on
+        every page, and the cookie banner does not control them &mdash; it
+        controls PostHog only.
+      </p>
+      <p>
+        <strong>TODO(verify):</strong> how long Vercel keeps server logs for
+        this project, and whether Vercel Analytics stores anything in your
+        browser.
+      </p>
+
+      <h2>5. Videos and code come from other companies</h2>
       <ul>
         <li>
-          <strong>Server logs:</strong> retained for 30 days for security and
-          troubleshooting, then deleted or anonymized.
+          <strong>YouTube.</strong> Several lessons embed a YouTube player. The
+          player loads from youtube.com as soon as the page opens, so Google
+          sees your IP address and can set its own cookies whether or not you
+          press play.
         </li>
         <li>
-          <strong>Analytics (PostHog):</strong> retained for 1 year, aggregated
-          where possible, then deleted or further anonymized.
+          <strong>GitHub.</strong> Pages that show workshop code fetch the file
+          from GitHub&apos;s public API while you read, straight from your
+          browser. GitHub sees that request.
         </li>
+      </ul>
+      <p>
+        What those companies do with what they see is covered by their privacy
+        policies, not by this one.
+      </p>
+
+      <h2>6. What stays in your browser</h2>
+      <p>
+        Your lesson check marks and anything you build in the season planner are
+        saved in your browser&apos;s local storage. They never reach our server,
+        they are not tied to you, and clearing your browser data deletes them.
+        Open the site on a different computer and they will not be there.
+      </p>
+
+      <h2>7. What we do not do</h2>
+      <ul>
+        <li>No accounts, no passwords, no payments.</li>
         <li>
-          <strong>Anonymous survey responses (PostHog):</strong> retained for up
-          to 1 year alongside analytics data, then aggregated or deleted.
+          No advertising, and no selling or sharing of personal information as
+          the California privacy laws (CCPA/CPRA) define those words.
+        </li>
+        <li>No profiles of individual readers.</li>
+        <li>
+          No response to Do Not Track browser signals, because there is no
+          agreed standard for what a site should do with them.
         </li>
       </ul>
 
-      <h2>10. Security</h2>
+      <h2>8. Younger readers</h2>
       <p>
-        We implement reasonable administrative, technical, and physical
-        safeguards (e.g., HTTPS/TLS, access controls, least-privilege, audit
-        logging). No method of transmission or storage is 100% secure.
+        This site is written for middle and high school students, so some
+        readers will be under 13. We do not ask anyone for personal information
+        and we do not knowingly collect it. If you think a reader under 13 typed
+        personal information into the feedback form, email us. We will delete
+        anything we hold and ask Google to do the same.
       </p>
 
-      <h2>11. International visitors</h2>
+      <h2>9. Where the data goes</h2>
       <p>
-        Our services are based in the United States (PostHog Cloud US). If you
-        access the site from outside the US, your information may be processed
-        in the US, which may have different data protection laws than your
-        country does.
+        Our hosting and our analytics run on servers in the United States. If
+        you read this site from another country, your information is processed
+        in the US.
       </p>
 
-      <h2>12. Third parties and links</h2>
+      <h2>10. Your choices</h2>
+      <ul>
+        <li>
+          <strong>The analytics cookie:</strong> use the Cookie Preferences box
+          at the top of this page, or the banner at the bottom of the screen.
+          You can also block cookies in your browser.
+        </li>
+        <li>
+          <strong>Access or deletion:</strong> email graymatter@hemlockps.com.
+          Tell us roughly when you visited and what you typed, and we will look.
+          We may need to ask a question or two to find it.
+        </li>
+      </ul>
       <p>
-        We may link to third-party sites or services. Their privacy practices
-        are governed by their own policies. We encourage you to review them. We
-        use embedded YouTube videos, which may collect information with their
-        own cookies or trackers.
+        California residents have rights under the CCPA/CPRA to access, correct,
+        and delete personal information, and not to be treated differently for
+        asking. The email address above is how you use them.
       </p>
 
-      <h2>13. Changes to this policy</h2>
+      <h2>11. Security</h2>
       <p>
-        We may update this policy periodically. We will update the &ldquo;Last
-        updated&rdquo; date above and, if changes are material, provide
-        additional notice (e.g., on-site banner).
+        The site is served over HTTPS. No website is completely secure, and we
+        are not going to claim otherwise.
       </p>
 
-      <h2>14. Contact</h2>
-      <p>Questions, concerns, or rights requests:</p>
+      <h2>12. Changes to this policy</h2>
+      <p>
+        We update this page when the site changes. The date at the top tells you
+        when it last changed. If we add something that sends your data somewhere
+        new, this page changes first.
+      </p>
+
+      <h2>13. Contact</h2>
       <ul>
         <li>Email: graymatter@hemlockps.com</li>
         <li>
-          Postal: Hemlock&apos;s Gray Matter, 700 N Pine St, Hemlock, MI, 48626,
+          Post: Hemlock&apos;s Gray Matter, 700 N Pine St, Hemlock, MI, 48626,
           USA
         </li>
-      </ul>
-
-      <p>PostHog configuration details (transparency)</p>
-      <ul>
-        <li>Deployment: PostHog Cloud US</li>
-        <li>
-          IP handling: IPs are not retained long term; where supported, IPs are
-          anonymized or truncated before storage and used only for approximate
-          geolocation and abuse prevention.
-        </li>
-        <li>
-          User identification: Disabled (no user IDs, emails, or device
-          fingerprints sent)
-        </li>
-        <li>Session replay: Disabled</li>
-        <li>Cross-site tracking: Disabled</li>
-        <li>Data retention in PostHog: 1 year</li>
       </ul>
     </div>
   );

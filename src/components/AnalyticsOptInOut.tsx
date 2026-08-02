@@ -33,7 +33,7 @@ export function OptInOutOfCookies() {
   }
 
   return (
-    <div className="flex flex-col border border-gray-400 dark:border-gray-700 rounded-lg p-2 mb-8">
+    <div className="flex flex-col border border-[var(--rule)] rounded-lg p-2 mb-8">
       <span className="text-lg font-bold">Cookie Preferences</span>
       <div className="flex flex-row items-center justify-between gap-2 w-full">
         <span>
@@ -46,7 +46,7 @@ export function OptInOutOfCookies() {
           {consentGiven === "granted" && (
             <button
               onClick={handleOptOut}
-              className="px-4 py-2 border border-gray-300 text-white rounded hover:bg-gray-800 transition-colors cursor-pointer"
+              className="px-4 py-2 border border-[var(--rule)] text-[var(--tx2)] rounded hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors cursor-pointer"
             >
               Opt Out of Analytics Cookies
             </button>
@@ -54,7 +54,7 @@ export function OptInOutOfCookies() {
           {consentGiven === "denied" && (
             <button
               onClick={handleOptIn}
-              className="px-4 py-2 border border-primary-500 text-white rounded hover:bg-primary-600 transition-colors cursor-pointer"
+              className="px-4 py-2 border border-[var(--accent)] bg-[var(--accent)] text-[var(--accent-ink)] rounded hover:opacity-90 transition-colors cursor-pointer"
             >
               Opt In to Analytics Cookies
             </button>

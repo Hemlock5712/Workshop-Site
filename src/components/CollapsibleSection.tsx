@@ -5,40 +5,61 @@ type CollapsibleSectionVariant = "default" | "warning" | "info";
 interface CollapsibleSectionProps {
   title: ReactNode;
   children: ReactNode;
+  /** Kept for the existing call sites; only `warning` still changes anything. */
   variant?: CollapsibleSectionVariant;
   className?: string;
 }
 
-const containerStyles = {
-  default:
-    "bg-slate-50 dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800",
-  warning: "bg-[var(--muted)] border-l-4 border-yellow-500",
-  info: "bg-[var(--muted)] border-l-4 border-blue-500",
-};
-
-const summaryStyles = {
-  default:
-    "text-primary-600 hover:text-primary-700 dark:hover:text-primary-300",
-  warning:
-    "text-[var(--foreground)] hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]",
-  info: "text-[var(--foreground)] hover:text-[var(--foreground)] dark:hover:text-[var(--foreground)]",
-};
-
+/**
+ * Optional detail, folded away.
+ *
+ * Rules rather than a raised card, so a folded section reads as part of the
+ * page instead of a widget dropped onto it. The marker is a mono plus/minus so
+ * the affordance is unmistakable without a chevron graphic.
+ *
+ * `warning` gets an accent rule down the left. The other variants are visually
+ * identical — the tinted blue and grey cards they used to render are gone, and
+ * keeping the prop only saves editing eleven call sites for nothing.
+ */
 export default function CollapsibleSection({
   title,
   children,
   variant = "default",
   className = "",
 }: CollapsibleSectionProps) {
-  const container = containerStyles[variant];
-  const summary = summaryStyles[variant];
-
   return (
-    <details className={`rounded-lg p-6 ${container} ${className}`}>
-      <summary className={`text-xl font-bold mb-4 cursor-pointer ${summary}`}>
+    <details
+      className={`measure group ${className}`.trim()}
+      style={{
+        borderTop: "1px solid var(--rule)",
+        borderBottom: "1px solid var(--rule-soft)",
+        borderLeft:
+          variant === "warning" ? "2px solid var(--accent)" : undefined,
+        paddingLeft: variant === "warning" ? 20 : undefined,
+      }}
+    >
+      <summary
+        className="flex cursor-pointer list-none items-baseline gap-3.5 py-4 transition-colors hover:text-[var(--accent)] [&::-webkit-details-marker]:hidden"
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 19,
+          lineHeight: 1.3,
+          color: "var(--tx)",
+        }}
+      >
+        <span
+          className="mono shrink-0"
+          aria-hidden="true"
+          style={{ fontSize: 12, color: "var(--accent)" }}
+        >
+          <span className="group-open:hidden">+</span>
+          <span className="hidden group-open:inline">−</span>
+        </span>
         {title}
       </summary>
-      <div className="mt-4">{children}</div>
+      <div className="lesson-prose flex flex-col gap-4 pb-6 pt-1">
+        {children}
+      </div>
     </details>
   );
 }

@@ -74,7 +74,7 @@ export function ObstacleEditor() {
         value={obstacle.name}
         onChange={handleNameChange}
         placeholder="Name"
-        className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
       />
 
       {/* Position Inputs */}
@@ -88,7 +88,7 @@ export function ObstacleEditor() {
             value={obstacle.x.toFixed(2)}
             onChange={handleXChange}
             step="0.05"
-            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
         </div>
         <div>
@@ -100,7 +100,7 @@ export function ObstacleEditor() {
             value={obstacle.y.toFixed(2)}
             onChange={handleYChange}
             step="0.05"
-            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
         </div>
       </div>
@@ -117,7 +117,7 @@ export function ObstacleEditor() {
               value={obstacle.w.toFixed(2)}
               onChange={handleWidthChange}
               step="0.05"
-              className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             />
           </div>
           <div>
@@ -129,7 +129,7 @@ export function ObstacleEditor() {
               value={obstacle.h.toFixed(2)}
               onChange={handleHeightChange}
               step="0.05"
-              className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
             />
           </div>
         </div>
@@ -146,7 +146,7 @@ export function ObstacleEditor() {
             value={obstacle.r.toFixed(2)}
             onChange={handleRadiusChange}
             step="0.05"
-            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
         </div>
       )}
@@ -161,7 +161,7 @@ export function ObstacleEditor() {
       {/* Delete Button */}
       <button
         onClick={handleDelete}
-        className="w-full flex items-center justify-center gap-2 bg-red-500/20 hover:bg-red-500/30 text-red-500 px-3 py-2 rounded-md text-sm transition-colors"
+        className="w-full flex items-center justify-center gap-2 bg-[color-mix(in_oklch,var(--bg2)_20%,transparent)] hover:bg-[color-mix(in_oklch,var(--bg2)_30%,transparent)] text-[var(--err)] px-3 py-2 rounded-md text-sm transition-colors"
       >
         <Trash2 className="w-4 h-4" />
         Delete Obstacle

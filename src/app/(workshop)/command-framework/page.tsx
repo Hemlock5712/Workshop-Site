@@ -1,35 +1,69 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import ArchitectureDiagram from "@/components/ArchitectureDiagram";
-import { Book, BookOpen, GitBranch } from "lucide-react";
+import { GitBranch } from "lucide-react";
+
+const bodyStyle = { color: "var(--fg-mute)" } as const;
 
 export default function CommandFramework() {
   return (
-    <PageTemplate title="Command-Based Framework">
+    <PageTemplate
+      title="Four words the rest of the workshop is written in"
+      emphasis="the rest of the workshop"
+      lede="Robot code on this team is built out of three kinds of thing. Triggers are the WHEN: a button, a sensor reading, anything that is either true or false. Mechanisms are the WHAT: one class per physical thing, holding that thing's motors. Commands are the actions you run on a mechanism."
+      needs={[
+        <>
+          <strong>What you need first:</strong> the vocabulary from{" "}
+          <strong>The Java You Need</strong> — class, field, method,
+          constructor, lambda, method reference. Every code block below uses all
+          six.
+        </>,
+        <>
+          <strong>Also useful:</strong> the robot template you cloned in{" "}
+          <strong>Project Setup</strong>, open in your editor. The last section
+          of this page has you go looking through it.
+        </>,
+        <>
+          <strong>What you get:</strong> the four words the rest of the workshop
+          is written in — trigger, mechanism, command, scheduler — plus the one
+          rule that causes more stuck robots than anything else.
+        </>,
+      ]}
+      time="About 20 minutes"
+    >
       <KeyConceptSection
-        title="The Command-Based Framework"
+        title="Three parts and a loop"
         description={[
-          "Command-based programming organizes robot code into three pieces: Triggers (when), Mechanisms (what hardware), and Commands (the actions to run on that hardware). The scheduler is the loop that ties them together: it watches Triggers, schedules Commands, and tracks which command owns which Mechanism so two commands never fight for the same motor.",
-          "Commands V3 gives each piece a concrete type: Mechanism for hardware, Command for the actions, and Scheduler for the loop. On this team, most commands are holds (they keep re-sending a setpoint so the motor stays actively commanded) and routines are built by chaining commands together.",
-          "The top-level wiring: a Robot class owns the mechanisms, and each mode (driver teleop, an autonomous routine, a calibration task) is its own OpMode class. You'll see that on the Triggers and Running the Program pages.",
+          "Underneath all three sits the scheduler. It is a loop that runs fifty times a second, checks every trigger, starts and stops commands, and keeps track of which command owns which mechanism so two commands can never fight over the same motor.",
+          "Nothing here is code you type. This is the map for the next four lessons, where you build each piece for real.",
         ]}
-        concept="Triggers schedule Commands. Commands operate on Mechanisms. The Scheduler enforces who-owns-what so nothing collides."
+        concept="Triggers start Commands. Commands drive Mechanisms. The scheduler runs the loop and settles who owns what."
       />
 
+      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
+        <p className="mt-3">
+          <strong>About 20 minutes</strong>, and no code to write. You start
+          writing on the next page.
+        </p>
+      </Box>
+
+      {/* ── the triad ────────────────────────────────────────────────── */}
       <div className="grid md:grid-cols-3 gap-6">
         <Box
           variant="concept"
           tag="WHEN"
           title="Triggers"
-          subtitle={<strong>BooleanSuppliers wired to commands</strong>}
+          subtitle={<strong>Something that is true or false</strong>}
         >
-          Buttons, sensor predicates, custom expressions: anything that
-          evaluates to a boolean. Bindings are scoped (global / opmode /
-          command), so they clean themselves up when the scope exits.
+          A controller button, a sensor reading, a comparison you wrote
+          yourself. You attach a command to a trigger, and the scheduler watches
+          it for you. Bindings written in an OpMode&apos;s constructor belong to
+          that OpMode and are removed when the driver station switches modes.
         </Box>
 
         <Box
@@ -38,9 +72,9 @@ export default function CommandFramework() {
           title="Mechanisms"
           subtitle={<strong>One physical thing each</strong>}
         >
-          An arm, a flywheel, the drivetrain. The type is <code>Mechanism</code>
-          , a class you extend. Hardware lives in private fields, configuration
-          in the constructor.
+          The arm. The flywheel. The drivetrain. Each is a class that{" "}
+          <code>extends Mechanism</code>. Its motors and sensors are private
+          fields, and its wiring configuration happens once, in the constructor.
         </Box>
 
         <Box
@@ -49,364 +83,488 @@ export default function CommandFramework() {
           title="Commands"
           subtitle={<strong>Named actions, mostly holds</strong>}
         >
-          Factory methods on a mechanism, each returning a named{" "}
-          <code>Command</code>. Most of ours are <em>holds</em>: they keep the
-          motor at a setpoint until something else takes over.
+          Methods on a mechanism that hand back a <code>Command</code>. Almost
+          every one you write in Workshop #1 is a <em>hold</em>: it keeps
+          re-sending the same request and never ends by itself.
         </Box>
       </div>
 
-      <section className="flex flex-col gap-8 mt-12">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          The big picture
-        </h2>
+      <LessonSection
+        id="the-big-picture"
+        title="The big picture"
+        className="mt-4"
+      >
         <ArchitectureDiagram variant="simple" />
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Holds: what our commands actually are
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Our mechanism commands (<code>arm.scoring()</code>,{" "}
-          <code>flywheel.spinUp()</code>, <code>robot.stow()</code>) are{" "}
-          <strong>holds</strong>: they keep re-sending their setpoint forever,
-          so the motor stays actively commanded. The plain-words version: hold
-          the A button, the arm goes to the scoring angle{" "}
-          <em>and stays there</em>, fighting gravity; let go, and the arm&apos;s
-          default command takes back over.
+      {/* ── the scheduler ────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-scheduler-and-the-one-line"
+        title="The scheduler, and the one line that starts it"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          None of the three pieces above does anything on its own. A trigger is
+          a question nobody is asking; a command you build and hold in a
+          variable is inert. The <strong>scheduler</strong> is what makes them
+          move, and it moves them because your <code>Robot</code> class asks it
+          to, once per loop:
         </p>
 
         <CodeBlock
           language="java"
-          title="A hold — runRepeatedly re-sends the closed-loop request"
-          code={`// From the 2027-Template's Arm mechanism. runRepeatedly re-runs the body
-// every scheduler tick, so the closed-loop request is re-sent forever.
-// This command never finishes on its own — that's what makes it a hold.
-public Command scoring() {
-  return runRepeatedly(() -> setPosition(SCORING_POSITION))
-      .named("scoring (hold)");
+          title="Robot.java — trimmed to the two things this page is about"
+          filename="src/main/java/frc/robot/Robot.java"
+          code={`public class Robot extends OpModeRobot {
+  // The robot's mechanisms. Public so OpModes can use them.
+  public final Arm arm = new Arm();
+  public final Flywheel flywheel = new Flywheel();
+
+  @Override
+  public void robotPeriodic() {
+    Scheduler.getDefault().run();
+  }
 }`}
         />
 
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          That <code>robotPeriodic()</code> method is called for you, over and
+          over, for as long as the robot is powered on. The gap between calls is
+          20 milliseconds, so it runs <strong>50 times a second</strong>. One
+          pass is called a <strong>tick</strong>, and you will see that word
+          everywhere from here on. When a page says a command &quot;runs every
+          tick,&quot; it means fifty times a second.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Here is what one call to <code>Scheduler.getDefault().run()</code>{" "}
+          actually does, in order. This list is the WPILib 2027 alpha&apos;s own
+          description of the method, in plainer words:
+        </p>
+
+        <ol
+          className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            Cancel any commands and triggers that belonged to a mode the driver
+            station is no longer running. This is why switching modes needs no
+            cleanup code from you.
+          </li>
+          <li>
+            Run any plain background tasks that were added to the scheduler (see
+            the note below).
+          </li>
+          <li>
+            Check every trigger. Newly-true ones queue up their command;
+            newly-false ones can cancel theirs.
+          </li>
+          <li>
+            For any mechanism with nothing queued or running, queue its{" "}
+            <strong>default command</strong>.
+          </li>
+          <li>Promote the queued commands to the running set.</li>
+          <li>
+            Run every command in the running set — one step each, then hand
+            control back so the next one gets its turn.
+          </li>
+        </ol>
+
+        <Box
+          variant="alert-info"
+          tag="NOTE · THE ESCAPE HATCH"
+          title="Work that is not a command"
+        >
+          <p>
+            Some jobs are not actions on a mechanism. Reading a camera, pushing
+            numbers to a dashboard, refreshing an LED strip — these need to
+            happen every tick but they do not own any hardware.{" "}
+            <code>addPeriodic</code> is where they go:
+          </p>
+          <div className="mt-3">
+            <CodeBlock
+              language="java"
+              hideControls
+              code={`Scheduler.getDefault().addPeriodic(camera::update);`}
+            />
+          </div>
+          <p className="mt-3">
+            That exact line is real — the vision lesson&apos;s{" "}
+            <code>Limelight</code> class registers each camera this way. Do not
+            reach for it to move a motor; motors go through commands, so the
+            scheduler can arbitrate who owns them.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── ownership ────────────────────────────────────────────────── */}
+      <LessonSection
+        id="one-mechanism-one-command-at-a"
+        title="One mechanism, one command at a time"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          This is the part of the framework that earns its keep. A command
+          declares which mechanisms it needs — a command built by{" "}
+          <code>arm.runFast()</code> needs the arm — and while that command is
+          running, it <strong>owns</strong> the arm. No second command touches
+          that motor at the same time. You never write the code that enforces
+          this; the scheduler does it.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          So what happens when a second command wants a mechanism that is
+          already owned? Every command carries a priority number, and every
+          command you write in this workshop has the same one. When they tie,{" "}
+          <strong>the newcomer wins</strong>: it takes the mechanism, and the
+          command that was running is canceled. The only command that loses is
+          one whose priority is strictly lower than what is already there.
+        </p>
+
+        <Box
+          variant="concept"
+          title="What happens when nothing claims a mechanism"
+        >
+          <p>
+            Every mechanism has a <strong>default command</strong>, and unless
+            you set one yourself it is <code>idle()</code>. An idle command owns
+            the mechanism at the lowest possible priority — so anything can take
+            it away — and it sends <em>nothing at all</em> to the motor.
+          </p>
+          <p className="mt-3">
+            Read that last part twice, because it surprises everyone: idle does
+            not switch the motor off. Phoenix keeps applying whatever request it
+            was last given. A canceled command does not stop hardware. The{" "}
+            <strong>Commands</strong> lesson shows what to do about it.
+          </p>
+        </Box>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Reading about ownership is worth about a tenth of watching one command
+          shove another off a motor. Once you have a mechanism, two buttons and
+          a simulator to watch, bind two commands that both need the arm and
+          press both. The second one takes it.
+        </p>
+      </LessonSection>
+
+      {/* ── opmodes ──────────────────────────────────────────────────── */}
+      <LessonSection
+        id="opmodes-the-layer-above-all-of"
+        title="OpModes: the layer above all of it"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Mechanisms own hardware. Something has to own the <em>policy</em> for
+          a phase of the match: which buttons do what right now, which
+          autonomous routine to run. That is an <strong>OpMode</strong>.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The split is two files deep. <code>Robot</code> holds the mechanisms
+          as <code>public final</code> fields and runs the scheduler — you saw
+          it above. Each mode is then its own separate class, tagged with{" "}
+          <code>@Teleop</code>, <code>@Autonomous</code> or{" "}
+          <code>@Utility</code>. The framework finds those classes by their tag
+          and lists them on the driver station, and each one is handed the{" "}
+          <code>Robot</code> so it can reach the mechanisms.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java — the shape of every mode class"
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          code={`@Teleop(name = "Teleop")
+public class TeleopOpMode extends PeriodicOpMode {
+  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+
+  public TeleopOpMode(Robot robot) {
+    final Arm arm = robot.arm;
+
+    // Left trigger: push the arm up while held, stop when released.
+    driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
+  }
+}`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The bindings live in the <strong>constructor</strong>, and that is the
+          whole trick. The framework builds this class when someone picks
+          &quot;Teleop&quot; on the driver station, and throws it away on a mode
+          switch. The bindings go with it. You write no cleanup code, and no
+          leftover binding from auto can fire during teleop.
+        </p>
+
+        <Box
+          variant="alert-warning"
+          tag="IF YOU HAVE SEEN FRC CODE BEFORE"
+          title="There is no RobotContainer and no SendableChooser here"
+        >
+          <p>
+            Older FRC projects put every subsystem and every binding in one{" "}
+            <code>RobotContainer</code> class, and picked the autonomous routine
+            from a dropdown called a <code>SendableChooser</code>. Neither
+            exists on this stack. Mechanisms live on <code>Robot</code>, and
+            each autonomous routine is its own <code>@Autonomous</code> class
+            that the driver station lists next to Teleop.
+          </p>
+          <p className="mt-3">
+            If you find a tutorial with <code>RobotContainer</code> or{" "}
+            <code>edu.wpi.first</code> imports in it, you are reading about a
+            different framework. Ours is <code>org.wpilib</code>.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── holds ────────────────────────────────────────────────────── */}
+      <LessonSection
+        id="holds-what-almost-every-command-here"
+        title="Holds: what almost every command here is"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          A <strong>hold</strong> is a command whose body runs again on every
+          tick — re-sending the same request fifty times a second — and never
+          reaches an end. Two reasons that is the house style here. The request
+          survives a motor controller rebooting mid-match, because the very next
+          tick sends it again. And a command that never ends is a command that
+          keeps owning its mechanism, so nothing else quietly takes the motor
+          out from under it.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Here is the real thing, from the arm you build two lessons from now.
+          Three lines from three different parts of one file:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Arm.java — a hold, its voltage, and the setter it calls"
+          filename="Workshop-Code, branch 2-Commands · subsystems/Arm.java"
+          code={`private static final double FAST_VOLTAGE = 6.0;
+
+/** Push the arm with a stronger voltage and keep pushing. Never finishes. */
+public Command runFast() {
+  return runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)");
+}
+
+private void setVoltage(double voltage) {
+  motor.setControl(voltageOut.withOutput(voltage));
+}`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Read it from the inside out. <code>setVoltage(6.0)</code> asks the
+          motor for six volts, once. <code>runRepeatedly(...)</code> wraps that
+          in a command that re-runs it every tick, so the request never goes
+          stale. <code>.named(&quot;runFast (hold)&quot;)</code> gives the
+          finished command a name, and the <code>(hold)</code> on the end is a
+          promise from whoever wrote it: <em>this command has no ending</em>.
+        </p>
+
+        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          Six volts is a push, not a position. The arm goes where gravity and
+          friction let it. Aiming at a real angle needs feedback, which arrives
+          in <strong>PID Control</strong>. Until then a hold is a steady shove.
+        </p>
+
+        {/* ── THE ONE RULE ───────────────────────────────────────────── */}
         <Box
           variant="alert-warning"
           tag="THE ONE RULE"
           title="A hold never finishes, so nothing may ever wait on a hold"
         >
           <p>
-            Put a hold inside <code>Command.sequence(...)</code> and the
-            sequence sticks on it <em>forever</em>: the hold has no finish line,
-            so the next step never starts. Every hold is named with{" "}
-            <code>(hold)</code> so you can catch this: if a stuck routine is
-            sitting on a <code>(hold)</code> command on the dashboard or in the
-            log, that&apos;s the bug. The fix is to give the hold a finish line
-            at the call site: <code>arm.scoring().until(arm::isAtTarget)</code>.
+            Put a hold in a list of steps and the list stops there{" "}
+            <em>forever</em>. Step two never runs, because step one never
+            reaches an end. No exception is thrown and no error appears in the
+            log — the routine sits there looking broken.
+          </p>
+          <p className="mt-3">
+            It is not a bug in the framework. A hold is <em>supposed</em> to run
+            until something takes the mechanism away from it. That is the whole
+            point of a hold.
+          </p>
+          <p className="mt-3">
+            <strong>How you spot one:</strong> the <code>(hold)</code> suffix.
+            Every command name on this site that has no ending carries it, and
+            the whole reason the convention exists is this bug. Once you work
+            out which command a stuck routine is sitting on, its name tells you
+            whether it was ever going to finish.
           </p>
         </Box>
-      </section>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
+        <Box
+          variant="concept"
+          tag="THE FIXES ARRIVE LATER"
+          title="Two ways to give a hold an ending"
         >
-          Chaining: how routines get built
-        </h2>
+          <p>
+            Diagnosing is all you can do today, and that is fine — you have no
+            multi-step routines yet to get stuck. Both cures are named lessons
+            further down the sidebar:
+          </p>
+          <ul className="ml-4 mt-3 list-disc space-y-2">
+            <li>
+              <code>.withTimeout(...)</code> — end the hold after a fixed amount
+              of time. Blunt, but it works on the very first commands you write.
+              That is <strong>Chaining Commands</strong>.
+            </li>
+            <li>
+              <code>.until(arm::isAtTarget)</code> — end the hold when the
+              mechanism reports that it actually arrived. Better, but it needs a
+              mechanism that can measure itself, which yours cannot do yet. That
+              is <strong>Finish Lines</strong>.
+            </li>
+          </ul>
+        </Box>
+      </LessonSection>
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Routines, especially autos, are built by <strong>chaining</strong>.
-          Chaining is as far as most routines ever need to go, and it takes just
-          three tools, learned in this order:
+      {/* ── did it work ──────────────────────────────────────────────── */}
+      <LessonSection id="did-it-work" title="Did it work?">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          There is no code to run, so check the words against the real project
+          instead. Open the robot template you cloned in{" "}
+          <strong>Project Setup</strong> and find these five things. Each one
+          should take under a minute.
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
+          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          style={bodyStyle}
         >
           <li>
-            <strong>
-              <code>Command.sequence(a, b, c)</code>
-            </strong>
-            : steps that finish on their own (a <code>DriveToPose</code> leg,
-            for example) can sit in a sequence as-is.
+            Open <code>src/main/java/frc/robot/Robot.java</code>.{" "}
+            <strong>You should see:</strong> <code>extends OpModeRobot</code> on
+            the class line, and a few <code>public final</code> fields —{" "}
+            <code>drivetrain</code>, <code>arm</code>, <code>flywheel</code>.
+            Those are the mechanisms.
           </li>
           <li>
-            <strong>
-              <code>.until(mech::isAtTarget)</code>
-            </strong>
-            : gives a hold a finish line, right where you need one. This is
-            always applied at the call site; mechanisms never bake waiting into
-            their command factories.
+            Search that same file for <code>robotPeriodic</code>.{" "}
+            <strong>You should see:</strong> one method, containing exactly one
+            line — <code>Scheduler.getDefault().run();</code>. That is the whole
+            engine.
           </li>
           <li>
-            <strong>
-              <code>Command.race(step, hold)</code>
-            </strong>
-            : &quot;do this step WHILE holding that pose.&quot; A race ends when
-            its first member finishes and cancels the rest. And since a hold
-            never finishes, the step is always what decides.
+            Look through the file list for a file called{" "}
+            <code>RobotContainer.java</code>. <strong>You should see:</strong>{" "}
+            there isn&apos;t one. A full-text search is a different matter — the
+            name does turn up, in the comments at the top of{" "}
+            <code>Robot.java</code> and <code>TeleopOpMode.java</code> and in
+            the template&apos;s markdown docs, every time to say the thing does
+            not exist here. What matters is that no file declares the class. If
+            a tutorial you find later has you create one, it is not describing
+            this stack.
+          </li>
+          <li>
+            Open the folder <code>src/main/java/frc/robot/opmodes/</code>.{" "}
+            <strong>You should see:</strong> six classes. Each one is a separate
+            mode the driver station can run. Open two of them and look at the
+            line above <code>public class</code> — <code>TeleopOpMode</code> is
+            tagged <code>@Teleop</code>, <code>UtilityOpMode</code> is tagged{" "}
+            <code>@Utility(name = &quot;Stow&quot;)</code>. The tag is what puts
+            it on the driver station.
+          </li>
+          <li>
+            Open <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>{" "}
+            and search it for <code>(hold)</code>.{" "}
+            <strong>You should see:</strong> five hits. Three of them are
+            command names — <code>vertical (hold)</code>,{" "}
+            <code>horizontal (hold)</code>, <code>scoring (hold)</code> — and
+            the other two are in the comment block above them, where the file
+            states the rule for itself. Three commands, three holds, no
+            exceptions.
           </li>
         </ol>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Plus one seatbelt: <code>.withTimeout(Seconds.of(...))</code> on any
-          step that waits on a sensor condition, so an auto never burns the
-          whole period stuck at a setpoint it can&apos;t quite reach.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="The reference routine — drive, stow, drive (from the 2027-Template)"
-          code={`routine =
-    Command.sequence(
-            // Leg 1: DriveToPose finishes on its own, so it can sit in a
-            // sequence as-is.
-            new DriveToPose(robot.drivetrain, pose1),
-
-            // Stow is a hold - it would stick here forever. .until(...) gives
-            // it a finish line: this step ends the moment the arm actually
-            // reaches the stow angle.
-            robot.stow().until(robot.arm::isAtTarget).named("stow until stowed"),
-
-            // Leg 2 WHILE holding the stow pose: the race ends when
-            // DriveToPose finishes (the hold never finishes, so the drive
-            // always decides) and cancels the hold.
-            Command.race(new DriveToPose(robot.drivetrain, pose2), robot.stow())
-                .named("drive holding stow"))
-        .named("Drive Stow Drive (Chained)");`}
-        />
-
-        <p
-          className="text-[14px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          (<code>robot.stow()</code> is a robot-level preset the template
-          defines: it drives the arm to its stowed angle, which is why the
-          finish line checks <code>robot.arm::isAtTarget</code>. Your own holds
-          will usually live on a mechanism, like <code>arm.stowed()</code>.)
-        </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-          title="DriveStowDriveChainedOpMode.java — the full working example"
-          icon={<GitBranch className="w-5 h-5" />}
-        />
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Decorators
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          A <em>decorator</em> is a method on the <code>Command</code> interface
-          that returns a wrapped command with some behavior added. The ones
-          below cover the cases that come up daily.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="The decorators you'll actually reach for"
-          code={`// Names a command. Compile-time enforced on every command-builder chain.
-// Without this call, the project does not compile. Holds get a "(hold)"
-// suffix so a stuck routine is visible on the dashboard.
-arm.scoring().named("scoring (hold)");
-
-// Gives a hold a finish line at the call site: this step ends the moment
-// the arm reaches its target. This is THE tool for using a hold in a
-// sequence.
-arm.scoring().until(arm::isAtTarget).named("scoring until there");
-
-// The seatbelt: cap any condition-waiting step so an auto can't sit at an
-// unreachable setpoint for the rest of the period.
-arm.scoring().until(arm::isAtTarget).withTimeout(Seconds.of(2)).named("scoring capped");
-
-// Adds an interrupt-only cleanup hook. Fires only on cancellation —
-// not on normal completion.
-arm.scoring()
-   .whenCanceled(() -> motor.setControl(voltageOut.withOutput(0)))
-   .named("scoring safeCancel");
-
-// Raises priority so this command pre-empts a lower-priority command that's
-// already running on the same mechanism (default priority is 0; idle() is
-// the lowest).
-emergencyStop()
-   .withPriority(1)
-   .named("eStop");`}
-        />
 
         <Box
           variant="alert-info"
-          tag="NOTE · DECORATOR RULES"
-          title="A few rules worth knowing"
+          tag="IF IT DIDN'T WORK"
+          title="Three things that go wrong here"
         >
-          <p>
-            <code>.named(...)</code> is required: the WPILib compiler plugin
-            makes an unnamed command a build error, so every builder chain ends
-            in <code>.named(...)</code>. The interrupt-only cleanup hook is{" "}
-            <code>.whenCanceled(...)</code>. Time-based options take a{" "}
-            <code>Time</code> (e.g. <code>Seconds.of(...)</code>), not a raw{" "}
-            <code>double</code>, in keeping with v3&apos;s units-everywhere
-            policy. And note what is <em>not</em> here: there are no{" "}
-            <code>...AndWait</code> variants on mechanisms; waiting is always
-            spelled <code>.until(...)</code> at the call site.
-          </p>
+          <ul className="ml-4 list-disc space-y-2">
+            <li>
+              <strong>
+                You have a <code>RobotContainer.java</code>, and no{" "}
+                <code>opmodes</code> folder.
+              </strong>{" "}
+              You generated a blank project from the VS Code wizard instead of
+              cloning the team template. That wizard produces the older
+              framework, and nothing in this workshop will line up with it. Go
+              back to <strong>Project Setup</strong> and clone the template.
+            </li>
+            <li>
+              <strong>
+                <code>Arm.java</code> has <code>vertical()</code>,{" "}
+                <code>horizontal()</code> and <code>scoring()</code>, not the{" "}
+                <code>runFast()</code> from the code block above.
+              </strong>{" "}
+              Correct, and expected. The template is the finished robot; the
+              lesson branches build up to it one step at a time. The three names
+              differ, the <code>(hold)</code> suffix does not.
+            </li>
+            <li>
+              <strong>
+                Your editor finds nothing when you search for{" "}
+                <code>Scheduler</code>.
+              </strong>{" "}
+              You are probably searching one open file rather than the whole
+              folder, or you opened the zip rather than the extracted project.
+              Open the project folder itself, then search again.
+            </li>
+          </ul>
         </Box>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          The advanced dialects (you can skip these)
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Commands V3 has two more ways to write routines. You don&apos;t need
-          either one for this workshop (chaining covers everything we build),
-          but you should know they exist so the template code doesn&apos;t
-          surprise you.
+      {/* ── what comes later ─────────────────────────────────────────── */}
+      <LessonSection
+        id="what-this-page-left-out-on"
+        title="What this page left out on purpose"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Four words are worth knowing so they do not surprise you in someone
+          else&apos;s code. Each has its own lesson; none of it is needed to
+          start.
         </p>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Box
-            variant="concept"
-            tag="OPTIONAL · COROUTINES"
-            title="fork / await / waitUntil"
-            code={<code>coroutine.await(command);</code>}
-          >
-            <p>
-              A command body that pauses itself from the inside. Reach for it
-              when a hold must span many steps or the logic needs loops and
-              branches: it keeps every mechanism actively commanded between
-              steps, where a chained sequence can leave one owned by the routine
-              but coasting on its last setpoint. See{" "}
-              <a
-                href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                DriveStowDriveOpMode.java
-              </a>{" "}
-              (the same routine as above, written in this dialect).
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="OPTIONAL · STATE MACHINE"
-            title="StateMachine"
-            code={<code>machine.when(...)</code>}
-          >
-            <p>
-              The robot is always in exactly one named state, and
-              buttons/sensors move it between states; illegal jumps simply
-              don&apos;t exist because no transition was declared for them. See{" "}
-              <a
-                href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-              >
-                StateMachineTeleop.java
-              </a>{" "}
-              and the State Machines lesson in Advanced Topics.
-            </p>
-          </Box>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Implementation sequence
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The workshop builds up a command-based project in this order. Each
-          step assumes the previous one is in place.
-        </p>
-
-        <ol
-          className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
         >
           <li>
-            <strong>Mechanisms</strong>: hardware fields, configuration,{" "}
-            <code>setDefaultCommand</code>.
+            <strong>Chaining</strong> — gluing commands into one bigger command
+            so a single button runs several things in order. This is the style
+            almost everything on this team is written in.{" "}
+            <strong>Chaining Commands</strong>.
           </li>
           <li>
-            <strong>Commands</strong>: hold factories on each mechanism, named
-            with a <code>(hold)</code> suffix.
+            <strong>Finish lines</strong> — ending a step when a mechanism
+            reports it has arrived, rather than after a fixed time.{" "}
+            <strong>Finish Lines</strong>.
           </li>
           <li>
-            <strong>Triggers</strong>: controller bindings + the scoping rules
-            (global / opmode / command).
+            <strong>Coroutines</strong> — a second way of writing a command,
+            where the body pauses itself from the inside. Reach for it when one
+            hold has to span many steps. <strong>Coroutines</strong>, in
+            Advanced Topics.
           </li>
           <li>
-            <strong>PID control</strong>: closed-loop requests for the holds to
-            re-send.
+            <strong>State machines</strong> — the robot is always in exactly one
+            named state, and buttons move it between them.{" "}
+            <strong>State Machines</strong>, in Advanced Topics.
           </li>
-          <li>
-            <strong>Motion Magic</strong>: profiled-position requests with
-            acceleration and cruise-velocity bounds.
-          </li>
-          <li>
-            <strong>Auto routines</strong>: chained sequences of drive legs and
-            holds, exactly the pattern above.
-          </li>
-        </ol>
+        </ul>
 
         <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4 flex items-center gap-2">
-            <BookOpen className="w-5 h-5" />
+          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
             Ground truth for this lesson
           </h3>
           <p className="text-[var(--foreground)] mb-4">
-            Our team&apos;s reference implementation, with the hold and chaining
-            rules written up in its onboarding guide:
+            Every code block above was trimmed out of one of these files, not
+            written for the page. Three of them are on branch{" "}
+            <code>2-Commands</code> of the workshop code:{" "}
+            <code>Robot.java</code> is the mechanisms and the scheduler tick,{" "}
+            <code>TeleopOpMode.java</code> is the mode class and its bindings,
+            and <code>Arm.java</code> is the hold. The <code>addPeriodic</code>{" "}
+            line is from <code>Limelight.java</code> on branch{" "}
+            <code>3-Limelight</code>. The onboarding guide is where the holds
+            rule is stated in the team&apos;s own words.
           </p>
           <div className="flex flex-col gap-3">
             <DocumentationButton
@@ -415,26 +573,40 @@ emergencyStop()
               icon={<GitBranch className="w-5 h-5" />}
             />
             <DocumentationButton
-              href="https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html"
-              title="WPILib Command-Based Programming Guide"
-              icon={<Book className="w-5 h-5" />}
+              href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/Robot.java"
+              title="Workshop-Code 2-Commands — Robot.java, the mechanisms and the scheduler tick"
+              icon={<GitBranch className="w-5 h-5" />}
+            />
+            <DocumentationButton
+              href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+              title="Workshop-Code 2-Commands — TeleopOpMode.java, bindings in the constructor"
+              icon={<GitBranch className="w-5 h-5" />}
+            />
+            <DocumentationButton
+              href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/subsystems/Arm.java"
+              title="Workshop-Code 2-Commands — Arm.java, the arm you build in two lessons"
+              icon={<GitBranch className="w-5 h-5" />}
+            />
+            <DocumentationButton
+              href="https://github.com/Hemlock5712/Workshop-Code/blob/3-Limelight/src/main/java/frc/robot/subsystems/Limelight.java"
+              title="Workshop-Code 3-Limelight — Limelight.java, the addPeriodic call"
+              icon={<GitBranch className="w-5 h-5" />}
             />
           </div>
         </div>
-      </section>
+      </LessonSection>
 
       <Box
         variant="alert-info"
         tag="NOTE · API STATUS"
         title="This is the WPILib 2027 alpha"
       >
-        Commands V3 (the staged builder, the compile-time naming enforcement,
-        and the <code>StateMachine</code> class) runs on{" "}
-        <strong>Java 25</strong> and deploys to <strong>SystemCore</strong>. The
-        stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
-        <code>2027.0.0-alpha-6</code>, Phoenix 6 <code>26.50.0-alpha-1</code>),
-        so the exact APIs are still moving between alpha builds. This page was
-        last verified against alpha-6 in July 2026.
+        Commands v3 and the OpMode framework run on <strong>Java 25</strong> and
+        deploy to <strong>SystemCore</strong> (GradleRIO{" "}
+        <code>2027.0.0-alpha-6</code>, Phoenix 6 <code>26.50.0-alpha-1</code>).
+        This is alpha software, so exact APIs still move between builds. The
+        scheduler behavior described above was read out of the alpha-6 source in
+        July 2026.
       </Box>
 
       <Quiz
@@ -452,63 +624,63 @@ emergencyStop()
             ],
             correctAnswer: 1,
             explanation:
-              "Triggers say when to run something, Mechanisms own the hardware (motors, sensors, configuration), and Commands are the actions that get scheduled.",
+              "Triggers say when to run something, Mechanisms own the hardware (motors, sensors, configuration), and Commands are the actions that get scheduled onto a mechanism.",
           },
           {
             id: 2,
             question:
-              "Which decorator is enforced at compile time by the WPILib compiler plugin?",
+              "Robot.java calls Scheduler.getDefault().run() inside robotPeriodic(). What breaks if you delete that line?",
             options: [
-              ".until(BooleanSupplier)",
-              ".named(String)",
-              ".whenCanceled(Runnable)",
-              ".withPriority(int)",
+              "Nothing — the scheduler starts itself when the first command is built",
+              "Every command on the robot stops running: triggers are never checked and nothing is ever scheduled",
+              "Only autonomous stops working; teleop bindings run directly off the driver station",
+              "The motors keep running but stop logging",
             ],
             correctAnswer: 1,
             explanation:
-              ".named(...) is enforced: every command-builder chain has to end with a name call or the project won't compile. That's also why every hold carries a \"(hold)\" suffix: the name is what you'll see on the dashboard when a routine gets stuck.",
+              "That one line is the whole engine. robotPeriodic() runs 50 times a second, and each call is the pass where the scheduler checks triggers, queues default commands, and gives every running command a turn. Without it, a built command is inert.",
           },
           {
             id: 3,
             question:
-              "You put arm.scoring() — a hold — directly into Command.sequence(driveLeg, arm.scoring(), nextLeg). What happens when the auto runs?",
+              "One command has the arm. A button fires and a second command that also needs the arm gets scheduled. Both have the ordinary priority. Who ends up with the arm?",
             options: [
-              "The arm reaches the scoring angle and the sequence moves on",
-              "The sequence sticks on the hold forever — nextLeg never starts",
-              "The scheduler throws an exception at schedule time",
-              "The hold is skipped because sequences ignore non-finishing commands",
+              "The command that was already running — a mechanism cannot be taken away",
+              "The new command; the one that was running is canceled",
+              "Both run at once and their voltages are added together",
+              "Neither — the scheduler drops both and runs the default command",
             ],
             correctAnswer: 1,
             explanation:
-              'THE ONE RULE: a hold never finishes, so nothing may ever wait on a hold. The sequence waits on scoring (hold) forever. On the dashboard you\'d see the routine sitting on a "(hold)"-named command; that name is the debugging clue.',
+              "A newcomer only loses if its priority is strictly lower than the running command's. Every command you write has the same priority, so ties go to the newcomer and the older command is canceled. Bind two commands that both need the arm to two buttons and you can watch it happen.",
           },
           {
             id: 4,
             question:
-              "What's the right fix for the stuck sequence in the previous question?",
+              'A routine has been stuck for eight seconds, and the command it is sitting on is named "runFast (hold)". What does that name tell you?',
             options: [
-              "Call arm.scoringAndWait() instead",
-              "Give the hold a finish line at the call site: arm.scoring().until(arm::isAtTarget)",
-              "Wrap the hold in Command.parallel so the sequence doesn't wait",
-              "Lower the hold's priority so the next step can pre-empt it",
+              "The command crashed and the scheduler is retrying it",
+              "It is a hold, which never finishes on its own — so whatever is waiting on it will wait forever",
+              "The mechanism is busy and the command has not started yet",
+              "Nothing useful; command names are decorative",
             ],
             correctAnswer: 1,
             explanation:
-              'Waiting is always spelled at the call site with .until(...); there are no "...AndWait" methods on mechanisms. Add .withTimeout(...) as a seatbelt if the target might be unreachable.',
+              "That is what the (hold) suffix is for. A hold has no ending by design, so anything waiting on one waits forever. The two ways to give a hold an ending — .withTimeout(...) and .until(...) — arrive in Chaining Commands and Finish Lines.",
           },
           {
             id: 5,
             question:
-              "In Command.race(new DriveToPose(robot.drivetrain, pose2), robot.stow()), which member decides when the race ends?",
+              "No command is claiming the flywheel. What is the mechanism doing?",
             options: [
-              "Whichever finishes first — it could be either",
-              "DriveToPose — the hold never finishes, so the drive leg is always what decides, and the race cancels the hold",
-              "robot.stow() — holds win races because they run at higher priority",
-              "Neither — a race needs an explicit .until(...) to end",
+              "Nothing is running, and the motor has been switched off",
+              "Its default command — idle() — owns it at the lowest priority and sends no output at all, so the motor keeps applying whatever request it last received",
+              "The scheduler re-runs the last command that finished",
+              "It throws an error until something claims it",
             ],
             correctAnswer: 1,
             explanation:
-              'A race ends when its first member finishes and cancels the rest. Since a hold never finishes, the self-finishing step is always the decider; that\'s why race is the tool for "do this step WHILE holding that pose."',
+              "Every mechanism defaults to idle(). Idle owns the mechanism so anything can take it, but it commands nothing — it does not zero the previous request. Canceling a command is not the same as stopping a motor, which is why a separate stop() command exists.",
           },
         ]}
       />

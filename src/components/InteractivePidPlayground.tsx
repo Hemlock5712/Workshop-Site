@@ -860,7 +860,7 @@ export default function InteractivePidPlayground() {
       {/* ── Tuning hint ─────────────────────── */}
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         <Lightbulb
-          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
         />
         <p>

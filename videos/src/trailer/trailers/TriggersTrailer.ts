@@ -150,13 +150,13 @@ export const TriggersTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Press A, raise the arm. That link is called a binding. Every binding has one big question to answer: when should it stop existing? In Commands version three, the answer is simple. Bindings belong to modes.",
+      text: "Press A, the arm goes up. That link is a binding, and the interesting question isn't how to make one. It's who deletes it when the match mode changes, because in the old framework that was your job and everybody got it wrong.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "ontrue",
-      text: "Teleop is a class now, called an OpMode. The controller is a field. Bindings go in the constructor. Bind driver dot a whileTrue arm dot scoring. Scoring is a hold: a command that keeps the arm at one angle. Hold A, and the hold runs.",
+      text: "Teleop is a class in version three, with the controller as a field on it. Bind in the constructor: hold A, and the arm drives to its scoring angle and stays there. Release it, and the binding is still there; it just isn't true anymore.",
       camera: CODE,
       events: [
         {
@@ -175,7 +175,7 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "whiletrue",
-      text: "Why whileTrue? A hold never finishes. Release the button, and the arm goes back to its normal job — its default command. onTrue is different. Save it for commands that end on their own, like a heading reset. Never bind a hold with onTrue.",
+      text: "whileTrue is doing real work here. Since the hold has no ending, the button release is what cancels it, which is how the arm's default gets the mechanism back. onTrue fires once on the press and never again. Save that for a heading reset.",
       camera: { x: 2620, y: 380, width: 1440, height: 810 },
       events: [
         {
@@ -189,7 +189,7 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "scopes",
-      text: "Here is the part that kills boilerplate. Every binding has a scope. A scope decides how long the binding lives. Bind in the Robot constructor, and it is global. Bind in an OpMode, and it lives with the mode. Bind inside a command body, and it dies with the command.",
+      text: "This is where the boilerplate goes away. Where you type a binding decides how long it lives. Robot constructor: global, alive for the whole session. An OpMode, and it dies with the mode. Inside a command, and you get exactly one run.",
       camera: DIAGRAM,
       events: [
         {
@@ -220,12 +220,12 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "teardown",
-      text: "Watch a mode switch. Pick auto, and the framework builds the auto OpMode with its bindings. Teleop's bindings are torn down for you. Pick teleop again, and fresh bindings come back. You never unregister anything by hand.",
+      text: "That middle one is the one you'll feel. Switch to autonomous and every teleop binding leaves with the old OpMode object; switch back and a new one wires them up again. No teardown list, nothing to forget.",
       camera: { x: 6960, y: 180, width: 1560, height: 1020 },
     },
     {
       id: "sensors",
-      text: "Triggers are not just buttons. Any yes-or-no reading wraps in a Trigger. A flywheel at speed. A beam break. A sensor binds just like the A button. While the flywheel is at speed, the feed hold runs.",
+      text: "Nothing here is button-specific. Any boolean your robot can produce wraps in a Trigger, so a flywheel coming up to speed can start the feed itself, no driver involved. Beam breaks, limit switches, a pose estimate.",
       camera: CODE2,
       events: [
         {
@@ -239,7 +239,7 @@ export const TriggersTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Command-scoped bindings go further. A climb routine can carry its own abort button. The binding dies the moment the climb ends. See all three scopes, with runnable code, at frc5712.com.",
+      text: "The third scope surprises people. A climb routine can register its own abort button, and that button stops existing the moment the climb does. Bindings you never have to remember.",
       camera: END,
       holdAfter: 1.2,
     },

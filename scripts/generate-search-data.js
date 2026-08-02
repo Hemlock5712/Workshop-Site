@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 // Check if a string looks like CSS/Tailwind classes
 function looksLikeCSSClasses(text) {
@@ -95,55 +96,79 @@ function getPageMetadata(route) {
     },
     hardware: {
       title: "Hardware Setup",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         "Overview of CTRE hardware components including Kraken X44 motors, CANcoders, and CANivore setup.",
     },
     "project-setup": {
       title: "Project Setup",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         "Creating a new WPILib project and configuring it for CTRE hardware integration.",
     },
+    "java-basics": {
+      title: "The Java You Need",
+      category: "Control Fundamentals",
+      description:
+        "Only the Java this site uses, taught off real lines of Arm.java: class and object, extends, fields, method signatures, private/public/final/static, the lambda () -> ..., the method reference arm::isAtTarget, and dot chaining.",
+    },
     "command-framework": {
       title: "Command-Based Framework",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
-        'Triggers, Mechanisms, and Commands in v3 — persistent holds (runRepeatedly, the "(hold)" naming rule) and chaining with Command.sequence, call-site .until, Command.race, and .withTimeout. Coroutines and StateMachine are optional advanced dialects.',
+        "The map for the rest of Workshop #1: Triggers, Mechanisms and Commands in v3, the scheduler loop that runs them, mechanism ownership, and the one rule — a hold never finishes, so nothing may wait on one. No code to write.",
     },
     "building-subsystems": {
       title: "Mechanisms",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         'Implementing the v3 Mechanism base class (extends Mechanism) — hold-command factories with runRepeatedly and "(hold)" names, private setters, idle() defaults, and setDefaultCommand for one physical part of the robot.',
     },
     "adding-commands": {
       title: "Commands",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
-        'Writing v3 commands as holds — runRepeatedly re-sending the closed-loop request, "(hold)" naming, the one rule (a hold never finishes), and chaining routines with sequence / until / race / withTimeout.',
+        'Writing your first v3 commands on branch 2-Commands: private setters, runRepeatedly factories, the "(hold)" naming rule, idle() as the default, and onTrue/onFalse trigger bindings. Composing them comes later, on Chaining Commands.',
     },
     "running-program": {
-      title: "Running Program",
-      category: "Workshop 1",
+      title: "Running Your Code",
+      category: "Control Fundamentals",
       description:
         "Deploying and running robot code with hardware simulation and testing.",
     },
+    "ai-coding-assistant": {
+      title: "Coding with an AI Assistant",
+      category: "Control Fundamentals",
+      description:
+        "Using Claude Code, Copilot, and Codex on robot code — and spotting the Commands v2 answers they give you, because RobotContainer and SubsystemBase are what the training data contains.",
+    },
+    "chaining-commands": {
+      title: "Chaining Commands",
+      category: "Control Fundamentals",
+      description:
+        "Composing v3 commands: whileTrue/whileFalse hold bindings, .withTimeout(Seconds.of(...)) to give a hold an ending, Command.sequence for steps in order, and Command.race as the deadline pattern.",
+    },
+    "finish-lines": {
+      title: "Finish Lines",
+      category: "Control Fundamentals",
+      description:
+        "The read side of a mechanism: getPosition/getTargetPosition/isAtTarget with unit types and a tolerance, then .until(arm::isAtTarget).named(...) replacing a fixed timeout, with the timeout kept as a seatbelt.",
+    },
     "mechanism-setup": {
       title: "Mechanism Setup",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         "Configuring specific robot mechanisms and their control systems.",
     },
     "pid-control": {
       title: "PID Control",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         "Understanding and implementing PID control for precise robot positioning and movement.",
     },
     "motion-magic": {
       title: "Motion Magic",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         "Advanced motion profiling using CTRE's Motion Magic for smooth, controlled movements.",
     },
@@ -155,9 +180,21 @@ function getPageMetadata(route) {
     },
     triggers: {
       title: "Triggers",
-      category: "Workshop 1",
+      category: "Control Fundamentals",
       description:
         "Binding controller inputs and sensor predicates to commands in v3 — scoped bindings (global / opmode / command), OpMode as a sibling to Mechanism, and why each binding's lifetime matches its scope.",
+    },
+    coroutines: {
+      title: "Coroutines",
+      category: "Advanced",
+      description:
+        "The advanced dialect: Command.noRequirements(coroutine -> ...) with fork, await, waitUntil and yield. Fork a hold instead of awaiting it, always time out a wait in an auto, and see the same routine written both ways.",
+    },
+    "drive-to-tag-inline": {
+      title: "Drive to Tag, Written as a Coroutine",
+      category: "Advanced",
+      description:
+        "The hardest lesson on the site: one while(true) coroutine body doing Limelight target-space reads, three ProfiledPIDControllers with feedforward, and the guard clauses that keep it from reporting done before it has a reading.",
     },
     "state-based": {
       title: "State Machines",
@@ -167,67 +204,55 @@ function getPageMetadata(route) {
     },
     "swerve-prerequisites": {
       title: "Swerve Drive Prerequisites",
-      category: "Workshop 2",
+      category: "Drive & Perception",
       description:
         "Understanding swerve drive fundamentals: holonomic motion, coordinate systems, and module anatomy.",
     },
     "swerve-drive-project": {
       title: "Creating a Swerve Drive Project",
-      category: "Workshop 2",
+      category: "Drive & Perception",
       description:
         "Advanced workshop on implementing swerve drive systems for omnidirectional robot movement.",
     },
     pathplanner: {
       title: "Autonomous: Driving to a Pose",
-      category: "Workshop 2",
+      category: "Drive & Perception",
       description:
-        "Autonomous in the v3 template: @Autonomous OpModes that sequence DriveToPose legs with CTRE LinearPath — no PathPlanner.",
-    },
-    "vision-options": {
-      title: "Vision Options",
-      category: "Workshop 2",
-      description:
-        "Overview of computer vision options for FRC robots including cameras and vision processing.",
+        "Autonomous with OpModes: sequencing DriveToPoint legs in an @Autonomous class and seeding the pose before the routine runs. The robot template's DriveToPose is the same idea. No PathPlanner — this slug is kept for old links.",
     },
     "vision-implementation": {
-      title: "Implementing Vision",
-      category: "Workshop 2",
+      title: "Vision",
+      category: "Drive & Perception",
       description:
-        "Practical implementation of vision systems in robot code for target detection and tracking.",
-    },
-    "logging-options": {
-      title: "Logging Options",
-      category: "Workshop 2",
-      description:
-        "Why logging matters and what to log; this workshop uses WPILib DataLogManager only — AdvantageKit, Epilogue, and replay are named as vocabulary, not taught.",
+        "AprilTag localization and camera mounting, then feeding Limelight measurements into the pose estimator for target detection and tracking.",
     },
     "logging-implementation": {
-      title: "Implementing Logging",
-      category: "Workshop 2",
+      title: "Logging",
+      category: "Drive & Perception",
       description:
-        "Setting up WPILib DataLogManager — start it in Robot's constructor and publish robot state to NetworkTables; view in AdvantageScope.",
+        "Setting up WPILib DataLogManager — start it in Robot's constructor and publish robot state to NetworkTables; view in AdvantageScope. Also covers why not AdvantageKit, Epilogue, or Hoot.",
     },
     "vision-shooting": {
       title: "Dynamic Flywheel Control",
-      category: "Advanced",
+      category: "Drive & Perception",
       description:
         "Shoot accurately from anywhere: odometry distance drives an InterpolatingDoubleTreeMap of distance-velocity pairs to set flywheel speed in real time.",
     },
     "swerve-calibration": {
       title: "Swerve Calibration",
-      category: "Workshop 2",
+      category: "Drive & Perception",
       description:
         "Calibrating and tuning swerve drive modules for accurate autonomous and teleop performance.",
     },
     "drive-to-point": {
       title: "Drive to Point",
-      category: "Workshop 2",
+      category: "Drive & Perception",
       description:
         "Implementing drive-to-point navigation using PID control for precise autonomous positioning.",
     },
     "advanced-drive-to-point": {
-      title: "Advanced: Profiled Drive to Point",
-      category: "Advanced",
+      title: "Profiled Drive to Point",
+      category: "Drive & Perception",
       description:
         "Profiled path following with CTRE LinearPath feedforward plus PID for smooth autonomous movement — the internals of DriveToPose.",
     },
@@ -237,17 +262,17 @@ function getPageMetadata(route) {
       description:
         "Terminology reference for FRC programming concepts and CTRE hardware components.",
     },
-    "ai-assistant": {
-      title: "AI Assistant",
-      category: "Resources",
-      description:
-        "AI chat for workshop questions, plus how to use AI coding assistants (Claude Code, GitHub Copilot, OpenAI Codex) and the 2027-Template's Agent Skills on your own robot code.",
-    },
     search: {
       title: "Search",
       category: "Resources",
       description:
         "Search across all workshop content to find specific topics and lessons.",
+    },
+    privacy: {
+      title: "Privacy Policy",
+      category: "Resources",
+      description:
+        "What this site collects, why, and how to opt out — analytics, the AI assistant, and third-party embeds.",
     },
   };
 
@@ -330,7 +355,31 @@ export const searchData: SearchItem[] = ${JSON.stringify(searchData, null, 2)};
 `;
 
   const outputPath = path.join(__dirname, "..", "src", "data", "searchData.ts");
+
   fs.writeFileSync(outputPath, output);
+
+  // Format on the way out. `pnpm build` runs this script, so an unformatted
+  // write left the tree dirty and the *next* `format:check` failed on a file
+  // nobody had touched — which is why CLAUDE.md used to tell you to run
+  // `pnpm format` afterwards. Shelling out to the CLI rather than using the
+  // API: Prettier 3's `format()` is async-only and this script is sync
+  // top to bottom.
+  // Run Prettier's own entry point under this Node, rather than going through
+  // `npx` — spawning a `.cmd` shim without a shell is EINVAL on Windows.
+  try {
+    const prettierBin = path.join(
+      path.dirname(require.resolve("prettier/package.json")),
+      "bin",
+      "prettier.cjs"
+    );
+    execFileSync(
+      process.execPath,
+      [prettierBin, "--write", "--log-level", "warn", outputPath],
+      { stdio: "inherit" }
+    );
+  } catch (err) {
+    console.warn("Could not format search data:", err.message);
+  }
 
   console.log(`Generated search data for ${searchData.length} pages`);
   console.log("Search data written to:", outputPath);

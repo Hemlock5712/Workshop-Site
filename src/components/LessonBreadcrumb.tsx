@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { findLessonBySlug, type LessonSection } from "@/data/lessons";
+import { findLessonBySlug, type LessonSectionId } from "@/data/lessons";
 
-const SECTION_LABEL: Record<LessonSection, string> = {
+const SECTION_LABEL: Record<LessonSectionId, string> = {
   main: "00 · GETTING STARTED",
   workshop1: "01 · CONTROL FUNDAMENTALS",
   workshop2: "02 · DRIVE & PERCEPTION",

@@ -60,7 +60,7 @@ Advanced Topics:
 └── /advanced-drive-to-point Advanced: Profiled Drive to Point (LinearPath)
 
 Utility pages (outside lesson navigation):
-└── /search, /glossary, /ai-assistant, /planner, /privacy
+└── /search, /glossary, /planner, /privacy
 ```
 
 ## 🚀 Getting Started
@@ -122,30 +122,11 @@ public/                      # Images, 3D models, downloads
 
 Navigation (sidebar groups, lesson order, prev/next links) is derived entirely from `src/data/lessons.ts` — add or reorder lessons there. See [CLAUDE.md](CLAUDE.md) for the full architecture and content-authoring reference.
 
-## 🤖 AI Assistant (Optional)
+## 🤖 AI Assistant
 
-The `/ai-assistant` page answers workshop questions using Gemini with a File Search store for retrieval. Everything else works without it. To enable it locally:
+[Coding with an AI Assistant](https://frc5712.com/ai-coding-assistant) is an optional Workshop #1 lesson on pointing Claude Code, GitHub Copilot, or OpenAI Codex at your own robot project — including the Agent Skills that ship in the [2027-Template](https://github.com/Hemlock5712/2027-Template) and how to spot an assistant that answered in Commands v2.
 
-1. Create `.env.local` with a [Google AI Studio](https://aistudio.google.com/app/apikey) API key:
-
-   ```
-   GOOGLE_GENERATIVE_AI_API_KEY=your_api_key
-   GEMINI_FILE_SEARCH_STORE=your_store_name
-   ```
-
-2. One-time store creation (prints the store name for `.env.local`):
-
-   ```bash
-   npx tsx scripts/setup-file-search.ts
-   ```
-
-3. Upload workshop pages to the store (use `--replace` after content changes):
-
-   ```bash
-   npx tsx scripts/upload-to-file-search.ts
-   ```
-
-`scripts/list-file-search.ts` lists what the store currently contains.
+The site itself no longer hosts a chat bot. The Gemini-backed `/ai-assistant` page and its File Search index were removed in August 2026: a retrieval index of these pages went stale faster than the pages did, and the workshop would rather teach the tools students already have open. There is no API key to configure — the site runs entirely without one.
 
 ## 🌐 Deployment
 

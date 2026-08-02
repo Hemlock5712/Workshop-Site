@@ -121,13 +121,13 @@ export const RunningProgramTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your code builds with no errors. Your mechanism works on paper. But the robot does not exist yet. Good news: WPILib twenty twenty-seven can run your whole program tonight. Right on your laptop. You can even watch it move.",
+      text: "It's the second week of build season, the mechanism is still three welds from done, and you have code you can't test. Except you can. WPILib will run the entire program on your laptop tonight, scheduler and all, and you can watch the arm move.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "launch",
-      text: "One Gradle command does it: simulateJava. Gradle is the build tool. It runs your robot code right on your laptop. A simulator window opens with a driver station — the panel that starts the robot. Nothing is wired up.",
+      text: "One Gradle command, and a sim driver station opens on your laptop with nothing wired to it. No robot. No radio. No battery to charge. Just the same code you'd deploy, running in a window.",
       camera: { x: 2580, y: 340, width: 1500, height: 820 },
       events: [
         {
@@ -140,7 +140,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "opmodes",
-      text: "That driver station lists every OpMode by name. An OpMode is one mode your robot can run. Teleop means a driver controls it. Autonomous means the robot drives itself. The list comes straight from your code. Write a new mode, and it shows up.",
+      text: "Every OpMode in that window came straight out of your source, one entry per class you tagged @Teleop or @Autonomous. No registration list to keep in sync. Add one, rebuild, and it shows up.",
       camera: { x: 3040, y: 320, width: 1560, height: 860 },
       events: [
         {
@@ -153,7 +153,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "select",
-      text: "Pick one, and that OpMode is constructed — built fresh, right then. That's when its buttons get connected to actions. Then, every loop, the scheduler ticks. The scheduler is the part that runs your commands. Your mechanism starts moving on screen.",
+      text: "Selecting a mode is when the OpMode gets constructed, and that timing matters more than it sounds: bindings in that constructor don't exist until you pick the mode. Then the scheduler ticks. Whatever your default command is takes over.",
       camera: { x: 3600, y: 160, width: 1800, height: 1060 },
       events: [
         {
@@ -172,7 +172,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here are both ways to launch the sim. simulateJava opens the window. You click Enable yourself. simulateJavaAgent runs headless — no window at all. It enables the robot for you. You can even pick the exact starting mode by name.",
+      text: "simulateJava opens the window and waits for a human to click Enable. simulateJavaAgent skips all of that: headless, auto-enabled, and you can name the exact mode to start in, which is how the whole thing runs unattended on a build server.",
       camera: CODE,
       events: [
         {
@@ -192,7 +192,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "hardware-sim",
-      text: "Want real motion? CTRE hardware sim can spin real motors from your laptop. The code reaches them through a CANivore — a USB hub for robot parts. One catch: turn off the CANivore USB setting in the TunerX app first. Otherwise the two programs fight.",
+      text: "CTRE hardware sim goes further and drives actual motors on your bench, over a CANivore, from that same laptop. One catch. Turn off the CANivore USB setting in Tuner X first, or the two programs fight over the port all night.",
       camera: { x: 3820, y: 400, width: 1560, height: 860 },
       events: [
         {
@@ -206,7 +206,7 @@ export const RunningProgramTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "So before a single part is bolted on, you can test everything. Drive your mechanism. Try every button. Break nothing. See the full running program guide at frc5712.com.",
+      text: "Every button, every command, tested before a single bolt goes in the arm. The night before your first match is a bad time to find out a trigger was bound backwards.",
       camera: END,
       holdAfter: 1.2,
     },

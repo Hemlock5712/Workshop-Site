@@ -1,16 +1,30 @@
-/**
- * Top-of-lesson "key concept" intro panel. Rebuilt on the module pattern:
- * a bordered container with a "KEY CONCEPT" tag corner label, a serif
- * heading, descriptive body copy, and an amber-striped takeaway line at
- * the bottom that names the concept itself.
- */
+import { Mark } from "@/components/lesson/Prose";
+
 interface KeyConceptSectionProps {
-  title: string;
+  /**
+   * Optional. Most lessons now promote this sentence to the page's `<h1>` via
+   * `PageTemplate`'s `title`, which leaves this component rendering the
+   * opening paragraphs only — one heading per lesson opening, not two.
+   */
+  title?: string;
   description: string | string[];
+  /** The one sentence to remember. Rendered highlighted, at the end. */
   concept: string;
   children?: React.ReactNode;
 }
 
+/**
+ * The opening passage of a lesson: what this is about, in a few sentences,
+ * ending on the one line worth carrying forward.
+ *
+ * No frame and no tag corner. It sits directly in the prose column because it
+ * *is* prose — boxing the first thing on the page taught students that the
+ * first thing on the page was skippable chrome.
+ *
+ * The takeaway gets the highlighter rather than a bordered strip. One marked
+ * sentence per page reads as someone's pen; a striped panel reads as a
+ * component.
+ */
 export default function KeyConceptSection({
   title,
   description,
@@ -20,61 +34,29 @@ export default function KeyConceptSection({
   const lines = Array.isArray(description) ? description : [description];
 
   return (
-    <div
-      className="module ticked relative"
-      style={{ padding: "44px 24px 24px" }}
-    >
-      <span className="module-tag">KEY CONCEPT</span>
-
-      <h2
-        className="mb-3 text-2xl font-semibold leading-tight"
-        style={{
-          fontFamily: "var(--font-serif)",
-          color: "var(--fg)",
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {title}
-      </h2>
-
-      <div className="flex flex-col gap-3">
-        {lines.map((line, i) => (
-          <p
-            key={i}
-            className="text-[15px] leading-relaxed"
-            style={{ color: "var(--fg-mute)", margin: 0 }}
-          >
-            {line}
-          </p>
-        ))}
-      </div>
-
-      <div
-        className="mt-5 flex items-start gap-3 rounded-md p-4"
-        style={{
-          background: "var(--bg)",
-          border: "1px solid var(--line-soft)",
-          borderLeft: "3px solid var(--accent)",
-        }}
-      >
-        <span
-          className="mono shrink-0"
+    <div className="measure mb-4 flex flex-col gap-[22px]">
+      {title && (
+        <h2
+          className="display m-0"
           style={{
-            color: "var(--accent)",
-            fontSize: 10.5,
-            letterSpacing: "0.08em",
-            marginTop: 3,
+            fontSize: "clamp(24px, 3vw, 32px)",
+            lineHeight: 1.12,
+            letterSpacing: "-0.015em",
           }}
         >
-          ↳ TAKEAWAY
-        </span>
-        <p
-          className="text-[14px] leading-relaxed"
-          style={{ color: "var(--fg)", margin: 0 }}
-        >
-          {concept}
+          {title}
+        </h2>
+      )}
+
+      {lines.map((line, i) => (
+        <p key={i} className="prose-body m-0">
+          {line}
         </p>
-      </div>
+      ))}
+
+      <p className="prose-body m-0">
+        <Mark>{concept}</Mark>
+      </p>
 
       {children}
     </div>

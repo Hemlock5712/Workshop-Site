@@ -1,0 +1,167 @@
+"use client";
+
+/**
+ * Sticky bar across the top of the scroll container.
+ *
+ * Left: where you are — `Workshop / 01 Control Fundamentals / PID Control`,
+ * with a completion pill once the lesson is finished. On non-lesson routes it
+ * degrades to the workshop wordmark.
+ *
+ * Right: the search affordance and the course-wide finished counter. The
+ * counter is here rather than in the rail because it answers a different
+ * question from the rail's spine — that one is "how far down this page", this
+ * one is "how far through the course".
+ */
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Search } from "lucide-react";
+import { useShell } from "@/contexts/ShellContext";
+import { useProgress } from "@/lib/useProgress";
+import { findLessonBySlug, getSectionOf, LESSON_COUNT } from "@/data/lessons";
+
+const microLabel = {
+  fontSize: 10,
+  letterSpacing: "0.14em",
+  textTransform: "uppercase",
+} as const;
+
+export default function Topbar() {
+  const pathname = usePathname();
+  const { openSearch } = useShell();
+  const { completed } = useProgress();
+
+  const lesson = findLessonBySlug(pathname);
+  const section = getSectionOf(pathname);
+  const done = completed.has(pathname);
+  const doneCount = completed.size;
+  const donePct = Math.round((doneCount / LESSON_COUNT) * 100);
+
+  return (
+    <div
+      className="sticky top-0 z-[35] flex items-center gap-3 px-6 py-2.5 lg:gap-[18px] lg:px-10"
+      style={{
+        background: "var(--bg)",
+        borderBottom: "1px solid var(--rule-soft)",
+      }}
+    >
+      {lesson ? (
+        <span className="flex min-w-0 items-center gap-2.5">
+          <Link
+            href="/"
+            className="mono whitespace-nowrap"
+            style={{ ...microLabel, color: "var(--tx3)" }}
+          >
+            Workshop
+          </Link>
+          <span style={{ color: "var(--rule)" }}>/</span>
+          {section && (
+            <>
+              <span
+                className="mono hidden whitespace-nowrap xl:inline"
+                style={{ ...microLabel, color: "var(--tx3)" }}
+              >
+                {section.num} {section.title}
+              </span>
+              <span
+                className="hidden xl:inline"
+                style={{ color: "var(--rule)" }}
+              >
+                /
+              </span>
+            </>
+          )}
+          <span
+            className="mono truncate"
+            style={{ ...microLabel, color: "var(--tx)" }}
+          >
+            {lesson.title}
+          </span>
+          {done && (
+            <span
+              className="mono shrink-0 whitespace-nowrap rounded-full px-2 py-0.5"
+              style={{
+                fontSize: 9,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                background: "var(--accent-soft)",
+                color: "var(--accent)",
+                animation: "rise 0.3s ease-out",
+              }}
+            >
+              ✓ complete
+            </span>
+          )}
+        </span>
+      ) : (
+        <span
+          className="mono truncate"
+          style={{ ...microLabel, color: "var(--tx3)" }}
+        >
+          FRC 5712 · Coding Workshop
+        </span>
+      )}
+
+      <button
+        type="button"
+        onClick={openSearch}
+        title="Search the workshop — Ctrl K"
+        className="ml-auto flex min-w-0 max-w-[330px] flex-1 cursor-pointer items-center gap-2.5 rounded-[4px] px-3 py-[7px] transition-colors hover:border-[var(--accent)] hover:text-[var(--tx2)]"
+        style={{
+          border: "1px solid var(--rule)",
+          background: "var(--bg2)",
+          color: "var(--tx3)",
+        }}
+      >
+        <Search size={15} aria-hidden="true" className="shrink-0" />
+        <span className="hidden truncate text-[13px] sm:inline">
+          Search lessons
+        </span>
+        <span
+          className="mono ml-auto hidden shrink-0 whitespace-nowrap rounded-[3px] px-[5px] py-px md:inline"
+          style={{
+            fontSize: 9.5,
+            letterSpacing: "0.08em",
+            border: "1px solid var(--rule)",
+          }}
+        >
+          Ctrl K
+        </span>
+      </button>
+
+      <span
+        title="Lessons you have finished"
+        className="hidden shrink-0 items-center gap-2.5 whitespace-nowrap md:flex"
+      >
+        <span
+          className="hidden h-[3px] w-14 overflow-hidden rounded-sm lg:block"
+          style={{ background: "var(--rule-soft)" }}
+          aria-hidden="true"
+        >
+          <span
+            className="block h-full"
+            style={{
+              width: `${donePct}%`,
+              background: "var(--accent)",
+              transition: "width 0.45s cubic-bezier(0.2,0.7,0.3,1)",
+            }}
+          />
+        </span>
+        <span
+          className="mono"
+          style={{
+            fontSize: 9.5,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "var(--tx3)",
+          }}
+        >
+          <span style={{ color: "var(--accent)" }}>
+            {String(doneCount).padStart(2, "0")}
+          </span>{" "}
+          / {LESSON_COUNT} finished
+        </span>
+      </span>
+    </div>
+  );
+}

@@ -142,13 +142,13 @@ export const ProjectSetupTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Every season starts the same way. A blank project. A blinking cursor. A robot that does nothing. Skip all of it. This workshop starts from a template — a robot program that already works.",
+      text: "A blank project, a blinking cursor, and two weeks of build season gone before the robot moves an inch. Skip it. Clone the template instead and the program you start with already deploys.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "stack",
-      text: "Here's the twenty twenty-seven stack. Commands version three with OpModes is the framework. It organizes your robot code. Java twenty-five is the language. GradleRIO is the build tool. It packs your code up for the robot. And it all runs on SystemCore — the new robot controller.",
+      text: "Commands and OpModes give your code its shape. Java is the language, and it's the one piece of this you already know. GradleRIO packages everything and shoves it down the wire. SystemCore catches it and starts running your program. Four names. Four things to blame.",
       camera: STACK,
       events: [
         {
@@ -174,7 +174,7 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "clone",
-      text: "Getting the code takes one step: clone the twenty twenty-seven template. Cloning means copying the project from GitHub. Then open the folder in VS Code — the WPILib install from the prerequisites page. The whole robot program is already there.",
+      text: "There is no scaffolding step. You clone the template from GitHub, then open that folder in WPILib VS Code, and what's already on your disk is a real robot program with mechanisms, an OpMode, and a build that works.",
       camera: { x: 5500, y: 140, width: 1560, height: 600 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "clone" } },
@@ -183,7 +183,7 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "team-number",
-      text: "Then make it yours. Your team number lives in one file, called wpilib preferences dot json. Set it once. From then on, every build knows exactly which robot the code belongs to.",
+      text: "Then make it yours. Your team number goes in one file, and getting it wrong is the classic first-day mistake: the deploy runs, finds nothing, and times out while everybody stares at the laptop.",
       camera: { x: 6100, y: 620, width: 1000, height: 580 },
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "number" } },
@@ -191,7 +191,7 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "deploy",
-      text: "Now plug in and deploy. Deploy just means sending your code to the robot. Gradle builds the program and ships it over the network. SystemCore boots it up and runs it. And you haven't written a single line yet.",
+      text: "Now plug in and deploy. Gradle builds, ships the result over the network, and SystemCore restarts your program in a few seconds. First deploy of the season, and you still haven't written a line of your own.",
       camera: { x: 6900, y: 620, width: 1000, height: 580 },
       events: [
         { type: "diagram", artifact: "flow", step: 4, at: { word: "deploy" } },
@@ -200,13 +200,13 @@ export const ProjectSetupTrailer: TrailerScript = {
     },
     {
       id: "payoff",
-      text: "That's the whole point of a template. No empty files. No setup code to write by hand. No blank screen staring back at you. Setup becomes a fifteen-minute checklist. Then the real work starts today: building your mechanisms.",
+      text: "Setup is done. The meeting goes to the arm instead. Every hour lost to a broken build is an hour the mechanism sits on the cart untested, and that's the hour that costs you a match.",
       camera: FLOW,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "The full walkthrough covers every click. You'll open the project in WPILib VS Code — the editor for robot code. You'll even test on your laptop, with no robot at all. Start your project at frc5712.com.",
+      text: "Do this once, properly, and you won't think about it again all season. The walkthrough has the exact clicks, including how to run the whole thing on your laptop with no robot yet.",
       camera: END,
       holdAfter: 1.2,
     },

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, RotateCcw } from "lucide-react";
 import { quizWinConfetti } from "@/lib/utils";
 
 interface QuizQuestion {
@@ -18,327 +17,251 @@ interface QuizProps {
 }
 
 /**
- * Knowledge-check quiz styled per the design's checkpoint pattern.
- * Module wrapper with "CHECKPOINT · N / TOTAL" tag corner, mono A/B/C/D
- * answer chips, amber "EXPLAIN ↳" strip for explanations, and a single
- * Submit / Reset action row. Confetti fires on a perfect score.
+ * "Check yourself" — the end-of-lesson knowledge check.
+ *
+ * Open by default. It used to be collapsed behind a disclosure, which meant
+ * the one part of the page that tells a student whether they actually
+ * understood it was the one part most of them never saw.
+ *
+ * Grading marks the right answer rather than scolding the wrong one: the
+ * chosen-but-wrong option is dimmed and labelled "not this one", and the
+ * explanation always appears. The point is to leave knowing why, not to
+ * score.
  */
 export default function Quiz({ title, questions }: QuizProps) {
-  const [selectedAnswers, setSelectedAnswers] = useState<
-    Record<number, number>
-  >({});
-  const [showResults, setShowResults] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [graded, setGraded] = useState(false);
 
-  const handleAnswerSelect = (questionId: number, answerIndex: number) => {
-    if (submitted) return;
-    setSelectedAnswers((prev) => ({ ...prev, [questionId]: answerIndex }));
+  const answered = Object.keys(answers).length === questions.length;
+  const score = questions.filter(
+    (q) => answers[q.id] === q.correctAnswer
+  ).length;
+
+  const submit = () => {
+    if (graded) {
+      setGraded(false);
+      setAnswers({});
+      return;
+    }
+    if (!answered) return;
+    setGraded(true);
+    if (score === questions.length) quizWinConfetti();
   };
-
-  const handleSubmit = () => {
-    if (Object.keys(selectedAnswers).length !== questions.length) return;
-    setSubmitted(true);
-    setShowResults(true);
-    if (getScore().percentage === 100) quizWinConfetti();
-  };
-
-  const handleReset = () => {
-    setSelectedAnswers({});
-    setShowResults(false);
-    setSubmitted(false);
-  };
-
-  const getScore = () => {
-    const correct = questions.filter(
-      (q) => selectedAnswers[q.id] === q.correctAnswer
-    ).length;
-    return {
-      correct,
-      total: questions.length,
-      percentage: Math.round((correct / questions.length) * 100),
-    };
-  };
-
-  const score = getScore();
-  const canSubmit =
-    Object.keys(selectedAnswers).length === questions.length && !submitted;
-
-  const summaryTone =
-    score.percentage >= 80 ? "ok" : score.percentage >= 60 ? "warn" : "err";
-  const summaryStripe = {
-    ok: "var(--ok)",
-    warn: "var(--accent)",
-    err: "var(--err)",
-  }[summaryTone];
 
   return (
-    <div className="module relative overflow-hidden" style={{ paddingTop: 40 }}>
-      <span className="module-tag">CHECKPOINT · {questions.length} ITEMS</span>
-
-      {/* Collapse header (page-default closed; click to open) */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        className="flex w-full items-center justify-between px-5 pb-3 pt-1 text-left transition-colors hover:bg-[var(--bg-elev-2)]"
-      >
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", letterSpacing: "-0.01em" }}
+    <section
+      id="check-yourself"
+      data-sec="check-yourself"
+      data-sec-label="Check yourself"
+      className="measure-wide scroll-mt-24"
+      aria-label={title}
+    >
+      <div className="mb-[26px] flex items-baseline gap-4">
+        <span
+          className="mono sec-num tabular shrink-0"
+          style={{
+            fontSize: 10,
+            letterSpacing: "0.14em",
+            color: "var(--accent)",
+          }}
+          aria-hidden="true"
+        />
+        <h2
+          className="display m-0"
+          style={{
+            fontSize: "clamp(27px, 3.4vw, 38px)",
+            lineHeight: 1.08,
+            letterSpacing: "-0.015em",
+          }}
         >
           {title}
-        </h3>
-        <ChevronDown
-          className={`h-5 w-5 transition-transform ${isOpen ? "rotate-180" : ""}`}
-          style={{ color: "var(--fg-mute)" }}
-          aria-hidden
+        </h2>
+        <span
+          aria-hidden="true"
+          className="h-px flex-1"
+          style={{ background: "var(--rule-soft)" }}
         />
-      </button>
+      </div>
 
-      {isOpen && (
-        <div className="px-5 pb-5">
-          {/* Results summary (only after submit) */}
-          {showResults && (
-            <div
-              className="mb-5 rounded-md p-3.5"
-              style={{
-                background: "var(--bg)",
-                border: "1px solid var(--line)",
-                borderLeft: `3px solid ${summaryStripe}`,
-              }}
-            >
-              <div className="flex items-baseline gap-3">
-                <span
-                  className="mono"
-                  style={{
-                    fontSize: 10.5,
-                    letterSpacing: "0.08em",
-                    color: summaryStripe,
-                  }}
-                >
-                  ↳ RESULTS
-                </span>
-                <span
-                  className="mono tabular text-base font-semibold"
-                  style={{ color: "var(--fg)" }}
-                >
-                  {String(score.correct).padStart(2, "0")}/
-                  {String(score.total).padStart(2, "0")} · {score.percentage}%
-                </span>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="mono ml-auto inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-[11px] transition-colors"
-                  style={{
-                    border: "1px solid var(--line)",
-                    background: "var(--bg-elev)",
-                    color: "var(--fg-mute)",
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  <RotateCcw className="h-3 w-3" />
-                  RESET
-                </button>
-              </div>
-              <p
-                className="mt-2 text-sm leading-relaxed"
-                style={{ color: "var(--fg-mute)" }}
+      <div
+        className="px-5 py-7 sm:px-[34px] sm:py-8"
+        style={{
+          background: "var(--bg2)",
+          border: "1px solid var(--rule)",
+          borderRadius: 3,
+        }}
+      >
+        {questions.map((q, qi) => (
+          <div
+            key={q.id}
+            className="mb-[26px] pb-[26px]"
+            style={{ borderBottom: "1px solid var(--rule-soft)" }}
+          >
+            <div className="mb-4 flex gap-3.5">
+              <span
+                className="mono tabular shrink-0 pt-2"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: "0.12em",
+                  color: "var(--accent)",
+                }}
               >
-                {score.percentage >= 80
-                  ? "Strong understanding. Move on with confidence."
-                  : score.percentage >= 60
-                    ? "Decent baseline — review the explanations below."
-                    : "Re-read this lesson before continuing."}
+                {String(qi + 1).padStart(2, "0")}
+              </span>
+              <p
+                className="display m-0"
+                style={{
+                  fontSize: "clamp(20px, 2.4vw, 26px)",
+                  lineHeight: 1.2,
+                }}
+              >
+                {q.question}
               </p>
             </div>
-          )}
 
-          {/* Questions */}
-          <div className="flex flex-col gap-6">
-            {questions.map((question, qIdx) => {
-              const selectedAnswer = selectedAnswers[question.id];
-              const isCorrect = selectedAnswer === question.correctAnswer;
+            <div
+              className="flex flex-col gap-px sm:pl-[34px]"
+              role="radiogroup"
+              aria-label={q.question}
+            >
+              {q.options.map((option, oi) => {
+                const picked = answers[q.id] === oi;
+                const right = oi === q.correctAnswer;
 
-              return (
-                <div key={question.id} className="flex flex-col gap-3">
-                  <h4
-                    className="text-[15px] font-semibold leading-snug"
-                    style={{ color: "var(--fg)" }}
+                let color = "var(--tx2)";
+                let background = "transparent";
+                let letterColor = "var(--tx3)";
+                let flag = "";
+                let flagColor = "var(--tx3)";
+
+                if (graded && right) {
+                  color = "var(--tx)";
+                  background = "var(--accent-soft)";
+                  letterColor = "var(--accent)";
+                  flag = "correct";
+                  flagColor = "var(--accent)";
+                } else if (graded && picked) {
+                  color = "var(--tx3)";
+                  flag = "not this one";
+                } else if (picked) {
+                  color = "var(--tx)";
+                  background = "var(--accent-soft)";
+                  letterColor = "var(--accent)";
+                }
+
+                return (
+                  <button
+                    key={oi}
+                    type="button"
+                    role="radio"
+                    aria-checked={picked}
+                    disabled={graded}
+                    onClick={() =>
+                      setAnswers((prev) => ({ ...prev, [q.id]: oi }))
+                    }
+                    className="flex w-full items-baseline gap-3.5 border-0 px-3.5 py-[11px] text-left transition-colors enabled:cursor-pointer"
+                    style={{ borderRadius: 2, background, color }}
                   >
                     <span
-                      className="mono"
-                      style={{
-                        color: "var(--fg-dim)",
-                        marginRight: 8,
-                        letterSpacing: "0.05em",
-                      }}
+                      className="mono shrink-0"
+                      style={{ fontSize: 11, color: letterColor }}
                     >
-                      {String(qIdx + 1).padStart(2, "0")}
+                      {String.fromCharCode(97 + oi)}.
                     </span>
-                    {question.question}
-                  </h4>
-
-                  <div className="flex flex-col gap-2">
-                    {question.options.map((option, oIdx) => {
-                      const isSelected = selectedAnswer === oIdx;
-                      const isCorrectOpt = oIdx === question.correctAnswer;
-
-                      let bg = "var(--bg)";
-                      let border = "var(--line)";
-                      let chipBorder = "var(--line)";
-                      let chipColor = "var(--fg-dim)";
-
-                      if (submitted) {
-                        if (isCorrectOpt) {
-                          bg = "oklch(0.78 0.14 155 / 0.10)";
-                          border = "var(--ok)";
-                          chipBorder = "var(--ok)";
-                          chipColor = "var(--ok)";
-                        } else if (isSelected) {
-                          bg = "oklch(0.7 0.18 25 / 0.10)";
-                          border = "var(--err)";
-                          chipBorder = "var(--err)";
-                          chipColor = "var(--err)";
-                        }
-                      } else if (isSelected) {
-                        bg = "var(--primary-soft)";
-                        border = "var(--primary-lifted)";
-                        chipBorder = "var(--primary-lifted)";
-                        chipColor = "var(--primary-lifted)";
-                      }
-
-                      return (
-                        <button
-                          key={oIdx}
-                          type="button"
-                          disabled={submitted}
-                          onClick={() => handleAnswerSelect(question.id, oIdx)}
-                          className="flex w-full items-center gap-3 rounded-sm p-3 text-left transition-all"
-                          style={{
-                            background: bg,
-                            border: `1px solid ${border}`,
-                            cursor: submitted ? "default" : "pointer",
-                            color: "var(--fg)",
-                          }}
-                        >
-                          <span
-                            className="mono inline-flex shrink-0 items-center justify-center"
-                            style={{
-                              width: 22,
-                              height: 22,
-                              borderRadius: 3,
-                              border: `1px solid ${chipBorder}`,
-                              fontSize: 11,
-                              color: chipColor,
-                            }}
-                          >
-                            {String.fromCharCode(65 + oIdx)}
-                          </span>
-                          <span className="flex-1 text-[14px]">{option}</span>
-                          {submitted && isCorrectOpt && (
-                            <span
-                              className="mono"
-                              style={{ fontSize: 10.5, color: "var(--ok)" }}
-                            >
-                              ✓ CORRECT
-                            </span>
-                          )}
-                          {submitted && isSelected && !isCorrectOpt && (
-                            <span
-                              className="mono"
-                              style={{ fontSize: 10.5, color: "var(--err)" }}
-                            >
-                              ✗ NOT QUITE
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {showResults && (
-                    <div
-                      className="rounded-md p-3.5"
+                    <span
                       style={{
-                        background: "var(--bg)",
-                        border: "1px solid var(--line)",
-                        borderLeft: "3px solid var(--accent)",
+                        fontFamily: "var(--font-serif)",
+                        fontSize: 17,
+                        lineHeight: 1.45,
                       }}
                     >
+                      {option}
+                    </span>
+                    {flag && (
                       <span
-                        className="mono"
+                        className="mono ml-auto shrink-0 whitespace-nowrap"
                         style={{
-                          color: "var(--accent)",
-                          fontSize: 10.5,
-                          letterSpacing: "0.08em",
+                          fontSize: 9,
+                          letterSpacing: "0.12em",
+                          textTransform: "uppercase",
+                          color: flagColor,
                         }}
                       >
-                        EXPLAIN ↳
-                      </span>{" "}
-                      <span
-                        className="text-[13.5px] leading-relaxed"
-                        style={{ color: "var(--fg-mute)" }}
-                      >
-                        {question.explanation}
+                        {flag}
                       </span>
-                      {!isCorrect && submitted && (
-                        <div
-                          className="mono mt-2"
-                          style={{ fontSize: 10.5, color: "var(--fg-dim)" }}
-                        >
-                          You picked{" "}
-                          <span style={{ color: "var(--err)" }}>
-                            {selectedAnswer !== undefined
-                              ? String.fromCharCode(65 + selectedAnswer)
-                              : "—"}
-                          </span>{" "}
-                          · correct was{" "}
-                          <span style={{ color: "var(--ok)" }}>
-                            {String.fromCharCode(65 + question.correctAnswer)}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Submit row */}
-          {!submitted && (
-            <div className="mt-7 flex items-center justify-between">
-              <span
-                className="mono"
-                style={{
-                  fontSize: 10.5,
-                  color: "var(--fg-dim)",
-                  letterSpacing: "0.06em",
-                }}
-              >
-                {String(Object.keys(selectedAnswers).length).padStart(2, "0")}/
-                {String(questions.length).padStart(2, "0")} answered
-              </span>
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-                className="inline-flex items-center gap-2 rounded-md px-5 py-2 text-[13px] font-semibold transition"
-                style={{
-                  background: canSubmit ? "var(--accent)" : "var(--bg-elev-2)",
-                  color: canSubmit ? "var(--accent-fg)" : "var(--fg-dim)",
-                  border: `1px solid ${canSubmit ? "var(--accent)" : "var(--line)"}`,
-                  cursor: canSubmit ? "pointer" : "not-allowed",
-                }}
-              >
-                Submit checkpoint
-                <span aria-hidden>→</span>
-              </button>
+                    )}
+                  </button>
+                );
+              })}
             </div>
-          )}
+
+            {graded && (
+              <div className="mt-5 grid grid-cols-[56px_1fr] gap-5 sm:ml-[34px] sm:grid-cols-[80px_1fr]">
+                <div
+                  className="mono pt-[5px] text-right"
+                  style={{
+                    fontSize: 9.5,
+                    letterSpacing: "0.13em",
+                    textTransform: "uppercase",
+                    color: "var(--accent)",
+                  }}
+                >
+                  Why
+                </div>
+                <div
+                  className="pl-5 sm:pl-[22px]"
+                  style={{
+                    borderLeft: "1px solid var(--rule)",
+                    fontFamily: "var(--font-serif)",
+                    fontSize: 16.5,
+                    lineHeight: 1.62,
+                    color: "var(--tx2)",
+                  }}
+                >
+                  {q.explanation}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+
+        <div className="flex flex-wrap items-center gap-5 pt-2 sm:pl-[34px]">
+          <button
+            type="button"
+            onClick={submit}
+            disabled={!answered && !graded}
+            className="whitespace-nowrap px-[22px] py-[11px] text-[13px] font-semibold transition-opacity enabled:cursor-pointer disabled:cursor-not-allowed"
+            style={{
+              borderRadius: 2,
+              border: `1px solid ${answered || graded ? "var(--accent)" : "var(--rule)"}`,
+              background: answered && !graded ? "var(--accent)" : "transparent",
+              color:
+                answered && !graded
+                  ? "var(--accent-ink)"
+                  : answered || graded
+                    ? "var(--accent)"
+                    : "var(--tx3)",
+            }}
+          >
+            {graded ? "Reset" : "Check answers"}
+          </button>
+          <span
+            aria-live="polite"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontStyle: "italic",
+              fontSize: 15.5,
+              color: "var(--tx3)",
+            }}
+          >
+            {graded
+              ? `${score} of ${questions.length} right.`
+              : answered
+                ? ""
+                : "Pick an answer for each."}
+          </span>
         </div>
-      )}
-    </div>
+      </div>
+    </section>
   );
 }

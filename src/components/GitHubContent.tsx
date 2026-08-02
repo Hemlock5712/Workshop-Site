@@ -86,7 +86,7 @@ function formatDate(dateString: string): string {
 function LoadingCard({ label }: { label: string }) {
   return (
     <div className="card p-8 text-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)] mx-auto mb-4"></div>
       <p className="text-[var(--muted-foreground)]">{label}</p>
     </div>
   );
@@ -102,12 +102,10 @@ function ErrorCard({
   context: string;
 }) {
   return (
-    <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg p-6">
-      <h3 className="text-red-800 dark:text-red-300 font-semibold mb-2">
-        {heading}
-      </h3>
-      <p className="text-red-600 dark:text-red-400 text-sm">{message}</p>
-      <p className="text-red-600 dark:text-red-400 text-sm mt-2">{context}</p>
+    <div className="bg-[var(--bg2)] border border-[var(--err)] rounded-lg p-6">
+      <h3 className="text-[var(--err)] font-semibold mb-2">{heading}</h3>
+      <p className="text-[var(--err)] text-sm">{message}</p>
+      <p className="text-[var(--err)] text-sm mt-2">{context}</p>
     </div>
   );
 }
@@ -156,7 +154,7 @@ export default function GitHubContent({
               onClick={() => setActiveTab("ide")}
               className={`px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 ${
                 activeTab === "ide"
-                  ? "border-primary-600 text-primary-600"
+                  ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
@@ -167,7 +165,7 @@ export default function GitHubContent({
               onClick={() => setActiveTab("diff")}
               className={`px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 ${
                 activeTab === "diff"
-                  ? "border-primary-600 text-primary-600"
+                  ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
               }`}
             >
@@ -277,7 +275,7 @@ function FileView({
               <span className="font-mono text-lg font-medium text-[var(--foreground)]">
                 {filename}
               </span>
-              <span className="px-2 py-1 bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-300 rounded text-xs font-medium">
+              <span className="px-2 py-1 bg-[var(--bg2)] text-[var(--accent)] rounded text-xs font-medium">
                 {language.toUpperCase()}
               </span>
             </div>
@@ -521,8 +519,8 @@ function PRView({
                     prData.merged_at
                       ? "bg-[var(--muted)] text-[var(--foreground)]"
                       : prData.state === "closed"
-                        ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-                        : "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+                        ? "bg-[var(--bg2)] text-[var(--err)] text-[var(--err)]"
+                        : "bg-[var(--bg2)] text-[var(--ok)] text-[var(--ok)]"
                   }`}
                 >
                   {prData.merged_at ? (
@@ -560,7 +558,7 @@ function PRView({
               href={prData.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors text-sm font-medium flex items-center gap-1"
+              className="bg-[var(--accent)] text-[var(--accent-ink)] px-4 py-2 rounded-lg hover:bg-[var(--bg2)] transition-colors text-sm font-medium flex items-center gap-1"
             >
               View on GitHub <ExternalLink className="w-4 h-4" />
             </a>
@@ -573,14 +571,15 @@ function PRView({
               {focusFile ? `${focusFile} Changes` : "Files Changed"}
             </h5>
             <div className="flex items-center space-x-4 text-sm">
-              <span className="flex items-center text-green-600 dark:text-green-400">
-                <span className="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
+              <span className="flex items-center text-[var(--ok)]">
+                <span className="w-3 h-3 bg-[var(--bg2)] rounded-full mr-2"></span>
                 +{files.reduce((sum, file) => sum + file.additions, 0)}{" "}
                 additions
               </span>
-              <span className="flex items-center text-red-600 dark:text-red-400">
-                <span className="w-3 h-3 bg-red-500 rounded-full mr-2"></span>-
-                {files.reduce((sum, file) => sum + file.deletions, 0)} deletions
+              <span className="flex items-center text-[var(--err)]">
+                <span className="w-3 h-3 bg-[var(--bg2)] rounded-full mr-2"></span>
+                -{files.reduce((sum, file) => sum + file.deletions, 0)}{" "}
+                deletions
               </span>
             </div>
           </div>
@@ -595,34 +594,34 @@ function PRView({
                 key={index}
                 className="border border-[var(--border)] rounded-lg overflow-hidden mb-4 last:mb-0"
               >
-                <div className="bg-white dark:bg-[#2d2d30] px-4 py-3 border-b border-gray-600 flex items-center justify-between">
+                <div className="bg-white dark:bg-[#2d2d30] px-4 py-3 border-b border-[var(--rule)] flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <span className="font-mono text-sm font-medium text-gray-800 dark:text-gray-200">
+                    <span className="font-mono text-sm font-medium text-[var(--tx)]">
                       {file.filename}
                     </span>
                     <span
                       className={`px-2 py-1 rounded text-xs ${
                         file.status === "added"
-                          ? "bg-green-600 text-white"
+                          ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                           : file.status === "removed"
-                            ? "bg-red-600 text-white"
-                            : "bg-primary-600 text-white"
+                            ? "bg-[var(--accent)] text-[var(--accent-ink)]"
+                            : "bg-[var(--accent)] text-[var(--accent-ink)]"
                       }`}
                     >
                       {file.status}
                     </span>
-                    <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded font-medium">
+                    <span className="text-xs bg-[var(--bg3)] text-[var(--tx3)] px-2 py-1 rounded font-medium">
                       {language.toUpperCase()}
                     </span>
                   </div>
                   <div className="flex items-center space-x-3 text-sm">
                     {file.additions > 0 && (
-                      <span className="text-green-400 font-medium">
+                      <span className="text-[var(--ok)] font-medium">
                         +{file.additions}
                       </span>
                     )}
                     {file.deletions > 0 && (
-                      <span className="text-red-400 font-medium">
+                      <span className="text-[var(--err)] font-medium">
                         -{file.deletions}
                       </span>
                     )}
@@ -632,7 +631,7 @@ function PRView({
                 <div className="bg-[#1e1e1e]">
                   {isLoadingContent ? (
                     <div className="flex items-center justify-center h-32">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent)]"></div>
                     </div>
                   ) : content ? (
                     <DiffEditor
@@ -665,12 +664,12 @@ function PRView({
                       }}
                       loading={
                         <div className="flex items-center justify-center h-32 bg-[#1e1e1e]">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent)]"></div>
                         </div>
                       }
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-32 text-gray-400">
+                    <div className="flex items-center justify-center h-32 text-[var(--tx3)]">
                       Unable to load file content
                     </div>
                   )}

@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
@@ -18,7 +19,26 @@ import {
 
 export default function Hardware() {
   return (
-    <PageTemplate title="Hardware Setup">
+    <PageTemplate
+      title="Wire it, name it, and make sure it answers"
+      emphasis="make sure it answers"
+      lede="Before any code, every device on the bus needs power, a unique CAN ID, current firmware, and a name you chose. Phoenix Tuner X does all four, and this is the page that owns the CANivore-USB toggle every later lesson refers back to."
+      needs={[
+        <>
+          The mechanism assembled and wired, with a charged battery — see{" "}
+          <strong>Mechanism CAD</strong> if you are building one.
+        </>,
+        <>
+          Phoenix Tuner X installed, from <strong>Prerequisites</strong>, and a
+          USB cable to the CANivore.
+        </>,
+        <>
+          <strong>The real hardware.</strong> There is no simulator path through
+          this page — it is the page where you confirm the devices exist.
+        </>,
+      ]}
+      time="About 45 minutes, longer if firmware needs updating"
+    >
       {/* Beginner-Friendly Introduction */}
       <Box
         variant="alert-info"
@@ -70,11 +90,7 @@ export default function Hardware() {
         concept="Solid hardware configuration enables precise and reliable robot control."
       />
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Hardware Components
-        </h2>
-
+      <LessonSection id="hardware-components" title="Hardware Components">
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
           <ContentCard>
             <ImageBlock
@@ -84,17 +100,17 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+            <h3 className="text-xl font-bold text-[var(--tx)] mb-3">
               <a
                 href="https://store.ctr-electronics.com/products/kraken-x44"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
+                className="text-[var(--accent)] hover:text-[var(--accent)] underline"
               >
                 Kraken X44 Brushless Motor
               </a>
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-[var(--tx2)] mb-3">
               <strong>What it is:</strong> A{" "}
               <GlossaryTerm term="motor">motor</GlossaryTerm> with a built-in
               &quot;brain&quot; (
@@ -102,16 +118,16 @@ export default function Hardware() {
               Instead of just spinning when you apply power, it can precisely
               control how fast it spins and exactly where it stops.
             </p>
-            <p className="text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-[var(--tx2)] mb-3">
               <strong>Why it&apos;s special:</strong> Most motors need a
               separate controller box. The Kraken has the controller built right
               in, making wiring simpler and saving space on your robot.
             </p>
-            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
-              <p className="text-sm text-primary-800 dark:text-primary-300 mb-2">
+            <div className="bg-[var(--bg2)] p-3 rounded-lg">
+              <p className="text-sm text-[var(--tx2)] mb-2">
                 <strong>What you need to know:</strong>
               </p>
-              <ul className="text-sm text-primary-800 dark:text-primary-300 list-disc list-inside space-y-1">
+              <ul className="text-sm text-[var(--tx2)] list-disc list-inside space-y-1">
                 <li>Strong enough to lift heavy arms and spin flywheels</li>
                 <li>Spins up to about 125 times per second</li>
                 <li>
@@ -133,17 +149,17 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+            <h3 className="text-xl font-bold text-[var(--tx)] mb-3">
               <a
                 href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
+                className="text-[var(--accent)] hover:text-[var(--accent)] underline"
               >
                 WCP ThroughBore Encoder (CANcoder) – Position Sensor
               </a>
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-[var(--tx2)] mb-3">
               <strong>What it is:</strong> A{" "}
               <GlossaryTerm term="sensor">sensor</GlossaryTerm> that measures
               exactly where a rotating part is positioned. It can tell you
@@ -151,7 +167,7 @@ export default function Hardware() {
               is the WCP ThroughBore; it&apos;s a CANcoder inside, so the code
               calls it a CANcoder.)
             </p>
-            <p className="text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-[var(--tx2)] mb-3">
               <strong>Why you need it:</strong> The{" "}
               <GlossaryTerm term="encoder">encoder</GlossaryTerm> built into
               your motor gets set to 0 degrees every time it powers on, which
@@ -159,11 +175,11 @@ export default function Hardware() {
               every time. The CANcoder uses a magnet, so it remembers its
               position.
             </p>
-            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
-              <p className="text-sm text-primary-800 dark:text-primary-300 mb-2">
+            <div className="bg-[var(--bg2)] p-3 rounded-lg">
+              <p className="text-sm text-[var(--tx2)] mb-2">
                 <strong>What you need to know:</strong>
               </p>
-              <ul className="text-sm text-primary-800 dark:text-primary-300 list-disc list-inside space-y-1">
+              <ul className="text-sm text-[var(--tx2)] list-disc list-inside space-y-1">
                 <li>
                   Remembers position even when the robot is turned off (absolute
                   position)
@@ -187,23 +203,23 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+            <h3 className="text-xl font-bold text-[var(--tx)] mb-3">
               <a
                 href="https://store.ctr-electronics.com/canivore/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-600 hover:text-primary-800 underline dark:text-primary-400 dark:hover:text-primary-300"
+                className="text-[var(--accent)] hover:text-[var(--accent)] underline"
               >
                 CANivore – Communication Hub
               </a>
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-[var(--tx2)] mb-3">
               <strong>What it is:</strong> A device that creates a high-speed
               &quot;conversation network&quot; for all your robot parts. Think
               of it like a Wi-Fi router, but instead of connecting phones and
               laptops, it connects motors and sensors.
             </p>
-            <p className="text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-[var(--tx2)] mb-3">
               <strong>Why you need it:</strong> Just like you can&apos;t have 10
               people all talking at once in a small room, robot parts need an
               organized way to communicate. The CANivore runs{" "}
@@ -212,11 +228,11 @@ export default function Hardware() {
               confused. Swerve drivetrains often need one because the robot
               controller&apos;s built-in network would be overwhelmed with data.
             </p>
-            <div className="bg-primary-100 dark:bg-primary-900/20 p-3 rounded-lg">
-              <p className="text-sm text-primary-800 dark:text-primary-300 mb-2">
+            <div className="bg-[var(--bg2)] p-3 rounded-lg">
+              <p className="text-sm text-[var(--tx2)] mb-2">
                 <strong>What you need to know:</strong>
               </p>
-              <ul className="text-sm text-primary-800 dark:text-primary-300 list-disc list-inside space-y-1">
+              <ul className="text-sm text-[var(--tx2)] list-disc list-inside space-y-1">
                 <li>Connects to your computer via USB cable</li>
                 <li>
                   All motors and sensors plug into this with{" "}
@@ -234,56 +250,55 @@ export default function Hardware() {
             </div>
           </ContentCard>
         </div>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Why We Choose CTRE Hardware
-        </h2>
-
-        <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+      <LessonSection
+        id="why-we-choose-ctre-hardware"
+        title="Why We Choose CTRE Hardware"
+      >
+        <div className="bg-[var(--bg2)] rounded-lg p-8 border border-[var(--rule)]">
+          <h3 className="text-xl font-semibold text-[var(--tx)] mb-4 flex items-center gap-2">
             <Target className="w-5 h-5" />
             CTRE&apos;s Unique Advantages
           </h3>
           <div className="grid md:grid-cols-4 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">
+            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
+              <h4 className="font-bold text-[var(--accent)] mb-2">
                 Full <GlossaryTerm term="pid">PID</GlossaryTerm> Control
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
+              <p className="text-sm text-[var(--tx2)]">
                 Complete <GlossaryTerm term="pid">PID</GlossaryTerm>{" "}
                 implementation with kP, kI, kD, and advanced filtering options
                 that other vendors don&apos;t provide.
               </p>
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
               <h4 className="font-bold text-[var(--foreground)] mb-2">
                 <GlossaryTerm term="feedforward">Feedforward (FF)</GlossaryTerm>
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
+              <p className="text-sm text-[var(--tx2)]">
                 Built-in{" "}
                 <GlossaryTerm term="feedforward">feedforward</GlossaryTerm>{" "}
                 control for gravity compensation and velocity control that
                 competitors lack.
               </p>
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-green-600 dark:text-green-400 mb-2">
+            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
+              <h4 className="font-bold text-[var(--ok)] mb-2">
                 <GlossaryTerm term="motion magic">
                   Motion Profiling
                 </GlossaryTerm>
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
+              <p className="text-sm text-[var(--tx2)]">
                 <GlossaryTerm term="motion magic">Motion Magic</GlossaryTerm>{" "}
                 and motion profiling for smooth, controlled movements.
               </p>
             </div>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-orange-600 dark:text-orange-400 mb-2">
+            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
+              <h4 className="font-bold text-[var(--accent)] mb-2">
                 Rotations Units
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
+              <p className="text-sm text-[var(--tx2)]">
                 Motor positions measured in rotations instead of encoder ticks
                 or radians.
               </p>
@@ -292,15 +307,15 @@ export default function Hardware() {
 
           {/* Phoenix Software Resources - moved inside CTRE advantages */}
           <div className="mt-8">
-            <h4 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
+            <h4 className="text-xl font-semibold text-[var(--tx)] mb-4 flex items-center gap-2">
               <Wrench className="w-5 h-5" />
               Phoenix Software Resources
             </h4>
-            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-800">
+            <div className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)]">
               <div className="grid md:grid-cols-2 gap-4">
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -308,7 +323,7 @@ export default function Hardware() {
                 </a>
                 <a
                   href="https://v6.docs.ctr-electronics.com/"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -316,7 +331,7 @@ export default function Hardware() {
                 </a>
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -324,7 +339,7 @@ export default function Hardware() {
                 </a>
                 <a
                   href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
-                  className="block text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
+                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -334,13 +349,12 @@ export default function Hardware() {
             </div>
           </div>
         </div>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Connecting to Your Device
-        </h2>
-
+      <LessonSection
+        id="connecting-to-your-device"
+        title="Connecting to Your Device"
+      >
         <Box
           variant="alert-warning"
           title="Important Setup Steps"
@@ -348,7 +362,18 @@ export default function Hardware() {
         >
           <ol className="list-decimal list-inside space-y-2">
             <li>Plug the computer into the CANivore</li>
-            <li>Make sure &quot;CANivore USB&quot; is checked</li>
+            <li>
+              Make sure &quot;CANivore USB&quot; is checked. It is one toggle
+              with two positions, and you will flip it back later — the full
+              rule is on{" "}
+              <a
+                href="/mechanism-setup#canivore-usb"
+                className="underline font-medium"
+              >
+                Mechanism Setup
+              </a>
+              .
+            </li>
             <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
             <li>Your CANivore should now appear in Phoenix Tuner</li>
             <li>
@@ -356,32 +381,31 @@ export default function Hardware() {
             </li>
           </ol>
         </Box>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Updating Your CTRE Products
-        </h2>
-
+      <LessonSection
+        id="updating-your-ctre-products"
+        title="Updating Your CTRE Products"
+      >
         <ContentCard className="p-8">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
+          <h3 className="text-xl font-semibold text-[var(--tx)] mb-4">
             Using Phoenix Tuner
           </h3>
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 ✓
               </span>
               <div>
                 <p className="font-medium">
                   Open Phoenix Tuner and connect to your robot
                 </p>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">
+                <p className="text-[var(--tx2)] text-sm">
                   If you have issues connecting to your robot,
                   <a
                     href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
-                    className="text-primary-600 underline hover:no-underline dark:text-primary-400 ml-1"
+                    className="text-[var(--accent)] underline hover:no-underline ml-1"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -392,14 +416,14 @@ export default function Hardware() {
             </div>
 
             <div className="flex items-start space-x-3">
-              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 ✓
               </span>
               <div>
                 <p className="font-medium">
                   Batch update all products of the same model
                 </p>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">
+                <p className="text-[var(--tx2)] text-sm">
                   Select one of the devices and then click the batch update
                   icons
                 </p>
@@ -407,28 +431,27 @@ export default function Hardware() {
             </div>
 
             <div className="flex items-start space-x-3">
-              <span className="bg-green-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 ✓
               </span>
               <div>
                 <p className="font-medium">Verify Updates</p>
-                <p className="text-slate-600 dark:text-slate-300 text-sm">
+                <p className="text-[var(--tx2)] text-sm">
                   The device cards will be green if the firmware is the latest
                 </p>
               </div>
             </div>
           </div>
         </ContentCard>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Motor Update Process & Status Colors
-        </h2>
-
+      <LessonSection
+        id="motor-update-process-status-colors"
+        title="Motor Update Process & Status Colors"
+      >
         <div>
           <ContentCard className="mx-auto flex flex-col gap-4">
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-[var(--tx)] flex items-center gap-2">
               <Smartphone className="w-5 h-5" />
               How to Update Motors
             </h3>
@@ -441,7 +464,7 @@ export default function Hardware() {
               className="w-full h-full aspect-video rounded-lg"
             />
 
-            <p className="text-slate-600 dark:text-slate-300 text-sm">
+            <p className="text-[var(--tx2)] text-sm">
               Use Phoenix Tuner to update your motor firmware. Select devices
               and use batch update to get every motor on the latest firmware.
             </p>
@@ -459,82 +482,72 @@ export default function Hardware() {
             underneath the device title.
           </p>
 
-          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-4">
+          <div className="bg-[var(--bg2)] rounded-lg p-4">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-700">
-                    <th className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100 w-32">
+                  <tr className="border-b border-[var(--rule)]">
+                    <th className="py-2 px-3 font-semibold text-[var(--tx)] w-32">
                       Color
                     </th>
-                    <th className="py-2 px-3 font-semibold text-slate-900 dark:text-slate-100">
+                    <th className="py-2 px-3 font-semibold text-[var(--tx)]">
                       Description
                     </th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  <tr className="border-b border-slate-100 dark:border-slate-800">
+                  <tr className="border-b border-[var(--rule-soft)]">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-green-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-green-700 dark:text-green-400">
-                          Green
-                        </strong>
+                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-[var(--ok)]">Green</strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
                       Device has latest firmware.
                     </td>
                   </tr>
-                  <tr className="border-b border-slate-100 dark:border-slate-800">
+                  <tr className="border-b border-[var(--rule-soft)]">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-purple-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-purple-700 dark:text-purple-400">
-                          Purple
-                        </strong>
+                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-[var(--accent)]">Purple</strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
                       Device has an unexpected/beta firmware version.
                     </td>
                   </tr>
-                  <tr className="border-b border-slate-100 dark:border-slate-800">
+                  <tr className="border-b border-[var(--rule-soft)]">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-yellow-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-yellow-700 dark:text-yellow-400">
-                          Yellow
-                        </strong>
+                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-[var(--accent)]">Yellow</strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
                       A new firmware version is available.
                     </td>
                   </tr>
-                  <tr className="border-b border-slate-100 dark:border-slate-800">
+                  <tr className="border-b border-[var(--rule-soft)]">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-red-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-red-700 dark:text-red-400">
-                          Red
-                        </strong>
+                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-[var(--err)]">Red</strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
                       Device has a duplicate ID.
                     </td>
                   </tr>
                   <tr>
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-blue-500 rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-blue-700 dark:text-primary-400">
-                          Blue
-                        </strong>
+                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
+                        <strong className="text-[var(--accent)]">Blue</strong>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-slate-700 dark:text-slate-300 align-top">
+                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
                       Failed to retrieve list of available firmware.
                     </td>
                   </tr>
@@ -554,14 +567,10 @@ export default function Hardware() {
             multiple devices.
           </Box>
         </Box>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Having Issues?
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
+      <LessonSection id="having-issues" title="Having Issues?">
+        <p className="text-[var(--tx2)]">
           If you are having issues connecting to your CANivore or other devices,
           make sure to update your CANivore firmware.
         </p>
@@ -573,15 +582,11 @@ export default function Hardware() {
           allowFullScreen
           className="w-full h-full aspect-video rounded-lg"
         />
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Let&apos;s Run Some Motors
-        </h2>
-
-        <div className="bg-primary-100 dark:bg-primary-900/20 border border-blue-200 dark:border-blue-900 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-primary-900 dark:text-primary-300 mb-4">
+      <LessonSection id="let-s-run-some-motors" title="Let's Run Some Motors">
+        <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-[var(--accent)] mb-4">
             Testing Motor Movement
           </h3>
 
@@ -609,12 +614,12 @@ export default function Hardware() {
               </ol>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-[var(--border)]">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-2 flex items-center gap-2">
+            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--border)]">
+              <h4 className="font-semibold text-[var(--tx)] mb-2 flex items-center gap-2">
                 <Zap className="w-4 h-4" />
                 Safety First
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
+              <p className="text-sm text-[var(--tx2)]">
                 Always start with low voltage values when testing motors. Make
                 sure your mechanism can move freely and won&apos;t cause damage.
               </p>
@@ -629,7 +634,7 @@ export default function Hardware() {
           allowFullScreen
           className="w-full h-full aspect-video rounded-lg"
         />
-      </section>
+      </LessonSection>
 
       <Quiz
         title="Knowledge Check"

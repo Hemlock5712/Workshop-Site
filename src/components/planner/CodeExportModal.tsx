@@ -97,8 +97,8 @@ export function CodeExportModal({ isOpen, onClose }: CodeExportModalProps) {
               onClick={handleCopy}
               className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 copied
-                  ? "bg-green-600 text-white"
-                  : "bg-primary-500 hover:bg-primary-600 text-white"
+                  ? "bg-[var(--bg2)] text-white"
+                  : "bg-[var(--bg2)] hover:bg-[var(--bg2)] text-white"
               }`}
             >
               {copied ? (
@@ -124,7 +124,7 @@ export function CodeExportModal({ isOpen, onClose }: CodeExportModalProps) {
 
         {/* Code Content */}
         <div className="flex-1 overflow-auto p-4">
-          <pre className="bg-[var(--background)] border border-[var(--border)] rounded-lg p-4 text-sm font-mono text-green-400 overflow-x-auto whitespace-pre">
+          <pre className="bg-[var(--background)] border border-[var(--border)] rounded-lg p-4 text-sm font-mono text-[var(--ok)] overflow-x-auto whitespace-pre">
             {javaCode}
           </pre>
         </div>

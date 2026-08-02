@@ -77,7 +77,7 @@ export function WaypointEditor() {
           onClick={handleToggleLink}
           className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${
             waypoint.isLinked
-              ? "bg-yellow-500/20 text-yellow-500"
+              ? "bg-[color-mix(in_oklch,var(--bg2)_20%,transparent)] text-[var(--accent)]"
               : "bg-[var(--background)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
           }`}
         >
@@ -92,8 +92,10 @@ export function WaypointEditor() {
         value={waypoint.name}
         onChange={handleNameChange}
         placeholder="Name"
-        className={`w-full bg-[var(--background)] border text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 ${
-          waypoint.isLinked ? "border-yellow-500" : "border-[var(--border)]"
+        className={`w-full bg-[var(--background)] border text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
+          waypoint.isLinked
+            ? "border-[var(--accent)]"
+            : "border-[var(--border)]"
         }`}
       />
 
@@ -106,7 +108,7 @@ export function WaypointEditor() {
           <select
             value=""
             onChange={handleSelectLink}
-            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           >
             <option value="">-- Select to Link --</option>
             {linkedNames.map((name) => (
@@ -129,7 +131,7 @@ export function WaypointEditor() {
             value={data.x.toFixed(2)}
             onChange={handleXChange}
             step="0.01"
-            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
         </div>
         <div>
@@ -141,7 +143,7 @@ export function WaypointEditor() {
             value={data.y.toFixed(2)}
             onChange={handleYChange}
             step="0.01"
-            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
           />
         </div>
       </div>
@@ -155,7 +157,7 @@ export function WaypointEditor() {
           type="number"
           value={Math.round(data.rot)}
           onChange={handleRotChange}
-          className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
         />
       </div>
 
@@ -172,7 +174,7 @@ export function WaypointEditor() {
           min="0"
           max={state.config.maxVelocity}
           step="0.1"
-          className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
         />
       </div>
 
@@ -187,7 +189,7 @@ export function WaypointEditor() {
         </button>
         <button
           onClick={handleDelete}
-          className="flex items-center justify-center gap-1 bg-red-500/20 hover:bg-red-500/30 text-red-500 px-3 py-2 rounded-md text-sm transition-colors"
+          className="flex items-center justify-center gap-1 bg-[color-mix(in_oklch,var(--bg2)_20%,transparent)] hover:bg-[color-mix(in_oklch,var(--bg2)_30%,transparent)] text-[var(--err)] px-3 py-2 rounded-md text-sm transition-colors"
         >
           <Trash2 className="w-4 h-4" />
           Delete

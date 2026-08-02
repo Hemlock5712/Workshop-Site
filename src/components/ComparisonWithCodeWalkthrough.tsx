@@ -45,19 +45,18 @@ export default function ComparisonWithCodeWalkthrough({
     <div className={className}>
       {content.caution && <div>{content.caution}</div>}
 
-      <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+      <div className="bg-[var(--bg2)] rounded-lg p-6">
+        <h3 className="text-xl font-bold text-[var(--tx)] mb-4">
           Before &amp; After: Implementation
         </h3>
+        {/* No className overrides: the default err/ok tones are exactly the
+            before/after pair, and the overrides pinned this to the old tinted
+            red and blue panels. */}
         <ComparisonTable
           leftTitle="Before"
           leftItems={content.beforeItems}
           rightTitle="After"
           rightItems={content.afterItems}
-          leftBlockClassName="before-block"
-          rightBlockClassName="after-block"
-          leftTitleClassName="before-title"
-          rightTitleClassName="after-title"
         />
       </div>
 

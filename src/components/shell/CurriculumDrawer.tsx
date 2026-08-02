@@ -1,0 +1,268 @@
+"use client";
+
+/**
+ * The whole curriculum, on demand. Opens from the rail's MENU button.
+ *
+ * Shows all 29 lessons grouped by section, numbered in course order, with a
+ * DONE flag on the ones already finished and the current lesson in accent.
+ * The point is that a student can always answer "where am I in this?" without
+ * that question costing screen space while they read.
+ */
+
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { useShell } from "@/contexts/ShellContext";
+import { useProgress } from "@/lib/useProgress";
+import { getLessonGroups, getSidebarLabel, LESSON_COUNT } from "@/data/lessons";
+
+export default function CurriculumDrawer() {
+  const { navOpen, closeNav } = useShell();
+  const pathname = usePathname();
+  const { completed } = useProgress();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const groups = getLessonGroups();
+
+  const doneCount = completed.size;
+  const donePct = Math.round((doneCount / LESSON_COUNT) * 100);
+
+  // Move focus into the panel on open so the first Tab lands inside the drawer
+  // rather than back on the page behind it.
+  useEffect(() => {
+    if (navOpen) panelRef.current?.focus();
+  }, [navOpen]);
+
+  // Keep focus in the panel while it's open. A drawer that covers the page but
+  // lets Tab walk into the hidden content behind it is unusable on a keyboard.
+  useEffect(() => {
+    if (!navOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusable = panel.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [navOpen]);
+
+  if (!navOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[60] flex">
+      <button
+        type="button"
+        onClick={closeNav}
+        aria-label="Close curriculum menu"
+        className="absolute inset-0 cursor-default"
+        style={{
+          background: "oklch(0.1 0.03 265 / 0.62)",
+          backdropFilter: "blur(3px)",
+        }}
+      />
+
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Curriculum"
+        tabIndex={-1}
+        className="relative h-full w-[min(560px,86vw)] overflow-y-auto px-6 py-[34px] focus:outline-none sm:px-10"
+        style={{
+          background: "var(--bg2)",
+          borderRight: "1px solid var(--rule)",
+          animation: "rise 0.24s ease-out",
+        }}
+      >
+        <div className="mb-[26px] flex items-baseline justify-between gap-4">
+          <span className="flex min-w-0 items-center gap-3.5">
+            <span
+              className="mono whitespace-nowrap"
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                color: "var(--tx3)",
+              }}
+            >
+              Curriculum
+            </span>
+            <span
+              className="hidden h-[3px] w-[90px] overflow-hidden rounded-sm sm:block"
+              style={{ background: "var(--rule-soft)" }}
+              aria-hidden="true"
+            >
+              <span
+                className="block h-full"
+                style={{
+                  width: `${donePct}%`,
+                  background: "var(--accent)",
+                  transition: "width 0.45s cubic-bezier(0.2,0.7,0.3,1)",
+                }}
+              />
+            </span>
+            <span
+              className="mono whitespace-nowrap"
+              style={{
+                fontSize: 10,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
+              }}
+            >
+              {String(doneCount).padStart(2, "0")} / {LESSON_COUNT} done
+            </span>
+          </span>
+          <button
+            type="button"
+            onClick={closeNav}
+            className="mono shrink-0 cursor-pointer border-0 bg-transparent"
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.1em",
+              color: "var(--tx3)",
+            }}
+          >
+            CLOSE ✕
+          </button>
+        </div>
+
+        <Link
+          href="/"
+          onClick={closeNav}
+          className="mx-[-14px] mb-6 flex items-center gap-3 rounded-[4px] px-3.5 py-3 text-sm font-semibold transition-colors"
+          style={{
+            border: "1px solid var(--rule)",
+            background: "var(--bg3)",
+            color: "var(--tx)",
+          }}
+        >
+          <Image
+            src="/images/gray-matter-logo.jpg"
+            alt=""
+            width={26}
+            height={26}
+            quality={95}
+            className="h-[26px] w-[26px] rounded-[5px]"
+          />
+          Home
+          <span
+            className="mono ml-auto hidden font-normal sm:inline"
+            style={{
+              fontSize: 9.5,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--tx3)",
+            }}
+          >
+            Workshop overview
+          </span>
+        </Link>
+
+        {groups.map((group) => (
+          <div key={group.id} className="mb-[30px]">
+            <div
+              className="mb-2.5 flex items-baseline gap-3 pb-2"
+              style={{ borderBottom: "1px solid var(--rule-soft)" }}
+            >
+              <span
+                className="mono"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: "0.12em",
+                  color: "var(--accent)",
+                }}
+              >
+                {group.num}
+              </span>
+              <span
+                className="display"
+                style={{ fontSize: 23, lineHeight: 1, color: "var(--tx)" }}
+              >
+                {group.title}
+              </span>
+              <span
+                className="mono ml-auto whitespace-nowrap"
+                style={{ fontSize: 10, color: "var(--tx3)" }}
+              >
+                {String(group.lessons.length).padStart(2, "0")} lessons
+              </span>
+            </div>
+
+            <div className="flex flex-col">
+              {group.lessons.map((lesson) => {
+                const current = pathname === lesson.slug;
+                const done = completed.has(lesson.slug);
+                return (
+                  <Link
+                    key={lesson.slug}
+                    href={lesson.slug}
+                    onClick={closeNav}
+                    aria-current={current ? "page" : undefined}
+                    className="-mx-2.5 flex items-baseline gap-3 rounded-[3px] px-2.5 py-[7px] transition-colors hover:bg-[var(--accent-soft)]"
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: 17.5,
+                      color: current ? "var(--accent)" : "var(--tx2)",
+                    }}
+                  >
+                    <span
+                      className="mono tabular w-[22px] shrink-0"
+                      style={{
+                        fontSize: 10,
+                        color: current ? "var(--accent)" : "var(--tx3)",
+                      }}
+                    >
+                      {lesson.num}
+                    </span>
+                    <span className="min-w-0">
+                      {getSidebarLabel(lesson)}
+                      {lesson.optional && (
+                        <span
+                          className="mono ml-2"
+                          style={{
+                            fontSize: 9,
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                            color: "var(--tx3)",
+                          }}
+                        >
+                          optional
+                        </span>
+                      )}
+                    </span>
+                    {done && (
+                      <span
+                        className="mono ml-auto shrink-0"
+                        style={{
+                          fontSize: 9.5,
+                          letterSpacing: "0.1em",
+                          color: "var(--accent)",
+                        }}
+                      >
+                        DONE
+                      </span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

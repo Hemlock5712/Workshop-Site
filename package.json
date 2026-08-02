@@ -33,9 +33,6 @@
     ]
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.0",
-    "@ai-sdk/react": "^3.0.0",
-    "@google/genai": "^2.0.0",
     "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.4",
@@ -44,7 +41,6 @@
     "@react-three/fiber": "^9.6.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "ai": "^6.0.0",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -57,9 +53,7 @@
     "posthog-node": "^5.34.7",
     "react": "19.2.6",
     "react-dom": "19.2.6",
-    "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^16.1.1",
-    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^3.6.0",
     "three": "^0.184.0",
     "three-stdlib": "^2.36.1",

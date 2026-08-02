@@ -135,13 +135,13 @@ export const MotionMagicLesson: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "This is the full Motion Magic lesson. Feedback corrects. Feedforward predicts. But both still slam into a big jump as hard as the motor allows. Today the target itself learns to travel. Speed up, cruise, slow down. And you will learn to choose numbers your hardware can actually keep.",
+      text: "By now your arm holds any angle you give it. Feedback cleans up what it can see, feedforward pays gravity up front, and both are still happy to get there at maximum brutality. Today we fix how it travels, not where it lands. Then the arithmetic on what your hardware can honestly promise.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "problem",
-      text: "Start with the arm we already tuned. Its gains are two point five, zero point two, and a k G of three point nine. A gain is a number that sets the push. Ask for sixty degrees in one step. For an instant the error, the gap to the target, is huge. So the controller floors it to twelve volts.",
+      text: "Same arm, same gains we settled on last lesson. Nothing about the tuning is wrong. Now ask for sixty degrees in one step. For one instant the error is the entire move, and the controller answers the only way a controller can: everything it has, twelve volts, immediately.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, kG: 3.9, at: { word: "gains" } },
@@ -150,12 +150,12 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "violence",
-      text: "Watch the shape of that move. A launch hard enough to snap a chain. A race at full speed. Then a hard scramble to stop at the top. The landing is accurate. But every jump like this makes the mechanism survive maximum violence. That is not a tuning problem. That is the step input itself: asking for the whole move at once.",
+      text: "Look at the shape, not the accuracy. It launches hard enough to skip a chain, sprints, then throws itself at the stop. The landing is dead on. Every time you command a move like that, the mechanism eats the worst hit the motor can deliver. Tuning won't fix it. It's the step input itself.",
       camera: SCOPE_CLOSEUP,
     },
     {
       id: "anatomy-phases",
-      text: "Motion Magic swaps the step for a trapezoid profile: a planned trip in three phases. Phase one: accelerate. Speed ramps up at a fixed rate. Phase two: cruise. Hold a chosen top speed. Phase three: decelerate. Ramp back down, so the arm arrives with zero speed left to kill.",
+      text: "Motion Magic swaps the step for a plan in three parts. Accelerate, and the arm spends torque it needs back later. Cruise, the only stretch where nothing interesting happens. Decelerate, the part everybody forgets, because that is where the profile spends the momentum it built instead of dumping it into a hard stop.",
       camera: { x: 5500, y: 120, width: 2160, height: 560 },
       events: [
         {
@@ -180,7 +180,7 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "anatomy-setpoint",
-      text: "Here is the trick that makes it work with the PID you already have. The profile drives a moving setpoint. The setpoint is the target your controller chases. Instead of teleporting to the goal, it travels along the trapezoid. Your feedback loop just follows. The error stays small the whole way.",
+      text: "None of this requires new tuning, which is the whole trick. The setpoint stops teleporting to the goal and starts walking the profile, one control cycle at a time. Your PID runs exactly as it did before. The difference is that the error it sees never gets big enough to be worth twelve volts.",
       camera: DIAGRAM,
       events: [
         {
@@ -193,7 +193,7 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "glide-down",
-      text: "Let's run it live. Load a profile. Cruise is seventy degrees per second. Acceleration is one forty. Now send the arm down to negative twenty. Watch the amber setpoint glide instead of jump. The arm chases a target that never runs away from it.",
+      text: "Let's run it live. Load a profile with numbers this arm can actually hold. Send it down to negative twenty. Watch the amber trace: it doesn't jump, it leaves. And the mint trace, the arm itself, stays glued right behind it the whole way down.",
       camera: SCOPE_CLOSEUP,
       events: [
         {
@@ -207,24 +207,24 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "glide-up",
-      text: "Now back up to fifty-five degrees. Keep your eye on the output bar. No slam this time. Just a steady, planned push the whole way there. Same arm, same gains as before. The only thing that changed is the shape of the request.",
+      text: "Now back the other way, up high, and watch the output bar instead of the arm. It never touches the rail. The push builds, then backs off on its own, and the gearbox never learns anything happened; nothing changed but the shape of the request.",
       camera: LAB,
       events: [{ type: "target", deg: 55, at: { word: "back" } }],
     },
     {
       id: "choose-cruise",
-      text: "So where do the numbers come from? Start with cruise velocity. First measure your mechanism's free speed. That is how fast it moves at full voltage. Then take a safe slice of it, maybe seventy or eighty percent. Watch it hold that ceiling on the way down to negative forty.",
+      text: "Start by measuring, not guessing. Run the mechanism at full voltage and see how fast it really goes, then set cruise velocity to a comfortable slice of that, seventy or eighty percent. The margin is there for the fourth match of the day, when the battery is tired. Down to negative forty.",
       camera: LAB,
       events: [{ type: "target", deg: -40, at: { word: "forty" } }],
     },
     {
       id: "choose-accel",
-      text: "Acceleration is a budget. The motor only has so much strength. Gravity steals some of it. A heavy arm is hard to speed up. This arm can really do about seven hundred degrees per second squared. Promising eight hundred is a lie. A profile built on a lie does not bend. It breaks, live, in front of you.",
+      text: "Acceleration is a torque budget. You don't get a vote. Gravity takes a cut, inertia takes a cut, and what's left is all a heavy arm gets. About seven hundred degrees per second squared, on a good day. Ask for eight hundred and the profile won't bend to fit. It fails, live.",
       camera: ARM_CLOSEUP,
     },
     {
       id: "infeasible-up",
-      text: "Let's tell that lie on purpose. Set cruise to four hundred, and acceleration to eight hundred. This arm cannot deliver those numbers. Now command fifty-five degrees. The amber setpoint sprints away. The mint trace falls behind. The gap between them keeps growing. And the voltage is stuck at twelve the whole time.",
+      text: "Let's tell the lie on purpose. Cruise at four hundred, acceleration at eight hundred, neither of which this arm has ever done. Command fifty-five degrees and the amber setpoint sprints off without the arm, the mint trace falling further behind every cycle while the voltage sits pinned at twelve, doing everything it can.",
       camera: LAB,
       events: [
         {
@@ -239,14 +239,14 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "infeasible-down",
-      text: "Swing back to negative forty. It is the same story in reverse. The profile finishes right on schedule. But the arm is nowhere near it. We rebuilt the exact step input we were trying to delete. A profile is a promise your motor has to keep. Never promise more than the physics allows.",
+      text: "Swing back the other way. Same failure, mirrored. The profile finishes right on schedule and means nothing, because the arm is still somewhere behind it. We have rebuilt the exact step input we spent this lesson deleting. A profile your motor can't keep isn't a plan. It's a slam with extra steps.",
       camera: SCOPE_CLOSEUP,
       events: [{ type: "target", deg: -40, at: { word: "back" } }],
       holdAfter: 0.6,
     },
     {
       id: "restore",
-      text: "Restore the honest numbers: seventy and one forty. Send it to thirty degrees. Tight again. The mint trace sits right on the amber line the whole trip. The output stays calm. Profiles the arm can keep will track. Profiles built on lies just move the slam.",
+      text: "Honest numbers back in: seventy, and the acceleration to match. Send it to thirty degrees. The mint trace sits on top of the amber line the whole trip, and the output bar never gets excited. A profile the arm can keep gets tracked. The other kind just relocates the slam.",
       camera: LAB,
       events: [
         {
@@ -261,12 +261,12 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "teamwork",
-      text: "Notice how the three layers split the work. k G holds the arm against gravity the entire time. The profile shapes the path. It decides how fast and how hard. PID only trims the leftover error, a degree or two at most. Small errors mean small pushes. Small pushes mean smooth metal.",
+      text: "Three layers, none of them doing another's job. kG carries the weight whether the arm is moving or parked. The profile owns how fast and how hard, which leaves PID a degree or two to clean up.",
       camera: LAB,
     },
     {
       id: "code",
-      text: "In code, this whole lesson is two settings and a different request. Keep the same slot zero gains you already tuned. Set the Motion Magic cruise velocity. Set the acceleration. Then swap position voltage for motion magic voltage. The profile is built on the motor controller itself. It is recalculated a thousand times a second.",
+      text: "In code the whole lesson is two config values and a different control request; slot zero stays exactly as you tuned it. Add the Motion Magic cruise velocity and acceleration, then send motion magic voltage where you used to send position voltage. From there the TalonFX generates the profile, a thousand times a second.",
       camera: CODE,
       events: [
         {
@@ -286,13 +286,13 @@ export const MotionMagicLesson: TrailerScript = {
     },
     {
       id: "velocity-variant",
-      text: "One more variant before we close. A flywheel does not have a position. It has a speed. And slamming a shooter from zero to five thousand RPM can brown out the robot. That means the battery voltage dips and everything gets weak. Motion magic velocity voltage applies the same idea to speed. It ramps the speed target smoothly instead of jumping it. You choose the acceleration.",
+      text: "One more variant. A flywheel has no position, only a speed, and jumping a shooter to five thousand RPM will brown the robot out mid-match. Motion magic velocity voltage ramps the speed target instead, on an acceleration you pick.",
       camera: CODE,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "And that closes the control trilogy. Feedback corrects. PID fights the error it can see. Feedforward predicts. The constants pay for physics up front. Motion Magic plans. The setpoint travels a path your hardware can honestly keep. Everything you just watched is waiting at frc5712.com.",
+      text: "Three lessons ago your arm couldn't hold an angle. Now it moves the way a mechanism moves when somebody thought about the trip and not just the destination. Go measure your own hardware before you pick numbers for it, and stop lying to your gearbox.",
       camera: END,
       holdAfter: 1.2,
     },

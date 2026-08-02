@@ -6,10 +6,25 @@ import { AlertTriangle, Lightbulb } from "lucide-react";
 
 export default function ProjectSetup() {
   return (
-    <PageTemplate title="Project Setup">
+    <PageTemplate
+      title="Start from the team's template, not a blank project"
+      emphasis="not a blank project"
+      lede="You clone one repository and run one build. When it finishes clean, you have a project that already knows about Commands v3, OpModes and Phoenix 6 — and you have proved your toolchain works before any lesson depends on it."
+      needs={[
+        <>
+          Everything on <strong>Prerequisites</strong> installed — WPILib 2027,
+          Java 25, Git.
+        </>,
+        <>An internet connection. The first build downloads the vendordeps.</>,
+        <>
+          No hardware. This page never talks to a motor; it ends on a green
+          build.
+        </>,
+      ]}
+      time="About 20 minutes, most of it the first Gradle build"
+    >
       {/* Introduction */}
       <KeyConceptSection
-        title="Project Setup: Launching Your Codebase"
         description="Step-by-step guide to creating a new WPILib project. This workshop's robot code is built on Commands v3 + OpModes, so the starting point is the team's 2027-Template, which already organizes your code into mechanisms and OpModes."
         concept="Start from the Commands v3 / OpMode project so your code is organized into mechanisms and OpModes from day one."
       />
@@ -43,11 +58,11 @@ export default function ProjectSetup() {
         </p>
       </Box>
 
-      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+      <div className="bg-[var(--bg2)] rounded-lg p-8 shadow-lg border border-[var(--rule)]">
+        <h2 className="display measure-wide m-0 mb-6">
           The Workshop Path: Clone the 2027-Template
         </h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-6">
+        <p className="text-[var(--tx2)] mb-6">
           This is the path the workshop follows. Four steps and you have a
           building project with the OpMode wiring, mechanisms folder, and
           GradleRIO 2027 alpha configuration already in place.
@@ -55,12 +70,12 @@ export default function ProjectSetup() {
 
         <div className="space-y-4">
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               1
             </span>
             <div>
               <p className="font-medium">Clone the template</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 <code>
                   git clone -b 2027-dev
                   https://github.com/Hemlock5712/2027-Template.git Workshop
@@ -72,12 +87,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               2
             </span>
             <div>
               <p className="font-medium">Open the folder in VS Code</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Use the WPILib 2027 alpha VS Code install from the Prerequisites
                 page. Avoid OneDrive-synced locations; they break Gradle builds.
               </p>
@@ -85,12 +100,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               3
             </span>
             <div>
               <p className="font-medium">Set your team number</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Edit <code>.wpilib/wpilib_preferences.json</code> and set{" "}
                 <code>teamNumber</code> to your FRC team number. Deploys
                 won&apos;t find your robot without it.
@@ -99,12 +114,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               4
             </span>
             <div>
               <p className="font-medium">Build once to verify</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Run <code>./gradlew build</code> (or WPILib: Build Robot Code).
                 A clean build means Java 25, the vendordeps, and the alpha
                 toolchain are all in place. Then read the template&apos;s{" "}
@@ -123,11 +138,11 @@ export default function ProjectSetup() {
         </div>
       </div>
 
-      <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-8 shadow-lg border border-slate-200 dark:border-slate-800">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-6">
+      <div className="bg-[var(--bg2)] rounded-lg p-8 shadow-lg border border-[var(--rule)]">
+        <h2 className="display measure-wide m-0 mb-6">
           Alternative: Creating a Blank WPILib Project
         </h2>
-        <p className="text-slate-600 dark:text-slate-300 mb-6">
+        <p className="text-[var(--tx2)] mb-6">
           For reference, this is how you&apos;d create a project from
           WPILib&apos;s built-in generator. Note that the generated skeleton
           does <em>not</em> include the OpMode structure this workshop teaches;
@@ -137,40 +152,40 @@ export default function ProjectSetup() {
 
         <div className="space-y-4">
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               1
             </span>
             <div>
               <p className="font-medium">Open VSCode</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Launch Visual Studio Code with the WPILib extension installed.
               </p>
             </div>
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               2
             </span>
             <div>
               <p className="font-medium">
                 Select the WPILib Logo in Top Right Corner
               </p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Click on the WPILib logo/icon in the top right corner of VSCode.
               </p>
             </div>
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               3
             </span>
             <div>
               <p className="font-medium">
                 Select &quot;Create a New Project&quot;
               </p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 From the WPILib menu, choose the &quot;Create a new
                 project&quot; option.
               </p>
@@ -178,14 +193,14 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               4
             </span>
             <div>
               <p className="font-medium">
                 Select &quot;Select a project type (Example or Template)&quot;
               </p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Choose Template → Java →{" "}
                 <strong>Command Robot Skeleton (Advanced)</strong>. This
                 generates the classic project layout; the workshop path above
@@ -195,7 +210,7 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               5
             </span>
             <div>
@@ -215,24 +230,24 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               6
             </span>
             <div>
               <p className="font-medium">Project Name &quot;Workshop&quot;</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Enter &quot;Workshop&quot; as your project name.
               </p>
             </div>
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               7
             </span>
             <div>
               <p className="font-medium">Team Number</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Enter your FRC team number. This is required for deploying code
                 to your robot.
               </p>
@@ -240,14 +255,14 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               8
             </span>
             <div>
               <p className="font-medium">
                 Check &quot;Enable Desktop Support&quot;
               </p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 This allows you to test your robot code on your computer without
                 a robot.
               </p>
@@ -255,12 +270,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-primary-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               9
             </span>
             <div>
               <p className="font-medium">Generate Project</p>
-              <p className="text-slate-600 dark:text-slate-300 text-sm">
+              <p className="text-[var(--tx2)] text-sm">
                 Click &quot;Generate Project&quot; and then open the new project
                 when prompted.
               </p>

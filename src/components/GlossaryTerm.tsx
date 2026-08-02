@@ -178,7 +178,8 @@ export default function GlossaryTerm({
     <span className="relative inline-block">
       <Link
         href={`/glossary#${glossaryAnchor}`}
-        className="underline decoration-dotted decoration-primary-400 dark:decoration-primary-600 underline-offset-2 text-inherit hover:text-primary-600 dark:hover:text-primary-400 cursor-help transition-colors"
+        className="cursor-help text-inherit underline decoration-dotted underline-offset-4 transition-colors hover:text-[var(--accent)]"
+        style={{ textDecorationColor: "var(--accent)" }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onFocus={() => setShowTooltip(true)}
@@ -189,12 +190,38 @@ export default function GlossaryTerm({
 
       {showTooltip && (
         <span
-          className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs rounded-lg shadow-lg z-50 w-64 pointer-events-none"
-          style={{ whiteSpace: "normal" }}
+          role="tooltip"
+          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 px-3.5 py-3"
+          style={{
+            whiteSpace: "normal",
+            background: "var(--bg3)",
+            border: "1px solid var(--rule)",
+            borderRadius: 3,
+            boxShadow: "0 18px 40px -18px oklch(0.05 0.03 265 / 0.7)",
+          }}
         >
-          <span className="block font-semibold mb-1">{term}</span>
-          {tooltipText}
-          <span className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900 dark:border-t-slate-100"></span>
+          <span
+            className="mono mb-1.5 block"
+            style={{
+              fontSize: 9,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+            }}
+          >
+            {term}
+          </span>
+          <span
+            className="block"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: "var(--tx2)",
+            }}
+          >
+            {tooltipText}
+          </span>
         </span>
       )}
     </span>

@@ -40,15 +40,22 @@ export default function SearchPageContent() {
   const getCategoryColor = (category: string) => {
     switch (category) {
       case "Workshop 1":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300";
+        return "bg-[var(--bg2)] text-[var(--accent)] text-[var(--accent)]";
       case "Workshop 2":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300";
+        return "bg-[var(--bg2)] text-[var(--accent)] text-[var(--accent)]";
       case "Getting Started":
-        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300";
+        return "bg-[var(--bg2)] text-[var(--ok)] text-[var(--ok)]";
       case "Resources":
-        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300";
+        return "bg-[var(--bg2)] text-[var(--accent)] text-[var(--accent)]";
+      case "Advanced":
+        return "bg-[var(--bg2)] text-[var(--err)] text-[var(--err)]";
+      case "General":
+        return "bg-[var(--bg3)] text-[var(--tx)] text-[var(--tx3)]";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300";
+        // Every category the index emits is handled above. If a new one shows
+        // up here it renders gray, which is the tell that this switch and
+        // `routeMap` in scripts/generate-search-data.js have drifted apart.
+        return "bg-[var(--bg2)] text-[var(--tx)] text-[var(--tx3)]";
     }
   };
 
@@ -61,7 +68,7 @@ export default function SearchPageContent() {
     );
     return text.replace(
       regex,
-      '<mark class="bg-yellow-200 dark:bg-yellow-900/50 px-1 rounded">$1</mark>'
+      '<mark class="bg-[var(--bg2)] px-1 rounded">$1</mark>'
     );
   };
 
@@ -92,11 +99,11 @@ export default function SearchPageContent() {
     <div className="max-w-4xl mx-auto">
       {/* Search Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+        <h1 className="text-3xl font-bold text-[var(--tx)] mb-4">
           Search Results
         </h1>
         {query && (
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-2 text-[var(--tx2)]">
             <span>Searching for:</span>
             <span className="bg-[var(--muted)] px-2 py-1 rounded font-mono text-sm">
               &quot;{query}&quot;
@@ -113,10 +120,8 @@ export default function SearchPageContent() {
       {/* Loading State */}
       {isLoading && (
         <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-          <span className="ml-2 text-slate-600 dark:text-slate-300">
-            Searching...
-          </span>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)]"></div>
+          <span className="ml-2 text-[var(--tx2)]">Searching...</span>
         </div>
       )}
 
@@ -124,7 +129,7 @@ export default function SearchPageContent() {
       {!query && !isLoading && (
         <div className="text-center py-12">
           <svg
-            className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500 mb-4"
+            className="mx-auto h-12 w-12 text-[var(--tx3)] mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -136,10 +141,10 @@ export default function SearchPageContent() {
               d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-          <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-2">
+          <h3 className="text-xl font-medium text-[var(--tx)] mb-2">
             No search query
           </h3>
-          <p className="text-slate-600 dark:text-slate-300">
+          <p className="text-[var(--tx2)]">
             Use the search bar above to find workshop content
           </p>
         </div>
@@ -149,7 +154,7 @@ export default function SearchPageContent() {
       {query && !isLoading && results.length === 0 && (
         <div className="text-center py-12">
           <svg
-            className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500 mb-4"
+            className="mx-auto h-12 w-12 text-[var(--tx3)] mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -161,13 +166,13 @@ export default function SearchPageContent() {
               d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <h3 className="text-xl font-medium text-slate-900 dark:text-slate-100 mb-2">
+          <h3 className="text-xl font-medium text-[var(--tx)] mb-2">
             No results found
           </h3>
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--tx2)] mb-4">
             We couldn&apos;t find anything matching &quot;{query}&quot;
           </p>
-          <div className="text-sm text-slate-500 dark:text-slate-400">
+          <div className="text-sm text-[var(--tx2)]">
             <p>Try:</p>
             <ul className="list-disc list-inside mt-2 space-y-1">
               <li>
@@ -192,7 +197,7 @@ export default function SearchPageContent() {
               <div className="flex items-start justify-between mb-3">
                 <Link href={result.url} className="group flex-1">
                   <h2
-                    className="text-xl font-semibold text-primary-600 dark:text-primary-400 group-hover:text-primary-800 dark:group-hover:text-primary-300 mb-2 leading-tight"
+                    className="text-xl font-semibold text-[var(--accent)] group-hover:text-[var(--accent)] mb-2 leading-tight"
                     dangerouslySetInnerHTML={{
                       __html: highlightMatch(result.title, query),
                     }}
@@ -205,7 +210,7 @@ export default function SearchPageContent() {
                 </span>
               </div>
 
-              <p className="text-slate-600 dark:text-slate-300 mb-4 leading-relaxed">
+              <p className="text-[var(--tx2)] mb-4 leading-relaxed">
                 {getMatchPreview(result, query)}
               </p>
 
@@ -220,7 +225,7 @@ export default function SearchPageContent() {
                     </span>
                   ))}
                 </div>
-                <div className="text-xs text-slate-500 dark:text-slate-400">
+                <div className="text-xs text-[var(--tx2)]">
                   Score: {Math.round(result.score * 100) / 100}
                 </div>
               </div>

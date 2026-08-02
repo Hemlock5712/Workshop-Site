@@ -1,36 +1,35 @@
 "use client";
 
+/**
+ * Keyboard navigation between lessons.
+ *
+ *   [  or  ArrowLeft   previous lesson
+ *   ]  or  ArrowRight  next lesson
+ *   Home               workshop home
+ *   End                last lesson
+ *
+ * ⌘K / Ctrl-K and Escape are owned by `ShellContext`, not this hook — they
+ * have to work whether or not a page mounted this hook, and two listeners
+ * both calling `preventDefault` on ⌘K toggled the palette twice.
+ *
+ * The order comes from `src/data/lessons.ts`. It used to be a hand-maintained
+ * twelve-slug array that had drifted so far it still described the lesson
+ * order from before the IA audit — pressing ArrowRight on any lesson added or
+ * moved since then did nothing at all.
+ */
+
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-
-// Define the page sequence for navigation
-const PAGE_SEQUENCE = [
-  "/",
-  "/introduction",
-  "/prerequisites",
-  "/hardware",
-  "/project-setup",
-  "/command-framework",
-  "/building-subsystems",
-  "/adding-commands",
-  "/running-program",
-  "/mechanism-setup",
-  "/pid-control",
-  "/motion-magic",
-];
-
-// Define search bar focus function type
-type SearchFocusFunction = () => void;
+import { getNextLesson, getPreviousLesson, LESSONS } from "@/data/lessons";
 
 interface UseKeyboardNavigationProps {
-  onSearchFocus?: SearchFocusFunction;
-  onSearchClose?: () => void;
+  /** Lets a page bind `/` to focus its own search field. */
+  onSearchFocus?: () => void;
   isSearchOpen?: boolean;
 }
 
 export function useKeyboardNavigation({
   onSearchFocus,
-  onSearchClose,
   isSearchOpen = false,
 }: UseKeyboardNavigationProps = {}) {
   const router = useRouter();
@@ -38,97 +37,62 @@ export function useKeyboardNavigation({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Don't trigger shortcuts when typing in inputs, textareas, or contenteditable elements
-      const target = event.target as HTMLElement;
+      // Never hijack a key someone is using to type.
+      const target = event.target as HTMLElement | null;
       if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.contentEditable === "true"
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable)
       ) {
-        // Exception: Allow Escape key to work even in inputs
-        if (event.key === "Escape") {
-          target.blur(); // Remove focus from input
-          onSearchClose?.();
+        return;
+      }
+      if (isSearchOpen) return;
+      // A modifier means the key belongs to the browser or the shell.
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+      if (event.key === "ArrowLeft" || event.key === "[") {
+        const prev = getPreviousLesson(pathname);
+        if (prev) {
+          event.preventDefault();
+          router.push(prev.slug);
         }
         return;
       }
 
-      const currentIndex = PAGE_SEQUENCE.indexOf(pathname);
-
-      switch (event.key) {
-        case "ArrowLeft":
-          if (isSearchOpen) {
-            return;
-          }
-          // Only prevent default if we can actually navigate
-          if (currentIndex > 0) {
-            event.preventDefault();
-            const previousPage = PAGE_SEQUENCE[currentIndex - 1];
-            router.push(previousPage);
-          }
-          break;
-
-        case "ArrowRight":
-          if (isSearchOpen) {
-            return;
-          }
-          // Only prevent default if we can actually navigate
-          if (currentIndex >= 0 && currentIndex < PAGE_SEQUENCE.length - 1) {
-            event.preventDefault();
-            const nextPage = PAGE_SEQUENCE[currentIndex + 1];
-            router.push(nextPage);
-          }
-          break;
-
-        case "/":
-          if (!isSearchOpen) {
-            event.preventDefault();
-            onSearchFocus?.();
-          }
-          break;
-
-        case "Escape":
+      if (event.key === "ArrowRight" || event.key === "]") {
+        const next = getNextLesson(pathname);
+        if (next) {
           event.preventDefault();
-          onSearchClose?.();
-          break;
-
-        case "Home":
-          if (isSearchOpen) {
-            return;
-          }
-          event.preventDefault();
-          router.push("/");
-          break;
-
-        case "End":
-          if (isSearchOpen) {
-            return;
-          }
-          event.preventDefault();
-          const lastPage = PAGE_SEQUENCE[PAGE_SEQUENCE.length - 1];
-          router.push(lastPage);
-          break;
+          router.push(next.slug);
+        }
+        return;
       }
 
-      // Handle Ctrl+K for search
-      if ((event.ctrlKey || event.metaKey) && event.key === "k") {
+      if (event.key === "/") {
+        if (onSearchFocus) {
+          event.preventDefault();
+          onSearchFocus();
+        }
+        return;
+      }
+
+      if (event.key === "Home") {
         event.preventDefault();
-        onSearchFocus?.();
+        router.push("/");
+        return;
+      }
+
+      if (event.key === "End") {
+        const last = LESSONS[LESSONS.length - 1];
+        if (last) {
+          event.preventDefault();
+          router.push(last.slug);
+        }
       }
     };
 
     document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [router, pathname, onSearchFocus, onSearchClose, isSearchOpen]);
-
-  // Return current page info for potential use by components
-  return {
-    currentIndex: PAGE_SEQUENCE.indexOf(pathname),
-    totalPages: PAGE_SEQUENCE.length,
-    isFirstPage: PAGE_SEQUENCE.indexOf(pathname) === 0,
-    isLastPage: PAGE_SEQUENCE.indexOf(pathname) === PAGE_SEQUENCE.length - 1,
-  };
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [router, pathname, onSearchFocus, isSearchOpen]);
 }

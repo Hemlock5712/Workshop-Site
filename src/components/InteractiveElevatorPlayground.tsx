@@ -124,21 +124,21 @@ const REGIME_STYLE: Record<
 > = {
   oscillating: {
     label: "Oscillating",
-    dot: "bg-amber-500",
+    dot: "bg-[var(--bg2)]",
     classes:
-      "bg-amber-50 text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-800/50",
+      "bg-[var(--bg2)] text-[var(--accent)] ring-1 ring-[color-mix(in_oklch,var(--accent)_70%,transparent)] text-[var(--accent)]",
   },
   stable: {
     label: "Stable",
-    dot: "bg-emerald-500",
+    dot: "bg-[var(--bg2)]",
     classes:
-      "bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200/70 dark:bg-emerald-950/40 dark:text-emerald-100 dark:ring-emerald-800/50",
+      "bg-[var(--bg2)] text-[var(--ok)] ring-1 ring-[color-mix(in_oklch,var(--ok)_70%,transparent)] text-[var(--ok)]",
   },
   drifting: {
     label: "Drifting",
-    dot: "bg-rose-500",
+    dot: "bg-[var(--bg2)]",
     classes:
-      "bg-rose-50 text-rose-900 ring-1 ring-rose-200/70 dark:bg-rose-950/40 dark:text-rose-100 dark:ring-rose-800/50",
+      "bg-[var(--bg2)] text-[var(--err)] ring-1 ring-[color-mix(in_oklch,var(--err)_70%,transparent)] text-[var(--err)]",
   },
 };
 
@@ -817,7 +817,7 @@ export default function InteractiveElevatorPlayground() {
       {/* ── Tuning hint ─────────────────────── */}
       <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
         <Lightbulb
-          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
         />
         <p>

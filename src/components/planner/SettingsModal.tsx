@@ -476,7 +476,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
         <div className="p-4 border-t border-[var(--border)]">
           <button
             onClick={onClose}
-            className="w-full bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-md font-medium transition-colors"
+            className="w-full bg-[var(--bg2)] hover:bg-[var(--bg2)] text-white px-4 py-2 rounded-md font-medium transition-colors"
           >
             Close
           </button>

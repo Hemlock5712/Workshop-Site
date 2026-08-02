@@ -67,43 +67,42 @@ export const AnimatedThemeToggler = ({
     );
   }, [resolvedTheme, setTheme, mounted, duration]);
 
-  // Show placeholder during SSR to prevent hydration mismatch
+  // Renders the bare <button> — no wrapper. Callers place it (the rail wants
+  // it as the last flex child of a column), so an extra centring div here
+  // silently broke their layout.
+  //
+  // Until `mounted` we can't know the resolved theme, so we render the same
+  // box with a neutral glyph rather than guessing and flipping on hydration.
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center gap-2">
-        <button
-          className={cn(
-            "cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-2 rounded",
-            className
-          )}
-          disabled
-          aria-label="Loading theme toggle"
-        >
-          <MoonIcon size={20} />
-          <span className="sr-only">Toggle theme</span>
-        </button>
-      </div>
+      <button
+        className={cn("cursor-pointer transition-colors", className)}
+        disabled
+        aria-label="Loading theme toggle"
+        {...props}
+      >
+        <MoonIcon size={15} aria-hidden="true" />
+        <span className="sr-only">Toggle theme</span>
+      </button>
     );
   }
 
   const isDark = resolvedTheme === "dark";
 
   return (
-    <div className="flex items-center justify-center gap-2">
-      <button
-        ref={buttonRef}
-        onClick={toggleTheme}
-        className={cn(
-          "cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-2 rounded",
-          !isDark && "text-[var(--primary)]",
-          className
-        )}
-        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-        {...props}
-      >
-        {isDark ? <SunIcon size={20} /> : <MoonIcon size={20} />}
-        <span className="sr-only">Toggle theme</span>
-      </button>
-    </div>
+    <button
+      ref={buttonRef}
+      onClick={toggleTheme}
+      className={cn("cursor-pointer transition-colors", className)}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      {...props}
+    >
+      {isDark ? (
+        <SunIcon size={15} aria-hidden="true" />
+      ) : (
+        <MoonIcon size={15} aria-hidden="true" />
+      )}
+      <span className="sr-only">Toggle theme</span>
+    </button>
   );
 };

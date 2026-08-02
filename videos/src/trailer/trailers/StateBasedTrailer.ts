@@ -157,13 +157,13 @@ export const StateBasedTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your arm has moods. Stowed. Pickup. Scoring. Everyday teleop handles them with one hold per button, and that works great. A state machine is the optional next step. It gives every mood a name, and Commands v3 ships a real StateMachine class to run them.",
+      text: "Your arm has moods. Stowed. Pickup. Scoring. Everyday teleop handles those with one hold per button and honestly that's fine for most robots. This is the next step up, for the ones it isn't: Commands v3 ships a StateMachine class.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "states",
-      text: "A state is just a command that runs while you are in it. Stowed runs the arm's stowed hold. Pickup runs the pickup hold, ready to grab. Scoring holds the arm up high. The robot is always in exactly one named state. Never two. Never none.",
+      text: "A state is a command that keeps running the whole time you're in it. Stowed tucks the arm in. Pickup drops it low. Scoring lifts. Exactly one of those is alive at any instant, never two, and never a gap in between.",
       camera: DIAGRAM,
       events: [
         {
@@ -188,7 +188,7 @@ export const StateBasedTrailer: TrailerScript = {
     },
     {
       id: "transitions",
-      text: "Transitions are the edges. Press A, and stowed switches to pickup. The gripper sees a game piece, so pickup hands off to scoring. When the gripper is empty again, you fall back to stowed. Buttons and sensors move the machine for you.",
+      text: "Transitions are the interesting part. A button hands the arm forward one step, then the gripper's sensor takes the next step for you, with nobody touching a controller. Your driver never picks a state. They ask for a cycle and it runs.",
       camera: { x: 2600, y: 220, width: 2120, height: 1060 },
       events: [
         {
@@ -201,7 +201,7 @@ export const StateBasedTrailer: TrailerScript = {
     },
     {
       id: "interrupt",
-      text: "Some transitions ignore the graph. switchFromAny sends you to defense from anywhere. Any state, one line. And here is the quiet superpower: illegal jumps do not exist, because no transition was ever declared for them.",
+      text: "Some transitions ignore the graph. An opponent pins you against the wall and the arm has to get clear right now, whatever state it was sitting in. One line, from anywhere, to defense. Illegal jumps cannot happen. Nobody declared one.",
       camera: { x: 2900, y: 420, width: 1700, height: 880 },
       events: [
         {
@@ -215,7 +215,7 @@ export const StateBasedTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Four steps in code. Construct the machine with a name. Add states, each wrapping a hold. Set the initial state; the compiler enforces it. Then wire the transitions. Every state runs a hold, and a hold never finishes. So every transition here is a when.",
+      text: "Four moves. Name the machine, wrap each hold in a state, point it at a starting state, then wire the edges. The compiler enforces that third one. Skip it and you get a build error, which beats a robot that sits doing nothing.",
       camera: CODE,
       events: [
         {
@@ -235,7 +235,7 @@ export const StateBasedTrailer: TrailerScript = {
     },
     {
       id: "factories",
-      text: "And the states themselves? The arm's ordinary hold commands, the same ones your buttons use. runRepeatedly re-sends the setpoint every tick, forever. Nothing ever waits on these holds. The transitions watch buttons and sensors instead. No phase fields. Just commands.",
+      text: "And the states themselves? Nothing new. You wrote these factories for the button bindings weeks ago. That is the part worth stealing: no phase field, no forty-line if statement. The machine holds the state; the arm just holds a position.",
       camera: CODE2,
       events: [
         {
@@ -249,7 +249,7 @@ export const StateBasedTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "There is more. When versus whenComplete. Entry and exit hooks. Exiting the machine entirely. The full state machine lesson is waiting at frc5712.com.",
+      text: "Draw your arm's states on a whiteboard. Boxes, arrows, and honesty about which arrows you need. If you can't name them out loud, no framework will save you.",
       camera: END,
       holdAfter: 1.2,
     },

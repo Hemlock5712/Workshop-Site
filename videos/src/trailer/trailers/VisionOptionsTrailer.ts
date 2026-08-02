@@ -103,23 +103,23 @@ export const VisionOptionsTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your robot thinks it knows where it is. Then the wheels slip. Odometry — the robot's guess from wheel spins — quietly drifts from reality. Vision fixes that. Cameras spot AprilTags — printed markers on the field — and hand you your true position.",
+      text: "Wheels slip. Carpet gives. Every time either one happens your odometry walks further from the truth, and late in a match the robot is confidently reporting a spot it's nowhere near. A camera that sees an AprilTag fixes that.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "limelight",
-      text: "This is the Limelight, a plug-and-play robot camera. The processing, the lights, and the networking all live in one box. Wire up power and Ethernet, and it starts tracking. Budget roughly four hundred to five hundred dollars.",
+      text: "Everything a vision system needs already lives in this box, which is the whole reason teams buy one. Power, Ethernet, done. An evening on mounting instead of a weekend on Linux. Four to five hundred dollars.",
       camera: IMAGE,
     },
     {
       id: "photonvision",
-      text: "Prefer free? PhotonVision is free software. It runs on a small add-on computer, like a Raspberry Pi. All in, that's roughly one hundred to one hundred fifty dollars. Both options read AprilTags and find your pose — your position plus heading. You're choosing convenience versus cost.",
+      text: "The alternative costs a quarter as much. PhotonVision is free, and it runs on whatever small computer your team can scrounge. A hundred to a hundred fifty dollars, all in. Same AprilTags, same pose. You pay in evenings instead.",
       camera: { x: 2380, y: 80, width: 1860, height: 1240 },
     },
     {
       id: "tag-to-camera",
-      text: "Here's the pipeline. An AprilTag sits at a known spot on the field. Your camera sees it and measures its corners. From that, it works out exactly where the robot must be standing.",
+      text: "Every AprilTag has a number and a known spot in the field layout. Your camera measures where its corners land, and there's exactly one place the robot could stand for them to look like that.",
       camera: DIAGRAM_LEFT,
       events: [
         {
@@ -138,7 +138,7 @@ export const VisionOptionsTrailer: TrailerScript = {
     },
     {
       id: "pose-to-drivetrain",
-      text: "That answer becomes a pose estimate: your field position, plus the exact time it was taken. Feed it to the drivetrain. Every frame with a tag in view snaps your odometry back to reality.",
+      text: "The camera hands back a pose and a timestamp. The timestamp matters, because that answer describes where you were a few frames ago. So the drivetrain rewinds, folds the correction in, and replays. Odometry stops lying.",
       camera: DIAGRAM_RIGHT,
       events: [
         {
@@ -157,13 +157,13 @@ export const VisionOptionsTrailer: TrailerScript = {
     },
     {
       id: "trust",
-      text: "One warning. A single tag can trick the math. Sometimes the answer flips to the wrong side. That's called ambiguity. Catch two or more tags at once, and they combine into one much stronger estimate. More tags, more trust.",
+      text: "One tag can lie to you. Seen straight on at range, the math can't tell a tag tilted left from one tilted right, so your pose flips to the wrong side of the field. That's ambiguity. Two tags kill it.",
       camera: DIAGRAM,
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "Vision can also spot game pieces and track targets. Pick your camera. Wire it into your WPILib 2027 drivetrain. Never trust drifting odometry again. The full comparison is waiting at frc5712.com.",
+      text: "Tags aren't the only thing worth seeing. The same camera finds game pieces. Whichever you buy, mount it where a defender can't park a bumper in front of the lens, and trust it only as far as it earns.",
       camera: END,
       holdAfter: 1.2,
     },

@@ -1,13 +1,12 @@
 import Image from "next/image";
 
 /**
- * Optimized image display component for workshop content
- * Features:
- * - Next.js Image optimization with lazy loading
- * - Consistent styling and responsive behavior
- * - Optional titles and captions for educational context
- * - Configurable dimensions and priority loading
- * - Professional presentation for hardware/technical images
+ * A figure in the lesson flow.
+ *
+ * Figures are allowed to cross into the margin rail — they are one of the
+ * three things that may (the others are code blocks and tables). The caption
+ * stays left-aligned under the image rather than centred: it is a sentence,
+ * and sentences are read from the left.
  */
 interface ImageBlockProps {
   src: string;
@@ -31,27 +30,39 @@ export default function ImageBlock({
   priority = false,
 }: ImageBlockProps) {
   return (
-    <figure className={`my-8 ${className}`}>
-      {title && (
-        <h4 className="text-lg font-semibold text-[var(--foreground)] mb-3">
-          {title}
-        </h4>
-      )}
+    <figure className={`measure-wide m-0 ${className}`.trim()}>
+      {title && <div className="micro mb-3">{title}</div>}
 
-      <div className="card overflow-hidden">
+      <div
+        className="overflow-hidden"
+        style={{
+          border: "1px solid var(--rule)",
+          borderRadius: 3,
+          background: "var(--bg2)",
+        }}
+      >
         <Image
           src={src}
           alt={alt}
           width={width}
           height={height}
           priority={priority}
-          className="w-full h-auto object-contain"
+          className="h-auto w-full object-contain"
           style={{ maxHeight: "70vh" }}
         />
       </div>
 
       {caption && (
-        <figcaption className="text-sm text-[var(--muted-foreground)] mt-3 text-center italic">
+        <figcaption
+          className="mt-3"
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontStyle: "italic",
+            fontSize: 14.5,
+            lineHeight: 1.55,
+            color: "var(--tx3)",
+          }}
+        >
           {caption}
         </figcaption>
       )}

@@ -110,7 +110,7 @@ function WaypointPlannerContent() {
 
           {/* Polygon drawing hint */}
           {state.isDrawingPolygon && (
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-yellow-500/90 text-black px-4 py-2 rounded-lg font-medium text-sm shadow-lg">
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-[color-mix(in_oklch,var(--bg2)_90%,transparent)] text-black px-4 py-2 rounded-lg font-medium text-sm shadow-lg">
               Click to add points. Right-click or press Escape to finish.
             </div>
           )}

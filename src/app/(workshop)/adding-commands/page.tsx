@@ -1,323 +1,787 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
+import GitHubContent from "@/components/GitHubContent";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Quiz from "@/components/Quiz";
-import { GitBranch } from "lucide-react";
 
 export default function AddingCommands() {
   return (
-    <PageTemplate title="Commands">
+    <PageTemplate
+      title="Stop calling the motor. Ask for a command instead."
+      emphasis="Ask for a command instead."
+      lede="Right now anyone in your project can call arm.setVoltage(6.0). Two pieces of code could call it in the same loop with different numbers, and the motor would flip between them. This page closes that door: the setter becomes private, and the arm hands out commands instead."
+      needs={[
+        <>
+          The <code>Arm</code> and <code>Flywheel</code> from{" "}
+          <strong>Mechanisms</strong> — branch <code>1-Subsystem</code>, with{" "}
+          <code>public void setVoltage(double)</code> on both.
+        </>,
+        <>
+          A project that builds. <code>./gradlew build</code> should already
+          finish clean.
+        </>,
+        <>
+          Lambdas (<code>() -&gt;</code>), method references (<code>::</code>
+          ), and <code>private</code> from <strong>The Java You Need</strong>.
+          Every line below uses at least one of them.
+        </>,
+      ]}
+      branch="2-Commands"
+      time="Roughly 40 minutes"
+    >
       <KeyConceptSection
-        title="Commands with WPILib Commands V3"
         description={[
-          "A command is what a mechanism can do: a factory method that returns a named Command the scheduler can run. Anything that wants to move the arm does it through a command; the setters stay private, which is how the scheduler prevents two things fighting over the same motor.",
-          "On this team almost every mechanism command is a hold: it keeps re-sending its closed-loop setpoint forever, so the motor stays actively commanded until another command takes the mechanism over. Hold a button (whileTrue), the arm goes to the angle and stays there; release it, and the default command comes back.",
+          "A command is a named job the scheduler runs. It owns the mechanism while it runs, so nothing else can touch that motor at the same time. That is the whole reason the door gets closed.",
         ]}
-        concept="A command is a named action from a mechanism factory. Most of ours are holds — and a hold never finishes."
+        concept="A command is a named job that owns its mechanism while it runs. Making the setter private is what forces everything to go through one."
       />
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          The default command shape: a hold
-        </h2>
+      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
+        <p className="mt-3">
+          <strong>What you&apos;ll build:</strong> three commands on the arm,
+          three on the flywheel, and a teleop OpMode that binds them to the
+          controller. <strong>Roughly 40 minutes.</strong>{" "}
+          <strong>You will not run it yet</strong> — pressing buttons and
+          watching motors turn is two lessons away, on{" "}
+          <strong>Running Your Code</strong>. The check on this page is a clean
+          build.
+        </p>
+      </Box>
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          <code>runRepeatedly(...)</code> re-runs its body every scheduler tick,
-          so the closed-loop request is re-sent forever. That&apos;s the whole
-          recipe: one line of setup, re-sent repeatedly, named with a{" "}
-          <code>(hold)</code> suffix. This is how every preset on the robot is
-          written.
+      {/* ── the diff ─────────────────────────────────────────────────── */}
+      <LessonSection
+        id="what-changes-on-this-branch"
+        title="What changes on this branch"
+      >
+        <p className="prose-body measure">
+          This lesson is branch <code>2-Commands</code>, one commit on top of{" "}
+          <code>1-Subsystem</code>. It touches four files: <code>Arm.java</code>{" "}
+          and <code>Flywheel.java</code> get commands,{" "}
+          <code>opmodes/TeleopOpMode.java</code> is brand new, and{" "}
+          <code>Robot.java</code> only has its comment updated. The mechanisms
+          are already public fields on <code>Robot</code> from last lesson, so
+          nothing has to be registered anywhere.
         </p>
 
         <CodeBlock
           language="java"
-          title="Arm.java — hold commands, exactly as the 2027-Template writes them"
-          code={`// The subsystem owns the hardware, keeps its setters private, and exposes
-// commands. Each factory returns a Command that re-sends its setpoint
-// forever — a hold. The "(hold)" suffix is part of the convention.
-public Command vertical() {
-  return runRepeatedly(() -> setPosition(VERTICAL_POSITION))
-      .named("vertical (hold)");
-}
+          title="Arm.java — the shape of the change"
+          code={`// BEFORE (1-Subsystem): anything in the project can push a voltage.
+public void setVoltage(double voltage) { ... }
+public void stop() { ... }
 
-public Command horizontal() {
-  return runRepeatedly(() -> setPosition(HORIZONTAL_POSITION))
-      .named("horizontal (hold)");
-}
+// AFTER (2-Commands): the setter is shut away, and three commands take
+// its place. Every one of them returns a Command.
+public Command runSlow()  { ... }
+public Command runFast()  { ... }
+public Command stop()     { ... }
 
-public Command scoring() {
-  return runRepeatedly(() -> setPosition(SCORING_POSITION))
-      .named("scoring (hold)");
-}
-
-// Not a command — a question other code can ask. Chains use it as a
-// finish line: arm.scoring().until(arm::isAtTarget).
-public boolean isAtTarget() {
-  return Math.abs(getPosition() - getTargetPosition()) < TOLERANCE;
-}
-
-// Private. The only way to move the arm is through a command.
-private void setPosition(double position) { ... }`}
+private void setVoltage(double voltage) { ... }`}
         />
+
+        <Box variant="concept" title="Why bother closing the door?">
+          <p>
+            The scheduler tracks which command owns which mechanism. If two
+            commands both need the arm, the second one cancels the first — one
+            of them wins, on purpose, and you can find out which. That
+            bookkeeping only works for commands.
+          </p>
+          <p className="mt-3">
+            A plain <code>setVoltage(6.0)</code> call goes around all of it. Two
+            callers, two different numbers, same loop, and the motor takes
+            whichever one ran last. Making the setter <code>private</code> is
+            what makes the bookkeeping unavoidable.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── step 1 ───────────────────────────────────────────────────── */}
+      <LessonSection
+        id="make-the-setter-private"
+        title="Make the setter private"
+      >
+        <p className="prose-body measure">
+          Open <code>src/main/java/frc/robot/subsystems/Arm.java</code>. Find{" "}
+          <code>setVoltage</code> at the bottom of the class. Change one word.
+        </p>
+
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Arm.java"
+          code={`private void setVoltage(double voltage) {
+  motor.setControl(voltageOut.withOutput(voltage));
+}`}
+        />
+
+        <p className="prose-body measure">
+          Delete the old <code>public void stop()</code> while you are in there
+          — a command with the same name replaces it in step 3.
+        </p>
+
+        <p className="prose-body measure">
+          <strong>You should see:</strong> nothing breaks. Nothing outside{" "}
+          <code>Arm</code> was calling <code>setVoltage</code> yet, so the build
+          still passes. That is the moment to add the commands, before anything
+          comes to depend on the open door.
+        </p>
+      </LessonSection>
+
+      {/* ── step 2 ───────────────────────────────────────────────────── */}
+      <LessonSection id="your-first-command" title="Your first command">
+        <p className="prose-body measure">
+          Two constants at the top of the class, next to the hardware fields,
+          then one method.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Arm.java — the two voltages and runSlow()"
+          code={`// Voltages for the two example commands.
+private static final double SLOW_VOLTAGE = 3.0;
+private static final double FAST_VOLTAGE = 6.0;
+
+/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
+public Command runSlow() {
+  return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
+}`}
+        />
+
+        <p className="prose-body measure">
+          You also need one new import,{" "}
+          <code>import org.wpilib.command3.Command;</code>. That single line of
+          method body is doing three separate things, and it is worth taking
+          apart before you write five more like it.
+        </p>
+
+        <ol
+          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            <code>() -&gt; setVoltage(SLOW_VOLTAGE)</code> is a lambda: a scrap
+            of code written down and handed over instead of run. Writing this
+            line does not move the arm.
+          </li>
+          <li>
+            <code>runRepeatedly(...)</code> comes from <code>Mechanism</code>,
+            which <code>Arm</code> extends. It wraps that scrap in a{" "}
+            <code>while (true)</code> loop, so once the command is running the
+            lambda fires every loop, about fifty times a second. Re-sending the
+            request every loop is also what restores it if a motor controller
+            reboots.
+          </li>
+          <li>
+            <code>.named(&quot;runSlow (hold)&quot;)</code> finishes the build
+            and produces the actual <code>Command</code> the method returns.
+          </li>
+        </ol>
+
+        <Box variant="concept" title="Three types in one line">
+          <p>
+            Each link of that chain hands back a different type, and that is
+            what decides what you are allowed to write next:
+          </p>
+          <div className="mt-3">
+            <CodeBlock
+              language="java"
+              hideControls
+              code={`() -> setVoltage(SLOW_VOLTAGE)   // a Runnable — the code, not run yet
+runRepeatedly( ... )             // a NeedsNameBuilderStage — a half-built command
+.named("runSlow (hold)")         // a Command — finished, and what gets returned`}
+            />
+          </div>
+          <p className="mt-3">
+            The middle one is a <strong>builder</strong>, not a command. It has
+            no name yet, and the scheduler cannot run it.
+          </p>
+        </Box>
+
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT"
+          title="The name is not optional"
+        >
+          <p>
+            Leave <code>.named(...)</code> off and the build fails: the method
+            promises to return a <code>Command</code>, and a builder is not one.
+            That is the whole error. The builder is still being returned, so
+            nothing has been thrown away.
+          </p>
+          <p className="mt-3">
+            A second, separate check catches the other way of getting this
+            wrong. Both <code>NeedsNameBuilderStage</code> and{" "}
+            <code>Command</code> carry WPILib&apos;s <code>@NoDiscard</code>{" "}
+            annotation, and the compiler plugin reports it when the result of
+            such a call is discarded — a builder or a command written as a
+            statement on its own line and then never used. <code>Command</code>
+            &apos;s version supplies the message —{" "}
+            <em>
+              &quot;Commands must be used! Did you mean to fork it or bind it to
+              a trigger?&quot;
+            </em>
+          </p>
+          <p className="mt-3">
+            The reason is practical. A command with no name is invisible when
+            you are trying to work out what the robot is doing.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── step 3 ───────────────────────────────────────────────────── */}
+      <LessonSection
+        id="runfast-and-stop"
+        title={
+          <>
+            Step 3 — <code>runFast()</code> and <code>stop()</code>
+          </>
+        }
+        outlineLabel="runFast() and stop()"
+      >
+        <p className="prose-body measure">
+          Same shape, twice more. <code>stop()</code> is the interesting one: it
+          hands over a method reference rather than a lambda, and it is a
+          command like any other, not a special case.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Arm.java — all three commands"
+          code={`/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
+public Command runSlow() {
+  return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
+}
+
+/** Push the arm with a stronger voltage and keep pushing. Never finishes. */
+public Command runFast() {
+  return runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)");
+}
+
+/** Stop the arm motor and keep it stopped. Never finishes. */
+public Command stop() {
+  return runRepeatedly(motor::stopMotor).named("stop (hold)");
+}`}
+        />
+
+        <p className="prose-body measure">
+          <code>motor::stopMotor</code> means the same thing as{" "}
+          <code>() -&gt; motor.stopMotor()</code>. And notice what{" "}
+          <code>stop()</code> is: a command that calls <code>stopMotor()</code>{" "}
+          every single loop, forever. Not a one-shot. It has to keep saying it,
+          and the section on bindings below explains why.
+        </p>
+
+        <p className="prose-body measure">
+          <strong>You should see:</strong> <code>./gradlew build</code> passes,
+          and your <code>Arm</code> now has three public methods that all return{" "}
+          <code>Command</code> and one private one that returns{" "}
+          <code>void</code>.
+        </p>
+      </LessonSection>
+
+      {/* ── the (hold) suffix ────────────────────────────────────────── */}
+      <LessonSection
+        id="why-every-name-ends-in-hold"
+        title={
+          <>
+            Why every name ends in <code>(hold)</code>
+          </>
+        }
+        outlineLabel="Why every name ends in (hold)"
+      >
+        <p className="prose-body measure">
+          <code>runRepeatedly</code> is a <code>while (true)</code> loop. There
+          is no exit. A command built with it never finishes on its own — it
+          runs until something else takes the mechanism away from it. The team
+          calls that a <strong>hold</strong>, and every hold on this robot is
+          named with the suffix so you can spot one at a glance.
+        </p>
 
         <Box
           variant="alert-warning"
           tag="THE ONE RULE"
-          title="A hold never finishes, so nothing may ever wait on a hold"
+          title="Nothing may ever wait on a hold"
         >
           <p>
-            A hold has no finish line, so a sequence that contains a bare hold
-            sticks on it forever. Every hold is named with <code>(hold)</code>{" "}
-            so you can catch this: if a stuck routine is sitting on a{" "}
-            <code>(hold)</code> command on the dashboard or in the log,
-            that&apos;s the bug.
+            Every command you wrote on this page is a hold, including{" "}
+            <code>stop()</code>. Later, when you start putting commands in a
+            list and running them in order, a hold in that list stops the list
+            there forever. Nothing crashes — the routine just sits.
+          </p>
+          <p className="mt-3">
+            That is why the suffix is in the name: when a routine seems frozen,
+            look at what it is sitting on. If the name says <code>(hold)</code>,
+            you have found the bug. The fix — giving a hold an ending — is the
+            first thing <strong>Chaining Commands</strong> teaches.
           </p>
         </Box>
 
         <Box
           variant="alert-info"
-          tag="NOTE · NO …AndWait METHODS"
-          title="Waiting happens at the call site, not in the factory"
+          tag="NOTE"
+          title="There are no ...AndWait methods here"
         >
           <p>
-            Mechanisms never bake waiting into their commands: there is no{" "}
-            <code>scoringAndWait()</code>. When a chain needs the hold to end,
-            you give it a finish line where you use it:{" "}
-            <code>arm.scoring().until(arm::isAtTarget)</code>. One factory per
-            preset, and the caller decides whether to wait.
+            A mechanism never bakes waiting into its own commands. There is no{" "}
+            <code>runFastAndWait()</code>. One factory per behavior, and whoever
+            uses it decides whether to wait and for how long. Keeping that
+            decision at the call site is what makes these six small commands
+            recombine into anything.
           </p>
         </Box>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Chaining: routines out of holds
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Routines that touch more than one mechanism are built where
-          they&apos;re used (in an OpMode) by chaining the mechanisms&apos;
-          commands. Three tools, in order: <code>Command.sequence</code> for
-          steps that finish on their own, <code>.until(...)</code> to give a
-          hold a finish line, and <code>Command.race(step, hold)</code> for
-          &quot;do this step WHILE holding.&quot; Add{" "}
-          <code>.withTimeout(...)</code> as the seatbelt on any step that waits
-          on a sensor condition.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="Score the preload — built in an @Autonomous OpMode constructor"
-          code={`routine =
-    Command.sequence(
-            // spinUp() is a hold — it would stick here forever. .until(...)
-            // gives it a finish line, and .withTimeout(...) is the seatbelt:
-            // if the wheel never quite reaches speed, the auto moves on after
-            // two seconds instead of burning the whole period.
-            robot.flywheel.spinUp()
-                .until(robot.flywheel::isAtSpeed)
-                .withTimeout(Seconds.of(2))
-                .named("spin up"),
-
-            // Feed WHILE the flywheel hold keeps the wheel at speed. The
-            // feed step finishes (it has its own finish line), and the race
-            // then cancels the hold.
-            Command.race(
-                    robot.intake.feed()
-                        .until(robot.intake::isEmpty)
-                        .named("feed until empty"),
-                    robot.flywheel.spinUp())
-                .named("feed holding speed"))
-        .named("Score Preload");`}
-        />
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          A race ends when its first member finishes and cancels the rest. And
-          since a hold never finishes, the step is always what decides. The full
-          drive-stow-drive version of this pattern lives in the template:
-        </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-          title="DriveStowDriveChainedOpMode.java — the chaining reference"
-          icon={<GitBranch className="w-5 h-5" />}
-        />
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          When a command should finish on its own
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Not everything is a hold. A step with its own natural ending (drive
-          this distance, run the roller until the beam break trips) can be a
-          self-finishing command. The workshop template ships{" "}
-          <code>utils/ClassicCommand</code>, a small base class with the
-          explicit <code>initialize</code> / <code>execute</code> /{" "}
-          <code>isFinished</code> / <code>end</code> lifecycle. Extend it,
-          override what you need, and the instance <em>is</em> a{" "}
-          <code>Command</code>. You&apos;ll see it again in{" "}
-          <code>DriveToPoint</code>.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="DriveDistance.java — a self-finishing step"
-          code={`// utils/ClassicCommand gives you an explicit initialize/execute/isFinished/end lifecycle.
-public class DriveDistance extends ClassicCommand {
-  private final Drive drive;
-  private final double meters;
-
-  public DriveDistance(Drive drive, double meters) {
-    super("DriveDistance", drive); // the command's name + the mechanism it requires
-    this.drive = drive;
-    this.meters = meters;
-  }
-
-  @Override protected void initialize()      { drive.resetEncoders(); }
-  @Override protected void execute()         { drive.arcade(0.5, 0); }
-  @Override protected boolean isFinished()   { return drive.distance() >= meters; }
-  @Override protected void end(boolean intr) { drive.stop(); }
-}`}
-        />
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Because it finishes on its own, a step like this can sit in a{" "}
-          <code>Command.sequence</code> as-is (no <code>.until(...)</code>{" "}
-          needed). That&apos;s the dividing line: holds get finish lines at the
-          call site; steps bring their own.
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Cancellation
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          A hold only ever ends by being cancelled: the driver releases a{" "}
-          <code>whileTrue</code> button, a race&apos;s step finishes, an{" "}
-          <code>.until(...)</code> condition trips. Usually that&apos;s fine
-          as-is: the motor keeps its last closed-loop request in firmware until
-          the next command sends a new one. When a command <em>does</em> need
-          cleanup on interruption (stop the rollers, zero a voltage), that goes
-          in a <code>.whenCanceled(...)</code> hook on the builder.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="A hold that cleans up after itself"
-          code={`// The intake should never keep spinning after its command is taken away.
-public Command feed() {
-  return runRepeatedly(() -> setVelocity(FEED_SPEED))
-      .whenCanceled(() -> roller.stopMotor())
-      .named("feed (hold)");
-}`}
-        />
-
-        <p
-          className="text-[14px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The <code>whenCanceled</code> callback fires only when the command is
-          interrupted, which for a hold is the only way it ends, so it&apos;s
-          effectively the hold&apos;s &quot;on the way out&quot; hook.
-        </p>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          The advanced dialect: coroutines (optional)
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          v3 commands can also be written as a single body that pauses itself
-          from the inside: <code>run(coroutine -&gt; {`{ ... }`})</code> with{" "}
-          <code>coroutine.await(command)</code>, <code>fork(command)</code>, and{" "}
-          <code>waitUntil(condition)</code>. Reach for it only when a hold must
-          span many steps or the logic needs loops and branches; you won&apos;t
-          need it in this workshop. The template keeps a worked example of the
-          same drive-stow-drive routine in that dialect:
-        </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
-          title="DriveStowDriveOpMode.java — the coroutine dialect (optional)"
-          icon={<GitBranch className="w-5 h-5" />}
-        />
-      </section>
-
-      <Box
-        variant="alert-info"
-        tag="NOTE · API STATUS"
-        title="This is the WPILib 2027 alpha"
+      {/* ── step 4 ───────────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-same-three-on"
+        title="The same three on the flywheel"
       >
-        <code>runRepeatedly</code>, the staged builder, and the compile-time
-        enforcement of <code>.named(...)</code> run on <strong>Java 25</strong>{" "}
-        and deploy to <strong>SystemCore</strong>. The stack is the WPILib 2027{" "}
-        <em>alpha</em> (GradleRIO <code>2027.0.0-alpha-6</code>), so the exact
-        APIs are still moving between alpha builds. This page was last verified
-        against alpha-6 in July 2026.
-      </Box>
+        <p className="prose-body measure">
+          Open <code>subsystems/Flywheel.java</code> and do it again. Identical
+          pattern, identical voltages. The one difference: the flywheel has two
+          motors, a leader on CAN 21 and a follower on CAN 22 that spins the
+          opposite direction, so the commands talk to <code>leader</code>.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Flywheel.java — same three commands, leader motor"
+          code={`private static final double SLOW_VOLTAGE = 3.0;
+private static final double FAST_VOLTAGE = 6.0;
+
+/** Spin the flywheel with a gentle voltage and hold it there. Never finishes. */
+public Command runSlow() {
+  return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
+}
+
+/** Spin the flywheel with a stronger voltage and hold it there. Never finishes. */
+public Command runFast() {
+  return runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)");
+}
+
+/** Stop the flywheel and keep it stopped. Never finishes. */
+public Command stop() {
+  return runRepeatedly(leader::stopMotor).named("stop (hold)");
+}
+
+private void setVoltage(double voltage) {
+  leader.setControl(voltageOut.withOutput(voltage));
+}`}
+        />
+
+        <p className="prose-body measure">
+          You never command the follower. It was told once, in the constructor,
+          to copy the leader. Six commands total now, three per mechanism, and
+          none of them can be reached except through the mechanism that owns
+          them.
+        </p>
+      </LessonSection>
+
+      {/* ── step 5 ───────────────────────────────────────────────────── */}
+      <LessonSection id="bind-them-to-the" title="Bind them to the controller">
+        <p className="prose-body measure">
+          Six commands that nothing calls do nothing. Create a new file,{" "}
+          <code>src/main/java/frc/robot/opmodes/TeleopOpMode.java</code>. This
+          is the whole file on the branch, minus the three-line WPILib copyright
+          header that every generated file already carries.
+        </p>
+
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          code={`package frc.robot.opmodes;
+
+import frc.robot.Robot;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Flywheel;
+import org.wpilib.command3.button.CommandNiDsXboxController;
+import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.Teleop;
+
+/**
+ * The driver's controls. The framework builds this class when "Teleop" is picked
+ * on the driver station. The button bindings made in the constructor belong to
+ * this OpMode, and the framework removes them on a mode switch. No cleanup code
+ * needed.
+ *
+ * <p>The buttons here run the arm and flywheel commands.
+ */
+@Teleop(name = "Teleop")
+public class TeleopOpMode extends PeriodicOpMode {
+  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+
+  public TeleopOpMode(Robot robot) {
+    final Arm arm = robot.arm;
+    final Flywheel flywheel = robot.flywheel;
+
+    // Left trigger: push the arm up while held, stop when released.
+    driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
+
+    // Right trigger: spin fast while held, drop back to the slow voltage when released.
+    driver.rightTrigger().onTrue(flywheel.runFast()).onFalse(flywheel.runSlow());
+
+    // A: spin fast while held, stop when released.
+    driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
+  }
+}`}
+        />
+
+        <p className="prose-body measure">
+          Four things to notice, and then the next lesson takes this apart
+          properly:
+        </p>
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            <code>@Teleop(name = &quot;Teleop&quot;)</code> is a label. The
+            framework finds this class by that annotation, so nothing has to be
+            registered in <code>Robot.java</code>.
+          </li>
+          <li>
+            The bindings live in the <strong>constructor</strong> — code that
+            runs once, when the OpMode is built. They are set up one time, not
+            every loop.
+          </li>
+          <li>
+            <code>robot.arm</code> and <code>robot.flywheel</code> are the
+            public fields you made last lesson. Every OpMode is handed the{" "}
+            <code>Robot</code> and reaches the mechanisms through it.
+          </li>
+          <li>
+            <code>onTrue(x)</code> schedules <code>x</code> the moment the
+            button goes down. <code>onFalse(y)</code> schedules <code>y</code>{" "}
+            the moment it comes back up. They return the trigger, which is why
+            they chain onto one line. <strong>Triggers</strong>, next lesson, is
+            the full treatment.
+          </li>
+        </ul>
+
+        <p className="prose-body measure">
+          <strong>You should see:</strong> <code>./gradlew build</code> passes
+          with the new file in place. That is the last check this page can give
+          you — the buttons are real, but you need the simulator from{" "}
+          <strong>Running Your Code</strong> to press them.
+        </p>
+      </LessonSection>
+
+      {/* ── the pair rule / idle ─────────────────────────────────────── */}
+      <LessonSection
+        id="why-every-binding-comes-in-a"
+        title="Why every binding comes in a pair"
+      >
+        <p className="prose-body measure">
+          Look at those three bindings again. Not one of them is a single call.
+          Every <code>onTrue</code> has an <code>onFalse</code> behind it. That
+          is not style — leave the second half off and the motor never stops.
+          There are two separate reasons for that, and both are worth knowing.
+        </p>
+
+        <p className="prose-body measure">
+          <strong>
+            One: <code>onTrue</code> does not undo itself.
+          </strong>{" "}
+          It schedules a command the instant the button goes down, and that is
+          all it does. Nothing happens on release. Since{" "}
+          <code>arm.runFast()</code> is a hold, it would sit there pushing 6 V
+          for the rest of the match. What actually ends it is the second
+          binding: <code>arm.stop()</code> needs the arm as well, and a command
+          of equal or greater priority claiming a mechanism interrupts and
+          cancels the one already on it. Both run at the default priority of 0,
+          so <code>stop()</code> wins by arriving second.
+        </p>
+
+        <p className="prose-body measure">
+          <strong>
+            Two: canceling on its own would not have stopped the motor either.
+          </strong>{" "}
+          When a command ends or is canceled with nothing to replace it, the
+          mechanism goes back to its <strong>default command</strong>. You never
+          set one on the arm — you did not have to. <code>Mechanism</code>
+          &apos;s own constructor already did it, and here is exactly what it
+          set. No branch in the mechanism track ever calls{" "}
+          <code>setDefaultCommand</code>; every mechanism runs the
+          constructor-supplied <code>idle()</code> for the whole of Workshop #1.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Mechanism.java, WPILib 2027.0.0-alpha-6 — the default command every mechanism gets"
+          code={`public Command idle() {
+  return run(Coroutine::park).withPriority(Command.LOWEST_PRIORITY).named(getName() + "[IDLE]");
+}`}
+        />
+
+        <p className="prose-body measure">
+          <code>Coroutine</code> is the machinery underneath every command; you
+          will not write one yourself until <strong>Coroutines</strong>, at the
+          end of the course. <code>park</code> is its &quot;stop here and do
+          nothing&quot; instruction, so <code>idle()</code> holds the mechanism
+          and does nothing at all. Read that carefully, because the consequence
+          is the thing that catches people out:
+        </p>
+
+        <Box
+          variant="alert-danger"
+          tag="THE TRAP"
+          title="Canceling a command does not stop the motor"
+        >
+          <p>
+            <code>idle()</code> sends <em>no output</em>. It does not zero
+            anything. It does not undo the last request. Phoenix is still
+            holding whatever voltage it was last given, so the arm keeps pushing
+            at 6 V after the command that asked for 6 V is long gone.
+          </p>
+          <p className="mt-3">
+            So &quot;stop the command&quot; and &quot;stop the motor&quot; are
+            two different things. That is why <code>stop()</code> exists as its
+            own command, and why it has to keep saying <code>stopMotor()</code>{" "}
+            every loop rather than once. Something has to actively send zero,
+            and something has to hold the mechanism while it does.
+          </p>
+        </Box>
+
+        <p className="prose-body measure">
+          <code>LOWEST_PRIORITY</code> is what keeps idling out of the way. It
+          is <code>Integer.MIN_VALUE</code>, so any command at all outranks it
+          and can take the mechanism. Yours never set a priority, so they all
+          sit at <code>DEFAULT_PRIORITY</code>, which is 0 — which is exactly
+          why <code>arm.stop()</code> is able to interrupt{" "}
+          <code>arm.runFast()</code>. Equal counts.
+        </p>
+
+        <p className="prose-body measure">
+          One last detail worth noticing in that OpMode: the right trigger
+          releases to <code>flywheel.runSlow()</code>, not{" "}
+          <code>flywheel.stop()</code>. A wheel left turning at 3 V does not
+          have to spin up from dead the next time you want it. The pair does not
+          have to be do-and-undo — it has to be do-and-then-what.
+        </p>
+      </LessonSection>
+
+      {/* ── rest of the builder ──────────────────────────────────────── */}
+      <LessonSection
+        id="the-rest-of-the-builder"
+        title="The rest of the builder"
+      >
+        <p className="prose-body measure">
+          <code>runRepeatedly(...)</code> hands back a{" "}
+          <code>NeedsNameBuilderStage</code>, and that type offers exactly four
+          methods. You have used one. The other three are worth recognizing even
+          though nothing on this branch calls them:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="NeedsNameBuilderStage — the whole interface"
+          code={`NeedsNameBuilderStage whenCanceled(Runnable onCancel);
+NeedsNameBuilderStage withPriority(int priority);
+NeedsNameBuilderStage until(BooleanSupplier endCondition);
+Command               named(String name);`}
+        />
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            <code>whenCanceled(...)</code> runs a scrap of cleanup code when the
+            command is interrupted. For a hold that is the only way it ever
+            ends, so it works out as the &quot;on the way out&quot; hook.
+          </li>
+          <li>
+            <code>withPriority(...)</code> changes who wins a fight over the
+            mechanism. <code>idle()</code> uses it to sit at the bottom.
+          </li>
+          <li>
+            <code>until(...)</code> gives the command an ending condition. It
+            needs the mechanism to be able to report on itself, which yours
+            cannot do yet. That arrives on <strong>Finish Lines</strong>.
+          </li>
+        </ul>
+
+        <Box
+          variant="alert-info"
+          tag="NOTE"
+          title="These three go before the name, not after"
+        >
+          <p>
+            They are builder methods. Once <code>.named(...)</code> has run you
+            have a finished <code>Command</code>, and a <code>Command</code>{" "}
+            does not have them. Order is not a preference here:
+          </p>
+          <div className="mt-3">
+            <CodeBlock
+              language="java"
+              hideControls
+              code={`runRepeatedly(...).named("x").withPriority(5)   // does not compile
+runRepeatedly(...).withPriority(5).named("x")   // compiles`}
+            />
+          </div>
+        </Box>
+      </LessonSection>
+
+      {/* ── the branch ───────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-finished-file-live-from-the"
+        title="The finished file, live from the branch"
+      >
+        <p className="prose-body measure">
+          Compare this against what you typed. The{" "}
+          <strong>GitHub Changes</strong> tab shows the whole{" "}
+          <code>1-Subsystem</code> → <code>2-Commands</code> diff — all four
+          files, side by side, which is the fastest way to check you did not
+          miss anything. Read the block of comments above <code>runSlow()</code>{" "}
+          too; THE ONE RULE is written out in the source itself.
+        </p>
+
+        <GitHubContent
+          repository="Hemlock5712/Workshop-Code"
+          branch="2-Commands"
+          filePath="src/main/java/frc/robot/subsystems/Arm.java"
+          pr={{ number: 2, focusFile: "Arm.java" }}
+        />
+      </LessonSection>
+
+      {/* ── did it work ──────────────────────────────────────────────── */}
+      <LessonSection id="did-it-work" title="Did it work?">
+        <ol
+          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            Run <code>./gradlew build</code> (or{" "}
+            <em>WPILib: Build Robot Code</em>). <strong>You should see:</strong>{" "}
+            <code>BUILD SUCCESSFUL</code>.
+          </li>
+          <li>
+            In <code>Arm.java</code>, count the public methods.{" "}
+            <strong>You should see:</strong> exactly three, all returning{" "}
+            <code>Command</code>, plus the constructor. <code>setVoltage</code>{" "}
+            is <code>private</code> and returns <code>void</code>.
+          </li>
+          <li>
+            Count the same in <code>Flywheel.java</code>.{" "}
+            <strong>You should see:</strong> the same three, with{" "}
+            <code>leader::stopMotor</code> in <code>stop()</code> rather than{" "}
+            <code>motor::stopMotor</code>.
+          </li>
+          <li>
+            Check every command name ends in <code>(hold)</code>.{" "}
+            <strong>You should see:</strong> six names, six suffixes. If one is
+            missing, add it now — the suffix is what makes a stuck routine
+            diagnosable later.
+          </li>
+          <li>
+            <strong>Break it on purpose.</strong> Delete the{" "}
+            <code>.named(&quot;runSlow (hold)&quot;)</code> from{" "}
+            <code>runSlow()</code> and build again.{" "}
+            <strong>You should see:</strong> a compile error pointing at that
+            line. A builder is not a <code>Command</code>. Put it back.
+          </li>
+          <li>
+            <strong>Break it the other way.</strong> Add{" "}
+            <code>arm.setVoltage(6.0);</code> to the <code>TeleopOpMode</code>{" "}
+            constructor and build. <strong>You should see:</strong> an error
+            saying <code>setVoltage</code> has private access in{" "}
+            <code>Arm</code>. That error is the entire point of this lesson.
+            Delete the line.
+          </li>
+        </ol>
+
+        <Box
+          variant="alert-info"
+          tag="IF IT DIDN'T WORK"
+          title="Four things that go wrong here"
+        >
+          <ul className="ml-4 list-disc space-y-2">
+            <li>
+              <strong>
+                &quot;incompatible types: NeedsNameBuilderStage cannot be
+                converted to Command&quot;
+              </strong>{" "}
+              — a <code>.named(...)</code> is missing from that method. javac
+              prints the package-qualified names, so what you actually see is{" "}
+              <code>org.wpilib.command3.NeedsNameBuilderStage</code> and{" "}
+              <code>org.wpilib.command3.Command</code>.
+            </li>
+            <li>
+              <strong>
+                &quot;cannot find symbol: method withPriority(int), location:
+                interface Command&quot;
+              </strong>{" "}
+              — a builder method landed <em>after</em> <code>.named(...)</code>.
+              The same error shows up for <code>whenCanceled</code>. Once the
+              name has run you are holding a <code>Command</code>, and a{" "}
+              <code>Command</code> does not have those two. Move the builder
+              call in front of the name.
+              <br />
+              Note that <code>until</code> and <code>withTimeout</code> are{" "}
+              <em>not</em> in that group — both exist on <code>Command</code>{" "}
+              itself, which is why{" "}
+              <code>arm.vertical().until(arm::isAtTarget)</code> compiles later
+              on <strong>Finish Lines</strong>.
+            </li>
+            <li>
+              <strong>&quot;cannot find symbol: class Command&quot;</strong> —
+              the import is missing. Add{" "}
+              <code>import org.wpilib.command3.Command;</code> at the top of{" "}
+              <code>Arm.java</code> and <code>Flywheel.java</code>. Check the
+              package while you are there: this stack is{" "}
+              <code>org.wpilib.*</code>, never <code>edu.wpi.first.*</code>.
+            </li>
+            <li>
+              <strong>
+                The OpMode builds but does not appear on the driver station
+              </strong>{" "}
+              (you will hit this two lessons from now) — the class has to sit in{" "}
+              <code>frc.robot.opmodes</code> and carry{" "}
+              <code>@Teleop(name = &quot;...&quot;)</code>. The framework finds
+              it by that annotation and nothing else.
+            </li>
+          </ul>
+        </Box>
+      </LessonSection>
+
+      {/* ── what's next ──────────────────────────────────────────────── */}
+      <LessonSection id="where-this-goes-next" title="Where this goes next">
+        <p className="prose-body measure">
+          You have six commands and one command per button. Three pages build on
+          that:
+        </p>
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={{ color: "var(--fg-mute)" }}
+        >
+          <li>
+            <strong>Triggers</strong>, next — where{" "}
+            <code>driver.leftTrigger().onTrue(...)</code> comes from, what else
+            can be a trigger, and why the bindings in that constructor disappear
+            on their own when the OpMode changes.
+          </li>
+          <li>
+            <strong>Chaining Commands</strong> — how to give a hold an ending
+            and run several of these commands from one button, in order. That is
+            where <code>Command.sequence</code>, <code>Command.race</code> and{" "}
+            <code>.withTimeout(...)</code> arrive, and where the{" "}
+            <code>onTrue</code>/<code>onFalse</code> pair gets replaced by a
+            single <code>whileTrue</code>.
+          </li>
+          <li>
+            <strong>Coroutines</strong>, at the end of the course — a second way
+            to write a command body, as one block of code that pauses itself
+            from the inside. It is the advanced dialect and you will not need it
+            for a long while. Everything between here and there is chaining.
+          </li>
+        </ul>
+      </LessonSection>
+
+      <AlphaStatusNote />
 
       <Quiz
         title="Knowledge Check"
@@ -325,71 +789,71 @@ public Command feed() {
           {
             id: 1,
             question:
-              "What makes a mechanism command a hold, and how do you spell it in v3?",
+              "Why does 2-Commands change setVoltage from public to private?",
             options: [
-              "It sets the motor once and exits — run(coroutine -> setControl(...))",
-              'It re-sends its closed-loop setpoint every tick and never finishes — runRepeatedly(() -> setPosition(TARGET)).named("target (hold)")',
-              "It runs at maximum priority so nothing can interrupt it",
-              "It waits on a condition — coroutine.waitUntil(this::atTarget)",
+              "Private methods run faster on SystemCore",
+              "So that the only way to move the arm is through a command, which lets the scheduler track who owns the motor",
+              "Because Mechanism requires all setters to be private",
+              "To hide the voltage constants from other mechanisms",
             ],
             correctAnswer: 1,
             explanation:
-              'A hold keeps re-sending its setpoint forever, so the motor stays actively commanded and the command that issued the request keeps running as long as the request is active. runRepeatedly(...) is the spelling, and the "(hold)" suffix in the name is part of the convention.',
+              "The scheduler tracks which command owns which mechanism, so two commands can never drive the same motor at once. That bookkeeping only applies to commands. A plain setVoltage(6.0) call from anywhere goes around it, so the door gets closed.",
           },
           {
             id: 2,
-            question: 'Why does every hold\'s name end in "(hold)"?',
+            question:
+              'In runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)"), what does runRepeatedly(...) hand back before .named(...) runs?',
             options: [
-              "The compiler plugin requires the suffix for runRepeatedly commands",
-              'So that when a routine gets stuck waiting on one, the dashboard and logs show a "(hold)" name — which tells you exactly what the bug is',
-              "The scheduler uses the suffix to assign holds the lowest priority",
-              "It's purely cosmetic — any name works the same",
+              "A finished Command, ready to schedule",
+              "A NeedsNameBuilderStage — a half-built command that is not a Command until it is named",
+              "void — runRepeatedly schedules the command immediately",
+              "A Runnable that the scheduler wraps later",
             ],
             correctAnswer: 1,
             explanation:
-              'THE ONE RULE is that a hold never finishes, so nothing may wait on one. Mistakes still happen, and when they do, the stuck routine sits on a command whose name literally says "(hold)". The naming convention turns a mystery hang into a one-glance diagnosis.',
+              "runRepeatedly returns a NeedsNameBuilderStage. .named(String) is what turns it into a Command. Leave the name off and the build fails, because the method promises a Command and a builder is not one. WPILib's @NoDiscard check is a separate matter: it catches a builder or a command written as a standalone statement and then thrown away.",
           },
           {
             id: 3,
             question:
-              "An auto needs the arm at scoring angle before the next step. The mechanism only exposes scoring(), a hold. What do you write?",
+              "Every command on this branch is a hold. What makes it one?",
             options: [
-              "arm.scoringAndWait() — mechanisms provide a waiting variant of each preset",
-              "arm.scoring().until(arm::isAtTarget), with .withTimeout(...) as a seatbelt — the finish line is applied at the call site",
-              "arm.scoring() directly — sequences detect holds and skip ahead automatically",
-              "coroutine.await(arm.scoring()) — awaiting adds a finish line",
+              "The (hold) suffix in the name — the framework reads it",
+              "runRepeatedly wraps the body in a while (true) loop, so the command never finishes on its own",
+              "Holds are scheduled at HIGHEST_PRIORITY so nothing can cancel them",
+              "The command is bound with onTrue rather than onFalse",
             ],
             correctAnswer: 1,
             explanation:
-              'There are no "...AndWait" methods; waiting is always spelled at the call site with .until(...). Awaiting or sequencing a bare hold just moves the forever-wait somewhere else. The timeout keeps an unreachable setpoint from burning the rest of the period.',
+              "runRepeatedly builds a while (true) loop around the body. There is no exit, so the command runs until something takes the mechanism away from it. The (hold) suffix is a naming convention that makes that visible to you — the framework does not read it.",
           },
           {
             id: 4,
             question:
-              "In Command.race(robot.intake.feed().until(robot.intake::isEmpty), robot.flywheel.spinUp()), what ends the race?",
+              "You bind driver.a().onTrue(flywheel.runFast()) and leave the onFalse off. You release A. What happens?",
             options: [
-              "Whichever member finishes first — it's unpredictable",
-              "The feed step — the flywheel hold never finishes, so the step always decides, and the race then cancels the hold",
-              "The flywheel hold, once the wheel reaches speed",
-              "The race never ends — one member is a hold",
+              "The flywheel stops — releasing the button cancels the command, and canceling stops the motor",
+              "runFast() is never canceled, so it keeps re-sending 6 V for the rest of the match",
+              "The command is canceled but the wheel keeps spinning anyway",
+              "The build fails — onTrue requires a matching onFalse",
             ],
             correctAnswer: 1,
             explanation:
-              "A race ends when its first member finishes and cancels the rest. The hold can't finish, so the self-finishing step is always the decider; that's what makes race the tool for \"do this step WHILE holding.\"",
+              "onTrue schedules on the press and does nothing on release. runFast() is a hold, so nothing ends it. The onFalse binding is what ends it, by scheduling flywheel.stop(), which needs the same mechanism and therefore interrupts it. And note that even a plain cancellation would not have stopped the wheel: idle() sends no output and does not zero the last request.",
           },
           {
             id: 5,
-            question:
-              "How do you run cleanup code when a hold is interrupted (which is the only way a hold ends)?",
+            question: "Where does .whenCanceled(...) go in the chain, and why?",
             options: [
-              "Attach a .whenCanceled(runnable) hook on the command builder",
-              "Wrap the body in a try/catch — cancellation throws a CancelledException",
-              "Put the cleanup at the bottom of the body — it runs when the command ends",
-              "Override an end(boolean interrupted) method on the hold",
+              "After .named(...), because a command must exist before you can hook it",
+              "Before .named(...), because it is a NeedsNameBuilderStage method and .named(...) ends the builder",
+              "Either position compiles — it is a style preference",
+              "It is passed as a second argument to runRepeatedly",
             ],
-            correctAnswer: 0,
+            correctAnswer: 1,
             explanation:
-              '.whenCanceled(...) registers a Runnable that fires only on cancellation. A cancelled command is simply dropped, so trailing code in the body never runs on interruption. For a hold, whenCanceled is effectively the "on the way out" hook.',
+              "whenCanceled, withPriority and until are all declared on NeedsNameBuilderStage, the builder type. .named(String) closes the builder and hands back a Command, which does not have those methods. So they go before the name.",
           },
         ]}
       />

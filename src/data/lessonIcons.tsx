@@ -41,7 +41,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ReactNode } from "react";
-import type { LessonSection } from "@/data/lessons";
+import type { LessonSectionId } from "@/data/lessons";
 
 const ICON_CLASS = "w-5 h-5";
 
@@ -70,10 +70,8 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/swerve-drive-project": makeIcon(Truck),
   "/pathplanner": makeIcon(MapIcon),
   "/swerve-calibration": makeIcon(Crosshair),
-  "/logging-options": makeIcon(FileText),
   "/logging-implementation": makeIcon(FileCode),
   "/drive-to-point": makeIcon(MapPin),
-  "/vision-options": makeIcon(Eye),
   "/vision-implementation": makeIcon(Camera),
 
   "/vision-shooting": makeIcon(Target),
@@ -81,7 +79,7 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/advanced-drive-to-point": makeIcon(Navigation),
 };
 
-export const SECTION_ICONS: Record<LessonSection, ReactNode> = {
+export const SECTION_ICONS: Record<LessonSectionId, ReactNode> = {
   main: makeIcon(Home),
   workshop1: makeIcon(Beaker),
   workshop2: makeIcon(Zap),

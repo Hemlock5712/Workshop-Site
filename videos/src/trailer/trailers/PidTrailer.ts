@@ -86,7 +86,7 @@ export const PidTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Every rookie robot arm makes one of two mistakes. It crawls toward the target and stops short. Or it flies right past the target and shakes. PID fixes both. And the idea behind it is simpler than the math.",
+      text: "Two ways a rookie arm embarrasses you: it creeps up and parks a foot short of where you asked. Or it whips past and shakes. PID fixes both, and the idea behind it is simpler than the algebra.",
       shots: [
         // Open wide with a real push instead of the old imperceptible creep.
         { rect: TITLE, drift: { dolly: 0.02 } },
@@ -102,7 +102,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "error",
-      text: "Meet the arm. It rests at negative forty-five degrees. We want it at positive thirty. That goal is called the setpoint. The gap left to travel is the error. PID starts with the error.",
+      text: "This arm sits on its hard stop, forty-five degrees below level. We want it at thirty. Call that the setpoint. Whatever's left in between is the error, and every term in PID works off it.",
       shots: [
         { rect: ARM_CLOSEUP, drift: { dolly: 0.02 } },
         // Pull out so the setpoint line reads against the whole lab.
@@ -112,7 +112,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "p-low",
-      text: "P stands for proportional. It pushes harder when the error is bigger. How hard? A number called the P gain decides. With a small gain, gravity wins. The arm stalls below the target and just hangs there.",
+      text: "P pushes in proportion to the error: far out, big voltage; nearly there, nearly nothing. One number, the P gain, sets how hard. Set it low and gravity wins. The arm climbs partway, stalls, and hangs.",
       shots: [
         { rect: LAB, drift: { dolly: 0.025 } },
         // Cut in tight for the sag — the whole point of the beat.
@@ -122,7 +122,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "p-high",
-      text: "So crank the P gain way up. Now the arm launches. It flies straight past thirty. Then it swings back and forth around the setpoint. More P gives more speed. But P can't tell it's arriving too fast.",
+      text: "So crank it up. Now the arm launches, blows straight through the target at full throttle, then swings back the other way. And again. More P buys speed. It buys nothing that knows how to stop.",
       shots: [
         // Stay on the arm to watch it go, snap because the motion is violent.
         { rect: ARM_CLOSEUP, move: { kind: "snap" }, drift: { dolly: 0.03 } },
@@ -134,7 +134,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "d-term",
-      text: "That's the D term's job. D stands for derivative. It watches how fast the error is shrinking. Then it eases off before you arrive. Keep the same P and add a little D. Now send the arm to sixty degrees. It just lands.",
+      text: "P alone will never stop politely. That's what D adds. The derivative of the error tells you how fast the gap is closing, and knowing that lets the controller ease off early. Same P, a splash of D. Ask for sixty. It lands.",
       shots: [
         { rect: LAB, drift: { dolly: 0.02 } },
         // The trace is the evidence that D is working.
@@ -159,7 +159,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "In code, this whole story is one slot config on the TalonFX. k P is the push. k D is the brakes. Then you just ask for an angle. The controller runs on the motor a thousand times a second.",
+      text: "None of this math lives in your code. It's one slot config on the TalonFX: kP for the push, kD for the brakes. You hand it an angle and walk away. The motor closes that loop a thousand times a second.",
       shots: [
         { rect: CODE, drift: { dolly: 0.018 } },
         // Frame just the gain lines while they are being typed.
@@ -190,7 +190,7 @@ export const PidTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "There's more to learn. Gravity feedforward. Motion Magic. And how to tune a real arm without snapping it. The full PID lesson is waiting at frc5712.com.",
+      text: "That arm was simulated. Guess a gain on real hardware and you can fold a mechanism in half, which is why the lesson tunes in sim first.",
       // A slow pull-back to close, rather than a static card.
       shots: [{ rect: END, drift: { dolly: -0.012 } }],
       holdAfter: 1.2,

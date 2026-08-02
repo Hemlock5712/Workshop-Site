@@ -13,7 +13,12 @@
       "mcp__playwright__browser_press_key",
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_navigate",
-      "WebFetch(domain:wcproducts.com)"
+      "WebFetch(domain:wcproducts.com)",
+      "Bash(find /c/Users/joeoj/Downloads/Workshop-Site/src -type f \\\\\\( -name \"*.ts\" -o -name \"*.tsx\" \\\\\\) -exec wc -l {} +)",
+      "Read(//c/Users/joeoj/Downloads/Workshop-Site/**)",
+      "Bash(sort -t: -k2 -rn)",
+      "Bash(wc -l \"c:/Users/joeoj/Downloads/Workshop-Site/src/app/\\(workshop\\)/glossary/page.tsx\" \"c:/Users/joeoj/Downloads/Workshop-Site/src/components/BillOfMaterials.tsx\" \"c:/Users/joeoj/Downloads/Workshop-Site/src/app/\\(workshop\\)/planner/usePlannerState.ts\" \"c:/Users/joeoj/Downloads/Workshop-Site/src/app/\\(workshop\\)/planner/PlannerCanvas.tsx\" \"c:/Users/joeoj/Downloads/Workshop-Site/src/components/GitHubPR.tsx\" \"c:/Users/joeoj/Downloads/Workshop-Site/src/app/\\(workshop\\)/planner/SettingsModal.tsx\")",
+      "Bash(xargs sed -i 's/GithubPageWithPR/GitHubPageWithPR/g')"
     ],
     "deny": [],
     "ask": []

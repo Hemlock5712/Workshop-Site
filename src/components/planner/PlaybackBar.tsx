@@ -17,7 +17,7 @@ export function PlaybackBar() {
       {/* Play/Pause Button */}
       <button
         onClick={togglePlay}
-        className="w-10 h-10 flex items-center justify-center rounded-md bg-primary-500 hover:bg-primary-600 text-white transition-colors"
+        className="w-10 h-10 flex items-center justify-center rounded-md bg-[var(--bg2)] hover:bg-[var(--bg2)] text-white transition-colors"
         title={isPlaying ? "Pause" : "Play"}
       >
         {isPlaying ? (
@@ -40,7 +40,7 @@ export function PlaybackBar() {
         step="0.1"
         value={playbackTime}
         onChange={handleSliderChange}
-        className="flex-1 h-2 bg-[var(--muted)] rounded-lg appearance-none cursor-pointer accent-primary-500"
+        className="flex-1 h-2 bg-[var(--muted)] rounded-lg appearance-none cursor-pointer accent-[var(--accent)]"
       />
 
       {/* Stats Display */}
@@ -52,7 +52,7 @@ export function PlaybackBar() {
           </span>
         </span>
         {state.collisionDetected && (
-          <span className="text-red-500 font-medium flex items-center gap-1">
+          <span className="text-[var(--err)] font-medium flex items-center gap-1">
             <span>⚠️</span> Collision
           </span>
         )}

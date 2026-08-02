@@ -68,13 +68,13 @@ export const MotionMagicTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Feedforward and feedback can land the arm anywhere you ask. But watch how it gets there. It floors the voltage, races, and brakes hard. That is fast, but violent. Motion Magic keeps the speed and deletes the violence.",
+      text: "Feedforward and feedback will land your arm on any angle you name, and they'll get there by pinning the voltage to the rail, sprinting, then standing on the brakes at the last instant. Fast. Violent. Motion Magic only fixes the violent part.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "problem",
-      text: "Here are our tuned gains, the numbers from the last two lessons. Ask the arm to jump to sixty degrees in one step. For an instant, the gap to the target is huge. So the controller slams to twelve volts. That can snap a chain. Then it scrambles to stop at the top.",
+      text: "These gains came out of the last two lessons. Now ask for sixty degrees in one step. The gap is enormous, so the controller does the only thing it knows: twelve volts, right now, straight through whatever chain is in the way.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, kG: 3.9, at: { word: "gains" } },
@@ -83,7 +83,7 @@ export const MotionMagicTrailer: TrailerScript = {
     },
     {
       id: "idea",
-      text: "Motion Magic replaces the step with a profile. A profile is a plan for the trip: speed up, cruise, slow down. Now the setpoint, the target the controller chases, travels too. Watch it glide. The arm only chases a target that never runs away.",
+      text: "Motion Magic won't hand the controller the whole jump at once. It hands over a profile instead: a schedule of speeds, ramping up, holding, ramping back down. The setpoint travels that schedule. Watch it glide. Your arm is chasing something it can actually catch.",
       camera: SCOPE_CLOSEUP,
       events: [
         {
@@ -97,19 +97,19 @@ export const MotionMagicTrailer: TrailerScript = {
     },
     {
       id: "demo",
-      text: "Send it back up and look at the output bar. No slam this time. Just a steady, planned push the whole way. Same arm, same gains, a much calmer robot.",
+      text: "Send it back up, eyes on the output bar. It never pegs. The push stays measured the whole trip. Same arm, same gains, and nothing in the gearbox getting punished.",
       camera: LAB,
       events: [{ type: "target", deg: 55, at: { word: "back" } }],
     },
     {
       id: "tuning",
-      text: "You set two numbers. Cruise velocity is the top speed you allow. Acceleration is how quickly it may speed up. Both are promises about what your hardware can take. Keep them honest. The profile handles the rest.",
+      text: "Two numbers. Cruise velocity caps the top speed; acceleration caps how fast it gets there. Both are promises you're making on behalf of a gearbox that has never read your code. Lie in either one and the profile is fiction.",
       camera: SCOPE_CLOSEUP,
       events: [{ type: "target", deg: 10, at: { word: "promises" } }],
     },
     {
       id: "code",
-      text: "In code, this is two settings and a different request. Set the Motion Magic cruise velocity. Set the acceleration. Then swap position voltage for motion magic voltage. The profile runs on the motor controller itself, a thousand times a second.",
+      text: "Two config lines and a different request object. Set the cruise velocity, set the acceleration, then hand the motor motion magic voltage instead of position voltage. That profile lives on the TalonFX now, rebuilt a thousand times a second. Your loop just watches.",
       camera: CODE,
       events: [
         {
@@ -129,7 +129,7 @@ export const MotionMagicTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "That's the whole control story. Feedback corrects. Feedforward predicts. Motion Magic plans. Your arm is competition-smooth. The full lesson is waiting at frc5712.com.",
+      text: "Three lessons, three layers, and your arm finally moves like somebody meant it to. Flywheels are next, and they only care about speed.",
       camera: END,
       holdAfter: 1.2,
     },

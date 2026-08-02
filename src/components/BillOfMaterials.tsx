@@ -41,7 +41,7 @@ function SortIcon({
   if (sortField !== field) {
     return (
       <svg
-        className="w-4 h-4 text-slate-400"
+        className="w-4 h-4 text-[var(--tx3)]"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -57,7 +57,7 @@ function SortIcon({
   }
   return sortDirection === "asc" ? (
     <svg
-      className="w-4 h-4 text-primary-600"
+      className="w-4 h-4 text-[var(--accent)]"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -71,7 +71,7 @@ function SortIcon({
     </svg>
   ) : (
     <svg
-      className="w-4 h-4 text-primary-600"
+      className="w-4 h-4 text-[var(--accent)]"
       fill="none"
       stroke="currentColor"
       viewBox="0 0 24 24"
@@ -331,12 +331,12 @@ export default function BillOfMaterials({
     <ContentCard>
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+          <h3 className="text-2xl font-bold text-[var(--tx)]">
             {title} - Bill of Materials
           </h3>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--bg2)] transition-colors"
           >
             {isExpanded ? "Hide Details" : "Show Details"}
             <svg
@@ -358,8 +358,8 @@ export default function BillOfMaterials({
         </div>
 
         {/* Cost-Saving Tip - Always Visible */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
-          <p className="text-blue-800 dark:text-blue-300 font-medium">
+        <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-4 mb-4">
+          <p className="text-[var(--accent)] font-medium">
             <strong>Cost-Saving Tip:</strong> Many parts listed below can likely
             be built from scrap material or parts you already own from previous
             projects, significantly reducing the actual cost of this mechanism.
@@ -367,29 +367,25 @@ export default function BillOfMaterials({
         </div>
 
         {/* Cost Summary - Always Visible */}
-        <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mb-4">
+        <div className="bg-[var(--bg2)] rounded-lg p-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-sm text-slate-600 dark:text-slate-400">
-                Total Items
-              </div>
-              <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
+              <div className="text-sm text-[var(--tx2)]">Total Items</div>
+              <div className="text-xl font-bold text-[var(--tx)]">
                 {items.length}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-slate-600 dark:text-slate-400">
-                Full Price
-              </div>
-              <div className="text-xl font-bold text-primary-600 dark:text-primary-400">
+              <div className="text-sm text-[var(--tx2)]">Full Price</div>
+              <div className="text-xl font-bold text-[var(--accent)]">
                 ${originalTotalCost.toFixed(2)}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-slate-600 dark:text-slate-400">
+              <div className="text-sm text-[var(--tx2)]">
                 With 3D Print $5 + CTRE Recycled
               </div>
-              <div className="text-xl font-bold text-green-600 dark:text-green-400">
+              <div className="text-xl font-bold text-[var(--ok)]">
                 $
                 {(
                   originalTotalCost -
@@ -420,13 +416,13 @@ export default function BillOfMaterials({
                   placeholder="Search parts, vendors, or part numbers..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
                 />
               </div>
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value as FilterType)}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
               >
                 <option value="all">All Parts</option>
                 <option value="3d-printed">3D Printed Only</option>
@@ -435,7 +431,7 @@ export default function BillOfMaterials({
               <select
                 value={vendorFilter}
                 onChange={(e) => setVendorFilter(e.target.value)}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
               >
                 <option value="all">All Vendors</option>
                 {vendors.map((vendor) => (
@@ -447,7 +443,7 @@ export default function BillOfMaterials({
               <select
                 value={printFilter}
                 onChange={(e) => setPrintFilter(e.target.value as PrintFilter)}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="px-4 py-2 border border-[var(--rule)] rounded-lg bg-white bg-[var(--bg2)] text-[var(--tx)] focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)]"
               >
                 <option value="all">All 3D Print</option>
                 <option value="yes">3D Printed</option>
@@ -462,9 +458,9 @@ export default function BillOfMaterials({
                   type="checkbox"
                   checked={free3DPrinting}
                   onChange={(e) => handle3DPrintingToggle(e.target.checked)}
-                  className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+                  className="w-4 h-4 text-[var(--accent)] border-[var(--rule)] bg-[var(--bg3)] rounded focus:ring-2 focus:ring-[var(--accent)]"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">
+                <span className="text-sm text-[var(--tx2)]">
                   3D Print for $5 Total
                 </span>
               </label>
@@ -473,15 +469,15 @@ export default function BillOfMaterials({
                   type="checkbox"
                   checked={recycleCTRE}
                   onChange={(e) => handleCTRERecyclingToggle(e.target.checked)}
-                  className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+                  className="w-4 h-4 text-[var(--accent)] border-[var(--rule)] bg-[var(--bg3)] rounded focus:ring-2 focus:ring-[var(--accent)]"
                 />
-                <span className="text-sm text-slate-700 dark:text-slate-300">
+                <span className="text-sm text-[var(--tx2)]">
                   Recycle CTRE Parts (Kraken, CANivore, CANcoder)
                 </span>
               </label>
               <button
                 onClick={printNeededItems}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                className="inline-flex items-center px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--bg2)] transition-colors text-sm font-medium"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -502,30 +498,24 @@ export default function BillOfMaterials({
           </div>
 
           {/* Cost Summary */}
-          <div className="bg-slate-100 dark:bg-slate-800 rounded-lg p-4 mb-4">
+          <div className="bg-[var(--bg2)] rounded-lg p-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Showing Items
-                </div>
-                <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                <div className="text-sm text-[var(--tx2)]">Showing Items</div>
+                <div className="text-xl font-bold text-[var(--tx)]">
                   {filteredAndSortedItems.length} / {items.length}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-sm text-slate-600 dark:text-slate-400">
-                  Current Cost
-                </div>
-                <div className="text-xl font-bold text-primary-600 dark:text-primary-400">
+                <div className="text-sm text-[var(--tx2)]">Current Cost</div>
+                <div className="text-xl font-bold text-[var(--accent)]">
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
               {savings > 0 && (
                 <div className="text-center">
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
-                    Savings
-                  </div>
-                  <div className="text-xl font-bold text-green-600 dark:text-green-400">
+                  <div className="text-sm text-[var(--tx2)]">Savings</div>
+                  <div className="text-xl font-bold text-[var(--ok)]">
                     -${savings.toFixed(2)}
                   </div>
                 </div>
@@ -537,12 +527,12 @@ export default function BillOfMaterials({
             <div className="inline-block min-w-full align-middle px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
               <table className="min-w-full border-collapse">
                 <thead>
-                  <tr className="bg-slate-100 dark:bg-slate-800">
-                    <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                  <tr className="bg-[var(--bg2)]">
+                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)]">
                       Own
                     </th>
                     <th
-                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("partDescription")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -555,7 +545,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("quantity")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -568,7 +558,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("vendor")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -581,7 +571,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("partNumber")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -594,7 +584,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("pricePerUnit")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -606,13 +596,13 @@ export default function BillOfMaterials({
                         />
                       </div>
                     </th>
-                    <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)]">
                       Link
                     </th>
-                    <th className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100 w-48">
+                    <th className="border border-[var(--rule)] px-2 py-3 text-center text-sm font-semibold text-[var(--tx)] w-48">
                       Notes
                     </th>
-                    <th className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)]">
                       3D Print
                     </th>
                   </tr>
@@ -628,58 +618,58 @@ export default function BillOfMaterials({
                         key={index}
                         className={`${
                           index % 2 === 0
-                            ? "bg-white dark:bg-slate-950"
-                            : "bg-slate-50 dark:bg-slate-900"
-                        } hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors`}
+                            ? "bg-white bg-[var(--bg2)]"
+                            : "bg-[var(--bg2)]"
+                        } hover:bg-[var(--bg2)] transition-colors`}
                       >
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-center">
                           <input
                             type="checkbox"
                             checked={ownedItems.has(itemIndex)}
                             onChange={() => handleOwnedToggle(itemIndex)}
-                            className="w-4 h-4 text-primary-600 bg-slate-100 border-slate-300 rounded focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-slate-800 focus:ring-2 dark:bg-slate-700 dark:border-slate-600"
+                            className="w-4 h-4 text-[var(--accent)] border-[var(--rule)] bg-[var(--bg3)] rounded focus:ring-2 focus:ring-[var(--accent)]"
                           />
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
                           <div className="flex items-center justify-center gap-2">
                             {item.partDescription}
                             {isCTREPart(item) && (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[var(--bg2)] text-[var(--accent)]">
                                 CTRE
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
                           {item.quantity}
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
                           {item.vendor}
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 font-mono text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] font-mono text-center">
                           {item.partNumber || "N/A"}
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-slate-900 dark:text-slate-100 text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
                           <div className="flex flex-col items-center">
                             <span
                               className={
                                 isDiscounted
-                                  ? "text-green-600 dark:text-green-400 font-semibold"
+                                  ? "text-[var(--ok)] font-semibold"
                                   : ""
                               }
                             >
                               ${effectivePrice.toFixed(2)}
                             </span>
                             {isDiscounted && (
-                              <span className="text-xs text-slate-500 dark:text-slate-400 line-through">
+                              <span className="text-xs text-[var(--tx2)] line-through">
                                 ${item.pricePerUnit.toFixed(2)}
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-center">
                           {item.vendor === "Custom" ? (
-                            <span className="text-slate-500 dark:text-slate-400 text-xs">
+                            <span className="text-[var(--tx2)] text-xs">
                               Files in Repository
                             </span>
                           ) : (
@@ -687,7 +677,7 @@ export default function BillOfMaterials({
                               href={item.productLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 underline"
+                              className="inline-flex items-center text-[var(--accent)] hover:text-[var(--accent)] underline"
                             >
                               <svg
                                 className="w-4 h-4 mr-1"
@@ -706,15 +696,15 @@ export default function BillOfMaterials({
                             </a>
                           )}
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-2 py-3 text-xs text-slate-700 dark:text-slate-300 w-48">
+                        <td className="border border-[var(--rule)] px-2 py-3 text-xs text-[var(--tx2)] w-48">
                           <div className="break-words" title={item.notes}>
                             {item.notes}
                           </div>
                         </td>
-                        <td className="border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-center">
                           {item.is3DPrinted ? (
                             <div className="flex items-center justify-center gap-2">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[var(--bg2)] text-[var(--ok)]">
                                 Yes
                               </span>
                               {item.printedModelLink && (
@@ -722,7 +712,7 @@ export default function BillOfMaterials({
                                   href={item.printedModelLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300"
+                                  className="text-[var(--accent)] hover:text-[var(--accent)]"
                                   title="3D Model Link"
                                 >
                                   <svg
@@ -742,7 +732,7 @@ export default function BillOfMaterials({
                               )}
                             </div>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[var(--bg2)] text-[var(--tx)]">
                               No
                             </span>
                           )}
@@ -755,7 +745,7 @@ export default function BillOfMaterials({
             </div>
           </div>
 
-          <div className="mt-4 text-sm text-slate-600 dark:text-slate-400">
+          <div className="mt-4 text-sm text-[var(--tx2)]">
             <p className="mb-2">
               <strong>Note:</strong> Prices are estimates and may vary. Please
               check vendor websites for current pricing and availability.

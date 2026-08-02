@@ -50,7 +50,7 @@ function LoadingFallback() {
   return (
     <Html center>
       <div className="flex flex-col items-center gap-3 bg-[var(--card)]/90 text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)]" />
         <p className="text-sm font-medium">Loading 3D model…</p>
       </div>
     </Html>
@@ -140,7 +140,7 @@ const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
 
     return (
       <div
-        className={`relative bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden ${className}`}
+        className={`relative bg-[var(--bg2)] rounded-lg overflow-hidden ${className}`}
         style={containerStyle}
       >
         <Canvas camera={{ position: DEFAULT_CAMERA_POSITION, fov: 45 }}>
@@ -174,7 +174,7 @@ const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
           <button
             type="button"
             onClick={applyDefaultCamera}
-            className="absolute top-2 right-2 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded font-medium transition-colors"
+            className="absolute top-2 right-2 bg-[var(--bg2)] hover:bg-[var(--accent)] text-[var(--accent-ink)] text-xs px-3 py-1 rounded font-medium transition-colors"
             title="Reset camera to default position"
           >
             Reset View

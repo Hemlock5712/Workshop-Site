@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
 import NavFooter from "@/components/NavFooter";
-import LessonBreadcrumb from "@/components/LessonBreadcrumb";
+import LessonOutline from "@/components/lesson/LessonOutline";
+import LessonKicker from "@/components/lesson/LessonKicker";
 
 interface NavOverride {
   href: string;
@@ -7,52 +9,145 @@ interface NavOverride {
 }
 
 interface PageTemplateProps {
+  /**
+   * The lesson's title, as a sentence. Long is fine — this is the display
+   * line, set at up to 74px, and "Tell the arm where to go, not how hard to
+   * push" teaches more than "PID Control" does.
+   */
   title: string;
+  /**
+   * Optional italic phrase inside the title, set in the accent colour. Pass
+   * the exact substring of `title` to lift; ignored if it isn't found.
+   */
+  emphasis?: string;
+  /** One paragraph, directly under the title. What this lesson is for. */
+  lede?: ReactNode;
+  /**
+   * The "You'll need" panel beside the title: what has to be true before a
+   * student starts. Anything physical goes last and in full text — a student
+   * who reads this on the bus needs to know the arm has to be on a bench.
+   */
+  needs?: ReactNode[];
+  /** Workshop-Code branch this lesson is written against, e.g. `3-PID`. */
+  branch?: string;
+  /** Honest time estimate, shown in the outline rail. */
+  time?: string;
   /**
    * Optional explicit Previous link. Omit to auto-derive from
    * `src/data/lessons.ts` based on the current pathname. Pass `null`
-   * to suppress the link entirely (e.g. on the landing page).
+   * to suppress the link entirely.
    */
   previousPage?: NavOverride | null;
-  /**
-   * Optional explicit Next link — same auto-derivation rules as
-   * `previousPage`.
-   */
+  /** Optional explicit Next link — same rules as `previousPage`. */
   nextPage?: NavOverride | null;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
+/**
+ * The frame every lesson renders into: outline rail on the left, article in
+ * the middle, prev/next at the bottom.
+ *
+ * The article is `--measure` wide plus a `--gutter` margin rail. Body copy
+ * never crosses into the rail; code blocks, tables and figures may. That
+ * asymmetry is the whole layout — prose stays at a readable line length while
+ * the things that genuinely need width get it.
+ */
 export default function PageTemplate({
   title,
+  emphasis,
+  lede,
+  needs,
+  branch,
+  time,
   previousPage,
   nextPage,
   children,
 }: PageTemplateProps) {
+  // Split the title around the emphasised phrase so it can be set in italic
+  // accent without the page having to hand-assemble JSX for its own <h1>.
+  const [before, after] =
+    emphasis && title.includes(emphasis)
+      ? [
+          title.slice(0, title.indexOf(emphasis)),
+          title.slice(title.indexOf(emphasis) + emphasis.length),
+        ]
+      : [title, null];
+
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12 md:px-6">
-      <LessonBreadcrumb />
+    <div className="grid justify-center gap-14 px-6 pt-14 md:px-10 min-[1240px]:grid-cols-[184px_auto]">
+      <LessonOutline branch={branch} time={time} />
 
-      {/* H1 — serif, navy (--primary) per the design.
-          Lesson section subtitle (serif italic, muted) lives in
-          individual pages when they need it; this stays minimal. */}
-      <h1
-        className="mb-10 font-semibold"
-        style={{
-          fontFamily: "var(--font-serif)",
-          fontSize: "clamp(2.25rem, 4vw, 2.75rem)",
-          lineHeight: 1.05,
-          letterSpacing: "-0.02em",
-          color: "var(--primary)",
-        }}
-      >
-        {title}
-      </h1>
+      <article className="lesson-body measure-wide pb-[120px]">
+        <header className="split mb-[52px] items-end">
+          <div>
+            <LessonKicker />
+            <h1
+              className="display m-0 mb-[22px]"
+              style={{
+                fontSize: "clamp(34px, 5.4vw, 74px)",
+                lineHeight: 0.96,
+                letterSpacing: "-0.022em",
+                textWrap: "balance",
+              }}
+            >
+              {before}
+              {after !== null && (
+                <>
+                  <em style={{ fontStyle: "italic", color: "var(--accent)" }}>
+                    {emphasis}
+                  </em>
+                  {after}
+                </>
+              )}
+            </h1>
+            {lede && (
+              <p
+                className="m-0"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: 21,
+                  lineHeight: 1.6,
+                  color: "var(--tx2)",
+                }}
+              >
+                {lede}
+              </p>
+            )}
+          </div>
 
-      <div className="flex max-w-none flex-col gap-8 dark:prose-invert">
-        {children}
+          {needs && needs.length > 0 && (
+            <div className="pb-1.5">
+              <div
+                className="micro pb-2"
+                style={{ borderBottom: "1px solid var(--rule)" }}
+              >
+                You&rsquo;ll need
+              </div>
+              <ul
+                className="m-0 mt-3 flex list-none flex-col gap-[9px] p-0"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: 14.5,
+                  lineHeight: 1.45,
+                  color: "var(--tx3)",
+                }}
+              >
+                {needs.map((need, i) => (
+                  <li key={i}>{need}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </header>
+
+        {/* One stack, one rhythm. Every top-level block on a lesson — an
+            opening passage, an aside, a section, the quiz — sits 52px from
+            its neighbour. Without this wrapper the sections spaced themselves
+            and everything else butted together, which read as random. */}
+        <div className="lesson-stack flex flex-col gap-[52px]">{children}</div>
 
         <NavFooter previousPage={previousPage} nextPage={nextPage} />
-      </div>
+      </article>
     </div>
   );
 }

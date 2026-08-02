@@ -190,24 +190,22 @@ const GROUPS: TrailerGroup[] = [
 export default function VideoPreviewPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-        Workshop Trailers
-      </h1>
-      <p className="mt-3 text-gray-600 dark:text-gray-400">
+      <h1 className="text-3xl font-bold text-[var(--tx)]">Workshop Trailers</h1>
+      <p className="mt-3 text-[var(--tx2)]">
         Preview build — these are not linked from the workshop pages yet. Each
         trailer is about 90 seconds.
       </p>
 
       {GROUPS.map((group) => (
         <section key={group.heading} className="mt-12">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+          <h2 className="text-xl font-semibold text-[var(--tx)]">
             {group.heading}
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-2">
             {group.trailers.map((trailer) => (
               <div
                 key={trailer.file}
-                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+                className="rounded-xl border border-[var(--rule)] bg-white p-4 shadow-sm border-[var(--rule)]"
               >
                 <video
                   controls
@@ -216,10 +214,10 @@ export default function VideoPreviewPage() {
                   className="aspect-video w-full rounded-lg bg-black"
                   src={`${RELEASE_BASE}/${trailer.file}`}
                 />
-                <h3 className="mt-3 font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="mt-3 font-semibold text-[var(--tx)]">
                   {trailer.title}
                 </h3>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-1 text-sm text-[var(--tx2)]">
                   {trailer.blurb}
                 </p>
               </div>

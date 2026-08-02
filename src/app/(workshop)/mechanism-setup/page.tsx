@@ -1,479 +1,860 @@
-"use client";
-
-import { useState } from "react";
-import Link from "next/link";
 import PageTemplate from "@/components/PageTemplate";
-import ImageBlock from "@/components/ImageBlock";
+import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
-import ContentCard from "@/components/ContentCard";
+import CodeBlock from "@/components/CodeBlock";
+import ImageBlock from "@/components/ImageBlock";
+import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
+import { BookOpen } from "lucide-react";
+
+const subHeadingStyle = {
+  fontFamily: "var(--font-serif)",
+  color: "var(--fg)",
+} as const;
+
+const bodyStyle = { color: "var(--fg-mute)" } as const;
 
 export default function MechanismSetup() {
-  const [activeTab, setActiveTab] = useState<"arm" | "flywheel">("arm");
-
   return (
-    <PageTemplate title="Mechanism Setup">
-      {/* Introduction */}
+    <PageTemplate
+      title="Make the hardware move before you make it think"
+      emphasis="before you make it think"
+      lede="Before you write a line of control code, check three things on the bench: the encoder counts the way you expect, the motor turns the way you expect, and zero is where you think it is."
+      needs={[
+        <>The mechanism assembled and wired, with the battery connected.</>,
+        <>
+          A CANivore named <code>canivore</code>, plugged into your laptop over
+          USB, with <em>Team # or IP</em> set to <code>localhost</code> in Tuner
+          X.
+        </>,
+        <>Every device visible in Tuner X, with current firmware.</>,
+        <>
+          No robot code running anywhere. See the toggle section directly below.
+        </>,
+      ]}
+      time="About half an hour"
+    >
       <KeyConceptSection
-        title="Mechanism Setup: Verifying Hardware Configuration"
-        description="Before writing any control code, verify that your motors and encoders work correctly: right direction, right zero position, basic movement."
-        concept="Always verify hardware setup before adding control algorithms. Otherwise you will be debugging control issues when the problem is hardware configuration."
+        description={[
+          "Each check takes a few minutes now. Skip them and you spend an afternoon tuning a PID loop that was never the problem — a motor wired backwards and a bad kP look identical from a laptop.",
+        ]}
+        concept="Fix direction and zero in Tuner X first. Then the only thing left to debug in your code is your code."
       />
 
-      {/* CANivore USB Warning */}
-      <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6">
-        <div className="flex items-start gap-3">
-          <svg
-            className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"
-            />
-          </svg>
-          <div>
-            <h3 className="text-lg font-bold text-red-800 dark:text-red-300 mb-2">
-              Warning: Stop Code Before Hardware Setup
-            </h3>
-            <p className="text-red-700 dark:text-red-300 mb-3">
-              Before performing hardware setup tasks,{" "}
-              <strong>stop any running code</strong> and turn{" "}
-              <strong>ON</strong> the &quot;CANivore USB&quot; setting in Tuner
-              X. This ensures proper communication with physical hardware during
-              testing and configuration.
-            </p>
-            <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded border border-red-200 dark:border-red-700">
-              <p className="text-red-800 dark:text-red-200 text-sm">
-                <strong>Steps:</strong> Stop any running robot code → Open Tuner
-                X → Go to CANivore settings → Enable &quot;CANivore USB&quot;
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mechanism-Specific Setup Steps */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Setup Steps by Mechanism
-        </h2>
-
-        {/* Tab Navigation */}
-        <div className="card">
-          <div className="border-b border-[var(--border)]">
-            <div className="flex">
-              <button
-                onClick={() => setActiveTab("arm")}
-                className={`px-6 py-3 text-sm font-medium border-b-2 ${
-                  activeTab === "arm"
-                    ? "border-primary-600 text-primary-600"
-                    : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                }`}
-              >
-                Arm Mechanism
-              </button>
-              <button
-                onClick={() => setActiveTab("flywheel")}
-                className={`px-6 py-3 text-sm font-medium border-b-2 ${
-                  activeTab === "flywheel"
-                    ? "border-primary-600 text-primary-600"
-                    : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                }`}
-              >
-                Flywheel Mechanism
-              </button>
-            </div>
-          </div>
-
-          {/* Tab Content */}
-          <div className="p-6">
-            {activeTab === "arm" ? (
-              <div className="flex flex-col gap-8">
-                {/* Encoder Replacement Warning - Top Level */}
-                <Box
-                  variant="alert-info"
-                  title="Important Note: Encoder Replacement"
-                >
-                  If you replace your encoder with a new one, you will need to{" "}
-                  <strong>repeat these setup steps</strong> to set the direction
-                  and zero position again.
-                </Box>
-
-                {/* Step 1: Encoder Direction */}
-                <div className="card p-8">
-                  <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    1. Encoder Direction
-                  </h3>
-
-                  <div className="grid grid-cols-2 gap-6 mb-6">
-                    <div>
-                      <p className="text-[var(--muted-foreground)] mb-4">
-                        With the device facing you, as shown in the picture
-                        below, rotate the arm counterclockwise and check that
-                        the encoder position increases.
-                      </p>
-                    </div>
-
-                    <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
-                      <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
-                        Expected Behavior:
-                      </h4>
-                      <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
-                        <li>
-                          • Counterclockwise rotation → Position increases
-                        </li>
-                        <li>• Clockwise rotation → Position decreases</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-row gap-8 justify-center items-center mb-8">
-                    <ImageBlock
-                      src="/images/setup/unit_circle_degrees_rotations_decimal.png"
-                      alt="Unit circle showing counterclockwise rotation direction"
-                      width={300}
-                      height={300}
-                      className="rounded-lg"
-                    />
-                    <ImageBlock
-                      src="/images/setup/counter-clockwise.png"
-                      alt="Counterclockwise rotation direction"
-                      width={300}
-                      height={225}
-                      className="rounded-lg"
-                    />
-                  </div>
-
-                  {/* Implementation Sequence */}
-                  <ContentCard>
-                    <h4 className="text-xl font-bold text-[var(--foreground)] mb-4">
-                      Implementation Sequence
-                    </h4>
-
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
-                        <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                          1
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-primary-700 dark:text-primary-300">
-                            Rotate Counter-Clockwise
-                          </h4>
-                          <p className="text-primary-600 dark:text-primary-400 text-sm">
-                            Manually rotate the mechanism counter-clockwise and
-                            observe if the encoder position increases.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                        <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                          2
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-primary-800 dark:text-primary-200">
-                            Fix Direction if Needed
-                          </h4>
-                          <p className="text-primary-700 dark:text-primary-300 text-sm">
-                            If position goes down instead of up, go to
-                            &quot;Info&quot; → &quot;Sensor Direction&quot; →
-                            press &quot;Apply&quot; button to invert the encoder
-                            direction.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
-                        <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-                          3
-                        </div>
-                        <div>
-                          <h4 className="font-bold text-primary-900 dark:text-primary-100">
-                            Zero the Encoder
-                          </h4>
-                          <p className="text-primary-800 dark:text-primary-200 text-sm">
-                            Move the arm to the zero position, then in Tuner X
-                            go to &quot;Info&quot; → press &quot;0 encoder&quot;
-                            button → press &quot;Apply&quot; button.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </ContentCard>
-
-                  <iframe
-                    src="https://www.youtube.com/embed/mjGn3y19eUc"
-                    title="Encoder Setup and Verification"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full aspect-video rounded-lg"
-                  />
-                </div>
-
-                {/* Step 2: Verifying Motor Setup */}
-                <div className="card p-8">
-                  <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    2. Verifying Motor Setup
-                  </h3>
-
-                  <div className="grid grid-cols-2 gap-6 mb-8 items-start">
-                    <p className="text-[var(--muted-foreground)]">
-                      Next, check that the motor spins the right way. With
-                      positive voltage, it should spin counterclockwise. You can
-                      test this in Tuner, with the device facing you as in the
-                      picture.
-                    </p>
-
-                    <ImageBlock
-                      src="/images/setup/counter-clockwise.png"
-                      alt="Counterclockwise rotation direction for motor verification"
-                      width={250}
-                      height={188}
-                      className="rounded-lg -mt-0"
-                    />
-                  </div>
-
-                  <iframe
-                    src="https://www.youtube.com/embed/iQqR1Wxptzg"
-                    title="Motor Testing"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full aspect-video rounded-lg"
-                  />
-
-                  {/* Motor Direction Verification */}
-                  <div className="mt-8">
-                    <h4 className="text-xl font-bold text-learn-600 mb-4">
-                      Motor Direction Verification
-                    </h4>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Box
-                        variant="concept"
-                        title="Positive Voltage Test"
-                        subtitle="Apply +6V to your motor and observe movement direction."
-                      >
-                        <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
-                          <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Positive voltage should
-                            move the mechanism in the &quot;positive&quot;
-                            direction (counter-clockwise for arms).
-                          </p>
-                        </div>
-                      </Box>
-
-                      <Box
-                        variant="concept"
-                        title="Encoder Consistency"
-                        subtitle="Verify encoder readings match motor movement."
-                      >
-                        <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
-                          <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Positive motor voltage →
-                            positive encoder change, negative motor voltage →
-                            negative encoder change.
-                          </p>
-                        </div>
-                      </Box>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-8">
-                {/* Flywheel Only Step: Verifying Motor Setup */}
-                <div className="card p-8">
-                  <h3 className="text-2xl font-bold text-[var(--foreground)] mb-6">
-                    1. Verifying Motor Setup
-                  </h3>
-
-                  <div className="grid grid-cols-3 gap-6 mb-8">
-                    <div className="col-span-2">
-                      <p className="text-[var(--muted-foreground)] mb-4">
-                        Check that your flywheel motors spin the right way. With
-                        positive voltage, both motors should spin in the same
-                        direction (leader-follower setup). You can test this in
-                        Tuner.
-                      </p>
-
-                      <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg">
-                        <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
-                          Expected Behavior:
-                        </h4>
-                        <ul className="text-primary-800 dark:text-primary-300 space-y-1 text-sm">
-                          <li>• Leader and follower motors spin together</li>
-                          <li>• Positive voltage → Shooting</li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    <div className="flex w-full justify-center">
-                      <ImageBlock
-                        src="/images/mechanisms/flywheel.png"
-                        alt="Flywheel mechanism for motor verification"
-                        width={300}
-                        height={200}
-                        className="rounded-lg"
-                      />
-                    </div>
-                  </div>
-
-                  <iframe
-                    src="https://www.youtube.com/embed/iQqR1Wxptzg"
-                    title="Motor Testing"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full aspect-video rounded-lg"
-                  />
-
-                  {/* Motor Direction Verification */}
-                  <div className="mt-8">
-                    <h4 className="text-xl font-bold text-learn-600 mb-4">
-                      Motor Direction Verification
-                    </h4>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <Box
-                        variant="concept"
-                        title="Positive Voltage Test"
-                        subtitle="Apply +6V to your flywheel and observe rotation."
-                      >
-                        <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
-                          <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Both motors should rotate
-                            smoothly in the same direction with consistent
-                            speed.
-                          </p>
-                        </div>
-                      </Box>
-
-                      <Box
-                        variant="concept"
-                        title="Leader-Follower Check"
-                        subtitle="Verify follower motor tracks leader motor exactly."
-                      >
-                        <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-3 rounded border border-[var(--border)]">
-                          <p className="text-xs text-[var(--muted-foreground)]">
-                            <strong>Expected:</strong> Follower motor should
-                            mirror leader motor movements with minimal lag.
-                          </p>
-                        </div>
-                      </Box>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Next Step */}
-      <div className="bg-[var(--muted)] border border-[var(--border)] rounded-lg p-6">
-        <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-          Ready for Control
-        </h3>
-        <p className="text-[var(--muted-foreground)] mb-4">
-          Once your mechanism moves in the correct direction and provides
-          accurate feedback (encoder for arms, motor consistency for flywheels),
-          you&apos;re ready to add control code.
+      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
+        <p className="mb-3">
+          <strong>You need, all from Hardware Setup:</strong>
         </p>
-        <div className="bg-indigo-50 dark:bg-indigo-950/30 p-4 rounded mt-4">
-          <p className="text-indigo-800 dark:text-indigo-300 text-sm">
-            <strong>Next Step:</strong>{" "}
-            <Link href="/pid-control" className="underline font-medium">
-              PID control
-            </Link>
-            . It uses this sensor feedback to reach target positions or
-            velocities automatically.
-          </p>
-        </div>
-      </div>
 
-      {/* Quiz Section */}
-      <section className="flex flex-col gap-8">
-        <Quiz
-          title="Knowledge Check"
-          questions={[
-            {
-              id: 1,
-              question:
-                "When rotating the arm counter-clockwise while facing the encoder, what should happen to the encoder position?",
-              options: [
-                "The encoder position should decrease",
-                "The encoder position should increase",
-                "The encoder position should stay the same",
-                "The encoder direction doesn't matter",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Counter-clockwise rotation should cause the encoder position to increase. If it decreases instead, you need to invert the encoder direction in Tuner X.",
-            },
-            {
-              id: 2,
-              question:
-                "What is the purpose of zeroing the encoder on an arm mechanism?",
-              options: [
-                "To set the maximum position limit",
-                "To calibrate the motor speed",
-                "To establish a reference point at a known position (typically horizontal or down)",
-                "To test if the encoder is working",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "Zeroing the encoder establishes a reference point at a known position. For arms, this is typically done with the arm in a horizontal or down position, so all future positions are measured relative to this starting point.",
-            },
-            {
-              id: 3,
-              question:
-                "What should you do BEFORE performing hardware setup tasks in Tuner X?",
-              options: [
-                "Calibrate the motors at full speed",
-                "Stop any running code and turn ON 'CANivore USB' setting",
-                "Reset all motor controllers to factory defaults",
-                "Disconnect the battery",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Before hardware setup, you must stop any running robot code and turn ON the 'CANivore USB' setting in Tuner X. This ensures proper communication with physical hardware during testing and configuration.",
-            },
-            {
-              id: 4,
-              question:
-                "When testing motor direction with positive voltage, what is the expected behavior for an arm mechanism?",
-              options: [
-                "The motor should spin at maximum speed",
-                "The motor should move the mechanism counter-clockwise (in the positive direction)",
-                "The motor should remain stationary",
-                "The motor direction doesn't matter as long as it moves",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Positive voltage should move the mechanism in the positive direction, which is counter-clockwise for arms. This ensures consistency between motor commands and encoder readings.",
-            },
-            {
-              id: 5,
-              question:
-                "What happens if you replace your encoder with a new one?",
-              options: [
-                "Nothing - it will work automatically",
-                "You only need to update the device ID in code",
-                "You need to repeat the encoder direction and zeroing setup steps",
-                "The old configuration transfers to the new encoder",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "If you replace your encoder with a new one, you must repeat the setup steps to ensure proper direction configuration and zero position. Each encoder needs individual setup and calibration.",
-            },
-          ]}
+        <p className="mt-3">
+          <strong>What you will finish with:</strong> an encoder that counts up
+          when the arm turns counterclockwise, a zero position you have written
+          down, and a motor whose positive direction agrees with that encoder.
+          On the flywheel build: two motors whose directions you have checked
+          one at a time.
+        </p>
+        <p className="mt-3">
+          <strong>About half an hour</strong>, nearly all of it inside Tuner X.
+          No code yet — you clone the project on the next page.
+        </p>
+      </Box>
+
+      {/* ── CANIVORE USB TOGGLE ──────────────────────────────────────────
+          This is the site's single explanation of the toggle. `/hardware`
+          and `/running-program` both deep-link to #canivore-usb rather than
+          restating the rule, so do not rename or remove this id. */}
+      <LessonSection
+        id="the-canivore-usb-toggle-one-switch"
+        title="The CANivore USB toggle: one switch, two positions"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          There is a checkbox in Phoenix Tuner X called{" "}
+          <strong>CANivore USB</strong>. It decides who is allowed to talk to
+          the CAN bus over the USB cable. Only one program can hold that bus at
+          a time, so the toggle is not a setting you pick once and forget — it
+          is a switch you flip depending on what you are doing.
+        </p>
+
+        <Box
+          variant="alert-success"
+          tag="POSITION 1 · ON"
+          title="Bench work in Tuner X — including everything on this page"
+        >
+          <p>
+            Turn it <strong>ON</strong> when Tuner X is the thing driving your
+            devices: reading encoder positions, applying Voltage Out, setting
+            sensor direction, zeroing, updating firmware. That is{" "}
+            <strong>Hardware Setup</strong> and this whole page.
+          </p>
+        </Box>
+
+        <Box
+          variant="alert-warning"
+          tag="POSITION 2 · OFF"
+          title="Running your robot code in hardware simulation"
+        >
+          <p>
+            Turn it <strong>OFF</strong> when your own program is driving the
+            devices. On <strong>Running Your Code</strong> you start the robot
+            project in hardware simulation, and the simulator takes the CANivore
+            for itself. Leave the toggle on and the two fight over the same bus:
+            devices drop out of Tuner X, or your code never reaches a motor.
+          </p>
+        </Box>
+
+        <Box variant="concept" title="How to flip it without breaking anything">
+          <ol className="ml-4 list-decimal space-y-1">
+            <li>
+              Stop whatever is currently using the bus — quit the running robot
+              program, or close the control window in Tuner X.
+            </li>
+            <li>Flip the CANivore USB checkbox to the position you need.</li>
+            <li>
+              Confirm your devices are listed. Tuner X shows them when the
+              toggle is ON; the simulator console reports them when it is OFF.
+            </li>
+          </ol>
+          <p className="mt-3">
+            If devices vanish from Tuner X for no obvious reason, this toggle is
+            the first thing to check. Something else has the bus.
+          </p>
+        </Box>
+
+        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          The toggle comes up on two other pages:{" "}
+          <strong>Hardware Setup</strong>, where you first connected, and{" "}
+          <strong>Running Your Code</strong>, where the simulator takes the bus
+          over. The rule does not change — whichever program is driving the
+          devices owns the toggle.
+        </p>
+      </LessonSection>
+
+      {/* ── DEVICE IDS ───────────────────────────────────────────────── */}
+      <LessonSection id="which-device-is-which" title="Which device is which">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Tuner X lists devices by CAN ID, so you need to know which number is
+          which before you start applying voltage. These are the IDs the
+          workshop code expects, and every one of them lives on the bus named{" "}
+          <code>canivore</code>:
+        </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-[14px]">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--line)" }}>
+                <th className="py-2 pr-4 font-semibold">Device</th>
+                <th className="py-2 pr-4 font-semibold">CAN ID</th>
+                <th className="py-2 font-semibold">In the code</th>
+              </tr>
+            </thead>
+            <tbody style={bodyStyle}>
+              <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
+                <td className="py-2 pr-4">Arm motor (TalonFX)</td>
+                <td className="py-2 pr-4">
+                  <code>31</code>
+                </td>
+                <td className="py-2">
+                  <code>new TalonFX(31, canivore)</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
+                <td className="py-2 pr-4">Arm encoder (CANcoder)</td>
+                <td className="py-2 pr-4">
+                  <code>32</code>
+                </td>
+                <td className="py-2">
+                  <code>new CANcoder(32, canivore)</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
+                <td className="py-2 pr-4">Flywheel leader (TalonFX)</td>
+                <td className="py-2 pr-4">
+                  <code>21</code>
+                </td>
+                <td className="py-2">
+                  <code>new TalonFX(21, canivore)</code>
+                </td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-4">Flywheel follower (TalonFX)</td>
+                <td className="py-2 pr-4">
+                  <code>22</code>
+                </td>
+                <td className="py-2">
+                  <code>new TalonFX(22, canivore)</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          If your device IDs do not match this table, either change them in
+          Tuner X now or remember to change the numbers in the code later. Do
+          not leave the two disagreeing.
+        </p>
+      </LessonSection>
+
+      {/* ── WHAT POSITIVE MEANS ──────────────────────────────────────── */}
+      <LessonSection
+        id="what-quot-positive-quot-means-on"
+        title='What "positive" means on this robot'
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Every direction check on this page rests on one convention:{" "}
+          <strong>positive is counterclockwise</strong>, viewed with the device
+          facing you. The code says so out loud. Both mechanisms configure their
+          motors the same way, and the arm even spells it out in a comment:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="One line out of Arm.java — you write this at Mechanisms"
+          hideControls
+          code={`config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;`}
         />
-      </section>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          You are not writing any code today, and you do not need to read Java
+          to use this page — that comes later, at{" "}
+          <strong>The Java You Need</strong>. The line is here for one reason:
+          it is the robot code&apos;s half of the promise you are about to check
+          on the bench.{" "}
+          <strong>
+            Positive voltage moves the arm counterclockwise, and the arm&apos;s
+            own comment in that file says so.
+          </strong>{" "}
+          If the bench disagrees with that sentence, something is wired or
+          mounted backwards, and you want to know now.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Positions are measured in <strong>rotations</strong>, not degrees. One
+          full turn is <code>1.0</code>. That makes the mapping short enough to
+          memorize:
+        </p>
+
+        <ul
+          className="ml-5 list-disc space-y-1 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <code>0.0</code> rotations = 0°
+          </li>
+          <li>
+            <code>0.25</code> rotations = 90° — the code calls this{" "}
+            <code>VERTICAL_POSITION</code>
+          </li>
+          <li>
+            <code>0.5</code> rotations = 180° — the code calls this{" "}
+            <code>HORIZONTAL_POSITION</code>
+          </li>
+          <li>
+            <code>1.0</code> rotations = 360°, back where you started
+          </li>
+        </ul>
+
+        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          Those two constants appear in <code>Arm.java</code> from the PID
+          branch onward, and they are what the arm aims at once you reach{" "}
+          <strong>PID Control</strong>. The two lessons before that push the arm
+          with voltages instead, so the names show up later than the numbers do.
+          What the numbers mean in the real world depends entirely on where you
+          put zero, which is Step 2 below.
+        </p>
+
+        <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
+          <ImageBlock
+            src="/images/setup/unit_circle_degrees_rotations_decimal.png"
+            alt="Unit circle showing the same angles written as degrees and as decimal rotations, with counterclockwise as the positive direction"
+            width={340}
+            height={340}
+            className="rounded-lg"
+          />
+          <ImageBlock
+            src="/images/setup/counter-clockwise.png"
+            alt="Arrow showing the counterclockwise rotation direction with the device facing you"
+            width={340}
+            height={255}
+            className="rounded-lg"
+          />
+        </div>
+      </LessonSection>
+
+      {/* ── ARM ──────────────────────────────────────────────────────── */}
+      <LessonSection
+        id="arm-build-three-checks"
+        title="Arm build: three checks"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Do these in order. The encoder comes first because step 3 uses the
+          encoder to judge the motor, so an encoder that counts backwards would
+          make a correct motor look wrong.
+        </p>
+
+        <Box variant="alert-info" title="If you ever swap the encoder">
+          A CANcoder stores its direction and its zero on the device itself, not
+          in your code. Replace the encoder and all of that is gone — come back
+          and do steps 1 and 2 again on the new one.
+        </Box>
+
+        {/* Step 1 */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
+            Step 1 — Encoder direction
+          </h3>
+
+          <ol
+            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+            style={bodyStyle}
+          >
+            <li>
+              In Tuner X, select CANcoder <code>32</code> and open its live
+              position reading.
+            </li>
+            <li>
+              With the device facing you, turn the arm{" "}
+              <strong>counterclockwise</strong> by hand. A factory-defaulted
+              TalonFX coasts while nothing is driving it, so the arm should move
+              without much fight. Later, <code>Arm.java</code> asks for Coast
+              deliberately, for the same reason.
+            </li>
+            <li>
+              <strong>You should see:</strong> the position number{" "}
+              <strong>increases</strong>. Turn the arm back clockwise and it
+              should decrease.
+            </li>
+            <li>
+              If it goes the wrong way, go to <em>Info</em> →{" "}
+              <em>Sensor Direction</em>, change it, and press <em>Apply</em>.
+              Then repeat the hand test — do not assume the change took.
+            </li>
+          </ol>
+        </div>
+
+        {/* Step 2 */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
+            Step 2 — Zero the encoder
+          </h3>
+
+          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+            Zeroing tells the CANcoder which physical spot counts as{" "}
+            <code>0.0</code> rotations. Every target the code ever aims at is
+            measured from that spot, so a zero in the wrong place shifts every
+            target by the same amount.
+          </p>
+
+          <ol
+            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+            style={bodyStyle}
+          >
+            <li>
+              Move the arm by hand to the zero position for your build — read
+              the warning below before you decide where that is.
+            </li>
+            <li>
+              In Tuner X, go to <em>Info</em>, press <em>0 encoder</em>, then
+              press <em>Apply</em>.
+            </li>
+            <li>
+              <strong>You should see:</strong> the live position reads about{" "}
+              <code>0</code> and stays there while the arm is still.
+            </li>
+            <li>
+              Move the arm 90° counterclockwise from there.{" "}
+              <strong>You should see:</strong> roughly <code>0.25</code>. That
+              single check confirms direction, zero and the rotations mapping
+              all at once.
+            </li>
+            <li>
+              Write down, in words, where zero physically is on your mechanism.
+              You will want it at <strong>PID Control</strong> and again at{" "}
+              <strong>Motion Magic</strong>.
+            </li>
+          </ol>
+
+          <Box
+            variant="alert-warning"
+            tag="TODO(VERIFY)"
+            title="Ask the hardware lead where zero belongs before you press the button"
+          >
+            <p>
+              The code does not settle this, and neither does this site. Here is
+              exactly what is known:
+            </p>
+            <ul className="mt-3 ml-4 list-disc space-y-2">
+              <li>
+                The arm aims at <code>VERTICAL_POSITION = 0.25</code> (90°) and{" "}
+                <code>HORIZONTAL_POSITION = 0.5</code> (180°), so zero rotations
+                is 0° — a <em>second</em> horizontal, pointing the opposite way
+                from the one the code names.
+              </li>
+              <li>
+                From the PID lesson onward the motor is configured with{" "}
+                <code>GravityTypeValue.Arm_Cosine</code>. That setting computes
+                the gravity push-back from the cosine of the angle, measured
+                from horizontal, so it only gives the right answer if zero is an
+                arm-horizontal.
+              </li>
+              <li>
+                Both of those fit together — 0° and 180° are both horizontal —
+                but <strong>which one your arm should sit at</strong> when you
+                press <em>0 encoder</em> is recorded nowhere. Confirm it with
+                whoever built the mechanism, write it on the page, and use the
+                same answer every time.
+              </li>
+            </ul>
+            <p className="mt-3">
+              This matters more than it looks. The <code>kG</code> gain you tune
+              on the <strong>PID Control</strong> page is measured from that
+              zero.
+            </p>
+          </Box>
+
+          <iframe
+            src="https://www.youtube.com/embed/mjGn3y19eUc"
+            title="Encoder setup and verification in Tuner X"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="aspect-video w-full rounded-lg"
+          />
+        </div>
+
+        {/* Step 3 */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
+            Step 3 — Motor direction
+          </h3>
+
+          <ol
+            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+            style={bodyStyle}
+          >
+            <li>
+              In Tuner X, select TalonFX <code>31</code> and set the control
+              drop-down to <em>Voltage Out</em>. Keep the CANcoder position
+              visible if you can.
+            </li>
+            <li>
+              Apply <strong>+6 V</strong> in a short burst. Be ready to release.
+            </li>
+            <li>
+              <strong>You should see:</strong> the arm moves{" "}
+              <strong>counterclockwise</strong>, and the encoder number goes{" "}
+              <strong>up</strong> while it moves. Negative voltage should do the
+              reverse.
+            </li>
+            <li>
+              If the arm moves clockwise on positive voltage, the motor is
+              inverted relative to the convention. Flip the motor inversion in
+              Tuner X so you can finish the bench test, then test again. Do not
+              fix it by re-inverting the encoder — you settled the encoder
+              against your own hand in step 1, and that answer is the one
+              everything else has to agree with.
+            </li>
+            <li>
+              Know that the Tuner X fix is temporary. <code>Arm.java</code>{" "}
+              builds a fresh configuration every time the robot boots and
+              applies the whole thing, including{" "}
+              <code>
+                config.MotorOutput.Inverted =
+                InvertedValue.CounterClockwise_Positive
+              </code>
+              . The first time you run robot code, that overwrites whatever you
+              set here. So Tuner X gets the bench test done today; the lasting
+              fix is either to remount the motor the other way round, or to
+              change that one line when you get to <strong>Mechanisms</strong>.
+              Write down which way your arm turned — you will need it.
+            </li>
+          </ol>
+
+          <Box variant="alert-warning" title="Why 6 V and not 12 V">
+            <p>
+              6 V is about half of what a fresh battery gives you — plenty to
+              see which way something turns, and slow enough that you can stop
+              it. It is also not an arbitrary number. The commands you write on
+              the <strong>Commands</strong> page use exactly these two values,{" "}
+              <code>SLOW_VOLTAGE = 3.0</code> and{" "}
+              <code>FAST_VOLTAGE = 6.0</code>, so bench testing at 6 V is
+              testing at the speed your code will run.
+            </p>
+          </Box>
+
+          <iframe
+            src="https://www.youtube.com/embed/iQqR1Wxptzg"
+            title="Testing motor direction with Voltage Out in Tuner X"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="aspect-video w-full rounded-lg"
+          />
+        </div>
+      </LessonSection>
+
+      {/* ── FLYWHEEL ─────────────────────────────────────────────────── */}
+      <LessonSection
+        id="flywheel-build-the-two-motors-turn"
+        title="Flywheel build: the two motors turn opposite ways"
+      >
+        <Box
+          variant="alert-danger"
+          tag="READ THIS FIRST"
+          title="Opposite directions is the correct result"
+        >
+          <p>
+            The flywheel has two motors and they are{" "}
+            <strong>supposed to spin against each other</strong>. If you watch
+            the shooter under robot code and see the two shafts turning opposite
+            ways, that is a working shooter, not a broken one. Two motors
+            turning the <em>same</em> way is the symptom of a problem.
+          </p>
+          <p className="mt-3">
+            This trips people up every year, so read the rest of this section
+            before you change any setting on either motor.
+          </p>
+        </Box>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Here is the code that decides it, straight out of{" "}
+          <code>Flywheel.java</code>. Later branches add gains and speed limits
+          around it, but the <code>Follower</code> line and the comment above it
+          are identical on every mechanism-track branch that has a flywheel:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="The one line that decides the follower's direction"
+          hideControls
+          code={`// The follower copies the leader, spinning the opposite direction.
+follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Again, nothing to write today — you build this file at{" "}
+          <strong>Mechanisms</strong>. What matters on the bench is the word{" "}
+          <code>Opposed</code>, and the comment sitting above it in the real
+          file:{" "}
+          <strong>the two motors are supposed to spin opposite ways.</strong>{" "}
+          CAN 21 is the leader, CAN 22 is the follower, and the follower&apos;s
+          direction is worked out from the leader&apos;s — there is no separate
+          switch for it.
+        </p>
+
+        <Box variant="concept" title="Opposite motors, same push on the ball">
+          <p>
+            The shooter carries one compliant wheel on each side of the gap the
+            ball travels through. For the ball to leave the front, the{" "}
+            <em>surface</em> of each wheel where it touches the ball has to
+            sweep toward the front. Two wheels facing each other across a gap
+            can only do that by turning opposite ways — the same geometry as the
+            two rollers in a paper shredder, which also turn against each other
+            to move one sheet between them.
+          </p>
+          <p className="mt-3">
+            <code>MotorAlignmentValue.Opposed</code> is what tells CAN 22 to
+            mirror CAN 21 backwards, so one command spins them the right way
+            round. Opposite shafts, same push.
+          </p>
+        </Box>
+
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT"
+          title="On the bench, there is no follower"
+        >
+          <p>
+            That <code>setControl(new Follower(...))</code> line lives in the{" "}
+            <code>Flywheel</code> constructor, which only runs when your robot
+            code runs. In Tuner X with no code running, CAN 21 and CAN 22 are
+            two unrelated motors. Command one and the other does nothing. So
+            test them one at a time.
+          </p>
+        </Box>
+
+        <div className="flex justify-center">
+          <ImageBlock
+            src="/images/mechanisms/flywheel.png"
+            alt="The workshop flywheel shooter, with a compliant wheel on each side of the ball gap"
+            width={380}
+            height={253}
+            className="rounded-lg"
+          />
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
+            Step 1 — Check each motor by itself
+          </h3>
+
+          <ol
+            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+            style={bodyStyle}
+          >
+            <li>
+              Decide which end of the shooter is the <strong>exit</strong> — the
+              open side the ball leaves from. Everything below is measured
+              against that.
+            </li>
+            <li>
+              In Tuner X, select TalonFX <code>21</code>, choose{" "}
+              <em>Voltage Out</em>, and apply <strong>+6 V</strong> in a short
+              burst. <strong>You should see:</strong> the surface of that wheel,
+              where it would touch the ball, sweeps{" "}
+              <strong>toward the exit</strong>.
+            </li>
+            <li>
+              Stop. Now select TalonFX <code>22</code> and apply{" "}
+              <strong>+6 V</strong> the same way.{" "}
+              <strong>You should see:</strong> the surface of <em>that</em>{" "}
+              wheel sweeps <strong>toward the back</strong> — the opposite of
+              motor 21.
+            </li>
+            <li>
+              Write both results down. That backwards-looking result on CAN 22
+              is the one you want, because the code is going to feed it the
+              opposite sign.
+            </li>
+          </ol>
+
+          <Box
+            variant="alert-success"
+            title="Why the follower looks backwards on the bench"
+          >
+            <p>
+              Under robot code, six volts goes to the leader, and{" "}
+              <code>Opposed</code> hands the follower the mirror image of that.
+              So on the robot the follower does what <code>-6 V</code> would
+              have done on the bench: it sweeps toward the exit too. Both wheels
+              throw, and the shafts turn against each other while they do it.
+            </p>
+          </Box>
+
+          <Box
+            variant="alert-danger"
+            tag="FAIL CASE"
+            title="Both wheels sweep the same way at +6 V"
+          >
+            <p>
+              If +6 V makes both wheel surfaces travel toward the exit, one
+              motor or gearbox is mounted the wrong way round relative to the
+              other. Leave it alone and the code makes it worse: with{" "}
+              <code>Opposed</code> in play, one wheel will try to throw the ball
+              while the other tries to drag it back in.
+            </p>
+            <p className="mt-3">
+              <strong>This one you fix on the robot, not in Tuner X.</strong>{" "}
+              There is no per-motor inversion switch to flip here.{" "}
+              <code>Flywheel.java</code> inverts only the leader, and the
+              follower&apos;s direction is computed from it by{" "}
+              <code>
+                new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed)
+              </code>
+              — so the two motors are never differentiated by an inversion
+              setting, and anything you change in Tuner X is overwritten the
+              next time robot code boots. Check the mechanical build. Swap the
+              leader and follower CAN IDs only if the mount really is mirrored.
+            </p>
+          </Box>
+
+          <iframe
+            src="https://www.youtube.com/embed/iQqR1Wxptzg"
+            title="Testing motor direction with Voltage Out in Tuner X"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="aspect-video w-full rounded-lg"
+          />
+        </div>
+      </LessonSection>
+
+      {/* ── DID IT WORK ──────────────────────────────────────────────── */}
+      <LessonSection id="did-it-work" title="Did it work?">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Run down the list for the build in front of you. Every line is
+          something you can see happen, not something you can assume.
+        </p>
+
+        <Box variant="alert-success" tag="ARM" title="Four things you can see">
+          <ul className="ml-4 list-disc space-y-2">
+            <li>
+              Turning the arm counterclockwise by hand makes the CANcoder
+              position <strong>go up</strong>.
+            </li>
+            <li>
+              At the zero position the reading is about <code>0</code>, and 90°
+              counterclockwise from there reads about <code>0.25</code>.
+            </li>
+            <li>
+              +6 V moves the arm counterclockwise, and the encoder number climbs
+              while it does.
+            </li>
+            <li>
+              You have written down, in plain words, where zero physically is.
+            </li>
+          </ul>
+        </Box>
+
+        <Box
+          variant="alert-success"
+          tag="FLYWHEEL"
+          title="Two things you can see"
+        >
+          <ul className="ml-4 list-disc space-y-2">
+            <li>
+              +6 V on CAN <code>21</code> sweeps its wheel surface toward the
+              exit.
+            </li>
+            <li>
+              +6 V on CAN <code>22</code> sweeps its wheel surface toward the
+              back — opposite to CAN 21, which is correct.
+            </li>
+          </ul>
+        </Box>
+
+        <Box
+          variant="alert-info"
+          tag="IF IT DIDN'T WORK"
+          title="Three things that go wrong here"
+        >
+          <ul className="ml-4 list-disc space-y-3">
+            <li>
+              <strong>
+                Devices disappear from Tuner X, or nothing responds.
+              </strong>{" "}
+              Something else owns the CAN bus. A robot program is probably still
+              running, or the CANivore USB toggle is in the wrong position. Stop
+              the program, set the toggle ON, and check the device list again.
+            </li>
+            <li>
+              <strong>
+                You fix the encoder direction, and it is wrong again next time
+                you look.
+              </strong>{" "}
+              The change did not stick. Sensor direction is a setting on the
+              CANcoder, and it needs <em>Apply</em> after you change it. Power
+              cycle and re-read the position before you believe it.
+            </li>
+            <li>
+              <strong>
+                The arm moves counterclockwise on +6 V but the encoder counts
+                down.
+              </strong>{" "}
+              Motor and encoder disagree, and you cannot tell which one is wrong
+              from that symptom alone. Go back to step 1 and re-settle the
+              encoder against your own hand — a direction you can see with the
+              power off. Then re-test the motor against the settled encoder.
+            </li>
+          </ul>
+        </Box>
+      </LessonSection>
+
+      {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
+      <LessonSection id="what-you-carry-forward" title="What you carry forward">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Three things from this page get used later, so keep them somewhere you
+          can find them: your <strong>device IDs</strong>, the{" "}
+          <strong>bus name</strong> (<code>canivore</code>), and{" "}
+          <strong>where zero physically is</strong> on the arm. The first two
+          show up as literal numbers in the code on the{" "}
+          <strong>Mechanisms</strong> page. The third is what makes the gravity
+          gain on <strong>PID Control</strong> mean anything.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Next page is <strong>Project Setup</strong>, where you clone the robot
+          project and build it once. No hardware needed for that one — but leave
+          the mechanism wired, because you come back to it in a few lessons.
+        </p>
+
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
+          title="Phoenix Tuner X documentation"
+          icon={<BookOpen className="h-5 w-5" />}
+        />
+      </LessonSection>
+
+      <Quiz
+        title="Knowledge Check"
+        questions={[
+          {
+            id: 1,
+            question:
+              "You turn the arm counterclockwise by hand, with the device facing you. What should the CANcoder position do?",
+            options: [
+              "Decrease",
+              "Increase",
+              "Stay the same until the motor is powered",
+              "Jump to zero",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Counterclockwise is the positive direction on this robot, so the position increases. If it decreases, change Sensor Direction in Tuner X under Info, press Apply, and test by hand again.",
+          },
+          {
+            id: 2,
+            question: "What does zeroing the encoder actually do?",
+            options: [
+              "It sets the furthest the arm is allowed to travel",
+              "It picks the physical spot that counts as 0 rotations, and every target in the code is measured from there",
+              "It calibrates the motor's top speed",
+              "It resets the motor controller to factory defaults",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Zeroing tells the CANcoder which physical spot is 0.0 rotations. VERTICAL_POSITION = 0.25 (90 degrees) and HORIZONTAL_POSITION = 0.5 (180 degrees) are both measured from it, so a zero in the wrong place shifts every target by the same amount. Where zero belongs on this arm is not recorded in the code — confirm it with whoever built the mechanism.",
+          },
+          {
+            id: 3,
+            question:
+              "The arm's target positions are in rotations. How many degrees is 0.25 rotations?",
+            options: ["25 degrees", "45 degrees", "90 degrees", "180 degrees"],
+            correctAnswer: 2,
+            explanation:
+              "One full rotation is 360 degrees, so 0.25 rotations is 90 degrees and 0.5 rotations is 180 degrees. Those are the two constants the arm aims at from the PID branch onward: VERTICAL_POSITION = 0.25 and HORIZONTAL_POSITION = 0.5.",
+          },
+          {
+            id: 4,
+            question:
+              "Your robot code is running and you watch the flywheel. The leader (CAN 21) and the follower (CAN 22) are turning in opposite directions. What is going on?",
+            options: [
+              "The follower is miswired — a leader and follower should always turn the same way",
+              "That is correct: the code sets MotorAlignmentValue.Opposed, so the follower mirrors the leader backwards",
+              "The follower has lost communication and is coasting to a stop",
+              "The two motors are fighting, and one will overheat",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Every Flywheel.java in the mechanism track calls follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed)), under the comment 'The follower copies the leader, spinning the opposite direction.' The two wheels sit on either side of the ball, so they must counter-rotate to throw it. Both motors turning the same way is the broken case.",
+          },
+          {
+            id: 5,
+            question:
+              "You have finished bench testing and want to run your robot code in hardware simulation. What do you do with the CANivore USB toggle?",
+            options: [
+              "Leave it ON — your code reaches the CANivore through Tuner X",
+              "Turn it OFF, after stopping Tuner X from driving the bus, because the simulator takes the CANivore for itself",
+              "It only matters when you are updating firmware",
+              "Turn it OFF and unplug the CANivore as well",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "One toggle, two positions. ON while Tuner X drives the bus for bench work like this page. OFF when your robot code drives it in hardware simulation. Only one program can own the CANivore at a time, so stop the other one before you flip it.",
+          },
+          {
+            id: 6,
+            question: "You replace the CANcoder with a new one. What now?",
+            options: [
+              "Nothing — the settings travel with the robot code",
+              "Update the device ID in the code and you are done",
+              "Redo the direction and zero steps, because both are stored on the encoder itself",
+              "Re-tune the PID gains, but the direction and zero carry over",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Sensor direction and the zero position live on the CANcoder, not in your project. A new device arrives with neither, so steps 1 and 2 have to be repeated before anything downstream is trustworthy.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

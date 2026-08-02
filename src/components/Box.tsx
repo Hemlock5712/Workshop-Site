@@ -1,73 +1,59 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-// Only the variants actually used in the codebase
 export type BoxVariant =
-  | "concept" // Concept explanation boxes with left border
-  | "alert-warning" // Amber warning alerts
-  | "alert-info" // Sky blue informational alerts
-  | "alert-tip" // Indigo tip/suggestion alerts
-  | "alert-success" // Green summary / "got it" callouts
-  | "alert-danger"; // Red "don't do this" / error callouts
+  | "concept" // Framed panel — a definition or a rule worth stopping on
+  | "alert-warning" // Where people get burned
+  | "alert-info" // Context you need but wouldn't guess
+  | "alert-tip" // A shortcut, not a requirement
+  | "alert-success" // "You should now see…" — the check after a step
+  | "alert-danger"; // Do not do this
 
 interface BoxProps {
   variant: BoxVariant;
   title?: ReactNode;
   subtitle?: ReactNode;
   children: ReactNode;
+  /** Accepted and ignored — the label carries the signal now. See below. */
   icon?: ReactNode;
   className?: string;
   /**
-   * Optional mono "module-tag"-style micro-label rendered above the
-   * title. Used to give a callout a category label like
-   * "NOTE · GRAVITY" or "WATCH OUT · WINDUP". Free-form string.
+   * The mono label down the left. Defaults per variant ("WATCH OUT", "NOTE",
+   * …). Free-form, so a page can say "WATCH OUT · WINDUP".
    */
   tag?: string;
-  // Concept variant specific props
+  // Concept variant only
   code?: ReactNode;
   uses?: ReactNode;
 }
 
 /**
- * Alert variants render as a neutral card with a 3-pixel left stripe
- * coloured by signal hue (--accent / --info / --ok / --err / --primary-lifted).
- * Body sits on --bg-elev so contrast doesn't depend on tinted backgrounds
- * at any breakpoint or theme.
+ * Asides.
+ *
+ * These used to be tinted cards — a yellow wash for warnings, blue for info,
+ * green for success. On a page with six of them the colour stopped carrying
+ * information and started reading as decoration, which is exactly how a real
+ * warning gets skipped.
+ *
+ * The form now is the one the design uses throughout: a right-aligned mono
+ * label, a vertical rule, and the text. The label says what kind of aside it
+ * is in words. Colour is used once — accent on the label — and only the
+ * danger variant departs from it, because "do not do this" is the one case
+ * where a second signal earns its keep.
+ *
+ * `concept` keeps a frame, because it is a thing you come back to rather than
+ * something you read past.
  */
-const alertAccent: Record<
-  | "alert-warning"
-  | "alert-info"
-  | "alert-tip"
-  | "alert-success"
-  | "alert-danger",
-  { stripe: string; iconColor: string }
-> = {
-  "alert-warning": {
-    stripe: "var(--accent)",
-    iconColor: "var(--accent)",
-  },
-  "alert-info": {
-    stripe: "var(--info)",
-    iconColor: "var(--info)",
-  },
-  "alert-tip": {
-    stripe: "var(--primary-lifted)",
-    iconColor: "var(--primary-lifted)",
-  },
-  "alert-success": {
-    stripe: "var(--ok)",
-    iconColor: "var(--ok)",
-  },
-  "alert-danger": {
-    stripe: "var(--err)",
-    iconColor: "var(--err)",
-  },
-};
 
-const conceptStyles = {
-  container: "bg-[var(--bg-elev)] border-[var(--line)]",
-  title: "text-lg font-bold text-[var(--fg)]",
-  text: "text-[var(--fg-mute)] text-sm",
+const VARIANT_META: Record<
+  Exclude<BoxVariant, "concept">,
+  { label: string; color: string }
+> = {
+  "alert-warning": { label: "Watch\nout", color: "var(--accent)" },
+  "alert-info": { label: "Note", color: "var(--accent)" },
+  "alert-tip": { label: "Tip", color: "var(--accent)" },
+  "alert-success": { label: "Check", color: "var(--ok)" },
+  "alert-danger": { label: "Don't", color: "var(--err)" },
 };
 
 export default function Box({
@@ -75,83 +61,83 @@ export default function Box({
   title,
   subtitle,
   children,
-  icon,
   className,
   tag,
   code,
   uses,
 }: BoxProps) {
-  // Alert rendering (warning, info, tip, success, danger)
   if (variant !== "concept") {
-    const accent = alertAccent[variant];
+    const meta = VARIANT_META[variant];
     return (
       <div
         className={cn(
-          "rounded-md border p-4",
-          "border-[var(--line)] bg-[var(--bg-elev)]",
+          "measure grid grid-cols-[72px_1fr] gap-5 sm:grid-cols-[96px_1fr] sm:gap-6",
           className
         )}
-        style={{
-          borderLeftWidth: 3,
-          borderLeftColor: accent.stripe,
-        }}
         role="note"
       >
-        <div className="flex items-start gap-3">
-          {icon && (
-            <div
-              className="mt-0.5 shrink-0"
-              style={{ color: accent.iconColor }}
+        <div
+          className="mono pt-[5px] text-right"
+          style={{
+            fontSize: 9.5,
+            letterSpacing: "0.13em",
+            textTransform: "uppercase",
+            color: meta.color,
+            lineHeight: 1.5,
+            whiteSpace: "pre-line",
+          }}
+        >
+          {tag ?? meta.label}
+        </div>
+        <div
+          className="lesson-prose pl-5 sm:pl-6"
+          style={{
+            borderLeft: `1px solid ${
+              variant === "alert-danger" ? "var(--err)" : "var(--rule)"
+            }`,
+            fontFamily: "var(--font-serif)",
+            fontSize: 17,
+            lineHeight: 1.65,
+            color: "var(--tx2)",
+          }}
+        >
+          {title && (
+            <p
+              className="m-0 mb-1.5 font-semibold"
+              style={{ color: "var(--tx)" }}
             >
-              {icon}
-            </div>
+              {title}
+            </p>
           )}
-          <div className="space-y-1 text-sm" style={{ color: "var(--fg)" }}>
-            {tag && (
-              <div
-                className="font-mono"
-                style={{
-                  fontSize: 10.5,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: accent.iconColor,
-                  marginBottom: 2,
-                }}
-              >
-                {tag}
-              </div>
-            )}
-            {title && (
-              <p className="font-semibold" style={{ color: "var(--fg)" }}>
-                {title}
-              </p>
-            )}
-            <div style={{ color: "var(--fg-mute)" }}>{children}</div>
-          </div>
+          {subtitle && (
+            <p className="m-0 mb-1.5" style={{ color: "var(--tx)" }}>
+              {subtitle}
+            </p>
+          )}
+          {children}
         </div>
       </div>
     );
   }
 
-  // Concept rendering — neutral card with thicker accent stripe + content blocks
+  // Concept — a framed panel. Used for definitions and the rules a lesson
+  // keeps referring back to.
   return (
     <div
-      className={cn(
-        "flex flex-col gap-3 rounded-md border p-6",
-        conceptStyles.container,
-        className
-      )}
+      className={cn("measure flex flex-col gap-3 p-6", className)}
       style={{
-        borderLeftWidth: 4,
-        borderLeftColor: "var(--accent)",
+        background: "var(--bg2)",
+        border: "1px solid var(--rule)",
+        borderLeft: "3px solid var(--accent)",
+        borderRadius: 3,
       }}
     >
       {tag && (
         <div
-          className="font-mono"
+          className="mono"
           style={{
-            fontSize: 10.5,
-            letterSpacing: "0.08em",
+            fontSize: 9.5,
+            letterSpacing: "0.14em",
             textTransform: "uppercase",
             color: "var(--accent)",
           }}
@@ -159,31 +145,72 @@ export default function Box({
           {tag}
         </div>
       )}
-      {title && <h4 className={conceptStyles.title}>{title}</h4>}
+      {title && (
+        <h4
+          className="display m-0"
+          style={{ fontSize: 22, lineHeight: 1.15, color: "var(--tx)" }}
+        >
+          {title}
+        </h4>
+      )}
       {subtitle && (
-        <p className="text-sm font-semibold" style={{ color: "var(--fg)" }}>
+        <p
+          className="m-0 font-semibold"
+          style={{ fontSize: 15, color: "var(--tx)" }}
+        >
           {subtitle}
         </p>
       )}
-      <div className={cn(conceptStyles.text, "flex-1")}>{children}</div>
+      <div
+        className="lesson-prose flex-1"
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: 16.5,
+          lineHeight: 1.6,
+          color: "var(--tx2)",
+        }}
+      >
+        {children}
+      </div>
       {code && (
         <div
-          className="rounded p-3 text-xs"
+          className="mono p-3"
           style={{
-            background: "var(--bg)",
-            border: "1px solid var(--line-soft)",
-            fontFamily: "var(--font-mono)",
-            color: "var(--fg-mute)",
+            fontSize: 12.5,
+            background: "#030718",
+            border: "1px solid var(--rule)",
+            borderRadius: 2,
+            color: "#dadee5",
+            overflowX: "auto",
           }}
         >
           {code}
         </div>
       )}
       {uses && (
-        <div className="text-sm" style={{ color: "var(--fg)" }}>
-          <strong>When to use:</strong>
-          <br />
-          <span style={{ color: "var(--fg-mute)" }}>{uses}</span>
+        <div style={{ fontSize: 14, color: "var(--tx)" }}>
+          <span
+            className="mono"
+            style={{
+              fontSize: 9.5,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--tx3)",
+            }}
+          >
+            When to use
+          </span>
+          <div
+            className="mt-1"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 16,
+              lineHeight: 1.6,
+              color: "var(--tx2)",
+            }}
+          >
+            {uses}
+          </div>
         </div>
       )}
     </div>

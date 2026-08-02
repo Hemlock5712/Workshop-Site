@@ -5,9 +5,9 @@ interface ComparisonTableProps {
   rightItems: string[];
   className?: string;
   /**
-   * Tone of each side. Defaults pick natural before/after coloring —
-   * `err` (red) for the "old way", `ok` (green) for the "new way".
-   * Pass explicit tones for non-before/after comparisons.
+   * Tone of each side. Defaults are the before/after pair — `err` for the old
+   * way, `ok` for the new. Pass explicit tones for comparisons that aren't
+   * a correction.
    */
   leftTone?: ComparisonTone;
   rightTone?: ComparisonTone;
@@ -22,19 +22,23 @@ interface ComparisonTableProps {
 
 type ComparisonTone = "ok" | "err" | "info" | "warn" | "neutral";
 
+/**
+ * Two columns, side by side, separated by a rule.
+ *
+ * Each side is a mono heading over a list, with a marker character carrying
+ * the tone. The markers do the work the old coloured card backgrounds did,
+ * and they survive being printed, screenshotted, or read by someone who can't
+ * tell the red panel from the green one.
+ */
 const toneMap: Record<
   ComparisonTone,
-  { stripe: string; label: string; bullet: string }
+  { label: string; bullet: string; rule: string }
 > = {
-  ok: { stripe: "var(--ok)", label: "var(--ok)", bullet: "+" },
-  err: { stripe: "var(--err)", label: "var(--err)", bullet: "−" },
-  info: { stripe: "var(--info)", label: "var(--info)", bullet: "·" },
-  warn: { stripe: "var(--accent)", label: "var(--accent)", bullet: "!" },
-  neutral: {
-    stripe: "var(--line)",
-    label: "var(--fg-dim)",
-    bullet: "·",
-  },
+  ok: { label: "var(--ok)", bullet: "+", rule: "var(--ok)" },
+  err: { label: "var(--err)", bullet: "−", rule: "var(--err)" },
+  info: { label: "var(--accent)", bullet: "·", rule: "var(--rule)" },
+  warn: { label: "var(--accent)", bullet: "!", rule: "var(--accent)" },
+  neutral: { label: "var(--tx3)", bullet: "·", rule: "var(--rule)" },
 };
 
 function Side({
@@ -56,51 +60,45 @@ function Side({
   const hasLegacyClasses = Boolean(
     blockClass.length || titleClass.length || listClass.length
   );
-  // Respect any legacy override classes pages still pass in. Otherwise
-  // use the new module + stripe styling.
+
   return (
     <div
-      className={hasLegacyClasses ? blockClass : "rounded-md p-4"}
+      className={hasLegacyClasses ? blockClass : "pt-3"}
       style={
-        hasLegacyClasses
-          ? undefined
-          : {
-              background: "var(--bg-elev)",
-              border: "1px solid var(--line)",
-              borderLeftWidth: 3,
-              borderLeftColor: t.stripe,
-            }
+        hasLegacyClasses ? undefined : { borderTop: `2px solid ${t.rule}` }
       }
     >
       <h4
-        className={titleClass || "mb-2 text-sm font-semibold"}
+        className={titleClass || "mono mb-3"}
         style={
           titleClass
             ? undefined
             : {
                 color: t.label,
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.08em",
+                letterSpacing: "0.14em",
                 textTransform: "uppercase",
-                fontSize: 11,
+                fontSize: 9.5,
               }
         }
       >
         {title}
       </h4>
       <ul
-        className={`text-sm ${listClass || ""}`}
+        className={listClass || ""}
         style={
           listClass
             ? undefined
             : {
-                color: "var(--fg-mute)",
                 listStyle: "none",
                 padding: 0,
                 margin: 0,
                 display: "flex",
                 flexDirection: "column",
-                gap: 6,
+                gap: 10,
+                fontFamily: "var(--font-serif)",
+                fontSize: 16,
+                lineHeight: 1.5,
+                color: "var(--tx2)",
               }
         }
       >
@@ -110,22 +108,22 @@ function Side({
             style={
               listClass
                 ? undefined
-                : {
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "baseline",
-                  }
+                : { display: "flex", gap: 10, alignItems: "baseline" }
             }
           >
             {!listClass && (
               <span
-                aria-hidden
-                style={{ color: t.label, flexShrink: 0, fontWeight: 600 }}
+                aria-hidden="true"
+                className="mono shrink-0"
+                style={{ color: t.label, fontSize: 13 }}
               >
                 {t.bullet}
               </span>
             )}
-            <span dangerouslySetInnerHTML={{ __html: item }} />
+            <span
+              className="lesson-prose"
+              dangerouslySetInnerHTML={{ __html: item }}
+            />
           </li>
         ))}
       </ul>
@@ -149,7 +147,9 @@ export default function ComparisonTable({
   rightListClassName = "",
 }: ComparisonTableProps) {
   return (
-    <div className={`grid gap-4 md:grid-cols-2 ${className}`}>
+    <div
+      className={`measure-wide grid gap-8 md:grid-cols-2 md:gap-10 ${className}`.trim()}
+    >
       <Side
         title={leftTitle}
         items={leftItems}

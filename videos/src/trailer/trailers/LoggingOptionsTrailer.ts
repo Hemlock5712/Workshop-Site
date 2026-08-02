@@ -124,13 +124,13 @@ export const LoggingOptionsTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "The match ends. The robot did something weird. Nobody knows why. Everyone argues. Logging turns those arguments into data. And in WPILib 2027, the recorder is already built in. You just have to turn it on.",
+      text: "Match ends. Something went wrong in the last thirty seconds, three people have three theories, and the only witness is the robot. It can testify. In WPILib 2027 the recorder already ships in the box.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "publish",
-      text: "Here's the pipeline. Your robot code publishes its numbers to NetworkTables — a shared table every tool can read. Positions, targets, speeds. You're doing that part already. Every dashboard value you've ever sent is on that wire.",
+      text: "Your robot code already publishes numbers to NetworkTables. Poses, setpoints, target angles. Every value you've ever pushed to a dashboard rode this wire, which means you're already halfway to a log and didn't know it.",
       camera: { x: 2580, y: 200, width: 1500, height: 800 },
       events: [
         {
@@ -149,7 +149,7 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "capture",
-      text: "DataLogManager sits underneath and records it all. Every NetworkTables change, plus console prints, streams into one wpilog file — the robot's flight recorder. It's built into WPILib. No extra library. No framework to adopt.",
+      text: "DataLogManager sits under all of that and writes every change to disk, plus your console prints, into one wpilog per run. No vendordep. No framework. Nothing in your mechanisms changes.",
       camera: { x: 3280, y: 420, width: 1560, height: 860 },
       events: [
         {
@@ -168,7 +168,7 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "The whole setup is two lines in your Robot constructor. Start DataLogManager. Then tell DriverStation to log its data too. Put those lines before anything else. Now every run of your robot records itself.",
+      text: "The setup goes in the Robot constructor, at the very top. Start DataLogManager, then hand DriverStation the same log so joystick data and match state land in it too. Everything after that records itself.",
       camera: CODE,
       events: [
         {
@@ -188,7 +188,7 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "scope",
-      text: "After the match, drag the wpilog file into AdvantageScope — the free viewer app. Or connect live while you tune. Whole poses drop straight onto the 3D field view. You watch your robot replay its own match.",
+      text: "Drag the file into AdvantageScope and the match plays back, joystick by joystick. Or hook it up live while you tune. Drop a pose onto the field view and you can watch the drift you were arguing about.",
       camera: { x: 3560, y: 180, width: 1560, height: 860 },
       events: [
         {
@@ -201,13 +201,13 @@ export const LoggingOptionsTrailer: TrailerScript = {
     },
     {
       id: "alternatives",
-      text: "Other tools exist. Epilogue writes logging code for you at compile time. AdvantageKit records every input, so teams can replay a match in code. Hoot captures Phoenix device signals on its own. Some teams love these. This workshop picks DataLogManager: two lines, and it ships with WPILib.",
+      text: "Other tools exist. Epilogue generates the logging code at compile time from annotations. Hoot grabs Phoenix signals off the CAN bus by itself. Both are good. Neither is two lines, and two lines is what gets turned on the week before a competition.",
       camera: DIAGRAM,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "Stop guessing what the robot did. The full comparison of logging options is waiting at frc5712.com. It also covers when the heavier tools earn their keep. Turn the recorder on before your next practice match.",
+      text: "The comparison page goes deeper on when the heavier tools actually earn their setup cost. But do the cheap thing tonight, and your next practice match becomes evidence instead of an argument.",
       camera: END,
       holdAfter: 1.2,
     },

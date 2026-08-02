@@ -98,19 +98,19 @@ export const HardwareTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Before you write any code, meet the hardware. Your robot needs three devices and one network. The devices come from a company called CTRE. A motor that thinks. A sensor that never forgets. And a hub that ties them all together.",
+      text: "Three CTRE devices and one wire. That's it. Every weird problem you'll chase later, from a motor that won't respond to an arm that has forgotten where it is, traces back to something in this picture being wrong.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "kraken-photo",
-      text: "This is the Kraken X44. It's a motor with a controller built in — the TalonFX. That controller is a tiny computer. It controls the motor's power and tracks its position. Your code talks to it over one shared wire — the CAN bus.",
+      text: "The TalonFX inside is the part that matters. It runs its own control loop on the motor, a thousand times a second, while your robot code checks in fifty. So you stop sending raw voltage down the CAN bus and start sending targets.",
       camera: { x: 2520, y: 180, width: 1480, height: 1080 },
       holdAfter: 0.6,
     },
     {
       id: "canivore",
-      text: "Now follow the wiring. Your code runs on a laptop or on the robot's controller. It plugs into a CANivore with a USB cable. The CANivore is a small hub with one job. It turns that USB port into a real robot network.",
+      text: "Your code lives on a laptop, or on the robot. Either way it hands everything to the CANivore over a plain USB cable, and that hub turns one USB port into a CAN FD bus you can run from a workbench.",
       camera: { x: 5500, y: 400, width: 1500, height: 820 },
       events: [
         { type: "diagram", artifact: "bus", step: 1, at: { word: "code" } },
@@ -119,7 +119,7 @@ export const HardwareTrailer: TrailerScript = {
     },
     {
       id: "kraken-node",
-      text: "On the far side, the CANivore creates its own network, called CAN FD. It's even faster than the bus built into the robot controller. The Kraken connects to this network. It sends its position and takes commands at full speed.",
+      text: "CAN FD is why this half of the wiring is worth the trouble. It carries several times the traffic of the bus on the robot controller, so the Kraken can stream position fast enough to close a loop on.",
       camera: { x: 6200, y: 160, width: 1480, height: 840 },
       events: [
         { type: "diagram", artifact: "bus", step: 3, at: { word: "Kraken" } },
@@ -127,7 +127,7 @@ export const HardwareTrailer: TrailerScript = {
     },
     {
       id: "cancoder-node",
-      text: "Next to it sits the CANcoder. It's a sensor that reads a magnet on the spinning shaft. That's how it knows the shaft's exact position. Turn the robot off and back on. The CANcoder still knows exactly where everything is.",
+      text: "A magnet on the shaft, read absolutely, so the CANcoder doesn't care that you power-cycled the robot between matches. No homing routine. No driving the arm into a hard stop to find zero. It wakes up knowing.",
       camera: { x: 6200, y: 420, width: 1480, height: 840 },
       events: [
         { type: "diagram", artifact: "bus", step: 4, at: { word: "CANcoder" } },
@@ -135,13 +135,13 @@ export const HardwareTrailer: TrailerScript = {
     },
     {
       id: "whole-bus",
-      text: "That's the whole setup. Every device plugs into the CANivore. Every message rides the same fast network. And your code sees all of it. Three devices. One network. No mystery wiring.",
+      text: "One hub, one bus, every device addressable from your code. Which sounds obvious until you've spent a Friday night chasing one loose CAN wire through a robot with the bumpers already on.",
       camera: DIAGRAM,
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "Next step: wire these three devices for real. Bring them online on your own robot. The full hardware guide, device by device, is waiting at frc5712.com.",
+      text: "Wire it for real next. Device IDs, bus order, and the Tuner X check that catches a bad crimp before it costs you a match.",
       camera: END,
       holdAfter: 1.2,
     },

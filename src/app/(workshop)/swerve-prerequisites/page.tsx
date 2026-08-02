@@ -1,688 +1,461 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
-import ContentCard from "@/components/ContentCard";
 import Box from "@/components/Box";
-import CodeBlock from "@/components/CodeBlock";
-import CollapsibleSection from "@/components/CollapsibleSection";
+import ImageBlock from "@/components/ImageBlock";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { Book, MapPin, Lightbulb } from "lucide-react";
-import Image from "next/image";
+import Link from "next/link";
+import { Book, Compass, MapPin } from "lucide-react";
+
+const bodyStyle = { color: "var(--fg-mute)" } as const;
+
+const linkClass = "underline hover:no-underline font-medium";
 
 export default function SwervePrerequisites() {
   return (
-    <PageTemplate title="Swerve Drive Prerequisites">
-      {/* Introduction */}
+    <PageTemplate
+      title="Four ideas the rest of Workshop #2 stands on"
+      emphasis="Four ideas"
+      lede="Workshop #2 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
+      needs={[
+        <>
+          Nothing installed, nothing typed. There is no code on this page and no
+          branch to check out.
+        </>,
+        <>
+          <Link href="/hardware" className={linkClass}>
+            Hardware Setup
+          </Link>{" "}
+          helps, because this page uses the words CAN bus, CANcoder and CANivore
+          without re-explaining them. That page owns the hardware.
+        </>,
+      ]}
+      time="About 15 minutes of reading"
+    >
       <KeyConceptSection
-        title="Understanding Swerve Drive Fundamentals"
-        description="Swerve drive makes a lot more sense once you know how the hardware and control systems fit together. This page covers the concepts you'll lean on when creating and tuning your drivetrain."
-        concept="Master the fundamentals of swerve drive: holonomic motion (moving any direction while rotating; the two are independent), coordinate systems, module anatomy, and field-centric control."
+        description={[
+          "What you do have to understand is how a swerve robot answers two questions — which way is forward, and where am I on the field. Four ideas cover that, and every page after this one leans on all four.",
+        ]}
+        concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
       />
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Swerve Module Anatomy
-        </h2>
+      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
+        <p className="mt-3">
+          <strong>What you&apos;ll get:</strong> the vocabulary the next six
+          pages assume — field-centric driving, <code>Pose2d</code>, the
+          field&apos;s coordinate frame, and odometry.{" "}
+          <strong>About 15 minutes of reading.</strong>
+        </p>
+      </Box>
 
-        <p className="text-slate-600 dark:text-slate-300">
-          Each swerve module has three key components:
+      {/* ── 1. WHAT SWERVE IS ────────────────────────────────────────── */}
+      <LessonSection
+        id="what-makes-a-drive-quot-swerve"
+        title='What makes a drive "swerve"'
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          On most drivetrains the wheels are bolted facing one direction. To go
+          sideways you first have to turn the whole robot. A swerve drive puts a
+          module at each of the four corners, and each module has{" "}
+          <strong>two motors</strong>: one spins the wheel, the other points it.
         </p>
 
-        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
-          <ContentCard>
-            <div className="bg-primary-100 dark:bg-primary-900/20 p-4 rounded-lg mb-4">
-              <h3 className="text-xl font-bold text-primary-900 dark:text-primary-300">
-                Drive Motor
-              </h3>
-            </div>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              Controls the wheel speed and provides forward/backward motion for
-              the module. Typically a high-power motor like Kraken X60 or Falcon
-              500.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                <strong>Purpose:</strong> Translational velocity control
-                <br />
-                <strong>Control:</strong> Velocity PID or voltage control
-                <br />
-                <strong>Sensor:</strong> Integrated encoder for speed feedback
-              </p>
-            </div>
-          </ContentCard>
-
-          <ContentCard>
-            <div className="bg-green-100 dark:bg-green-900/20 p-4 rounded-lg mb-4">
-              <h3 className="text-xl font-bold text-green-900 dark:text-green-300">
-                Turning Motor
-              </h3>
-            </div>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              Steers the module by rotating the wheel to the desired angle.
-              Requires precise position control with absolute encoder feedback.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                <strong>Purpose:</strong> Wheel direction control
-                <br />
-                <strong>Control:</strong> Position PID with Motion Magic
-                <br />
-                <strong>Sensor:</strong> Absolute encoder (CANcoder) for angle
-              </p>
-            </div>
-          </ContentCard>
-
-          <ContentCard>
-            <div className="bg-orange-100 dark:bg-orange-900/20 p-4 rounded-lg mb-4">
-              <h3 className="text-xl font-bold text-orange-900 dark:text-orange-300">
-                CANcoder
-              </h3>
-            </div>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              Absolute position sensor that tracks the steering angle. Critical
-              for module zeroing and maintaining accurate wheel orientation.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                <strong>Purpose:</strong> Absolute angle measurement
-                <br />
-                <strong>Type:</strong> WCP ThroughBore or CANcoder V2
-                <br />
-                <strong>Units:</strong> Rotations (0 to 1.0)
-              </p>
-            </div>
-          </ContentCard>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Hardware Setup & Wiring
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          A consistent CAN ID scheme makes wiring and debugging much easier.
-          This is the standard configuration we use on all our robots.
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Because every wheel can point wherever it likes, the robot can travel
+          in any direction while facing any direction, and the two are
+          independent. It can drive straight down the field while slowly
+          spinning. The word for that is <strong>holonomic</strong> motion, and
+          it is the whole appeal.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <ContentCard>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Recommended CAN ID Scheme
-            </h3>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>Drive Motors:</strong> 1, 3, 5, 7 (FL, FR, BL, BR)
-                </li>
-                <li>
-                  <strong>Steer Motors:</strong> 2, 4, 6, 8 (FL, FR, BL, BR)
-                </li>
-                <li>
-                  <strong>CANcoders:</strong> 9, 10, 11, 12 (FL, FR, BL, BR)
-                </li>
-                <li>
-                  <strong>Pigeon 2 Gyro:</strong> 13
-                </li>
-              </ul>
-            </div>
-          </ContentCard>
-        </div>
-
-        <Box variant="alert-tip" title="Why Use a CANivore?">
-          <p className="mb-2">
-            A <strong>CANivore</strong> is a USB-to-CAN adapter that creates a
-            separate, high-speed CAN FD bus.
-          </p>
+        <Box variant="concept" title="You never write the swerve math">
           <p>
-            <strong>Benefit:</strong> It allows you to run your swerve motors at
-            a much higher refresh rate (250Hz vs 50Hz on the native RIO bus).
-            This significantly improves the responsiveness and smoothness of
-            your swerve drive control loop.
+            Turning &quot;move 2 meters per second to the left while turning
+            slowly&quot; into eight motor commands is called{" "}
+            <strong>kinematics</strong>. Tuner X&apos;s swerve generator writes
+            it for you, in two files you will meet on the next page:{" "}
+            <code>TunerConstants.java</code> (every device ID, gear ratio, wheel
+            radius and gain) and <code>CommandSwerveDrivetrain.java</code> (the
+            drivetrain itself, which its own comment says &quot;owns the
+            hardware and odometry&quot;).
           </p>
-        </Box>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Coordinate Systems &amp; Reference Frames
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Every drive command is relative to something, either the robot or the
-          field. Which one you pick changes how the robot responds to the
-          sticks.
-        </p>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <ContentCard>
-            <h3 className="text-xl font-bold text-blue-900 dark:text-blue-300 mb-4">
-              Robot-Centric (Robot Frame)
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              All movements are relative to the robot&apos;s current
-              orientation. Forward is always toward the front of the robot.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>Forward:</strong> Robot moves in the direction
-                  it&apos;s facing
-                </li>
-                <li>
-                  <strong>Strafe Right:</strong> Robot moves to its right side
-                </li>
-                <li>
-                  <strong>Use Case:</strong> Precise maneuvering, driver
-                  preference
-                </li>
-                <li>
-                  <strong>Control:</strong> More intuitive for beginners
-                </li>
-              </ul>
-            </div>
-          </ContentCard>
-
-          <ContentCard>
-            <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">
-              Field-Centric (Field Frame)
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              All movements are relative to the field. Forward is always away
-              from your driver station, regardless of robot orientation.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>Forward:</strong> Robot moves away from driver station
-                </li>
-                <li>
-                  <strong>Strafe Right:</strong> Robot moves right on the field
-                </li>
-                <li>
-                  <strong>Use Case:</strong> Competition driving, intuitive
-                  control
-                </li>
-                <li>
-                  <strong>Requirement:</strong> Needs gyro for robot heading
-                </li>
-              </ul>
-            </div>
-          </ContentCard>
-        </div>
-
-        <Box variant="alert-info" title="Gyro Requirement for Field-Centric">
-          <p className="mb-3">
-            Field-centric control requires a gyroscope (IMU) to track the
-            robot&apos;s heading. Without an accurate heading, the robot cannot
-            determine which direction is &quot;forward&quot; relative to the
-            field.
-          </p>
-          <div className="text-sm text-slate-600 dark:text-slate-300">
-            <p className="mb-2">
-              <strong>Common gyros in FRC:</strong>
-            </p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>Pigeon 2 (CTRE): CAN-based, highly accurate</li>
-              <li>NavX (Kauai Labs): USB/SPI, popular choice</li>
-              <li>ADIS16470 (Analog Devices): SPI, WPILib support</li>
-            </ul>
-          </div>
-        </Box>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Swerve Kinematics &amp; Control
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Kinematics is the mathematical relationship between the desired robot
-          motion (velocities in X, Y, and rotation) and the individual wheel
-          states (speed and angle) needed to achieve that motion.
-        </p>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          <ContentCard>
-            <h3 className="text-xl font-bold text-primary-900 dark:text-primary-300 mb-4">
-              Forward Kinematics
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              Converts individual wheel states into overall robot velocity. Used
-              for odometry and determining where the robot is moving.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <code className="text-xs text-slate-700 dark:text-slate-300">
-                Given: [FL, FR, BL, BR] module states
-                <br />
-                Calculate: Robot velocity (Vx, Vy, omega)
-              </code>
-            </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mt-4">
-              <strong>Example:</strong> If all modules point forward at the same
-              speed, the robot is moving straight forward with no rotation.
-            </p>
-          </ContentCard>
-
-          <ContentCard>
-            <h3 className="text-xl font-bold text-green-900 dark:text-green-300 mb-4">
-              Inverse Kinematics
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              Converts desired robot velocity into individual wheel states. Used
-              for teleop driving and autonomous path following.
-            </p>
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <code className="text-xs text-slate-700 dark:text-slate-300">
-                Given: Robot velocity (Vx, Vy, omega)
-                <br />
-                Calculate: [FL, FR, BL, BR] module states
-              </code>
-            </div>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mt-4">
-              <strong>Example:</strong> To strafe right while rotating, inverse
-              kinematics calculates the unique angle and speed for each module.
-            </p>
-          </ContentCard>
-        </div>
-
-        <Box variant="alert-info" title="CTRE Handles Kinematics Automatically">
-          <p className="mb-3">
-            CTRE&apos;s swerve implementation handles all kinematics
-            calculations internally, so you never compute wheel states by hand.
-          </p>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            The <code>CommandSwerveDrivetrain</code> class uses Phoenix 6&apos;s
-            built-in kinematics to convert your desired{" "}
-            <code>ChassisVelocities</code> (vx, vy, omega) into the appropriate
-            module states automatically.
+          <p className="mt-3">
+            You ask for a chassis speed. Those two files decide what all eight
+            motors do. Nothing in Workshop #2 asks you to compute a wheel angle.
           </p>
         </Box>
 
-        <CollapsibleSection title="Understanding Chassis Velocities">
-          <div className="space-y-4">
-            <p className="text-slate-600 dark:text-slate-300">
-              Chassis velocities represent the desired velocity of the robot as
-              a whole:
-            </p>
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The parts are the same family you met on{" "}
+          <Link href="/hardware" className={linkClass}>
+            Hardware Setup
+          </Link>
+          : Kraken motors, a CANcoder in each module to report the steering
+          angle, and a CANivore carrying the bus. Swerve adds one device the arm
+          never needed — a <strong>Pigeon 2 gyro</strong>, which reports which
+          way the robot is facing. <code>TunerConstants.java</code> lists it as{" "}
+          <code>kPigeonId</code>, alongside three device IDs and a corner
+          position for each of the four modules.
+        </p>
+      </LessonSection>
 
-            <Box variant="alert-info" title="The ChassisVelocities type">
-              The type that carries these three numbers is{" "}
-              <code>ChassisVelocities</code>, and its fields are <code>vx</code>
-              , <code>vy</code>, and <code>omega</code>.
-            </Box>
-
-            <div className="grid md:grid-cols-3 gap-4">
-              <Box variant="alert-info" title="Vx (Forward/Back)">
-                Linear velocity in the X direction. Positive = forward, Negative
-                = backward. Units: meters per second.
-              </Box>
-
-              <Box variant="alert-success" title="Vy (Left/Right)">
-                Linear velocity in the Y direction. Positive = left, Negative =
-                right. Units: meters per second.
-              </Box>
-
-              <Box variant="alert-tip" title="Omega (Rotation)">
-                Angular velocity (rotation rate). Positive = counter-clockwise,
-                Negative = clockwise. Units: radians per second.
-              </Box>
-            </div>
-
-            <CodeBlock
-              language="java"
-              title="Creating Chassis Velocities for Control"
-              code={`// Example: drive forward at 2 m/s while rotating CCW at 1 rad/s.
-// ChassisVelocities fields are vx, vy, omega.
-ChassisVelocities velocities = new ChassisVelocities(
-    2.0,  // vx: forward velocity (m/s)
-    0.0,  // vy: left velocity (m/s)
-    1.0   // omega: rotation rate (rad/s)
-);
-
-// For field-centric teleop you usually DON'T transform by hand — CTRE's
-// FieldCentric request applies the field-relative rotation for you, using the
-// drivetrain's operator perspective. Feed it the joystick values directly:
-drivetrain.setControl(
-    new SwerveRequest.FieldCentric()
-        .withVelocityX(joystickX)           // field +X (m/s)
-        .withVelocityY(joystickY)           // field +Y (m/s)
-        .withRotationalRate(joystickOmega)  // rad/s, CCW positive
-);`}
-            />
-          </div>
-        </CollapsibleSection>
-      </section>
-
-      {/* Section 5: Odometry & Pose Estimation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Odometry &amp; Pose Estimation
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Odometry is the process of tracking the robot&apos;s position and
-          orientation on the field by integrating wheel movements over time.
-          Autonomous navigation and field-aware control both depend on it being
-          accurate.
+      {/* ── 2. FIELD-CENTRIC VS ROBOT-CENTRIC ────────────────────────── */}
+      <LessonSection id="which-way-is-forward" title="Which way is forward?">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          You push the left stick away from you. Which way does the robot go?
+          There are two answers, and a swerve robot has to be told which one you
+          meant.
         </p>
 
-        <div className="flex justify-center my-8">
-          <Image
-            src="/images/drive-to-point-field.png"
-            alt="FRC field coordinate system showing X and Y axes with blue and red alliance robots"
-            width={1024}
-            height={463}
-            className="rounded-lg shadow-lg border border-slate-200 dark:border-slate-800"
-          />
-        </div>
-
-        <div className="bg-primary-50 dark:bg-primary-950/30 rounded-lg p-8 border border-slate-200 dark:border-slate-800">
-          <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            Pose2d: Robot Position on the Field
-          </h3>
-
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
-            The robot&apos;s pose consists of three components:
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">
-                X Position
-              </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Distance along the field length. X increases as you move away
-                from the driver station. Units: meters.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">
-                Y Position
-              </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Distance along the field width. Y increases as you move to the
-                left. Units: meters.
-              </p>
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-bold text-primary-600 dark:text-primary-400 mb-2">
-                Rotation
-              </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                Robot heading (which direction the robot is facing). Represented
-                as Rotation2d. 0° = field forward.
-              </p>
-            </div>
-          </div>
-
-          <Box
-            variant="alert-tip"
-            title="Field Coordinate System"
-            icon={<Lightbulb className="w-5 h-5" />}
-          >
+        <div className="grid gap-6 md:grid-cols-2">
+          <Box variant="alert-info" title="Robot-centric">
             <p>
-              The field coordinate system origin (0, 0) is at the right corner
-              on the blue side of the field. X increases as you move away from
-              the driver station, Y increases as you move to the left, and
-              rotation is counter-clockwise positive.
+              Forward means the direction the robot&apos;s front is pointing.
+              Spin the robot and forward spins with it.
+            </p>
+            <p className="mt-3">
+              Fine while the robot is pointing away from you. The moment it
+              turns around, its left is your right and every input is mirrored.
+              Needs no gyro — the robot does not have to know its heading to
+              drive relative to itself.
+            </p>
+          </Box>
+
+          <Box variant="alert-success" title="Field-centric">
+            <p>
+              Forward means down the field, away from your driver station, no
+              matter which way the robot is facing.
+            </p>
+            <p className="mt-3">
+              Push the stick away from you and the robot moves away from you,
+              even if it has to drive backwards to do it. This is what makes a
+              swerve robot drivable by a human. It needs the gyro, because the
+              code has to subtract the robot&apos;s heading out of your request.
             </p>
           </Box>
         </div>
 
-        <div className="space-y-6">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            How Odometry Works
-          </h3>
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The workshop code only ever drives field-centric. The teleop OpMode
+          you get on the next page builds one{" "}
+          <code>SwerveRequest.FieldCentric</code> and hands it to the
+          drivetrain&apos;s default command. No file in the workshop code builds
+          a robot-centric request.
+        </p>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <ContentCard>
-              <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Wheel Odometry
-              </h4>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
-                Primary odometry source using encoder readings from swerve
-                modules.
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>Inputs:</strong> Module positions (distance traveled +
-                  angle)
-                </li>
-                <li>
-                  <strong>Process:</strong> Forward kinematics converts module
-                  deltas to robot motion
-                </li>
-                <li>
-                  <strong>Integration:</strong> Accumulates motion over time to
-                  track pose
-                </li>
-                <li>
-                  <strong>Accuracy:</strong> Drifts over time due to wheel slip
-                  and measurement errors
-                </li>
-              </ul>
-            </ContentCard>
-
-            <ContentCard>
-              <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Vision Odometry
-              </h4>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
-                Secondary odometry source using camera and AprilTag vision
-                targets.
-              </p>
-              <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>Inputs:</strong> Detected AprilTags with known field
-                  positions
-                </li>
-                <li>
-                  <strong>Process:</strong> Camera calculates robot pose from
-                  tag positions
-                </li>
-                <li>
-                  <strong>Integration:</strong> Fused with wheel odometry for
-                  drift correction
-                </li>
-                <li>
-                  <strong>Accuracy:</strong> More accurate but only works when
-                  tags are visible
-                </li>
-              </ul>
-            </ContentCard>
-          </div>
-
-          <Box variant="alert-info" title="Pose Estimation with Sensor Fusion">
-            <p className="mb-3">
-              CTRE&apos;s <code>CommandSwerveDrivetrain</code> includes built-in
-              pose estimation that fuses wheel odometry with vision measurements
-              using a Kalman filter approach.
-            </p>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              This provides more accurate position tracking than wheel odometry
-              alone, automatically correcting for drift when vision targets are
-              visible.
-            </p>
-          </Box>
-        </div>
-
-        <CollapsibleSection title="Odometry Code Examples">
-          <div className="space-y-6">
-            <CodeBlock
-              language="java"
-              title="Getting Current Robot Pose"
-              code={`// In your mechanism or command. This is the raw CTRE call —
-// the workshop's DriveMechanism wraps it as drivetrain.getPose(),
-// which is what you'll see on later pages.
-Pose2d currentPose = drivetrain.getState().Pose;
-
-// Extract components
-double xPosition = currentPose.getX();          // meters
-double yPosition = currentPose.getY();          // meters
-Rotation2d heading = currentPose.getRotation(); // robot orientation
-
-// Display on dashboard
-SmartDashboard.putNumber("Robot X", xPosition);
-SmartDashboard.putNumber("Robot Y", yPosition);
-SmartDashboard.putNumber("Robot Heading", heading.getDegrees());`}
-            />
-          </div>
-        </CollapsibleSection>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <DocumentationButton
-            href="https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html"
-            title="WPILib Swerve Drive Odometry Documentation"
-            icon={<Book className="w-5 h-5" />}
-          />
-          <DocumentationButton
-            href="https://docs.wpilib.org/en/stable/docs/software/advanced-controls/state-space/state-space-pose-estimators.html"
-            title="WPILib Pose Estimators"
-            icon={<MapPin className="w-5 h-5" />}
-          />
-        </div>
-      </section>
-
-      {/* Quiz Section */}
-      <section className="flex flex-col gap-8">
-        <Quiz
-          title="Knowledge Check"
-          questions={[
-            {
-              id: 1,
-              question: "What are the three key components of a swerve module?",
-              options: [
-                "Drive motor, turning motor, and gyroscope",
-                "Drive motor, turning motor, and CANcoder",
-                "Two drive motors and a CANcoder",
-                "Drive motor, brake, and CANcoder",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Each swerve module consists of a drive motor (for speed), turning motor (for steering), and CANcoder (for absolute position sensing).",
-            },
-            {
-              id: 2,
-              question:
-                "What is the main difference between robot-centric and field-centric control?",
-              options: [
-                "Robot-centric is faster than field-centric",
-                "Robot-centric uses relative movement to the robot, field-centric uses movement relative to the field",
-                "Field-centric doesn't require encoders",
-                "Robot-centric only works with tank drive",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Robot-centric control moves relative to the robot's orientation (forward is always the robot's front), while field-centric moves relative to the field (forward is always away from the driver station).",
-            },
-            {
-              id: 3,
-              question:
-                "What sensor is required for field-centric swerve drive control?",
-              options: [
-                "Ultrasonic sensor",
-                "Camera",
-                "Gyroscope (IMU)",
-                "Accelerometer only",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "A gyroscope (IMU) is required for field-centric control to track the robot's heading and determine which direction is 'forward' relative to the field.",
-            },
-            {
-              id: 4,
-              question:
-                "What does inverse kinematics calculate in swerve drive?",
-              options: [
-                "Robot velocity from wheel states",
-                "Individual wheel states from desired robot velocity",
-                "Motor temperatures from current usage",
-                "Battery voltage from power consumption",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Inverse kinematics converts desired robot velocity (Vx, Vy, omega) into the individual wheel speeds and angles needed to achieve that motion.",
-            },
-            {
-              id: 5,
-              question:
-                "What are the three components of ChassisVelocities in swerve drive?",
-              options: [
-                "Left speed, right speed, rotation",
-                "Forward speed, backward speed, turning speed",
-                "Vx (forward/back), Vy (left/right), Omega (rotation)",
-                "Motor speed, wheel speed, encoder speed",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "ChassisVelocities consist of vx (linear velocity in X direction), vy (linear velocity in Y direction), and omega (angular velocity for rotation). (WPILib 2027 renamed the old ChassisSpeeds type to ChassisVelocities.)",
-            },
-            {
-              id: 6,
-              question:
-                "What is the primary purpose of odometry in swerve drive?",
-              options: [
-                "To control motor speeds",
-                "To track the robot's position and orientation on the field",
-                "To communicate with other robots",
-                "To measure battery voltage",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Odometry tracks the robot's position (X, Y) and orientation (heading) on the field by integrating wheel movements over time, which is essential for autonomous navigation.",
-            },
-            {
-              id: 7,
-              question:
-                "Which component provides absolute angle measurement for the steering system?",
-              options: [
-                "Drive motor encoder",
-                "Turning motor internal encoder",
-                "CANcoder",
-                "Gyroscope",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "The CANcoder provides absolute position sensing for the steering angle, which is critical for module zeroing and maintaining accurate wheel orientation.",
-            },
-            {
-              id: 8,
-              question:
-                "What does CTRE's CommandSwerveDrivetrain handle automatically?",
-              options: [
-                "Only motor control",
-                "Kinematics calculations and pose estimation",
-                "Only sensor readings",
-                "Only path planning",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "CTRE's CommandSwerveDrivetrain handles kinematics calculations (converting chassis speeds to module states), pose estimation with sensor fusion, and provides built-in swerve control functionality.",
-            },
-          ]}
-        />
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What&apos;s Next?
-        </h2>
-
-        <Box variant="alert-success" title="Ready for Implementation">
-          <p className="mb-4">
-            That covers the fundamentals: module anatomy, robot-centric vs
-            field-centric control, gyro requirements, kinematics, odometry, and
-            pose estimation.
-          </p>
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT · ALLIANCE"
+          title="The driver's forward flips with alliance color. The field frame does not."
+          icon={<Compass className="w-5 h-5" />}
+        >
           <p>
-            Next, you&apos;ll use Phoenix Tuner X to generate a complete swerve
-            project and bring up your drivetrain.
+            Two drivers stand at opposite ends of the field, and both of them
+            should be able to push the stick away and watch the robot go away.
+            So the code flips what &quot;forward&quot; means depending on which
+            side you are on. <code>DriveMechanism</code> registers{" "}
+            <code>applyOperatorPerspective</code> to run every loop, with the
+            comment{" "}
+            <em>
+              &quot;Every loop, check which alliance we are on so
+              &apos;forward&apos; faces the right way.&quot;
+            </em>
+          </p>
+          <p className="mt-3">
+            The generated drivetrain spells out the two cases:{" "}
+            <em>blue sees forward as 0 degrees, toward the red wall</em>, and{" "}
+            <em>red sees forward as 180 degrees, toward the blue wall</em>.
+          </p>
+          <p className="mt-3">
+            Hold on to this, because the next section is the other half of it:{" "}
+            <strong>
+              only the driver&apos;s forward flips. The field&apos;s coordinates
+              never do.
+            </strong>
           </p>
         </Box>
-      </section>
+      </LessonSection>
+
+      {/* ── 3. POSE2D AND THE FIELD FRAME ────────────────────────────── */}
+      <LessonSection
+        id="where-am-i-pose2d"
+        title={
+          <>
+            Where am I? <code>Pose2d</code>
+          </>
+        }
+        outlineLabel="Where am I? Pose2d"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          A <code>Pose2d</code> is three numbers in one package. It answers{" "}
+          <em>where on the field</em> and <em>which way around</em> at the same
+          time. The robot&apos;s current position is a <code>Pose2d</code>. So
+          is a spot you want to drive to.
+        </p>
+
+        <ImageBlock
+          src="/images/drive-to-point-field.png"
+          alt="FRC field coordinate system: X runs the length of the field away from the blue driver station, Y runs across it to the left"
+          width={1024}
+          height={469}
+          caption="X runs down the length of the field, Y runs across it. The origin is the blue alliance corner, for both alliances."
+        />
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <strong>X</strong> — meters down the length of the field, increasing
+            away from the blue driver station.
+          </li>
+          <li>
+            <strong>Y</strong> — meters across the field, increasing to the
+            left.
+          </li>
+          <li>
+            <strong>Rotation</strong> — a <code>Rotation2d</code>, the direction
+            the front of the robot points. 0° faces down the field along
+            increasing X. You build one with{" "}
+            <code>Rotation2d.fromDegrees(180)</code>, or take a ready-made
+            constant like <code>Rotation2d.kZero</code>.
+          </li>
+        </ul>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          They travel together for a reason. A position with no heading does not
+          say which way the robot is pointing when it arrives, and a heading
+          with no position does not say where it is.
+        </p>
+
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT · ORIGIN"
+          title="(0, 0) is the blue corner, even when you are on red"
+          icon={<MapPin className="w-5 h-5" />}
+        >
+          <p>
+            The <code>getPose()</code> method in <code>DriveMechanism</code>{" "}
+            says it in its own comment:{" "}
+            <em>
+              &quot;The robot&apos;s position on the field, from odometry. (0,
+              0) is always the blue alliance corner. It does not flip when you
+              are on red.&quot;
+            </em>
+          </p>
+          <p className="mt-3">
+            This is the one that catches people, because the section above said
+            forward <em>does</em> flip. Both are true, and they are about
+            different things. The driver&apos;s forward flips so driving feels
+            the same from either end of the field. The coordinate frame stays
+            put so that two poses can be compared at all. A red robot parked
+            against its own wall reports a large X, not zero.
+          </p>
+          <p className="mt-3">
+            Every pose in Workshop #2 is measured from that same blue corner:
+            what odometry reports, what the camera estimates, and the target you
+            hand a drive command.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── 4. ODOMETRY ──────────────────────────────────────────────── */}
+      <LessonSection
+        id="odometry-and-why-it-goes-wrong"
+        title="Odometry, and why it goes wrong"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <strong>Odometry</strong> is how the robot keeps a running answer to
+          &quot;where am I.&quot; Every loop the drivetrain reads how far each
+          wheel turned and which way that wheel was pointing, works out how far
+          the robot moved in that slice of time, and adds it to the pose. You
+          never call any of that. You read the answer with{" "}
+          <code>drivetrain.getPose()</code>.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          It starts out excellent and gets worse all match, because it is
+          addition and it never subtracts. Three things it cannot see:
+        </p>
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <strong>Slip.</strong> A wheel spinning on carpet without moving the
+            robot still reports distance. Odometry counts it as travel.
+          </li>
+          <li>
+            <strong>A wheel radius that is slightly wrong.</strong> Distance per
+            rotation comes from a number in <code>TunerConstants.java</code>. If
+            that number is off by 1 percent, every distance is off by 1 percent
+            — 10 centimeters for every 10 meters driven, always in the same
+            direction.
+          </li>
+          <li>
+            <strong>Being moved without driving.</strong> Get shoved, get
+            pinned, get lifted: the wheels do not turn, so as far as odometry is
+            concerned nothing happened.
+          </li>
+        </ul>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Nothing in odometry ever looks at the field, so there is no moment
+          where it notices it is wrong. That is what &quot;drift&quot; means
+          here: not noise, but an error that only accumulates.
+        </p>
+
+        <Box variant="concept" title="Two fixes, and they are the next pages">
+          <ul className="ml-4 list-disc space-y-2">
+            <li>
+              <strong>Measure the numbers it is built on.</strong> Wheel radius,
+              top speed, steering offsets — that is{" "}
+              <Link href="/swerve-calibration" className={linkClass}>
+                Swerve Calibration
+              </Link>
+              . Better inputs mean slower drift.
+            </li>
+            <li>
+              <strong>Give it something that does look at the field.</strong> A
+              camera reading AprilTags knows where it is in absolute terms.{" "}
+              <code>DriveMechanism</code> already has the door for it —{" "}
+              <code>addVisionMeasurement(...)</code>, described in its own
+              comment as &quot;Feeds a camera position estimate into the
+              drivetrain so it can correct odometry.&quot; That is{" "}
+              <Link href="/vision-implementation" className={linkClass}>
+                Vision
+              </Link>
+              .
+            </li>
+          </ul>
+          <p className="mt-3">
+            Until one of those happens, treat the pose as{" "}
+            <em>distance and direction traveled since the code started</em>,
+            which is honest and still useful.
+          </p>
+        </Box>
+      </LessonSection>
+
+      {/* ── 5. WHERE THIS LANDS ──────────────────────────────────────── */}
+      <LessonSection
+        id="where-each-idea-shows-up"
+        title="Where each idea shows up"
+      >
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <strong>Field-centric driving</strong> — the next page. The teleop
+            default command is a field-centric request wired straight to the
+            sticks.
+          </li>
+          <li>
+            <strong>Odometry and drift</strong> — the two pages named in the box
+            above.
+          </li>
+          <li>
+            <strong>
+              <code>Pose2d</code> and <code>Rotation2d</code>
+            </strong>{" "}
+            — Drive to Point and the autonomous page, where a pose stops being a
+            reading and becomes a destination.
+          </li>
+          <li>
+            <strong>The blue-corner frame</strong> — all of the above. It is why
+            the camera is asked for a blue-origin estimate, and why a drive
+            command pins its velocities to that frame instead of the
+            driver&apos;s.
+          </li>
+        </ul>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Next you open Phoenix Tuner X, point it at the four modules, and let
+          it generate the drivetrain.
+        </p>
+
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html"
+          title="CTRE — Tuner X Swerve Project Generator"
+          icon={<Book className="w-5 h-5" />}
+        />
+      </LessonSection>
+
+      <Quiz
+        title="Knowledge Check"
+        questions={[
+          {
+            id: 1,
+            question:
+              "You are driving field-centric. The robot is facing your driver station — its front points at you. You push the left stick away from yourself. What does the robot do?",
+            options: [
+              "Drives toward you, because forward means the direction the robot faces",
+              "Drives away from you, backwards, because forward is a field direction and not the robot's",
+              "Spins to face away first, then drives",
+              "Nothing, until you press the seed-field-centric button",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Field-centric means forward is fixed to the field, not to the robot. The stick asks for motion away from your driver station, so the robot goes that way regardless of which direction its front happens to point. Robot-centric is the other answer: there, forward would follow the robot's nose and it would drive at you.",
+          },
+          {
+            id: 2,
+            question:
+              "What does field-centric control need that robot-centric control does not?",
+            options: [
+              "A camera",
+              "A gyro, so the code knows the robot's heading",
+              "A CANivore",
+              "Closed-loop drive motors",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "To turn a field direction into wheel motion, the code has to subtract the robot's current heading out of your request — so it needs to know that heading. That is the Pigeon 2 gyro, listed in TunerConstants.java as kPigeonId. Robot-centric needs no heading, because everything is already relative to the robot.",
+          },
+          {
+            id: 3,
+            question:
+              "Your robot is on the red alliance. Your driver pushes the stick away from the red driver station and the robot moves away from them. What happened to the coordinate frame odometry reports?",
+            options: [
+              "It flipped too — (0, 0) moved to the red corner",
+              "Nothing. (0, 0) stays in the blue corner; only the driver's idea of forward flipped",
+              "It rotated 90 degrees",
+              "Odometry is disabled on the red alliance",
+            ],
+            correctAnswer: 1,
+            explanation:
+              'Two separate things. applyOperatorPerspective flips what the sticks call forward — 0 degrees on blue, 180 on red — so driving feels the same from either end. The pose frame never moves: DriveMechanism.getPose() says "(0, 0) is always the blue alliance corner. It does not flip when you are on red." A red robot at its own wall reports a large X.',
+          },
+          {
+            id: 4,
+            question: "What three things does a Pose2d hold?",
+            options: [
+              "Speed, acceleration, and heading",
+              "An X in meters, a Y in meters, and a heading as a Rotation2d",
+              "Three wheel angles",
+              "X, Y, and Z position in meters",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "A Pose2d answers where on the field and which way around at once: X meters down the field, Y meters across it, and a Rotation2d for the direction the front of the robot points. Both the robot's current position and a target you drive to are written as one.",
+          },
+          {
+            id: 5,
+            question: "Why does odometry drift over the course of a match?",
+            options: [
+              "The gyro loses power between modes",
+              "It adds up wheel motion and never checks against the field, so slip and small measurement errors accumulate and are never corrected",
+              "The CAN bus drops messages",
+              "It resets to zero every time the robot is disabled",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Odometry is addition. A wheel that slips still reports distance, a wheel radius that is off by 1 percent makes every distance off by 1 percent, and a robot that gets shoved moves without turning a wheel. Nothing in the calculation ever looks at the field, so the error only grows. Calibration slows it down; vision is what actually corrects it.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

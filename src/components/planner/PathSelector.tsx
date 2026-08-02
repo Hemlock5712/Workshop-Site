@@ -47,7 +47,7 @@ export function PathSelector() {
       <select
         value={state.currentPathId}
         onChange={handlePathChange}
-        className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
       >
         {Object.entries(state.paths).map(([id, path]) => (
           <option key={id} value={id}>
@@ -62,7 +62,7 @@ export function PathSelector() {
         value={currentPath?.name || ""}
         onChange={handleNameChange}
         placeholder="Path Name"
-        className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="w-full bg-[var(--background)] border border-[var(--border)] text-[var(--foreground)] px-3 py-2 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
       />
 
       {/* Path Stats */}
@@ -111,7 +111,7 @@ export function PathSelector() {
 
       <button
         onClick={handleDeletePath}
-        className="w-full flex items-center justify-center gap-2 bg-red-500/20 hover:bg-red-500/30 text-red-500 px-3 py-2 rounded-md text-sm transition-colors"
+        className="w-full flex items-center justify-center gap-2 bg-[color-mix(in_oklch,var(--bg2)_20%,transparent)] hover:bg-[color-mix(in_oklch,var(--bg2)_30%,transparent)] text-[var(--err)] px-3 py-2 rounded-md text-sm transition-colors"
       >
         <Trash2 className="w-4 h-4" />
         Delete Path

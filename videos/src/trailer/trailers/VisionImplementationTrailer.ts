@@ -140,13 +140,13 @@ export const VisionImplementationTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your drivetrain's odometry drifts — its position guess slides away from the truth. The fix is four steps of code. A wrapper, a camera class, a pose estimator, and one line in the Robot constructor. By the end, every AprilTag your camera sees corrects your position.",
+      text: "Odometry drift isn't a bug you find and fix. It's a fact you correct, over and over, with a camera. Most of the work is one small class; the rest is a single line in the Robot constructor.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "steps-one-two",
-      text: "Step one: LimelightHelpers. It reads the camera's NetworkTables data — the numbers it broadcasts. Step two: a Limelight class. It turns raw tag data into three things — a pose, a timestamp, and standard deviations. Those say how much to trust the measurement.",
+      text: "LimelightHelpers is vendor code you drop in and forget. Your own Limelight class is the part that matters: it decides whether a measurement is worth having, and how much weight to put on it. Standard deviations are how you say that in code.",
       camera: { x: 2540, y: 400, width: 1400, height: 800 },
       events: [
         {
@@ -160,7 +160,7 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "steps-three-four",
-      text: "Step three: a CTRE pose estimator inside the drivetrain. It blends camera measurements with your wheel odometry. Step four: register every camera in the Robot constructor. One call, and the pipeline runs itself.",
+      text: "You don't write the estimator. CTRE already built one into the swerve drivetrain, blending wheel odometry with whatever vision hands it. Register your cameras once in the Robot constructor and it runs all match.",
       camera: DIAGRAM,
       events: [
         {
@@ -179,7 +179,7 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "plain-class",
-      text: "The Limelight is not a Mechanism, because it owns no motors. It's a plain class. Its update method reads a fresh estimate, computes trust, and feeds the drivetrain. One registerAll call hooks every camera into Scheduler addPeriodic — update then runs every loop.",
+      text: "A Mechanism owns motors and gets scheduled. A camera owns neither, so Limelight is a plain class. One registerAll call hooks every camera into the scheduler, and update runs from then on: newest estimate, drop it if it's wrong, compute trust, hand it over.",
       camera: CODE,
       events: [
         {
@@ -199,7 +199,7 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "trust-math",
-      text: "How much should you trust one measurement? Distance hurts. Trust falls with the distance squared. Far tags count for less. More tags help. You divide by the tag count. And rotation gets the least trust of all. Heading read from a single tag is shaky.",
+      text: "Standard deviations sound academic until you watch a robot teleport. A tag across the field, read at a bad angle, will absolutely lie to you, and if you told the estimator to believe it, it believes it. These numbers are you telling it not to.",
       camera: CODE2,
       events: [
         {
@@ -213,13 +213,13 @@ export const VisionImplementationTrailer: TrailerScript = {
     },
     {
       id: "filters",
-      text: "Before any measurement counts, three quick checks run. Is the pose inside the field? Is the tag ambiguous — could the math flip it? Is the height sane? And Phoenix 6 now shares WPILib's clock, so the timestamp goes straight in. No conversion needed.",
+      text: "Three cheap checks run first, and each exists because it burned somebody. A pose outside the field. A tag the solver couldn't pin down. A robot floating a meter above the carpet. Phoenix 6 shares WPILib's clock now, so the timestamp passes through untouched.",
       camera: { x: 5520, y: 520, width: 1480, height: 700 },
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "That's the whole pipeline: helpers, camera class, estimator, one registration line. Now your robot knows where it is, even after taking a hit. Build it step by step at frc5712.com.",
+      text: "One specific misery ends here. Your auto stops falling apart after contact, because the robot no longer trusts a position it got from a wheel that spent half a second in the air.",
       camera: END,
       holdAfter: 1.2,
     },

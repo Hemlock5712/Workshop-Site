@@ -1,315 +1,875 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
-import ContentCard from "@/components/ContentCard";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import CodeBlock from "@/components/CodeBlock";
 import GitHubContent from "@/components/GitHubContent";
+import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { Lightbulb, AlertTriangle, TrendingUp, X, Check } from "lucide-react";
+import { GitBranch } from "lucide-react";
+
+const subheadingStyle = {
+  fontFamily: "var(--font-serif)",
+  color: "var(--fg)",
+} as const;
+
+const bodyStyle = { color: "var(--fg-mute)" } as const;
 
 export default function DynamicFlywheel() {
   return (
-    <PageTemplate title="Dynamic Flywheel Control">
+    <PageTemplate
+      title="Let the robot pick its own shooting speed"
+      emphasis="its own shooting speed"
+      lede="A flywheel that always spins at one speed only scores from one spot on the field. Every other shot is either short or long, so the driver has to hunt for the sweet spot before every shot."
+      needs={[
+        <>
+          The vision setup from <strong>Vision</strong>. Branch{" "}
+          <code>4-DynamicFlywheel</code> is one commit off{" "}
+          <code>3-Limelight</code>.
+        </>,
+        <>
+          Odometry you trust, from <strong>Swerve Calibration</strong>. This
+          whole lesson is arithmetic on the robot&apos;s reported position. If
+          that position is wrong, every speed the table hands back is wrong too,
+          and nothing on this page will tell you so.
+        </>,
+        <>
+          A flywheel on the bench: two Krakens, CAN IDs <strong>21</strong> and{" "}
+          <strong>22</strong>, on the CANivore. You met this mechanism in
+          Workshop&nbsp;#1 — the same two motors on the same CAN IDs, and the
+          distance lookup is the new part.
+        </>,
+      ]}
+      branch="4-DynamicFlywheel"
+      time="about 40 minutes to type in"
+    >
       <KeyConceptSection
-        title="Vision-Based Shooting with Dynamic Velocity"
-        description="Using odometry data with an interpolating lookup table, your robot can shoot accurately from anywhere on the field."
-        concept="Use swerve odometry and a velocity map to shoot consistently from any position without manual adjustment."
+        description={[
+          "The drivetrain already knows roughly where it is on the field. So the flywheel can ask it, work out how far away the goal is, and look up the speed that works at that distance — every loop, while the robot is still moving.",
+        ]}
+        concept="A lookup table turns a handful of measured shots into a speed for every distance in between."
       />
 
-      <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
-        Instead of one fixed shooting speed, dynamic flywheel control adjusts
-        the velocity in real time based on how far the robot is from the target.
-      </p>
+      <Box
+        variant="alert-warning"
+        tag="OPTIONAL · DEAD-END BRANCH"
+        title="Read this before you start typing"
+      >
+        <p>
+          This lesson is a side trip, and the branch it teaches is a dead end.{" "}
+          <code>4-DynamicFlywheel</code> sits <strong>one commit</strong> on top
+          of <code>3-Limelight</code>. Nothing after it builds on it.
+        </p>
+        <p className="mt-3">
+          The next lesson, <strong>Drive to Point</strong>, uses{" "}
+          <code>5-DriveToPoint</code> — and that branch forks off{" "}
+          <code>2-Logging</code> instead. Compare the two and git reports them
+          as <em>diverged</em>: ahead 1, behind 2. Its <code>subsystems/</code>{" "}
+          folder holds exactly three files —{" "}
+          <code>CommandSwerveDrivetrain.java</code>,{" "}
+          <code>DriveMechanism.java</code> and <code>Limelight.java</code>.{" "}
+          <strong>
+            No <code>Flywheel.java</code>. No{" "}
+            <code>utils/TalonFXUtil.java</code>.
+          </strong>
+        </p>
+        <p className="mt-3">
+          Check out <code>5-DriveToPoint</code> after this lesson and the
+          flywheel you built disappears. That is not a mistake in your work — it
+          is how the repository is laid out. Two ways to keep it:
+        </p>
+        <ul className="ml-4 mt-3 list-disc space-y-1">
+          <li>
+            Stay on <code>4-DynamicFlywheel</code> until you are finished
+            playing with it, and clone a second copy of the repository for the
+            next lesson.
+          </li>
+          <li>
+            Or commit your work on a branch of your own before you switch:{" "}
+            <code>git switch -c my-flywheel</code>, then <code>git add -A</code>{" "}
+            and <code>git commit</code>. It will still be there when you come
+            back.
+          </li>
+        </ul>
+        <p className="mt-3">
+          Skipping this page breaks nothing later. It is here because the idea
+          is worth knowing, not because anything depends on it.
+        </p>
+      </Box>
 
-      {/* Why Dynamic Velocity */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Why Dynamic Velocity Control?
-        </h2>
+      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
+        <p className="mt-3">
+          <strong>What you&apos;ll build:</strong> a <code>Flywheel</code>{" "}
+          mechanism that reads the drivetrain&apos;s pose, measures the distance
+          to a fixed field point, and sets its speed from a lookup table — bound
+          to the A button.
+        </p>
+        <p className="mt-3">
+          <strong>How long:</strong> about 40 minutes to type in, build and
+          watch the numbers move. Filling the table with speeds that actually
+          score is a separate session, on a real field, with a pile of game
+          pieces. More on that below.
+        </p>
+      </Box>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-red-50 dark:bg-red-950/30 rounded-lg p-6 border-l-4 border-red-400 dark:border-red-900">
-            <h3 className="text-xl font-bold text-red-800 dark:text-red-300 mb-4 flex items-center gap-2">
-              <X className="w-5 h-5" aria-hidden="true" />
-              Fixed Velocity Problems
-            </h3>
-            <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Only accurate from one specific distance</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Requires driver to position robot precisely</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>
-                  Wastes time moving to &quot;sweet spot&quot; locations
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Limited strategic positioning options</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Multiple preset buttons needed for different zones</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="bg-green-50 dark:bg-green-950/30 rounded-lg p-6 border-l-4 border-green-400 dark:border-green-900">
-            <h3 className="text-xl font-bold text-green-800 dark:text-green-300 mb-4 flex items-center gap-2">
-              <Check className="w-5 h-5" aria-hidden="true" />
-              Dynamic Velocity Benefits
-            </h3>
-            <ul className="space-y-2 text-sm text-slate-700 dark:text-slate-300">
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Shoot accurately from anywhere on the field</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>
-                  Automatic velocity adjustment, no driver input needed
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Faster scoring cycles (shoot from current position)</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>More strategic flexibility during matches</span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>Single-button command handles all distances</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Understanding Interpolation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Understanding Distance-to-Velocity Mapping
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          The core of dynamic flywheel control is an{" "}
-          <strong>InterpolatingDoubleTreeMap</strong>, a data structure that
-          stores known distance-velocity pairs and automatically calculates
-          velocities for distances in between.
+      {/* ── THE IDEA ─────────────────────────────────────────────────── */}
+      <LessonSection
+        id="four-measurements-every-distance-in-between"
+        title="Four measurements, every distance in between"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          You cannot measure the right flywheel speed at every possible
+          distance. There are infinitely many distances and one afternoon of
+          practice time. So you measure a few, write them down, and let the code
+          fill in the gaps.
         </p>
 
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              <TrendingUp className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                How InterpolatingDoubleTreeMap Works
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                You provide key distance-velocity pairs, and the map fills in
-                the gaps automatically using linear interpolation.
-              </p>
-            </div>
-          </div>
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <code>InterpolatingDoubleTreeMap</code> is the WPILib class that does
+          the filling in. You hand it pairs — a distance and the speed that
+          works at that distance — and ask it for any distance you like. Between
+          two rows it draws a straight line and reads the answer off it. That is
+          all &quot;linear interpolation&quot; means.
+        </p>
 
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Example Mapping:
-              </h4>
-              <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <div className="flex justify-between p-2 bg-white dark:bg-slate-800 rounded">
-                  <span className="font-mono">Distance: 1.0 m</span>
-                  <span className="font-mono">→ Velocity: 10 RPS</span>
-                </div>
-                <div className="flex justify-between p-2 bg-white dark:bg-slate-800 rounded">
-                  <span className="font-mono">Distance: 2.0 m</span>
-                  <span className="font-mono">→ Velocity: 30 RPS</span>
-                </div>
-                <div className="flex justify-between p-2 bg-white dark:bg-slate-800 rounded">
-                  <span className="font-mono">Distance: 3.0 m</span>
-                  <span className="font-mono">→ Velocity: 60 RPS</span>
-                </div>
-              </div>
-            </div>
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          These are the four pairs the branch ships, in meters and rotations per
+          second:
+        </p>
 
-            <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg border border-primary-200 dark:border-primary-800">
-              <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
-                Automatic Interpolation:
-              </h4>
-              <p className="text-sm text-slate-700 dark:text-slate-300 mb-2">
-                If your robot is at <strong>1.5 meters</strong> (between 1.0 and
-                2.0), the map automatically calculates:
-              </p>
-              <p className="text-sm font-mono bg-white dark:bg-slate-800 p-2 rounded">
-                Velocity = 10 + (30 - 10) × (1.5 - 1.0) / (2.0 - 1.0) ={" "}
-                <strong>20 RPS</strong>
-              </p>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
-                Linear interpolation ensures smooth velocity transitions as the
-                robot moves around the field.
-              </p>
-            </div>
-          </div>
-        </ContentCard>
-      </section>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[520px] border-collapse text-[14px]">
+            <thead>
+              <tr>
+                <th
+                  className="border-b px-3 py-2 text-left font-semibold"
+                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                >
+                  Distance (m)
+                </th>
+                <th
+                  className="border-b px-3 py-2 text-left font-semibold"
+                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                >
+                  Speed (rot/s)
+                </th>
+                <th
+                  className="border-b px-3 py-2 text-left font-semibold"
+                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                >
+                  Where the number comes from
+                </th>
+              </tr>
+            </thead>
+            <tbody style={bodyStyle}>
+              <tr>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  0.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  0.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  In the table — <code>table.put(0.0, 0.0)</code>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  1.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  10.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  In the table — <code>table.put(1.0, 10.0)</code>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  1.5
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  20.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  <em>Not in the table.</em> Halfway between the two rows above,
+                  so halfway between 10 and 30.
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  2.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  30.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  In the table — <code>table.put(2.0, 30.0)</code>
+                </td>
+              </tr>
+              <tr>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  3.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top font-mono"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  60.0
+                </td>
+                <td
+                  className="border-b px-3 py-2 align-top"
+                  style={{ borderColor: "var(--line-soft)" }}
+                >
+                  In the table — <code>table.put(3.0, 60.0)</code>
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2 align-top font-mono">4.0</td>
+                <td className="px-3 py-2 align-top font-mono">60.0</td>
+                <td className="px-3 py-2 align-top">
+                  <em>Past the last row.</em> The map stops at the edge — see
+                  the warning below.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-      {/* Implementation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Implementation Guide
-        </h2>
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT"
+          title="Off the end of the table, the number stops changing"
+        >
+          <p>
+            Ask for a distance further out than your last row and the map hands
+            back the value at that last row. It does <strong>not</strong> keep
+            the line going. With this table, 3.5 m, 4 m and 9 m all return{" "}
+            <code>60.0</code>.
+          </p>
+          <p className="mt-3">
+            That is the safe choice — an extrapolated speed at 9 meters would be
+            a guess with nothing behind it. But it means a shot from beyond your
+            furthest measured point is quietly wrong, and the robot gives no
+            sign. Measure out to the furthest distance you ever plan to shoot
+            from.
+          </p>
+        </Box>
+      </LessonSection>
 
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              1
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Set Up the Lookup Table
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Create an InterpolatingDoubleTreeMap and populate it with
-                distance-velocity pairs based on testing.
-              </p>
-            </div>
-          </div>
+      {/* ── STEP 1 ───────────────────────────────────────────────────── */}
+      <LessonSection id="add-the-two-new" title="Add the two new files">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          This branch adds four files&apos; worth of changes on top of{" "}
+          <code>3-Limelight</code>: two brand-new files, plus edits to{" "}
+          <code>Robot.java</code> and <code>opmodes/TeleopOpMode.java</code>.
+          Create the new ones first.
+        </p>
 
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <code>src/main/java/frc/robot/utils/TalonFXUtil.java</code> — a
+            small helper. Phoenix&apos;s <code>apply(...)</code> sends a
+            configuration to a motor once and reports whether it landed; it does
+            not retry. This helper tries up to five times, which covers the
+            short CAN hiccups that happen while a robot boots, and reports to
+            the driver station if all five fail. The swerve track has not needed
+            it until now.
+          </li>
+          <li>
+            <code>src/main/java/frc/robot/subsystems/Flywheel.java</code> — the
+            lesson.
+          </li>
+        </ul>
+
+        <CollapsibleSection title="Read the helper: TalonFXUtil.java">
+          <GitHubContent
+            repository="Hemlock5712/Workshop-Code"
+            branch="4-DynamicFlywheel"
+            filePath="src/main/java/frc/robot/utils/TalonFXUtil.java"
+            title="TalonFXUtil"
+            description="Retries a TalonFX configuration up to five times, then reports a driver station error naming the device ID."
+          />
+        </CollapsibleSection>
+
+        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+          The fields at the top of <code>Flywheel.java</code>
+        </h3>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Everything below sits{" "}
+          <strong>inside the class braces and above the constructor</strong>.
+          These are field declarations — each one names a thing the mechanism
+          owns for as long as the robot is on. None of them is a statement you
+          could drop into a method.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Flywheel.java — class declaration and fields"
+          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
+          code={`public class Flywheel extends Mechanism {
+  // Field point we are shooting at, blue-alliance origin (meters). TODO: set the real goal.
+  private static final Translation2d TARGET = new Translation2d(3, 5);
+
+  // PID + feedforward gains.
+  private static final double kS = 0.0; // overcomes friction
+  private static final double kV = 0.125; // volts per rotation-per-second
+  private static final double kP = 0.0; // correction strength
+
+  // Motion Magic limits: how fast the wheel may spin and how quickly it may speed up.
+  private static final double MOTION_MAGIC_CRUISE_VELOCITY = 100.0; // top speed (rot/s)
+  private static final double MOTION_MAGIC_ACCELERATION = 1000.0; // ramp rate (rot/s²)
+
+  private final CANBus canivore = new CANBus("canivore");
+  private final TalonFX leader = new TalonFX(21, canivore);
+  private final TalonFX follower = new TalonFX(22, canivore);
+
+  // Asks the motor to ramp to a target speed instead of jumping to it.
+  private final MotionMagicVelocityVoltage velocityOut = new MotionMagicVelocityVoltage(0);
+
+  private final DriveMechanism drivetrain;
+
+  // distance (meters) -> flywheel speed (rotations/second). Gaps are filled in automatically.
+  private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+
+  // Publish live numbers to NetworkTables. DataLogManager also records them to the log file.
+  private final NetworkTable telemetry = NetworkTableInstance.getDefault().getTable("Flywheel");
+  private final DoublePublisher distancePublisher =
+      telemetry.getDoubleTopic("DistanceToTargetMeters").publish();
+  private final DoublePublisher targetVelocityPublisher =
+      telemetry.getDoubleTopic("TargetVelocityRps").publish();`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Three of those deserve a second look.
+        </p>
+
+        <ul
+          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <code>TARGET</code> is a <code>Translation2d</code> — an x and a y
+            in meters, measured from the blue-alliance corner of the field, the
+            same origin the pose uses. <code>(3, 5)</code> is a placeholder, and
+            the branch says so in its own comment:{" "}
+            <code>TODO: set the real goal</code>.
+          </li>
+          <li>
+            <code>drivetrain</code> has no <code>= new ...</code> on it. There
+            is only ever one drivetrain, and <code>Robot</code> already owns it,
+            so the flywheel is handed the existing one in its constructor.
+          </li>
+          <li>
+            The two <code>DoublePublisher</code>s are typed handles into
+            NetworkTables. Creating them once up here is cheaper than looking
+            the topic up every loop, and it means the names{" "}
+            <code>Flywheel/DistanceToTargetMeters</code> and{" "}
+            <code>Flywheel/TargetVelocityRps</code> are spelled in exactly one
+            place. Logging is already running from the Logging lesson, so both
+            numbers land in the <code>.wpilog</code> file with no extra work.
+          </li>
+        </ul>
+
+        <Box variant="alert-success" title="You should see">
+          Nothing yet — the file will not compile until it has a constructor.
+          What you should see is red squiggles on the <em>imports</em> only if
+          you typed a package name wrong. Grab the import block below if you
+          want to be sure.
+        </Box>
+
+        <CollapsibleSection title="The full import block, if you want to paste it">
           <CodeBlock
             language="java"
-            title="Flywheel constructor: populating the lookup table"
-            code={`// distance (meters) -> velocity (RPS), with linear interpolation between rows.
-private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+            hideControls
+            code={`import static org.wpilib.units.Units.RotationsPerSecond;
 
-// Fill the table from real-world testing — measure at a few distances,
-// the map handles the in-between values for you.
-table.put(0.0, 0.0);    // At target: no velocity needed
-table.put(1.0, 10.0);   // 1 meter away: 10 RPS
-table.put(2.0, 30.0);
-table.put(3.0, 60.0);`}
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.utils.TalonFXUtil;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Mechanism;
+import org.wpilib.math.geometry.Translation2d;
+import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
+import org.wpilib.networktables.DoublePublisher;
+import org.wpilib.networktables.NetworkTable;
+import org.wpilib.networktables.NetworkTableInstance;`}
           />
+        </CollapsibleSection>
+      </LessonSection>
 
-          <Box
-            variant="alert-tip"
-            title="Tuning Tip"
-            icon={<Lightbulb className="w-5 h-5" />}
-          >
-            <p>
-              Start with a few key distance points, then add more data through
-              testing. You don&apos;t need every possible distance;
-              interpolation handles the values in between.
-            </p>
-          </Box>
-        </ContentCard>
+      {/* ── STEP 2 ───────────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-constructor-table-follower"
+        title="The constructor: table, follower, configuration"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The constructor runs once, when <code>Robot</code> builds the
+          flywheel. Three jobs: fill the table, tell the second motor to copy
+          the first, and push the gains down to the hardware.
+        </p>
 
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              2
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Calculate Distance to Target
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Use your swerve drivetrain&apos;s odometry to get the
-                robot&apos;s position, then calculate distance to the target.
-              </p>
-            </div>
+        <CodeBlock
+          language="java"
+          title="Flywheel.java — the constructor"
+          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
+          code={`  public Flywheel(DriveMechanism drivetrain) {
+    this.drivetrain = drivetrain;
+
+    // Build the distance -> speed table. Tune these points with real test shots.
+    table.put(0.0, 0.0);
+    table.put(1.0, 10.0);
+    table.put(2.0, 30.0);
+    table.put(3.0, 60.0);
+
+    // The follower copies the leader, spinning the opposite direction.
+    follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to spin by hand
+    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    config.Slot0.kS = kS;
+    config.Slot0.kV = kV;
+    config.Slot0.kP = kP;
+    config.MotionMagic.MotionMagicCruiseVelocity = MOTION_MAGIC_CRUISE_VELOCITY;
+    config.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;
+
+    TalonFXUtil.applyConfigWithRetries(leader, config);
+  }`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <code>MotorAlignmentValue.Opposed</code> is the important one. It
+          makes the follower spin backward relative to the leader, which is
+          exactly what the branch&apos;s own comment asks for:{" "}
+          <em>
+            the follower copies the leader, spinning the opposite direction
+          </em>
+          . Set it the other way and the two motors fight each other.
+        </p>
+
+        <Box
+          variant="alert-warning"
+          tag="NOTE · GAINS"
+          title="Two of these three gains ship as zero"
+        >
+          <p>
+            <code>kV = 0.125</code> is a real number: volts per rotation per
+            second. That one term is doing all the work — ask for 60 rot/s and
+            it applies about 7.5 volts, which gets the wheel roughly there.
+          </p>
+          <p className="mt-3">
+            <code>kS = 0.0</code> and <code>kP = 0.0</code> are placeholders. As
+            shipped there is no correction at all: nothing measures the real
+            speed and pushes harder when the wheel is slow. It runs
+            open-loop-ish, and it will sag when a game piece hits it. Tuning
+            those two is bench work, using the same procedure as the{" "}
+            <strong>PID Control</strong> lesson. Do not read the zeros as
+            &quot;tuned and finished.&quot;
+          </p>
+        </Box>
+
+        <Box variant="alert-success" title="You should see">
+          <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
+          Every <code>final</code> field now gets assigned, which is what Step 1
+          was missing. The class still does nothing — no command, no binding.
+        </Box>
+      </LessonSection>
+
+      {/* ── STEP 3 ───────────────────────────────────────────────────── */}
+      <LessonSection id="measure-the-distance" title="Measure the distance">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Two short private methods. The first asks the drivetrain where it
+          thinks it is and measures to the target. The second sends a speed to
+          the motor. Both publish their number on the way past, so you can watch
+          them.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Flywheel.java — the two private helpers"
+          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
+          code={`  /** Distance (meters) from where the robot thinks it is to the target. */
+  private double distanceToTarget() {
+    double distance = drivetrain.getPose().getTranslation().getDistance(TARGET);
+    distancePublisher.set(distance);
+    return distance;
+  }
+
+  private void setVelocity(double rps) {
+    targetVelocityPublisher.set(rps);
+    leader.setControl(velocityOut.withVelocity(RotationsPerSecond.of(rps)));
+  }`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Read that first line right to left. <code>drivetrain.getPose()</code>{" "}
+          hands back a <code>Pose2d</code> — a position <em>and</em> a heading.{" "}
+          <code>.getTranslation()</code> throws the heading away and keeps the x
+          and y. <code>.getDistance(TARGET)</code> is the straight-line distance
+          between two points, the one you would measure with a tape.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Notice the wording of the comment the branch put there:{" "}
+          <em>where the robot thinks it is</em>. That is deliberate. The pose is
+          wheel odometry corrected by AprilTag sightings — a good estimate, not
+          ground truth. The number this method returns inherits every bit of
+          error in it.
+        </p>
+
+        <Box
+          variant="alert-info"
+          tag="NOTE · UNITS"
+          title="RotationsPerSecond.of(rps), not rps"
+        >
+          <p>
+            Every flywheel in Workshop-Code and in the robot template writes{" "}
+            <code>withVelocity(RotationsPerSecond.of(rps))</code> rather than
+            passing a bare <code>double</code>. Wrapping the number in a unit
+            type keeps the unit attached to the value, so nobody downstream has
+            to guess whether 60 meant rotations or radians. The static import at
+            the top of the file is what makes the short spelling work.
+          </p>
+        </Box>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          There is no <code>periodic()</code> method to put this in. Mechanisms
+          in Commands&nbsp;v3 do not have one. The measuring happens inside the
+          command instead, which is the next step.
+        </p>
+
+        <Box variant="alert-success" title="You should see">
+          <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
+          Nothing calls either method yet, so nothing moves — the checkpoint is
+          that <code>RotationsPerSecond</code> and <code>Translation2d</code>{" "}
+          resolved and the two publishers are in scope.
+        </Box>
+      </LessonSection>
+
+      {/* ── STEP 4 ───────────────────────────────────────────────────── */}
+      <LessonSection
+        id="the-command-that-keeps"
+        title="The command that keeps re-measuring"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Here is the whole point of the lesson in one method.{" "}
+          <code>runRepeatedly(...)</code> runs its body every scheduler loop —
+          about fifty times a second. So the distance is measured again, the
+          table is asked again, and the motor is given a new speed again, fifty
+          times a second, while the robot is still driving.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Flywheel.java — the commands, with the branch's own comment block"
+          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
+          code={`  // Both commands below are HOLDS: runRepeatedly runs the action every loop and never finishes.
+  // Never make a sequence wait on a hold. Need an ending? Add it where you use the command:
+  // flywheel.distanceShoot().until(someCondition). The "(hold)" in each name shows up on the
+  // dashboard and in logs - if a stuck routine is sitting on a "(hold)", you found the bug.
+
+  /**
+   * Keep setting the flywheel speed from the live distance to the target. A hold - it never
+   * finishes on its own. Bind it with {@code whileTrue} so it stops when the button is released.
+   */
+  public Command distanceShoot() {
+    return runRepeatedly(() -> setVelocity(table.get(distanceToTarget())))
+        .named("distanceShoot (hold)");
+  }
+
+  /** Stop the flywheel and keep it stopped. Never finishes. */
+  public Command stop() {
+    return runRepeatedly(leader::stopMotor).named("stop (hold)");
+  }`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The body reads inside out:{" "}
+          <code>setVelocity(table.get(distanceToTarget()))</code>. Measure, look
+          up, send. Three calls, one line, once per loop.
+        </p>
+
+        <Box variant="concept" title="Why the name ends in (hold)">
+          <p>
+            <code>runRepeatedly(...)</code> never finishes on its own. It is a
+            hold, and the site&apos;s convention is that every hold says so in
+            its name. That suffix is not decoration — it is a warning to the
+            next person who reads it. Put <code>distanceShoot()</code> into a{" "}
+            <code>Command.sequence(...)</code> and the sequence stops there
+            forever, because step one never ends.
+          </p>
+          <p className="mt-3">
+            The suffix also shows up in the log, so a routine that has quietly
+            frozen tells you which hold it froze on.
+          </p>
+        </Box>
+
+        <Box
+          variant="alert-danger"
+          tag="DON'T"
+          title="Do not measure the distance once and reuse it"
+        >
+          <p>
+            The tempting shortcut is to work the distance out in the
+            constructor, or once at the top of the command, and store it. Both
+            give you the distance to the target at the moment the robot booted
+            or the moment you pressed the button. Drive two meters and the speed
+            is wrong, with nothing to tell you.
+          </p>
+          <p className="mt-3">
+            The re-measuring <em>is</em> the lesson. <code>runRepeatedly</code>{" "}
+            is what does it.
+          </p>
+        </Box>
+
+        <Box variant="alert-success" title="You should see">
+          <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>, and{" "}
+          <code>Flywheel.java</code> is finished: two public commands,{" "}
+          <code>distanceShoot()</code> and <code>stop()</code>. Nothing runs
+          either one yet — no <code>Robot</code> field owns the flywheel and no
+          button is bound to it. That is Step 5.
+        </Box>
+      </LessonSection>
+
+      {/* ── STEP 5 ───────────────────────────────────────────────────── */}
+      <LessonSection
+        id="own-it-in-robot"
+        title={
+          <>
+            Step 5 — Own it in <code>Robot</code>, bind it in{" "}
+            <code>TeleopOpMode</code>
+          </>
+        }
+        outlineLabel="Own it in Robot, bind it in TeleopOpMode"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Mechanisms are <code>public final</code> fields on <code>Robot</code>.
+          Add one line, below the drivetrain:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Robot.java — the flywheel joins the drivetrain"
+          filename="src/main/java/frc/robot/Robot.java"
+          code={`public class Robot extends OpModeRobot {
+  public final DriveMechanism drivetrain = new DriveMechanism();
+
+  // The flywheel reads the drivetrain's position to pick its shooting speed.
+  public final Flywheel flywheel = new Flywheel(drivetrain);`}
+        />
+
+        <Box
+          variant="alert-warning"
+          tag="WATCH OUT"
+          title="Order matters on these two lines"
+        >
+          <p>
+            Java builds fields top to bottom, and the language will not let you
+            read one before it is declared. Put the flywheel line <em>above</em>{" "}
+            the drivetrain line and the build stops with{" "}
+            <code>illegal forward reference</code>, pointing at{" "}
+            <code>drivetrain</code>. That is the good outcome — the compiler
+            catches it by name instead of leaving you a null to chase at the
+            field. Declare the drivetrain above anything that takes it as an
+            argument.
+          </p>
+        </Box>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Now the binding. Button bindings for a driving mode go in that
+          OpMode&apos;s constructor, and the framework removes them when the
+          mode switches. This is what the branch writes:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java — inside the constructor"
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          code={`    // Hold A: spin the flywheel at the speed picked from the live distance to the goal.
+    driver.a().whileTrue(robot.flywheel.distanceShoot());`}
+        />
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <code>whileTrue</code> is the right verb for a hold: the command runs
+          while A is down and is canceled the moment you let go. That is the
+          binding the command&apos;s own javadoc asks for.
+        </p>
+
+        <Box
+          variant="alert-warning"
+          tag="THE BRANCH LEAVES THIS OUT"
+          title="Canceling the command does not stop the wheel"
+        >
+          <p>
+            The branch binds <code>whileTrue</code> and nothing else. Release A
+            and the command is canceled — but canceling hands the mechanism back
+            to <code>idle()</code>, and <code>idle()</code> sends{" "}
+            <em>nothing</em>. It does not zero the last request. Phoenix carries
+            on applying the last speed it was given, so the wheel keeps
+            spinning.
+          </p>
+          <p className="mt-3">
+            That is why <code>stop()</code> exists on this class. The branch
+            never binds it. Add the pair yourself:
+          </p>
+          <div className="mt-3">
+            <CodeBlock
+              language="java"
+              hideControls
+              code={`driver
+    .a()
+    .whileTrue(robot.flywheel.distanceShoot())
+    .whileFalse(robot.flywheel.stop());`}
+            />
           </div>
+        </Box>
 
-          <CodeBlock
-            language="java"
-            title="Distance to target (computed on demand)"
-            code={`// v3 mechanisms have no periodic() — compute the distance on demand from odometry.
-private double distanceToTarget() {
-    // Current robot pose from swerve odometry (blue-origin frame).
-    Pose2d robotPose = m_drivetrain.getPose();
-    Translation2d robotXY = robotPose.getTranslation();
+        <Box variant="alert-success" title="You should see">
+          <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
+          Start the robot code and a <code>Flywheel</code> table appears in your
+          dashboard tree with <code>DistanceToTargetMeters</code> and{" "}
+          <code>TargetVelocityRps</code> under it, before you press A. If the
+          table is missing, <code>Robot</code> never built the flywheel — check
+          the field you just added.
+        </Box>
+      </LessonSection>
 
-    // Euclidean distance to the fixed target.
-    return robotXY.getDistance(target);
-}`}
-          />
+      {/* ── FILLING THE TABLE ────────────────────────────────────────── */}
+      <LessonSection
+        id="the-four-numbers-in-the-table"
+        title="The four numbers in the table are not your numbers"
+      >
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          0, 10, 30, 60 are placeholders. The branch says so in its own comment
+          — <code>Tune these points with real test shots</code> — and they were
+          never measured on your shooter, with your wheels, your compression or
+          your game piece.
+        </p>
 
-          <Box variant="alert-info" title="Target Position">
-            <p>
-              The <code>target</code> is a fixed field position (e.g., speaker
-              center). In this example, it&apos;s at coordinates (3, 5). Update
-              this based on your field layout and game objectives.
-            </p>
-          </Box>
-        </ContentCard>
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          There is no formula for these. You cannot compute them from the
+          geometry, because the answer depends on how much the game piece
+          squashes, how much it slips on the wheel, how worn the wheel is, and
+          how much the battery has sagged. Every team that runs a lookup table
+          got its numbers the same way: by shooting.
+        </p>
 
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              3
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Create the Distance Shoot Command
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                This command continuously queries the lookup table and adjusts
-                flywheel velocity as the robot moves.
-              </p>
-            </div>
-          </div>
+        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+          How teams actually fill it in
+        </h3>
 
-          <CodeBlock
-            language="java"
-            title="Dynamic Velocity Command"
-            code={`/**
- * Continuously sets flywheel velocity from the live distance to the target.
- * runRepeatedly re-runs the body every loop, so the velocity tracks the robot
- * as it moves around the field. .named(...) is required in v3.
- */
-public Command distanceShoot() {
-    return runRepeatedly(() -> {
-          double distance = distanceToTarget();
-          setVelocity(table.get(distance));
-          SmartDashboard.putNumber("Flywheel/DistanceToTarget", distance); // -> NT -> .wpilog
-        })
-        .named("distanceShoot");
-}`}
-          />
+        <ol
+          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            <strong>Park at one distance and stay there.</strong> Tape mark on
+            the carpet. Read <code>Flywheel/DistanceToTargetMeters</code> and
+            check the robot agrees with your tape measure. If it does not, stop
+            — your odometry is the problem, not the flywheel.
+          </li>
+          <li>
+            <strong>Hunt for the speed by hand.</strong> Change the number in{" "}
+            <code>table.put(...)</code>, redeploy, shoot. Big steps first, then
+            smaller ones. You are looking for the middle of the range that
+            scores, not the first speed that goes in once.
+          </li>
+          <li>
+            <strong>Shoot five, not one.</strong> A single lucky shot is not
+            data. If four out of five score, write the number down. If two out
+            of five score, you found the edge of the range, not the middle.
+          </li>
+          <li>
+            <strong>Move a meter and do it again.</strong> Three or four
+            distances spread across the range you will actually shoot from.
+            Include the furthest one, because the table stops changing past your
+            last row.
+          </li>
+          <li>
+            <strong>Test in between.</strong> Stand halfway between two measured
+            distances and shoot. That is the interpolation doing its job. If it
+            misses there, add a row between them — that is the only reason to
+            add rows.
+          </li>
+        </ol>
 
-          <div className="bg-green-50 dark:bg-green-950/30 p-4 rounded-lg border-l-4 border-green-400 dark:border-green-900 mt-4">
-            <h4 className="font-semibold text-green-800 dark:text-green-300 mb-2">
-              Automatic Adjustment
-            </h4>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              As the robot drives around, <code>runRepeatedly</code> re-runs the
-              command body every loop, recomputing the distance and pulling the
-              new velocity from the table.
-            </p>
-          </div>
-        </ContentCard>
-      </section>
+        <Box variant="alert-tip" title="Expect this to take a practice session">
+          <p>
+            Four distances, five shots each, redeploying between attempts, is an
+            hour or two with someone feeding game pieces. That is normal. Put
+            the numbers in a shared note as you go, with the date and the
+            battery, so nobody re-does the work in March.
+          </p>
+        </Box>
 
-      {/* Code Example from GitHub */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation: Dynamic Flywheel
-        </h2>
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The same warning applies to <code>TARGET</code>. As shipped it is{" "}
+          <code>new Translation2d(3, 5)</code> with a{" "}
+          <code>TODO: set the real goal</code> next to it. Look up the real
+          coordinates in the game manual&apos;s field drawings, measured from
+          the blue-alliance origin, and put those in before you measure a single
+          shot.
+        </p>
+      </LessonSection>
 
-        <p className="text-slate-600 dark:text-slate-300">
-          See the complete implementation in the Workshop-Code repository. The{" "}
-          <code>4-DynamicFlywheel</code> branch shows how all the pieces fit
-          together in a real subsystem.
+      {/* ── FULL FILE ────────────────────────────────────────────────── */}
+      <LessonSection id="the-whole-file" title="The whole file">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Everything above, in one piece, straight off the branch. The
+          &quot;GitHub Changes&quot; tab shows the four-file diff against{" "}
+          <code>3-Limelight</code> — that diff is exactly this lesson.
         </p>
 
         <GitHubContent
@@ -318,241 +878,258 @@ public Command distanceShoot() {
           branch="4-DynamicFlywheel"
           pr={{ number: 10, focusFile: "Flywheel.java" }}
         />
-      </section>
 
-      {/* Tuning Guide */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Tuning Your Velocity Map
-        </h2>
-
-        <CollapsibleSection title="Step-by-Step Tuning Process" variant="info">
-          <div className="space-y-6">
-            <div className="flex gap-4">
-              <span className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                1
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Start with closest or farthest distance
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Put your robot at the closest or farthest distance from the
-                  target and manually tune the flywheel velocity until shots are
-                  accurate.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                2
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Test at Key Distances
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Position your robot at specific distances (1m, 2m, 3m, etc.)
-                  and manually tune the flywheel velocity until shots are
-                  consistently successful.
-                </p>
-                <br />
-                <Box
-                  variant="alert-warning"
-                  title="Test Systematically"
-                  icon={<AlertTriangle className="w-5 h-5" />}
-                >
-                  <p className="text-sm">
-                    Test each distance multiple times to account for
-                    variability. Record the velocity that gives the best
-                    consistency, not just a single lucky shot.
-                  </p>
-                </Box>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                3
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Record Successful Velocities
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Log the distance and corresponding velocity for each
-                  successful test. Create a table of proven data points.
-                </p>
-                <div className="bg-slate-50 dark:bg-slate-900 p-3 rounded mt-2">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-slate-300 dark:border-slate-700">
-                        <th className="text-left py-2">Distance (m)</th>
-                        <th className="text-left py-2">Velocity (RPS)</th>
-                        <th className="text-left py-2">Success Rate</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-slate-600 dark:text-slate-300">
-                      <tr>
-                        <td>1.0</td>
-                        <td>10.0</td>
-                        <td>95%</td>
-                      </tr>
-                      <tr>
-                        <td>2.0</td>
-                        <td>30.0</td>
-                        <td>90%</td>
-                      </tr>
-                      <tr>
-                        <td>3.0</td>
-                        <td>60.0</td>
-                        <td>92%</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                4
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Populate the TreeMap
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Add your tested distance-velocity pairs to the lookup table in
-                  your code. Start with 3-5 key points.
-                </p>
-                <CodeBlock
-                  language="java"
-                  title="Updated Lookup Table"
-                  code={`// Based on testing results
-table.put(1.0, 10.0);   // 95% success rate
-table.put(2.0, 30.0);   // 90% success rate
-table.put(3.0, 60.0);   // 92% success rate
-table.put(4.0, 85.0);   // Additional data point
-table.put(5.0, 100.0);  // Maximum range`}
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                5
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Let Interpolation Fill the Gaps
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Test at intermediate distances (1.5m, 2.5m, etc.) to verify
-                  that interpolation is giving good results. Fine-tune by adding
-                  more data points if needed.
-                </p>
-                <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded mt-2 border-l-4 border-green-400 dark:border-green-900">
-                  <p className="text-sm text-green-800 dark:text-green-300">
-                    <strong>Pro Tip:</strong> Don&apos;t add too many points.
-                    Only add one when you start missing.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CollapsibleSection>
-      </section>
-
-      {/* Quiz */}
-      <section className="flex flex-col gap-8">
-        <AlphaStatusNote />
-
-        <Quiz
-          title="Knowledge Check"
-          questions={[
-            {
-              id: 1,
-              question:
-                "What is the primary advantage of dynamic flywheel control over fixed velocity shooting?",
-              options: [
-                "It uses less battery power",
-                "It automatically adjusts velocity based on distance to target",
-                "It eliminates the need for PID control",
-                "It makes the flywheel spin faster",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Dynamic flywheel control automatically calculates and applies the correct velocity based on the robot's current distance to the target, allowing accurate shooting from any position without manual adjustment.",
-            },
-            {
-              id: 2,
-              question: "What does an InterpolatingDoubleTreeMap do?",
-              options: [
-                "It stores only exact distance-velocity pairs with no calculation",
-                "It automatically calculates velocities for distances between stored data points",
-                "It sorts robot positions by distance",
-                "It replaces the need for odometry",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "An InterpolatingDoubleTreeMap stores known distance-velocity pairs and uses linear interpolation to automatically calculate appropriate velocities for distances that fall between your stored data points.",
-            },
-            {
-              id: 3,
-              question:
-                "How does the flywheel subsystem know the robot's distance to the target?",
-              options: [
-                "The driver manually inputs the distance",
-                "It uses swerve drivetrain odometry to get robot pose and calculates distance",
-                "It measures distance with an ultrasonic sensor",
-                "It estimates based on flywheel motor current",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The subsystem gets the robot's current pose from the swerve drivetrain's odometry system, then calculates the Euclidean distance between the robot's position and the fixed target coordinates.",
-            },
-            {
-              id: 4,
-              question:
-                "If your lookup table has entries for 1.0m→10 RPS and 2.0m→30 RPS, what velocity will it calculate for 1.5m?",
-              options: ["15 RPS", "20 RPS", "25 RPS", "10 RPS"],
-              correctAnswer: 1,
-              explanation:
-                "The map uses linear interpolation: 10 + (30-10) × (1.5-1.0)/(2.0-1.0) = 10 + 20×0.5 = 20 RPS. The velocity increases linearly between the two data points.",
-            },
-            {
-              id: 5,
-              question:
-                "When tuning your velocity map, what is the recommended approach?",
-              options: [
-                "Test only at the exact distances you'll shoot from in matches",
-                "Add every possible distance from 0 to maximum range",
-                "Test at 3-5 key distances and let interpolation fill the gaps",
-                "Copy values from another team's robot",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "The most efficient approach is to test at 3-5 key distances throughout your shooting range. The InterpolatingDoubleTreeMap will automatically calculate appropriate velocities for intermediate distances through linear interpolation.",
-            },
-            {
-              id: 6,
-              question:
-                "What happens in the distanceShoot() command's run method?",
-              options: [
-                "It sets a fixed velocity and never changes it",
-                "It continuously queries the lookup table with current distance and updates velocity",
-                "It only calculates velocity once when the command starts",
-                "It turns off the flywheel motors",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The command continuously queries table.get(distance) to get the appropriate velocity for the current distance, then applies it to the flywheel. As the robot moves and distance changes, the velocity automatically adjusts.",
-            },
-          ]}
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/Workshop-Code/tree/4-DynamicFlywheel"
+          title="Branch 4-DynamicFlywheel on GitHub"
+          icon={<GitBranch className="w-5 h-5" />}
         />
-      </section>
+      </LessonSection>
+
+      {/* ── DID IT WORK ──────────────────────────────────────────────── */}
+      <LessonSection id="did-it-work" title="Did it work?">
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          You do not need a game piece for any of this. You are checking that
+          two numbers move the way the table says they should.
+        </p>
+
+        <ol
+          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          style={bodyStyle}
+        >
+          <li>
+            Run <code>gradlew build</code>. <strong>You should see:</strong>{" "}
+            <code>BUILD SUCCESSFUL</code>. If the compiler points at{" "}
+            <code>.named(...)</code>, read the second failure below.
+          </li>
+          <li>
+            Start the robot code and open your dashboard. Find the{" "}
+            <code>Flywheel</code> table. <strong>You should see:</strong> two
+            entries, <code>DistanceToTargetMeters</code> and{" "}
+            <code>TargetVelocityRps</code>. They appear as soon as the flywheel
+            is built, before you press anything.
+          </li>
+          <li>
+            Enable, and drive the robot around. <strong>You should see:</strong>{" "}
+            <code>DistanceToTargetMeters</code> changing smoothly as you move.
+            Drive toward the point you put in <code>TARGET</code> and it should
+            fall; drive away and it should climb. Check it against a tape
+            measure once — the robot&apos;s idea of the distance is only as good
+            as your odometry.
+          </li>
+          <li>
+            Hold A. <strong>You should see:</strong>{" "}
+            <code>TargetVelocityRps</code> stop reading zero, and the wheel spin
+            up. With the shipped table, anywhere past 3 meters gives you exactly{" "}
+            <code>60.0</code>.
+          </li>
+          <li>
+            Keep A held and drive from about 2 meters in to about 1 meter.{" "}
+            <strong>You should see:</strong> <code>TargetVelocityRps</code>{" "}
+            slide down from around 30 toward around 10, and the wheel slow to
+            match. That is the table being read fifty times a second. Park at
+            1.5 meters and it should sit near <code>20.0</code>.
+          </li>
+          <li>
+            Drive out past 3 meters, still holding A.{" "}
+            <strong>You should see:</strong> the speed climb to{" "}
+            <code>60.0</code> and then stop climbing, however far you go. Not a
+            bug — that is the end of the table.
+          </li>
+          <li>
+            Release A. <strong>You should see:</strong> with the branch&apos;s
+            binding as written,{" "}
+            <em>the wheel keeps spinning at the last speed it was given</em>.
+            Add the <code>whileFalse(robot.flywheel.stop())</code> from Step 5
+            and try again: now the motor is released and the wheel coasts down.
+            Neutral mode on this branch is <code>Coast</code>, so expect it to
+            take a few seconds rather than stop dead.
+          </li>
+        </ol>
+
+        <Box
+          variant="alert-info"
+          tag="IF IT DIDN'T WORK"
+          title="Four things that go wrong here"
+        >
+          <ul className="ml-4 list-disc space-y-3">
+            <li>
+              <strong>
+                The robot code crashes the instant you press A, with a{" "}
+                <code>NullPointerException</code>.
+              </strong>{" "}
+              The table is empty. Ask an empty{" "}
+              <code>InterpolatingDoubleTreeMap</code> for a value and it returns{" "}
+              <code>null</code>, which blows up on its way into{" "}
+              <code>setVelocity(double)</code>. Check that the four{" "}
+              <code>table.put(...)</code> lines are inside the constructor and
+              that you did not comment them out while experimenting.
+            </li>
+            <li>
+              <strong>
+                It will not compile, and the error points at{" "}
+                <code>.named(...)</code>.
+              </strong>{" "}
+              <code>runRepeatedly(...)</code> hands back a builder, not a
+              finished <code>Command</code>, and{" "}
+              <code>.named(&quot;...&quot;)</code> is what turns it into one.
+              Every command has to have a name — WPILib makes an unnamed one a
+              build error. The other version of this mistake is adding a second{" "}
+              <code>.named(...)</code> to a command that already has one.
+            </li>
+            <li>
+              <strong>
+                <code>DistanceToTargetMeters</code> never changes while you
+                drive.
+              </strong>{" "}
+              The problem is upstream of this file. The pose is frozen, which
+              means the drivetrain is not reporting motion. Go back to{" "}
+              <strong>Swerve Calibration</strong> and confirm odometry moves
+              before you debug anything here. The flywheel is doing its job
+              perfectly with a bad input.
+            </li>
+            <li>
+              <strong>
+                One motor screams, or the wheels shove against each other.
+              </strong>{" "}
+              The follower is aligned the wrong way. It must be{" "}
+              <code>
+                new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed)
+              </code>{" "}
+              — <code>Opposed</code> is what makes the follower spin backward
+              relative to the leader, which is what the branch&apos;s comment
+              prescribes. Also confirm the leader really is CAN&nbsp;21 and the
+              follower CAN&nbsp;22, not swapped. If the driver station shows a{" "}
+              <em>failed to configure after 5 attempts</em> error naming a
+              device ID, that is <code>TalonFXUtil</code> telling you the motor
+              never got its configuration — check CAN wiring first.
+            </li>
+          </ul>
+        </Box>
+      </LessonSection>
+
+      {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
+      <LessonSection id="what-s-next" title="What's next">
+        <Box
+          variant="alert-warning"
+          tag="BEFORE YOU SWITCH BRANCHES"
+          title="Save this work if you want to keep it"
+        >
+          <p>
+            Last reminder, because this is the moment it bites.{" "}
+            <strong>Drive to Point</strong> runs on <code>5-DriveToPoint</code>,
+            which forks off <code>2-Logging</code> and has never had a{" "}
+            <code>Flywheel.java</code> or a <code>TalonFXUtil.java</code> in it.
+            Check it out and both files are gone from your working tree.
+          </p>
+          <p className="mt-3">
+            Commit to a branch of your own first, or keep a second clone. Either
+            works. Losing an afternoon of typing to a <code>git switch</code> is
+            an annoying way to learn this.
+          </p>
+        </Box>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          The pattern you learned here is bigger than flywheels. Any time a
+          mechanism needs a number that depends on where the robot is standing —
+          a hood angle, a wrist position, how long to hold a feeder — the same
+          three pieces apply: a lookup table of measured pairs, a distance
+          computed from the pose, and a <code>runRepeatedly</code> command that
+          redoes both every loop.
+        </p>
+
+        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          Next up, the drivetrain stops being something the driver steers and
+          starts driving itself to a pose you name.
+        </p>
+      </LessonSection>
+
+      <AlphaStatusNote />
+
+      <Quiz
+        title="Knowledge Check"
+        questions={[
+          {
+            id: 1,
+            question:
+              "Your table has table.put(1.0, 10.0) and table.put(2.0, 30.0). The robot is 1.5 meters away. What speed does table.get(1.5) hand back?",
+            options: ["10.0", "20.0", "30.0", "40.0"],
+            correctAnswer: 1,
+            explanation:
+              "InterpolatingDoubleTreeMap draws a straight line between the two rows it has. 1.5 is halfway between 1.0 and 2.0, so the answer is halfway between 10 and 30: 20.0 rotations per second.",
+          },
+          {
+            id: 2,
+            question:
+              "The last row of the table is table.put(3.0, 60.0). The robot drives out to 5 meters. What does the map return?",
+            options: [
+              "60.0 — it stops at the last row and does not extrapolate",
+              "100.0 — it keeps the line going past the last row",
+              "0.0 — the distance is out of range",
+              "It throws an error you have to catch",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "Past the last row the map hands back the value at that row, every time. That is the safe choice — an extrapolated speed would be a guess with no measurement behind it — but it means shots from beyond your furthest measured distance are quietly wrong. Measure out as far as you plan to shoot.",
+          },
+          {
+            id: 3,
+            question:
+              "Why does distanceShoot() use runRepeatedly(...) instead of measuring the distance once when the button is pressed?",
+            options: [
+              "runRepeatedly uses less bandwidth on the CAN bus",
+              "The robot keeps moving, so the distance changes and the speed has to be looked up again every loop",
+              "The lookup table can only be read from inside runRepeatedly",
+              "It is the only way to give a command a name",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "A distance measured once is the distance you were at when you pressed the button. Drive two meters and the speed is wrong, with nothing to tell you. runRepeatedly re-runs its body every scheduler loop — about fifty times a second — so measure, look up and send all happen again while the robot is still moving.",
+          },
+          {
+            id: 4,
+            question:
+              'The command is named "distanceShoot (hold)". What is the (hold) suffix telling you?',
+            options: [
+              "The command holds the mechanism at a fixed position",
+              "The command never finishes on its own, so nothing may wait on it",
+              "The command only runs while the robot is stationary",
+              "The command has the highest scheduler priority",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "runRepeatedly never ends by itself. Put a hold inside Command.sequence(...) and the sequence stops there forever, because step one never finishes. The suffix is a warning to the next reader, and it shows up in the log so a frozen routine tells you which hold it froze on.",
+          },
+          {
+            id: 5,
+            question:
+              "Where does the flywheel get the distance to the target from?",
+            options: [
+              "A rangefinder mounted next to the shooter",
+              "The Limelight reports the distance directly",
+              "drivetrain.getPose() measured against a fixed Translation2d field point",
+              "The driver types it into the dashboard before each shot",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "distanceToTarget() calls drivetrain.getPose().getTranslation().getDistance(TARGET). The pose is wheel odometry corrected by AprilTag sightings, so this number inherits every bit of error in your calibration and vision setup. Check it against a tape measure before you trust it.",
+          },
+          {
+            id: 6,
+            question:
+              "The branch binds driver.a().whileTrue(robot.flywheel.distanceShoot()) and nothing else. You release A. What happens to the wheel?",
+            options: [
+              "It stops, because canceling a command stops its motors",
+              "It keeps spinning — idle() sends no output and does not zero the last request, so Phoenix keeps applying it",
+              "It coasts to a stop within one scheduler loop",
+              "The robot code throws an error because no command owns the mechanism",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Canceling hands the mechanism back to idle(), which issues no motor output at all and does not clear the last control request. Phoenix carries on applying the speed it was last given. That is why stop() exists as its own command, and why you pair the binding with whileFalse(robot.flywheel.stop()).",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

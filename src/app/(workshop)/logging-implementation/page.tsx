@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
@@ -19,21 +20,36 @@ import {
 
 export default function LoggingImplementation() {
   return (
-    <PageTemplate title="Implementing Logging">
+    <PageTemplate
+      title="Record what the robot did, so you can ask it later"
+      emphasis="ask it later"
+      lede="Two lines in Robot's constructor and every value the robot publishes gets written to a file you can scrub through afterwards. Nothing to install — DataLogManager ships with WPILib."
+      needs={[
+        <>
+          The swerve project from{" "}
+          <strong>Creating a Swerve Drive Project</strong>, building and
+          driving.
+        </>,
+        <>
+          AdvantageScope, from <strong>Prerequisites</strong>. It is what opens
+          the <code>.wpilog</code> file at the end.
+        </>,
+        <>
+          A USB stick, if you want logs off a real robot rather than the sim.
+        </>,
+      ]}
+      branch="2-Logging"
+      time="About 20 minutes"
+    >
       {/* Introduction */}
       <KeyConceptSection
-        title="Setting Up DataLogManager"
         description="We log with WPILib's built-in DataLogManager: nothing extra to install. Two lines in Robot's constructor turn it on; after that, anything published to NetworkTables (WPILib's shared live-data table) is captured to a .wpilog file you open in AdvantageScope, along with the Driver-Station and joystick data."
         concept="Turn it on in Robot's constructor, then publish what you care about to NetworkTables. DataLogManager records every NT change to disk."
       />
 
       {/* Turning it on */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Turning on logging
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
+      <LessonSection id="turning-on-logging" title="Turning on logging">
+        <p className="text-[var(--tx2)]">
           <code>DataLogManager</code> is part of WPILib, so there&apos;s nothing
           to install. Start it in <code>Robot</code>&apos;s constructor before
           anything else, and add the Driver-Station data feed:
@@ -64,7 +80,7 @@ public class Robot extends OpModeRobot {
           title="Where the logs go"
           icon={<Info className="w-5 h-5" />}
         >
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Simulation:</strong> a <code>.wpilog</code> under{" "}
               <code>./logs</code> in your project.
@@ -81,15 +97,14 @@ public class Robot extends OpModeRobot {
             </li>
           </ul>
         </Box>
-      </section>
+      </LessonSection>
 
       {/* What you get for free */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What you get automatically
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
+      <LessonSection
+        id="what-you-get-automatically"
+        title="What you get automatically"
+      >
+        <p className="text-[var(--tx2)]">
           The moment <code>DataLogManager.start()</code> runs, these are
           captured with no further code:
         </p>
@@ -99,7 +114,7 @@ public class Robot extends OpModeRobot {
           title="Captured for free"
           icon={<Lightbulb className="w-5 h-5" />}
         >
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Every NetworkTables value change</strong>, including
               everything your telemetry publishes (more below)
@@ -118,15 +133,14 @@ public class Robot extends OpModeRobot {
             </li>
           </ul>
         </Box>
-      </section>
+      </LessonSection>
 
       {/* Logging your own values */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Logging your own values
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
+      <LessonSection
+        id="logging-your-own-values"
+        title="Logging your own values"
+      >
+        <p className="text-[var(--tx2)]">
           To log something specific,{" "}
           <strong>publish it to NetworkTables</strong>;{" "}
           <code>DataLogManager</code> records the change to the{" "}
@@ -138,7 +152,7 @@ public class Robot extends OpModeRobot {
         </p>
 
         <CollapsibleSection title="The drivetrain telemetry surface (struct publishers)">
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--tx2)] mb-4">
             The template&apos;s <code>Telemetry</code> class is the
             project&apos;s logging surface. It publishes the swerve state to
             NetworkTables with type-aware struct publishers; CTRE calls it from
@@ -182,7 +196,7 @@ public class Telemetry {
         </CollapsibleSection>
 
         <CollapsibleSection title="Logging from a mechanism (there's no periodic() in v3)">
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--tx2)] mb-4">
             v3 mechanisms don&apos;t have a <code>periodic()</code> method, so
             &quot;publish my state every loop&quot; needs a different home. The
             simple pattern is a <code>runRepeatedly(...)</code> default command
@@ -207,7 +221,7 @@ public class Telemetry {
   }
 }`}
           />
-          <p className="text-slate-600 dark:text-slate-300 mt-4">
+          <p className="text-[var(--tx2)] mt-4">
             You can also publish from inside a command body, right next to the
             setpoint that produced the value. That&apos;s handy for logging
             target-vs-actual during a move.
@@ -219,7 +233,7 @@ public class Telemetry {
           title="Performance Considerations"
           icon={<AlertTriangle className="w-5 h-5" />}
         >
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Use hierarchical keys</strong> (e.g.{" "}
               <code>&quot;Arm/Position&quot;</code>) so the log stays organized.
@@ -238,15 +252,14 @@ public class Telemetry {
             </li>
           </ul>
         </Box>
-      </section>
+      </LessonSection>
 
       {/* Workshop Implementation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Code Implementation
-        </h2>
-
-        <h3 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
+      <LessonSection
+        id="workshop-code-implementation"
+        title="Workshop Code Implementation"
+      >
+        <h3 className="text-2xl font-semibold text-[var(--tx)]">
           Robot.java: starting DataLogManager
         </h3>
 
@@ -257,7 +270,7 @@ public class Telemetry {
         />
 
         <CollapsibleSection title="Drivetrain telemetry">
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
+          <p className="text-[var(--tx2)] mb-4">
             The drivetrain is the canonical example: it publishes{" "}
             <code>Pose2d</code>, velocity, and per-module states to
             NetworkTables through its telemetry helper, and{" "}
@@ -269,15 +282,11 @@ public class Telemetry {
             filePath="src/main/java/frc/robot/subsystems/CommandSwerveDrivetrain.java"
           />
         </CollapsibleSection>
-      </section>
+      </LessonSection>
 
       {/* Viewing Logs */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          AdvantageScope
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
+      <LessonSection id="advantagescope" title="AdvantageScope">
+        <p className="text-[var(--tx2)]">
           AdvantageScope is the natural viewer for the logs you&apos;re
           producing. It reads <code>.wpilog</code> files for post-match analysis
           and connects to your robot over NetworkTables for live monitoring.
@@ -286,14 +295,14 @@ public class Telemetry {
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-[var(--bg2)] p-6 rounded-lg border border-[var(--rule)]">
+            <h3 className="text-xl font-semibold text-[var(--tx)] mb-4">
               Real-Time Data Viewing
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-sm text-[var(--tx2)] mb-3">
               Everything you publish to NetworkTables is visible live.
             </p>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+            <ol className="list-decimal list-inside space-y-2 text-sm text-[var(--tx2)]">
               <li>Open AdvantageScope on your driver station</li>
               <li>Select &quot;Connect to Robot&quot; from the menu</li>
               <li>Enter your team number or robot address</li>
@@ -307,15 +316,15 @@ public class Telemetry {
             </ol>
           </div>
 
-          <div className="bg-slate-50 dark:bg-slate-900 p-6 rounded-lg border border-slate-200 dark:border-slate-800">
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-4">
+          <div className="bg-[var(--bg2)] p-6 rounded-lg border border-[var(--rule)]">
+            <h3 className="text-xl font-semibold text-[var(--tx)] mb-4">
               Post-Match Log Analysis
             </h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
+            <p className="text-sm text-[var(--tx2)] mb-3">
               Pull <code>.wpilog</code> files off the USB drive or download them
               from the robot with AdvantageScope.
             </p>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+            <ol className="list-decimal list-inside space-y-2 text-sm text-[var(--tx2)]">
               <li>Open Preferences and set the robot address / log folder</li>
               <li>Click &quot;File&quot; &gt; &quot;Download Logs...&quot;</li>
               <li>Select the logs to download (newest at top)</li>
@@ -332,11 +341,11 @@ public class Telemetry {
           title="Where the data lives in NetworkTables"
           icon={<Info className="w-5 h-5" />}
         >
-          <p className="mb-3 text-sm text-slate-600 dark:text-slate-300">
+          <p className="mb-3 text-sm text-[var(--tx2)]">
             Your published values land under whatever table you chose, and the
             auto-captured data sits alongside it:
           </p>
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …:
               your telemetry struct publishers
@@ -357,7 +366,7 @@ public class Telemetry {
           title="AdvantageScope Pro Tips"
           icon={<Lightbulb className="w-5 h-5" />}
         >
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
+          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Overlay multiple signals:</strong> compare target vs
               actual on the same graph
@@ -381,14 +390,10 @@ public class Telemetry {
           title="AdvantageScope Documentation"
           icon={<Book className="w-5 h-5" />}
         />
-      </section>
+      </LessonSection>
 
       {/* Best Practices */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Logging Best Practices
-        </h2>
-
+      <LessonSection id="logging-best-practices" title="Logging Best Practices">
         <div className="grid md:grid-cols-2 gap-6">
           <Box variant="alert-success" title="Do">
             <ul className="list-disc list-inside space-y-2">
@@ -426,14 +431,10 @@ public class Telemetry {
             </ul>
           </Box>
         </div>
-      </section>
+      </LessonSection>
 
       {/* Resources */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Additional Resources
-        </h2>
-
+      <LessonSection id="additional-resources" title="Additional Resources">
         <div className="grid md:grid-cols-2 gap-4">
           <DocumentationButton
             href="https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html"
@@ -456,7 +457,7 @@ public class Telemetry {
             icon={<Zap className="w-5 h-5" />}
           />
         </div>
-      </section>
+      </LessonSection>
 
       {/* Quiz Section */}
       <section className="flex flex-col gap-8">
@@ -537,19 +538,86 @@ public class Telemetry {
         />
       </section>
 
-      {/* What's Next Section */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What&apos;s Next?
-        </h2>
+      {/* Why this and not the others — merged in from the former /logging-options */}
+      <LessonSection
+        id="the-other-names-you-ll-hear"
+        title="The other names you'll hear"
+      >
+        <p className="text-[var(--tx2)]">
+          Other teams use other logging tools, and their names come up on Chief
+          Delphi and in Discord. Here is what each one is, and why this workshop
+          does not use it. You do not need any of them.
+        </p>
 
+        <ul className="list-disc space-y-3 pl-5 text-[var(--tx2)]">
+          <li>
+            <strong>AdvantageKit</strong> — a logging and replay framework that
+            records every input to the robot code so you can re-run a whole
+            match on your laptop. It is genuinely good and it restructures how
+            you write every subsystem to get there. That is a large change to
+            make for a teaching codebase, so we do not use it.
+          </li>
+          <li>
+            <strong>Epilogue</strong> — WPILib&apos;s annotation-based logging,
+            where you tag a field with <code>@Logged</code> and it gets
+            recorded. A reasonable alternative. <code>DataLogManager</code> plus
+            plain NetworkTables publishing keeps the mental model smaller, so
+            that is what we teach.
+          </li>
+          <li>
+            <strong>Hoot logging</strong> — CTRE&apos;s device-side signal log.
+            You already have this one and you did not do anything to get it:
+            every Phoenix 6 device writes a <code>.hoot</code> file on its own,
+            alongside the <code>.wpilog</code> that DataLogManager writes. Open
+            it in Tuner X or AdvantageScope.
+          </li>
+        </ul>
+
+        <Box
+          variant="alert-info"
+          tag="NOT A LOGGER"
+          title="AdvantageScope is the viewer"
+        >
+          <p>
+            <strong>AdvantageScope</strong> gets mentioned alongside the names
+            above, but it does not write logs — it reads them. It opens{" "}
+            <code>.wpilog</code> and <code>.hoot</code> files whatever wrote
+            them, which is why you use it here without using AdvantageKit.
+          </p>
+        </Box>
+
+        <Box
+          variant="alert-info"
+          tag="ON THE HORIZON"
+          title="A new WPILib Telemetry API is in development"
+        >
+          WPILib is working on a first-class telemetry framework: a static{" "}
+          <code>Telemetry.log(&quot;name&quot;, value)</code> API with pluggable
+          backends for NetworkTables and log files (
+          <a
+            href="https://github.com/wpilibsuite/allwpilib/pull/7773"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            allwpilib PR #7773
+          </a>
+          ). As of mid-2026 it is still an open draft: not merged, not in any
+          2027 alpha. If it ships, this workshop will likely adopt it in place
+          of hand-rolled NetworkTables publishing. Until then, DataLogManager is
+          the shipped, supported path.
+        </Box>
+      </LessonSection>
+
+      {/* What's Next Section */}
+      <LessonSection id="what-s-next" title="What's Next?">
         <Box variant="alert-success" title="Up Next: Drive to Point">
           DataLogManager is now recording your pose, velocities, and module
           states. That pays off in the next lesson: when a drive-to-point run
           looks wrong, the PID setpoints, errors, and motor outputs are already
           in the log.
         </Box>
-      </section>
+      </LessonSection>
     </PageTemplate>
   );
 }

@@ -17,6 +17,7 @@ import { KokoroTTS, TextSplitterStream } from "kokoro-js";
 import { applyPronunciations } from "./pronunciations";
 import { decodePcm16Wav, encodePcm16Wav, synthWhoosh } from "./lib/wav";
 import {
+  ALIGN_VERSION,
   refineWordTimings,
   whisperAvailable,
   WHISPER_DIR_NAME,
@@ -42,6 +43,8 @@ interface CachedClip {
   durationSec: number;
   words: { text: string; startSec: number; endSec: number }[];
   refined: boolean;
+  /** ALIGN_VERSION the timings were produced with; absent on pre-versioning sidecars. */
+  alignVersion?: number;
 }
 
 const ROOT = resolve(__dirname, "..");
@@ -103,8 +106,12 @@ async function prepareTrailer(
     let clip: CachedClip;
     if (existsSync(wavPath) && existsSync(metaPath)) {
       clip = JSON.parse(await readFile(metaPath, "utf8")) as CachedClip;
-      // Whisper installed after this clip was cached? Upgrade its timings.
-      if (!clip.refined && whisperAvailable(WHISPER_DIR)) {
+      // Re-align when whisper was installed after this clip was cached, OR when
+      // the alignment maths has improved since it was written. Without the
+      // version check an already-refined clip would keep its old timings forever.
+      const staleAlignment =
+        clip.refined && (clip.alignVersion ?? 0) < ALIGN_VERSION;
+      if ((!clip.refined || staleAlignment) && whisperAvailable(WHISPER_DIR)) {
         const { samples, sampleRate } = decodePcm16Wav(await readFile(wavPath));
         const displayWords = beat.text.split(/\s+/).filter((w) => w.length > 0);
         const aligned = await refineWordTimings({
@@ -120,6 +127,7 @@ async function prepareTrailer(
           clip = {
             ...clip,
             refined: true,
+            alignVersion: ALIGN_VERSION,
             words: displayWords.map((text, i) => ({
               text,
               startSec: aligned[i].startSec,
@@ -265,7 +273,12 @@ async function synthesizeBeat(
     refined = true;
   }
 
-  return { durationSec, words, refined };
+  return {
+    durationSec,
+    words,
+    refined,
+    alignVersion: refined ? ALIGN_VERSION : undefined,
+  };
 }
 
 /** Word timings for a WAV we didn't synthesize (human take): estimate, then refine. */
@@ -297,7 +310,12 @@ async function timeExistingClip(
     }));
     refined = true;
   }
-  return { durationSec, words, refined };
+  return {
+    durationSec,
+    words,
+    refined,
+    alignVersion: refined ? ALIGN_VERSION : undefined,
+  };
 }
 
 /**

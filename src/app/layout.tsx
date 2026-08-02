@@ -1,28 +1,42 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Mono, IBM_Plex_Serif } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
-const plexSans = IBM_Plex_Sans({
+/**
+ * Three families, three jobs — see `context/style-guide.md`.
+ *
+ *   Instrument Sans  UI chrome, labels, buttons. Never body copy.
+ *   Newsreader       Body copy and every display heading. Optical sizing is
+ *                    on, so the same family reads right at 15px and at 124px.
+ *   JetBrains Mono   Code, and the micro-labels that mark a piece of the
+ *                    interface as machinery rather than prose.
+ *
+ * All three are variable fonts, so `weight` is deliberately omitted — next/font
+ * ships the full axis and CSS picks the instance.
+ */
+const instrumentSans = Instrument_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
-const plexMono = IBM_Plex_Mono({
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
-const plexSerif = IBM_Plex_Serif({
+const newsreader = Newsreader({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  axes: ["opsz"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -39,7 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${plexSans.variable} ${plexMono.variable} ${plexSerif.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
+        className={`${instrumentSans.variable} ${jetbrainsMono.variable} ${newsreader.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
         suppressHydrationWarning={true}
       >
         <ThemeProvider
