@@ -11,6 +11,7 @@
     "test": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run build",
     "spell": "cspell \"src/**/*.{ts,tsx}\" *.md",
     "generate-search": "tsx scripts/generate-search-data.ts",
+    "check-embeds": "tsx scripts/check-embeds.ts",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "prepare": "simple-git-hooks"

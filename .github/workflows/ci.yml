@@ -5,11 +5,19 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+  # 06:00 UTC daily, for the `embeds` job — see the comment on it. Nothing else
+  # in this file needs a timer; a scheduled lint of unchanged code is noise.
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
 
 jobs:
   test:
     name: Lint, type-check, spell, build
     runs-on: ubuntu-latest
+    # The nightly trigger exists for the `embeds` job only. Re-linting a commit
+    # that has not changed since yesterday tells us nothing and burns minutes.
+    if: github.event_name != 'schedule'
 
     steps:
       - name: Checkout repository
@@ -51,6 +59,42 @@ jobs:
             exit 1
           fi
           echo "Build successful"
+
+  # Split out from `test` on purpose. This one talks to the GitHub API, so it
+  # can fail for reasons that have nothing to do with the commit — a rate limit
+  # or an API blip should not read as "your PR is broken". It also runs on a
+  # schedule, which is the only trigger that actually matters here: the embeds
+  # break when a Workshop-Code teaching branch is rewritten, and that happens
+  # in a different repository with no push to this one.
+  embeds:
+    name: Verify GitHub embeds resolve
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check embeds
+        run: pnpm run check-embeds
+        env:
+          # The default token lifts the 60/hour anonymous limit to 1000/hour.
+          # ~31 requests per run, so this is only about not being throttled
+          # when several runs land together.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-check:
     name: Deployment Check
