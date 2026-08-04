@@ -176,10 +176,23 @@ const OVERFLOW_PROBE = () => {
       if (r.width === 0) continue;
       const right = r.right - originX;
       if (right <= limit) continue;
-      // An element that scrolls its own overflow is doing the right thing;
-      // so is any ancestor of it. Only flag the innermost real offender.
-      const cs = getComputedStyle(el);
-      if (cs.overflowX === "auto" || cs.overflowX === "scroll") continue;
+      // Anything inside a horizontally scrolling ancestor is fine by
+      // definition — a 520px table inside a 242px `overflow-x-auto` wrapper is
+      // the design working, not a bug. Without this the report was full of
+      // table cells and code spans while the actual offender went unnamed.
+      // Start at the PARENT, not at `el`. A scroll container that is itself
+      // wider than the page is still the bug — skipping any element that
+      // scrolls let exactly that case hide, and the report came back with an
+      // overflowing page and no offender named.
+      let scrolled = false;
+      for (let a = el.parentElement; a && a !== scroller; a = a.parentElement) {
+        const ax = getComputedStyle(a).overflowX;
+        if (ax === "auto" || ax === "scroll" || ax === "hidden") {
+          scrolled = true;
+          break;
+        }
+      }
+      if (scrolled) continue;
       if (el.querySelector("*")) {
         const childOverflows = [...el.children].some(
           (c) => c.getBoundingClientRect().right - originX > limit
@@ -248,8 +261,18 @@ for (const theme of ["dark", "light"]) {
     for (const route of PAGES) {
       const page = await context.newPage();
       const consoleErrors = [];
+      const rateLimited = [];
       page.on("console", (m) => {
-        if (m.type() === "error") consoleErrors.push(m.text().slice(0, 160));
+        if (m.type() !== "error") return;
+        const text = m.text().slice(0, 160);
+        // Pages with a live GitHub embed hit api.github.com on every load.
+        // This script opens each of them four times (two themes × two
+        // viewports), which burns through the 60/hour unauthenticated limit
+        // partway through and returns 403 for the rest of the run. That is
+        // this tool's own footprint, not a defect in the page — count it
+        // separately so the exit code stays meaningful.
+        if (/\b403\b/.test(text)) rateLimited.push(text);
+        else consoleErrors.push(text);
       });
       page.on("pageerror", (e) =>
         consoleErrors.push("pageerror: " + e.message)
@@ -281,6 +304,7 @@ for (const theme of ["dark", "light"]) {
         overflow,
         focus,
         consoleErrors,
+        rateLimited,
         shot,
       });
       await page.close();
@@ -293,6 +317,7 @@ await browser.close();
 
 // ── report ─────────────────────────────────────────────────────────
 const line = (s) => console.log(s);
+const throttled = results.reduce((a, r) => a + (r.rateLimited?.length ?? 0), 0);
 line("\n══════════════ UI AUDIT ══════════════\n");
 
 for (const r of results) {
