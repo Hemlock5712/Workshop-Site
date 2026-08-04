@@ -39,6 +39,45 @@ interface GitHubContentProps {
 }
 
 /**
+ * The loading state, in the one form this design has for it.
+ *
+ * There were two vocabularies in this file: a mono micro-label reading
+ * "loading diff…" on the Monaco chunk, and three rotating rings — the site's
+ * only `animate-spin`, built from `rounded-full` plus `border-b-2`, which is
+ * also what the design detector kept flagging. A spinner is not an idiom this
+ * design uses anywhere else, and the label already says more than the ring
+ * did. So the label won, and it is now one component.
+ *
+ * `onCode` picks the ink for the fixed `#1e1e1e` code panel, where `--tx3`
+ * would be near-black in light theme. `aria-live` because a sighted student
+ * watches the label appear and a screen-reader user otherwise gets silence
+ * until the file lands.
+ */
+function LoadingLabel({
+  label,
+  onCode = false,
+  className = "flex h-32 items-center justify-center",
+}: {
+  label: string;
+  onCode?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`mono ${className}`}
+      style={{
+        fontSize: "var(--text-micro)",
+        letterSpacing: "0.1em",
+        color: onCode ? "#464d5b" : "var(--tx3)",
+      }}
+      aria-live="polite"
+    >
+      {label}
+    </div>
+  );
+}
+
+/**
  * Monaco, kept for exactly one job: the side-by-side PR diff.
  *
  * Everything else on the site moved to Shiki, which highlights server-side and
@@ -53,14 +92,7 @@ const DiffEditor = dynamic(
   () => import("@monaco-editor/react").then((m) => m.DiffEditor),
   {
     ssr: false,
-    loading: () => (
-      <div
-        className="mono flex h-32 items-center justify-center"
-        style={{ fontSize: 10, letterSpacing: "0.1em", color: "#464d5b" }}
-      >
-        loading diff…
-      </div>
-    ),
+    loading: () => <LoadingLabel label="loading diff…" onCode />,
   }
 );
 
@@ -111,27 +143,99 @@ function formatDate(dateString: string): string {
 
 function LoadingCard({ label }: { label: string }) {
   return (
-    <div className="card p-8 text-center">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--accent)] mx-auto mb-4"></div>
-      <p className="text-[var(--muted-foreground)]">{label}</p>
+    <div
+      className="p-8"
+      style={{
+        background: "var(--bg2)",
+        border: "1px solid var(--rule)",
+        borderRadius: 3,
+      }}
+    >
+      <LoadingLabel label={label} className="" />
     </div>
   );
 }
 
+/**
+ * What a student sees when an embed cannot reach GitHub.
+ *
+ * It used to print the raw failure — "Failed to Load File" over "Failed to
+ * fetch file: Not Found" and a repo/path line — which reads as though
+ * something in *their* project is wrong. It is not: these files are fetched
+ * live from a public repo while the page renders, and the usual cause is
+ * GitHub's anonymous rate limit. So the copy says whose fault it is, offers
+ * the two things that actually help (wait and retry, or read it on GitHub),
+ * and leaves the technical detail in the console where it belongs.
+ *
+ * `--err` colours the heading only. A whole card washed in the error colour
+ * made a rate-limited embed look like a broken robot.
+ */
 function ErrorCard({
   heading,
-  message,
-  context,
+  detail,
+  href,
+  onRetry,
 }: {
   heading: string;
-  message: string;
-  context: string;
+  detail: string;
+  href: string;
+  onRetry: () => void;
 }) {
   return (
-    <div className="bg-[var(--bg2)] border border-[var(--err)] rounded-lg p-6">
-      <h3 className="text-[var(--err)] font-semibold mb-2">{heading}</h3>
-      <p className="text-[var(--err)] text-sm">{message}</p>
-      <p className="text-[var(--err)] text-sm mt-2">{context}</p>
+    <div
+      className="rounded-lg p-6"
+      style={{ background: "var(--bg2)", border: "1px solid var(--rule)" }}
+    >
+      <h3
+        className="display m-0 mb-2 text-lede"
+        style={{ color: "var(--err)" }}
+      >
+        {heading}
+      </h3>
+      <p
+        className="max-w-[62ch]"
+        style={{
+          fontFamily: "var(--font-serif)",
+          fontSize: "var(--text-aside)",
+          lineHeight: 1.55,
+          color: "var(--tx2)",
+        }}
+      >
+        {detail}
+      </p>
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mono cursor-pointer rounded-[3px] px-3.5 py-2 transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
+          style={{
+            fontSize: "var(--text-micro)",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            border: "1px solid var(--rule)",
+            background: "var(--bg3)",
+            color: "var(--tx2)",
+          }}
+        >
+          Try again
+        </button>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mono inline-flex items-center gap-1.5 rounded-[3px] px-3.5 py-2 transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
+          style={{
+            fontSize: "var(--text-micro)",
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            border: "1px solid var(--rule)",
+            color: "var(--tx2)",
+          }}
+        >
+          Open on GitHub
+          <ExternalLink className="h-3 w-3" aria-hidden="true" />
+        </a>
+      </div>
     </div>
   );
 }
@@ -150,11 +254,7 @@ export default function GitHubContent({
   const header =
     title || description ? (
       <div className="mb-6">
-        {title && (
-          <h3 className="text-2xl font-bold text-[var(--foreground)] mb-2">
-            {title}
-          </h3>
-        )}
+        {title && <h3 className="display m-0 mb-2 text-title">{title}</h3>}
         {description && (
           <p className="text-[var(--muted-foreground)]">{description}</p>
         )}
@@ -175,10 +275,10 @@ export default function GitHubContent({
       {header}
       <div className="card">
         <div className="border-b border-[var(--border)]">
-          <div className="flex">
+          <div className="flex flex-wrap">
             <button
               onClick={() => setActiveTab("ide")}
-              className={`px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 ${
+              className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "ide"
                   ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -189,7 +289,7 @@ export default function GitHubContent({
             </button>
             <button
               onClick={() => setActiveTab("diff")}
-              className={`px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 ${
+              className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "diff"
                   ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -235,17 +335,22 @@ function FileView({
 }) {
   const [fileContent, setFileContent] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
   const [fileSize, setFileSize] = useState<number | undefined>(undefined);
+  // Bumping this re-runs the effect, which is the whole retry mechanism.
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const fetchFile = async () => {
       try {
         setLoading(true);
+        setFailed(false);
         const endpoint = `https://api.github.com/repos/${repository}/contents/${filePath}?ref=${branch}`;
         const response = await fetch(endpoint);
         if (!response.ok) {
-          throw new Error(`Failed to fetch file: ${response.statusText}`);
+          throw new Error(
+            `GitHub returned ${response.status} ${response.statusText}`
+          );
         }
         const data = parseGitHub(
           GitHubFileContentSchema,
@@ -255,19 +360,21 @@ function FileView({
         setFileSize(data.size);
         setFileContent(atob(data.content));
       } catch (err) {
-        if (err instanceof GitHubSchemaError) {
-          setError(
-            `GitHub returned an unexpected response shape (${err.message})`
-          );
-        } else {
-          setError(err instanceof Error ? err.message : "Failed to fetch file");
-        }
+        // Not rendered. The reader gets human copy; whoever can fix it gets
+        // the status code, the path and the branch.
+        console.error(
+          `GitHub embed failed: ${repository}/${filePath} @ ${branch}`,
+          err instanceof GitHubSchemaError
+            ? `unexpected response shape — ${err.message}`
+            : err
+        );
+        setFailed(true);
       } finally {
         setLoading(false);
       }
     };
     fetchFile();
-  }, [repository, filePath, branch]);
+  }, [repository, filePath, branch, attempt]);
 
   if (loading) {
     return (
@@ -277,13 +384,14 @@ function FileView({
     );
   }
 
-  if (error || !fileContent) {
+  if (failed || !fileContent) {
     return (
       <div className={className}>
         <ErrorCard
-          heading="Failed to Load File"
-          message={error || "File not found"}
-          context={`Repository: ${repository}, File: ${filePath}`}
+          heading="This code embed didn’t load"
+          detail={`The file is pulled live from GitHub while you read, and that request failed. Nothing is wrong with your project or your install. GitHub also limits how many anonymous requests a browser can make in an hour, so this often clears up on its own — try again in a few minutes, or read ${filePath.split("/").pop() || filePath} on GitHub.`}
+          href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
+          onRetry={() => setAttempt((n) => n + 1)}
         />
       </div>
     );
@@ -338,10 +446,10 @@ function FileView({
       </div>
 
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
-        <h5 className="font-semibold mb-3 flex items-center gap-2">
+        <h5 className="display m-0 mb-3 flex items-center gap-2 text-aside">
           <Folder className="w-5 h-5" /> Live from GitHub
         </h5>
-        <p className="text-[var(--muted-foreground)] text-sm">
+        <p className="max-w-[70ch] text-note text-[var(--tx2)]">
           This file is displayed directly from the GitHub repository. Click
           &quot;View on GitHub&quot; to see the file in its repository context,
           view history, blame information, and make edits.
@@ -374,8 +482,10 @@ function PRView({
     {}
   );
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
   const [loadingFiles, setLoadingFiles] = useState<Set<string>>(new Set());
+  // Bumping this re-runs the effect, which is the whole retry mechanism.
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const fetchFileContents = async (
@@ -448,11 +558,14 @@ function PRView({
     const fetchPR = async () => {
       try {
         setLoading(true);
+        setFailed(false);
 
         const prUrl = `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}`;
         const prResponse = await fetch(prUrl);
         if (!prResponse.ok) {
-          throw new Error(`Failed to fetch PR: ${prResponse.statusText}`);
+          throw new Error(
+            `GitHub returned ${prResponse.status} ${prResponse.statusText} for the pull request`
+          );
         }
         const prResult = parseGitHub(
           GitHubPRDataSchema,
@@ -465,7 +578,7 @@ function PRView({
         const filesResponse = await fetch(filesUrl);
         if (!filesResponse.ok) {
           throw new Error(
-            `Failed to fetch PR files: ${filesResponse.statusText}`
+            `GitHub returned ${filesResponse.status} ${filesResponse.statusText} for the changed-file list`
           );
         }
         const filesResult = parseGitHub(
@@ -481,22 +594,21 @@ function PRView({
 
         await fetchFileContents(filteredFiles, prResult, repository);
       } catch (err) {
-        if (err instanceof GitHubSchemaError) {
-          setError(
-            `GitHub returned an unexpected response shape (${err.message})`
-          );
-        } else {
-          setError(
-            err instanceof Error ? err.message : "Failed to fetch PR data"
-          );
-        }
+        // See the note in FileView: detail to the console, copy to the reader.
+        console.error(
+          `GitHub PR embed failed: ${repository}#${pullRequestNumber}`,
+          err instanceof GitHubSchemaError
+            ? `unexpected response shape — ${err.message}`
+            : err
+        );
+        setFailed(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchPR();
-  }, [repository, pullRequestNumber, focusFile]);
+  }, [repository, pullRequestNumber, focusFile, attempt]);
 
   const calculateEditorHeight = (content: FileContent) => {
     const maxLines = Math.max(
@@ -521,13 +633,14 @@ function PRView({
     );
   }
 
-  if (error || !prData) {
+  if (failed || !prData) {
     return (
       <div className={`my-8 ${className}`}>
         <ErrorCard
-          heading="Failed to Load Pull Request"
-          message={error || "PR not found"}
-          context={`Repository: ${repository}`}
+          heading="This diff didn’t load"
+          detail="The changed files are pulled live from GitHub while you read, and that request failed. Nothing is wrong with your project or your install. GitHub also limits how many anonymous requests a browser can make in an hour, so this often clears up on its own — try again in a few minutes, or read the pull request on GitHub."
+          href={`https://github.com/${repository}/pull/${pullRequestNumber}`}
+          onRetry={() => setAttempt((n) => n + 1)}
         />
       </div>
     );
@@ -568,9 +681,7 @@ function PRView({
                 </span>
               </div>
 
-              <h4 className="text-xl font-semibold text-[var(--foreground)] mb-3">
-                {prData.title}
-              </h4>
+              <h4 className="display m-0 mb-3 text-lede">{prData.title}</h4>
 
               <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
                 <span>created {formatDate(prData.created_at)}</span>
@@ -593,7 +704,7 @@ function PRView({
 
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h5 className="font-semibold text-[var(--foreground)]">
+            <h5 className="display m-0 text-aside">
               {focusFile ? `${focusFile} Changes` : "Files Changed"}
             </h5>
             <div className="flex items-center space-x-4 text-sm">
@@ -656,9 +767,7 @@ function PRView({
 
                 <div className="bg-[#1e1e1e]">
                   {isLoadingContent ? (
-                    <div className="flex items-center justify-center h-32">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent)]"></div>
-                    </div>
+                    <LoadingLabel label="loading diff…" onCode />
                   ) : content ? (
                     <DiffEditor
                       height={calculateEditorHeight(content)}
@@ -672,6 +781,9 @@ function PRView({
                         minimap: { enabled: false },
                         scrollBeyondLastLine: false,
                         renderLineHighlight: "none",
+                        // Monaco's own option, not a CSS style — it takes a
+                        // number and cannot read a custom property. 13 is
+                        // `--text-note`, kept in sync by hand.
                         fontSize: 13,
                         fontFamily:
                           "'Fira Code', 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
@@ -689,9 +801,11 @@ function PRView({
                         diffWordWrap: "off",
                       }}
                       loading={
-                        <div className="flex items-center justify-center h-32 bg-[#1e1e1e]">
-                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--accent)]"></div>
-                        </div>
+                        <LoadingLabel
+                          label="loading diff…"
+                          onCode
+                          className="flex h-32 items-center justify-center bg-[#1e1e1e]"
+                        />
                       }
                     />
                   ) : (
@@ -707,10 +821,10 @@ function PRView({
       </div>
 
       <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
-        <h5 className="font-semibold text-[var(--foreground)] mb-3 flex items-center gap-2">
+        <h5 className="display m-0 mb-3 flex items-center gap-2 text-aside">
           <GraduationCap className="w-5 h-5" /> Workshop Learning
         </h5>
-        <p className="text-[var(--muted-foreground)] text-sm">
+        <p className="max-w-[70ch] text-note text-[var(--tx2)]">
           This pull request demonstrates real-world development practices.
           Students can explore the actual code changes, commit history, and
           review comments that led to the implementation improvements. Click

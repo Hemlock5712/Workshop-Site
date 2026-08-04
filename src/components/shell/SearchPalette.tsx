@@ -28,7 +28,7 @@ import { useShell } from "@/contexts/ShellContext";
 import { useProgress } from "@/lib/useProgress";
 
 const microLabel = {
-  fontSize: 9.5,
+  fontSize: "var(--text-micro)",
   letterSpacing: "0.12em",
   textTransform: "uppercase",
 } as const;
@@ -43,6 +43,11 @@ export default function SearchPalette() {
   const [query, setQuery] = useState("");
   const [groups, setGroups] = useState<GroupedResult[]>([]);
   const [instance, setInstance] = useState<MiniSearch<SearchDoc> | null>(null);
+  // A failed index fetch used to be logged and then forgotten, which made a
+  // broken index look exactly like "nothing matches that" — the reader is told
+  // their query is wrong when in fact the search never ran. Same distinction
+  // the full /search page already makes.
+  const [indexFailed, setIndexFailed] = useState(false);
 
   // Fetch the index the first time the palette is opened, not on mount — most
   // sessions never search, and this way they never pay for it.
@@ -50,11 +55,18 @@ export default function SearchPalette() {
     if (searchOpen && !instance) {
       getSearchInstance()
         .then(setInstance)
-        .catch((error) => console.error("Search unavailable:", error));
+        .catch((error) => {
+          console.error("Search unavailable:", error);
+          setIndexFailed(true);
+        });
     }
     if (!searchOpen) {
       setQuery("");
       setGroups([]);
+      // Clear the failure on close so reopening the palette retries. A
+      // non-ok response drops the cached promise in `getSearchInstance`, so
+      // the next attempt really does refetch.
+      setIndexFailed(false);
     }
   }, [searchOpen, instance]);
 
@@ -86,7 +98,13 @@ export default function SearchPalette() {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex justify-center px-6 pb-6 pt-[11vh]"
+      // `items-start` is load-bearing. A row flex container aligns its items
+      // with `stretch` by default, which stretched the panel to the full
+      // available height and let `maxHeight: 74vh` clamp it there — on a
+      // one-row result that was a 666px bordered box holding 171px of content
+      // and 495px of nothing. Top-aligned, the panel is the height of what is
+      // in it and 74vh is a ceiling again rather than a floor.
+      className="fixed inset-0 z-[80] flex items-start justify-center px-6 pb-6 pt-[11vh]"
       role="dialog"
       aria-modal="true"
       aria-label="Search the workshop"
@@ -112,7 +130,16 @@ export default function SearchPalette() {
           animation: "rise 0.18s ease-out",
         }}
       >
-        <Command label="Search the Gray Matter Workshop" shouldFilter={false}>
+        {/* cmdk's root renders a plain block, so the `flex-1` on Command.List
+            below was inert and the list never scrolled: on a broad query the
+            rows and the whole keyboard-hint footer simply overflowed past the
+            panel's `overflow-hidden` edge, unreachable. Making the root a
+            shrinkable column gives the list a bounded height to scroll in. */}
+        <Command
+          label="Search the Gray Matter Workshop"
+          shouldFilter={false}
+          className="flex min-h-0 flex-col"
+        >
           <label
             className="flex items-center gap-3.5 px-[22px] py-[18px]"
             style={{ borderBottom: "1px solid var(--rule-soft)" }}
@@ -128,13 +155,13 @@ export default function SearchPalette() {
               onValueChange={setQuery}
               autoFocus
               placeholder="Search lessons, mechanisms, gains…"
-              className="min-w-0 flex-1 border-0 bg-transparent text-[17px] outline-none"
+              className="min-w-0 flex-1 border-0 bg-transparent text-aside outline-none"
               style={{ color: "var(--tx)" }}
             />
             <span
               className="mono shrink-0 whitespace-nowrap rounded-[3px] px-[7px] py-[3px]"
               style={{
-                fontSize: 9.5,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.1em",
                 color: "var(--tx3)",
                 border: "1px solid var(--rule)",
@@ -144,19 +171,43 @@ export default function SearchPalette() {
             </span>
           </label>
 
-          <Command.List className="flex-1 overflow-y-auto px-3 py-2.5">
-            {searching && groups.length === 0 && (
-              <Command.Empty className="px-3.5 py-[34px] text-center">
+          <Command.List className="min-h-0 flex-1 overflow-y-auto px-3 py-2.5">
+            {indexFailed && (
+              <div
+                className="px-3.5 py-[34px] text-center"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "var(--text-aside)",
+                  lineHeight: 1.5,
+                  color: "var(--tx2)",
+                }}
+              >
+                The search index could not be loaded. Reload the page to try
+                again.
+              </div>
+            )}
+
+            {/* A plain div, not `<Command.Empty>`. Command.Empty applies cmdk's
+                own gate on top of this guard and only renders when cmdk counts
+                zero items — and the "open the full search page" row below is
+                always mounted while searching, so the count is never zero and
+                this copy could never appear. */}
+            {searching && !indexFailed && groups.length === 0 && (
+              <div className="px-3.5 py-[34px] text-center">
                 <div
                   className="display mb-2"
-                  style={{ fontSize: 26, lineHeight: 1.2, color: "var(--tx2)" }}
+                  style={{
+                    fontSize: "var(--text-title)",
+                    lineHeight: 1.2,
+                    color: "var(--tx2)",
+                  }}
                 >
                   Nothing matches that yet
                 </div>
                 <div
                   style={{
                     fontFamily: "var(--font-serif)",
-                    fontSize: 16,
+                    fontSize: "var(--text-aside)",
                     lineHeight: 1.5,
                     color: "var(--tx3)",
                   }}
@@ -164,15 +215,15 @@ export default function SearchPalette() {
                   Try a mechanism (arm, flywheel, swerve), a concept (PID,
                   odometry, AprilTag), or a gain name.
                 </div>
-              </Command.Empty>
+              </div>
             )}
 
-            {!searching && (
+            {!searching && !indexFailed && (
               <div
                 className="px-3.5 py-[34px] text-center"
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: 16,
+                  fontSize: "var(--text-aside)",
                   lineHeight: 1.5,
                   color: "var(--tx3)",
                 }}
@@ -197,7 +248,7 @@ export default function SearchPalette() {
                     <span
                       className="mono tabular w-[22px] shrink-0"
                       style={{
-                        fontSize: 10,
+                        fontSize: "var(--text-micro)",
                         letterSpacing: "0.08em",
                         color: group.lessonNum ? "var(--accent)" : "var(--tx3)",
                       }}
@@ -208,7 +259,7 @@ export default function SearchPalette() {
                       className="truncate"
                       style={{
                         fontFamily: "var(--font-serif)",
-                        fontSize: 17,
+                        fontSize: "var(--text-aside)",
                         lineHeight: 1.2,
                         color: "var(--tx)",
                       }}
@@ -245,7 +296,7 @@ export default function SearchPalette() {
                         className="min-w-0 flex-1 truncate"
                         style={{
                           fontFamily: "var(--font-serif)",
-                          fontSize: 15,
+                          fontSize: "var(--text-ui)",
                           lineHeight: 1.3,
                           color: "var(--tx2)",
                         }}
@@ -268,7 +319,7 @@ export default function SearchPalette() {
               );
             })}
 
-            {searching && (
+            {searching && !indexFailed && (
               <Command.Item
                 value="__all_results__"
                 onSelect={() => go(`/search?q=${encodeURIComponent(trimmed)}`)}
@@ -276,7 +327,7 @@ export default function SearchPalette() {
                 style={{
                   borderTop: "1px solid var(--rule-soft)",
                   fontFamily: "var(--font-serif)",
-                  fontSize: 16,
+                  fontSize: "var(--text-aside)",
                   color: "var(--tx2)",
                 }}
               >
@@ -307,11 +358,16 @@ export default function SearchPalette() {
             </span>
             <span
               className="mono ml-auto"
-              style={{ ...microLabel, color: "var(--accent)" }}
+              style={{
+                ...microLabel,
+                color: indexFailed ? "var(--tx3)" : "var(--accent)",
+              }}
             >
-              {searching
-                ? `${hitCount} ${hitCount === 1 ? "section" : "sections"}`
-                : "Type to search"}
+              {indexFailed
+                ? "index unavailable"
+                : searching
+                  ? `${hitCount} ${hitCount === 1 ? "section" : "sections"}`
+                  : "Type to search"}
             </span>
           </div>
         </Command>
