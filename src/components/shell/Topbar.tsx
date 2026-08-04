@@ -17,11 +17,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 import { useShell } from "@/contexts/ShellContext";
+import { useModifierKey } from "@/lib/useModifierKey";
 import { useProgress } from "@/lib/useProgress";
 import { findLessonBySlug, getSectionOf, LESSON_COUNT } from "@/data/lessons";
 
 const microLabel = {
-  fontSize: 10,
+  fontSize: "var(--text-micro)",
   letterSpacing: "0.14em",
   textTransform: "uppercase",
 } as const;
@@ -30,6 +31,7 @@ export default function Topbar() {
   const pathname = usePathname();
   const { openSearch } = useShell();
   const { completed } = useProgress();
+  const { palette } = useModifierKey();
 
   const lesson = findLessonBySlug(pathname);
   const section = getSectionOf(pathname);
@@ -84,7 +86,7 @@ export default function Topbar() {
             <span
               className="mono shrink-0 whitespace-nowrap rounded-full px-2 py-0.5"
               style={{
-                fontSize: 9,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 background: "var(--accent-soft)",
@@ -108,7 +110,7 @@ export default function Topbar() {
       <button
         type="button"
         onClick={openSearch}
-        title="Search the workshop — Ctrl K"
+        title={`Search the workshop — ${palette}`}
         // `min-w-0` and no floor on the width: the rail already takes 70px, so
         // at a 360px viewport this button and the breadcrumb are sharing a
         // 290px column. A `min-w-[150px]` here pushed the bar wider than the
@@ -121,18 +123,18 @@ export default function Topbar() {
         }}
       >
         <Search size={15} aria-hidden="true" className="shrink-0" />
-        <span className="hidden truncate text-[13px] sm:inline">
+        <span className="hidden truncate text-note sm:inline">
           Search lessons
         </span>
         <span
           className="mono ml-auto hidden shrink-0 whitespace-nowrap rounded-[3px] px-[5px] py-px md:inline"
           style={{
-            fontSize: 9.5,
+            fontSize: "var(--text-micro)",
             letterSpacing: "0.08em",
             border: "1px solid var(--rule)",
           }}
         >
-          Ctrl K
+          {palette}
         </span>
       </button>
 
@@ -145,19 +147,21 @@ export default function Topbar() {
           style={{ background: "var(--rule-soft)" }}
           aria-hidden="true"
         >
+          {/* `scaleX` rather than `width` — off the layout path, same result.
+              See the matching fill in `CurriculumDrawer`. */}
           <span
-            className="block h-full"
+            className="block h-full w-full origin-left"
             style={{
-              width: `${donePct}%`,
+              transform: `scaleX(${donePct / 100})`,
               background: "var(--accent)",
-              transition: "width 0.45s cubic-bezier(0.2,0.7,0.3,1)",
+              transition: "transform 0.45s cubic-bezier(0.2,0.7,0.3,1)",
             }}
           />
         </span>
         <span
           className="mono"
           style={{
-            fontSize: 9.5,
+            fontSize: "var(--text-micro)",
             letterSpacing: "0.12em",
             textTransform: "uppercase",
             color: "var(--tx3)",

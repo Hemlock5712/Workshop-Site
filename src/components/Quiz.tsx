@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { quizWinConfetti } from "@/lib/utils";
 
 interface QuizQuestion {
@@ -12,7 +12,13 @@ interface QuizQuestion {
 }
 
 interface QuizProps {
-  title: string;
+  /**
+   * Heading. Defaults to "Check yourself", which is also the anchor id and the
+   * outline label — every call site passed the same title, and 26 of them
+   * passed one ("Knowledge Check") that contradicted the label the outline
+   * rail was already showing. The default is now the single authored name.
+   */
+  title?: string;
   questions: QuizQuestion[];
 }
 
@@ -27,10 +33,22 @@ interface QuizProps {
  * chosen-but-wrong option is dimmed and labelled "not this one", and the
  * explanation always appears. The point is to leave knowing why, not to
  * score.
+ *
+ * The options are native radios hidden behind their labels. They were styled
+ * buttons carrying `role="radio"`, which announced a radio group and then
+ * behaved like nothing of the sort: six questions meant twenty-four separate
+ * tab stops and no arrow keys. The platform gives the right contract — one tab
+ * stop per question, arrows to move within it — for free.
  */
-export default function Quiz({ title, questions }: QuizProps) {
+export default function Quiz({
+  title = "Check yourself",
+  questions,
+}: QuizProps) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [graded, setGraded] = useState(false);
+  // Radios group by `name`, so the name has to be unique to this instance,
+  // not just to the question.
+  const uid = useId();
 
   const answered = Object.keys(answers).length === questions.length;
   const score = questions.filter(
@@ -58,24 +76,14 @@ export default function Quiz({ title, questions }: QuizProps) {
     >
       <div className="mb-[26px] flex items-baseline gap-4">
         <span
-          className="mono sec-num tabular shrink-0"
+          className="mono sec-num tabular shrink-0 text-micro"
           style={{
-            fontSize: 10,
             letterSpacing: "0.14em",
             color: "var(--accent)",
           }}
           aria-hidden="true"
         />
-        <h2
-          className="display m-0"
-          style={{
-            fontSize: "clamp(27px, 3.4vw, 38px)",
-            lineHeight: 1.08,
-            letterSpacing: "-0.015em",
-          }}
-        >
-          {title}
-        </h2>
+        <h2 className="display-section m-0 min-w-0">{title}</h2>
         <span
           aria-hidden="true"
           className="h-px flex-1"
@@ -97,11 +105,11 @@ export default function Quiz({ title, questions }: QuizProps) {
             className="mb-[26px] pb-[26px]"
             style={{ borderBottom: "1px solid var(--rule-soft)" }}
           >
-            <div className="mb-4 flex gap-3.5">
+            <div className="mb-4 flex min-w-0 gap-3.5">
               <span
                 className="mono tabular shrink-0 pt-2"
                 style={{
-                  fontSize: 10,
+                  fontSize: "var(--text-micro)",
                   letterSpacing: "0.12em",
                   color: "var(--accent)",
                 }}
@@ -109,7 +117,7 @@ export default function Quiz({ title, questions }: QuizProps) {
                 {String(qi + 1).padStart(2, "0")}
               </span>
               <p
-                className="display m-0"
+                className="display m-0 min-w-0"
                 style={{
                   fontSize: "clamp(20px, 2.4vw, 26px)",
                   lineHeight: 1.2,
@@ -150,28 +158,45 @@ export default function Quiz({ title, questions }: QuizProps) {
                 }
 
                 return (
-                  <button
+                  <label
                     key={oi}
-                    type="button"
-                    role="radio"
-                    aria-checked={picked}
-                    disabled={graded}
-                    onClick={() =>
-                      setAnswers((prev) => ({ ...prev, [q.id]: oi }))
-                    }
-                    className="flex w-full items-baseline gap-3.5 border-0 px-3.5 py-[11px] text-left transition-colors enabled:cursor-pointer"
-                    style={{ borderRadius: 2, background, color }}
+                    className="quiz-option flex w-full items-baseline gap-3.5 px-3.5 py-[11px] text-left transition-colors"
+                    style={{
+                      borderRadius: 2,
+                      background,
+                      color,
+                      cursor: graded ? "default" : "pointer",
+                    }}
                   >
+                    {/* `aria-disabled` rather than `disabled`: grading is the
+                        moment the explanation appears beside these, and the
+                        real attribute would drop every option out of the tab
+                        order exactly then. The handler declines instead. */}
+                    <input
+                      type="radio"
+                      className="quiz-radio"
+                      name={`${uid}-q${q.id}`}
+                      value={oi}
+                      checked={picked}
+                      aria-disabled={graded || undefined}
+                      onChange={() => {
+                        if (graded) return;
+                        setAnswers((prev) => ({ ...prev, [q.id]: oi }));
+                      }}
+                    />
                     <span
                       className="mono shrink-0"
-                      style={{ fontSize: 11, color: letterColor }}
+                      style={{
+                        fontSize: "var(--text-meta)",
+                        color: letterColor,
+                      }}
                     >
                       {String.fromCharCode(97 + oi)}.
                     </span>
                     <span
                       style={{
                         fontFamily: "var(--font-serif)",
-                        fontSize: 17,
+                        fontSize: "var(--text-aside)",
                         lineHeight: 1.45,
                       }}
                     >
@@ -181,7 +206,7 @@ export default function Quiz({ title, questions }: QuizProps) {
                       <span
                         className="mono ml-auto shrink-0 whitespace-nowrap"
                         style={{
-                          fontSize: 9,
+                          fontSize: "var(--text-micro)",
                           letterSpacing: "0.12em",
                           textTransform: "uppercase",
                           color: flagColor,
@@ -190,38 +215,51 @@ export default function Quiz({ title, questions }: QuizProps) {
                         {flag}
                       </span>
                     )}
-                  </button>
+                  </label>
                 );
               })}
             </div>
 
-            {graded && (
-              <div className="mt-5 grid grid-cols-[56px_1fr] gap-5 sm:ml-[34px] sm:grid-cols-[80px_1fr]">
-                <div
-                  className="mono pt-[5px] text-right"
-                  style={{
-                    fontSize: 9.5,
-                    letterSpacing: "0.13em",
-                    textTransform: "uppercase",
-                    color: "var(--accent)",
-                  }}
-                >
-                  Why
-                </div>
-                <div
-                  className="pl-5 sm:pl-[22px]"
-                  style={{
-                    borderLeft: "1px solid var(--rule)",
-                    fontFamily: "var(--font-serif)",
-                    fontSize: 16.5,
-                    lineHeight: 1.62,
-                    color: "var(--tx2)",
-                  }}
-                >
-                  {q.explanation}
-                </div>
-              </div>
-            )}
+            {/* The explanation is the whole point of the quiz, so it is
+                announced when it lands. The region is always mounted and
+                filled on grading — a live region added to the DOM at the same
+                moment as its content is unreliably announced. */}
+            <div
+              role="status"
+              className={
+                graded
+                  ? "mt-5 grid grid-cols-[56px_minmax(0,1fr)] gap-5 sm:ml-[34px] sm:grid-cols-[80px_minmax(0,1fr)]"
+                  : undefined
+              }
+            >
+              {graded && (
+                <>
+                  <div
+                    className="mono pt-[5px] text-right"
+                    style={{
+                      fontSize: "var(--text-micro)",
+                      letterSpacing: "0.13em",
+                      textTransform: "uppercase",
+                      color: "var(--accent)",
+                    }}
+                  >
+                    Why
+                  </div>
+                  <div
+                    className="pl-5 sm:pl-[22px]"
+                    style={{
+                      borderLeft: "1px solid var(--rule)",
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "var(--text-aside)",
+                      lineHeight: 1.62,
+                      color: "var(--tx2)",
+                    }}
+                  >
+                    {q.explanation}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         ))}
 
@@ -230,7 +268,7 @@ export default function Quiz({ title, questions }: QuizProps) {
             type="button"
             onClick={submit}
             disabled={!answered && !graded}
-            className="whitespace-nowrap px-[22px] py-[11px] text-[13px] font-semibold transition-opacity enabled:cursor-pointer disabled:cursor-not-allowed"
+            className="whitespace-nowrap px-[22px] py-[11px] text-note font-semibold transition-opacity enabled:cursor-pointer disabled:cursor-not-allowed"
             style={{
               borderRadius: 2,
               border: `1px solid ${answered || graded ? "var(--accent)" : "var(--rule)"}`,
@@ -250,7 +288,7 @@ export default function Quiz({ title, questions }: QuizProps) {
             style={{
               fontFamily: "var(--font-serif)",
               fontStyle: "italic",
-              fontSize: 15.5,
+              fontSize: "var(--text-ui)",
               color: "var(--tx3)",
             }}
           >

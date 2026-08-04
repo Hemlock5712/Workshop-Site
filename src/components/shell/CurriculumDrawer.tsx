@@ -22,15 +22,32 @@ export default function CurriculumDrawer() {
   const pathname = usePathname();
   const { completed } = useProgress();
   const panelRef = useRef<HTMLDivElement>(null);
+  const returnToRef = useRef<HTMLElement | null>(null);
   const groups = getLessonGroups();
 
   const doneCount = completed.size;
   const donePct = Math.round((doneCount / LESSON_COUNT) * 100);
 
   // Move focus into the panel on open so the first Tab lands inside the drawer
-  // rather than back on the page behind it.
+  // rather than back on the page behind it — and hand it back to whatever
+  // opened the drawer on close. Closing a trap without returning focus drops
+  // the reader on `<body>`, which here means losing both their place in the
+  // tab order and the ability to arrow-scroll at all.
   useEffect(() => {
-    if (navOpen) panelRef.current?.focus();
+    if (navOpen) {
+      returnToRef.current =
+        document.activeElement instanceof HTMLElement
+          ? document.activeElement
+          : null;
+      panelRef.current?.focus();
+      return;
+    }
+
+    const returnTo = returnToRef.current;
+    returnToRef.current = null;
+    // The trigger can be gone: the drawer closes on navigation too, and the
+    // page it was rendered on may no longer exist.
+    if (returnTo?.isConnected) returnTo.focus();
   }, [navOpen]);
 
   // Keep focus in the panel while it's open. A drawer that covers the page but
@@ -92,7 +109,7 @@ export default function CurriculumDrawer() {
             <span
               className="mono whitespace-nowrap"
               style={{
-                fontSize: 10,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
                 color: "var(--tx3)",
@@ -105,19 +122,23 @@ export default function CurriculumDrawer() {
               style={{ background: "var(--rule-soft)" }}
               aria-hidden="true"
             >
+              {/* `scaleX` rather than `width`: animating width relayouts the
+                  fill on every frame, and this one runs while the drawer is
+                  opening. The transform is composited, and on a plain bar the
+                  result is pixel-identical. */}
               <span
-                className="block h-full"
+                className="block h-full w-full origin-left"
                 style={{
-                  width: `${donePct}%`,
+                  transform: `scaleX(${donePct / 100})`,
                   background: "var(--accent)",
-                  transition: "width 0.45s cubic-bezier(0.2,0.7,0.3,1)",
+                  transition: "transform 0.45s cubic-bezier(0.2,0.7,0.3,1)",
                 }}
               />
             </span>
             <span
               className="mono whitespace-nowrap"
               style={{
-                fontSize: 10,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 color: "var(--accent)",
@@ -131,7 +152,7 @@ export default function CurriculumDrawer() {
             onClick={closeNav}
             className="mono shrink-0 cursor-pointer border-0 bg-transparent"
             style={{
-              fontSize: 11,
+              fontSize: "var(--text-meta)",
               letterSpacing: "0.1em",
               color: "var(--tx3)",
             }}
@@ -162,7 +183,7 @@ export default function CurriculumDrawer() {
           <span
             className="mono ml-auto hidden font-normal sm:inline"
             style={{
-              fontSize: 9.5,
+              fontSize: "var(--text-micro)",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               color: "var(--tx3)",
@@ -181,7 +202,7 @@ export default function CurriculumDrawer() {
               <span
                 className="mono"
                 style={{
-                  fontSize: 10,
+                  fontSize: "var(--text-micro)",
                   letterSpacing: "0.12em",
                   color: "var(--accent)",
                 }}
@@ -190,13 +211,17 @@ export default function CurriculumDrawer() {
               </span>
               <span
                 className="display"
-                style={{ fontSize: 23, lineHeight: 1, color: "var(--tx)" }}
+                style={{
+                  fontSize: "var(--text-title)",
+                  lineHeight: 1,
+                  color: "var(--tx)",
+                }}
               >
                 {group.title}
               </span>
               <span
                 className="mono ml-auto whitespace-nowrap"
-                style={{ fontSize: 10, color: "var(--tx3)" }}
+                style={{ fontSize: "var(--text-micro)", color: "var(--tx3)" }}
               >
                 {String(group.lessons.length).padStart(2, "0")} lessons
               </span>
@@ -215,14 +240,14 @@ export default function CurriculumDrawer() {
                     className="-mx-2.5 flex items-baseline gap-3 rounded-[3px] px-2.5 py-[7px] transition-colors hover:bg-[var(--accent-soft)]"
                     style={{
                       fontFamily: "var(--font-serif)",
-                      fontSize: 17.5,
+                      fontSize: "var(--text-aside)",
                       color: current ? "var(--accent)" : "var(--tx2)",
                     }}
                   >
                     <span
                       className="mono tabular w-[22px] shrink-0"
                       style={{
-                        fontSize: 10,
+                        fontSize: "var(--text-micro)",
                         color: current ? "var(--accent)" : "var(--tx3)",
                       }}
                     >
@@ -234,7 +259,7 @@ export default function CurriculumDrawer() {
                         <span
                           className="mono ml-2"
                           style={{
-                            fontSize: 9,
+                            fontSize: "var(--text-micro)",
                             letterSpacing: "0.12em",
                             textTransform: "uppercase",
                             color: "var(--tx3)",
@@ -248,7 +273,7 @@ export default function CurriculumDrawer() {
                       <span
                         className="mono ml-auto shrink-0"
                         style={{
-                          fontSize: 9.5,
+                          fontSize: "var(--text-micro)",
                           letterSpacing: "0.1em",
                           color: "var(--accent)",
                         }}

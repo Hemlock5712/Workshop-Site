@@ -14,9 +14,12 @@
 
 import { type ReactNode } from "react";
 import { ShellProvider, useShell } from "@/contexts/ShellContext";
+import AnalyticsBanner from "@/components/AnalyticsBanner";
+import KeyboardShortcutsHelp from "@/components/KeyboardShortcutsHelp";
 import AppRail from "./AppRail";
 import CurriculumDrawer from "./CurriculumDrawer";
 import SearchPalette from "./SearchPalette";
+import SkipLink from "./SkipLink";
 import Topbar from "./Topbar";
 
 function ShellFrame({ children }: { children: ReactNode }) {
@@ -24,6 +27,7 @@ function ShellFrame({ children }: { children: ReactNode }) {
 
   return (
     <>
+      <SkipLink />
       <AppRail />
       <CurriculumDrawer />
       <SearchPalette />
@@ -37,6 +41,14 @@ function ShellFrame({ children }: { children: ReactNode }) {
         <Topbar />
         {children}
       </main>
+
+      {/* Viewport-fixed overlays live OUTSIDE <main>. Inside it they still
+          counted toward its scrollable overflow, and since main is inset 70px
+          by the rail while these span `left-0 right-0`, they added exactly
+          that 70px — every page reported a horizontal scroll that no visible
+          element accounted for. */}
+      <AnalyticsBanner />
+      <KeyboardShortcutsHelp />
     </>
   );
 }

@@ -2,15 +2,7 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { Keyboard, X } from "lucide-react";
-
-const shortcuts: Array<{ keys: string[]; description: string }> = [
-  { keys: ["←", "→"], description: "Navigate between workshop pages" },
-  { keys: ["/"], description: "Focus search bar" },
-  { keys: ["Ctrl", "K"], description: "Focus search bar" },
-  { keys: ["Esc"], description: "Close search or dialogs" },
-  { keys: ["Home"], description: "Go to homepage" },
-  { keys: ["End"], description: "Go to last workshop page" },
-];
+import { useModifierKey } from "@/lib/useModifierKey";
 
 function ShortcutKeys({ keys }: { keys: string[] }) {
   return (
@@ -28,6 +20,18 @@ function ShortcutKeys({ keys }: { keys: string[] }) {
 }
 
 export default function KeyboardShortcutsHelp() {
+  // Built here rather than at module scope because the search shortcut is
+  // spelled per platform — see `useModifierKey`.
+  const { mod } = useModifierKey();
+  const shortcuts: Array<{ keys: string[]; description: string }> = [
+    { keys: ["←", "→"], description: "Navigate between workshop pages" },
+    { keys: ["/"], description: "Focus search bar" },
+    { keys: [mod, "K"], description: "Focus search bar" },
+    { keys: ["Esc"], description: "Close search or dialogs" },
+    { keys: ["Home"], description: "Go to homepage" },
+    { keys: ["End"], description: "Go to last workshop page" },
+  ];
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
