@@ -203,7 +203,7 @@ export default function GlossaryTerm({
           <span
             className="mono mb-1.5 block"
             style={{
-              fontSize: 9,
+              fontSize: "var(--text-micro)",
               letterSpacing: "0.14em",
               textTransform: "uppercase",
               color: "var(--accent)",
@@ -215,7 +215,7 @@ export default function GlossaryTerm({
             className="block"
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 14,
+              fontSize: "var(--text-note)",
               lineHeight: 1.5,
               color: "var(--tx2)",
             }}

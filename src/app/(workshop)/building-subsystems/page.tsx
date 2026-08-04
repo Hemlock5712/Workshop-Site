@@ -9,8 +9,6 @@ import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
 
-const bodyStyle = { color: "var(--fg-mute)" } as const;
-
 export default function BuildingSubsystems() {
   return (
     <PageTemplate
@@ -87,7 +85,7 @@ export default function BuildingSubsystems() {
         id="what-this-branch-actually-contains"
         title="What this branch actually contains"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>1-Subsystem</code> is the first branch of the mechanism track,
           and it is deliberately tiny. The arm can push a voltage at its motor
           and it can stop. That is the entire public surface of the class. Not
@@ -96,9 +94,7 @@ export default function BuildingSubsystems() {
           on yet.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
-          The file says so itself, in the comment at the top:
-        </p>
+        <p>The file says so itself, in the comment at the top:</p>
 
         <CodeBlock
           language="java"
@@ -116,7 +112,7 @@ export default function BuildingSubsystems() {
  */`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Take that at face value. Everything about commands — making the setter{" "}
           <code>private</code>, <code>runRepeatedly(...)</code>, naming them,
           the <code>(hold)</code> suffix — lands on the next page, against the
@@ -169,7 +165,7 @@ export default function BuildingSubsystems() {
 
       {/* ── step 1 ───────────────────────────────────────────────────── */}
       <LessonSection id="the-arm-s-hardware" title="The arm's hardware fields">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Open <code>src/main/java/frc/robot/subsystems/Arm.java</code> in your
           clone — empty if you deleted it, the finished file if you did not —
           and start with the class line and four fields.
@@ -188,10 +184,7 @@ export default function BuildingSubsystems() {
   private final VoltageOut voltageOut = new VoltageOut(0);`}
         />
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <code>extends Mechanism</code> is what makes this class a mechanism
             rather than a plain object. Building one registers it with the
@@ -255,7 +248,7 @@ export default function BuildingSubsystems() {
         id="configure-the-motor-once"
         title="Configure the motor once, in the constructor"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The constructor runs one time, automatically, when{" "}
           <code>new Arm()</code> is evaluated. Five statements, and each one is
           a decision.
@@ -378,7 +371,7 @@ export default function BuildingSubsystems() {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>voltageOut.withOutput(voltage)</code> sets the number on the
           request object you built as a field, and{" "}
           <code>motor.setControl(...)</code> sends it. The motor holds that
@@ -425,7 +418,7 @@ export default function BuildingSubsystems() {
         id="the-finished-file-live-from-the"
         title="The finished file, live from the branch"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Here is the whole of <code>Arm.java</code> on <code>1-Subsystem</code>
           , imports and all, pulled straight from the repository — around sixty
           lines including the comments. Compare it against what you typed,
@@ -444,7 +437,7 @@ export default function BuildingSubsystems() {
         id="the-flywheel-two-motors"
         title="The flywheel: two motors, one of them a follower"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Same three regions, same pattern, one new idea. The flywheel has two
           TalonFX motors — a leader on CAN <code>21</code> and a follower on CAN{" "}
           <code>22</code> — and the code only ever talks to the leader.
@@ -474,7 +467,7 @@ export default function BuildingSubsystems() {
   }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The two methods are the arm&apos;s two methods, pointed at the leader:
         </p>
 
@@ -551,7 +544,7 @@ export default function BuildingSubsystems() {
         id="hand-the-mechanisms-to"
         title="Hand the mechanisms to the robot, and start the scheduler"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Two mechanism classes that nobody builds are two files that do
           nothing. <code>Robot.java</code> is where they become real objects,
           and it is one of the shortest files on the branch. Here it is in full,
@@ -620,10 +613,7 @@ public class Robot extends OpModeRobot {
           </p>
         </Box>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <code>extends OpModeRobot</code> is the top of the whole program.
             There is no <code>RobotContainer</code> on this stack and there
@@ -666,16 +656,13 @@ public class Robot extends OpModeRobot {
 
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           There is nothing to press yet, so the checks are a clean build, three
           things you can see in your own files, and one last look at Tuner X.
           Each one takes under a minute.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Run <code>./gradlew build</code>. <strong>You should see:</strong>{" "}
             <code>BUILD SUCCESSFUL</code>. That is the real check on this page —
@@ -766,16 +753,13 @@ public class Robot extends OpModeRobot {
         id="what-this-page-left-out-on"
         title="What this page left out on purpose"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Everything below is real and everything below is coming. None of it
           exists in the files you wrote above, which is why none of it is on
           this page.
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Commands, and the private setter.</strong>{" "}
             <code>runRepeatedly(...)</code>, the mandatory{" "}
@@ -810,7 +794,6 @@ public class Robot extends OpModeRobot {
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

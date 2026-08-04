@@ -42,7 +42,7 @@ export default function CollapsibleSection({
         className="flex cursor-pointer list-none items-baseline gap-3.5 py-4 transition-colors hover:text-[var(--accent)] [&::-webkit-details-marker]:hidden"
         style={{
           fontFamily: "var(--font-serif)",
-          fontSize: 19,
+          fontSize: "var(--text-body)",
           lineHeight: 1.3,
           color: "var(--tx)",
         }}
@@ -50,7 +50,7 @@ export default function CollapsibleSection({
         <span
           className="mono shrink-0"
           aria-hidden="true"
-          style={{ fontSize: 12, color: "var(--accent)" }}
+          style={{ fontSize: "var(--text-meta)", color: "var(--accent)" }}
         >
           <span className="group-open:hidden">+</span>
           <span className="hidden group-open:inline">−</span>

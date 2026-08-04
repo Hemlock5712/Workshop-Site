@@ -27,7 +27,7 @@ export default function CodeCopyButton({ code }: { code: string }) {
       aria-label={copied ? "Copied" : "Copy code"}
       className="mono ml-auto shrink-0 cursor-pointer border-0 bg-transparent transition-colors hover:text-[var(--accent)]"
       style={{
-        fontSize: 10,
+        fontSize: "var(--text-micro)",
         letterSpacing: "0.1em",
         textTransform: "uppercase",
         color: "#7f8793",

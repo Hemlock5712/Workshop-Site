@@ -46,12 +46,25 @@ function Model({ url, onLoaded }: { url: string; onLoaded: () => void }) {
   );
 }
 
+/* The other rotating ring on the site, retired for the same reason as the one
+   in `GitHubContent`: a quiet mono micro-label is the idiom here, and it says
+   more than the ring did. */
 function LoadingFallback() {
   return (
     <Html center>
-      <div className="flex flex-col items-center gap-3 bg-[var(--card)]/90 text-[var(--foreground)] px-6 py-4 rounded-lg shadow-lg">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[var(--accent)]" />
-        <p className="text-sm font-medium">Loading 3D model…</p>
+      <div
+        className="mono px-4 py-2.5 whitespace-nowrap"
+        style={{
+          fontSize: "var(--text-micro)",
+          letterSpacing: "0.1em",
+          background: "var(--bg2)",
+          border: "1px solid var(--rule)",
+          borderRadius: 3,
+          color: "var(--tx3)",
+        }}
+        aria-live="polite"
+      >
+        loading 3D model…
       </div>
     </Html>
   );

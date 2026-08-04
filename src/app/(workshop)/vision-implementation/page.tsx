@@ -11,13 +11,6 @@ import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
 import { Link, Tag, GitBranch } from "lucide-react";
 
-const subheadingStyle = {
-  fontFamily: "var(--font-serif)",
-  color: "var(--fg)",
-} as const;
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
-
 export default function VisionImplementation() {
   return (
     <PageTemplate
@@ -92,7 +85,7 @@ export default function VisionImplementation() {
         id="what-an-apriltag-gives-you"
         title="What an AprilTag gives you"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           AprilTags are the square black-and-white markers bolted around the
           field. Each one carries a unique ID, and the field drawing says
           exactly where that ID sits. The camera does not know what a speaker or
@@ -103,10 +96,7 @@ export default function VisionImplementation() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <ContentCard tag="HOW THE MATH RUNS">
-            <ul
-              className="ml-4 list-disc space-y-2 text-sm leading-relaxed"
-              style={bodyStyle}
-            >
+            <ul className="ml-4 list-disc space-y-2">
               <li>Every tag ID maps to a known spot on the field.</li>
               <li>
                 The camera measures the tag&apos;s pose relative to itself.
@@ -120,10 +110,7 @@ export default function VisionImplementation() {
           </ContentCard>
 
           <ContentCard tag="WHY BOTHER">
-            <ul
-              className="ml-4 list-disc space-y-2 text-sm leading-relaxed"
-              style={bodyStyle}
-            >
+            <ul className="ml-4 list-disc space-y-2">
               <li>Wheel odometry drifts; a tag sighting pulls it back.</li>
               <li>
                 You get absolute field coordinates, not an accumulated guess.
@@ -160,7 +147,7 @@ export default function VisionImplementation() {
         id="two-solvers-megatag1-and-megatag2"
         title="Two solvers: MegaTag1 and MegaTag2"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The Limelight can turn the same picture into a robot pose two
           different ways, and the difference decides everything else on this
           page. Understand this part and the rest of the file reads itself.
@@ -168,16 +155,16 @@ export default function VisionImplementation() {
 
         <div className="grid md:grid-cols-2 gap-6">
           <ContentCard tag="MEGATAG1">
-            <h3 className="mb-2 text-lg font-semibold" style={subheadingStyle}>
+            <h3 className="display m-0 mb-2 text-lede">
               Solves everything from the tags
             </h3>
-            <p className="text-sm leading-relaxed" style={bodyStyle}>
+            <p>
               Position <em>and</em> heading come out of the geometry of the tags
               in frame. Nothing else is needed. With two or more tags spread
               across the image that geometry is well constrained and the answer
               is good.
             </p>
-            <p className="mt-3 text-sm leading-relaxed" style={bodyStyle}>
+            <p className="mt-3">
               With a single tag it is shaky: a small error in the measured
               corner positions swings the solved heading a long way, and the
               heading error drags the position with it.
@@ -185,15 +172,15 @@ export default function VisionImplementation() {
           </ContentCard>
 
           <ContentCard tag="MEGATAG2">
-            <h3 className="mb-2 text-lg font-semibold" style={subheadingStyle}>
+            <h3 className="display m-0 mb-2 text-lede">
               Takes your heading as given
             </h3>
-            <p className="text-sm leading-relaxed" style={bodyStyle}>
+            <p>
               You tell the camera which way the robot is facing. It stops
               solving for heading and solves only for position, which is a much
               easier problem. One tag is enough.
             </p>
-            <p className="mt-3 text-sm leading-relaxed" style={bodyStyle}>
+            <p className="mt-3">
               The catch is in the name: it trusts <em>your</em> heading. If the
               gyro is off by ten degrees, the position it hands back is wrong in
               a way no amount of filtering will catch. Seed the gyro.
@@ -221,15 +208,12 @@ export default function VisionImplementation() {
         id="set-the-camera-up"
         title="Set the camera up in its own web page"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           None of the code below can fix a badly configured camera. Do this
           first, on the hardware, with the robot powered.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-4 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-4">
           <li>
             <strong>Switch the active pipeline to AprilTag.</strong> Open the
             Limelight web interface and pick the AprilTag pipeline. This is what
@@ -295,7 +279,7 @@ export default function VisionImplementation() {
         }
         outlineLabel="Add LimelightHelpers.java"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The Limelight publishes everything it knows to NetworkTables as raw
           arrays of numbers. <code>LimelightHelpers</code> is the single file
           Limelight ships to save you from reading those arrays by hand: it
@@ -318,7 +302,7 @@ export default function VisionImplementation() {
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Two pieces of it matter for this lesson. A <code>PoseEstimate</code>{" "}
           carries the fields the rest of the page uses — <code>pose</code>,{" "}
           <code>timestampSeconds</code>, <code>tagCount</code>,{" "}
@@ -334,7 +318,7 @@ export default function VisionImplementation() {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           A <em>fiducial</em> is one detected tag. So this is asking: did we get
           an answer at all, and did at least one tag go into it? When there is
           no data to read, <code>LimelightHelpers</code> hands back a default{" "}
@@ -372,17 +356,17 @@ export default function VisionImplementation() {
         }
         outlineLabel="Write the Limelight class"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Create <code>src/main/java/frc/robot/subsystems/Limelight.java</code>.
           It is about eighty lines, and it is worth building in pieces, because
           each piece answers a question.
         </p>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           3a. Why it is not a <code>Mechanism</code>
         </h3>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           A <code>Mechanism</code> exists so the scheduler can hand out
           exclusive ownership of a piece of hardware — one command at a time
           gets the arm. A camera drives nothing, so there is nothing to own and
@@ -403,10 +387,7 @@ export default function VisionImplementation() {
 }`}
         />
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <code>String... cameraNames</code> means &quot;any number of
             names&quot;. Call it with one, or with four.
@@ -424,7 +405,7 @@ export default function VisionImplementation() {
           </li>
         </ul>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           3b. Tell the camera your heading, then pick a solver
         </h3>
 
@@ -443,13 +424,13 @@ if (LimelightHelpers.validPoseEstimate(estimate) && estimate.tagCount == 1) {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The five zeros after the heading are yaw rate, pitch, pitch rate, roll
           and roll rate. The heading you pass is the yaw. This code only has a
           heading to offer, so the rest go in as zero.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>_NoFlush</code> is a small efficiency detail worth understanding
           because it explains the second <code>addPeriodic</code> above.
           Normally a NetworkTables write is pushed out immediately. With four
@@ -458,7 +439,7 @@ if (LimelightHelpers.validPoseEstimate(estimate) && estimate.tagCount == 1) {
           <code>LimelightHelpers::Flush</code> sends all of them together, once.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>_wpiBlue</code> means the pose comes back in
           blue-alliance-origin coordinates: (0, 0) is the blue corner no matter
           which alliance you are on. That matches{" "}
@@ -468,7 +449,7 @@ if (LimelightHelpers.validPoseEstimate(estimate) && estimate.tagCount == 1) {
           agree.
         </p>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           3c. Two conditions, and that is the whole filter
         </h3>
 
@@ -482,7 +463,7 @@ if (!LimelightHelpers.validPoseEstimate(estimate)
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           That is it. No tag in frame, or the average tag is further than{" "}
           <code>MAX_TAG_DISTANCE_METERS = 4.0</code> away, and the update
           returns without telling the drivetrain anything. Everything else gets
@@ -505,11 +486,11 @@ if (!LimelightHelpers.validPoseEstimate(estimate)
           </p>
         </Box>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           3d. How much to trust it
         </h3>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The pose estimator does not want to be told &quot;the robot is
           here&quot;. It wants to be told &quot;the robot is here, give or take
           this much&quot;, and it blends that against what the wheels say. The
@@ -519,7 +500,7 @@ if (!LimelightHelpers.validPoseEstimate(estimate)
           meters and radians, and bigger numbers mean trust it less.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Read it as an error bar. A value of <code>0.2</code> means &quot;I
           think the robot is within about 20 cm of this&quot;. A value of{" "}
           <code>2.0</code> means &quot;somewhere in this two-meter
@@ -556,14 +537,9 @@ drivetrain.addVisionMeasurement(
     VecBuilder.fill(xyStdDev, xyStdDev, headingStdDev));`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
-          Four things are going on in those ten lines.
-        </p>
+        <p>Four things are going on in those ten lines.</p>
 
-        <ul
-          className="ml-5 list-disc space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-3">
           <li>
             <strong>Distance hurts, gently.</strong>{" "}
             <code>Math.pow(avgTagDist, 1.2)</code> grows a little faster than
@@ -614,17 +590,17 @@ drivetrain.addVisionMeasurement(
           </p>
         </Box>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           What those numbers actually come out to
         </h3>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Working the formula by hand for a few realistic sightings makes the
           shape of it obvious. These are the position error bars only:
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-[15px]" style={bodyStyle}>
+          <table className="w-full text-ui" style={{ color: "var(--tx2)" }}>
             <thead>
               <tr className="border-b" style={{ borderColor: "var(--line)" }}>
                 <th className="py-2 pr-4 text-left font-semibold">Tags seen</th>
@@ -671,7 +647,7 @@ drivetrain.addVisionMeasurement(
           </table>
         </div>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           Those are calculated from the constants above, not read off a
           dashboard. Note the second and third rows: at the same distance, the
           second tag is worth four times the trust. Note also that a single tag
@@ -680,11 +656,11 @@ drivetrain.addVisionMeasurement(
           that shaky.
         </p>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           The timestamp is not optional
         </h3>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>addVisionMeasurement</code> takes{" "}
           <code>estimate.timestampSeconds</code>, not the current time. The
           picture was taken, processed on the camera, and sent over the network
@@ -696,7 +672,7 @@ drivetrain.addVisionMeasurement(
           Limelight&apos;s own value straight through with no conversion.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The correction has already been made for you inside{" "}
           <code>LimelightHelpers</code>, which builds the field as{" "}
           <code>(timestamp / 1000000.0) - (latency / 1000.0)</code> — the
@@ -732,7 +708,7 @@ drivetrain.addVisionMeasurement(
         }
         outlineLabel="Wire it up in Robot"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           One line, in <code>Robot</code>&apos;s constructor. Not in an OpMode —
           OpMode bindings are torn down on a mode switch, and vision has to keep
           correcting odometry in teleop, in autonomous and while disabled.
@@ -747,7 +723,7 @@ drivetrain.addVisionMeasurement(
 Limelight.registerAll(drivetrain, "limelight");`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>drivetrain</code> is the <code>public final</code> field{" "}
           <code>Robot</code> already owns, and{" "}
           <code>&quot;limelight&quot;</code> is the camera name from step 1. A
@@ -792,17 +768,14 @@ Limelight.registerAll(drivetrain, "limelight");`}
 
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           All of this happens on the real robot. Deploy, put the robot on the
           floor with a tag somewhere it can see, and open the drivetrain
           telemetry you set up in the Logging lesson —{" "}
           <code>Drivetrain/Pose</code> in NetworkTables.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Park the robot roughly two meters from a tag, square to the field,
             and note where <code>Drivetrain/Pose</code> says it is.
@@ -911,7 +884,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
           />
         </div>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           The template&apos;s version of this class is the same code in a{" "}
           <code>subsystems/vision/</code> package — same constants, same two
           conditions, same MegaTag1-first logic. If you graduate this project
@@ -923,7 +896,6 @@ Limelight.registerAll(drivetrain, "limelight");`}
         <AlphaStatusNote />
 
         <Quiz
-          title="Knowledge Check"
           questions={[
             {
               id: 1,

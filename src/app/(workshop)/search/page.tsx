@@ -11,7 +11,7 @@ function SearchFallback() {
     <p
       className="mono measure"
       style={{
-        fontSize: 10,
+        fontSize: "var(--text-micro)",
         letterSpacing: "0.14em",
         textTransform: "uppercase",
         color: "var(--tx3)",

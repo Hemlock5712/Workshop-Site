@@ -1,8 +1,6 @@
 import WorkshopShell from "@/components/shell/WorkshopShell";
 import AutoFocusMain from "@/components/AutoFocusMain";
 import KeyboardNavigationProvider from "@/components/KeyboardNavigationProvider";
-import KeyboardShortcutsHelp from "@/components/KeyboardShortcutsHelp";
-import AnalyticsBanner from "@/components/AnalyticsBanner";
 import AlphaBanner from "@/components/AlphaBanner";
 
 /**
@@ -24,8 +22,6 @@ export default function WorkshopLayout({
       <AutoFocusMain />
       <AlphaBanner />
       {children}
-      <KeyboardShortcutsHelp />
-      <AnalyticsBanner />
     </WorkshopShell>
   );
 }

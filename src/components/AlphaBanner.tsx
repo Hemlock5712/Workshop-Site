@@ -26,7 +26,7 @@ export default function AlphaBanner() {
       <span
         className="mono"
         style={{
-          fontSize: 10,
+          fontSize: "var(--text-micro)",
           letterSpacing: "0.08em",
           color: "var(--tx3)",
         }}

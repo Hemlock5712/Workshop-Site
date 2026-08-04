@@ -121,7 +121,7 @@ export default function FinishLines() {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -341,7 +341,7 @@ import org.wpilib.units.measure.Angle;`}
         />
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -375,7 +375,7 @@ import org.wpilib.units.measure.Angle;`}
 
         <h3
           className="display measure m-0"
-          style={{ fontSize: 23, lineHeight: 1.15 }}
+          style={{ fontSize: "var(--text-title)", lineHeight: 1.15 }}
         >
           The two colons matter
         </h3>
@@ -622,7 +622,7 @@ import org.wpilib.units.measure.Angle;`}
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -747,7 +747,6 @@ import org.wpilib.units.measure.Angle;`}
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

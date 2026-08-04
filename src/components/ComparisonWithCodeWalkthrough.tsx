@@ -45,8 +45,8 @@ export default function ComparisonWithCodeWalkthrough({
     <div className={className}>
       {content.caution && <div>{content.caution}</div>}
 
-      <div className="bg-[var(--bg2)] rounded-lg p-6">
-        <h3 className="text-xl font-bold text-[var(--tx)] mb-4">
+      <div className="min-w-0 bg-[var(--bg2)] rounded-lg p-6">
+        <h3 className="display m-0 mb-4 text-lede">
           Before &amp; After: Implementation
         </h3>
         {/* No className overrides: the default err/ok tones are exactly the

@@ -9,15 +9,8 @@ import Box from "@/components/Box";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { Book } from "lucide-react";
-
-const headingStyle = {
-  fontFamily: "var(--font-serif)",
-  color: "var(--fg)",
-  letterSpacing: "-0.01em",
-} as const;
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
 
 export default function PIDControl() {
   return (
@@ -49,33 +42,28 @@ export default function PIDControl() {
       branch="3-PID"
       time="about 20 minutes of typing"
     >
-      <KeyConceptSection
-        description={[
-          "On this page the motor takes over. You hand it a target angle — the number you ask the motor to reach is called the setpoint. It reads the CANcoder, compares that reading to the setpoint, and works out its own voltage — over and over, inside the TalonFX itself rather than in your code. That is a closed loop: the motor reads a sensor and adjusts, instead of blindly pushing. That is PID.",
-          "Then you tune it. Four numbers, measured on your actual arm, in a fixed order. The 3-PID branch ships all four as 0.0 on purpose — finding them is the lesson.",
-        ]}
-        concept="PID turns the gap between where the arm is and where you asked it to be into motor output. Feedforward adds the output you already know it will need, before any gap shows up."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> an arm that drives to an
-          angle and holds it, and a flywheel that holds a speed under load.
-          Branch <code>3-PID</code>.
-        </p>
-        <p className="mt-2">
-          <strong>How long:</strong> about 20 minutes of typing. Tuning takes as
-          long as it takes — plan on an hour the first time, and expect to
-          redeploy a dozen times.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "On this page the motor takes over. You hand it a target angle — the number you ask the motor to reach is called the setpoint. It reads the CANcoder, compares that reading to the setpoint, and works out its own voltage — over and over, inside the TalonFX itself rather than in your code. That is a closed loop: the motor reads a sensor and adjusts, instead of blindly pushing. That is PID.",
+            "Then you tune it. Four numbers, measured on your actual arm, in a fixed order. The 3-PID branch ships all four as 0.0 on purpose — finding them is the lesson.",
+          ]}
+          concept="PID turns the gap between where the arm is and where you asked it to be into motor output. Feedforward adds the output you already know it will need, before any gap shows up."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          An arm that drives to an angle and holds it, and a flywheel that holds
+          a speed under load. The typing is the short part. Tuning takes as long
+          as it takes — plan on an hour the first time, and expect to redeploy a
+          dozen times.
+        </MarginNote>
+      </Split>
 
       {/* ── the rename ───────────────────────────────────────────────── */}
       <LessonSection
         id="first-the-arm-s-commands-change"
         title="First: the arm's commands change names"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           On <code>2-Commands</code> the arm offered <code>runSlow()</code>,{" "}
           <code>runFast()</code> and <code>stop()</code> — three voltages. On{" "}
           <code>3-PID</code> those are gone. In their place are two{" "}
@@ -83,7 +71,7 @@ export default function PIDControl() {
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-[14px]">
+          <table className="w-full min-w-[520px] border-collapse text-note">
             <thead>
               <tr>
                 <th
@@ -106,7 +94,7 @@ export default function PIDControl() {
                 </th>
               </tr>
             </thead>
-            <tbody style={bodyStyle}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top"
@@ -175,7 +163,7 @@ export default function PIDControl() {
           </table>
         </div>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           So the routine from Chaining Commands does not compile any more. One
           identifier changes:
         </p>
@@ -195,14 +183,14 @@ export default function PIDControl() {
     .whileFalse(flywheel.stop());`}
         />
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>Seconds.of(1.0)</code> still needs the static import you added
           on <strong>Chaining Commands</strong>:{" "}
           <code>import static org.wpilib.units.Units.Seconds;</code> at the top
           of the file.
         </p>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           The timeout is still a guess at how long the arm needs. The arm still
           cannot tell you when it has arrived — that arrives on{" "}
           <strong>Finish Lines</strong>, two lessons from here, and it is where
@@ -242,7 +230,7 @@ export default function PIDControl() {
         id="play-with-the-gains-first"
         title="Play with the gains first"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Drag a gain and watch what the mechanism does. Get a feel for what
           &quot;too much kP&quot; looks like before you type a number into a
           file and send it to a real motor. These are simulations, not your
@@ -259,17 +247,14 @@ export default function PIDControl() {
         id="the-six-numbers-and-what-each"
         title="The six numbers, and what each one is measured in"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Phoenix computes each term, adds them together, and sends the total to
           the motor as volts. Every gain below is therefore &quot;volts per
           something&quot; — and knowing the <em>something</em> is what makes a
           number like <code>160</code> stop looking absurd.
         </p>
 
-        <h3
-          className="display measure m-0"
-          style={{ fontSize: 25, lineHeight: 1.15 }}
-        >
+        <h3 className="display measure m-0 text-title">
           Feedback: the three that react to error
         </h3>
 
@@ -333,14 +318,11 @@ export default function PIDControl() {
           </Box>
         </div>
 
-        <h3
-          className="display measure m-0"
-          style={{ fontSize: 25, lineHeight: 1.15 }}
-        >
+        <h3 className="display measure m-0 text-title">
           Feedforward: the three that do not wait for error
         </h3>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Feedback is reactive — nothing happens until the arm is already in the
           wrong place. Feedforward is the opposite: output you add because you
           already know it will be needed. On an arm that is most of the work,
@@ -400,7 +382,7 @@ export default function PIDControl() {
           </Box>
         </div>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           There is a seventh, <code>kA</code> — volts per unit of requested{" "}
           <em>acceleration</em>. Neither file sets it. It only earns its place
           once a motion profile is asking for specific accelerations, which is
@@ -413,14 +395,14 @@ export default function PIDControl() {
         id="why-an-arm-needs-kg-and"
         title="Why an arm needs kG, and why it is a cosine"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Hold your own arm straight out to the side. Now raise it straight up.
           Straight out is the hard one — the full weight of your arm is hanging
           off your shoulder. Straight up, gravity pulls down the length of your
           arm instead of across it, and the effort nearly vanishes.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           A robot arm behaves the same way, so the voltage needed to hold still
           is different at every angle. A single fixed number cannot cover that.
           One config line tells Phoenix to handle it:
@@ -432,7 +414,7 @@ export default function PIDControl() {
           code={`config.Slot0.GravityType = GravityTypeValue.Arm_Cosine; // fights gravity automatically`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           With <code>Arm_Cosine</code>, Phoenix multiplies kG by the cosine of
           the angle between the arm and horizontal. Straight out, the cosine is
           1 and the full kG is applied. Straight up, the cosine is 0 and the
@@ -528,22 +510,19 @@ config.Feedback.withRemoteCANcoder(encoder);`}
       <LessonSection id="write-it-three-steps" title="Write it: three steps">
         {/* Step 1 */}
         <div className="flex flex-col gap-4">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             1. Swap the arm from <code>VoltageOut</code> to{" "}
             <code>PositionVoltage</code>
           </h3>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <code>VoltageOut</code> carries a voltage.{" "}
             <code>PositionVoltage</code> carries a target position and lets the
             motor pick the voltage. Everything else on the page follows from
             that one substitution.
           </p>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             That is the line between the two halves of this workshop.{" "}
             <code>VoltageOut</code> is <strong>open-loop</strong>: no sensor
             takes part in the decision, so the request goes out and nothing
@@ -580,26 +559,25 @@ private final CANcoder encoder = new CANcoder(32, canivore);
 private final PositionVoltage positionOut = new PositionVoltage(0);`}
           />
 
-          <Box
-            variant="alert-danger"
-            tag="READ THE COMMENT"
-            title="Those four zeros are not a typo"
-          >
-            <p>
-              The branch ships <code>kG</code>, <code>kS</code>, <code>kP</code>{" "}
-              and <code>kD</code> at <code>0.0</code>, each marked{" "}
-              <code>NEEDS TUNING</code>. Deploy this and the arm will not move —
-              every term multiplies out to zero volts. That is the correct
-              starting state, and finding the four real numbers is the second
-              half of this page.
-            </p>
-            <p className="mt-3">
+          <Split>
+            <ProseBlock>
+              <p>
+                Those four zeros are not a typo. The branch ships{" "}
+                <code>kG</code>, <code>kS</code>, <code>kP</code> and{" "}
+                <code>kD</code> at <code>0.0</code>, each marked{" "}
+                <code>NEEDS TUNING</code>. Deploy this and the arm will not move
+                — every term multiplies out to zero volts. That is the correct
+                starting state, and finding the four real numbers is the second
+                half of this page.
+              </p>
+            </ProseBlock>
+            <MarginNote label="NOT AN ANSWER KEY">
               The <code>0.2 / 0.2 / 160 / 30</code> in the TODO are the
-              file&apos;s own <em>suggested starting points</em>, not measured
-              values for your arm. Treat them as a sanity check on the numbers
-              you find, not as an answer to copy.
-            </p>
-          </Box>
+              file&apos;s own suggested starting points, not measured values for
+              your arm. Treat them as a sanity check on the numbers you find,
+              not as an answer to copy.
+            </MarginNote>
+          </Split>
 
           <CodeBlock
             language="java"
@@ -643,7 +621,7 @@ private void setPosition(double rotations) {
 }`}
           />
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             The shape is identical to <code>2-Commands</code>: a private setter,
             two <code>runRepeatedly</code> factories, a <code>(hold)</code> in
             each name. Only the request type changed. And these are still holds
@@ -652,7 +630,7 @@ private void setPosition(double rotations) {
             mid-match.
           </p>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> the project compiles. Deploy it and
             press the left trigger and nothing moves. Correct — all four gains
             are zero.
@@ -661,15 +639,12 @@ private void setPosition(double rotations) {
 
         {/* Step 2 */}
         <div className="flex flex-col gap-4">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             2. Swap the flywheel from <code>VoltageOut</code> to{" "}
             <code>VelocityVoltage</code>
           </h3>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Same substitution, different quantity. The flywheel targets a speed
             in rotations per second, and it keeps that speed when a game piece
             drags on the wheel — which a fixed voltage cannot do.
@@ -696,27 +671,18 @@ private void setVelocity(double rps) {
 }`}
           />
 
-          <Box
-            variant="alert-info"
-            tag="NOTE · UNITS"
-            title="RotationsPerSecond.of(rps)"
-          >
-            <p>
-              <code>withVelocity(...)</code> takes a WPILib unit type, the same
-              way <code>.withTimeout(...)</code> takes a <code>Time</code>. The
-              file converts the plain <code>double</code> at the last moment.
-              That needs a static import at the top:
-            </p>
-            <div className="mt-3">
-              <CodeBlock
-                language="java"
-                hideControls
-                code={`import static org.wpilib.units.Units.RotationsPerSecond;`}
-              />
-            </div>
-          </Box>
+          <p>
+            <code>withVelocity(...)</code> takes a WPILib unit type, the same
+            way <code>.withTimeout(...)</code> takes a <code>Time</code>, so the
+            file converts the plain <code>double</code> at the last moment. Like{" "}
+            <code>Seconds</code> above, that needs a static import at the top:{" "}
+            <code>
+              import static org.wpilib.units.Units.RotationsPerSecond;
+            </code>
+            .
+          </p>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             The leader/follower pair is untouched — CAN 22 still mirrors CAN 21
             with <code>MotorAlignmentValue.Opposed</code>, spinning the opposite
             direction. The config goes to the leader. The follower is never
@@ -724,7 +690,7 @@ private void setVelocity(double rps) {
             bus.
           </p>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> press A and the flywheel spins up
             and holds a roughly steady speed. That is <code>kV</code> doing all
             the work by itself — 0.125 volts per rotation-per-second times a 75
@@ -735,14 +701,11 @@ private void setVelocity(double rps) {
 
         {/* Step 3 */}
         <div className="flex flex-col gap-4">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             3. Bind the two arm targets and the two flywheel speeds
           </h3>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Here is what the branch actually ships. It was written before the
             chaining lesson, so it still uses the <code>onTrue</code> /{" "}
             <code>onFalse</code> pairs from <strong>Triggers</strong>, and it
@@ -763,15 +726,29 @@ driver.rightTrigger().onTrue(flywheel.runFast()).onFalse(flywheel.runSlow());
 driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());`}
           />
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
-            Use this version instead. Three things change. The{" "}
-            <code>onTrue</code> / <code>onFalse</code> pairs become{" "}
-            <code>whileTrue</code> / <code>whileFalse</code>, the dialect from
-            Chaining Commands. B picks up <code>arm.horizontal()</code>, because
-            you need two places to send the arm before you can tune anything.
-            And the right trigger drops to the slow flywheel speed instead of
-            the fast one, so both speeds are reachable when you tune kV.
-          </p>
+          <Split>
+            <ProseBlock>
+              <p>
+                Use this version instead. Three things change. The{" "}
+                <code>onTrue</code> / <code>onFalse</code> pairs become{" "}
+                <code>whileTrue</code> / <code>whileFalse</code>, the dialect
+                from Chaining Commands. B picks up <code>arm.horizontal()</code>
+                , because you need two places to send the arm before you can
+                tune anything. And the right trigger drops to the slow flywheel
+                speed instead of the fast one, so both speeds are reachable when
+                you tune kV.
+              </p>
+            </ProseBlock>
+            <MarginNote label="ONE HONEST DIFFERENCE">
+              With <code>onTrue</code> the command stays scheduled after you let
+              go, so <code>runRepeatedly</code> keeps re-sending the position
+              request forever. With <code>whileTrue</code>, releasing cancels
+              the command and the re-sending stops — but Phoenix is still
+              holding the last request it got, so the arm still holds its angle.
+              It does not go limp either way. That is why the arm needs no{" "}
+              <code>whileFalse</code> partner and the flywheel does.
+            </MarginNote>
+          </Split>
 
           <CodeBlock
             language="java"
@@ -807,22 +784,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             </p>
           </Box>
 
-          <Box variant="concept" title="One honest difference between the two">
-            <p>
-              With <code>onTrue</code>, the command stays scheduled after you
-              let go, so <code>runRepeatedly</code> keeps re-sending the
-              position request forever. With <code>whileTrue</code>, releasing
-              cancels the command and the re-sending stops — but Phoenix is
-              still holding the last request it got, so the arm still holds its
-              angle. The arm does not go limp either way.
-            </p>
-            <p className="mt-3">
-              The arm needs no <code>whileFalse</code> partner for that reason.
-              The flywheel does.
-            </p>
-          </Box>
-
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> the flywheel responds to A and to
             the right trigger, and the arm does nothing at all. Two buttons that
             command two angles and produce zero motion is precisely where the
@@ -839,7 +801,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         id="tuning-finding-the-four-numbers"
         title="Tuning: finding the four numbers"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Nobody can give you these gains. They depend on your arm&apos;s mass,
           its length, its gear ratio, how much friction is in the gearbox, and
           how the CANcoder is mounted. Change the arm and the numbers change.
@@ -874,7 +836,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           </ul>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The four numbers live as <code>private static final double</code>{" "}
           constants at the top of <code>Arm.java</code>. Each attempt is: edit
           the constant, save, redeploy, test. That loop is slow, which is the
@@ -883,17 +845,11 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
         {/* Step 0 */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-zero"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-zero" className="display measure m-0 text-title">
             Step 0 — start from all zeros
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
-            The branch already is. Deploy, enable, hold the left trigger.
-          </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>The branch already is. Deploy, enable, hold the left trigger.</p>
+          <p>
             <strong>You should see:</strong> nothing. Not a twitch. Every term
             is multiplied by zero, so the motor is being sent 0 volts. If the
             arm moves here, something else is commanding that motor and you need
@@ -903,22 +859,15 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
         {/* Step 1 kG */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-kg"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-kg" className="display measure m-0 text-title">
             Step 1 — kG, by measuring it in Tuner X
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             kG is the output needed to hold the arm horizontally forward. That
             is a thing you can go and measure directly, with no PID involved at
             all.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               Open the arm motor in Phoenix Tuner X and set the control
               drop-down to <strong>Voltage Out</strong>, the same way Hardware
@@ -937,19 +886,19 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
               hangs there, holding itself. Write that voltage down.
             </li>
           </ol>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>That voltage is kG.</strong> It works out that cleanly
             because the cosine at horizontal is exactly 1, so the gravity term
             at that position <em>is</em> kG. Put it in the file and redeploy.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> hold the left trigger so the closed
             loop is running. With kP still at zero the arm will not travel
             anywhere — but it stops falling. Lift it by hand, let go, and it
             stays roughly where you left it, at any angle. That is the cosine
             working.
           </p>
-          <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>Too low:</strong> the arm still sags, worst near horizontal.{" "}
             <strong>Too high:</strong> the arm creeps upward on its own. On a
             counterbalanced arm kG can legitimately be negative; Phoenix accepts
@@ -961,14 +910,10 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
         {/* Step 2 kS */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-ks"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-ks" className="display measure m-0 text-title">
             Step 2 — kS, the smallest push that breaks friction
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Measure this one in Tuner X too, but with the arm{" "}
             <strong>vertical</strong> — straight up, 0.25 rotations. The cosine
             there is 0, so gravity is neither helping nor hindering, and
@@ -976,18 +921,18 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             a balance point, so steady the arm with a hand before you start
             raising the voltage.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Raise Voltage Out from 0 until the arm first starts to creep, then
             back off to the last value where it did not move. That is kS.
             CTRE&apos;s own instruction for this step reads: &quot;Increase kS
             until just before the motor moves.&quot;
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> back in the robot code, no visible
             change at all. kS is small and the arm is still not being driven
             anywhere. That is expected.
           </p>
-          <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>Too high:</strong> once kP is in, the arm buzzes or shivers
             when it is sitting on target. That is the dithering CTRE warns about
             with <code>UseClosedLoopSign</code> — the sign of kS flips back and
@@ -998,22 +943,15 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
         {/* Step 3 kP */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-kp"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-kp" className="display measure m-0 text-title">
             Step 3 — kP, until it oscillates, then back off
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Now the buttons start doing something. Put the arm somewhere away
             from vertical, hold the left trigger, and watch it try to get to
             0.25 rotations.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               Start kP small — small enough that the arm barely drifts toward
               the target — and roughly double it each redeploy.
@@ -1028,55 +966,49 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
               overshoot is left is kD&apos;s job, not kP&apos;s.
             </li>
           </ol>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> holding the left trigger drives the
             arm to vertical; holding B drives it to horizontal; releasing leaves
             it parked wherever it was last commanded.
           </p>
-          <p className="text-[14px] leading-relaxed" style={bodyStyle}>
-            <strong>Too low:</strong> the arm creeps toward the target and stops
-            short, sitting at a permanent small offset. (That leftover gap is
-            what kI would erase — resist. kG and kS are the right fix for it on
-            an arm.) <strong>Too high:</strong> the arm slams into the target
-            and bounces, or hums continuously.
-          </p>
-          <Box variant="concept" title="Why kP = 160 is not a crazy number">
-            <p>
-              kP is volts per <strong>rotation</strong> of error, and the arm
-              turns in fractions of a rotation. At the file&apos;s suggested
-              160, an error of 0.075 rotations — 27° — already asks for the full
-              12 volts. Rotations are a big unit for an arm, so the gain that
-              divides by them has to be big.
-            </p>
-            <p className="mt-3">
-              The flywheel&apos;s kP will look tiny by comparison because its
-              error is measured in rotations <em>per second</em>, and a flywheel
-              misses by whole rotations per second routinely. Different units,
-              not different physics.
-            </p>
-          </Box>
+          <Split>
+            <ProseBlock>
+              <p>
+                <strong>Too low:</strong> the arm creeps toward the target and
+                stops short, sitting at a permanent small offset. (That leftover
+                gap is what kI would erase — resist. kG and kS are the right fix
+                for it on an arm.) <strong>Too high:</strong> the arm slams into
+                the target and bounces, or hums continuously.
+              </p>
+            </ProseBlock>
+            <MarginNote label="WHY 160 IS NOT ABSURD">
+              kP is volts per <em>rotation</em> of error, and the arm turns in
+              fractions of a rotation. At the file&apos;s suggested 160, an
+              error of 0.075 rotations — 27° — already asks for the full 12
+              volts. The flywheel&apos;s kP will look tiny by comparison because
+              its error is measured in rotations <em>per second</em>, and a
+              flywheel misses by whole rotations per second routinely. Different
+              units, not different physics.
+            </MarginNote>
+          </Split>
         </div>
 
         {/* Step 4 kD */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-kd"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-kd" className="display measure m-0 text-title">
             Step 4 — kD, as much as you can get without jitter
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             kD pushes back against fast changes in error, so it damps the
             overshoot kP leaves behind. Raise it as far as it will go before the
             motor starts jittering — CTRE&apos;s wording is &quot;as much as
             possible without introducing jittering to the response.&quot;
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> the arm arrives at the target and
             settles, instead of arriving and bouncing.
           </p>
-          <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>Too low:</strong> the bounce is still there.{" "}
             <strong>Too high:</strong> the motor gets audibly rough and the arm
             feels sticky leaving a stop, because kD is fighting the very motion
@@ -1086,14 +1018,10 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
         {/* Step 5 kI */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-ki"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-ki" className="display measure m-0 text-title">
             Step 5 — kI: leave it alone
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <code>Arm.java</code> never mentions kI. Phoenix&apos;s default is
             0, and 0 is where it stays. An integral term accumulates every
             fraction of error the loop has ever seen, which on a mechanism that
@@ -1103,39 +1031,37 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           </p>
         </div>
 
-        <Box variant="alert-success" tag="STOP HERE" title="When it is tuned">
-          <p>
-            The arm goes where you send it, does not bounce past the target more
-            than once, and sits still when it arrives — no buzz, no creep, no
-            noise from the motor. That is tuned. There is no score to maximize,
-            and a mechanism that behaves the same way every time beats one that
-            is 2% faster and occasionally surprising.
-          </p>
-          <p className="mt-3">
-            Write the four numbers down somewhere outside the code as well. You
-            will re-tune after any mechanical change, and having last
-            season&apos;s starting point saves a session.
-          </p>
-        </Box>
+        <div className="flex flex-col gap-3">
+          <h3 className="display measure m-0 text-title">When to stop</h3>
+          <Split>
+            <ProseBlock>
+              <p>
+                The arm goes where you send it, does not bounce past the target
+                more than once, and sits still when it arrives — no buzz, no
+                creep, no noise from the motor. That is tuned. There is no score
+                to maximize, and a mechanism that behaves the same way every
+                time beats one that is 2% faster and occasionally surprising.
+              </p>
+            </ProseBlock>
+            <MarginNote label="KEEP THE NUMBERS">
+              Write the four down somewhere outside the code as well. You will
+              re-tune after any mechanical change, and having last season&apos;s
+              starting point saves a session.
+            </MarginNote>
+          </Split>
+        </div>
 
         {/* Flywheel tuning */}
         <div className="flex flex-col gap-3">
-          <h3
-            id="tune-flywheel"
-            className="text-xl font-semibold leading-tight"
-            style={headingStyle}
-          >
+          <h3 id="tune-flywheel" className="display measure m-0 text-title">
             The flywheel is a different order: kV first
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             A velocity loop has something a position loop does not — a
             feedforward that can do nearly the whole job on its own. So the
             order changes.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               <strong>kV.</strong> With kS and kP at zero, hold the right
               trigger for the slow speed and compare the velocity Tuner X
@@ -1155,14 +1081,17 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
               below the target speed.
             </li>
           </ol>
-          <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          <p>
             <code>Flywheel.java</code> sets only kS, kV and kP — there is no kD
             line in the file, and no gravity type. Two of the three ship at 0.0.
           </p>
         </div>
 
+        {/* `concept`, not `alert-info`: this is the panel a student scrolls
+            back to mid-tune, which is what the framed variant is for. An
+            alert label here would have been the page's fifth. */}
         <Box
-          variant="alert-info"
+          variant="concept"
           tag="THE GENERAL RECIPE"
           title="CTRE's manual tuning order, in one list"
         >
@@ -1196,13 +1125,10 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         />
 
         <div className="flex flex-col gap-4">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Watch someone do it
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             The team&apos;s own walkthrough of the same procedure, on hardware:
           </p>
           <div className="aspect-video overflow-hidden rounded-lg">
@@ -1218,10 +1144,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Deploy with all four gains at <code>0.0</code> and hold the left
             trigger. <strong>You should see:</strong> no motion at all.
@@ -1274,7 +1197,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         <Box
           variant="alert-warning"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="Dead arm, buzzing arm, runaway arm, sagging arm"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -1427,10 +1350,7 @@ config.Feedback.withRemoteCANcoder(encoder);`}
 
       {/* ── what's next ──────────────────────────────────────────────── */}
       <LessonSection id="what-comes-next" title="What comes next">
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Motion Magic</strong> keeps every gain you measured here and
             adds a speed limit and a ramp on top, so the arm eases into its
@@ -1452,7 +1372,6 @@ config.Feedback.withRemoteCANcoder(encoder);`}
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

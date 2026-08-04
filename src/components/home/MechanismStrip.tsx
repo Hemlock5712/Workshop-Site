@@ -153,7 +153,7 @@ export default function MechanismStrip() {
             <span
               className="mono shrink-0"
               style={{
-                fontSize: 11,
+                fontSize: "var(--text-meta)",
                 letterSpacing: "0.12em",
                 color: "var(--accent)",
               }}
@@ -162,7 +162,7 @@ export default function MechanismStrip() {
             </span>
             <span
               className="display shrink-0"
-              style={{ fontSize: 25, lineHeight: 1.1 }}
+              style={{ fontSize: "var(--text-title)", lineHeight: 1.1 }}
             >
               {group.title}
             </span>
@@ -170,7 +170,7 @@ export default function MechanismStrip() {
               className="min-w-0"
               style={{
                 fontFamily: "var(--font-serif)",
-                fontSize: 15.5,
+                fontSize: "var(--text-ui)",
                 lineHeight: 1.5,
                 color: "var(--tx3)",
               }}
@@ -245,7 +245,7 @@ export default function MechanismStrip() {
                     <div
                       className="mono mb-2"
                       style={{
-                        fontSize: 9.5,
+                        fontSize: "var(--text-micro)",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase",
                         color: "var(--accent)",
@@ -255,14 +255,17 @@ export default function MechanismStrip() {
                     </div>
                     <div
                       className="display mb-[7px]"
-                      style={{ fontSize: 26, lineHeight: 1.08 }}
+                      style={{
+                        fontSize: "var(--text-title)",
+                        lineHeight: 1.08,
+                      }}
                     >
                       {mech.title}
                     </div>
                     <div
                       style={{
                         fontFamily: "var(--font-serif)",
-                        fontSize: 15,
+                        fontSize: "var(--text-ui)",
                         lineHeight: 1.55,
                         color: "var(--tx3)",
                       }}

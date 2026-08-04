@@ -116,7 +116,7 @@ export default function Coroutines() {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -163,7 +163,7 @@ export default function Coroutines() {
 
         <CollapsibleSection title="Three more you will see, but do not need yet">
           <ul
-            className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+            className="ml-5 list-disc space-y-2"
             style={{ color: "var(--fg-mute)" }}
           >
             <li>
@@ -192,7 +192,7 @@ export default function Coroutines() {
         </p>
 
         {/* step 1 */}
-        <h3 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
+        <h3 className="display m-0 text-aside">
           Step 1 — Make the file and the empty shell
         </h3>
 
@@ -272,7 +272,7 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
         </p>
 
         {/* step 2 */}
-        <h3 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
+        <h3 className="display m-0 text-aside">
           Step 2 — Start the arm hold with <code>fork</code>
         </h3>
 
@@ -304,7 +304,7 @@ coroutine.fork(arm.vertical());`}
         </Box>
 
         {/* step 3 */}
-        <h3 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
+        <h3 className="display m-0 text-aside">
           Step 3 — Wait for the arm, with a seatbelt
         </h3>
 
@@ -366,7 +366,7 @@ Command.waitUntil(arm::isAtTarget).named("wait for the arm").withTimeout(Seconds
         </Box>
 
         {/* step 4 */}
-        <h3 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
+        <h3 className="display m-0 text-aside">
           Step 4 — The flywheel, exactly the same pair
         </h3>
 
@@ -390,9 +390,7 @@ coroutine.await(
         </p>
 
         {/* step 5 */}
-        <h3 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
-          Step 5 — Shoot
-        </h3>
+        <h3 className="display m-0 text-aside">Step 5 — Shoot</h3>
 
         <CodeBlock
           language="java"
@@ -418,9 +416,7 @@ coroutine.await(
         </p>
 
         {/* step 6 */}
-        <h3 className="text-lg font-semibold" style={{ color: "var(--fg)" }}>
-          Step 6 — Fall off the end
-        </h3>
+        <h3 className="display m-0 text-aside">Step 6 — Fall off the end</h3>
 
         <CodeBlock
           language="java"
@@ -575,7 +571,7 @@ coroutine.await(
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -702,7 +698,6 @@ coroutine.await(
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

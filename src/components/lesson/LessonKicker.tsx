@@ -22,7 +22,7 @@ export default function LessonKicker() {
     <div
       className="mono mb-[18px]"
       style={{
-        fontSize: 11,
+        fontSize: "var(--text-meta)",
         letterSpacing: "0.16em",
         color: "var(--accent)",
       }}

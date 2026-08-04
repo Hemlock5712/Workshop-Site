@@ -114,21 +114,6 @@ export default function RunningProgram() {
       {/* ── CANivore USB toggle ──────────────────────────────────────── */}
       <Box
         variant="alert-warning"
-        icon={
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"
-            />
-          </svg>
-        }
         title="First: turn the CANivore USB setting OFF"
       >
         <p className="mb-3">
@@ -271,7 +256,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -395,7 +380,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -485,7 +470,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -560,7 +545,6 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

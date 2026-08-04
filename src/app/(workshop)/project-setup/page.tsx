@@ -2,7 +2,6 @@ import PageTemplate from "@/components/PageTemplate";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
-import { AlertTriangle, Lightbulb } from "lucide-react";
 
 export default function ProjectSetup() {
   return (
@@ -217,12 +216,7 @@ export default function ProjectSetup() {
               <p className="font-medium">
                 Base folder: select &quot;Downloads&quot;
               </p>
-              <Box
-                variant="alert-warning"
-                title="Warning"
-                icon={<AlertTriangle className="w-5 h-5" />}
-                className="mt-2"
-              >
+              <Box variant="alert-warning" title="Warning" className="mt-2">
                 OneDrive locations are not supported and will cause project
                 creation to fail.
               </Box>
@@ -292,18 +286,12 @@ export default function ProjectSetup() {
         className="w-full h-full aspect-video rounded-lg"
       />
 
-      <Box
-        variant="alert-tip"
-        title="Next Step"
-        icon={<Lightbulb className="w-5 h-5" />}
-        className="mt-4"
-      >
+      <Box variant="alert-tip" title="Next Step" className="mt-4">
         After creating your project, the next section covers the Command-Based
         Framework, where you&apos;ll start adding mechanisms and commands.
       </Box>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

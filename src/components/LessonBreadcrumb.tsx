@@ -27,7 +27,7 @@ export default function LessonBreadcrumb() {
       aria-label="Breadcrumb"
       className="mb-6 flex flex-wrap items-center gap-2 font-mono"
       style={{
-        fontSize: 11,
+        fontSize: "var(--text-meta)",
         color: "var(--fg-dim)",
         letterSpacing: "0.06em",
         textTransform: "uppercase",

@@ -23,7 +23,7 @@ export default function CodeWalkthrough({
     <div
       className={`bg-[var(--bg2)] border border-[var(--ok)] rounded-lg p-6 ${className}`}
     >
-      <h3 className="flex items-center gap-2 text-xl font-bold text-[var(--tx)] mb-4">
+      <h3 className="display m-0 mb-4 flex items-center gap-2 text-lede">
         <FileCode className="w-5 h-5" aria-hidden="true" />
         <span>Code Walkthrough</span>
       </h3>
@@ -40,7 +40,7 @@ export default function CodeWalkthrough({
       />
 
       <div className="bg-[var(--bg2)] p-4 rounded mt-4">
-        <p className="flex items-center gap-2 text-[var(--tx)] text-sm">
+        <p className="flex items-center gap-2 text-note text-[var(--tx)]">
           <ArrowRightCircle className="w-4 h-4 text-[var(--accent)]" />
           <span>{nextStepText}</span>
         </p>

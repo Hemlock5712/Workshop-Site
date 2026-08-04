@@ -86,17 +86,17 @@ function Slider({
           />
           <label
             htmlFor={id}
-            className="font-mono text-[13px] font-semibold"
+            className="font-mono text-note font-semibold"
             style={{ color: "var(--tx)" }}
           >
             {label}
           </label>
-          <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
+          <span className="font-mono text-micro text-[var(--muted-foreground)]">
             {unit}
           </span>
         </div>
         <span
-          className="font-mono text-[12px] tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
+          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
           aria-hidden
         >
           {value.toFixed(precision)}
@@ -714,7 +714,7 @@ export default function InteractivePidPlayground() {
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
           <span
-            className="font-mono inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-[11px] font-semibold"
+            className="font-mono inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-meta font-semibold"
             style={{
               background: "var(--bg-elev)",
               border: `1px solid ${regimeStyle.cssVar}`,
@@ -736,7 +736,7 @@ export default function InteractivePidPlayground() {
             {regimeStyle.label}
           </span>
           <div
-            className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
+            className="flex items-center gap-x-3 text-meta text-[var(--muted-foreground)] tabular-nums"
             aria-label="Performance metrics"
           >
             <span>
@@ -768,7 +768,7 @@ export default function InteractivePidPlayground() {
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-[11px] font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-meta font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
           aria-label="Reset all gains and the target to defaults"
         >
           <RotateCcw className="h-3 w-3" />
@@ -780,7 +780,7 @@ export default function InteractivePidPlayground() {
       <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
         <label
           htmlFor="pid-target"
-          className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
+          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
         >
           <TargetIcon className="h-3.5 w-3.5" aria-hidden />
           Target
@@ -805,10 +805,10 @@ export default function InteractivePidPlayground() {
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-[12px] tabular-nums text-[var(--foreground)]">
+        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--foreground)]">
           {targetDeg}°
         </span>
-        <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
+        <span className="font-mono text-micro text-[var(--muted-foreground)]">
           {(targetDeg / 360).toFixed(3)} rot
         </span>
       </div>
@@ -833,7 +833,7 @@ export default function InteractivePidPlayground() {
             aria-label={`Response plot for a step to ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (stepping from zero to the target at one second), solid is the actual arm angle over five seconds.`}
             role="img"
           />
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--muted-foreground)]">
             <span className="inline-flex items-center gap-1">
               <span
                 aria-hidden
@@ -867,7 +867,7 @@ export default function InteractivePidPlayground() {
       </div>
 
       {/* ── Tuning hint ─────────────────────── */}
-      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
         <Lightbulb
           className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
@@ -893,17 +893,13 @@ export default function InteractivePidPlayground() {
       {/* ── Sliders ─────────────────────────── */}
       <div className="mt-5 grid gap-5 md:grid-cols-2">
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
-            Feedback · PID
-          </h3>
+          <div className="micro mb-2">Feedback · PID</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDBACK_SLIDERS.map(renderSlider)}
           </div>
         </div>
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
-            Feedforward
-          </h3>
+          <div className="micro mb-2">Feedforward</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDFORWARD_SLIDERS.map(renderSlider)}
           </div>
@@ -911,7 +907,7 @@ export default function InteractivePidPlayground() {
       </div>
 
       {/* ── Footer ──────────────────────────── */}
-      <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+      <p className="mt-4 max-w-[70ch] text-meta text-[var(--tx2)]">
         2 kg · 0.4 m arm on a Kraken X44 + 25:1 reduction (4.11 N·m stall, 7758
         RPM free per CTRE dyno data; ≈ 103 N·m / 310 RPM at the arm; back-EMF
         modelled, ±12 V saturation). Gains use Phoenix 6 / WPILib mechanism-side

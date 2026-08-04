@@ -24,7 +24,7 @@ export default function MechanismTabs({
 }: MechanismTabsProps) {
   return (
     <section className="flex flex-col gap-8">
-      <h2 className="text-3xl font-bold text-[var(--tx)]">{sectionTitle}</h2>
+      <h2 className="display-section m-0">{sectionTitle}</h2>
 
       <Tabs.Root defaultValue="arm" className="card">
         <Tabs.List className="flex border-b border-[var(--border)]">

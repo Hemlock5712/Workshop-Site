@@ -9,8 +9,6 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { Book } from "lucide-react";
 
-const proseStyle = { color: "var(--fg-mute)" } as const;
-
 export default function MotionMagic() {
   return (
     <PageTemplate
@@ -59,7 +57,7 @@ export default function MotionMagic() {
         id="what-a-motion-profile-actually-is"
         title="What a motion profile actually is"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           A motion profile is a graph of speed against time, worked out before
           the move starts. The motor follows the graph. The usual shape is a
           trapezoid: speed up at a fixed rate, hold a steady speed, slow down at
@@ -184,7 +182,7 @@ export default function MotionMagic() {
                 velocity
               </text>
             </svg>
-            <p className="mt-2 text-[13px] leading-relaxed" style={proseStyle}>
+            <p className="mt-2">
               <strong>A long move.</strong> There is enough distance to reach
               cruise velocity and sit there for a while.
             </p>
@@ -262,7 +260,7 @@ export default function MotionMagic() {
                 velocity
               </text>
             </svg>
-            <p className="mt-2 text-[13px] leading-relaxed" style={proseStyle}>
+            <p className="mt-2">
               <strong>A short move.</strong> The motor has to start slowing down
               before it ever gets up to cruise, so the trapezoid collapses into
               a triangle.
@@ -270,7 +268,7 @@ export default function MotionMagic() {
           </div>
         </div>
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Which of those two shapes you get is not something you configure. It
           falls out of the distance. That matters more than it sounds like it
           does, and there is a worked example further down where the workshop
@@ -283,7 +281,7 @@ export default function MotionMagic() {
         id="two-numbers-and-what-a-quot"
         title='Two numbers, and what a "rotation" means in each one'
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Both files on <code>4-MotionMagic</code> set exactly two Motion Magic
           values, and nothing else:
         </p>
@@ -373,7 +371,7 @@ export default function MotionMagic() {
         }
         outlineLabel="swap the control request in Arm.java"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Three edits, all in <code>Arm.java</code>, plus one line that goes
           away — covered just below. The type changes from{" "}
           <code>PositionVoltage</code> to <code>MotionMagicVoltage</code>, two
@@ -402,7 +400,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
     config.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           <strong>Visible result:</strong> the project compiles. Nothing else in
           the file has to change for that — there is one line to delete as well,
           below, but the build does not depend on it. The setter and both
@@ -423,7 +421,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
   }`}
         />
 
-        <p className="text-[14px] leading-relaxed" style={proseStyle}>
+        <p>
           The rule that javadoc points at is the comment block above the
           commands in <code>Arm.java</code>: every command here is a hold, and a
           hold never finishes. That is unchanged too.
@@ -457,7 +455,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
         }
         outlineLabel="the same three edits in Flywheel.java"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Identical shape, different type name, and — this is the interesting
           part — real numbers instead of placeholders.
         </p>
@@ -482,7 +480,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
     config.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           <strong>Visible result:</strong> still compiling, and you do not have
           to pick either number — those two are the ones the branch ships. The
           gains are a separate question, and they are not all filled in:{" "}
@@ -500,7 +498,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
         title="The branch fills in the flywheel's numbers and leaves the
           arm's blank"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Put the two constant blocks next to each other. This is not an
           oversight in the workshop code — it is the honest state of a real
           robot project, and it is worth understanding before you type anything.
@@ -543,7 +541,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Why is one filled in and the other not? A flywheel has one job, it
           cannot crash into anything, and nothing hanging off it changes from
           one copy of the mechanism to the next — so its numbers travel. An arm
@@ -555,14 +553,9 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 
       {/* ── picking the arm's numbers ────────────────────────────────── */}
       <LessonSection id="pick-the-arm-s" title="pick the arm's two numbers">
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
-          Work out the ceiling first, then start well under it.
-        </p>
+        <p>Work out the ceiling first, then start well under it.</p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={proseStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             <strong>Find the motor&apos;s free speed.</strong> Free speed is how
             fast a motor spins with nothing attached to it. CTRE&apos;s
@@ -631,7 +624,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           From there, tune by feel, and change one number at a time. Raise
           acceleration until the arm slams into position or the gearbox makes a
           noise you do not like, then back it off until that stops. Raise cruise
@@ -645,16 +638,13 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
         id="read-the-flywheel-s"
         title="read the flywheel's numbers and check them"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           You do not have to pick these, but you should be able to say why they
           are what they are. Four numbers from the file, all measured at the
           motor:
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={proseStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <code>SLOW_SPEED_RPS = 25.0</code> and{" "}
             <code>FAST_SPEED_RPS = 75.0</code> — the two speeds the commands ask
@@ -671,7 +661,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
           </li>
         </ul>
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Do the same division as before: 75 rot/s at 1000 rot/s² is{" "}
           <strong>0.075 seconds</strong> from stopped to full speed.
           Seventy-five thousandths of a second. You will not see that ramp by
@@ -701,7 +691,7 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
         id="nothing-about-your-bindings-changes"
         title="Nothing about your bindings changes"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           Motion Magic is entirely inside the mechanism. From outside,{" "}
           <code>arm.vertical()</code> is the same hold it was last page, and you
           bind it the way <strong>Chaining Commands</strong> established.
@@ -717,7 +707,7 @@ driver.leftTrigger().whileTrue(arm.vertical());
 driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         />
 
-        <p className="text-[14px] leading-relaxed" style={proseStyle}>
+        <p>
           The <code>TeleopOpMode.java</code> on <code>4-MotionMagic</code> still
           shows the older <code>onTrue</code> / <code>onFalse</code> pairs it
           was given back on branch <code>2-Commands</code>, because no branch
@@ -813,10 +803,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={proseStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Build the project. It should compile clean. If it does not, the
             import is the usual cause — see below.
@@ -921,9 +908,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         id="watch-someone-else-do-it"
         title="Watch someone else do it"
       >
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
-          Motion Magic tuning, walked through end to end.
-        </p>
+        <p>Motion Magic tuning, walked through end to end.</p>
 
         <div className="aspect-video overflow-hidden rounded-lg">
           <iframe
@@ -934,7 +919,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           />
         </div>
 
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           CTRE&apos;s own reference is the place to check what a setting does,
           including the jerk field this lesson leaves alone and the Motion Magic
           Expo variant it never uses.
@@ -949,7 +934,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
 
       {/* ── what's next ──────────────────────────────────────────────── */}
       <LessonSection id="what-this-sets-up" title="What this sets up">
-        <p className="text-[15px] leading-relaxed" style={proseStyle}>
+        <p>
           The arm now has a target and a sensible way of getting to it. What it
           still cannot do is <em>tell you</em> it arrived — there is no{" "}
           <code>isAtTarget()</code> anywhere in <code>Arm.java</code> on this
@@ -963,7 +948,6 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

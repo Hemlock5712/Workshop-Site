@@ -136,7 +136,7 @@ public static Trigger disabled() {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -353,10 +353,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           </Box>
         </div>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
+        <h3 className="display m-0 text-aside">
           The OpMode case, which is the one you have
         </h3>
 
@@ -422,10 +419,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           of controls.
         </p>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
+        <h3 className="display m-0 text-aside">
           The global case, and the one binding that earns it
         </h3>
 
@@ -521,7 +515,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -652,7 +646,6 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

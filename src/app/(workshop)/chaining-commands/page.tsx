@@ -367,7 +367,7 @@ Command.race(
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -459,7 +459,7 @@ Command.race(
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -497,7 +497,6 @@ Command.race(
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

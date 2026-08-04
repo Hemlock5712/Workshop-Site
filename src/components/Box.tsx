@@ -14,8 +14,6 @@ interface BoxProps {
   title?: ReactNode;
   subtitle?: ReactNode;
   children: ReactNode;
-  /** Accepted and ignored — the label carries the signal now. See below. */
-  icon?: ReactNode;
   className?: string;
   /**
    * The mono label down the left. Defaults per variant ("WATCH OUT", "NOTE",
@@ -71,33 +69,29 @@ export default function Box({
     return (
       <div
         className={cn(
-          "measure grid grid-cols-[72px_1fr] gap-5 sm:grid-cols-[96px_1fr] sm:gap-6",
+          "measure grid grid-cols-[72px_minmax(0,1fr)] gap-5 sm:grid-cols-[96px_minmax(0,1fr)] sm:gap-6",
           className
         )}
         role="note"
       >
         <div
-          className="mono pt-[5px] text-right"
+          className="mono pt-chip text-right text-micro"
           style={{
-            fontSize: 9.5,
             letterSpacing: "0.13em",
             textTransform: "uppercase",
             color: meta.color,
-            lineHeight: 1.5,
             whiteSpace: "pre-line",
           }}
         >
           {tag ?? meta.label}
         </div>
         <div
-          className="lesson-prose pl-5 sm:pl-6"
+          className="lesson-prose pl-5 text-aside sm:pl-6"
           style={{
             borderLeft: `1px solid ${
               variant === "alert-danger" ? "var(--err)" : "var(--rule)"
             }`,
             fontFamily: "var(--font-serif)",
-            fontSize: 17,
-            lineHeight: 1.65,
             color: "var(--tx2)",
           }}
         >
@@ -124,7 +118,14 @@ export default function Box({
   // keeps referring back to.
   return (
     <div
-      className={cn("measure flex flex-col gap-3 p-6", className)}
+      // `min-w-0` for the reason spelled out on `.lesson-stack > *`: a concept
+      // Box is usually a grid child, grid children default to `min-width:
+      // auto`, and the code slot below holds identifiers like
+      // `MotionMagicCruiseVelocity` whose min-content width is wider than a
+      // phone. Without this the Box refused to shrink and pushed
+      // /motion-magic 72px past the viewport instead of letting the code
+      // slot's own `overflow-x: auto` scroll.
+      className={cn("measure flex min-w-0 flex-col gap-3 p-6", className)}
       style={{
         background: "var(--bg2)",
         border: "1px solid var(--rule)",
@@ -133,40 +134,24 @@ export default function Box({
       }}
     >
       {tag && (
-        <div
-          className="mono"
-          style={{
-            fontSize: 9.5,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            color: "var(--accent)",
-          }}
-        >
+        <div className="micro" style={{ color: "var(--accent)" }}>
           {tag}
         </div>
       )}
       {title && (
-        <h4
-          className="display m-0"
-          style={{ fontSize: 22, lineHeight: 1.15, color: "var(--tx)" }}
-        >
+        <h4 className="display m-0 text-lede" style={{ color: "var(--tx)" }}>
           {title}
         </h4>
       )}
       {subtitle && (
-        <p
-          className="m-0 font-semibold"
-          style={{ fontSize: 15, color: "var(--tx)" }}
-        >
+        <p className="m-0 font-semibold text-ui" style={{ color: "var(--tx)" }}>
           {subtitle}
         </p>
       )}
       <div
-        className="lesson-prose flex-1"
+        className="lesson-prose flex-1 text-aside"
         style={{
           fontFamily: "var(--font-serif)",
-          fontSize: 16.5,
-          lineHeight: 1.6,
           color: "var(--tx2)",
         }}
       >
@@ -174,9 +159,8 @@ export default function Box({
       </div>
       {code && (
         <div
-          className="mono p-3"
+          className="mono p-3 text-meta"
           style={{
-            fontSize: 12.5,
             background: "#030718",
             border: "1px solid var(--rule)",
             borderRadius: 2,
@@ -188,24 +172,12 @@ export default function Box({
         </div>
       )}
       {uses && (
-        <div style={{ fontSize: 14, color: "var(--tx)" }}>
-          <span
-            className="mono"
-            style={{
-              fontSize: 9.5,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: "var(--tx3)",
-            }}
-          >
-            When to use
-          </span>
+        <div className="text-note" style={{ color: "var(--tx)" }}>
+          <span className="micro">When to use</span>
           <div
-            className="mt-1"
+            className="mt-1 text-aside"
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 16,
-              lineHeight: 1.6,
               color: "var(--tx2)",
             }}
           >

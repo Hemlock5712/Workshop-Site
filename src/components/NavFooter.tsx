@@ -87,7 +87,10 @@ export default function NavFooter({ previousPage, nextPage }: NavFooterProps) {
             <span className="micro">
               ← {prev.num ? `Lesson ${prev.num}` : "Previous"}
             </span>
-            <span className="display" style={{ fontSize: 27, lineHeight: 1.1 }}>
+            <span
+              className="display"
+              style={{ fontSize: "var(--text-title)", lineHeight: 1.1 }}
+            >
               {prev.title}
             </span>
           </Link>
@@ -108,13 +111,16 @@ export default function NavFooter({ previousPage, nextPage }: NavFooterProps) {
             <span className="micro" style={{ color: "var(--accent)" }}>
               {next.num ? `Lesson ${next.num}` : "Next"} →
             </span>
-            <span className="display" style={{ fontSize: 27, lineHeight: 1.1 }}>
+            <span
+              className="display"
+              style={{ fontSize: "var(--text-title)", lineHeight: 1.1 }}
+            >
               {next.title}
             </span>
             <span
               className="mono mt-[3px]"
               style={{
-                fontSize: 9,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.12em",
                 textTransform: "uppercase",
                 color: done ? "var(--accent)" : "var(--tx3)",

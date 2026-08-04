@@ -128,7 +128,7 @@ public class Arm extends Mechanism {
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -239,7 +239,7 @@ public class Robot extends OpModeRobot {
         title="Braces, semicolons, and the three places a line can live"
       >
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -324,7 +324,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -394,7 +394,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
         />
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -461,7 +461,7 @@ public void setVoltage(double voltage) {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -566,7 +566,7 @@ public Command runSlow() {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -640,7 +640,7 @@ public Command runSlow() {
         />
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -897,7 +897,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         />
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -932,12 +932,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
       {/* ── 11. loose ends ───────────────────────────────────────────── */}
       <LessonSection id="11-loose-ends" title="11. Loose ends">
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
-          Imports
-        </h3>
+        <h3 className="display m-0 text-aside">Imports</h3>
 
         <p className="prose-body measure">
           One line per class borrowed from somewhere else, at the top of the
@@ -977,10 +972,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
           </p>
         </Box>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
+        <h3 className="display m-0 text-aside">
           <code>super</code> and <code>this</code>
         </h3>
 
@@ -1012,10 +1004,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
           which one you mean.
         </p>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
+        <h3 className="display m-0 text-aside">
           The comparison and logic symbols
         </h3>
 
@@ -1045,7 +1034,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -1086,7 +1075,7 @@ public Command runSlow() {
         />
 
         <ol
-          className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -1227,7 +1216,6 @@ public Command runSlow() {
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

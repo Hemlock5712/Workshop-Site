@@ -102,7 +102,7 @@ protected void execute() {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -196,10 +196,7 @@ protected void execute() {
         </p>
 
         {/* step 1 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           1. Add three imports
         </h3>
 
@@ -217,10 +214,7 @@ import org.wpilib.math.trajectory.TrapezoidProfile;      // the shape of the pla
         </p>
 
         {/* step 2 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           2. Add the plan as a field
         </h3>
 
@@ -250,10 +244,7 @@ private final LinearPath path =
         </p>
 
         {/* step 3 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           3. Drop the PID gains
         </h3>
 
@@ -287,10 +278,7 @@ private final PIDController headingController = new PIDController(4.0, 0.0, 0.0)
         </p>
 
         {/* step 4 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           4. Rename the field to <code>goal</code>
         </h3>
 
@@ -345,10 +333,7 @@ public DriveToPoint(DriveMechanism drivetrain, Pose2d goal) {
         </p>
 
         {/* step 5 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           5. Take a snapshot when the command starts
         </h3>
 
@@ -387,10 +372,7 @@ protected void initialize() {
         </p>
 
         {/* step 6 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           6. Rewrite <code>execute()</code>
         </h3>
 
@@ -428,10 +410,7 @@ protected void execute() {
         </p>
 
         {/* step 7 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           7. Give the command a finish line
         </h3>
 
@@ -483,7 +462,7 @@ protected boolean isFinished() {
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[14px]">
+          <table className="w-full border-collapse text-note">
             <thead>
               <tr>
                 <th
@@ -726,7 +705,7 @@ driver
         />
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -846,14 +825,14 @@ driver
         </p>
 
         <CollapsibleSection title="One name you may run into: WheelForceCalculator">
-          <p className="text-[15px] leading-relaxed">
+          <p>
             Phoenix 6 also ships a <code>WheelForceCalculator</code>, which
             works out a force for each individual swerve module from the
             robot&apos;s mass and its moment of inertia, and feeds those forces
             to the drivetrain as a second kind of feedforward. It is a genuine
             class and a genuine technique.
           </p>
-          <p className="mt-3 text-[15px] leading-relaxed">
+          <p className="mt-3">
             <strong>The workshop code does not use it,</strong> and you do not
             need it. The chassis-velocity feedforward on this page is what{" "}
             <code>6-ProfiledToPoint</code> does, and it is enough to make the
@@ -872,7 +851,6 @@ driver
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

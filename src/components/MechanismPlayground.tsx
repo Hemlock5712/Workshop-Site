@@ -36,6 +36,12 @@ const OPTIONS: ReadonlyArray<{
  * Three playgrounds (arm position, flywheel velocity, elevator position) sit
  * behind one segmented toggle. Each playground has its own Zustand store, so
  * each mechanism remembers its own gains as the user flips between them.
+ *
+ * The toggle is native radios hidden behind their labels — the same pattern
+ * `Quiz` uses, and it reuses that pattern's two classes. It was three
+ * `<button role="radio">` in a `role="radiogroup"`, which announces a radio
+ * group and then behaves like three unrelated buttons: three tab stops, no
+ * arrow keys, and nothing telling assistive tech the group has one value.
  */
 export default function MechanismPlayground() {
   const mechanism = useMechanismToggle((s) => s.mechanism);
@@ -44,33 +50,42 @@ export default function MechanismPlayground() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
-        <div
-          role="radiogroup"
-          aria-label="Choose mechanism"
-          className="inline-flex rounded-lg border border-[var(--border)] bg-[var(--muted)] p-0.5 text-[12px] font-medium"
+        <fieldset
+          className="m-0 inline-flex gap-px border p-0.5 text-meta"
+          style={{
+            background: "var(--bg2)",
+            borderColor: "var(--rule)",
+            borderRadius: 3,
+          }}
         >
+          <legend className="sr-only">Choose mechanism</legend>
           {OPTIONS.map((opt) => {
             const active = mechanism === opt.value;
             return (
-              <button
+              <label
                 key={opt.value}
-                type="button"
-                role="radio"
-                aria-checked={active}
                 title={opt.desc}
-                onClick={() => setMechanism(opt.value)}
-                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1 ${
-                  active
-                    ? "bg-[var(--card)] text-[var(--foreground)] shadow-sm"
-                    : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-                }`}
+                className="quiz-option inline-flex cursor-pointer items-center gap-1.5 px-3 py-1.5 transition-colors"
+                style={{
+                  borderRadius: 2,
+                  background: active ? "var(--accent-soft)" : "transparent",
+                  color: active ? "var(--tx)" : "var(--tx3)",
+                }}
               >
+                <input
+                  type="radio"
+                  className="quiz-radio"
+                  name="mechanism-playground"
+                  value={opt.value}
+                  checked={active}
+                  onChange={() => setMechanism(opt.value)}
+                />
                 {opt.icon}
                 {opt.label}
-              </button>
+              </label>
             );
           })}
-        </div>
+        </fieldset>
       </div>
 
       {mechanism === "arm" && <InteractivePidPlayground />}

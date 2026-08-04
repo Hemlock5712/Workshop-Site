@@ -9,7 +9,7 @@ import Box from "@/components/Box";
 import { armBOMData } from "@/data/armBOM";
 import { shooterBOMData } from "@/data/shooterBOM";
 import { useRef } from "react";
-import { Package, Wrench, ClipboardCheck, Box as BoxIcon } from "lucide-react";
+import { Package, Wrench, Box as BoxIcon } from "lucide-react";
 
 export default function MechanismCAD() {
   const flywheelModelRef = useRef<ModelViewerRef>(null);
@@ -54,9 +54,7 @@ export default function MechanismCAD() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-[var(--tx)]">
-                Flywheel Mechanism
-              </h3>
+              <h3 className="display m-0 text-lede">Flywheel Mechanism</h3>
               <p className="text-[var(--tx2)] max-w-2xl">
                 This is the mechanism you&apos;ll be programming in this
                 workshop. Use your mouse to orbit the model, zoom in and out,
@@ -64,7 +62,7 @@ export default function MechanismCAD() {
               </p>
 
               {/* Download Buttons */}
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <a
                   href="/cad/HTTI Mechanism v2 - Shooter Mode.stl"
                   download
@@ -108,9 +106,7 @@ export default function MechanismCAD() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-[var(--tx)]">
-                Arm Mechanism
-              </h3>
+              <h3 className="display m-0 text-lede">Arm Mechanism</h3>
               <p className="text-[var(--tx2)] max-w-2xl">
                 The arm version of the workshop mechanism. You&apos;ll use it to
                 practice precise positioning and control, which come up on
@@ -118,7 +114,7 @@ export default function MechanismCAD() {
               </p>
 
               {/* Download Buttons */}
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 <a
                   href="/cad/HTTI Mechanism v2 - Arm Mode.stl"
                   download
@@ -151,14 +147,13 @@ export default function MechanismCAD() {
 
         {/* File Format Guide */}
         <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-          <Box
-            variant="alert-info"
-            title="File Format Guide"
-            icon={<ClipboardCheck className="w-5 h-5" />}
-          >
+          <Box variant="alert-info" title="File Format Guide">
             <div className="grid md:grid-cols-2 gap-4 text-sm">
               <div>
-                <h5 className="font-bold text-[var(--accent)] mb-2">
+                <h5
+                  className="display m-0 mb-2 text-aside"
+                  style={{ color: "var(--accent)" }}
+                >
                   STL Files
                 </h5>
                 <p className="text-[var(--accent)]">
@@ -167,7 +162,10 @@ export default function MechanismCAD() {
                 </p>
               </div>
               <div>
-                <h5 className="font-bold text-[var(--accent)] mb-2">
+                <h5
+                  className="display m-0 mb-2 text-aside"
+                  style={{ color: "var(--accent)" }}
+                >
                   STP Files
                 </h5>
                 <p className="text-[var(--accent)]">
@@ -212,7 +210,10 @@ export default function MechanismCAD() {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[var(--accent)] mb-2">
+              <h3
+                className="display m-0 mb-2 text-aside"
+                style={{ color: "var(--accent)" }}
+              >
                 Ready for Programming
               </h3>
               <p className="text-[var(--accent)]">

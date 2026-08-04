@@ -10,8 +10,6 @@ import Quiz from "@/components/Quiz";
 import Link from "next/link";
 import { GitBranch } from "lucide-react";
 
-const bodyStyle = { color: "var(--fg-mute)" } as const;
-
 export default function AutonomousRoutines() {
   return (
     <PageTemplate
@@ -94,7 +92,7 @@ export default function AutonomousRoutines() {
         id="the-leg-you-already-built"
         title="The leg you already built"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>DriveToPoint</code> takes a drivetrain and a goal{" "}
           <code>Pose2d</code>, and drives to it in a straight line while turning
           to the goal heading. <code>LinearPath</code> plans the whole trip up
@@ -168,7 +166,7 @@ Command leg = new DriveToPoint(robot.drivetrain, goal);`}
 
       {/* ── 1. write the routine ─────────────────────────────────────── */}
       <LessonSection id="1-write-the-routine" title="1. Write the routine">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Create one new file next to your <code>TeleopOpMode</code>. The
           framework finds every annotated class in{" "}
           <code>frc.robot.opmodes</code> on its own — there is nothing to
@@ -222,15 +220,12 @@ public class AutonomousOpMode extends PeriodicOpMode {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Three things are worth naming, because they are the whole shape of an
           autonomous routine on this stack:
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>The constructor builds; it does not run.</strong>{" "}
             <code>Command.sequence(...).named(&quot;Two Leg Auto&quot;)</code>{" "}
@@ -268,7 +263,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
 
       {/* ── 2. real poses ────────────────────────────────────────────── */}
       <LessonSection id="2-make-the-poses-real" title="2. Make the poses real">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           A <code>Pose2d</code> is three numbers: x in meters, y in meters, and
           a heading. <code>Rotation2d.kZero</code> means facing along +x;{" "}
           <code>Rotation2d.fromDegrees(90)</code> means facing along +y. The
@@ -300,7 +295,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The cheapest way to get honest numbers is to stop guessing: push the
           robot to the spot you want, read <code>Drivetrain/Pose</code> out of
           the telemetry you set up on{" "}
@@ -329,7 +324,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
         id="seed-the-pose-before-the"
         title="Seed the pose before the routine runs"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           This is the step that quietly ruins autonomous routines.{" "}
           <code>DriveToPoint</code> never looks at the field. It reads{" "}
           <code>drivetrain.getPose()</code>, which is odometry — the
@@ -338,7 +333,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           robot will drive confidently to the wrong place.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The template&apos;s own autonomous example says this out loud in a
           comment:{" "}
           <em>
@@ -369,7 +364,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           On the branch you have, exactly one thing writes an absolute field
           pose into odometry: <strong>vision</strong>. <code>Robot.java</code>{" "}
           calls{" "}
@@ -379,10 +374,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           procedure is:
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Place the robot at its real starting spot,{" "}
             <strong>with an AprilTag in view</strong>.
@@ -443,7 +435,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
 
       {/* ── 4. run it ────────────────────────────────────────────────── */}
       <LessonSection id="4-run-it" title="4. Run it">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Step 3 is a real-robot step. <code>Limelight</code> says so in its own
           javadoc —{" "}
           <em>&quot;Does nothing in simulation (there is no camera).&quot;</em>{" "}
@@ -453,7 +445,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           numbers.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Two ways to start it. The normal one is the simulator you have been
           using: launch it, pick <strong>Two Leg Auto</strong> from the
           autonomous modes, set the robot state to Autonomous, and enable. The
@@ -471,7 +463,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
 ./gradlew simulateJavaAgent -Pmode=auto:"Two Leg Auto"`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The headless run prints which OpMode it picked, which makes it a quick
           way to check the name matched:
         </p>
@@ -488,7 +480,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
         id="doing-something-partway-through"
         title="Doing something partway through"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           In a path editor this is an &quot;event marker&quot;: a flag dropped
           on the path that fires an action. Here there is nothing to drop it on
           — the legs are ordinary commands in a list, so an action is another
@@ -496,10 +488,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           it:
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Between legs:</strong> put the mechanism command in the
             sequence, with a finish line —{" "}
@@ -551,7 +540,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
         .named("Drive Stow Drive (Chained)");`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The methods it calls — <code>robot.stow()</code>,{" "}
           <code>robot.intake()</code>, <code>robot.score()</code> — live at the
           bottom of the template&apos;s <code>Robot.java</code>. Each one poses
@@ -564,7 +553,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
           , where posing the whole robot is the entire point.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           That file&apos;s own comment calls chaining{" "}
           <em>
             &quot;the recommended style for multi-mechanism autos on this team —
@@ -592,10 +581,7 @@ public class AutonomousOpMode extends PeriodicOpMode {
 
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Build the project. <strong>You should see:</strong> it compiles, and{" "}
             <strong>Two Leg Auto</strong> is in the autonomous list on the
@@ -677,7 +663,6 @@ public class AutonomousOpMode extends PeriodicOpMode {
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

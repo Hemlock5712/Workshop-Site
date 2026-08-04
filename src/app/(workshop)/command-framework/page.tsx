@@ -8,8 +8,6 @@ import Quiz from "@/components/Quiz";
 import ArchitectureDiagram from "@/components/ArchitectureDiagram";
 import { GitBranch } from "lucide-react";
 
-const bodyStyle = { color: "var(--fg-mute)" } as const;
-
 export default function CommandFramework() {
   return (
     <PageTemplate
@@ -102,7 +100,7 @@ export default function CommandFramework() {
         id="the-scheduler-and-the-one-line"
         title="The scheduler, and the one line that starts it"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           None of the three pieces above does anything on its own. A trigger is
           a question nobody is asking; a command you build and hold in a
           variable is inert. The <strong>scheduler</strong> is what makes them
@@ -126,7 +124,7 @@ export default function CommandFramework() {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           That <code>robotPeriodic()</code> method is called for you, over and
           over, for as long as the robot is powered on. The gap between calls is
           20 milliseconds, so it runs <strong>50 times a second</strong>. One
@@ -135,16 +133,13 @@ export default function CommandFramework() {
           tick,&quot; it means fifty times a second.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Here is what one call to <code>Scheduler.getDefault().run()</code>{" "}
           actually does, in order. This list is the WPILib 2027 alpha&apos;s own
           description of the method, in plainer words:
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-2">
           <li>
             Cancel any commands and triggers that belonged to a mode the driver
             station is no longer running. This is why switching modes needs no
@@ -201,7 +196,7 @@ export default function CommandFramework() {
         id="one-mechanism-one-command-at-a"
         title="One mechanism, one command at a time"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           This is the part of the framework that earns its keep. A command
           declares which mechanisms it needs — a command built by{" "}
           <code>arm.runFast()</code> needs the arm — and while that command is
@@ -210,7 +205,7 @@ export default function CommandFramework() {
           this; the scheduler does it.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           So what happens when a second command wants a mechanism that is
           already owned? Every command carries a priority number, and every
           command you write in this workshop has the same one. When they tie,{" "}
@@ -237,7 +232,7 @@ export default function CommandFramework() {
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Reading about ownership is worth about a tenth of watching one command
           shove another off a motor. Once you have a mechanism, two buttons and
           a simulator to watch, bind two commands that both need the arm and
@@ -250,13 +245,13 @@ export default function CommandFramework() {
         id="opmodes-the-layer-above-all-of"
         title="OpModes: the layer above all of it"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Mechanisms own hardware. Something has to own the <em>policy</em> for
           a phase of the match: which buttons do what right now, which
           autonomous routine to run. That is an <strong>OpMode</strong>.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The split is two files deep. <code>Robot</code> holds the mechanisms
           as <code>public final</code> fields and runs the scheduler — you saw
           it above. Each mode is then its own separate class, tagged with{" "}
@@ -283,7 +278,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The bindings live in the <strong>constructor</strong>, and that is the
           whole trick. The framework builds this class when someone picks
           &quot;Teleop&quot; on the driver station, and throws it away on a mode
@@ -317,7 +312,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         id="holds-what-almost-every-command-here"
         title="Holds: what almost every command here is"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           A <strong>hold</strong> is a command whose body runs again on every
           tick — re-sending the same request fifty times a second — and never
           reaches an end. Two reasons that is the house style here. The request
@@ -327,7 +322,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           out from under it.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Here is the real thing, from the arm you build two lessons from now.
           Three lines from three different parts of one file:
         </p>
@@ -348,7 +343,7 @@ private void setVoltage(double voltage) {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Read it from the inside out. <code>setVoltage(6.0)</code> asks the
           motor for six volts, once. <code>runRepeatedly(...)</code> wraps that
           in a command that re-runs it every tick, so the request never goes
@@ -357,7 +352,7 @@ private void setVoltage(double voltage) {
           promise from whoever wrote it: <em>this command has no ending</em>.
         </p>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           Six volts is a push, not a position. The arm goes where gravity and
           friction let it. Aiming at a real angle needs feedback, which arrives
           in <strong>PID Control</strong>. Until then a hold is a steady shove.
@@ -417,17 +412,14 @@ private void setVoltage(double voltage) {
 
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           There is no code to run, so check the words against the real project
           instead. Open the robot template you cloned in{" "}
           <strong>Project Setup</strong> and find these five things. Each one
           should take under a minute.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Open <code>src/main/java/frc/robot/Robot.java</code>.{" "}
             <strong>You should see:</strong> <code>extends OpModeRobot</code> on
@@ -517,16 +509,13 @@ private void setVoltage(double voltage) {
         id="what-this-page-left-out-on"
         title="What this page left out on purpose"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Four words are worth knowing so they do not surprise you in someone
           else&apos;s code. Each has its own lesson; none of it is needed to
           start.
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Chaining</strong> — gluing commands into one bigger command
             so a single button runs several things in order. This is the style
@@ -552,7 +541,7 @@ private void setVoltage(double voltage) {
         </ul>
 
         <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-          <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
+          <h3 className="display m-0 mb-4 text-lede">
             Ground truth for this lesson
           </h3>
           <p className="text-[var(--foreground)] mb-4">
@@ -610,7 +599,6 @@ private void setVoltage(double voltage) {
       </Box>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

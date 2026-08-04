@@ -33,14 +33,12 @@ export default function Glossary() {
         outlineLabel="Hardware & Electronics"
         className="mb-8"
       >
-        <div className="grid gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div
             id="motor-controller"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Motor Controller
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Motor Controller</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A smart device that controls how a motor
               spins. Think of it like a dimmer switch for lights, but much
@@ -56,11 +54,9 @@ export default function Glossary() {
 
           <div
             id="talonfx"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              TalonFX / Kraken X44
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">TalonFX / Kraken X44</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A specific type of motor controller made
               by CTRE. The Kraken X44 is a motor with a TalonFX controller built
@@ -76,9 +72,9 @@ export default function Glossary() {
 
           <div
             id="encoder"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">Encoder</h3>
+            <h3 className="display m-0 mb-2 text-lede">Encoder</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A sensor that measures how far and how
               fast a motor has turned. Like a speedometer and odometer combined,
@@ -98,11 +94,9 @@ export default function Glossary() {
 
           <div
             id="cancoder"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              CANcoder
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">CANcoder</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A standalone encoder that connects to the
               CAN bus. Unlike encoders built into motors, you can mount this
@@ -117,11 +111,9 @@ export default function Glossary() {
 
           <div
             id="canivore"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              CANivore
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">CANivore</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A device that creates a high-speed
               network for your robot&apos;s motors and sensors to talk to each
@@ -138,11 +130,9 @@ export default function Glossary() {
 
           <div
             id="phoenix-6"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Phoenix 6
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Phoenix 6</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The latest software library from CTRE for
               controlling their motors and sensors. It&apos;s the
@@ -158,9 +148,9 @@ export default function Glossary() {
 
           <div
             id="can-bus"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">CAN Bus</h3>
+            <h3 className="display m-0 mb-2 text-lede">CAN Bus</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The communication network that connects
               motors, sensors, and the robot brain (roboRIO). Like a telephone
@@ -176,11 +166,9 @@ export default function Glossary() {
 
           <div
             id="device-id"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Device ID
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Device ID</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A unique number (like a name tag) given
               to each motor or sensor so your code knows which one to control.
@@ -194,9 +182,9 @@ export default function Glossary() {
 
           <div
             id="roborio"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">roboRIO</h3>
+            <h3 className="display m-0 mb-2 text-lede">roboRIO</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The &quot;brain&quot; of your robot.
               It&apos;s a small computer that runs your code and tells all the
@@ -213,11 +201,9 @@ export default function Glossary() {
 
           <div
             id="swerve-drive"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Swerve Drive
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Swerve Drive</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A drivetrain where every wheel can both
               spin and steer on its own. The robot can drive any direction while
@@ -245,14 +231,12 @@ export default function Glossary() {
         outlineLabel="Programming Concepts"
         className="mb-8"
       >
-        <div className="grid gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div
             id="subsystem"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Subsystem
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Subsystem</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A section of code that represents one
               physical part of your robot (like an arm, shooter, or drivetrain).
@@ -272,9 +256,9 @@ export default function Glossary() {
 
           <div
             id="command"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">Command</h3>
+            <h3 className="display m-0 mb-2 text-lede">Command</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> An action your robot performs, like
               &quot;raise arm&quot; or &quot;shoot ball&quot;. Commands use
@@ -301,9 +285,9 @@ export default function Glossary() {
 
           <div
             id="trigger"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">Trigger</h3>
+            <h3 className="display m-0 mb-2 text-lede">Trigger</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A connection between a button press (or
               sensor reading) and a command. When you press button A, the
@@ -327,9 +311,9 @@ export default function Glossary() {
 
           <div
             id="command-based"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               Command-Based Programming
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -348,9 +332,9 @@ export default function Glossary() {
 
           <div
             id="command-swerve-drivetrain"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               CommandSwerveDrivetrain
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -370,11 +354,9 @@ export default function Glossary() {
 
           <div
             id="periodic"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Periodic Method
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Periodic Method</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> Code that runs automatically every 20
               milliseconds (50 times per second). Used for displaying data or
@@ -392,11 +374,9 @@ export default function Glossary() {
 
           <div
             id="mechanism"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Mechanism
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Mechanism</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The Commands v3 (WPILib 2027) name for a
               subsystem: one physical part of the robot (arm, flywheel,
@@ -413,9 +393,9 @@ export default function Glossary() {
 
           <div
             id="opmode"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">OpMode</h3>
+            <h3 className="display m-0 mb-2 text-lede">OpMode</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A &quot;mode&quot; the robot can be in:
               driver teleop, an autonomous routine, or a calibration task. Each
@@ -433,11 +413,9 @@ export default function Glossary() {
 
           <div
             id="coroutine"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Coroutine
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Coroutine</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The thing that lets a Commands v3 command
               body pause and resume. Inside a command you call{" "}
@@ -458,9 +436,9 @@ export default function Glossary() {
 
           <div
             id="hold"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">Hold</h3>
+            <h3 className="display m-0 mb-2 text-lede">Hold</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A command that takes a mechanism to a
               setpoint and <em>stays there</em>: hold a button (
@@ -490,11 +468,9 @@ export default function Glossary() {
 
           <div
             id="chaining"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Chaining
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Chaining</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> Building a routine (like an auto) by
               snapping commands together, one after another. This is the
@@ -517,11 +493,9 @@ export default function Glossary() {
 
           <div
             id="state-machine"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              StateMachine
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">StateMachine</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> An optional, advanced way to organize
               robot behavior where the robot is always in exactly one named
@@ -555,14 +529,12 @@ export default function Glossary() {
         outlineLabel="Control Theory"
         className="mb-8"
       >
-        <div className="grid gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div
             id="pid"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              PID Control
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">PID Control</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A smart way to automatically control
               motors to reach exact positions or speeds. Instead of you
@@ -584,9 +556,9 @@ export default function Glossary() {
 
           <div
             id="kp"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               kP (Proportional Gain)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -603,11 +575,9 @@ export default function Glossary() {
 
           <div
             id="ki"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              kI (Integral Gain)
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">kI (Integral Gain)</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> Corrects for small steady errors that
               build up over time. Usually left at zero for FRC because it can
@@ -627,11 +597,9 @@ export default function Glossary() {
 
           <div
             id="kd"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              kD (Derivative Gain)
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">kD (Derivative Gain)</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> Slows down the motor as it approaches the
               target to prevent overshooting. Like easing off the gas as you
@@ -646,11 +614,9 @@ export default function Glossary() {
 
           <div
             id="feedforward"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Feedforward (FF)
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Feedforward (FF)</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A &quot;smart guess&quot; about how much
               power you need, based on physics rather than error. Instead of
@@ -672,9 +638,9 @@ export default function Glossary() {
 
           <div
             id="ks"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               kS (Static Feedforward)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -691,9 +657,9 @@ export default function Glossary() {
 
           <div
             id="kg"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               kG (Gravity Feedforward)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -714,9 +680,9 @@ export default function Glossary() {
 
           <div
             id="kv"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               kV (Velocity Feedforward)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -735,11 +701,9 @@ export default function Glossary() {
 
           <div
             id="motion-magic"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Motion Magic
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Motion Magic</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> An upgrade to PID that makes movements
               smooth instead of jerky. Instead of rushing to the target, it
@@ -760,11 +724,9 @@ export default function Glossary() {
 
           <div
             id="closed-loop"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Closed-Loop Control
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Closed-Loop Control</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A control method that uses sensor
               feedback. The motor checks where it actually is (using an encoder)
@@ -779,11 +741,9 @@ export default function Glossary() {
 
           <div
             id="open-loop"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Open-Loop Control
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Open-Loop Control</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> Direct voltage control with no sensor
               feedback. You tell the motor &quot;run at 6 volts&quot; and hope
@@ -814,12 +774,12 @@ export default function Glossary() {
         outlineLabel="Software & Tools"
         className="mb-8"
       >
-        <div className="grid gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div
             id="wpilib"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">WPILib</h3>
+            <h3 className="display m-0 mb-2 text-lede">WPILib</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The main programming toolkit for FRC
               robots. It includes everything you need to write robot code, like
@@ -834,11 +794,9 @@ export default function Glossary() {
 
           <div
             id="phoenix-tuner-x"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Phoenix Tuner X
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Phoenix Tuner X</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A program that lets you test and
               configure CTRE motors without writing any code. You can spin
@@ -853,11 +811,9 @@ export default function Glossary() {
 
           <div
             id="driver-station"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Driver Station
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Driver Station</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The program that connects your laptop to
               the robot during matches. It shows you robot status, lets you
@@ -872,9 +828,9 @@ export default function Glossary() {
 
           <div
             id="git"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               Git / Version Control
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -897,11 +853,9 @@ export default function Glossary() {
 
           <div
             id="networktables"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              NetworkTables
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">NetworkTables</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A shared bulletin board for your robot.
               Your code can post numbers (like battery voltage) to it, and your
@@ -916,11 +870,9 @@ export default function Glossary() {
 
           <div
             id="tuner-constants"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              TunerConstants.java
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">TunerConstants.java</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> A specific file generated by Phoenix
               Tuner X that contains all the settings for your swerve drive, like
@@ -946,14 +898,12 @@ export default function Glossary() {
         }
         outlineLabel="Units & Measurements"
       >
-        <div className="grid gap-4">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-4">
           <div
             id="rotations"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Rotations
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Rotations</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> How CTRE motors measure position: one
               full spin = 1 rotation. Much easier than degrees (360°) or radians
@@ -972,9 +922,9 @@ export default function Glossary() {
 
           <div
             id="rps"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
+            <h3 className="display m-0 mb-2 text-lede">
               RPS (Rotations Per Second)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
@@ -993,9 +943,9 @@ export default function Glossary() {
 
           <div
             id="voltage"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">Voltage</h3>
+            <h3 className="display m-0 mb-2 text-lede">Voltage</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> The &quot;strength&quot; of electrical
               power sent to the motor. FRC uses 12-volt batteries, so motors can
@@ -1014,11 +964,9 @@ export default function Glossary() {
 
           <div
             id="gear-ratio"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Gear Ratio
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Gear Ratio</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> How much the motor&apos;s speed is
               reduced to increase power. A 25:1 gear ratio means the motor spins
@@ -1038,11 +986,9 @@ export default function Glossary() {
 
           <div
             id="tolerance"
-            className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
+            className="min-w-0 bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)] scroll-mt-24"
           >
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-2">
-              Tolerance
-            </h3>
+            <h3 className="display m-0 mb-2 text-lede">Tolerance</h3>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Simple:</strong> How close is &quot;close enough&quot; to
               the target. If your target is 90° with a tolerance of 2°, anywhere

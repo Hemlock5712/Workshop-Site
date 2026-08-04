@@ -221,12 +221,7 @@ import org.wpilib.command3.StateMachine.State;
 import org.wpilib.system.DataLogManager;`}
         />
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
-          1. Build the machine
-        </h3>
+        <h3 className="display m-0 text-aside">1. Build the machine</h3>
 
         <CodeBlock
           language="java"
@@ -240,12 +235,7 @@ StateMachine sm = new StateMachine("Superstructure");`}
           until step 3. That is deliberate — see step 3.
         </p>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
-          2. Add the states
-        </h3>
+        <h3 className="display m-0 text-aside">2. Add the states</h3>
 
         <CodeBlock
           language="java"
@@ -295,12 +285,7 @@ State ready =
           </p>
         </Box>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
-          3. Pick the starting state
-        </h3>
+        <h3 className="display m-0 text-aside">3. Pick the starting state</h3>
 
         <CodeBlock
           language="java"
@@ -319,12 +304,7 @@ sm.setInitialState(stowed);`}
           will hit the compiler first.
         </p>
 
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", fontFamily: "var(--font-serif)" }}
-        >
-          4. Wire the transitions
-        </h3>
+        <h3 className="display m-0 text-aside">4. Wire the transitions</h3>
 
         <CodeBlock
           language="java"
@@ -504,7 +484,7 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
         </Box>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -812,7 +792,7 @@ spinUp.exitStateMachine().when(driver.back());`}
       {/* ── lifecycle ────────────────────────────────────────────────── */}
       <CollapsibleSection title="What the machine does every loop">
         <ol
-          className="ml-5 list-decimal space-y-2 text-[14px] leading-relaxed"
+          className="ml-5 list-decimal space-y-2 text-note leading-relaxed"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -858,7 +838,7 @@ spinUp.exitStateMachine().when(driver.back());`}
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -915,7 +895,6 @@ spinUp.exitStateMachine().when(driver.back());`}
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

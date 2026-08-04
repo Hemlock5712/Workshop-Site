@@ -58,7 +58,7 @@ export default function ImageBlock({
           style={{
             fontFamily: "var(--font-serif)",
             fontStyle: "italic",
-            fontSize: 14.5,
+            fontSize: "var(--text-note)",
             lineHeight: 1.55,
             color: "var(--tx3)",
           }}

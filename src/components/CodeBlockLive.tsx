@@ -132,7 +132,7 @@ export default function CodeBlockLive({
         >
           <span
             className="mono truncate"
-            style={{ fontSize: 11.5, color: "#c9ced6" }}
+            style={{ fontSize: "var(--text-meta)", color: "#c9ced6" }}
           >
             {label ?? language}
           </span>
@@ -140,7 +140,7 @@ export default function CodeBlockLive({
             <span
               className="mono shrink-0 whitespace-nowrap"
               style={{
-                fontSize: 9,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.12em",
                 color: "var(--accent)",
                 border: "1px solid var(--accent)",
@@ -166,8 +166,13 @@ export default function CodeBlockLive({
             gridTemplateColumns: showLineNumbers
               ? `calc(${gutterWidth} + 28px) minmax(0, max-content)`
               : "minmax(0, max-content)",
+            // Explicitly transparent. The inline-code rule in globals.css
+            // paints `code` with --bg2, which is near-white on the light
+            // theme — it was landing on top of the dark card and putting
+            // light-on-light code at 1.16:1.
+            background: "transparent",
             fontFamily: "var(--font-mono)",
-            fontSize: 13,
+            fontSize: "var(--text-note)",
             lineHeight: "22px",
             color: "#e6edf3",
           }}

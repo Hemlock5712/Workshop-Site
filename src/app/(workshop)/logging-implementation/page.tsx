@@ -8,15 +8,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import {
-  BarChart2,
-  Book,
-  Globe,
-  Zap,
-  Lightbulb,
-  AlertTriangle,
-  Info,
-} from "lucide-react";
+import { BarChart2, Book, Globe, Zap } from "lucide-react";
 
 export default function LoggingImplementation() {
   return (
@@ -75,11 +67,7 @@ public class Robot extends OpModeRobot {
 }`}
         />
 
-        <Box
-          variant="alert-info"
-          title="Where the logs go"
-          icon={<Info className="w-5 h-5" />}
-        >
+        <Box variant="alert-info" title="Where the logs go">
           <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Simulation:</strong> a <code>.wpilog</code> under{" "}
@@ -109,11 +97,7 @@ public class Robot extends OpModeRobot {
           captured with no further code:
         </p>
 
-        <Box
-          variant="alert-tip"
-          title="Captured for free"
-          icon={<Lightbulb className="w-5 h-5" />}
-        >
+        <Box variant="alert-tip" title="Captured for free">
           <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Every NetworkTables value change</strong>, including
@@ -228,11 +212,7 @@ public class Telemetry {
           </p>
         </CollapsibleSection>
 
-        <Box
-          variant="alert-warning"
-          title="Performance Considerations"
-          icon={<AlertTriangle className="w-5 h-5" />}
-        >
+        <Box variant="alert-warning" title="Performance Considerations">
           <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Use hierarchical keys</strong> (e.g.{" "}
@@ -259,7 +239,7 @@ public class Telemetry {
         id="workshop-code-implementation"
         title="Workshop Code Implementation"
       >
-        <h3 className="text-2xl font-semibold text-[var(--tx)]">
+        <h3 className="display m-0 text-title">
           Robot.java: starting DataLogManager
         </h3>
 
@@ -296,7 +276,7 @@ public class Telemetry {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="bg-[var(--bg2)] p-6 rounded-lg border border-[var(--rule)]">
-            <h3 className="text-xl font-semibold text-[var(--tx)] mb-4">
+            <h3 className="display m-0 mb-4 text-lede">
               Real-Time Data Viewing
             </h3>
             <p className="text-sm text-[var(--tx2)] mb-3">
@@ -317,7 +297,7 @@ public class Telemetry {
           </div>
 
           <div className="bg-[var(--bg2)] p-6 rounded-lg border border-[var(--rule)]">
-            <h3 className="text-xl font-semibold text-[var(--tx)] mb-4">
+            <h3 className="display m-0 mb-4 text-lede">
               Post-Match Log Analysis
             </h3>
             <p className="text-sm text-[var(--tx2)] mb-3">
@@ -336,11 +316,7 @@ public class Telemetry {
           </div>
         </div>
 
-        <Box
-          variant="alert-info"
-          title="Where the data lives in NetworkTables"
-          icon={<Info className="w-5 h-5" />}
-        >
+        <Box variant="alert-info" title="Where the data lives in NetworkTables">
           <p className="mb-3 text-sm text-[var(--tx2)]">
             Your published values land under whatever table you chose, and the
             auto-captured data sits alongside it:
@@ -361,11 +337,7 @@ public class Telemetry {
           </ul>
         </Box>
 
-        <Box
-          variant="alert-tip"
-          title="AdvantageScope Pro Tips"
-          icon={<Lightbulb className="w-5 h-5" />}
-        >
+        <Box variant="alert-tip" title="AdvantageScope Pro Tips">
           <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
             <li>
               <strong>Overlay multiple signals:</strong> compare target vs
@@ -464,7 +436,6 @@ public class Telemetry {
         <AlphaStatusNote />
 
         <Quiz
-          title="Knowledge Check"
           questions={[
             {
               id: 1,

@@ -10,13 +10,6 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
 
-const subheadingStyle = {
-  fontFamily: "var(--font-serif)",
-  color: "var(--fg)",
-} as const;
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
-
 export default function DynamicFlywheel() {
   return (
     <PageTemplate
@@ -119,14 +112,14 @@ export default function DynamicFlywheel() {
         id="four-measurements-every-distance-in-between"
         title="Four measurements, every distance in between"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           You cannot measure the right flywheel speed at every possible
           distance. There are infinitely many distances and one afternoon of
           practice time. So you measure a few, write them down, and let the code
           fill in the gaps.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>InterpolatingDoubleTreeMap</code> is the WPILib class that does
           the filling in. You hand it pairs — a distance and the speed that
           works at that distance — and ask it for any distance you like. Between
@@ -134,13 +127,13 @@ export default function DynamicFlywheel() {
           all &quot;linear interpolation&quot; means.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           These are the four pairs the branch ships, in meters and rotations per
           second:
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-[14px]">
+          <table className="w-full min-w-[520px] border-collapse text-note">
             <thead>
               <tr>
                 <th
@@ -163,7 +156,7 @@ export default function DynamicFlywheel() {
                 </th>
               </tr>
             </thead>
-            <tbody style={bodyStyle}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
@@ -300,17 +293,14 @@ export default function DynamicFlywheel() {
 
       {/* ── STEP 1 ───────────────────────────────────────────────────── */}
       <LessonSection id="add-the-two-new" title="Add the two new files">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           This branch adds four files&apos; worth of changes on top of{" "}
           <code>3-Limelight</code>: two brand-new files, plus edits to{" "}
           <code>Robot.java</code> and <code>opmodes/TeleopOpMode.java</code>.
           Create the new ones first.
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <code>src/main/java/frc/robot/utils/TalonFXUtil.java</code> — a
             small helper. Phoenix&apos;s <code>apply(...)</code> sends a
@@ -336,11 +326,11 @@ export default function DynamicFlywheel() {
           />
         </CollapsibleSection>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           The fields at the top of <code>Flywheel.java</code>
         </h3>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Everything below sits{" "}
           <strong>inside the class braces and above the constructor</strong>.
           These are field declarations — each one names a thing the mechanism
@@ -385,14 +375,9 @@ export default function DynamicFlywheel() {
       telemetry.getDoubleTopic("TargetVelocityRps").publish();`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
-          Three of those deserve a second look.
-        </p>
+        <p>Three of those deserve a second look.</p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <code>TARGET</code> is a <code>Translation2d</code> — an x and a y
             in meters, measured from the blue-alliance corner of the field, the
@@ -454,7 +439,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         id="the-constructor-table-follower"
         title="The constructor: table, follower, configuration"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The constructor runs once, when <code>Robot</code> builds the
           flywheel. Three jobs: fill the table, tell the second motor to copy
           the first, and push the gains down to the hardware.
@@ -489,7 +474,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
   }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>MotorAlignmentValue.Opposed</code> is the important one. It
           makes the follower spin backward relative to the leader, which is
           exactly what the branch&apos;s own comment asks for:{" "}
@@ -529,7 +514,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
       {/* ── STEP 3 ───────────────────────────────────────────────────── */}
       <LessonSection id="measure-the-distance" title="Measure the distance">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Two short private methods. The first asks the drivetrain where it
           thinks it is and measures to the target. The second sends a speed to
           the motor. Both publish their number on the way past, so you can watch
@@ -553,7 +538,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
   }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Read that first line right to left. <code>drivetrain.getPose()</code>{" "}
           hands back a <code>Pose2d</code> — a position <em>and</em> a heading.{" "}
           <code>.getTranslation()</code> throws the heading away and keeps the x
@@ -561,7 +546,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           between two points, the one you would measure with a tape.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Notice the wording of the comment the branch put there:{" "}
           <em>where the robot thinks it is</em>. That is deliberate. The pose is
           wheel odometry corrected by AprilTag sightings — a good estimate, not
@@ -584,7 +569,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           There is no <code>periodic()</code> method to put this in. Mechanisms
           in Commands&nbsp;v3 do not have one. The measuring happens inside the
           command instead, which is the next step.
@@ -603,7 +588,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         id="the-command-that-keeps"
         title="The command that keeps re-measuring"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Here is the whole point of the lesson in one method.{" "}
           <code>runRepeatedly(...)</code> runs its body every scheduler loop —
           about fifty times a second. So the distance is measured again, the
@@ -635,7 +620,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
   }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The body reads inside out:{" "}
           <code>setVelocity(table.get(distanceToTarget()))</code>. Measure, look
           up, send. Three calls, one line, once per loop.
@@ -694,7 +679,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         }
         outlineLabel="Own it in Robot, bind it in TeleopOpMode"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Mechanisms are <code>public final</code> fields on <code>Robot</code>.
           Add one line, below the drivetrain:
         </p>
@@ -727,7 +712,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Now the binding. Button bindings for a driving mode go in that
           OpMode&apos;s constructor, and the framework removes them when the
           mode switches. This is what the branch writes:
@@ -741,7 +726,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
     driver.a().whileTrue(robot.flywheel.distanceShoot());`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>whileTrue</code> is the right verb for a hold: the command runs
           while A is down and is canceled the moment you let go. That is the
           binding the command&apos;s own javadoc asks for.
@@ -791,14 +776,14 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         id="the-four-numbers-in-the-table"
         title="The four numbers in the table are not your numbers"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           0, 10, 30, 60 are placeholders. The branch says so in its own comment
           — <code>Tune these points with real test shots</code> — and they were
           never measured on your shooter, with your wheels, your compression or
           your game piece.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           There is no formula for these. You cannot compute them from the
           geometry, because the answer depends on how much the game piece
           squashes, how much it slips on the wheel, how worn the wheel is, and
@@ -806,14 +791,11 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           got its numbers the same way: by shooting.
         </p>
 
-        <h3 className="text-xl font-semibold" style={subheadingStyle}>
+        <h3 className="display measure m-0 text-title">
           How teams actually fill it in
         </h3>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             <strong>Park at one distance and stay there.</strong> Tape mark on
             the carpet. Read <code>Flywheel/DistanceToTargetMeters</code> and
@@ -854,7 +836,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The same warning applies to <code>TARGET</code>. As shipped it is{" "}
           <code>new Translation2d(3, 5)</code> with a{" "}
           <code>TODO: set the real goal</code> next to it. Look up the real
@@ -866,7 +848,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
       {/* ── FULL FILE ────────────────────────────────────────────────── */}
       <LessonSection id="the-whole-file" title="The whole file">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Everything above, in one piece, straight off the branch. The
           &quot;GitHub Changes&quot; tab shows the four-file diff against{" "}
           <code>3-Limelight</code> — that diff is exactly this lesson.
@@ -888,15 +870,12 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           You do not need a game piece for any of this. You are checking that
           two numbers move the way the table says they should.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Run <code>gradlew build</code>. <strong>You should see:</strong>{" "}
             <code>BUILD SUCCESSFUL</code>. If the compiler points at{" "}
@@ -1029,7 +1008,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The pattern you learned here is bigger than flywheels. Any time a
           mechanism needs a number that depends on where the robot is standing —
           a hood angle, a wrist position, how long to hold a feeder — the same
@@ -1038,7 +1017,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           redoes both every loop.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Next up, the drivetrain stops being something the driver steers and
           starts driving itself to a pose you name.
         </p>
@@ -1047,7 +1026,6 @@ import org.wpilib.networktables.NetworkTableInstance;`}
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

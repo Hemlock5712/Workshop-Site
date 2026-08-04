@@ -224,7 +224,7 @@ public class Arm extends Mechanism {
 
         <div className="grid gap-4 md:grid-cols-2">
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="font-bold" style={{ color: "var(--fg)" }}>
+            <h4 className="display m-0 text-aside">
               <code>robot-description</code>
             </h4>
             <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
@@ -237,7 +237,7 @@ public class Arm extends Mechanism {
           </ContentCard>
 
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="font-bold" style={{ color: "var(--fg)" }}>
+            <h4 className="display m-0 text-aside">
               <code>game-info</code>
             </h4>
             <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
@@ -249,7 +249,7 @@ public class Arm extends Mechanism {
           </ContentCard>
 
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="font-bold" style={{ color: "var(--fg)" }}>
+            <h4 className="display m-0 text-aside">
               <code>run-sim</code>
             </h4>
             <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
@@ -261,7 +261,7 @@ public class Arm extends Mechanism {
           </ContentCard>
 
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="font-bold" style={{ color: "var(--fg)" }}>
+            <h4 className="display m-0 text-aside">
               <code>log-reading</code>
             </h4>
             <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
@@ -276,7 +276,7 @@ public class Arm extends Mechanism {
             tag="SKILL"
             className="flex flex-col gap-2 md:col-span-2"
           >
-            <h4 className="font-bold" style={{ color: "var(--fg)" }}>
+            <h4 className="display m-0 text-aside">
               <code>teaching</code>
             </h4>
             <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
@@ -311,9 +311,7 @@ public class Arm extends Mechanism {
                 className="h-5 w-5"
                 style={{ color: "var(--primary-lifted)" }}
               />
-              <h4 className="font-bold" style={{ color: "var(--fg)" }}>
-                Claude Code
-              </h4>
+              <h4 className="display m-0 text-aside">Claude Code</h4>
             </div>
             <p className="flex-1 text-sm" style={{ color: "var(--fg-mute)" }}>
               Anthropic&apos;s coding agent, in the terminal or as a VS Code
@@ -336,9 +334,7 @@ public class Arm extends Mechanism {
                 className="h-5 w-5"
                 style={{ color: "var(--primary-lifted)" }}
               />
-              <h4 className="font-bold" style={{ color: "var(--fg)" }}>
-                GitHub Copilot
-              </h4>
+              <h4 className="display m-0 text-aside">GitHub Copilot</h4>
             </div>
             <p className="flex-1 text-sm" style={{ color: "var(--fg-mute)" }}>
               Lives inside VS Code, which you already have open for WPILib.
@@ -361,9 +357,7 @@ public class Arm extends Mechanism {
                 className="h-5 w-5"
                 style={{ color: "var(--primary-lifted)" }}
               />
-              <h4 className="font-bold" style={{ color: "var(--fg)" }}>
-                OpenAI Codex
-              </h4>
+              <h4 className="display m-0 text-aside">OpenAI Codex</h4>
             </div>
             <p className="flex-1 text-sm" style={{ color: "var(--fg-mute)" }}>
               OpenAI&apos;s coding agent, as a CLI and an IDE extension.
@@ -428,7 +422,7 @@ you change anything in this project.`}
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -503,7 +497,7 @@ I have finished the Commands lesson. Do not change any files.`}
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -603,7 +597,7 @@ Show me the diff before you write anything.`}
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -700,7 +694,7 @@ Show me the diff before you write anything.`}
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -757,7 +751,6 @@ Show me the diff before you write anything.`}
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

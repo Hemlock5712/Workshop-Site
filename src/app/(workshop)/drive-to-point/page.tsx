@@ -110,7 +110,7 @@ export default function DriveToPoint() {
         />
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -202,7 +202,7 @@ Pose2d currentPose = drivetrain.getPose();`}
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -328,10 +328,7 @@ Pose2d currentPose = drivetrain.getPose();`}
         </p>
 
         {/* step 1 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           1. Copy in <code>ClassicCommand.java</code>
         </h3>
 
@@ -348,10 +345,7 @@ Pose2d currentPose = drivetrain.getPose();`}
         </p>
 
         {/* step 2 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           2. New file, class declaration, and the three controllers
         </h3>
 
@@ -397,10 +391,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 3 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           3. Add the drive request
         </h3>
 
@@ -425,7 +416,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -458,10 +449,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 4 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           4. The constructor
         </h3>
 
@@ -518,10 +506,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 5 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           5. <code>initialize()</code> — clear the controllers
         </h3>
 
@@ -552,10 +537,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 6 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           6. <code>execute()</code> — the whole control loop
         </h3>
 
@@ -600,10 +582,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 7 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           7. <code>isFinished()</code> — and why it returns false
         </h3>
 
@@ -656,10 +635,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 8 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           8. <code>end()</code> — stop the drivetrain
         </h3>
 
@@ -705,10 +681,7 @@ public class DriveToPoint extends ClassicCommand {
         </p>
 
         {/* step 9 */}
-        <h3
-          className="text-lg font-semibold"
-          style={{ color: "var(--fg)", marginBottom: "-8px" }}
-        >
+        <h3 className="display m-0 text-aside" style={{ marginBottom: "-8px" }}>
           9. Bind it to two buttons
         </h3>
 
@@ -774,7 +747,7 @@ import org.wpilib.math.geometry.Rotation2d;
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[14px]">
+          <table className="w-full border-collapse text-note">
             <thead>
               <tr>
                 <th
@@ -958,7 +931,7 @@ import org.wpilib.math.geometry.Rotation2d;
         </Box>
 
         <CollapsibleSection title="Optional: a speed clamp you can add today">
-          <p className="text-[15px] leading-relaxed">
+          <p>
             This is <strong>not</strong> on <code>5-DriveToPoint</code>. Add it
             if you want a seatbelt on real hardware before the next lesson
             replaces it properly. Two imports —{" "}
@@ -981,7 +954,7 @@ double vx = clamp(xController.calculate(currentPose.getX(), targetPose.getX()), 
 double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), maxSpeed);`}
             />
           </div>
-          <p className="mt-3 text-[15px] leading-relaxed">
+          <p className="mt-3">
             A clamp stops the command asking for the impossible, but it does not
             make the motion good — the robot still runs flat out until the last
             moment. The real answer is to work out the whole trip in advance,
@@ -1041,7 +1014,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
       {/* ── did it work ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -1153,7 +1126,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-2"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -1191,7 +1164,6 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

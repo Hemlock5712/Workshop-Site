@@ -68,21 +68,16 @@ function Side({
         hasLegacyClasses ? undefined : { borderTop: `2px solid ${t.rule}` }
       }
     >
-      <h4
-        className={titleClass || "mono mb-3"}
-        style={
-          titleClass
-            ? undefined
-            : {
-                color: t.label,
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                fontSize: 9.5,
-              }
-        }
+      {/* Not a heading: "Before" / "After" is a 9.5px mono label on a column,
+          and putting it in the document outline made every comparison on the
+          site announce two more sections. `.micro` is what the design calls
+          this, and it carries the size. */}
+      <div
+        className={titleClass || "micro mb-3"}
+        style={titleClass ? undefined : { color: t.label }}
       >
         {title}
-      </h4>
+      </div>
       <ul
         className={listClass || ""}
         style={
@@ -96,7 +91,7 @@ function Side({
                 flexDirection: "column",
                 gap: 10,
                 fontFamily: "var(--font-serif)",
-                fontSize: 16,
+                fontSize: "var(--text-aside)",
                 lineHeight: 1.5,
                 color: "var(--tx2)",
               }
@@ -115,7 +110,7 @@ function Side({
               <span
                 aria-hidden="true"
                 className="mono shrink-0"
-                style={{ color: t.label, fontSize: 13 }}
+                style={{ color: t.label, fontSize: "var(--text-note)" }}
               >
                 {t.bullet}
               </span>
@@ -148,7 +143,7 @@ export default function ComparisonTable({
 }: ComparisonTableProps) {
   return (
     <div
-      className={`measure-wide grid gap-8 md:grid-cols-2 md:gap-10 ${className}`.trim()}
+      className={`measure-wide grid grid-cols-[minmax(0,1fr)] gap-8 md:grid-cols-2 md:gap-10 ${className}`.trim()}
     >
       <Side
         title={leftTitle}

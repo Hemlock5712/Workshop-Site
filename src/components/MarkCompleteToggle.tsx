@@ -29,7 +29,7 @@ export default function MarkCompleteToggle() {
       }
       className="mono cursor-pointer whitespace-nowrap rounded-full px-3.5 py-1.5 transition-colors"
       style={{
-        fontSize: 9.5,
+        fontSize: "var(--text-micro)",
         letterSpacing: "0.12em",
         textTransform: "uppercase",
         border: `1px solid ${done ? "var(--accent)" : "var(--rule)"}`,

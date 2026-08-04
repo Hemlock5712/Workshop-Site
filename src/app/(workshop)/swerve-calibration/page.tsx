@@ -6,9 +6,7 @@ import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
-import { AlertTriangle, Book, Gauge, MapPin } from "lucide-react";
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
+import { Book } from "lucide-react";
 
 export default function SwerveCalibration() {
   return (
@@ -61,7 +59,7 @@ export default function SwerveCalibration() {
         id="why-this-page-sits-between-logging"
         title="Why this page sits between Logging and Vision"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Everything from here on reads <code>drivetrain.getPose()</code>. The
           next page feeds camera measurements into that pose. Drive to Point
           steers to field coordinates taken from it. Autonomous strings those
@@ -69,7 +67,7 @@ export default function SwerveCalibration() {
           and you will spend an evening blaming the camera for a wheel radius.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           It sits <em>after</em> Logging because two of the steps below work by
           driving the robot, stopping, and reading a number out of the log
           afterward. You cannot do that with a robot that is not logging.
@@ -111,7 +109,7 @@ export default function SwerveCalibration() {
         id="three-things-that-all-sound-like"
         title='Three things that all sound like "zeroing"'
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           This trips up nearly everybody, so it gets its own section before the
           steps. The swerve code has three separate operations that all get
           described as resetting or seeding, and they do different jobs. Mixing
@@ -120,7 +118,7 @@ export default function SwerveCalibration() {
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-[14px]">
+          <table className="w-full min-w-[560px] border-collapse text-note">
             <thead>
               <tr>
                 <th
@@ -143,14 +141,14 @@ export default function SwerveCalibration() {
                 </th>
               </tr>
             </thead>
-            <tbody style={bodyStyle}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
                   style={{ borderColor: "var(--line-soft)" }}
                 >
                   <code>seedFieldCentric()</code>
-                  <div className="mt-1 text-[13px]">left bumper, on demand</div>
+                  <div className="mt-1 text-note">left bumper, on demand</div>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
@@ -173,7 +171,7 @@ export default function SwerveCalibration() {
                   style={{ borderColor: "var(--line-soft)" }}
                 >
                   <code>applyOperatorPerspective()</code>
-                  <div className="mt-1 text-[13px]">every loop, automatic</div>
+                  <div className="mt-1 text-note">every loop, automatic</div>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
@@ -196,7 +194,7 @@ export default function SwerveCalibration() {
                   style={{ borderColor: "var(--line-soft)" }}
                 >
                   <code>resetPose(Pose2d)</code>
-                  <div className="mt-1 text-[13px]">
+                  <div className="mt-1 text-note">
                     the one nothing calls yet
                   </div>
                 </td>
@@ -218,7 +216,7 @@ export default function SwerveCalibration() {
           </table>
         </div>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The first two are heading references — a heading, and only a heading.
           The <code>DriveMechanism</code> you have wraps{" "}
           <code>seedFieldCentric()</code> with the comment{" "}
@@ -237,7 +235,7 @@ export default function SwerveCalibration() {
 driver.leftBumper().onTrue(drivetrain.seedFieldCentric());`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Press it and the robot drives correctly again from the driver&apos;s
           point of view. Press it and <code>Drivetrain/Pose</code> still says
           the robot is wherever odometry has been quietly accumulating since
@@ -248,7 +246,6 @@ driver.leftBumper().onTrue(drivetrain.seedFieldCentric());`}
           variant="alert-warning"
           tag="THE HONEST VERSION"
           title="Nothing on these branches ever sets an absolute field pose"
-          icon={<MapPin className="w-5 h-5" />}
         >
           <p>
             <code>resetPose(Pose2d)</code> is a real Phoenix 6 method on the
@@ -283,7 +280,7 @@ driver.leftBumper().onTrue(drivetrain.seedFieldCentric());`}
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           One consequence worth carrying to the next page: with a single tag in
           view the camera code switches to MegaTag2, which trusts the gyro
           heading instead of solving for it. Its own comment says{" "}
@@ -300,7 +297,7 @@ driver.leftBumper().onTrue(drivetrain.seedFieldCentric());`}
         id="seven-steps-in-this-order"
         title="Seven steps, in this order"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The order is not arbitrary. Each step measures something the steps
           after it depend on. Do them out of order and you will measure a
           correct number for a robot that no longer exists by the time you use
@@ -352,7 +349,7 @@ private static final Distance kWheelRadius = Inches.of(2.167);
 public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Those are the numbers you are replacing. They are not nonsense — they
           are a plausible robot that is not yours. Each step below says which
           line it edits.
@@ -360,13 +357,10 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 1 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 1 — Zero the modules
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Each module has a CANcoder measuring which way the wheel is pointed,
             and an offset saying what reading counts as straight ahead. Those
             offsets are per-robot. In your generated file they are the four{" "}
@@ -376,10 +370,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             <code>kBackRightEncoderOffset</code> constants, and the ones checked
             in are from somebody else&apos;s robot.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               Disable the robot. Nothing should be commanding the modules while
               you are setting them.
@@ -405,7 +396,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               do not work out the numbers by hand.
             </li>
           </ol>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> re-enable, push the left stick
             straight forward, and the robot goes straight down the carpet. Sight
             along a seam or a tape line. If it curves consistently to one side,
@@ -416,20 +407,17 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 2 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 2 — Tune <code>steerGains</code>
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             A steering motor holds an angle. That is the same job the arm does
             on the PID Control page: a <strong>position loop</strong>, tuned in
             the same order, with one difference — an arm fights gravity and a
             steering module does not. There is no kG here. Skip that step and
             start at kS.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             One other difference from the arm. The arm shipped with every gain
             at zero, so you had no choice but to start from nothing. The
             generator gave your steering modules real numbers — kP 100, kD 0.5,
@@ -437,10 +425,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             of hardware. Start from those and adjust, rather than zeroing them
             and beginning again. They are often close.
           </p>
-          <ul
-            className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ul className="ml-5 list-disc space-y-2">
             <li>
               <a
                 href="/pid-control#tune-ks"
@@ -469,12 +454,12 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               </a>
             </li>
           </ul>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Same rules as that page: one number per deploy, approach every gain
             from below, halve it the moment the module does something you did
             not expect.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> the verification loop is already
             built. <code>Telemetry.java</code> publishes{" "}
             <code>Drivetrain/ModuleStates</code> (what the modules are actually
@@ -488,13 +473,10 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 3 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 3 — Measure <code>kWheelRadius</code>
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Odometry counts wheel rotations and multiplies by a radius to get
             distance. The radius in the file is what the wheel measures on a
             bench. The radius you want is the <em>effective</em> one: the wheel
@@ -503,10 +485,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             smaller than the bench number, and it drifts as the tread wears — so
             this is a measurement to repeat late in the season, not once.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               Put a piece of tape on the floor at the robot&apos;s front edge.
               Note the current <code>Drivetrain/Pose</code>, or restart the code
@@ -538,7 +517,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 // e.g. tape says 5.00 m, the log says 4.80 m, the file says 2.167 in:
 //      (5.00 / 4.80) * 2.167 = 2.257 in`}
           />
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> put the new radius in{" "}
             <code>kWheelRadius</code>, redeploy, and run the same test again.
             The log and the tape measure should now agree, and the gap that is
@@ -550,28 +529,22 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 4 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 4 — Measure <code>kSpeedAt12Volts</code>
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             This one comes after the wheel radius, and it has to. The speed you
             are about to read out of the log is computed from wheel rotations
             times that radius. Measure the speed first and you have measured it
             through the wrong radius.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             It also has to happen <em>before</em> step 7. The constant means
             &quot;how fast this robot goes with 12 volts applied to the drive
             motors,&quot; which is a question you can only ask while the drive
             request is still open-loop voltage. It is, right now.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               Clear floor, at least six meters, on the surface you actually
               compete on. Carpet and shop floor give different answers.
@@ -608,7 +581,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               believes it.
             </p>
           </Box>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> a trace that ramps up and then goes
             flat, and a plateau somewhere near the 4.54 the file shipped with.
             If it comes out wildly higher or lower, suspect the file before you
@@ -620,13 +593,10 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 5 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 5 — Find <code>kSlipCurrent</code>
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Current is how hard the motor is pushing. Stator current — the
             current in the motor windings — is directly proportional to torque,
             so a limit on stator current is a limit on how hard the wheel can
@@ -635,10 +605,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             motor is allowed to make ends up pushing the robot instead of
             polishing the carpet.
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>
               Drive the robot up against a wall on carpet and square it up so
               all four wheels point straight into the wall. The push is along
@@ -674,7 +641,6 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           <Box
             variant="alert-warning"
             title="You may be measuring the limit, not the tire"
-            icon={<AlertTriangle className="w-5 h-5" />}
           >
             <p>
               The drive motors are already limited. The shipped{" "}
@@ -691,11 +657,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               ramp again — then put the measured value in when you have one.
             </p>
           </Box>
-          <Box
-            variant="alert-warning"
-            title="Too low costs you acceleration"
-            icon={<AlertTriangle className="w-5 h-5" />}
-          >
+          <Box variant="alert-warning" title="Too low costs you acceleration">
             <p>
               This limit caps torque, and torque is acceleration. Set it well
               under the slip point and the robot is safe, predictable and slow
@@ -704,7 +666,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               Measure first, then decide how much you are giving away.
             </p>
           </Box>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> redeploy, then floor it from a dead
             stop on carpet. The robot should launch without the squeal and the
             little sideways hop that wheel spin gives you.
@@ -718,19 +680,16 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 6 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 6 — Tune <code>driveGains</code>
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             A drive motor holds a <em>speed</em>, not an angle. That is the
             flywheel, not the arm, and a velocity loop is tuned in a different
             order — feedforward first, because on a velocity loop the
             feedforward can do nearly the whole job by itself:
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <a
               href="/pid-control#tune-flywheel"
               className="font-semibold underline decoration-1 underline-offset-2"
@@ -739,14 +698,14 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               The velocity-loop order: kV, then kS, then kP
             </a>
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Do this on the ground, not on blocks. A wheel spinning in the air
             has no load on it, and the gains that hold a speed with nothing
             attached are not the gains that hold it with the weight of a robot
             pressing down. Blocks are fine for a first pass at kV if you want
             the robot to stay put while you find the rough number.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <strong>You should see:</strong> the same two signals as step 2, but
             the speed component this time — <code>Drivetrain/ModuleStates</code>{" "}
             against <code>Drivetrain/ModuleTargets</code>. Drive around, then
@@ -759,13 +718,10 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
         {/* Step 7 */}
         <div className="flex flex-col gap-3">
-          <h3
-            className="display measure m-0"
-            style={{ fontSize: 25, lineHeight: 1.15 }}
-          >
+          <h3 className="display measure m-0 text-title">
             Step 7 — Switch the drive request to <code>Velocity</code>
           </h3>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Now the payoff. Up to this point the drivetrain has been open-loop:
             the stick position was converted straight into volts, and whatever
             speed that produced was whatever it produced. With the drive gains
@@ -776,7 +732,6 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             variant="alert-danger"
             tag="THIS IS NOT DONE FOR YOU"
             title="Every reference file ships open-loop"
-            icon={<Gauge className="w-5 h-5" />}
           >
             <p>
               Open <code>TeleopOpMode.java</code> on <code>1-Swerve</code>, on{" "}
@@ -814,7 +769,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
         .withDriveRequestType(DriveRequestType.Velocity); // closed loop on wheel speed`}
           />
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             <code>Velocity</code> comes from the same place as{" "}
             <code>OpenLoopVoltage</code>, so the import at the top of the file
             already covers it and nothing else changes. Redeploy and drive.
@@ -822,13 +777,8 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             step 6.
           </p>
 
-          <h4
-            className="text-[15px] font-semibold"
-            style={{ color: "var(--fg)" }}
-          >
-            And now the deadband
-          </h4>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <h4 className="display m-0 text-ui">And now the deadband</h4>
+          <p>
             A deadband throws away small stick inputs. The branch discards the
             bottom 10%, which is a lot: with the shipped top speed of 4.54 m/s,
             the slowest the robot will move at all is about 0.45 m/s. That is
@@ -836,16 +786,13 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             reliable motion anyway. With a tuned velocity loop, they do — so the
             10% is now throwing away control you have paid for.
           </p>
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Shrink it rather than deleting it. The deadband is also what stops a
             worn controller&apos;s stick drift from creeping the robot across
             the field while nobody is touching it. There is a test for how far
             you can go:
           </p>
-          <ol
-            className="ml-5 list-decimal space-y-2 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-2">
             <li>Put the robot on blocks so nothing can move it.</li>
             <li>Enable, and take your hands off the controller completely.</li>
             <li>
@@ -859,7 +806,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               back to the previous value.
             </li>
           </ol>
-          <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+          <p>
             Do this per controller. A brand new controller will let you go far
             lower than the one that has been in the practice-field bin all
             season, and the deadband has to suit the worst one you will actually
@@ -880,15 +827,12 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           One run tells you whether the whole page landed. Do it on the surface
           you compete on, with logging on.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Tape a start mark on the floor and put the robot on it. Restart the
             robot code so <code>Drivetrain/Pose</code> starts at (0, 0).
@@ -973,7 +917,6 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
         <AlphaStatusNote />
 
         <Quiz
-          title="Knowledge Check"
           questions={[
             {
               id: 1,

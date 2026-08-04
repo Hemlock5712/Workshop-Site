@@ -94,7 +94,7 @@ export default function LessonOutline({
                   key={entry.id}
                   href={`#${entry.id}`}
                   aria-current={on ? "true" : undefined}
-                  className="flex items-center gap-2.5 py-[5px] text-[13px] leading-[1.35]"
+                  className="flex items-center gap-2.5 py-[5px] text-note leading-[1.35]"
                   style={{ color: on ? "var(--tx)" : "var(--tx3)" }}
                 >
                   <span
@@ -128,7 +128,7 @@ export default function LessonOutline({
               <div className="micro mb-2">Branch</div>
               <div
                 className="mono"
-                style={{ fontSize: 12, color: "var(--accent)" }}
+                style={{ fontSize: "var(--text-meta)", color: "var(--accent)" }}
               >
                 {branch}
               </div>
@@ -140,7 +140,7 @@ export default function LessonOutline({
               style={{
                 fontFamily: "var(--font-serif)",
                 fontStyle: "italic",
-                fontSize: 14,
+                fontSize: "var(--text-note)",
                 lineHeight: 1.5,
                 color: "var(--tx3)",
               }}

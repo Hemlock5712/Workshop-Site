@@ -24,7 +24,11 @@ export default function DocumentationButton({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center gap-2.5 px-[18px] py-2.5 text-[13px] font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      // `max-w-full` plus `flex-wrap`: an `inline-flex` row does not wrap, so a
+      // long vendor title plus the 16px arrow plus 18px of padding each side
+      // added up to more than the 272px a 390px phone leaves, and the arrow
+      // hung 3px off the side of the page. Wrapping is the graceful failure.
+      className="inline-flex max-w-full flex-wrap items-center gap-2.5 px-[18px] py-2.5 text-note font-medium transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
       style={{
         border: "1px solid var(--rule)",
         borderRadius: 2,

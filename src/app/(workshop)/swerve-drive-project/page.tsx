@@ -8,9 +8,7 @@ import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import Link from "next/link";
-import { Book, Download, Gamepad2, MapPin } from "lucide-react";
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
+import { Book, Download } from "lucide-react";
 
 const linkStyle =
   "text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium";
@@ -66,7 +64,7 @@ export default function SwerveDriveProject() {
       </Box>
 
       <Box variant="alert-info" title="Quick start: download the baseline code">
-        <p className="mb-4" style={bodyStyle}>
+        <p className="mb-4">
           You do not have to build the project from nothing. Download the
           workshop swerve project, which is the code shown on this page. Change
           the team number in <code>.wpilib/wpilib_preferences.json</code> — it
@@ -89,7 +87,7 @@ export default function SwerveDriveProject() {
         id="one-file-is-the-whole-output"
         title="One file is the whole output"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The generator can emit a complete project, but that is not how this
           workshop uses it. The only piece you keep is{" "}
           <code>src/main/java/frc/robot/generated/TunerConstants.java</code>.
@@ -99,7 +97,7 @@ export default function SwerveDriveProject() {
           page.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The copy checked into the workshop project is a placeholder for
           somebody else&apos;s robot. <code>DriveMechanism.java</code> says so
           in a comment right where it builds the drivetrain:{" "}
@@ -169,13 +167,10 @@ export default function SwerveDriveProject() {
               1
             </div>
             <div className="flex-1">
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ color: "var(--fg)" }}
-              >
+              <h3 className="display m-0 mb-2 text-aside">
                 Get every device on the bus with a unique ID
               </h3>
-              <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+              <p>
                 Power the robot, connect Tuner X, and look at the device list.
                 All thirteen devices have to be on the same CAN bus: eight
                 TalonFX, four CANcoders and one Pigeon 2. Assign IDs now and
@@ -183,7 +178,7 @@ export default function SwerveDriveProject() {
                 generator in step 3, and a swapped pair is the single most
                 common way this page goes wrong.
               </p>
-              <p className="mt-2 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-2">
                 <strong>You should see:</strong> thirteen devices listed, every
                 ID different, no duplicate-ID warning and no red firmware
                 badges. If a device is missing, it is a wiring or termination
@@ -199,17 +194,14 @@ export default function SwerveDriveProject() {
               2
             </div>
             <div className="flex-1">
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ color: "var(--fg)" }}
-              >
+              <h3 className="display m-0 mb-2 text-aside">
                 Open the swerve project generator
               </h3>
-              <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+              <p>
                 It lives under <strong>Mechanisms</strong> in the left sidebar,
                 behind a <strong>New Project</strong> button.
               </p>
-              <p className="mt-2 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-2">
                 <strong>You should see:</strong> a wizard that starts by asking
                 for the robot&apos;s physical dimensions, not for code.
               </p>
@@ -222,13 +214,10 @@ export default function SwerveDriveProject() {
               3
             </div>
             <div className="flex-1">
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ color: "var(--fg)" }}
-              >
+              <h3 className="display m-0 mb-2 text-aside">
                 Measure the robot and enter the numbers
               </h3>
-              <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+              <p>
                 Four measurements do all the work. Take them off the real robot
                 with a tape measure, not off the CAD you meant to build.
               </p>
@@ -239,7 +228,10 @@ export default function SwerveDriveProject() {
                   background: "var(--bg-elev)",
                 }}
               >
-                <ul className="space-y-2 text-[14px]" style={bodyStyle}>
+                <ul
+                  className="space-y-2 text-note"
+                  style={{ color: "var(--tx2)" }}
+                >
                   <li>
                     <strong>Wheelbase</strong> — front-to-back distance between
                     module centers.
@@ -258,14 +250,14 @@ export default function SwerveDriveProject() {
                   </li>
                 </ul>
               </div>
-              <p className="mt-3 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-3">
                 Wheelbase and trackwidth become each module&apos;s X and Y
                 offset from the robot&apos;s center. The checked-in example is a
                 square robot with all four modules 10 inches out in each
                 direction, and a drive ratio of about 7.36:1 on a 2.167-inch
                 wheel radius. Yours will differ.
               </p>
-              <p className="mt-2 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-2">
                 <strong>You should see:</strong> the wizard accept all four
                 without complaint. Say the numbers back to yourself before you
                 move on — wheelbase and trackwidth are the pair people swap, and
@@ -281,13 +273,10 @@ export default function SwerveDriveProject() {
               4
             </div>
             <div className="flex-1">
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ color: "var(--fg)" }}
-              >
+              <h3 className="display m-0 mb-2 text-aside">
                 Let the generator drive each module
               </h3>
-              <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+              <p>
                 With the robot on blocks, the wizard works through the modules
                 one at a time, driving each motor and checking what it sees. Two
                 of the things it settles here end up in the file as pairs per
@@ -297,7 +286,7 @@ export default function SwerveDriveProject() {
                 part seriously — half a degree of error per module walks the
                 robot sideways over a long drive.
               </p>
-              <p className="mt-2 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-2">
                 <strong>You should see:</strong> one module moving at a time,
                 and it should be the corner the wizard named. If a different
                 corner moves, two CAN IDs are swapped — go back to step 1 and
@@ -312,13 +301,10 @@ export default function SwerveDriveProject() {
               5
             </div>
             <div className="flex-1">
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ color: "var(--fg)" }}
-              >
+              <h3 className="display m-0 mb-2 text-aside">
                 Generate the constants and swap the file in
               </h3>
-              <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+              <p>
                 At the end of the wizard, generate the Tuner constants. Take the{" "}
                 <code>TunerConstants.java</code> it writes and use it to replace{" "}
                 <code>
@@ -328,7 +314,7 @@ export default function SwerveDriveProject() {
                 hand-merge fields, because the offsets, the inversions and the
                 IDs all have to come from the same run.
               </p>
-              <p className="mt-2 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-2">
                 <strong>You should see:</strong> your own CAN IDs in the new
                 file, and a <code>kCANBus</code> line naming your CANivore
                 rather than the example&apos;s.
@@ -342,13 +328,10 @@ export default function SwerveDriveProject() {
               6
             </div>
             <div className="flex-1">
-              <h3
-                className="text-lg font-semibold mb-2"
-                style={{ color: "var(--fg)" }}
-              >
+              <h3 className="display m-0 mb-2 text-aside">
                 Set the team number and deploy
               </h3>
-              <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+              <p>
                 Open <code>.wpilib/wpilib_preferences.json</code> and change{" "}
                 <code>&quot;teamNumber&quot;</code> from <code>5712</code> to
                 yours. Then deploy the way{" "}
@@ -357,7 +340,7 @@ export default function SwerveDriveProject() {
                 </Link>{" "}
                 showed.
               </p>
-              <p className="mt-2 text-[15px] leading-relaxed" style={bodyStyle}>
+              <p className="mt-2">
                 <strong>You should see:</strong> the driver station listing{" "}
                 <strong>Teleop</strong> as a mode you can select. Modules point
                 straight when you enable, and nothing spins on its own.
@@ -378,7 +361,7 @@ export default function SwerveDriveProject() {
         id="three-files-and-why-there-have"
         title="Three files, and why there have to be three"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Every other mechanism you have written was one class. The drivetrain
           is three, and the reason is a Java rule you met on{" "}
           <Link href="/java-basics" className={linkStyle}>
@@ -387,7 +370,7 @@ export default function SwerveDriveProject() {
           : a class can only <code>extend</code> one other class.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The generated drivetrain already extends CTRE&apos;s swerve class, so
           it cannot also extend <code>Mechanism</code>. The workshop code
           therefore keeps them apart: <code>CommandSwerveDrivetrain</code> owns
@@ -402,7 +385,7 @@ export default function SwerveDriveProject() {
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-[14px]">
+          <table className="w-full min-w-[560px] border-collapse text-note">
             <thead>
               <tr>
                 <th
@@ -425,7 +408,7 @@ export default function SwerveDriveProject() {
                 </th>
               </tr>
             </thead>
-            <tbody style={bodyStyle}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
@@ -493,7 +476,7 @@ export default function SwerveDriveProject() {
           </table>
         </div>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <code>DriveMechanism</code> is the one to read closely — it is the
           only one of the three you would ever add to. Its public surface is
           small: <code>applyRequest(...)</code> and{" "}
@@ -526,7 +509,7 @@ export default function SwerveDriveProject() {
         id="your-first-real-default-command"
         title="Your first real default command"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Back on{" "}
           <Link href="/chaining-commands" className={linkStyle}>
             Chaining Commands
@@ -538,7 +521,7 @@ export default function SwerveDriveProject() {
           in the whole workshop code that calls <code>setDefaultCommand</code>.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Here is the whole of <code>TeleopOpMode</code>&apos;s constructor on
           the swerve branch:
         </p>
@@ -566,7 +549,7 @@ export default function SwerveDriveProject() {
   }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Read the shape rather than the algebra. <code>applyRequest(...)</code>{" "}
           is an ordinary command factory — it builds a hold with{" "}
           <code>runRepeatedly</code>, exactly like <code>arm.runFast()</code>{" "}
@@ -583,17 +566,13 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
 }`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           So the default command is a hold that re-reads the sticks every loop
           and re-sends a fresh <code>FieldCentric</code> request. Let go of the
           sticks and it is still running — it is now asking for zero.
         </p>
 
-        <Box
-          variant="concept"
-          title="A real default command versus idle()"
-          icon={<Gamepad2 className="w-5 h-5" />}
-        >
+        <Box variant="concept" title="A real default command versus idle()">
           <p>
             Every mechanism already has a default command. You saw it on{" "}
             <Link href="/adding-commands" className={linkStyle}>
@@ -629,7 +608,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
           </ul>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           That is the property every later page leans on. When Drive to Point
           takes the drivetrain to run an automatic move, the driver gets control
           back the instant that command ends — not because anything cleaned up,
@@ -697,7 +676,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
           description="The full file: the speed limits, the FieldCentric request with its deadbands, and the two bindings above."
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Two details in that file worth noticing. <code>maxSpeed</code> is read
           straight out of <code>TunerConstants.kSpeedAt12Volts</code>, so full
           stick means the top speed the constants claim your robot has — which
@@ -713,7 +692,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         id="the-left-bumper-and-what-it"
         title="The left bumper, and what it does not do"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The other binding in that constructor is{" "}
           <code>driver.leftBumper().onTrue(drivetrain.seedFieldCentric())</code>
           . Press it and whatever way the robot is facing becomes the new
@@ -726,7 +705,6 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
           variant="alert-warning"
           tag="COMMON MIX-UP"
           title="Seeding the heading is not resetting the pose"
-          icon={<MapPin className="w-5 h-5" />}
         >
           <p>
             <code>seedFieldCentric()</code> changes a heading reference and
@@ -749,15 +727,12 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
 
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Robot on blocks for the first three checks, then on the floor with
           plenty of room. Keep a hand on the disable.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Select <strong>Teleop</strong> and enable, hands off the controller.{" "}
             <strong>You should see:</strong> all four wheels stationary and all
@@ -846,7 +821,6 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
       <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

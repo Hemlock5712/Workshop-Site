@@ -26,7 +26,7 @@ import type { SearchDoc } from "@/lib/searchSchema";
 import { useProgress } from "@/lib/useProgress";
 
 const microLabel = {
-  fontSize: 9.5,
+  fontSize: "var(--text-micro)",
   letterSpacing: "0.12em",
   textTransform: "uppercase",
 } as const;
@@ -120,7 +120,7 @@ export default function SearchPageContent() {
         <p
           style={{
             fontFamily: "var(--font-serif)",
-            fontSize: 17,
+            fontSize: "var(--text-aside)",
             color: "var(--tx2)",
           }}
         >
@@ -138,7 +138,7 @@ export default function SearchPageContent() {
         <p
           style={{
             fontFamily: "var(--font-serif)",
-            fontSize: 17,
+            fontSize: "var(--text-aside)",
             lineHeight: 1.55,
             color: "var(--tx2)",
           }}
@@ -154,14 +154,18 @@ export default function SearchPageContent() {
         <div>
           <p
             className="display mb-3"
-            style={{ fontSize: 26, lineHeight: 1.2, color: "var(--tx2)" }}
+            style={{
+              fontSize: "var(--text-title)",
+              lineHeight: 1.2,
+              color: "var(--tx2)",
+            }}
           >
             Nothing matches that
           </p>
           <p
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 17,
+              fontSize: "var(--text-aside)",
               lineHeight: 1.55,
               color: "var(--tx3)",
             }}
@@ -189,7 +193,7 @@ export default function SearchPageContent() {
                 <span
                   className="mono tabular w-[22px] shrink-0"
                   style={{
-                    fontSize: 10,
+                    fontSize: "var(--text-micro)",
                     letterSpacing: "0.08em",
                     color: group.lessonNum ? "var(--accent)" : "var(--tx3)",
                   }}
@@ -201,7 +205,7 @@ export default function SearchPageContent() {
                   className="min-w-0 flex-1 truncate hover:underline"
                   style={{
                     fontFamily: "var(--font-serif)",
-                    fontSize: 22,
+                    fontSize: "var(--text-lede)",
                     lineHeight: 1.2,
                     color: "var(--tx)",
                   }}
@@ -234,7 +238,7 @@ export default function SearchPageContent() {
                         className="mb-1 block group-hover:underline"
                         style={{
                           fontFamily: "var(--font-serif)",
-                          fontSize: 17,
+                          fontSize: "var(--text-aside)",
                           lineHeight: 1.3,
                           color: "var(--accent)",
                         }}
@@ -245,7 +249,7 @@ export default function SearchPageContent() {
                         className="block"
                         style={{
                           fontFamily: "var(--font-serif)",
-                          fontSize: 15,
+                          fontSize: "var(--text-ui)",
                           lineHeight: 1.55,
                           color: "var(--tx2)",
                         }}

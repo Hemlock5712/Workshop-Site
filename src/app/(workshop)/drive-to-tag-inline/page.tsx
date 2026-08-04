@@ -304,7 +304,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
         />
 
         <ul
-          className="ml-5 list-disc space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -397,7 +397,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
         </p>
 
         <ul
-          className="ml-5 list-disc space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-disc space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -828,7 +828,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -871,7 +871,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         </p>
 
         <ol
-          className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
+          className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--fg-mute)" }}
         >
           <li>
@@ -978,7 +978,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-[14px] leading-relaxed">
+          <table className="w-full text-left text-note leading-relaxed">
             <thead>
               <tr style={{ color: "var(--fg)" }}>
                 <th className="py-2 pr-4 font-semibold">Phase</th>
@@ -1073,7 +1073,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
 
         <CollapsibleSection title="Workshop-Code vs. 2027-Template — the differences">
           <ul
-            className="ml-5 list-disc space-y-3 text-[15px] leading-relaxed"
+            className="ml-5 list-disc space-y-3"
             style={{ color: "var(--fg-mute)" }}
           >
             <li>
@@ -1140,10 +1140,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
               template.
             </li>
           </ul>
-          <p
-            className="mt-4 text-[15px] leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
+          <p className="mt-4">
             For this page, the branch is what you are reading and the branch
             wins. When you take this to your own robot, the template&apos;s
             version is the better starting point.
@@ -1181,7 +1178,6 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

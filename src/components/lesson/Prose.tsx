@@ -29,10 +29,24 @@ export function Prose({
 /**
  * A stack of prose paragraphs sharing one measure — use when several
  * paragraphs run together with no margin note between them.
+ *
+ * This is the piece of the reading vocabulary the CSS default in `globals.css`
+ * cannot replace. A bare `<p>` inside `.lesson-body` now gets the treatment on
+ * its own, so wrapping one paragraph in `<Prose>` buys nothing there; what a
+ * paragraph cannot do by itself is space itself against its neighbour. The
+ * 22px gap and the shared measure are this component's whole reason to exist.
  */
-export function ProseBlock({ children }: { children: ReactNode }) {
+export function ProseBlock({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
-    <div className="measure flex flex-col gap-[22px] [&>p]:m-0 [&>p]:prose-body">
+    <div
+      className={`measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body ${className}`.trim()}
+    >
       {children}
     </div>
   );
@@ -64,7 +78,7 @@ export function MarginNote({
       <div
         className="mono mb-[7px]"
         style={{
-          fontSize: 9,
+          fontSize: "var(--text-micro)",
           letterSpacing: "0.14em",
           textTransform: "uppercase",
           color: "var(--accent)",
@@ -76,7 +90,7 @@ export function MarginNote({
         style={{
           fontFamily: "var(--font-serif)",
           fontStyle: "italic",
-          fontSize: 14.5,
+          fontSize: "var(--text-note)",
           lineHeight: 1.55,
           color: "var(--tx3)",
         }}
@@ -101,11 +115,11 @@ export function WatchOut({
   children: ReactNode;
 }) {
   return (
-    <div className="measure grid grid-cols-[72px_1fr] gap-6 sm:grid-cols-[96px_1fr]">
+    <div className="measure grid grid-cols-[72px_minmax(0,1fr)] gap-6 sm:grid-cols-[96px_minmax(0,1fr)]">
       <div
         className="mono pt-[5px] text-right"
         style={{
-          fontSize: 9.5,
+          fontSize: "var(--text-micro)",
           letterSpacing: "0.13em",
           textTransform: "uppercase",
           color: "var(--accent)",
@@ -120,7 +134,7 @@ export function WatchOut({
         style={{
           borderLeft: "1px solid var(--rule)",
           fontFamily: "var(--font-serif)",
-          fontSize: 17,
+          fontSize: "var(--text-aside)",
           lineHeight: 1.65,
           color: "var(--tx2)",
         }}

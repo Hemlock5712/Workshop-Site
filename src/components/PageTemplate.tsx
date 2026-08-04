@@ -100,19 +100,7 @@ export default function PageTemplate({
                 </>
               )}
             </h1>
-            {lede && (
-              <p
-                className="m-0"
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: 21,
-                  lineHeight: 1.6,
-                  color: "var(--tx2)",
-                }}
-              >
-                {lede}
-              </p>
-            )}
+            {lede && <p className="lesson-lede m-0">{lede}</p>}
           </div>
 
           {needs && needs.length > 0 && (
@@ -124,11 +112,9 @@ export default function PageTemplate({
                 You&rsquo;ll need
               </div>
               <ul
-                className="m-0 mt-3 flex list-none flex-col gap-[9px] p-0"
+                className="m-0 mt-3 flex list-none flex-col gap-tight p-0 text-note"
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: 14.5,
-                  lineHeight: 1.45,
                   color: "var(--tx3)",
                 }}
               >

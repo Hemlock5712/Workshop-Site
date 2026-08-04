@@ -1,4 +1,4 @@
-import { Mark } from "@/components/lesson/Prose";
+import { Mark, ProseBlock } from "@/components/lesson/Prose";
 
 interface KeyConceptSectionProps {
   /**
@@ -34,7 +34,11 @@ export default function KeyConceptSection({
   const lines = Array.isArray(description) ? description : [description];
 
   return (
-    <div className="measure mb-4 flex flex-col gap-[22px]">
+    // No bottom margin: as a `.lesson-stack` child the stack's gap owns the
+    // spacing and the margin was already being zeroed. It mattered once this
+    // started appearing inside a `<Split>`, where it is no longer a direct
+    // stack child and a live 16px would have broken the 52px rhythm.
+    <ProseBlock>
       {title && (
         <h2
           className="display m-0"
@@ -49,16 +53,14 @@ export default function KeyConceptSection({
       )}
 
       {lines.map((line, i) => (
-        <p key={i} className="prose-body m-0">
-          {line}
-        </p>
+        <p key={i}>{line}</p>
       ))}
 
-      <p className="prose-body m-0">
+      <p>
         <Mark>{concept}</Mark>
       </p>
 
       {children}
-    </div>
+    </ProseBlock>
   );
 }

@@ -6,16 +6,7 @@ import ContentCard from "@/components/ContentCard";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import GlossaryTerm from "@/components/GlossaryTerm";
-import {
-  AlertTriangle,
-  Palette,
-  Lightbulb,
-  Bot,
-  Target,
-  Wrench,
-  Smartphone,
-  Zap,
-} from "lucide-react";
+import { Target, Wrench, Smartphone, Zap } from "lucide-react";
 
 export default function Hardware() {
   return (
@@ -42,7 +33,6 @@ export default function Hardware() {
       {/* Beginner-Friendly Introduction */}
       <Box
         variant="alert-info"
-        icon={<Bot className="w-5 h-5" />}
         title="New to Robot Hardware? Start Here"
         className="mb-8"
       >
@@ -100,7 +90,7 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-3">
+            <h3 className="display m-0 mb-3 text-lede">
               <a
                 href="https://store.ctr-electronics.com/products/kraken-x44"
                 target="_blank"
@@ -149,7 +139,7 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-3">
+            <h3 className="display m-0 mb-3 text-lede">
               <a
                 href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
                 target="_blank"
@@ -203,7 +193,7 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
-            <h3 className="text-xl font-bold text-[var(--tx)] mb-3">
+            <h3 className="display m-0 mb-3 text-lede">
               <a
                 href="https://store.ctr-electronics.com/canivore/"
                 target="_blank"
@@ -257,13 +247,16 @@ export default function Hardware() {
         title="Why We Choose CTRE Hardware"
       >
         <div className="bg-[var(--bg2)] rounded-lg p-8 border border-[var(--rule)]">
-          <h3 className="text-xl font-semibold text-[var(--tx)] mb-4 flex items-center gap-2">
+          <h3 className="display m-0 mb-4 flex items-center gap-2 text-lede">
             <Target className="w-5 h-5" />
             CTRE&apos;s Unique Advantages
           </h3>
           <div className="grid md:grid-cols-4 gap-4">
             <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4 className="font-bold text-[var(--accent)] mb-2">
+              <h4
+                className="display m-0 mb-2 text-aside"
+                style={{ color: "var(--accent)" }}
+              >
                 Full <GlossaryTerm term="pid">PID</GlossaryTerm> Control
               </h4>
               <p className="text-sm text-[var(--tx2)]">
@@ -273,7 +266,7 @@ export default function Hardware() {
               </p>
             </div>
             <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4 className="font-bold text-[var(--foreground)] mb-2">
+              <h4 className="display m-0 mb-2 text-aside">
                 <GlossaryTerm term="feedforward">Feedforward (FF)</GlossaryTerm>
               </h4>
               <p className="text-sm text-[var(--tx2)]">
@@ -284,7 +277,10 @@ export default function Hardware() {
               </p>
             </div>
             <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4 className="font-bold text-[var(--ok)] mb-2">
+              <h4
+                className="display m-0 mb-2 text-aside"
+                style={{ color: "var(--ok)" }}
+              >
                 <GlossaryTerm term="motion magic">
                   Motion Profiling
                 </GlossaryTerm>
@@ -295,7 +291,10 @@ export default function Hardware() {
               </p>
             </div>
             <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4 className="font-bold text-[var(--accent)] mb-2">
+              <h4
+                className="display m-0 mb-2 text-aside"
+                style={{ color: "var(--accent)" }}
+              >
                 Rotations Units
               </h4>
               <p className="text-sm text-[var(--tx2)]">
@@ -307,7 +306,7 @@ export default function Hardware() {
 
           {/* Phoenix Software Resources - moved inside CTRE advantages */}
           <div className="mt-8">
-            <h4 className="text-xl font-semibold text-[var(--tx)] mb-4 flex items-center gap-2">
+            <h4 className="display m-0 mb-4 flex items-center gap-2 text-lede">
               <Wrench className="w-5 h-5" />
               Phoenix Software Resources
             </h4>
@@ -355,11 +354,7 @@ export default function Hardware() {
         id="connecting-to-your-device"
         title="Connecting to Your Device"
       >
-        <Box
-          variant="alert-warning"
-          title="Important Setup Steps"
-          icon={<AlertTriangle className="w-5 h-5" />}
-        >
+        <Box variant="alert-warning" title="Important Setup Steps">
           <ol className="list-decimal list-inside space-y-2">
             <li>Plug the computer into the CANivore</li>
             <li>
@@ -388,9 +383,7 @@ export default function Hardware() {
         title="Updating Your CTRE Products"
       >
         <ContentCard className="p-8">
-          <h3 className="text-xl font-semibold text-[var(--tx)] mb-4">
-            Using Phoenix Tuner
-          </h3>
+          <h3 className="display m-0 mb-4 text-lede">Using Phoenix Tuner</h3>
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
@@ -451,7 +444,7 @@ export default function Hardware() {
       >
         <div>
           <ContentCard className="mx-auto flex flex-col gap-4">
-            <h3 className="text-xl font-semibold text-[var(--tx)] flex items-center gap-2">
+            <h3 className="display m-0 flex items-center gap-2 text-lede">
               <Smartphone className="w-5 h-5" />
               How to Update Motors
             </h3>
@@ -471,11 +464,7 @@ export default function Hardware() {
           </ContentCard>
         </div>
 
-        <Box
-          variant="alert-info"
-          title="Card Colors"
-          icon={<Palette className="w-5 h-5" />}
-        >
+        <Box variant="alert-info" title="Card Colors">
           <p className="mb-3">
             The color of the device cards is a quick visual indicator of device
             state. The meaning of the card color is also shown as text
@@ -556,12 +545,7 @@ export default function Hardware() {
             </div>
           </div>
 
-          <Box
-            variant="alert-tip"
-            title="Tip"
-            icon={<Lightbulb className="w-5 h-5" />}
-            className="mt-4"
-          >
+          <Box variant="alert-tip" title="Tip" className="mt-4">
             Always update all motors to the same firmware version for
             consistency, and use batch update to save time when updating
             multiple devices.
@@ -586,15 +570,16 @@ export default function Hardware() {
 
       <LessonSection id="let-s-run-some-motors" title="Let's Run Some Motors">
         <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-[var(--accent)] mb-4">
+          <h3
+            className="display m-0 mb-4 text-aside"
+            style={{ color: "var(--accent)" }}
+          >
             Testing Motor Movement
           </h3>
 
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
-              <h4 className="font-semibold text-[var(--foreground)] mb-3">
-                Quick Test Steps:
-              </h4>
+              <h4 className="display m-0 mb-3 text-aside">Quick Test Steps:</h4>
               <ol className="list-decimal list-inside space-y-2 text-[var(--foreground)]">
                 <li>Open up your motor in Phoenix Tuner</li>
                 <li>
@@ -615,7 +600,7 @@ export default function Hardware() {
             </div>
 
             <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--border)]">
-              <h4 className="font-semibold text-[var(--tx)] mb-2 flex items-center gap-2">
+              <h4 className="display m-0 mb-2 flex items-center gap-2 text-aside">
                 <Zap className="w-4 h-4" />
                 Safety First
               </h4>
@@ -637,7 +622,6 @@ export default function Hardware() {
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

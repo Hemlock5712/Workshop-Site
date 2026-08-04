@@ -49,24 +49,21 @@ export default function LessonSection({
     >
       <div className="measure-wide mb-[26px] flex items-baseline gap-4">
         <span
-          className="mono sec-num tabular shrink-0"
+          className="mono sec-num tabular shrink-0 text-micro"
           style={{
-            fontSize: 10,
             letterSpacing: "0.14em",
             color: "var(--accent)",
           }}
           aria-hidden="true"
         />
-        <h2
-          className="display m-0"
-          style={{
-            fontSize: "clamp(27px, 3.4vw, 38px)",
-            lineHeight: 1.08,
-            letterSpacing: "-0.015em",
-          }}
-        >
-          {title}
-        </h2>
+        {/* `min-w-0` so the heading can shrink: it is a flex item, flex items
+            default to `min-width: auto`, and a title like "Step 2 — Add
+            LimelightHelpers.java" has a min-content width wider than a phone.
+            The `overflow-wrap: break-word` in globals.css is deliberately the
+            variant that does *not* shrink intrinsic size, so without this the
+            row stayed at min-content and pushed /vision-implementation 37px
+            past the viewport. */}
+        <h2 className="display-section m-0 min-w-0">{title}</h2>
         <span
           aria-hidden="true"
           className="h-px flex-1"

@@ -86,7 +86,7 @@ export default function AppRail() {
         <span
           className="mono"
           style={{
-            fontSize: 9,
+            fontSize: "var(--text-micro)",
             letterSpacing: "0.16em",
             color: "var(--tx3)",
             writingMode: "vertical-rl",
@@ -110,7 +110,11 @@ export default function AppRail() {
         </div>
         <span
           className="mono tabular"
-          style={{ fontSize: 10, letterSpacing: "0.06em", color: "var(--tx2)" }}
+          style={{
+            fontSize: "var(--text-micro)",
+            letterSpacing: "0.06em",
+            color: "var(--tx2)",
+          }}
         >
           {String(pct).padStart(2, "0")}
         </span>

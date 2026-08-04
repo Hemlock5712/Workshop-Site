@@ -6,9 +6,7 @@ import ImageBlock from "@/components/ImageBlock";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import Link from "next/link";
-import { Book, Compass, MapPin } from "lucide-react";
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
+import { Book } from "lucide-react";
 
 const linkClass = "underline hover:no-underline font-medium";
 
@@ -54,14 +52,14 @@ export default function SwervePrerequisites() {
         id="what-makes-a-drive-quot-swerve"
         title='What makes a drive "swerve"'
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           On most drivetrains the wheels are bolted facing one direction. To go
           sideways you first have to turn the whole robot. A swerve drive puts a
           module at each of the four corners, and each module has{" "}
           <strong>two motors</strong>: one spins the wheel, the other points it.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Because every wheel can point wherever it likes, the robot can travel
           in any direction while facing any direction, and the two are
           independent. It can drive straight down the field while slowly
@@ -86,7 +84,7 @@ export default function SwervePrerequisites() {
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The parts are the same family you met on{" "}
           <Link href="/hardware" className={linkClass}>
             Hardware Setup
@@ -102,7 +100,7 @@ export default function SwervePrerequisites() {
 
       {/* ── 2. FIELD-CENTRIC VS ROBOT-CENTRIC ────────────────────────── */}
       <LessonSection id="which-way-is-forward" title="Which way is forward?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           You push the left stick away from you. Which way does the robot go?
           There are two answers, and a swerve robot has to be told which one you
           meant.
@@ -136,7 +134,7 @@ export default function SwervePrerequisites() {
           </Box>
         </div>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The workshop code only ever drives field-centric. The teleop OpMode
           you get on the next page builds one{" "}
           <code>SwerveRequest.FieldCentric</code> and hands it to the
@@ -148,7 +146,6 @@ export default function SwervePrerequisites() {
           variant="alert-warning"
           tag="WATCH OUT · ALLIANCE"
           title="The driver's forward flips with alliance color. The field frame does not."
-          icon={<Compass className="w-5 h-5" />}
         >
           <p>
             Two drivers stand at opposite ends of the field, and both of them
@@ -187,7 +184,7 @@ export default function SwervePrerequisites() {
         }
         outlineLabel="Where am I? Pose2d"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           A <code>Pose2d</code> is three numbers in one package. It answers{" "}
           <em>where on the field</em> and <em>which way around</em> at the same
           time. The robot&apos;s current position is a <code>Pose2d</code>. So
@@ -202,10 +199,7 @@ export default function SwervePrerequisites() {
           caption="X runs down the length of the field, Y runs across it. The origin is the blue alliance corner, for both alliances."
         />
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>X</strong> — meters down the length of the field, increasing
             away from the blue driver station.
@@ -223,7 +217,7 @@ export default function SwervePrerequisites() {
           </li>
         </ul>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           They travel together for a reason. A position with no heading does not
           say which way the robot is pointing when it arrives, and a heading
           with no position does not say where it is.
@@ -233,7 +227,6 @@ export default function SwervePrerequisites() {
           variant="alert-warning"
           tag="WATCH OUT · ORIGIN"
           title="(0, 0) is the blue corner, even when you are on red"
-          icon={<MapPin className="w-5 h-5" />}
         >
           <p>
             The <code>getPose()</code> method in <code>DriveMechanism</code>{" "}
@@ -265,7 +258,7 @@ export default function SwervePrerequisites() {
         id="odometry-and-why-it-goes-wrong"
         title="Odometry, and why it goes wrong"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           <strong>Odometry</strong> is how the robot keeps a running answer to
           &quot;where am I.&quot; Every loop the drivetrain reads how far each
           wheel turned and which way that wheel was pointing, works out how far
@@ -274,15 +267,12 @@ export default function SwervePrerequisites() {
           <code>drivetrain.getPose()</code>.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           It starts out excellent and gets worse all match, because it is
           addition and it never subtracts. Three things it cannot see:
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Slip.</strong> A wheel spinning on carpet without moving the
             robot still reports distance. Odometry counts it as travel.
@@ -301,7 +291,7 @@ export default function SwervePrerequisites() {
           </li>
         </ul>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Nothing in odometry ever looks at the field, so there is no moment
           where it notices it is wrong. That is what &quot;drift&quot; means
           here: not noise, but an error that only accumulates.
@@ -343,10 +333,7 @@ export default function SwervePrerequisites() {
         id="where-each-idea-shows-up"
         title="Where each idea shows up"
       >
-        <ul
-          className="ml-5 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Field-centric driving</strong> — the next page. The teleop
             default command is a field-centric request wired straight to the
@@ -371,7 +358,7 @@ export default function SwervePrerequisites() {
           </li>
         </ul>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Next you open Phoenix Tuner X, point it at the four modules, and let
           it generate the drivetrain.
         </p>
@@ -384,7 +371,6 @@ export default function SwervePrerequisites() {
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,

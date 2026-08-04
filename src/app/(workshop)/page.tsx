@@ -65,7 +65,7 @@ export default function Home() {
           />
           <div style={{ lineHeight: 1.25 }}>
             <div
-              className="text-[15px] font-semibold"
+              className="text-ui font-semibold"
               style={{ letterSpacing: "-0.005em", color: "var(--tx)" }}
             >
               Gray Matter Coding Workshop
@@ -73,7 +73,7 @@ export default function Home() {
             <div
               className="mono mt-[3px]"
               style={{
-                fontSize: 10,
+                fontSize: "var(--text-micro)",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase",
                 color: "var(--accent)",
@@ -112,7 +112,7 @@ export default function Home() {
           className="mt-[52px] max-w-[640px]"
           style={{
             fontFamily: "var(--font-serif)",
-            fontSize: 20,
+            fontSize: "var(--text-lede)",
             lineHeight: 1.62,
             color: "var(--tx2)",
           }}
@@ -141,7 +141,7 @@ export default function Home() {
             href="#syllabus"
             className="mono whitespace-nowrap pb-[3px] transition-colors hover:text-[var(--accent)]"
             style={{
-              fontSize: 11,
+              fontSize: "var(--text-meta)",
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               color: "var(--tx2)",
@@ -182,7 +182,7 @@ export default function Home() {
             className="m-0 max-w-[400px]"
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 16.5,
+              fontSize: "var(--text-aside)",
               lineHeight: 1.6,
               color: "var(--tx3)",
             }}
@@ -201,7 +201,7 @@ export default function Home() {
             <div
               className="mono pt-1.5"
               style={{
-                fontSize: 11,
+                fontSize: "var(--text-meta)",
                 letterSpacing: "0.12em",
                 color: "var(--accent)",
               }}
@@ -218,7 +218,7 @@ export default function Home() {
               <div
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: 15.5,
+                  fontSize: "var(--text-ui)",
                   lineHeight: 1.55,
                   color: "var(--tx3)",
                 }}
@@ -231,7 +231,7 @@ export default function Home() {
                 <Link
                   key={lesson.slug}
                   href={lesson.slug}
-                  className="whitespace-nowrap rounded-full px-3 py-[5px] text-[12.5px] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  className="whitespace-nowrap rounded-full px-3 py-[5px] text-meta transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
                   style={{
                     border: "1px solid var(--rule)",
                     color: "var(--tx3)",
@@ -247,7 +247,7 @@ export default function Home() {
         <p
           className="mono pt-5"
           style={{
-            fontSize: 10,
+            fontSize: "var(--text-micro)",
             letterSpacing: "0.14em",
             textTransform: "uppercase",
             color: "var(--tx3)",
@@ -304,7 +304,7 @@ export default function Home() {
           <div
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 16,
+              fontSize: "var(--text-aside)",
               lineHeight: 1.7,
               color: "var(--tx2)",
             }}
@@ -321,7 +321,7 @@ export default function Home() {
           <div
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 16,
+              fontSize: "var(--text-aside)",
               lineHeight: 1.7,
               color: "var(--tx2)",
             }}
@@ -336,7 +336,7 @@ export default function Home() {
           <div
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: 16,
+              fontSize: "var(--text-aside)",
               lineHeight: 1.7,
               color: "var(--tx3)",
             }}

@@ -5,16 +5,6 @@ import Box from "@/components/Box";
 import Link from "next/link";
 import { getLessonsBySection, type LessonSectionId } from "@/data/lessons";
 
-const headingStyle = {
-  fontFamily: "var(--font-serif)",
-  color: "var(--fg)",
-  letterSpacing: "-0.01em",
-} as const;
-
-const bodyStyle = {
-  color: "var(--fg-mute)",
-} as const;
-
 /**
  * The roadmap below is generated from `src/data/lessons.ts`, the same list
  * the sidebar reads. It used to be two hand-typed link columns and it had
@@ -116,7 +106,7 @@ export default function Introduction() {
         id="the-hardware-is-the-course"
         title="The hardware is the course"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Read this before you start, not at lesson thirteen. This workshop has
           no software-only path. Later pages talk about running your code in
           &quot;hardware simulation,&quot; and that phrase misleads people: your
@@ -146,16 +136,13 @@ export default function Introduction() {
         id="what-you-are-learning-exactly"
         title="What you are learning, exactly"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Which version of FRC&apos;s libraries you are learning decides whether
           outside help is any use to you. FRC programming changed shape for
           2027, and this site teaches the new shape:
         </p>
 
-        <ul
-          className="ml-4 list-disc space-y-2 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-4 list-disc space-y-2">
           <li>
             <strong>WPILib 2027 alpha</strong>, with{" "}
             <strong>Commands v3</strong> and <strong>OpModes</strong>.
@@ -176,7 +163,7 @@ export default function Introduction() {
           </li>
         </ul>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Almost every FRC tutorial you find by searching was written for
           Commands v2. Those pages open a file called{" "}
           <code>RobotContainer</code>, import <code>edu.wpi.first</code>{" "}
@@ -204,7 +191,7 @@ export default function Introduction() {
 
       {/* ── the road ─────────────────────────────────────────────────── */}
       <LessonSection id="the-road-ahead" title="The road ahead">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           The same list lives in the sidebar, and the arrows at the bottom of
           every page walk it in order. Lessons marked <em>optional</em> are side
           trips — skip one and the next lesson still works.
@@ -214,16 +201,13 @@ export default function Introduction() {
           {ROADMAP.map((section) => {
             const lessons = getLessonsBySection(section.id);
             return (
-              <div key={section.id} className="module" style={{ padding: 24 }}>
-                <h3
-                  className="mb-2 text-xl font-semibold leading-tight"
-                  style={headingStyle}
-                >
+              <div key={section.id} className="module p-pad">
+                <h3 className="display m-0 mb-2 text-lede">
                   {section.heading}
                 </h3>
                 <p
-                  className="mb-4 text-[14px] leading-relaxed"
-                  style={bodyStyle}
+                  className="mb-4 max-w-[70ch] text-note"
+                  style={{ color: "var(--tx2)" }}
                 >
                   {section.blurb}
                 </p>
@@ -235,26 +219,24 @@ export default function Introduction() {
                         className="flex items-baseline gap-3 rounded-md border border-[var(--line-soft)] bg-[var(--bg)] p-3 transition-colors hover:border-[var(--accent)]"
                       >
                         <span
-                          className="mono shrink-0"
+                          className="mono shrink-0 text-micro"
                           style={{
                             color: "var(--accent)",
-                            fontSize: 10.5,
                             letterSpacing: "0.08em",
                           }}
                         >
                           {String(i + 1).padStart(2, "0")}
                         </span>
                         <span
-                          className="text-[14px] font-medium"
-                          style={{ color: "var(--fg)" }}
+                          className="text-note font-medium"
+                          style={{ color: "var(--tx)" }}
                         >
                           {lesson.title}
                           {lesson.optional && (
                             <span
-                              className="mono ml-2"
+                              className="mono ml-2 text-micro"
                               style={{
-                                color: "var(--fg-mute)",
-                                fontSize: 10,
+                                color: "var(--tx2)",
                                 letterSpacing: "0.08em",
                                 textTransform: "uppercase",
                               }}
@@ -293,14 +275,14 @@ export default function Introduction() {
         id="who-this-is-for-and-who"
         title="Who this is for, and who made it"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           This is written for FRC students, most of them in middle or high
           school, who have never programmed anything. It is also written for the
           mentor or lead programmer sitting next to them, which is why the pages
           say what the code does rather than only what to type.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Team 5712, Hemlock&apos;s Gray Matter, built this site with help from
           its friends. Two goals shaped it. The first is that you learn the
           patterns good FRC teams already use, instead of inventing your own and
@@ -310,7 +292,7 @@ export default function Introduction() {
           tested.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Start with{" "}
           <Link href="/prerequisites" className="underline font-medium">
             Prerequisites

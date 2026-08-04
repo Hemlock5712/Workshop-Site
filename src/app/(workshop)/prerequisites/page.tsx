@@ -55,7 +55,7 @@ export default function Prerequisites() {
 
           <div className="space-y-6">
             <div className="border-l-4 border-[var(--accent)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <a
                   href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html"
                   className="text-[var(--accent)] underline hover:no-underline"
@@ -83,7 +83,7 @@ export default function Prerequisites() {
             </div>
 
             <div className="border-l-4 border-[var(--accent)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <a
                   href="https://apps.microsoft.com/detail/9NVV4PWDW27Z"
                   className="text-[var(--accent)] underline hover:no-underline"
@@ -101,7 +101,7 @@ export default function Prerequisites() {
             </div>
 
             <div className="border-l-4 border-[var(--accent)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <a
                   href="https://github.com/Mechanical-Advantage/AdvantageScope/releases"
                   className="text-[var(--accent)] underline hover:no-underline"
@@ -120,7 +120,7 @@ export default function Prerequisites() {
             </div>
 
             <div className="border-l-4 border-[var(--ok)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <a
                   href="https://git-scm.com/downloads"
                   className="text-[var(--ok)] underline hover:no-underline"
@@ -137,7 +137,7 @@ export default function Prerequisites() {
             </div>
 
             <div className="border-l-4 border-[var(--accent)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <a
                   href="https://github.com/Hemlock5712/2027-Template"
                   className="text-[var(--accent)] underline hover:no-underline"
@@ -164,7 +164,7 @@ export default function Prerequisites() {
             </div>
 
             <div className="border-l-4 border-[var(--err)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <a
                   href="https://github.com/Gold872/elastic-dashboard"
                   className="text-[var(--err)] underline hover:no-underline"
@@ -205,7 +205,7 @@ export default function Prerequisites() {
             </div>
 
             <div className="border-l-4 border-[var(--accent)] pl-4">
-              <h3 className="text-lg font-semibold text-[var(--tx)]">
+              <h3 className="display m-0 text-aside">
                 <Link
                   href="/java-basics"
                   className="text-[var(--accent)] underline hover:no-underline"
@@ -285,7 +285,7 @@ export default function Prerequisites() {
             </p>
           </Box>
 
-          <h3 className="text-lg font-semibold text-[var(--tx)] mt-6">
+          <h3 className="display m-0 mt-6 text-aside">
             The minimum to follow Workshop #1
           </h3>
           <ul className="ml-4 mt-3 list-disc space-y-3 text-[var(--tx2)]">
@@ -345,7 +345,10 @@ export default function Prerequisites() {
       </div>
 
       <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-6 mb-8">
-        <h3 className="text-lg font-semibold text-[var(--accent)] mb-2">
+        <h3
+          className="display m-0 mb-2 text-aside"
+          style={{ color: "var(--accent)" }}
+        >
           Ready to Start?
         </h3>
         <p className="text-[var(--accent)]">

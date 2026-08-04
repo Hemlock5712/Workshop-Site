@@ -8,13 +8,6 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { BookOpen } from "lucide-react";
 
-const subHeadingStyle = {
-  fontFamily: "var(--font-serif)",
-  color: "var(--fg)",
-} as const;
-
-const bodyStyle = { color: "var(--fg-mute)" } as const;
-
 export default function MechanismSetup() {
   return (
     <PageTemplate
@@ -68,7 +61,7 @@ export default function MechanismSetup() {
         id="the-canivore-usb-toggle-one-switch"
         title="The CANivore USB toggle: one switch, two positions"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           There is a checkbox in Phoenix Tuner X called{" "}
           <strong>CANivore USB</strong>. It decides who is allowed to talk to
           the CAN bus over the USB cable. Only one program can hold that bus at
@@ -121,7 +114,7 @@ export default function MechanismSetup() {
           </p>
         </Box>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           The toggle comes up on two other pages:{" "}
           <strong>Hardware Setup</strong>, where you first connected, and{" "}
           <strong>Running Your Code</strong>, where the simulator takes the bus
@@ -132,7 +125,7 @@ export default function MechanismSetup() {
 
       {/* ── DEVICE IDS ───────────────────────────────────────────────── */}
       <LessonSection id="which-device-is-which" title="Which device is which">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Tuner X lists devices by CAN ID, so you need to know which number is
           which before you start applying voltage. These are the IDs the
           workshop code expects, and every one of them lives on the bus named{" "}
@@ -140,7 +133,7 @@ export default function MechanismSetup() {
         </p>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-[14px]">
+          <table className="w-full text-left text-note">
             <thead>
               <tr style={{ borderBottom: "1px solid var(--line)" }}>
                 <th className="py-2 pr-4 font-semibold">Device</th>
@@ -148,7 +141,7 @@ export default function MechanismSetup() {
                 <th className="py-2 font-semibold">In the code</th>
               </tr>
             </thead>
-            <tbody style={bodyStyle}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
                 <td className="py-2 pr-4">Arm motor (TalonFX)</td>
                 <td className="py-2 pr-4">
@@ -189,7 +182,7 @@ export default function MechanismSetup() {
           </table>
         </div>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           If your device IDs do not match this table, either change them in
           Tuner X now or remember to change the numbers in the code later. Do
           not leave the two disagreeing.
@@ -201,7 +194,7 @@ export default function MechanismSetup() {
         id="what-quot-positive-quot-means-on"
         title='What "positive" means on this robot'
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Every direction check on this page rests on one convention:{" "}
           <strong>positive is counterclockwise</strong>, viewed with the device
           facing you. The code says so out loud. Both mechanisms configure their
@@ -215,7 +208,7 @@ export default function MechanismSetup() {
           code={`config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           You are not writing any code today, and you do not need to read Java
           to use this page — that comes later, at{" "}
           <strong>The Java You Need</strong>. The line is here for one reason:
@@ -229,16 +222,13 @@ export default function MechanismSetup() {
           mounted backwards, and you want to know now.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Positions are measured in <strong>rotations</strong>, not degrees. One
           full turn is <code>1.0</code>. That makes the mapping short enough to
           memorize:
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-1 text-[15px] leading-relaxed"
-          style={bodyStyle}
-        >
+        <ul className="ml-5 list-disc space-y-1">
           <li>
             <code>0.0</code> rotations = 0°
           </li>
@@ -255,7 +245,7 @@ export default function MechanismSetup() {
           </li>
         </ul>
 
-        <p className="text-[14px] leading-relaxed" style={bodyStyle}>
+        <p>
           Those two constants appear in <code>Arm.java</code> from the PID
           branch onward, and they are what the arm aims at once you reach{" "}
           <strong>PID Control</strong>. The two lessons before that push the arm
@@ -287,7 +277,7 @@ export default function MechanismSetup() {
         id="arm-build-three-checks"
         title="Arm build: three checks"
       >
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Do these in order. The encoder comes first because step 3 uses the
           encoder to judge the motor, so an encoder that counts backwards would
           make a correct motor look wrong.
@@ -301,14 +291,9 @@ export default function MechanismSetup() {
 
         {/* Step 1 */}
         <div className="flex flex-col gap-4">
-          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
-            Step 1 — Encoder direction
-          </h3>
+          <h3 className="display m-0 text-lede">Step 1 — Encoder direction</h3>
 
-          <ol
-            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-3">
             <li>
               In Tuner X, select CANcoder <code>32</code> and open its live
               position reading.
@@ -335,21 +320,16 @@ export default function MechanismSetup() {
 
         {/* Step 2 */}
         <div className="flex flex-col gap-4">
-          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
-            Step 2 — Zero the encoder
-          </h3>
+          <h3 className="display m-0 text-lede">Step 2 — Zero the encoder</h3>
 
-          <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+          <p>
             Zeroing tells the CANcoder which physical spot counts as{" "}
             <code>0.0</code> rotations. Every target the code ever aims at is
             measured from that spot, so a zero in the wrong place shifts every
             target by the same amount.
           </p>
 
-          <ol
-            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-3">
             <li>
               Move the arm by hand to the zero position for your build — read
               the warning below before you decide where that is.
@@ -424,14 +404,9 @@ export default function MechanismSetup() {
 
         {/* Step 3 */}
         <div className="flex flex-col gap-4">
-          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
-            Step 3 — Motor direction
-          </h3>
+          <h3 className="display m-0 text-lede">Step 3 — Motor direction</h3>
 
-          <ol
-            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-3">
             <li>
               In Tuner X, select TalonFX <code>31</code> and set the control
               drop-down to <em>Voltage Out</em>. Keep the CANcoder position
@@ -515,7 +490,7 @@ export default function MechanismSetup() {
           </p>
         </Box>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Here is the code that decides it, straight out of{" "}
           <code>Flywheel.java</code>. Later branches add gains and speed limits
           around it, but the <code>Follower</code> line and the comment above it
@@ -530,7 +505,7 @@ export default function MechanismSetup() {
 follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));`}
         />
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Again, nothing to write today — you build this file at{" "}
           <strong>Mechanisms</strong>. What matters on the bench is the word{" "}
           <code>Opposed</code>, and the comment sitting above it in the real
@@ -583,14 +558,11 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
         </div>
 
         <div className="flex flex-col gap-4">
-          <h3 className="text-xl font-semibold" style={subHeadingStyle}>
+          <h3 className="display m-0 text-lede">
             Step 1 — Check each motor by itself
           </h3>
 
-          <ol
-            className="ml-5 list-decimal space-y-3 text-[15px] leading-relaxed"
-            style={bodyStyle}
-          >
+          <ol className="ml-5 list-decimal space-y-3">
             <li>
               Decide which end of the shooter is the <strong>exit</strong> — the
               open side the ball leaves from. Everything below is measured
@@ -669,7 +641,7 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
 
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Did it work?">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Run down the list for the build in front of you. Every line is
           something you can see happen, not something you can assume.
         </p>
@@ -750,7 +722,7 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
 
       {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
       <LessonSection id="what-you-carry-forward" title="What you carry forward">
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Three things from this page get used later, so keep them somewhere you
           can find them: your <strong>device IDs</strong>, the{" "}
           <strong>bus name</strong> (<code>canivore</code>), and{" "}
@@ -760,7 +732,7 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
           gain on <strong>PID Control</strong> mean anything.
         </p>
 
-        <p className="text-[15px] leading-relaxed" style={bodyStyle}>
+        <p>
           Next page is <strong>Project Setup</strong>, where you clone the robot
           project and build it once. No hardware needed for that one — but leave
           the mechanism wired, because you come back to it in a few lessons.
@@ -774,7 +746,6 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
       </LessonSection>
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,
