@@ -36,6 +36,107 @@
   --shadow-2xl: 0 12px 32px -14px oklch(0 0 0 / 0.3);
 }
 
+/* `static` matters here, and it is not decoration. Tailwind only emits a
+   theme variable it can see used, and what it can see is class names in
+   the source. This codebase's dominant idiom is the inline style object —
+   `style={{ color: "var(--tx2)" }}`, several hundred times — and a token
+   referenced that way is invisible to the scanner. Compiled without
+   `static`, thirteen of the sixteen rungs below vanished from `:root`;
+   `font-size: var(--text-ui)` in a style object would then resolve to
+   nothing at all and silently render at the inherited size. `static`
+   emits the whole vocabulary whether or not anything has adopted it yet,
+   which is also what makes the scale legible in devtools.
+
+   The block above stays lazy on purpose: `--radius-*` and `--shadow-*`
+   redefine names Tailwind already ships, so they are reached through
+   `rounded-lg` / `shadow-sm` and the scanner sees them fine. */
+@theme static {
+  /* ── Type ─────────────────────────────────────────────────────────
+     Four steps were ever named (`.display`, `.prose-body`,
+     `.prose-body-sm`, `.micro`). The pages were setting twenty-seven
+     sizes across 133 inline `fontSize`s and 403 `text-[Npx]` utilities,
+     and eight of those sizes existed only as the half-pixel twin of
+     another — 9/9.5, 10/10.5, 11/11.5, 12/12.5, 14/14.5, 15/15.5,
+     16/16.5, 17/17.5. Half a pixel is nothing anyone decided; it is
+     what you get when every call site picks its own number fresh. The
+     visible cost is /pid-control, which renders body copy in eleven
+     treatments — three of its seventy-seven paragraphs at the size the
+     lesson is meant to be read at.
+
+     These eight rungs are that census, frequency-weighted: every value
+     in use collapses into its nearest rung and no rung is invented. The
+     count after each is how many call sites it answers for.
+
+     Rungs sit ~1.16x apart. That is the narrowest gap that still reads
+     as a different size — closer together is exactly how a site ends up
+     with 14px and 15px both meaning "small".
+
+     New names on purpose. `--text-sm` / `--text-base` / `--text-lg` /
+     `--text-xl` are Tailwind's own and ~360 call sites already consume
+     them, so these sit beside that scale rather than redefining it. */
+  --text-micro: 9.5px; /* 9 · 9.5 · 10 · 10.5 — mono caps label · 64 */
+  --text-micro--line-height: 1.5;
+  --text-meta: 11px; /* 11 · 11.5 · 12 · 12.5 — the label above it · 38 */
+  --text-meta--line-height: 1.5;
+  --text-note: 13px; /* 13 · 14 · 14.5 — captions, small controls · 51 */
+  --text-note--line-height: 1.55;
+  --text-ui: 15px; /* 15 · 15.5 — default interface text · 328 */
+  --text-ui--line-height: 1.6;
+  --text-aside: 17px; /* 16 · 16.5 · 17 · 17.5 — Box and list body · 24 */
+  --text-aside--line-height: 1.6;
+  --text-body: clamp(16px, 12.9px + 0.79vw, 19px); /* reading size · 19 */
+  --text-body--line-height: 1.72;
+  --text-lede: clamp(17px, 12.9px + 1.05vw, 21px); /* 20 · 21 · 22 · 6 */
+  --text-lede--line-height: 1.6;
+  --text-title: 25px; /* 23 · 25 · 26 · 27 — section title · 21 */
+  --text-title--line-height: 1.15;
+
+  /* Two rungs clamp because they are the two a student reads in
+     sentences, and a flat size has no lower bound: 19px in the 272px
+     column a 390px phone leaves is ~32 characters a line, four words.
+     Both reach their full size by ~772px and are flat from there, so
+     every viewport a desk gets is unchanged. Titles stay flat — they
+     run three to eight words, so line length was never their problem.
+
+     The display ramp is deliberately absent. Home and the lesson H1s
+     size themselves with `clamp()` at the call site, against the
+     viewport rather than against a rung, which is right for type that
+     big; the lone `fontSize: 29` and `fontSize: 7.5` belong to that
+     world too and are left as the one-offs they are. */
+
+  /* ── Spacing ──────────────────────────────────────────────────────
+     48 distinct arbitrary px spacing utilities, which is not a scale
+     either. These eight are only the values that actually recur —
+     named so step 4 has something to sweep onto, not to be complete. A
+     lone `px-[76px]` on the home page is a layout constant and stays
+     one; so do the 70px rail and the 88/120px page end-caps.
+
+     `stack` is the exception that proves the rest are worth naming:
+     the 52px `.lesson-stack` gap is already enforced in one place
+     (PageTemplate) and measures identically on every lesson page. It
+     gets a name here and keeps its value — and it turns out to be
+     exactly two `step`s, which is why the pages read as regular even
+     where nothing enforced them.
+
+     Name these carefully. Every `--spacing-*` key becomes a value in
+     *every* spacing-driven utility family at once, and one of those
+     families is `inline-*` (inline-size). Naming the 26px rung `block`
+     therefore minted `inline-block` as a width utility, which emitted a
+     second `.inline-block { inline-size: 26px }` after the display rule
+     of the same name and silently resized every element on the site
+     carrying the commonest display utility in Tailwind. It is `step`
+     for that reason. Before adding a rung, check that no existing
+     utility ends with the name you picked. */
+  --spacing-chip: 5px; /* inside a pill or chip · 9 */
+  --spacing-tight: 7px; /* the tightest real gap · 9 */
+  --spacing-control: 13px; /* button and row height · 11 · 13 · 15 · 10 */
+  --spacing-flow: 18px; /* the site's commonest gap · 16 */
+  --spacing-pad: 22px; /* panel inset · 12 */
+  --spacing-step: 26px; /* between blocks in a section · 12 */
+  --spacing-panel: 34px; /* a panel's generous inset · 9 */
+  --spacing-stack: 52px; /* two steps — the lesson rhythm, enforced · 3 */
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Design tokens
 
@@ -214,6 +315,33 @@ h3,
   border-radius: 3px;
 }
 
+/* Skip link — the first focusable thing in the shell.
+   Parked just above the viewport rather than clipped to a pixel, so it is
+   genuinely off-screen but still focusable and still measurable. It lands on
+   `<main>`, which carries `tabindex="-1"` because it is also the scroll
+   container: focus there is what makes the arrow keys work. Sits above the
+   rail (z-40) since it appears over it. */
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  transform: translateY(calc(-100% - 14px));
+  padding: 9px 15px;
+  border-radius: 3px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 0.14s ease-out;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Motion — every animation in the design is opt-out
    ───────────────────────────────────────────────────────────────── */
@@ -263,10 +391,11 @@ h3,
 
 /* The design's standard micro-label: mono, ~9.5px, wide tracking, caps.
    It marks a thing as an instrument reading rather than something to
-   read as a sentence. */
+   read as a sentence. The size is the scale's bottom rung, which was
+   derived from this class — same 9.5px, now said once. */
 .micro {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--text-micro);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--tx3);
@@ -321,6 +450,40 @@ h3,
   letter-spacing: 0.1em;
 }
 
+/* Quiz options are native radios wearing a label. The input is hidden but
+   focusable — hiding it with `display: none` would take the arrow-key and
+   roving-tabindex behaviour we went to the inputs for in the first place — so
+   the focus ring has to be drawn on the label instead. */
+.quiz-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.quiz-option {
+  position: relative;
+
+  /* Same reasoning as the `overflow-wrap` rules under Lesson typography, and
+     the same bug: a quiz option is often a bare identifier, and
+     `DriveRequestType.OpenLoopVoltage` is one 31-character word ~260px wide in
+     the 226px column a 390px phone leaves. It pushed /swerve-calibration 27px
+     past the viewport. Those rules reach `p` / `li` / `td` and `.lesson-prose`;
+     an option's text is a `<span>` inside a `<label>`, so it needs saying
+     here. */
+  overflow-wrap: anywhere;
+}
+
+.quiz-option:has(.quiz-radio:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Lesson typography
 
@@ -348,19 +511,123 @@ h3,
 }
 
 /* Body copy. Lesson prose, margin notes, table cells — anything a
-   student reads as sentences rather than scans as a label. */
+   student reads as sentences rather than scans as a label.
+
+   `--text-body` clamps rather than sitting flat at 19px. `--measure`
+   caps how wide this column can get but nothing caps how narrow: at
+   390px the rail and the page padding leave 272px, and 19px Newsreader
+   in 272px is ~32 characters a line — four words, a hyphenation ladder
+   down the phone. The clamp reaches 19px by ~772px, so every desktop
+   viewport renders exactly what it rendered before. */
 .prose-body {
   font-family: var(--font-serif);
-  font-size: 19px;
+  font-size: var(--text-body);
   line-height: 1.72;
   color: var(--tx);
 }
 
+/* Half a pixel off the `--text-aside` rung (16.5 vs 17) and left that way
+   on purpose — moving it is a rendering change, so it belongs to the sweep
+   that moves every other call site, not to the step that names the rungs. */
 .prose-body-sm {
   font-family: var(--font-serif);
   font-size: 16.5px;
   line-height: 1.6;
   color: var(--tx2);
+}
+
+/* A section heading — the `<h2>` that opens a numbered lesson step. The same
+   `clamp(27px, 3.4vw, 38px)` was written inline in three places
+   (`LessonSection`, `Quiz`, `MechanismTabs`), which is how MechanismTabs came
+   to render its own heading in Instrument Sans 700 instead: nothing named the
+   treatment, so each call site re-guessed it. Sized against the viewport
+   rather than against a rung, like the other display type — see the note on
+   the display ramp in the `@theme` block. */
+.display-section {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(27px, 3.4vw, 38px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--tx);
+}
+
+/* The lesson's lede — the paragraph directly under the H1. One step above
+   body copy, secondary colour, and it clamps for the same reason `--text-body`
+   does: it is read as a sentence, so it needs a floor on a phone. */
+.lesson-lede {
+  max-width: var(--measure);
+  font-family: var(--font-serif);
+  font-size: var(--text-lede);
+  line-height: 1.6;
+  color: var(--tx2);
+}
+
+/* ── The reading treatment, as the default ─────────────────────────
+   A paragraph in a lesson gets Newsreader at `--text-body` inside
+   `--measure` without having to say so.
+
+   Before this rule the pages said it themselves and got it wrong: the
+   dominant idiom was `text-[15px] leading-relaxed` plus a per-page
+   `bodyStyle` const, 321 call sites, which renders Instrument Sans
+   15px across the full 954px of `.measure-wide`. That is ~143
+   characters a line on /pid-control against ~88 for the same sentence
+   inside the measure. Body copy — the one thing on the page a student
+   actually reads — was the one thing nobody had styled.
+
+   `@layer base`, not unlayered, and that is the whole design of it.
+   Tailwind's utilities live in a later layer, so any explicit
+   `text-note` / `text-ui` / `text-sm` at the call site wins and a
+   genuine exception stays writable — it just has to name itself. The
+   named classes above (`.prose-body`, `.display`, `.micro`,
+   `.lesson-prose`) are unlayered and beat this too, so anything
+   already on the system keeps what it has. Contrast `.lesson-stack
+   > *` further down, which is unlayered precisely because it has to
+   overrule leftover utilities it cannot strip.
+
+   The ancestor list is the set of places that own their own treatment:
+   `Box` in both variants (it wraps children in `.lesson-prose`, and
+   the alert form is also `[role="note"]`), the bordered `.module`
+   panel, table cells, figure captions, margin notes in the rail, and
+   the header — whose lede is `.lesson-lede` above. Same exclusions the
+   list rules further down already make. */
+@layer base {
+  .lesson-body
+    p:not(
+      :is(
+          [role="note"],
+          .module,
+          .lesson-prose,
+          .split aside,
+          header,
+          figure,
+          table,
+          .not-prose
+        )
+        *
+    ) {
+    max-width: var(--measure);
+    font-family: var(--font-serif);
+    font-size: var(--text-body);
+    line-height: 1.72;
+    color: var(--tx);
+  }
+}
+
+/* Prose inside a panel still needs a line length.
+   `.module` is excluded from the default above on purpose — a panel owns its
+   own treatment — and the list rules further down deliberately release lists
+   from the measure once they are inside one. Both are right, and together they
+   left /prerequisites reading body copy at 123 characters a line, because its
+   panels are `measure-wide` and full of sentences.
+
+   `--measure`, the same cap the main column uses, so panel prose lands at the
+   same line length as the lesson body rather than at some second number.
+   (`ch` was tried first and is a trap: 1ch is the width of "0", which is wider
+   than the average character, so a 74ch cap measured 109 characters a line.)
+   Panels narrower than the measure are unaffected — this only ever caps. */
+.lesson-body .module :is(p, li, dd) {
+  max-width: var(--measure);
 }
 
 /* The text column, and the column-plus-margin-rail it sits in. */
@@ -426,18 +693,30 @@ h3,
 }
 
 /* Same reasoning one level up: a long bare URL or identifier in body copy is
-   the other way a lesson page ends up wider than the screen. */
-.lesson-body :is(p, li, td, th, figcaption) {
+   the other way a lesson page ends up wider than the screen.
+
+   `.lesson-prose` is listed explicitly because comparison rows put their text
+   in a flex item — `overflow-wrap` on the flex container does not reach it, so
+   `withRemoteCANcoder(encoder)` in a <strong> still forced the page wide. */
+.lesson-body :is(p, li, td, th, figcaption),
+.lesson-prose,
+.lesson-prose :is(strong, em, b, i, span) {
+  overflow-wrap: anywhere;
+}
+
+/* Headings too — glossary terms are single identifiers like
+   `CommandSwerveDrivetrain`, wider at 20px than a card is on a phone.
+   `break-word` rather than `anywhere`: it breaks only when the word would
+   otherwise overflow, and leaves intrinsic sizing alone, so display headings
+   still get to size themselves normally. */
+.lesson-body :is(h1, h2, h3, h4, h5, h6) {
   overflow-wrap: break-word;
 }
 
-/* Tables get the measure-plus-rail width, and scroll inside it if they still
-   don't fit — but they never widen the page. */
-.lesson-body table {
-  display: block;
-  max-width: 100%;
-  overflow-x: auto;
-}
+/* Deliberately no `display: block` on tables. An earlier pass set that to
+   force scrolling, which turns `<thead>`/`<tbody>` into block boxes and
+   destroys column alignment. Every table on the site is already wrapped in an
+   `overflow-x-auto` div; what stopped that wrapper working is one line below. */
 
 /* Lists in lesson prose.
    Targeting the `list-disc` / `list-decimal` utilities rather than the bare
@@ -487,6 +766,14 @@ h3,
    unlayered rules beat layered ones, so this wins without `!important`. */
 .lesson-stack > * {
   margin-block: 0;
+
+  /* `min-width: 0` is the fix for every horizontal-overflow bug on this site.
+     Flex and grid children default to `min-width: auto`, which refuses to
+     shrink below the content's min-content width. A table carrying
+     `min-w-[520px]` therefore forced its own 520px onto the flex item, its
+     `overflow-x-auto` wrapper never got the chance to scroll, and the whole
+     lesson page scrolled sideways on a phone instead. */
+  min-width: 0;
 }
 
 /* Section numbering. A CSS counter rather than a `number` prop on every
