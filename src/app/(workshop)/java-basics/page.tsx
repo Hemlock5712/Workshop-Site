@@ -1193,10 +1193,10 @@ public Command runSlow() {
         </Box>
 
         <p className="prose-body measure">
-          If a specific word still has no meaning attached to it, the glossary
-          has short entries for most of them, and every one of these constructs
-          reappears in real code within the next three lessons. Reading them in
-          place beats re-reading this page.
+          If a specific word still has no meaning attached to it, leave it for
+          now — every one of these constructs reappears in real code within the
+          next three lessons, and reading them in place beats re-reading this
+          page.
         </p>
 
         <DocumentationButton

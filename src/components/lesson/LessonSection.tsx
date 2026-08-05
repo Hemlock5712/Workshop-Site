@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 interface LessonSectionProps {
   /**
    * Anchor id. Also what the on-this-page outline links to, so it has to be
-   * stable — it ends up in URLs students paste into Discord.
+   * stable — it ends up in URLs students copy and pass around.
    */
   id: string;
   /**

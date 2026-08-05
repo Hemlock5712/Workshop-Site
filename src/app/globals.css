@@ -292,6 +292,20 @@ h3,
   border-radius: 3px;
 }
 
+/* The ring above lands on links, inputs and `<pre>` as the accent, and landed
+   on buttons as `currentColor` — measured on the topbar search button and the
+   code Copy button as `--tx3`, i.e. a grey hairline at ~4.4:1 against `--bg2`
+   where the intended orange is ~8:1. Tailwind's default outline colour is
+   `currentColor`, and it was winning on the two commonest chrome controls on
+   the site: the ones a keyboard user hits first and most often. An
+   element-plus-pseudo-class selector outranks it without `!important`. */
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline-color: var(--accent);
+}
+
 /* Skip link — the first focusable thing in the shell.
    Parked just above the viewport rather than clipped to a pixel, so it is
    genuinely off-screen but still focusable and still measurable. It lands on
@@ -704,7 +718,7 @@ h3,
   overflow-wrap: anywhere;
 }
 
-/* Headings too — glossary terms are single identifiers like
+/* Headings too — a heading that names a method is a single identifier like
    `CommandSwerveDrivetrain`, wider at 20px than a card is on a phone.
    `break-word` rather than `anywhere`: it breaks only when the word would
    otherwise overflow, and leaves intrinsic sizing alone, so display headings

@@ -24,8 +24,8 @@ export const SEARCH_INDEX_URL = "/search-index.json";
 
 /**
  * A single searchable chunk. One lesson produces many of these: an intro doc
- * for the page opening, then one per `<LessonSection>`. The glossary produces
- * one per term, which is why "CANivore" can return a definition rather than a
+ * for the page opening, then one per `<LessonSection>` — which is why
+ * "CANivore" returns the section that explains it rather than the top of a
  * 17,000-character page.
  */
 export interface SearchDoc {

@@ -87,19 +87,6 @@ const STOPWORDS = new Set([
   "your",
 ]);
 
-/**
- * Reference material ranks just below the lesson that teaches the same idea.
- *
- * Glossary entries are short and their headings are exact term names, which
- * BM25 loves — unweighted, searching "motion magic" put the two-sentence
- * definition above the lesson built around it. This value was picked by
- * measuring rather than taste: anything above 0.7 changes no result at all,
- * and at 0.7 the definition still lands at rank 1 or 2 for every bare term
- * probed (kP, coroutine, tolerance, gear ratio, CANivore, feedforward) while
- * the teaching page takes the top slot when it is the better answer.
- */
-const GLOSSARY_WEIGHT = 0.7;
-
 let cachedInstance: MiniSearch<SearchDoc> | null = null;
 let pendingInstance: Promise<MiniSearch<SearchDoc>> | null = null;
 
@@ -171,11 +158,6 @@ export const searchIndex = (
   const lastIndex = terms.length - 1;
   const options = {
     boost: { ...SEARCH_BOOST },
-    boostDocument: (
-      _id: string,
-      _term: string,
-      stored?: Record<string, unknown>
-    ) => (stored?.slug === "/glossary" ? GLOSSARY_WEIGHT : 1),
     prefix: (_term: string, index: number) => index === lastIndex,
     fuzzy: (term: string, index: number) =>
       term.length >= 4 ? (index === lastIndex ? 0.2 : 0.15) : false,

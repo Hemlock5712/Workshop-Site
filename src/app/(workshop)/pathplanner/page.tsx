@@ -61,12 +61,12 @@ export default function AutonomousRoutines() {
         title="No PathPlanner here"
       >
         <p>
-          This page lives at <code>/pathplanner</code> because that link is in
-          old Discord messages and old slides, and breaking it would strand
-          people. <strong>This stack does not use PathPlanner</strong> — no path
-          editor, no <code>.path</code> files, no <code>AutoBuilder</code>. The
-          speed profile PathPlanner would have generated is already computed on
-          the robot by CTRE&apos;s <code>LinearPath</code>, inside the{" "}
+          This page lives at <code>/pathplanner</code> because that link is
+          printed on old slides, and breaking it would strand people.{" "}
+          <strong>This stack does not use PathPlanner</strong> — no path editor,
+          no <code>.path</code> files, no <code>AutoBuilder</code>. The speed
+          profile PathPlanner would have generated is already computed on the
+          robot by CTRE&apos;s <code>LinearPath</code>, inside the{" "}
           <code>DriveToPoint</code> command you finished on the last page. So an
           autonomous routine is a short list of those commands, written in Java.
         </p>

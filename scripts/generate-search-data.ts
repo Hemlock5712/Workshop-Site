@@ -18,8 +18,7 @@
  *    The site has 29 lessons but well over 200 sections, each with a stable
  *    `id` that is already a scroll anchor. Indexing at that grain is what lets
  *    a result link to `/motion-magic#picking-a-cruise-velocity` instead of
- *    dropping the reader at the top of a 20,000-character page. The glossary
- *    goes one finer still: every term is its own document.
+ *    dropping the reader at the top of a 20,000-character page.
  *
  * All lesson metadata is read from `src/data/lessons.ts`. There is no second
  * copy of the lesson list here — the old `routeMap` had already drifted from
@@ -143,10 +142,6 @@ const EXTRA_ROUTES: Record<string, ExtraRoute> = {
     title: "Gray Matter Coding Workshop",
     section: "Home",
   },
-  "/glossary": {
-    title: "Glossary of Terms",
-    section: "Reference",
-  },
   "/privacy": {
     title: "Privacy Policy",
     section: "Reference",
@@ -165,16 +160,6 @@ const EXTRA_ROUTES: Record<string, ExtraRoute> = {
 
 /** `/search` returning itself as a result helps nobody. */
 const EXCLUDED_ROUTES = new Set(["/search"]);
-
-/**
- * Pages whose every `id`-bearing block with an `<h3>` should become its own
- * document. Only the glossary qualifies: its sections are containers of
- * independent term definitions, so "CANivore" should return the definition
- * rather than a 17,000-character page. Ordinary lessons are prose that reads
- * top to bottom, and splitting them below the section level would return
- * fragments with no context.
- */
-const TERM_SCOPED_ROUTES = new Set(["/glossary"]);
 
 /* ── the extractor ────────────────────────────────────────────────────── */
 
@@ -274,43 +259,12 @@ function literalTextOf(node: ts.Node): string {
   return clean(parts.join(" "));
 }
 
-/** Does this element contain an `<h3>`? Marks a glossary term block. */
-function hasHeadingChild(node: ts.JsxElement): boolean {
-  let found = false;
-  const walk = (current: ts.Node): void => {
-    if (found) return;
-    if (ts.isJsxElement(current) && jsxTagName(current) === "h3") {
-      found = true;
-      return;
-    }
-    current.forEachChild(walk);
-  };
-  node.children.forEach(walk);
-  return found;
-}
-
-/** Text of the first `<h3>` inside an element. */
-function headingTextOf(node: ts.JsxElement): string {
-  let heading = "";
-  const walk = (current: ts.Node): void => {
-    if (heading) return;
-    if (ts.isJsxElement(current) && jsxTagName(current) === "h3") {
-      heading = literalTextOf(current);
-      return;
-    }
-    current.forEachChild(walk);
-  };
-  node.children.forEach(walk);
-  return heading;
-}
-
 /**
  * Walk one page into chunks. The first chunk is the page opening — the
  * `PageTemplate` title, lede and prerequisites, which is real teaching text
  * and belongs in the index even though it sits above any section.
  */
-function extractChunks(source: ts.SourceFile, route: string): Chunk[] {
-  const termScoped = TERM_SCOPED_ROUTES.has(route);
+function extractChunks(source: ts.SourceFile): Chunk[] {
   const intro: Chunk = { anchor: "", heading: "", prose: [], code: [] };
   const chunks: Chunk[] = [intro];
 
@@ -336,27 +290,6 @@ function extractChunks(source: ts.SourceFile, route: string): Chunk[] {
             stringAttr(node, "outlineLabel") ??
             literalTextOf(node.openingElement.attributes);
           const chunk: Chunk = { anchor, heading, prose: [], code: [] };
-          chunks.push(chunk);
-          node.children.forEach((child) => visit(child, chunk));
-          return;
-        }
-      }
-
-      // On the glossary, each id'd block with an <h3> is its own term.
-      if (
-        termScoped &&
-        ts.isJsxElement(node) &&
-        tag !== "LessonSection" &&
-        hasHeadingChild(node)
-      ) {
-        const anchor = stringAttr(node, "id");
-        if (anchor) {
-          const chunk: Chunk = {
-            anchor,
-            heading: headingTextOf(node),
-            prose: [],
-            code: [],
-          };
           chunks.push(chunk);
           node.children.forEach((child) => visit(child, chunk));
           return;
@@ -527,7 +460,7 @@ function build(): void {
     );
 
     const meta = metaFor(route);
-    const chunks = extractChunks(source, route);
+    const chunks = extractChunks(source);
     const blurb = EXTRA_ROUTES[route]?.blurb;
 
     for (const chunk of chunks) {

@@ -11,7 +11,7 @@ import { getLessonNumber } from "@/data/lessons";
  * being typed on the page — a hard-coded number goes stale the first time a
  * lesson is inserted above it.
  *
- * Renders nothing on routes outside `LESSONS` (glossary, search, privacy).
+ * Renders nothing on routes outside `LESSONS` (search, privacy, video).
  */
 export default function LessonKicker() {
   const pathname = usePathname();

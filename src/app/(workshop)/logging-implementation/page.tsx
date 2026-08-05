@@ -526,8 +526,8 @@ public class Telemetry {
       >
         <p className="text-[var(--tx2)]">
           Other teams use other logging tools, and their names come up on Chief
-          Delphi and in Discord. Here is what each one is, and why this workshop
-          does not use it. You do not need any of them.
+          Delphi and at competitions. Here is what each one is, and why this
+          workshop does not use it. You do not need any of them.
         </p>
 
         <ul className="list-disc space-y-3 pl-5 text-[var(--tx2)]">

@@ -80,14 +80,22 @@ export default function Box({
     const meta = VARIANT_META[variant];
     return (
       <div
+        // One column on a phone. The two-track form spends 72px on the label,
+        // 20px on the gap and 20px on the text inset — 113px of a 310px
+        // column, which left the text at 22-25 characters a line while the
+        // prose beside it ran at 36. The warnings were narrower than the page
+        // they interrupt, which is backwards: an aside a student is meant to
+        // absorb in one pass should not be the hardest thing to read. Below
+        // `sm` the label sits above the rule instead of beside it, and the
+        // text gets the full measure less its own inset (~33 characters).
         className={cn(
-          "measure grid grid-cols-[72px_minmax(0,1fr)] gap-5 sm:grid-cols-[96px_minmax(0,1fr)] sm:gap-6",
+          "measure grid grid-cols-1 gap-2 sm:grid-cols-[96px_minmax(0,1fr)] sm:gap-6",
           className
         )}
         role="note"
       >
         <div
-          className="mono pt-chip text-right text-micro"
+          className="mono pt-chip text-left text-micro sm:text-right"
           style={{
             letterSpacing: "0.13em",
             textTransform: "uppercase",

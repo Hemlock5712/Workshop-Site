@@ -95,7 +95,7 @@ const nextConfig: NextConfig = {
   // The two "options" survey pages were folded into the lessons that follow
   // them: the parts worth keeping (the AprilTag primer, camera mounting, the
   // logging-tool vocabulary) now live on the implementation pages. Both slugs
-  // are linked from Discord and from old slides, so they redirect rather than
+  // are printed on old slides, so they redirect rather than
   // 404. `skipTrailingSlashRedirect` below only suppresses Next's automatic
   // trailing-slash normalisation; it does not affect these.
   async redirects() {
@@ -117,6 +117,16 @@ const nextConfig: NextConfig = {
       {
         source: "/ai-assistant",
         destination: "/ai-coding-assistant",
+        permanent: true,
+      },
+      // The glossary page was a second copy of every definition, kept in sync
+      // by hand, and not worth the upkeep. The definitions themselves survive
+      // as the hover/focus tooltips in `GlossaryTerm.tsx`, so there is no
+      // reference page to land on — old links go to the course opening, which
+      // is the closest thing to "start here".
+      {
+        source: "/glossary",
+        destination: "/introduction",
         permanent: true,
       },
     ];

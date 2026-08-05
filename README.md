@@ -60,7 +60,7 @@ Advanced Topics:
 └── /advanced-drive-to-point Advanced: Profiled Drive to Point (LinearPath)
 
 Utility pages (outside lesson navigation):
-└── /search, /glossary, /planner, /privacy
+└── /search, /privacy, /video
 ```
 
 ## 🚀 Getting Started

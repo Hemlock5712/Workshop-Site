@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 
 // Internal preview page for the workshop trailer videos. Intentionally NOT
-// linked from the sidebar or search index, and marked noindex — videos move
-// onto their topic pages once approved. MP4s are hosted as GitHub release
-// assets so the repo stays free of large binaries.
+// linked from the curriculum drawer, and marked noindex — videos move onto
+// their topic pages once approved. MP4s are hosted as GitHub release assets so
+// the repo stays free of large binaries.
+//
+// It lives under `(workshop)` so it renders inside the shell. It used to sit at
+// `src/app/video/`, outside the group, which meant no rail, no breadcrumb and
+// no way back: the page measured zero links and zero landmarks. Route groups
+// add no path segment, so the URL is still `/video`.
 
 export const metadata: Metadata = {
   title: "Workshop Trailers (Preview)",
@@ -189,39 +194,85 @@ const GROUPS: TrailerGroup[] = [
 
 export default function VideoPreviewPage() {
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-bold text-[var(--tx)]">Workshop Trailers</h1>
-      <p className="mt-3 text-[var(--tx2)]">
-        Preview build — these are not linked from the workshop pages yet. Each
-        trailer is about 90 seconds.
-      </p>
+    <div className="px-6 pb-24 pt-14 md:px-12 lg:px-[76px]">
+      <header className="max-w-[660px]">
+        <span className="micro">Internal preview · not indexed</span>
+        <h1 className="display-section m-0 mt-control">Workshop Trailers</h1>
+        <p className="lesson-lede m-0 mt-flow">
+          Not linked from the lessons yet. The 22 trailers run a minute and a
+          half to two minutes each; the five full lessons at the top run about
+          five minutes.
+        </p>
+      </header>
 
       {GROUPS.map((group) => (
-        <section key={group.heading} className="mt-12">
-          <h2 className="text-xl font-semibold text-[var(--tx)]">
-            {group.heading}
+        <section key={group.heading} className="mt-stack">
+          {/* A mono micro-label over a hairline, not display type. These four
+              headings label a list of cards rather than open a passage of
+              prose, and `.display-section` above floors at 27px on a phone —
+              a 25px group heading under it read as the same size. Smaller than
+              the card titles is the point: it divides, it doesn't compete. */}
+          <h2
+            className="micro m-0 flex items-baseline justify-between gap-flow pb-tight"
+            style={{
+              borderBottom: "1px solid var(--rule)",
+              color: "var(--tx2)",
+            }}
+          >
+            <span>{group.heading}</span>
+            <span className="tabular shrink-0" style={{ color: "var(--tx3)" }}>
+              {String(group.trailers.length).padStart(2, "0")} videos
+            </span>
           </h2>
-          <div className="mt-6 grid grid-cols-1 gap-8 md:grid-cols-2">
-            {group.trailers.map((trailer) => (
-              <div
-                key={trailer.file}
-                className="rounded-xl border border-[var(--rule)] bg-[var(--bg2)] p-4 shadow-sm border-[var(--rule)]"
-              >
-                <video
-                  controls
-                  preload="none"
-                  playsInline
-                  className="aspect-video w-full rounded-lg bg-black"
-                  src={`${RELEASE_BASE}/${trailer.file}`}
-                />
-                <h3 className="mt-3 font-semibold text-[var(--tx)]">
-                  {trailer.title}
-                </h3>
-                <p className="mt-1 text-sm text-[var(--tx2)]">
-                  {trailer.blurb}
-                </p>
-              </div>
-            ))}
+
+          <div className="mt-step grid grid-cols-1 gap-step md:grid-cols-2">
+            {group.trailers.map((trailer) => {
+              // The caption is the video's accessible name, so the two cannot
+              // drift apart. File names are unique, which is what makes this a
+              // safe id without a client-side `useId`.
+              const titleId = `${trailer.file.replace(/\.mp4$/, "")}-title`;
+
+              return (
+                <figure
+                  key={trailer.file}
+                  className="m-0 min-w-0 rounded-lg p-flow"
+                  style={{
+                    border: "1px solid var(--rule)",
+                    background: "var(--bg2)",
+                  }}
+                >
+                  {/* `preload="metadata"` plus the `#t=0.1` media fragment is
+                      what makes these visible at all. With `preload="none"` and
+                      no poster the page was 27 empty boxes; metadata alone
+                      fetches the header but paints nothing, so the fragment
+                      seeks a tenth of a second in and the browser renders that
+                      frame as its own poster. No poster files to keep in sync. */}
+                  <video
+                    controls
+                    preload="metadata"
+                    playsInline
+                    aria-labelledby={titleId}
+                    className="aspect-video w-full rounded-lg bg-[var(--bg3)]"
+                    src={`${RELEASE_BASE}/${trailer.file}#t=0.1`}
+                  />
+
+                  <figcaption className="mt-control">
+                    <h3 id={titleId} className="display m-0 text-aside">
+                      {trailer.title}
+                    </h3>
+                    <p
+                      className="m-0 mt-tight text-note"
+                      style={{
+                        fontFamily: "var(--font-serif)",
+                        color: "var(--tx2)",
+                      }}
+                    >
+                      {trailer.blurb}
+                    </p>
+                  </figcaption>
+                </figure>
+              );
+            })}
           </div>
         </section>
       ))}

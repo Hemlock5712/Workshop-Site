@@ -31,7 +31,7 @@ const PAGES = [
   "/java-basics",
   "/drive-to-tag-inline",
   "/mechanism-cad",
-  "/glossary",
+  "/video",
   "/introduction",
 ];
 

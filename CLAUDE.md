@@ -192,8 +192,14 @@ course is 29 lessons and the counter says so.
 └── /ai-coding-assistant (optional — AI assistants; last on purpose, see lessons.ts)
 
 Utility (outside lesson navigation):
-├── /search, /glossary, /privacy, /video
+├── /search, /privacy, /video
 ```
+
+**There is no `/glossary`.** The standalone glossary page was retired in August
+2026 — it was a second copy of every definition, kept in sync by hand. Inline
+definitions now live only in `src/components/GlossaryTerm.tsx`, whose
+`glossaryDefinitions` record renders the hover/focus tooltip on an annotated
+term; add a term there, not to a page.
 
 **There is no `/planner` in this repo.** The waypoint planner was removed in
 August 2026 — `frc5712.com/planner` is served from a separate repository. The
@@ -201,10 +207,10 @@ route, its ten components, four hooks and four lib modules (~5,100 lines) are
 gone, and nothing here linked to them. Don't reintroduce it, and don't confuse
 it with `/pathplanner`, which is lesson 26 and stays.
 
-**Retired slugs, kept as 308 redirects in `next.config.ts`** — they're linked
-from Discord and old slides: `/logging-options` → `/logging-implementation`,
+**Retired slugs, kept as 308 redirects in `next.config.ts`** — they're printed
+on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-implementation`, `/ai-assistant` →
-`/ai-coding-assistant`.
+`/ai-coding-assistant`, `/glossary` → `/introduction`.
 
 ### Asset Management
 

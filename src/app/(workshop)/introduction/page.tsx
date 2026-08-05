@@ -264,8 +264,8 @@ export default function Introduction() {
             page does not teach PathPlanner, and this stack does not use
             PathPlanner anywhere — autonomous routines drive to a pose with
             CTRE&apos;s own path code, which you build yourself in the two
-            lessons before it. The URL stays so links posted to Discord and
-            printed on slides keep working.
+            lessons before it. The URL stays so links printed on old slides keep
+            working.
           </p>
         </Box>
       </LessonSection>

@@ -6,10 +6,10 @@
  * needs a client component.
  *
  * A 404 here is usually not a typo. Slugs have moved — `next.config.ts`
- * redirects three of them because they are still linked from Discord and from
- * old slides — so the useful thing to put on this page is navigation rather
- * than an apology. The four curriculum groups come from `lessons.ts`, which
- * means this page cannot drift out of date with the course.
+ * redirects four of them because they are still printed on old slides — so the
+ * useful thing to put on this page is navigation rather than an apology. The
+ * four curriculum groups come from `lessons.ts`, which means this page cannot
+ * drift out of date with the course.
  */
 
 import Link from "next/link";
@@ -50,9 +50,9 @@ export default function NotFoundBody() {
           }}
         >
           A few lesson slugs changed when the workshop was reorganised, and old
-          links from Discord and from slides still point at the names they used
-          to have. What you were after is almost certainly one of the{" "}
-          {LESSON_COUNT} lessons below.
+          links and printed slides still point at the names they used to have.
+          What you were after is almost certainly one of the {LESSON_COUNT}{" "}
+          lessons below.
         </p>
 
         <div className="mt-9 flex flex-wrap items-center gap-4">

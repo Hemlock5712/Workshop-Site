@@ -83,7 +83,15 @@ export default function PageTemplate({
     // the rail plus two 24px margins left a 272px column on a 390px phone,
     // which is ~37 characters of Newsreader a line, and the 8px each side is
     // worth about 3 characters.
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-4 pt-14 sm:px-6 md:px-10 min-[1240px]:grid-cols-[184px_minmax(0,auto)] min-[1240px]:justify-center">
+    // The rail column is `auto`, not a fixed 184px. A page with no
+    // `<LessonSection>` has nothing to put in an outline, and the fixed track
+    // reserved the full width anyway — /project-setup rendered a 184px column
+    // on a 1440px screen containing one line, "About 20 minutes, most of it
+    // the first Gradle build", and nothing else. `auto` collapses the track to
+    // whatever the rail actually needs, and to zero when `LessonOutline`
+    // returns null. `gap-14` still applies, so the sticky rail keeps its
+    // breathing room on the 27 pages that do have sections.
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-4 pt-14 sm:px-6 md:px-10 min-[1240px]:grid-cols-[auto_minmax(0,auto)] min-[1240px]:justify-center">
       <LessonOutline branch={branch} time={time} />
 
       {/* `id` + `tabIndex` so the skip link can land *past* the outline rail.

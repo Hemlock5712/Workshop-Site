@@ -310,7 +310,7 @@ export const LESSON_COUNT = LESSONS.length;
 /**
  * 1-based position in the course, zero-padded to two digits — the "LESSON 15"
  * kicker and the numbers down the drawer. Returns null for anything not in
- * `LESSONS` (Home, /search, /glossary, /privacy …).
+ * `LESSONS` (Home, /search, /privacy, /video …).
  */
 export function getLessonNumber(slug: string): string | null {
   const idx = SLUG_INDEX.get(slug);
