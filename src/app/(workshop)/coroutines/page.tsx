@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -35,35 +36,32 @@ export default function Coroutines() {
       branch="6-Coroutines"
       time="Roughly 45 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "This is the second dialect, not a better one. Chaining stays the default. Reach for a coroutine when a hold has to stay alive across several steps, or when the routine needs a real loop or a real if.",
-        ]}
-        concept="A coroutine pauses and resumes, so a routine reads as a plain list of steps."
+      <Split>
+        <KeyConceptSection
+          description={[
+            "This is the second dialect, not a better one. Chaining stays the default. Reach for a coroutine when a hold has to stay alive across several steps, or when the routine needs a real loop or a real if.",
+          ]}
+          concept="A coroutine pauses and resumes, so a routine reads as a plain list of steps."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          One new file — <code>RaiseAndShootOpMode.java</code>, an autonomous
+          routine that raises the arm, spins up the flywheel while the arm keeps
+          holding, and shoots.
+        </MarginNote>
+      </Split>
+
+      <p>
+        You are switching back to the <strong>mechanism track</strong>. The last
+        time you touched arm-and-flywheel code was <strong>Finish Lines</strong>
+        , on <code>5-GettersAndSetters</code>. Pick that project back up and
+        check out the next branch:
+      </p>
+
+      <CodeBlock
+        language="bash"
+        hideControls
+        code={`git checkout 6-Coroutines`}
       />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p>
-          You are switching back to the <strong>mechanism track</strong>. The
-          last time you touched arm-and-flywheel code was{" "}
-          <strong>Finish Lines</strong>, on <code>5-GettersAndSetters</code>.
-          Pick that project back up and check out the next branch:
-        </p>
-        <div className="mt-3">
-          <CodeBlock
-            language="bash"
-            hideControls
-            code={`git checkout 6-Coroutines`}
-          />
-        </div>
-
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> one new file —{" "}
-          <code>RaiseAndShootOpMode.java</code>, an autonomous routine that
-          raises the arm, spins up the flywheel while the arm keeps holding, and
-          shoots. <strong>Roughly 45 minutes.</strong>
-        </p>
-      </Box>
 
       {/* ── chaining is still the default ────────────────────────────── */}
       <LessonSection
@@ -137,7 +135,7 @@ export default function Coroutines() {
             loop, then carry on. This is the one you need when you write your
             own loop; it is what lets other commands run while your loop is
             going. You will use it on{" "}
-            <strong>Drive to Tag, Written as a Coroutine</strong>.
+            <strong>{"Drive to Tag, Written as a Coroutine "}</strong>.
           </li>
         </ul>
 
@@ -424,28 +422,26 @@ coroutine.await(
           code={`// Ending the routine cancels both forked holds.`}
         />
 
-        <p className="prose-body measure">
-          There is no cleanup step. When the body runs out of lines the routine
-          finishes, and finishing cancels every command it forked. That is the
-          one piece of bookkeeping the coroutine does for you.
-        </p>
-
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT"
-          title="Canceled is not stopped"
-        >
-          <p>
-            Canceling those two holds does not zero the motors. The arm and
-            flywheel fall back to <code>idle()</code>, which issues no output
-            and does not clear the last request, so Phoenix keeps applying it —
-            the same behaviour you saw on <strong>Chaining Commands</strong>.
-            The branch leaves it that way because the autonomous period is about
-            to end and the robot is about to be disabled. If you extend this
-            routine into something that runs mid-match, end it with explicit
-            stop steps.
-          </p>
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              There is no cleanup step. When the body runs out of lines the
+              routine finishes, and finishing cancels every command it forked.
+              That is the one piece of bookkeeping the coroutine does for you.
+            </p>
+            <p>
+              Canceling is not stopping, though. The arm and flywheel fall back
+              to <code>idle()</code>, which issues no output and does not clear
+              the last request, so Phoenix keeps applying it — the same
+              behaviour you saw on <strong>Chaining Commands</strong>.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY THE BRANCH GETS AWAY WITH IT">
+            The autonomous period is about to end and the robot is about to be
+            disabled. If you extend this routine into something that runs
+            mid-match, end it with explicit stop steps.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* ── the whole file ───────────────────────────────────────────── */}
@@ -593,30 +589,32 @@ coroutine.await(
             <code>@Autonomous(name = ...)</code>, not the class name.
           </li>
           <li>
-            <strong>You should see:</strong> the arm swings to vertical (0.25
-            rotations, 90&deg;) and <em>stays</em> there. It does not sag back.
+            <strong>{"You should see: "}</strong> the arm swings to vertical
+            (0.25 rotations, 90&deg;) and <em>stays</em> there. It does not sag
+            back.
           </li>
           <li>
-            <strong>You should see:</strong> as soon as the arm settles, the
-            flywheel spins up to 75 rotations per second — and the arm is still
-            being held while it does. That is the fork earning its place.
+            <strong>{"You should see: "}</strong> as soon as the arm settles,
+            the flywheel spins up to 75 rotations per second — and the arm is
+            still being held while it does. That is the fork earning its place.
           </li>
           <li>
-            <strong>You should see:</strong> about a second after the flywheel
-            reaches speed, the routine ends. Both holds stop being commanded.
+            <strong>{"You should see: "}</strong> about a second after the
+            flywheel reaches speed, the routine ends. Both holds stop being
+            commanded.
           </li>
           <li>
-            <strong>Time it.</strong> A healthy run is short — however long the
-            arm takes, plus however long the flywheel takes, plus one second. If
-            it takes almost exactly seven seconds every single time, that is
-            3&nbsp;+&nbsp;3&nbsp;+&nbsp;1: both waits hit their timeout and
-            neither mechanism ever arrived.
+            <strong>{"Time it. "}</strong> A healthy run is short — however long
+            the arm takes, plus however long the flywheel takes, plus one
+            second. If it takes almost exactly seven seconds every single time,
+            that is 3&nbsp;+&nbsp;3&nbsp;+&nbsp;1: both waits hit their timeout
+            and neither mechanism ever arrived.
           </li>
           <li>
             <strong>Now break it on purpose.</strong> Change the first line from{" "}
             <code>coroutine.fork(arm.vertical())</code> to{" "}
             <code>coroutine.await(arm.vertical())</code> and run again.{" "}
-            <strong>You should see:</strong> the arm moves to vertical and
+            <strong>{"You should see: "}</strong> the arm moves to vertical and
             nothing else ever happens. No flywheel, no error, no log line. The
             routine is parked on line one for the rest of the period. Put the{" "}
             <code>fork</code> back.
@@ -626,7 +624,7 @@ coroutine.await(
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="Seven wasted seconds, a routine that sits forever, or a missing import"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -679,15 +677,15 @@ coroutine.await(
       </LessonSection>
 
       {/* ── what's next ──────────────────────────────────────────────── */}
-      <LessonSection id="where-this-goes-next" title="Where this goes next">
+      <LessonSection id="where-this-goes-next" title="What's next">
         <p className="prose-body measure">
           You have now seen every dialect the site uses except one.{" "}
           <strong>State Machines</strong> is the next branch on this track, one
           commit further along, and it goes back to chaining — states are built
           with <code>Command.parallel</code>. Then{" "}
-          <strong>Drive to Tag, Written as a Coroutine</strong> comes back to
-          this page&apos;s material with the fourth verb, <code>yield</code>, in
-          a routine whose body is a real <code>while</code> loop.
+          <strong>{"Drive to Tag, Written as a Coroutine "}</strong>comes back
+          to this page&apos;s material with the fourth verb, <code>yield</code>,
+          in a routine whose body is a real <code>while</code> loop.
         </p>
 
         <p className="prose-body measure">

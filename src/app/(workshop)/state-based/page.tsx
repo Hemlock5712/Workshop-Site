@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -36,12 +38,19 @@ export default function StateMachines() {
       branch="7-StateBased"
       time="About 30 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "This page rebuilds the same arm-and-flywheel teleop a different way. The robot is always in exactly one named state — stowed, pickup, spin-up, or ready — and the buttons move it between states. The machine cancels the old state's command and starts the new one for you. A jump you never declared cannot happen.",
-        ]}
-        concept="A state is one Command that runs the whole time the machine sits in that state. A transition is a condition that cancels that command and moves to the next state."
-      />
+      <Split>
+        <KeyConceptSection
+          description={[
+            "This page rebuilds the same arm-and-flywheel teleop a different way. The robot is always in exactly one named state — stowed, pickup, spin-up, or ready — and the buttons move it between states. The machine cancels the old state's command and starts the new one for you. A jump you never declared cannot happen.",
+          ]}
+          concept="A state is one Command that runs the whole time the machine sits in that state. A transition is a condition that cancels that command and moves to the next state."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          The same teleop, rebuilt as a four-state machine — with the two
+          shooting states separated, so the robot can tell &quot;spinning
+          up&quot; apart from &quot;ready to shoot.&quot;
+        </MarginNote>
+      </Split>
 
       <Box
         variant="alert-tip"
@@ -58,15 +67,6 @@ export default function StateMachines() {
         <p className="mt-3">
           It is also the smallest of the three dialects to learn. There is one
           new class, four setup steps, and two kinds of transition.
-        </p>
-      </Box>
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> the same teleop, rebuilt as a
-          four-state machine — with the two shooting states separated so the
-          robot can tell &quot;spinning up&quot; apart from &quot;ready to
-          shoot.&quot; <strong>About 30 minutes.</strong>
         </p>
       </Box>
 
@@ -135,8 +135,8 @@ driver
         outlineLabel="First, the operator this needs: Command.parallel"
       >
         <p className="prose-body measure">
-          A state has to pose the <em>whole</em> robot, not one mechanism. If a
-          state only said &quot;arm vertical,&quot; the flywheel would be
+          A state has to pose the <em>{"whole "}</em> robot, not one mechanism.
+          If a state only said &quot;arm vertical,&quot; the flywheel would be
           wherever the last binding left it, and you would be back to guessing.
           So each state runs one command that commands both mechanisms at once.
         </p>
@@ -164,8 +164,8 @@ driver
             both holds, so neither ever finishes, so the group never finishes
             either. That sounds like THE ONE RULE being broken — and it would
             be, inside a <code>Command.sequence</code>. Here it is exactly what
-            you want. A state machine never <em>waits</em> for a state&apos;s
-            command; it cancels it the moment a transition fires.
+            you want. A state machine never <em>{"waits "}</em> for a
+            state&apos;s command; it cancels it the moment a transition fires.
           </p>
           <p className="mt-3">
             The group also inherits its members&apos; requirements, so this one
@@ -431,7 +431,7 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
         </p>
 
         <p className="prose-body-sm measure">
-          Entry callbacks run immediately <em>after</em> the state&apos;s
+          Entry callbacks run immediately <em>{"after "}</em> the state&apos;s
           command is scheduled, so they can see it running. Exit callbacks run
           immediately before the command is canceled on a transition, or right
           after it finishes on its own. Both run in the order you added them.
@@ -489,19 +489,19 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
         >
           <li>
             Start the simulator and click Enable.{" "}
-            <strong>You should see:</strong> the arm drives to vertical and the
-            flywheel stays stopped. That is <code>Stowed (hold)</code>, the
+            <strong>{"You should see: "}</strong> the arm drives to vertical and
+            the flywheel stays stopped. That is <code>Stowed (hold)</code>, the
             initial state, running on its own with no button pressed.
           </li>
           <li>
-            Hold the left trigger. <strong>You should see:</strong> the arm
-            swings to horizontal. Release it. <strong>You should see:</strong>{" "}
-            the arm goes back to vertical. You have driven{" "}
-            <code>stowed &rarr; pickup &rarr; stowed</code>.
+            Hold the left trigger. <strong>{"You should see: "}</strong> the arm
+            swings to horizontal. Release it.{" "}
+            <strong>{"You should see: "}</strong> the arm goes back to vertical.
+            You have driven <code>stowed &rarr; pickup &rarr; stowed</code>.
           </li>
           <li>
-            Hold the right trigger. <strong>You should see:</strong> the arm
-            stays vertical, the flywheel spins up, and{" "}
+            Hold the right trigger. <strong>{"You should see: "}</strong> the
+            arm stays vertical, the flywheel spins up, and{" "}
             <code>Superstructure: entered ReadyToShoot</code> appears in the
             console. The hardware does not change when that line lands — the two
             states run the same pose on purpose, so the console is the only
@@ -511,31 +511,31 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
             below cover both.
           </li>
           <li>
-            Release the right trigger. <strong>You should see:</strong> the
+            Release the right trigger. <strong>{"You should see: "}</strong> the
             flywheel stops. That is{" "}
             <code>switchFromAny(spinUp, ready).to(stowed)</code> firing.
           </li>
           <li>
             Hold the left trigger, then press B while still holding it.{" "}
-            <strong>You should see:</strong> the arm returns to vertical even
-            though the left trigger is still down — the any-state escape hatch
-            beats whatever state you were in. <strong>Keep holding it.</strong>{" "}
-            The arm stays vertical. The <code>stowed &rarr; pickup</code>{" "}
-            transition needs the trigger to go false and true again, because
-            transitions fire on the rising edge. Release and press again to go
-            back to pickup.
+            <strong>{"You should see: "}</strong> the arm returns to vertical
+            even though the left trigger is still down — the any-state escape
+            hatch beats whatever state you were in.{" "}
+            <strong>Keep holding it.</strong> The arm stays vertical. The{" "}
+            <code>stowed &rarr; pickup</code> transition needs the trigger to go
+            false and true again, because transitions fire on the rising edge.
+            Release and press again to go back to pickup.
           </li>
           <li>
             Now try to break it: hold the left trigger to get into{" "}
             <code>pickup</code>, and while still holding it, pull the right
-            trigger too. <strong>You should see:</strong> nothing. The arm stays
-            down and the flywheel stays stopped. There is no{" "}
+            trigger too. <strong>{"You should see: "}</strong> nothing. The arm
+            stays down and the flywheel stays stopped. There is no{" "}
             <code>pickup &rarr; spinUp</code> transition, so that jump does not
             exist. This is the whole point of the page.
           </li>
           <li>
             Scroll back through the console, or open the <code>.wpilog</code>{" "}
-            from the run. <strong>You should see:</strong> one{" "}
+            from the run. <strong>{"You should see: "}</strong> one{" "}
             <code>entered ReadyToShoot</code> and one{" "}
             <code>left ReadyToShoot</code> for each time you held the right
             trigger long enough to get up to speed. Matched pairs mean the
@@ -546,7 +546,7 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="Stuck in SpinUp, skipping straight to ready, or a state nothing can reach"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -620,58 +620,68 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
           its own or not?
         </p>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Box
-            variant="concept"
-            tag="FOR STATES THAT HOLD"
-            title="switchTo(next).when(condition)"
-          >
-            <p>
-              Checked every scheduler loop{" "}
-              <em>while the state&apos;s command is running</em>, and fires on
-              the rising edge — the moment the condition flips from false to
-              true. It has to go false and come back before it can fire again,
-              which is why{" "}
-              <code>switchFromAny().to(stowed).when(driver.b())</code> does not
-              spin in a loop when you are already stowed.
-            </p>
-            <p className="mt-3">
-              Five of the six transitions on the branch use{" "}
-              <code>.when(...)</code>; only <code>spinUp.switchTo(ready)</code>{" "}
-              uses <code>whenComplete()</code>. A state that holds can only ever
-              use <code>.when(...)</code>. A state that finishes can use either,
-              and <code>spinUp</code> uses both — <code>whenComplete()</code> to
-              advance to <code>ready</code>, and the{" "}
-              <code>switchFromAny(spinUp, ready)</code> <code>.when(...)</code>{" "}
-              to bail out when the trigger is released.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="FOR STATES THAT FINISH"
-            title="switchTo(next).whenComplete()"
-          >
-            <p>
-              Checked once, <em>after</em> the state&apos;s command finishes on
-              its own. <code>spinUp</code> is the only state on the branch that
-              can use it, because <code>.until(flywheel::isAtTarget)</code> is
-              what gives its command an ending.
-            </p>
-            <p className="mt-3">
-              Put <code>whenComplete()</code> on a hold-backed state and it
-              never fires, because the command never finishes. Put{" "}
-              <code>.when(...)</code> on a one-shot that finishes without ever
-              yielding and it never fires either, because the loop that checks
-              it never runs.
-            </p>
-            <p className="mt-3">
-              There is a third spelling, <code>whenCompleteAnd(condition)</code>
-              . It is a variant of this one — the same completion check plus an
-              extra condition — and the two boxes below use it.
-            </p>
-          </Box>
-        </div>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "For states that hold",
+              term: <code>switchTo(next).when(condition)</code>,
+              body: (
+                <>
+                  <p className="m-0">
+                    Checked every scheduler loop{" "}
+                    <em>while the state&apos;s command is running</em>, and
+                    fires on the rising edge — the moment the condition flips
+                    from false to true. It has to go false and come back before
+                    it can fire again, which is why{" "}
+                    <code>switchFromAny().to(stowed).when(driver.b())</code>{" "}
+                    does not spin in a loop when you are already stowed.
+                  </p>
+                  <p className="m-0 mt-3">
+                    Five of the six transitions on the branch use{" "}
+                    <code>.when(...)</code>; only{" "}
+                    <code>spinUp.switchTo(ready)</code> uses{" "}
+                    <code>whenComplete()</code>. A state that holds can only
+                    ever use <code>.when(...)</code>. A state that finishes can
+                    use either, and <code>spinUp</code> uses both —{" "}
+                    <code>whenComplete()</code> to advance to <code>ready</code>
+                    , and the <code>switchFromAny(spinUp, ready)</code>{" "}
+                    <code>.when(...)</code> to bail out when the trigger is
+                    released.
+                  </p>
+                </>
+              ),
+            },
+            {
+              label: "For states that finish",
+              term: <code>switchTo(next).whenComplete()</code>,
+              body: (
+                <>
+                  <p className="m-0">
+                    Checked once, <em>{"after "}</em> the state&apos;s command
+                    finishes on its own. <code>spinUp</code> is the only state
+                    on the branch that can use it, because{" "}
+                    <code>.until(flywheel::isAtTarget)</code> is what gives its
+                    command an ending.
+                  </p>
+                  <p className="m-0 mt-3">
+                    Put <code>whenComplete()</code> on a hold-backed state and
+                    it never fires, because the command never finishes. Put{" "}
+                    <code>.when(...)</code> on a one-shot that finishes without
+                    ever yielding and it never fires either, because the loop
+                    that checks it never runs.
+                  </p>
+                  <p className="m-0 mt-3">
+                    There is a third spelling,{" "}
+                    <code>whenCompleteAnd(condition)</code>. It is a variant of
+                    this one — the same completion check plus an extra condition
+                    — and the two panels below use it.
+                  </p>
+                </>
+              ),
+            },
+          ]}
+        />
 
         <Box
           variant="alert-warning"

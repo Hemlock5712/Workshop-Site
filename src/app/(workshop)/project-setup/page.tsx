@@ -144,9 +144,9 @@ export default function ProjectSetup() {
         <p className="text-[var(--tx2)] mb-6">
           For reference, this is how you&apos;d create a project from
           WPILib&apos;s built-in generator. Note that the generated skeleton
-          does <em>not</em> include the OpMode structure this workshop teaches;
-          you&apos;d be wiring mechanisms and OpModes up by hand, which is
-          exactly why we clone the template instead.
+          does <em>{"not "}</em> include the OpMode structure this workshop
+          teaches; you&apos;d be wiring mechanisms and OpModes up by hand, which
+          is exactly why we clone the template instead.
         </p>
 
         <div className="space-y-4">

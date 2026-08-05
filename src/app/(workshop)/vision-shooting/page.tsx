@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -38,12 +39,22 @@ export default function DynamicFlywheel() {
       branch="4-DynamicFlywheel"
       time="about 40 minutes to type in"
     >
-      <KeyConceptSection
-        description={[
-          "The drivetrain already knows roughly where it is on the field. So the flywheel can ask it, work out how far away the goal is, and look up the speed that works at that distance — every loop, while the robot is still moving.",
-        ]}
-        concept="A lookup table turns a handful of measured shots into a speed for every distance in between."
-      />
+      <Split>
+        <KeyConceptSection
+          description={[
+            "The drivetrain already knows roughly where it is on the field. So the flywheel can ask it, work out how far away the goal is, and look up the speed that works at that distance — every loop, while the robot is still moving.",
+          ]}
+          concept="A lookup table turns a handful of measured shots into a speed for every distance in between."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          A <code>Flywheel</code> mechanism that reads the drivetrain&apos;s
+          pose, measures the distance to a fixed field point, and sets its speed
+          from a lookup table, bound to the A button. Typing it in and watching
+          the numbers move is the short part. Filling the table with speeds that
+          actually score is a separate session, on a real field, with a pile of
+          game pieces — more on that below.
+        </MarginNote>
+      </Split>
 
       <Box
         variant="alert-warning"
@@ -89,21 +100,6 @@ export default function DynamicFlywheel() {
         <p className="mt-3">
           Skipping this page breaks nothing later. It is here because the idea
           is worth knowing, not because anything depends on it.
-        </p>
-      </Box>
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> a <code>Flywheel</code>{" "}
-          mechanism that reads the drivetrain&apos;s pose, measures the distance
-          to a fixed field point, and sets its speed from a lookup table — bound
-          to the A button.
-        </p>
-        <p className="mt-3">
-          <strong>How long:</strong> about 40 minutes to type in, build and
-          watch the numbers move. Filling the table with speeds that actually
-          score is a separate session, on a real field, with a pile of game
-          pieces. More on that below.
         </p>
       </Box>
 
@@ -401,12 +397,12 @@ export default function DynamicFlywheel() {
           </li>
         </ul>
 
-        <Box variant="alert-success" title="You should see">
-          Nothing yet — the file will not compile until it has a constructor.
-          What you should see is red squiggles on the <em>imports</em> only if
-          you typed a package name wrong. Grab the import block below if you
-          want to be sure.
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Nothing yet — the file will not
+          compile until it has a constructor. What you should see is red
+          squiggles on the <em>imports</em> only if you typed a package name
+          wrong. Grab the import block below if you want to be sure.
+        </p>
 
         <CollapsibleSection title="The full import block, if you want to paste it">
           <CodeBlock
@@ -500,16 +496,17 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             speed and pushes harder when the wheel is slow. It runs
             open-loop-ish, and it will sag when a game piece hits it. Tuning
             those two is bench work, using the same procedure as the{" "}
-            <strong>PID Control</strong> lesson. Do not read the zeros as
+            <strong>{"PID Control "}</strong> lesson. Do not read the zeros as
             &quot;tuned and finished.&quot;
           </p>
         </Box>
 
-        <Box variant="alert-success" title="You should see">
+        <p>
+          <strong>{"You should see: "}</strong>
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
           Every <code>final</code> field now gets assigned, which is what Step 1
           was missing. The class still does nothing — no command, no binding.
-        </Box>
+        </p>
       </LessonSection>
 
       {/* ── STEP 3 ───────────────────────────────────────────────────── */}
@@ -575,12 +572,13 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           command instead, which is the next step.
         </p>
 
-        <Box variant="alert-success" title="You should see">
+        <p>
+          <strong>{"You should see: "}</strong>
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
           Nothing calls either method yet, so nothing moves — the checkpoint is
           that <code>RotationsPerSecond</code> and <code>Translation2d</code>{" "}
           resolved and the two publishers are in scope.
-        </Box>
+        </p>
       </LessonSection>
 
       {/* ── STEP 4 ───────────────────────────────────────────────────── */}
@@ -620,26 +618,28 @@ import org.wpilib.networktables.NetworkTableInstance;`}
   }`}
         />
 
-        <p>
-          The body reads inside out:{" "}
-          <code>setVelocity(table.get(distanceToTarget()))</code>. Measure, look
-          up, send. Three calls, one line, once per loop.
-        </p>
-
-        <Box variant="concept" title="Why the name ends in (hold)">
-          <p>
-            <code>runRepeatedly(...)</code> never finishes on its own. It is a
-            hold, and the site&apos;s convention is that every hold says so in
-            its name. That suffix is not decoration — it is a warning to the
-            next person who reads it. Put <code>distanceShoot()</code> into a{" "}
-            <code>Command.sequence(...)</code> and the sequence stops there
-            forever, because step one never ends.
-          </p>
-          <p className="mt-3">
-            The suffix also shows up in the log, so a routine that has quietly
-            frozen tells you which hold it froze on.
-          </p>
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              The body reads inside out:{" "}
+              <code>setVelocity(table.get(distanceToTarget()))</code>. Measure,
+              look up, send. Three calls, one line, once per loop.
+            </p>
+            <p>
+              <code>runRepeatedly(...)</code> never finishes on its own, so both
+              names end in <code>(hold)</code> — the site&apos;s convention is
+              that every hold says so. That suffix is not decoration; it is a
+              warning to the next person who reads it. Put{" "}
+              <code>distanceShoot()</code> into a{" "}
+              <code>Command.sequence(...)</code> and the sequence stops there
+              forever, because step one never ends.
+            </p>
+          </ProseBlock>
+          <MarginNote label="IT SHOWS UP IN THE LOG">
+            Which means a routine that has quietly frozen tells you which hold
+            it froze on.
+          </MarginNote>
+        </Split>
 
         <Box
           variant="alert-danger"
@@ -659,13 +659,14 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           </p>
         </Box>
 
-        <Box variant="alert-success" title="You should see">
+        <p>
+          <strong>{"You should see: "}</strong>
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>, and{" "}
           <code>Flywheel.java</code> is finished: two public commands,{" "}
           <code>distanceShoot()</code> and <code>stop()</code>. Nothing runs
           either one yet — no <code>Robot</code> field owns the flywheel and no
           button is bound to it. That is Step 5.
-        </Box>
+        </p>
       </LessonSection>
 
       {/* ── STEP 5 ───────────────────────────────────────────────────── */}
@@ -761,14 +762,15 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           </div>
         </Box>
 
-        <Box variant="alert-success" title="You should see">
+        <p>
+          <strong>{"You should see: "}</strong>
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
           Start the robot code and a <code>Flywheel</code> table appears in your
           dashboard tree with <code>DistanceToTargetMeters</code> and{" "}
           <code>TargetVelocityRps</code> under it, before you press A. If the
           table is missing, <code>Robot</code> never built the flywheel — check
           the field you just added.
-        </Box>
+        </p>
       </LessonSection>
 
       {/* ── FILLING THE TABLE ────────────────────────────────────────── */}
@@ -877,19 +879,21 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Run <code>gradlew build</code>. <strong>You should see:</strong>{" "}
-            <code>BUILD SUCCESSFUL</code>. If the compiler points at{" "}
-            <code>.named(...)</code>, read the second failure below.
+            Run <code>gradlew build</code>.{" "}
+            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
+            If the compiler points at <code>.named(...)</code>, read the second
+            failure below.
           </li>
           <li>
             Start the robot code and open your dashboard. Find the{" "}
-            <code>Flywheel</code> table. <strong>You should see:</strong> two
-            entries, <code>DistanceToTargetMeters</code> and{" "}
+            <code>Flywheel</code> table. <strong>{"You should see: "}</strong>{" "}
+            two entries, <code>DistanceToTargetMeters</code> and{" "}
             <code>TargetVelocityRps</code>. They appear as soon as the flywheel
             is built, before you press anything.
           </li>
           <li>
-            Enable, and drive the robot around. <strong>You should see:</strong>{" "}
+            Enable, and drive the robot around.{" "}
+            <strong>{"You should see: "}</strong>{" "}
             <code>DistanceToTargetMeters</code> changing smoothly as you move.
             Drive toward the point you put in <code>TARGET</code> and it should
             fall; drive away and it should climb. Check it against a tape
@@ -897,27 +901,27 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             as your odometry.
           </li>
           <li>
-            Hold A. <strong>You should see:</strong>{" "}
+            Hold A. <strong>{"You should see: "}</strong>{" "}
             <code>TargetVelocityRps</code> stop reading zero, and the wheel spin
             up. With the shipped table, anywhere past 3 meters gives you exactly{" "}
             <code>60.0</code>.
           </li>
           <li>
             Keep A held and drive from about 2 meters in to about 1 meter.{" "}
-            <strong>You should see:</strong> <code>TargetVelocityRps</code>{" "}
+            <strong>{"You should see: "}</strong> <code>TargetVelocityRps</code>{" "}
             slide down from around 30 toward around 10, and the wheel slow to
             match. That is the table being read fifty times a second. Park at
             1.5 meters and it should sit near <code>20.0</code>.
           </li>
           <li>
             Drive out past 3 meters, still holding A.{" "}
-            <strong>You should see:</strong> the speed climb to{" "}
+            <strong>{"You should see: "}</strong> the speed climb to{" "}
             <code>60.0</code> and then stop climbing, however far you go. Not a
             bug — that is the end of the table.
           </li>
           <li>
-            Release A. <strong>You should see:</strong> with the branch&apos;s
-            binding as written,{" "}
+            Release A. <strong>{"You should see: "}</strong> with the
+            branch&apos;s binding as written,{" "}
             <em>the wheel keeps spinning at the last speed it was given</em>.
             Add the <code>whileFalse(robot.flywheel.stop())</code> from Step 5
             and try again: now the motor is released and the wheel coasts down.
@@ -929,7 +933,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="A crash on A, a missing name, a distance that never changes"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>

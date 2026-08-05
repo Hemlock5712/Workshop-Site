@@ -307,7 +307,7 @@ export default function Prerequisites() {
               to wire.
             </li>
             <li>
-              <strong>A CANcoder.</strong> The WCP ThroughBore encoder is a
+              <strong>{"A CANcoder. "}</strong> The WCP ThroughBore encoder is a
               CANcoder inside, which is why the code calls it one. It reports
               the arm&apos;s real angle and remembers that angle after a power
               cycle. The arm build uses one; the flywheel build does not.

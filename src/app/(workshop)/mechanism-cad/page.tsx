@@ -189,7 +189,7 @@ export default function MechanismCAD() {
       </LessonSection>
 
       {/* Next Steps */}
-      <LessonSection id="what-s-next" title="What's Next?">
+      <LessonSection id="what-s-next" title="What's next">
         <div className="bg-[var(--bg2)] rounded-lg p-8 border border-[var(--accent)]">
           <div className="flex items-start space-x-4">
             <div className="flex-shrink-0">

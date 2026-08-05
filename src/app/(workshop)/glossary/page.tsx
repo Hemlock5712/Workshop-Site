@@ -40,15 +40,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Motor Controller</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A smart device that controls how a motor
-              spins. Think of it like a dimmer switch for lights, but much
-              smarter: it can control speed, direction, and precisely how far
-              the motor turns.
+              <strong>{"Definition: "}</strong> An electronic device that
+              manages power delivery to a motor while monitoring performance
+              metrics like position, velocity, and current draw.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> An electronic device that manages
-              power delivery to a motor while monitoring performance metrics
-              like position, velocity, and current draw.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A smart device that controls
+              how a motor spins. Think of it like a dimmer switch for lights,
+              but much smarter: it can control speed, direction, and precisely
+              how far the motor turns.
             </p>
           </div>
 
@@ -58,15 +65,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">TalonFX / Kraken X44</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A specific type of motor controller made
-              by CTRE. The Kraken X44 is a motor with a TalonFX controller built
-              right into it, like having an engine and transmission in one
-              package.
+              <strong>{"Definition: "}</strong> CTRE&apos;s integrated brushless
+              motor and motor controller unit featuring built-in FOC control,
+              1kHz PID loops, and CAN bus communication.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> CTRE&apos;s integrated brushless motor
-              and motor controller unit featuring built-in FOC control, 1kHz PID
-              loops, and CAN bus communication.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A specific type of motor
+              controller made by CTRE. The Kraken X44 is a motor with a TalonFX
+              controller built right into it, like having an engine and
+              transmission in one package.
             </p>
           </div>
 
@@ -76,19 +90,23 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Encoder</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A sensor that measures how far and how
-              fast a motor has turned. Like a speedometer and odometer combined,
-              but for motors instead of cars.
+              <strong>{"Definition: "}</strong> A rotary position sensor that
+              provides feedback on shaft rotation, measured in rotations,
+              degrees, or encoder ticks.
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Imagine trying to park a car
-              blindfolded. An encoder is like opening your eyes so you can see
-              exactly where you are and how fast you&apos;re moving.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A rotary position sensor that provides
-              feedback on shaft rotation, measured in rotations, degrees, or
-              encoder ticks.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A sensor that measures how
+              far and how fast a motor has turned. Like a speedometer and
+              odometer combined, but for motors instead of cars. Imagine trying
+              to park a car blindfolded. An encoder is like opening your eyes so
+              you can see exactly where you are and how fast you&apos;re moving.
             </p>
           </div>
 
@@ -98,14 +116,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">CANcoder</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A standalone encoder that connects to the
-              CAN bus. Unlike encoders built into motors, you can mount this
-              anywhere to measure rotation of wheels, arms, or other mechanisms.
+              <strong>{"Definition: "}</strong> CTRE&apos;s absolute magnetic
+              encoder that communicates over CAN bus, providing persistent
+              position measurement even after power cycles.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> CTRE&apos;s absolute magnetic encoder
-              that communicates over CAN bus, providing persistent position
-              measurement even after power cycles.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A standalone encoder that
+              connects to the CAN bus. Unlike encoders built into motors, you
+              can mount this anywhere to measure rotation of wheels, arms, or
+              other mechanisms.
             </p>
           </div>
 
@@ -115,16 +141,23 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">CANivore</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A device that creates a high-speed
-              network for your robot&apos;s motors and sensors to talk to each
-              other. Like a super-fast Wi-Fi router, but for robot parts instead
-              of computers. It increases the refresh rate of motors from 50 Hz
-              to 250 Hz, giving you more accurate odometry.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A USB-to-CAN FD interface that
+              <strong>{"Definition: "}</strong> A USB-to-CAN FD interface that
               provides an additional CAN bus network with higher bandwidth and
               lower latency than the roboRIO&apos;s built-in CAN bus.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A device that creates a
+              high-speed network for your robot&apos;s motors and sensors to
+              talk to each other. Like a super-fast Wi-Fi router, but for robot
+              parts instead of computers. It increases the refresh rate of
+              motors from 50 Hz to 250 Hz, giving you more accurate odometry.
             </p>
           </div>
 
@@ -134,15 +167,23 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Phoenix 6</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The latest software library from CTRE for
-              controlling their motors and sensors. It&apos;s the
+              <strong>{"Definition: "}</strong> CTRE&apos;s API for
+              communicating with v6 firmware devices, offering improved
+              performance, FOC support, and simplified licensing compared to
+              Phoenix 5.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The latest software library
+              from CTRE for controlling their motors and sensors. It&apos;s the
               &quot;language&quot; your code uses to talk to TalonFXs and
               CANcoders.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> CTRE&apos;s API for communicating with
-              v6 firmware devices, offering improved performance, FOC support,
-              and simplified licensing compared to Phoenix 5.
             </p>
           </div>
 
@@ -152,15 +193,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">CAN Bus</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The communication network that connects
-              motors, sensors, and the robot brain (roboRIO). Like a telephone
-              line that lets all robot parts talk to each other using the same
-              wire.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Controller Area Network, a
+              <strong>{"Definition: "}</strong> Controller Area Network, a
               communication protocol that allows multiple devices to communicate
               over a shared bus using unique device IDs.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The communication network
+              that connects motors, sensors, and the robot brain (roboRIO). Like
+              a telephone line that lets all robot parts talk to each other
+              using the same wire.
             </p>
           </div>
 
@@ -170,13 +218,21 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Device ID</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A unique number (like a name tag) given
-              to each motor or sensor so your code knows which one to control.
+              <strong>{"Definition: "}</strong> A unique integer identifier
+              (typically 1-62) assigned to each CAN device for addressing and
+              communication on the network.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A unique integer identifier (typically
-              1-62) assigned to each CAN device for addressing and communication
-              on the network.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A unique number (like a name
+              tag) given to each motor or sensor so your code knows which one to
+              control.
             </p>
           </div>
 
@@ -186,16 +242,23 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">roboRIO</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The &quot;brain&quot; of your robot.
-              It&apos;s a small computer that runs your code and tells all the
-              motors and sensors what to do.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> National Instruments&apos; embedded
-              controller designed for FRC, running a real-time Linux operating
-              system and WPILib framework. Note: the WPILib 2027 stack this
-              workshop targets deploys to <strong>SystemCore</strong>, the
+              <strong>{"Definition: "}</strong> National Instruments&apos;
+              embedded controller designed for FRC, running a real-time Linux
+              operating system and WPILib framework. Note: the WPILib 2027 stack
+              this workshop targets deploys to <strong>SystemCore</strong>, the
               roboRIO&apos;s successor, instead.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The &quot;brain&quot; of
+              your robot. It&apos;s a small computer that runs your code and
+              tells all the motors and sensors what to do.
             </p>
           </div>
 
@@ -205,15 +268,23 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Swerve Drive</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A drivetrain where every wheel can both
-              spin and steer on its own. The robot can drive any direction while
-              rotating, like a shopping cart where all four wheels steer.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Four independent modules, each with a
-              drive motor and a steering motor. The workshop uses CTRE&apos;s
-              generated swerve code wrapped in a hand-written{" "}
+              <strong>{"Definition: "}</strong> Four independent modules, each
+              with a drive motor and a steering motor. The workshop uses
+              CTRE&apos;s generated swerve code wrapped in a hand-written{" "}
               <code>DriveMechanism</code>. Covered in Workshop #2.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A drivetrain where every
+              wheel can both spin and steer on its own. The robot can drive any
+              direction while rotating, like a shopping cart where all four
+              wheels steer.
             </p>
           </div>
         </div>
@@ -238,19 +309,24 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Subsystem</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A section of code that represents one
-              physical part of your robot (like an arm, shooter, or drivetrain).
-              It knows how to control its motors and read its sensors.
+              <strong>{"Definition: "}</strong> In Commands v3 (WPILib 2027)
+              this is called a <strong>Mechanism</strong>: a class you extend
+              that owns hardware (motors, sensors) and exposes commands.
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Think of your robot like a
-              human body. The arm subsystem is like your actual arm: it knows
-              how to move, knows where it is, and has specific jobs it can do.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> In Commands v3 (WPILib 2027) this is
-              called a <strong>Mechanism</strong>: a class you extend that owns
-              hardware (motors, sensors) and exposes commands.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A section of code that
+              represents one physical part of your robot (like an arm, shooter,
+              or drivetrain). It knows how to control its motors and read its
+              sensors. Think of your robot like a human body. The arm subsystem
+              is like your actual arm: it knows how to move, knows where it is,
+              and has specific jobs it can do.
             </p>
           </div>
 
@@ -260,26 +336,31 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Command</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> An action your robot performs, like
-              &quot;raise arm&quot; or &quot;shoot ball&quot;. Commands use
-              subsystems to get things done.
+              <strong>{"Definition: "}</strong> A schedulable unit of robot
+              behavior that declares its mechanism requirements, built from a
+              mechanism factory and finished with{" "}
+              <code>.named(&quot;...&quot;)</code>. Most commands on this team
+              are <strong>holds</strong> (<code>runRepeatedly</code> re-sending
+              a setpoint). A step-by-step initialize / execute / isFinished /
+              end lifecycle is also available by extending{" "}
+              <code>ClassicCommand</code>, and advanced routines can be a single
+              coroutine body via <code>mechanism.run(coroutine -&gt; ...)</code>
+              .
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> If subsystems are body parts,
-              commands are actions. &quot;Raise arm&quot; is a command that
-              tells the arm subsystem what to do, just like your brain tells
-              your arm to pick up a cup.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A schedulable unit of robot behavior
-              that declares its mechanism requirements, built from a mechanism
-              factory and finished with <code>.named(&quot;...&quot;)</code>.
-              Most commands on this team are <strong>holds</strong> (
-              <code>runRepeatedly</code> re-sending a setpoint). A step-by-step
-              initialize / execute / isFinished / end lifecycle is also
-              available by extending <code>ClassicCommand</code>, and advanced
-              routines can be a single coroutine body via{" "}
-              <code>mechanism.run(coroutine -&gt; ...)</code>.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> An action your robot
+              performs, like &quot;raise arm&quot; or &quot;shoot ball&quot;.
+              Commands use subsystems to get things done. If subsystems are body
+              parts, commands are actions. &quot;Raise arm&quot; is a command
+              that tells the arm subsystem what to do, just like your brain
+              tells your arm to pick up a cup.
             </p>
           </div>
 
@@ -289,23 +370,27 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Trigger</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A connection between a button press (or
-              sensor reading) and a command. When you press button A, the
-              trigger runs a specific command.
+              <strong>{"Definition: "}</strong> A boolean condition (from
+              buttons, sensors, or custom logic) that schedules commands when
+              its state changes. <code>whileTrue()</code> is the everyday
+              method: it runs a hold while the condition is true and hands the
+              mechanism back to its default command when it goes false.{" "}
+              <code>onTrue()</code> fires once, for self-finishing commands.
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Like a light switch: when you
-              flip it (trigger), the light turns on (command runs). The switch
-              doesn&apos;t create light itself, it just tells the light what to
-              do.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A boolean condition (from buttons,
-              sensors, or custom logic) that schedules commands when its state
-              changes. <code>whileTrue()</code> is the everyday method: it runs
-              a hold while the condition is true and hands the mechanism back to
-              its default command when it goes false. <code>onTrue()</code>{" "}
-              fires once, for self-finishing commands.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A connection between a
+              button press (or sensor reading) and a command. When you press
+              button A, the trigger runs a specific command. Like a light
+              switch: when you flip it (trigger), the light turns on (command
+              runs). The switch doesn&apos;t create light itself, it just tells
+              the light what to do.
             </p>
           </div>
 
@@ -317,16 +402,23 @@ export default function Glossary() {
               Command-Based Programming
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The main way FRC teams organize robot
-              code. You divide your robot into subsystems (parts), create
-              commands (actions), and use triggers (buttons) to make things
-              happen.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> WPILib&apos;s design pattern
+              <strong>{"Definition: "}</strong> WPILib&apos;s design pattern
               organizing code into subsystems, commands, and triggers, providing
               clear separation of concerns and automatic scheduling/conflict
               resolution.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The main way FRC teams
+              organize robot code. You divide your robot into subsystems
+              (parts), create commands (actions), and use triggers (buttons) to
+              make things happen.
             </p>
           </div>
 
@@ -338,17 +430,24 @@ export default function Glossary() {
               CommandSwerveDrivetrain
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A special class generated by Phoenix
-              Tuner X that handles all the complex math for swerve drive. It
-              connects CTRE&apos;s swerve logic with WPILib&apos;s command-based
-              structure.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A generated class that extends
+              <strong>{"Definition: "}</strong> A generated class that extends
               CTRE&apos;s SwerveDrivetrain. In the v3 template it isn&apos;t a
               Mechanism itself. A hand-written <code>DriveMechanism</code>{" "}
               (extends Mechanism) wraps it and exposes the drive commands to
               command-based code.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A special class generated by
+              Phoenix Tuner X that handles all the complex math for swerve
+              drive. It connects CTRE&apos;s swerve logic with WPILib&apos;s
+              command-based structure.
             </p>
           </div>
 
@@ -358,17 +457,24 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Periodic Method</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> Code that runs automatically every 20
-              milliseconds (50 times per second). Used for displaying data or
-              monitoring sensors, NOT for controlling motors directly.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A callback the scheduler runs every
-              robot loop (20ms) for telemetry/monitoring. Commands v3 mechanisms
-              don&apos;t have a <code>periodic()</code> method. Use a{" "}
+              <strong>{"Definition: "}</strong> A callback the scheduler runs
+              every robot loop (20ms) for telemetry/monitoring. Commands v3
+              mechanisms don&apos;t have a <code>periodic()</code> method. Use a{" "}
               <code>runRepeatedly(...)</code> default command, or register a
               callback with <code>Scheduler.getDefault().addPeriodic(...)</code>
               .
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> Code that runs automatically
+              every 20 milliseconds (50 times per second). Used for displaying
+              data or monitoring sensors, NOT for controlling motors directly.
             </p>
           </div>
 
@@ -378,16 +484,24 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Mechanism</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The Commands v3 (WPILib 2027) name for a
-              subsystem: one physical part of the robot (arm, flywheel,
-              drivetrain). It owns the hardware and hands out commands.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A base class you extend (
+              <strong>{"Definition: "}</strong> A base class you extend (
               <code>extends Mechanism</code>). It supplies command factories (
               <code>run</code>, <code>runRepeatedly</code>, <code>idle</code>)
               and automatically holds a low-priority idle default command until
               something else commands it.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The Commands v3 (WPILib
+              2027) name for a subsystem: one physical part of the robot (arm,
+              flywheel, drivetrain). It owns the hardware and hands out
+              commands.
             </p>
           </div>
 
@@ -397,17 +511,25 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">OpMode</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A &quot;mode&quot; the robot can be in:
-              driver teleop, an autonomous routine, or a calibration task. Each
-              one is its own class, and the driver station lists them by name.
-              The Commands v3 stack organizes robot setup around OpModes.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A class extending{" "}
+              <strong>{"Definition: "}</strong> A class extending{" "}
               <code>PeriodicOpMode</code> tagged <code>@Teleop</code>,{" "}
               <code>@Autonomous</code>, or <code>@Utility</code>. Selecting it
               constructs it (building its button bindings); switching away tears
               it down.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A &quot;mode&quot; the robot
+              can be in: driver teleop, an autonomous routine, or a calibration
+              task. Each one is its own class, and the driver station lists them
+              by name. The Commands v3 stack organizes robot setup around
+              OpModes.
             </p>
           </div>
 
@@ -417,20 +539,27 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Coroutine</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The thing that lets a Commands v3 command
-              body pause and resume. Inside a command you call{" "}
-              <code>coroutine.wait(...)</code>, <code>waitUntil(...)</code>, or{" "}
-              <code>await(...)</code> to pause until something happens. Then the
-              code keeps going from where it left off.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> The <code>Coroutine</code> handle
-              passed to a command body. It lets a single method suspend at{" "}
-              <code>yield</code>/<code>wait</code>/<code>waitUntil</code>/
+              <strong>{"Definition: "}</strong> The <code>Coroutine</code>{" "}
+              handle passed to a command body. It lets a single method suspend
+              at <code>yield</code>/<code>wait</code>/<code>waitUntil</code>/
               <code>await</code>/<code>park</code>/<code>fork</code> and resume
               on a later scheduler tick, so the whole command reads as one
               straight-line method. On this team it&apos;s an optional advanced
               dialect; everyday robot code uses holds and chaining instead.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The thing that lets a
+              Commands v3 command body pause and resume. Inside a command you
+              call <code>coroutine.wait(...)</code>, <code>waitUntil(...)</code>
+              , or <code>await(...)</code> to pause until something happens.
+              Then the code keeps going from where it left off.
             </p>
           </div>
 
@@ -440,21 +569,7 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Hold</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A command that takes a mechanism to a
-              setpoint and <em>stays there</em>: hold a button (
-              <code>whileTrue</code>) and the arm goes to the scoring angle and
-              keeps fighting gravity; let go and the default command comes back.
-              Almost every mechanism command in this workshop is a hold.
-            </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>The one rule:</strong> a hold never finishes, so nothing
-              may ever wait on a hold. A bare hold inside{" "}
-              <code>Command.sequence</code> sticks there forever. Every hold is
-              named with a <code>(hold)</code> suffix so a stuck routine is
-              visible on the dashboard.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong>{" "}
+              <strong>{"Definition: "}</strong>{" "}
               <code>
                 runRepeatedly(() -&gt; setPosition(TARGET)).named(&quot;target
                 (hold)&quot;)
@@ -464,6 +579,27 @@ export default function Glossary() {
               <code>.until(mech::isAtTarget)</code>; never bake an{" "}
               <code>...AndWait</code> variant into the mechanism.
             </p>
+            <p className="text-[var(--tx2)] mb-2">
+              <strong>The one rule:</strong> a hold never finishes, so nothing
+              may ever wait on a hold. A bare hold inside{" "}
+              <code>Command.sequence</code> sticks there forever. Every hold is
+              named with a <code>(hold)</code> suffix so a stuck routine is
+              visible on the dashboard.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A command that takes a
+              mechanism to a setpoint and <em>stays there</em>: hold a button (
+              <code>whileTrue</code>) and the arm goes to the scoring angle and
+              keeps fighting gravity; let go and the default command comes back.
+              Almost every mechanism command in this workshop is a hold.
+            </p>
           </div>
 
           <div
@@ -472,13 +608,7 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Chaining</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> Building a routine (like an auto) by
-              snapping commands together, one after another. This is the
-              team&apos;s recommended style, as far as most routines ever need
-              to go.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Three tools:{" "}
+              <strong>{"Definition: "}</strong> Three tools:{" "}
               <code>Command.sequence(...)</code> for steps that finish on their
               own, <code>.until(mech::isAtTarget)</code> to give a hold a finish
               line at the call site, and <code>Command.race(step, hold)</code>{" "}
@@ -489,6 +619,19 @@ export default function Glossary() {
               <code>DriveStowDriveChainedOpMode.java</code> in the
               2027-Template.
             </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> Building a routine (like an
+              auto) by snapping commands together, one after another. This is
+              the team&apos;s recommended style, as far as most routines ever
+              need to go.
+            </p>
           </div>
 
           <div
@@ -497,14 +640,7 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">StateMachine</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> An optional, advanced way to organize
-              robot behavior where the robot is always in exactly one named
-              state (stowed, pickup, scoring…) and buttons or sensors move it
-              between states. Illegal jumps can&apos;t happen because no
-              transition was declared for them.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong>{" "}
+              <strong>{"Definition: "}</strong>{" "}
               <code>org.wpilib.command3.StateMachine</code>, shipped in WPILib
               2027 alpha-6. Each state owns a command (typically one of the
               mechanism&apos;s holds); transitions are declared with{" "}
@@ -512,6 +648,20 @@ export default function Glossary() {
               <code>whenComplete()</code> (for self-finishing state commands).
               See the State Machines lesson and{" "}
               <code>StateMachineTeleop.java</code> in the 2027-Template.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> An optional, advanced way to
+              organize robot behavior where the robot is always in exactly one
+              named state (stowed, pickup, scoring…) and buttons or sensors move
+              it between states. Illegal jumps can&apos;t happen because no
+              transition was declared for them.
             </p>
           </div>
         </div>
@@ -536,21 +686,25 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">PID Control</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A smart way to automatically control
-              motors to reach exact positions or speeds. Instead of you
-              constantly adjusting, PID measures the error and corrects it.
-            </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Like cruise control in a car.
-              You set a target speed (60 mph), and the car automatically adjusts
-              the gas pedal to maintain that speed, even going uphill or
-              downhill.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Proportional-Integral-Derivative
+              <strong>{"Definition: "}</strong> Proportional-Integral-Derivative
               controller that uses error feedback to automatically adjust motor
               output, minimizing the difference between desired and actual
               states.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A smart way to automatically
+              control motors to reach exact positions or speeds. Instead of you
+              constantly adjusting, PID measures the error and corrects it. Like
+              cruise control in a car. You set a target speed (60 mph), and the
+              car automatically adjusts the gas pedal to maintain that speed,
+              even going uphill or downhill.
             </p>
           </div>
 
@@ -562,14 +716,22 @@ export default function Glossary() {
               kP (Proportional Gain)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> How strongly the motor reacts to being
-              away from the target. Higher kP = stronger reaction. Like pressing
-              the gas pedal harder when you&apos;re further from your target
-              speed.
+              <strong>{"Definition: "}</strong> The proportional gain
+              coefficient determining motor output per unit of error (Output =
+              kP × Error).
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> The proportional gain coefficient
-              determining motor output per unit of error (Output = kP × Error).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> How strongly the motor
+              reacts to being away from the target. Higher kP = stronger
+              reaction. Like pressing the gas pedal harder when you&apos;re
+              further from your target speed.
             </p>
           </div>
 
@@ -579,19 +741,26 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">kI (Integral Gain)</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> Corrects for small steady errors that
-              build up over time. Usually left at zero for FRC because it can
-              cause instability.
+              <strong>{"Definition: "}</strong> The integral gain coefficient
+              that accumulates error over time to eliminate steady-state error
+              (Output = kI × ∑Error).
             </p>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>When to use:</strong> Most FRC mechanisms don&apos;t need
-              this. Only use if your mechanism consistently stops just short of
-              the target.
+              <strong>{"When to use: "}</strong> Most FRC mechanisms don&apos;t
+              need this. Only use if your mechanism consistently stops just
+              short of the target.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> The integral gain coefficient that
-              accumulates error over time to eliminate steady-state error
-              (Output = kI × ∑Error).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> Corrects for small steady
+              errors that build up over time. Usually left at zero for FRC
+              because it can cause instability.
             </p>
           </div>
 
@@ -601,14 +770,21 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">kD (Derivative Gain)</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> Slows down the motor as it approaches the
-              target to prevent overshooting. Like easing off the gas as you
-              approach a stop sign.
+              <strong>{"Definition: "}</strong> The derivative gain coefficient
+              that responds to the rate of error change, providing damping to
+              reduce oscillation (Output = kD × dError/dt).
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> The derivative gain coefficient that
-              responds to the rate of error change, providing damping to reduce
-              oscillation (Output = kD × dError/dt).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> Slows down the motor as it
+              approaches the target to prevent overshooting. Like easing off the
+              gas as you approach a stop sign.
             </p>
           </div>
 
@@ -618,21 +794,25 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Feedforward (FF)</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A &quot;smart guess&quot; about how much
-              power you need, based on physics rather than error. Instead of
-              waiting for the motor to be wrong and then correcting it,
-              feedforward predicts what&apos;s needed.
+              <strong>{"Definition: "}</strong> Model-based control that
+              predicts required output based on system physics (gravity,
+              friction, velocity) rather than reacting to error.
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> When carrying a heavy
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A &quot;smart guess&quot;
+              about how much power you need, based on physics rather than error.
+              Instead of waiting for the motor to be wrong and then correcting
+              it, feedforward predicts what&apos;s needed. When carrying a heavy
               backpack upstairs, you automatically use more effort than on flat
               ground. You don&apos;t wait to slow down and then push harder. You
               predict you&apos;ll need more force.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Model-based control that predicts
-              required output based on system physics (gravity, friction,
-              velocity) rather than reacting to error.
             </p>
           </div>
 
@@ -644,14 +824,22 @@ export default function Glossary() {
               kS (Static Feedforward)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The minimum voltage needed to overcome
-              friction and get your mechanism moving from a standstill. Like the
-              initial push needed to get a heavy door to start opening.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Static friction compensation, a
+              <strong>{"Definition: "}</strong> Static friction compensation, a
               constant voltage applied to overcome static friction regardless of
               desired velocity.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The minimum voltage needed
+              to overcome friction and get your mechanism moving from a
+              standstill. Like the initial push needed to get a heavy door to
+              start opening.
             </p>
           </div>
 
@@ -663,18 +851,26 @@ export default function Glossary() {
               kG (Gravity Feedforward)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> Extra power needed to hold up an arm or
-              elevator against gravity. The voltage changes based on the angle:
-              horizontal arms need more help than vertical ones.
+              <strong>{"Definition: "}</strong> Gravity compensation coefficient
+              that applies voltage proportional to the cosine of the mechanism
+              angle to counteract gravitational torque.
             </p>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>When to use:</strong> For arms, elevators, or anything
-              fighting gravity. Not needed for wheels or horizontal mechanisms.
+              <strong>{"When to use: "}</strong> For arms, elevators, or
+              anything fighting gravity. Not needed for wheels or horizontal
+              mechanisms.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Gravity compensation coefficient that
-              applies voltage proportional to the cosine of the mechanism angle
-              to counteract gravitational torque.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> Extra power needed to hold
+              up an arm or elevator against gravity. The voltage changes based
+              on the angle: horizontal arms need more help than vertical ones.
             </p>
           </div>
 
@@ -686,16 +882,25 @@ export default function Glossary() {
               kV (Velocity Feedforward)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> How much voltage is needed per unit of
-              speed. Helps the motor reach and maintain target speeds smoothly.
+              <strong>{"Definition: "}</strong> Velocity feedforward gain
+              determining voltage per unit of target velocity (Volts = kV ×
+              TargetVelocity).
             </p>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>When to use:</strong> For flywheels, shooters, and any
-              mechanism where speed control is important.
+              <strong>{"When to use: "}</strong> For flywheels, shooters, and
+              any mechanism where speed control is important.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Velocity feedforward gain determining
-              voltage per unit of target velocity (Volts = kV × TargetVelocity).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> How much voltage is needed
+              per unit of speed. Helps the motor reach and maintain target
+              speeds smoothly.
             </p>
           </div>
 
@@ -705,20 +910,24 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Motion Magic</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> An upgrade to PID that makes movements
-              smooth instead of jerky. Instead of rushing to the target, it
-              accelerates smoothly, cruises, then slows down smoothly.
+              <strong>{"Definition: "}</strong> CTRE&apos;s trapezoidal motion
+              profile generator that creates smooth velocity curves with
+              controlled acceleration, cruise, and deceleration phases.
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Like an elevator: it
-              doesn&apos;t instantly jump to full speed and slam to a stop. It
-              accelerates smoothly when starting, maintains speed, then
-              decelerates smoothly to arrive gently.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> CTRE&apos;s trapezoidal motion profile
-              generator that creates smooth velocity curves with controlled
-              acceleration, cruise, and deceleration phases.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> An upgrade to PID that makes
+              movements smooth instead of jerky. Instead of rushing to the
+              target, it accelerates smoothly, cruises, then slows down
+              smoothly. Like an elevator: it doesn&apos;t instantly jump to full
+              speed and slam to a stop. It accelerates smoothly when starting,
+              maintains speed, then decelerates smoothly to arrive gently.
             </p>
           </div>
 
@@ -728,14 +937,21 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Closed-Loop Control</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A control method that uses sensor
-              feedback. The motor checks where it actually is (using an encoder)
-              and adjusts automatically to reach the target.
+              <strong>{"Definition: "}</strong> A feedback control system where
+              sensor measurements inform control decisions, creating a closed
+              feedback loop (sensor → controller → motor → sensor).
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A feedback control system where sensor
-              measurements inform control decisions, creating a closed feedback
-              loop (sensor → controller → motor → sensor).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A control method that uses
+              sensor feedback. The motor checks where it actually is (using an
+              encoder) and adjusts automatically to reach the target.
             </p>
           </div>
 
@@ -745,18 +961,26 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Open-Loop Control</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> Direct voltage control with no sensor
-              feedback. You tell the motor &quot;run at 6 volts&quot; and hope
-              it does what you want. Simple but imprecise.
+              <strong>{"Definition: "}</strong> Control without feedback. Motor
+              output is set directly without measuring actual performance or
+              position.
             </p>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>When to use:</strong> For testing motors, simple
+              <strong>{"When to use: "}</strong> For testing motors, simple
               movements, or mechanisms where precision isn&apos;t critical (like
               running an intake).
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Control without feedback. Motor output
-              is set directly without measuring actual performance or position.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> Direct voltage control with
+              no sensor feedback. You tell the motor &quot;run at 6 volts&quot;
+              and hope it does what you want. Simple but imprecise.
             </p>
           </div>
         </div>
@@ -781,14 +1005,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">WPILib</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The main programming toolkit for FRC
-              robots. It includes everything you need to write robot code, like
-              Microsoft Word does for documents.
+              <strong>{"Definition: "}</strong> FRC&apos;s official software
+              library providing robot framework, command-based programming
+              structure, motor control, sensor integration, and development
+              tools.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> FRC&apos;s official software library
-              providing robot framework, command-based programming structure,
-              motor control, sensor integration, and development tools.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The main programming toolkit
+              for FRC robots. It includes everything you need to write robot
+              code, like Microsoft Word does for documents.
             </p>
           </div>
 
@@ -798,14 +1030,21 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Phoenix Tuner X</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A program that lets you test and
-              configure CTRE motors without writing any code. You can spin
-              motors, check sensors, update firmware, and tune PID values.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> CTRE&apos;s device configuration and
-              diagnostic tool for configuring, testing, and tuning Phoenix
+              <strong>{"Definition: "}</strong> CTRE&apos;s device configuration
+              and diagnostic tool for configuring, testing, and tuning Phoenix
               devices with live plotting and control.
+            </p>
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A program that lets you test
+              and configure CTRE motors without writing any code. You can spin
+              motors, check sensors, update firmware, and tune PID values.
             </p>
           </div>
 
@@ -815,14 +1054,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Driver Station</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The program that connects your laptop to
-              the robot during matches. It shows you robot status, lets you
-              enable/disable the robot, and displays error messages.
+              <strong>{"Definition: "}</strong> FMS-compatible software
+              interface for robot communication, control mode selection,
+              joystick input, diagnostics, and competition connectivity.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> FMS-compatible software interface for
-              robot communication, control mode selection, joystick input,
-              diagnostics, and competition connectivity.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The program that connects
+              your laptop to the robot during matches. It shows you robot
+              status, lets you enable/disable the robot, and displays error
+              messages.
             </p>
           </div>
 
@@ -834,20 +1081,24 @@ export default function Glossary() {
               Git / Version Control
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A system that saves every version of your
-              code as you work. Like a super-powered &quot;undo&quot; button
-              that lets you go back to any previous version of your code, even
-              from weeks ago.
+              <strong>{"Definition: "}</strong> Distributed version control
+              system tracking code changes, enabling collaboration, branching,
+              and code history management.
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Like Google Docs version
-              history, but for code. You can see what changed, who changed it,
-              and restore old versions if needed.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Distributed version control system
-              tracking code changes, enabling collaboration, branching, and code
-              history management.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A system that saves every
+              version of your code as you work. Like a super-powered
+              &quot;undo&quot; button that lets you go back to any previous
+              version of your code, even from weeks ago. Like Google Docs
+              version history, but for code. You can see what changed, who
+              changed it, and restore old versions if needed.
             </p>
           </div>
 
@@ -857,14 +1108,22 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">NetworkTables</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A shared bulletin board for your robot.
-              Your code can post numbers (like battery voltage) to it, and your
-              laptop can read them. It&apos;s how dashboards get their data.
+              <strong>{"Definition: "}</strong> A publish-subscribe messaging
+              system used in FRC to communicate data between the robot, driver
+              station, and coprocessors over the network.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A publish-subscribe messaging system
-              used in FRC to communicate data between the robot, driver station,
-              and coprocessors over the network.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A shared bulletin board for
+              your robot. Your code can post numbers (like battery voltage) to
+              it, and your laptop can read them. It&apos;s how dashboards get
+              their data.
             </p>
           </div>
 
@@ -874,14 +1133,21 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">TunerConstants.java</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> A specific file generated by Phoenix
-              Tuner X that contains all the settings for your swerve drive, like
-              CAN IDs, gear ratios, and physical measurements.
+              <strong>{"Definition: "}</strong> A generated Java configuration
+              file containing static constants that define the physical
+              properties and electrical configuration of the swerve drivetrain.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> A generated Java configuration file
-              containing static constants that define the physical properties
-              and electrical configuration of the swerve drivetrain.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> A specific file generated by
+              Phoenix Tuner X that contains all the settings for your swerve
+              drive, like CAN IDs, gear ratios, and physical measurements.
             </p>
           </div>
         </div>
@@ -905,18 +1171,25 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Rotations</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> How CTRE motors measure position: one
-              full spin = 1 rotation. Much easier than degrees (360°) or radians
-              (2π).
+              <strong>{"Definition: "}</strong> Phoenix 6&apos;s native position
+              unit representing complete shaft revolutions (1 rotation = 360° =
+              2π radians).
             </p>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Example:</strong> If your arm is at 0.25 rotations, it has
               turned one-quarter of a full circle (90 degrees).
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Phoenix 6&apos;s native position unit
-              representing complete shaft revolutions (1 rotation = 360° = 2π
-              radians).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> How CTRE motors measure
+              position: one full spin = 1 rotation. Much easier than degrees
+              (360°) or radians (2π).
             </p>
           </div>
 
@@ -928,16 +1201,23 @@ export default function Glossary() {
               RPS (Rotations Per Second)
             </h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> How fast a motor is spinning, measured in
-              full rotations each second.
+              <strong>{"Definition: "}</strong> Velocity measurement in Phoenix
+              6 (1 RPS = 60 RPM = 360°/s).
             </p>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Example:</strong> A motor running at 10 RPS completes 10
               full spins every second.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Velocity measurement in Phoenix 6 (1
-              RPS = 60 RPM = 360°/s).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> How fast a motor is
+              spinning, measured in full rotations each second.
             </p>
           </div>
 
@@ -947,18 +1227,26 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Voltage</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> The &quot;strength&quot; of electrical
-              power sent to the motor. FRC uses 12-volt batteries, so motors can
-              receive anywhere from -12V (full reverse) to +12V (full forward).
+              <strong>{"Definition: "}</strong> Electrical potential difference
+              measured in volts, controlling motor speed and torque output (FRC
+              nominal: 12V).
             </p>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Example:</strong> 6V makes the motor run at half power,
               12V is full power.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Electrical potential difference
-              measured in volts, controlling motor speed and torque output (FRC
-              nominal: 12V).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> The &quot;strength&quot; of
+              electrical power sent to the motor. FRC uses 12-volt batteries, so
+              motors can receive anywhere from -12V (full reverse) to +12V (full
+              forward).
             </p>
           </div>
 
@@ -968,19 +1256,24 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Gear Ratio</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> How much the motor&apos;s speed is
-              reduced to increase power. A 25:1 gear ratio means the motor spins
-              25 times for the output to spin once: slower but 25x stronger.
+              <strong>{"Definition: "}</strong> Ratio of input rotations to
+              output rotations, trading velocity for torque (25:1 = 25 motor
+              rotations per 1 output rotation).
             </p>
-            <p className="text-[var(--tx2)] mb-2">
-              <strong>Real-world analogy:</strong> Like bicycle gears: low gear
-              (high ratio) is slow but powerful for hills; high gear (low ratio)
-              is fast but weak for flat roads.
-            </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Ratio of input rotations to output
-              rotations, trading velocity for torque (25:1 = 25 motor rotations
-              per 1 output rotation).
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> How much the motor&apos;s
+              speed is reduced to increase power. A 25:1 gear ratio means the
+              motor spins 25 times for the output to spin once: slower but 25x
+              stronger. Like bicycle gears: low gear (high ratio) is slow but
+              powerful for hills; high gear (low ratio) is fast but weak for
+              flat roads.
             </p>
           </div>
 
@@ -990,19 +1283,26 @@ export default function Glossary() {
           >
             <h3 className="display m-0 mb-2 text-lede">Tolerance</h3>
             <p className="text-[var(--tx2)] mb-2">
-              <strong>Simple:</strong> How close is &quot;close enough&quot; to
-              the target. If your target is 90° with a tolerance of 2°, anywhere
-              from 88° to 92° counts as success.
+              <strong>{"Definition: "}</strong> Acceptable error range from
+              setpoint, defining when a control system is considered &quot;at
+              target&quot; or finished.
             </p>
             <p className="text-[var(--tx2)] mb-2">
               <strong>Why it matters:</strong> Perfect precision is impossible.
               Tolerance defines acceptable error so your robot can move on to
               the next action.
             </p>
-            <p className="text-[var(--tx2)]">
-              <strong>Technical:</strong> Acceptable error range from setpoint,
-              defining when a control system is considered &quot;at target&quot;
-              or finished.
+            <p
+              className="text-note"
+              style={{
+                fontFamily: "var(--font-serif)",
+                fontStyle: "italic",
+                color: "var(--tx3)",
+              }}
+            >
+              <strong>{"If this is new: "}</strong> How close is &quot;close
+              enough&quot; to the target. If your target is 90° with a tolerance
+              of 2°, anywhere from 88° to 92° counts as success.
             </p>
           </div>
         </div>

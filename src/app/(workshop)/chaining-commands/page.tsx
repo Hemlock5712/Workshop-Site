@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -30,21 +31,18 @@ export default function ChainingCommands() {
       ]}
       time="Roughly 30 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "Chaining is the style this team writes almost everything in. There is a second, more powerful style called coroutines, and you will meet it at the very end of the course. You will not need it before then.",
-        ]}
-        concept="Chaining means gluing commands you already have into one bigger command."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> one button that raises the
-          arm, then spins the flywheel, then stops both when you let go.{" "}
-          <strong>Roughly 30 minutes</strong>, most of it watching the
-          simulator.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "Chaining is the style this team writes almost everything in. There is a second, more powerful style called coroutines, and you will meet it at the very end of the course. You will not need it before then.",
+          ]}
+          concept="Chaining means gluing commands you already have into one bigger command."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          One button that raises the arm, then spins the flywheel, then stops
+          both when you let go. Most of the time goes on watching the simulator.
+        </MarginNote>
+      </Split>
 
       {/* ── THE ONE RULE ─────────────────────────────────────────────── */}
       <LessonSection
@@ -379,27 +377,27 @@ Command.race(
             Start the simulator and click Enable, the same way as last page.
           </li>
           <li>
-            Hold Y. <strong>You should see:</strong> the arm runs for one second
-            and stops, <em>then</em> the flywheel starts. One after the other,
-            not both at once.
+            Hold Y. <strong>{"You should see: "}</strong> the arm runs for one
+            second and stops, <em>then</em> the flywheel starts. One after the
+            other, not both at once.
           </li>
           <li>
-            Keep holding Y. <strong>You should see:</strong> the flywheel keeps
-            spinning and never stops by itself. Correct — the last step is a
-            hold, so the whole group is a hold.
+            Keep holding Y. <strong>{"You should see: "}</strong> the flywheel
+            keeps spinning and never stops by itself. Correct — the last step is
+            a hold, so the whole group is a hold.
           </li>
           <li>
-            Release Y. <strong>You should see:</strong> the flywheel stops,
+            Release Y. <strong>{"You should see: "}</strong> the flywheel stops,
             because <code>whileFalse(flywheel.stop())</code> takes over.
           </li>
           <li>
             <strong>Now break it on purpose.</strong> Bind Y to just{" "}
             <code>arm.runFast().withTimeout(Seconds.of(1.0))</code> instead, and
-            hold it for two seconds. <strong>You should see:</strong> after one
-            second the command ends — and the arm <em>keeps moving anyway</em>.
-            That is Shape B. Nothing claims the arm, <code>idle()</code> sends
-            nothing, and Phoenix is still applying the 6&nbsp;V you last asked
-            for.
+            hold it for two seconds. <strong>{"You should see: "}</strong> after
+            one second the command ends — and the arm{" "}
+            <em>keeps moving anyway</em>. That is Shape B. Nothing claims the
+            arm, <code>idle()</code> sends nothing, and Phoenix is still
+            applying the 6&nbsp;V you last asked for.
           </li>
           <li>
             <strong>Now fix it.</strong> Put the step back in a sequence with a
@@ -414,15 +412,15 @@ Command.race(
     .named("Lift Then Stop")`}
               />
             </div>
-            <strong>You should see:</strong> the arm runs for a second, stops,
-            and stays stopped after the routine ends.
+            <strong>{"You should see: "}</strong> the arm runs for a second,
+            stops, and stays stopped after the routine ends.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Y does nothing, the sequence will not compile, or both move at once"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>

@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -34,58 +36,65 @@ export default function CommandFramework() {
       ]}
       time="About 20 minutes"
     >
-      <KeyConceptSection
-        title="Three parts and a loop"
-        description={[
-          "Underneath all three sits the scheduler. It is a loop that runs fifty times a second, checks every trigger, starts and stops commands, and keeps track of which command owns which mechanism so two commands can never fight over the same motor.",
-          "Nothing here is code you type. This is the map for the next four lessons, where you build each piece for real.",
-        ]}
-        concept="Triggers start Commands. Commands drive Mechanisms. The scheduler runs the loop and settles who owns what."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>About 20 minutes</strong>, and no code to write. You start
-          writing on the next page.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          title="Three parts and a loop"
+          description={[
+            "Underneath all three sits the scheduler. It is a loop that runs fifty times a second, checks every trigger, starts and stops commands, and keeps track of which command owns which mechanism so two commands can never fight over the same motor.",
+            "Nothing here is code you type. This is the map for the next four lessons, where you build each piece for real.",
+          ]}
+          concept="Triggers start Commands. Commands drive Mechanisms. The scheduler runs the loop and settles who owns what."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Nothing, on this page. There is no code to write here — you start
+          writing on the next one.
+        </MarginNote>
+      </Split>
 
       {/* ── the triad ────────────────────────────────────────────────── */}
-      <div className="grid md:grid-cols-3 gap-6">
-        <Box
-          variant="concept"
-          tag="WHEN"
-          title="Triggers"
-          subtitle={<strong>Something that is true or false</strong>}
-        >
-          A controller button, a sensor reading, a comparison you wrote
-          yourself. You attach a command to a trigger, and the scheduler watches
-          it for you. Bindings written in an OpMode&apos;s constructor belong to
-          that OpMode and are removed when the driver station switches modes.
-        </Box>
-
-        <Box
-          variant="concept"
-          tag="WHAT"
-          title="Mechanisms"
-          subtitle={<strong>One physical thing each</strong>}
-        >
-          The arm. The flywheel. The drivetrain. Each is a class that{" "}
-          <code>extends Mechanism</code>. Its motors and sensors are private
-          fields, and its wiring configuration happens once, in the constructor.
-        </Box>
-
-        <Box
-          variant="concept"
-          tag="HOW"
-          title="Commands"
-          subtitle={<strong>Named actions, mostly holds</strong>}
-        >
-          Methods on a mechanism that hand back a <code>Command</code>. Almost
-          every one you write in Workshop #1 is a <em>hold</em>: it keeps
-          re-sending the same request and never ends by itself.
-        </Box>
-      </div>
+      <FigureGrid
+        items={[
+          {
+            label: "When",
+            term: "Triggers",
+            body: (
+              <>
+                <strong>{"Something that is true or false. "}</strong> A
+                controller button, a sensor reading, a comparison you wrote
+                yourself. You attach a command to a trigger, and the scheduler
+                watches it for you. Bindings written in an OpMode&apos;s
+                constructor belong to that OpMode and are removed when the
+                driver station switches modes.
+              </>
+            ),
+          },
+          {
+            label: "What",
+            term: "Mechanisms",
+            body: (
+              <>
+                <strong>One physical thing each.</strong> The arm. The flywheel.
+                The drivetrain. Each is a class that{" "}
+                <code>extends Mechanism</code>. Its motors and sensors are
+                private fields, and its wiring configuration happens once, in
+                the constructor.
+              </>
+            ),
+          },
+          {
+            label: "How",
+            term: "Commands",
+            body: (
+              <>
+                <strong>Named actions, mostly holds.</strong> Methods on a
+                mechanism that hand back a <code>Command</code>. Almost every
+                one you write in Workshop #1 is a <em>hold</em>: it keeps
+                re-sending the same request and never ends by itself.
+              </>
+            ),
+          },
+        ]}
+      />
 
       <LessonSection
         id="the-big-picture"
@@ -422,41 +431,42 @@ private void setVoltage(double voltage) {
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Open <code>src/main/java/frc/robot/Robot.java</code>.{" "}
-            <strong>You should see:</strong> <code>extends OpModeRobot</code> on
-            the class line, and a few <code>public final</code> fields —{" "}
-            <code>drivetrain</code>, <code>arm</code>, <code>flywheel</code>.
-            Those are the mechanisms.
+            <strong>{"You should see: "}</strong>{" "}
+            <code>extends OpModeRobot</code> on the class line, and a few{" "}
+            <code>public final</code> fields — <code>drivetrain</code>,{" "}
+            <code>arm</code>, <code>flywheel</code>. Those are the mechanisms.
           </li>
           <li>
             Search that same file for <code>robotPeriodic</code>.{" "}
-            <strong>You should see:</strong> one method, containing exactly one
-            line — <code>Scheduler.getDefault().run();</code>. That is the whole
-            engine.
+            <strong>{"You should see: "}</strong> one method, containing exactly
+            one line — <code>Scheduler.getDefault().run();</code>. That is the
+            whole engine.
           </li>
           <li>
             Look through the file list for a file called{" "}
-            <code>RobotContainer.java</code>. <strong>You should see:</strong>{" "}
-            there isn&apos;t one. A full-text search is a different matter — the
-            name does turn up, in the comments at the top of{" "}
-            <code>Robot.java</code> and <code>TeleopOpMode.java</code> and in
-            the template&apos;s markdown docs, every time to say the thing does
-            not exist here. What matters is that no file declares the class. If
-            a tutorial you find later has you create one, it is not describing
-            this stack.
+            <code>RobotContainer.java</code>.{" "}
+            <strong>{"You should see: "}</strong> there isn&apos;t one. A
+            full-text search is a different matter — the name does turn up, in
+            the comments at the top of <code>Robot.java</code> and{" "}
+            <code>TeleopOpMode.java</code> and in the template&apos;s markdown
+            docs, every time to say the thing does not exist here. What matters
+            is that no file declares the class. If a tutorial you find later has
+            you create one, it is not describing this stack.
           </li>
           <li>
             Open the folder <code>src/main/java/frc/robot/opmodes/</code>.{" "}
-            <strong>You should see:</strong> six classes. Each one is a separate
-            mode the driver station can run. Open two of them and look at the
-            line above <code>public class</code> — <code>TeleopOpMode</code> is
-            tagged <code>@Teleop</code>, <code>UtilityOpMode</code> is tagged{" "}
+            <strong>{"You should see: "}</strong> six classes. Each one is a
+            separate mode the driver station can run. Open two of them and look
+            at the line above <code>public class</code> —{" "}
+            <code>TeleopOpMode</code> is tagged <code>@Teleop</code>,{" "}
+            <code>UtilityOpMode</code> is tagged{" "}
             <code>@Utility(name = &quot;Stow&quot;)</code>. The tag is what puts
             it on the driver station.
           </li>
           <li>
             Open <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>{" "}
             and search it for <code>(hold)</code>.{" "}
-            <strong>You should see:</strong> five hits. Three of them are
+            <strong>{"You should see: "}</strong> five hits. Three of them are
             command names — <code>vertical (hold)</code>,{" "}
             <code>horizontal (hold)</code>, <code>scoring (hold)</code> — and
             the other two are in the comment block above them, where the file
@@ -468,7 +478,7 @@ private void setVoltage(double voltage) {
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="You have a RobotContainer, the wrong Arm.java, or no Scheduler"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>

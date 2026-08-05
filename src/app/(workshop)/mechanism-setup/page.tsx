@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
@@ -6,6 +7,7 @@ import CodeBlock from "@/components/CodeBlock";
 import ImageBlock from "@/components/ImageBlock";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 
 export default function MechanismSetup() {
@@ -28,30 +30,21 @@ export default function MechanismSetup() {
       ]}
       time="About half an hour"
     >
-      <KeyConceptSection
-        description={[
-          "Each check takes a few minutes now. Skip them and you spend an afternoon tuning a PID loop that was never the problem — a motor wired backwards and a bad kP look identical from a laptop.",
-        ]}
-        concept="Fix direction and zero in Tuner X first. Then the only thing left to debug in your code is your code."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mb-3">
-          <strong>You need, all from Hardware Setup:</strong>
-        </p>
-
-        <p className="mt-3">
-          <strong>What you will finish with:</strong> an encoder that counts up
-          when the arm turns counterclockwise, a zero position you have written
-          down, and a motor whose positive direction agrees with that encoder.
-          On the flywheel build: two motors whose directions you have checked
-          one at a time.
-        </p>
-        <p className="mt-3">
-          <strong>About half an hour</strong>, nearly all of it inside Tuner X.
-          No code yet — you clone the project on the next page.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "Each check takes a few minutes now. Skip them and you spend an afternoon tuning a PID loop that was never the problem — a motor wired backwards and a bad kP look identical from a laptop.",
+          ]}
+          concept="Fix direction and zero in Tuner X first. Then the only thing left to debug in your code is your code."
+        />
+        <MarginNote label="WHAT YOU'LL FINISH WITH">
+          An encoder that counts up when the arm turns counterclockwise, a zero
+          position you have written down, and a motor whose positive direction
+          agrees with that encoder. On the flywheel build: two motors whose
+          directions you have checked one at a time. Nearly all of it is inside
+          Tuner X — no code yet, you clone the project on the next page.
+        </MarginNote>
+      </Split>
 
       {/* ── CANIVORE USB TOGGLE ──────────────────────────────────────────
           This is the site's single explanation of the toggle. `/hardware`
@@ -69,32 +62,37 @@ export default function MechanismSetup() {
           is a switch you flip depending on what you are doing.
         </p>
 
-        <Box
-          variant="alert-success"
-          tag="POSITION 1 · ON"
-          title="Bench work in Tuner X — including everything on this page"
-        >
-          <p>
-            Turn it <strong>ON</strong> when Tuner X is the thing driving your
-            devices: reading encoder positions, applying Voltage Out, setting
-            sensor direction, zeroing, updating firmware. That is{" "}
-            <strong>Hardware Setup</strong> and this whole page.
-          </p>
-        </Box>
-
-        <Box
-          variant="alert-warning"
-          tag="POSITION 2 · OFF"
-          title="Running your robot code in hardware simulation"
-        >
-          <p>
-            Turn it <strong>OFF</strong> when your own program is driving the
-            devices. On <strong>Running Your Code</strong> you start the robot
-            project in hardware simulation, and the simulator takes the CANivore
-            for itself. Leave the toggle on and the two fight over the same bus:
-            devices drop out of Tuner X, or your code never reaches a motor.
-          </p>
-        </Box>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "Position 1 · On",
+              term: "Bench work in Tuner X, including everything on this page",
+              body: (
+                <>
+                  Turn it <strong>on</strong> when Tuner X is the thing driving
+                  your devices: reading encoder positions, applying Voltage Out,
+                  setting sensor direction, zeroing, updating firmware. That is{" "}
+                  <strong>Hardware Setup</strong> and this whole page.
+                </>
+              ),
+            },
+            {
+              label: "Position 2 · Off",
+              term: "Running your robot code in hardware simulation",
+              body: (
+                <>
+                  Turn it <strong>off</strong> when your own program is driving
+                  the devices. On <strong>Running Your Code</strong> you start
+                  the robot project in hardware simulation, and the simulator
+                  takes the CANivore for itself. Leave the toggle on and the two
+                  fight over the same bus: devices drop out of Tuner X, or your
+                  code never reaches a motor.
+                </>
+              ),
+            },
+          ]}
+        />
 
         <Box variant="concept" title="How to flip it without breaking anything">
           <ol className="ml-4 list-decimal space-y-1">
@@ -277,17 +275,20 @@ export default function MechanismSetup() {
         id="arm-build-three-checks"
         title="Arm build: three checks"
       >
-        <p>
-          Do these in order. The encoder comes first because step 3 uses the
-          encoder to judge the motor, so an encoder that counts backwards would
-          make a correct motor look wrong.
-        </p>
-
-        <Box variant="alert-info" title="If you ever swap the encoder">
-          A CANcoder stores its direction and its zero on the device itself, not
-          in your code. Replace the encoder and all of that is gone — come back
-          and do steps 1 and 2 again on the new one.
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              Do these in order. The encoder comes first because step 3 uses the
+              encoder to judge the motor, so an encoder that counts backwards
+              would make a correct motor look wrong.
+            </p>
+          </ProseBlock>
+          <MarginNote label="IF YOU SWAP THE ENCODER">
+            A CANcoder stores its direction and its zero on the device itself,
+            not in your code. Replace the encoder and all of that is gone — come
+            back and do steps 1 and 2 again on the new one.
+          </MarginNote>
+        </Split>
 
         {/* Step 1 */}
         <div className="flex flex-col gap-4">
@@ -306,7 +307,7 @@ export default function MechanismSetup() {
               deliberately, for the same reason.
             </li>
             <li>
-              <strong>You should see:</strong> the position number{" "}
+              <strong>{"You should see: "}</strong> the position number{" "}
               <strong>increases</strong>. Turn the arm back clockwise and it
               should decrease.
             </li>
@@ -339,14 +340,14 @@ export default function MechanismSetup() {
               press <em>Apply</em>.
             </li>
             <li>
-              <strong>You should see:</strong> the live position reads about{" "}
-              <code>0</code> and stays there while the arm is still.
+              <strong>{"You should see: "}</strong> the live position reads
+              about <code>0</code> and stays there while the arm is still.
             </li>
             <li>
               Move the arm 90° counterclockwise from there.{" "}
-              <strong>You should see:</strong> roughly <code>0.25</code>. That
-              single check confirms direction, zero and the rotations mapping
-              all at once.
+              <strong>{"You should see: "}</strong> roughly <code>0.25</code>.
+              That single check confirms direction, zero and the rotations
+              mapping all at once.
             </li>
             <li>
               Write down, in words, where zero physically is on your mechanism.
@@ -416,7 +417,7 @@ export default function MechanismSetup() {
               Apply <strong>+6 V</strong> in a short burst. Be ready to release.
             </li>
             <li>
-              <strong>You should see:</strong> the arm moves{" "}
+              <strong>{"You should see: "}</strong> the arm moves{" "}
               <strong>counterclockwise</strong>, and the encoder number goes{" "}
               <strong>up</strong> while it moves. Negative voltage should do the
               reverse.
@@ -445,17 +446,22 @@ export default function MechanismSetup() {
             </li>
           </ol>
 
-          <Box variant="alert-warning" title="Why 6 V and not 12 V">
-            <p>
-              6 V is about half of what a fresh battery gives you — plenty to
-              see which way something turns, and slow enough that you can stop
-              it. It is also not an arbitrary number. The commands you write on
-              the <strong>Commands</strong> page use exactly these two values,{" "}
+          <Split>
+            <ProseBlock>
+              <p>
+                Six volts, not twelve: about half of what a fresh battery gives
+                you — plenty to see which way something turns, and slow enough
+                that you can stop it.
+              </p>
+            </ProseBlock>
+            <MarginNote label="WHY 6 V">
+              It is also not an arbitrary number. The commands you write on the{" "}
+              <strong>Commands</strong> page use exactly these two values,{" "}
               <code>SLOW_VOLTAGE = 3.0</code> and{" "}
               <code>FAST_VOLTAGE = 6.0</code>, so bench testing at 6 V is
               testing at the speed your code will run.
-            </p>
-          </Box>
+            </MarginNote>
+          </Split>
 
           <iframe
             src="https://www.youtube.com/embed/iQqR1Wxptzg"
@@ -472,30 +478,35 @@ export default function MechanismSetup() {
         id="flywheel-build-the-two-motors-turn"
         title="Flywheel build: the two motors turn opposite ways"
       >
-        <Box
-          variant="alert-danger"
-          tag="READ THIS FIRST"
-          title="Opposite directions is the correct result"
-        >
-          <p>
-            The flywheel has two motors and they are{" "}
-            <strong>supposed to spin against each other</strong>. If you watch
-            the shooter under robot code and see the two shafts turning opposite
-            ways, that is a working shooter, not a broken one. Two motors
-            turning the <em>same</em> way is the symptom of a problem.
-          </p>
-          <p className="mt-3">
-            This trips people up every year, so read the rest of this section
-            before you change any setting on either motor.
-          </p>
-        </Box>
-
-        <p>
-          Here is the code that decides it, straight out of{" "}
-          <code>Flywheel.java</code>. Later branches add gains and speed limits
-          around it, but the <code>Follower</code> line and the comment above it
-          are identical on every mechanism-track branch that has a flywheel:
-        </p>
+        <Split>
+          <ProseBlock>
+            <p>
+              The flywheel has two motors and they are{" "}
+              <strong>supposed to spin against each other</strong>. If you watch
+              the shooter under robot code and see the two shafts turning
+              opposite ways, that is a working shooter, not a broken one. Two
+              motors turning the <em>same</em> way is the symptom of a problem.
+              This trips people up every year, so read the rest of this section
+              before you change any setting on either motor.
+            </p>
+            <p>
+              Here is the code that decides it, straight out of{" "}
+              <code>Flywheel.java</code>. Later branches add gains and speed
+              limits around it, but the <code>Follower</code> line and the
+              comment above it are identical on every mechanism-track branch
+              that has a flywheel:
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY OPPOSITE">
+            The shooter carries one compliant wheel on each side of the gap the
+            ball travels through. For the ball to leave the front, the{" "}
+            <em>surface</em> of each wheel where it touches the ball has to
+            sweep toward the front, and two wheels facing each other across a
+            gap can only do that by turning opposite ways — the same geometry as
+            the two rollers in a paper shredder, which also turn against each
+            other to move one sheet between them. Opposite shafts, same push.
+          </MarginNote>
+        </Split>
 
         <CodeBlock
           language="java"
@@ -516,22 +527,11 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
           switch for it.
         </p>
 
-        <Box variant="concept" title="Opposite motors, same push on the ball">
-          <p>
-            The shooter carries one compliant wheel on each side of the gap the
-            ball travels through. For the ball to leave the front, the{" "}
-            <em>surface</em> of each wheel where it touches the ball has to
-            sweep toward the front. Two wheels facing each other across a gap
-            can only do that by turning opposite ways — the same geometry as the
-            two rollers in a paper shredder, which also turn against each other
-            to move one sheet between them.
-          </p>
-          <p className="mt-3">
-            <code>MotorAlignmentValue.Opposed</code> is what tells CAN 22 to
-            mirror CAN 21 backwards, so one command spins them the right way
-            round. Opposite shafts, same push.
-          </p>
-        </Box>
+        <p>
+          <code>MotorAlignmentValue.Opposed</code> is what tells CAN 22 to
+          mirror CAN 21 backwards, so one command spins them the right way
+          round.
+        </p>
 
         <Box
           variant="alert-warning"
@@ -571,14 +571,14 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
             <li>
               In Tuner X, select TalonFX <code>21</code>, choose{" "}
               <em>Voltage Out</em>, and apply <strong>+6 V</strong> in a short
-              burst. <strong>You should see:</strong> the surface of that wheel,
-              where it would touch the ball, sweeps{" "}
+              burst. <strong>{"You should see: "}</strong> the surface of that
+              wheel, where it would touch the ball, sweeps{" "}
               <strong>toward the exit</strong>.
             </li>
             <li>
               Stop. Now select TalonFX <code>22</code> and apply{" "}
               <strong>+6 V</strong> the same way.{" "}
-              <strong>You should see:</strong> the surface of <em>that</em>{" "}
+              <strong>{"You should see: "}</strong> the surface of <em>that</em>{" "}
               wheel sweeps <strong>toward the back</strong> — the opposite of
               motor 21.
             </li>
@@ -589,18 +589,20 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
             </li>
           </ol>
 
-          <Box
-            variant="alert-success"
-            title="Why the follower looks backwards on the bench"
-          >
-            <p>
-              Under robot code, six volts goes to the leader, and{" "}
-              <code>Opposed</code> hands the follower the mirror image of that.
-              So on the robot the follower does what <code>-6 V</code> would
-              have done on the bench: it sweeps toward the exit too. Both wheels
+          <Split>
+            <ProseBlock>
+              <p>
+                That backwards-looking result on CAN 22 is the one you want.
+              </p>
+            </ProseBlock>
+            <MarginNote label="WHY IT LOOKS BACKWARDS">
+              Under robot code, six volts goes to the leader and{" "}
+              <code>Opposed</code> hands the follower the mirror image of it. So
+              on the robot the follower does what <code>-6 V</code> would have
+              done on the bench: it sweeps toward the exit too. Both wheels
               throw, and the shafts turn against each other while they do it.
-            </p>
-          </Box>
+            </MarginNote>
+          </Split>
 
           <Box
             variant="alert-danger"
@@ -621,7 +623,7 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
               follower&apos;s direction is computed from it by{" "}
               <code>
                 new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed)
-              </code>
+              </code>{" "}
               — so the two motors are never differentiated by an inversion
               setting, and anything you change in Tuner X is overwritten the
               next time robot code boots. Check the mechanical build. Swap the
@@ -646,47 +648,45 @@ follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Oppos
           something you can see happen, not something you can assume.
         </p>
 
-        <Box variant="alert-success" tag="ARM" title="Four things you can see">
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              Turning the arm counterclockwise by hand makes the CANcoder
-              position <strong>go up</strong>.
-            </li>
-            <li>
-              At the zero position the reading is about <code>0</code>, and 90°
-              counterclockwise from there reads about <code>0.25</code>.
-            </li>
-            <li>
-              +6 V moves the arm counterclockwise, and the encoder number climbs
-              while it does.
-            </li>
-            <li>
-              You have written down, in plain words, where zero physically is.
-            </li>
-          </ul>
-        </Box>
+        <h3 className="display measure m-0 text-lede">
+          What the arm should do
+        </h3>
+        <ul className="ml-4 list-disc space-y-2">
+          <li>
+            Turning the arm counterclockwise by hand makes the CANcoder position{" "}
+            <strong>go up</strong>.
+          </li>
+          <li>
+            At the zero position the reading is about <code>0</code>, and 90°
+            counterclockwise from there reads about <code>0.25</code>.
+          </li>
+          <li>
+            +6 V moves the arm counterclockwise, and the encoder number climbs
+            while it does.
+          </li>
+          <li>
+            You have written down, in plain words, where zero physically is.
+          </li>
+        </ul>
 
-        <Box
-          variant="alert-success"
-          tag="FLYWHEEL"
-          title="Two things you can see"
-        >
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              +6 V on CAN <code>21</code> sweeps its wheel surface toward the
-              exit.
-            </li>
-            <li>
-              +6 V on CAN <code>22</code> sweeps its wheel surface toward the
-              back — opposite to CAN 21, which is correct.
-            </li>
-          </ul>
-        </Box>
+        <h3 className="display measure m-0 text-lede">
+          What the flywheel should do
+        </h3>
+        <ul className="ml-4 list-disc space-y-2">
+          <li>
+            +6 V on CAN <code>21</code> sweeps its wheel surface toward the
+            exit.
+          </li>
+          <li>
+            +6 V on CAN <code>22</code> sweeps its wheel surface toward the back
+            — opposite to CAN 21, which is correct.
+          </li>
+        </ul>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Devices that vanish, a direction that will not stay fixed, an encoder that disagrees"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>

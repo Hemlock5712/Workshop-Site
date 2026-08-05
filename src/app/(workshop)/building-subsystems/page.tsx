@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -46,39 +48,42 @@ export default function BuildingSubsystems() {
         concept="One class per physical thing. Hardware in private fields, configuration in the constructor, and one line in Robot.java that makes the whole framework run."
       />
 
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> <code>Arm.java</code>,{" "}
-          <code>Flywheel.java</code>, and the <code>Robot.java</code> that owns
-          them both. <strong>Roughly 30 minutes.</strong>
-        </p>
-        <p className="mt-3">
-          <strong>Which project you work in — read this before Step 1.</strong>{" "}
-          Not the 2027-Template clone from <strong>Project Setup</strong>. That
-          template is the finished robot: twenty-odd Java files under{" "}
-          <code>frc/robot/</code>, an <code>opmodes</code> folder with six
-          OpModes, and an arm at <code>subsystems/arm/Arm.java</code> that
-          already does everything this page is about to teach. The lesson code
-          is a second, much smaller repository. Clone it alongside the template
-          and work in the clone:
-        </p>
-        <div className="mt-3">
-          <CodeBlock
-            language="bash"
-            hideControls
-            code={`git clone -b 1-Subsystem https://github.com/Hemlock5712/Workshop-Code.git`}
-          />
-        </div>
-        <p className="mt-3">
-          That clone is the finished version of this page — six Java files, and
-          this page writes three of them. To type the code yourself, delete{" "}
-          <code>subsystems/Arm.java</code> and{" "}
-          <code>subsystems/Flywheel.java</code> and start from the class line in
-          Step 1. To read instead of type, leave them in place and follow along.
-          Either way, every file path and every check below is written against
-          that clone, not against the template.
-        </p>
-      </Box>
+      <Split>
+        <ProseBlock>
+          <p>
+            <strong>
+              Which project you work in — read this before Step 1.
+            </strong>{" "}
+            Not the 2027-Template clone from <strong>Project Setup</strong>.
+            That template is the finished robot: twenty-odd Java files under{" "}
+            <code>frc/robot/</code>, an <code>opmodes</code> folder with six
+            OpModes, and an arm at <code>subsystems/arm/Arm.java</code> that
+            already does everything this page is about to teach. The lesson code
+            is a second, much smaller repository. Clone it alongside the
+            template and work in the clone:
+          </p>
+        </ProseBlock>
+        <MarginNote label="WHAT YOU'LL BUILD">
+          <code>Arm.java</code>, <code>Flywheel.java</code>, and the{" "}
+          <code>Robot.java</code> that owns them both.
+        </MarginNote>
+      </Split>
+
+      <CodeBlock
+        language="bash"
+        hideControls
+        code={`git clone -b 1-Subsystem https://github.com/Hemlock5712/Workshop-Code.git`}
+      />
+
+      <p>
+        That clone is the finished version of this page — six Java files, and
+        this page writes three of them. To type the code yourself, delete{" "}
+        <code>subsystems/Arm.java</code> and{" "}
+        <code>subsystems/Flywheel.java</code> and start from the class line in
+        Step 1. To read instead of type, leave them in place and follow along.
+        Either way, every file path and every check below is written against
+        that clone, not against the template.
+      </p>
 
       {/* ── what is on this branch ───────────────────────────────────── */}
       <LessonSection
@@ -121,46 +126,34 @@ export default function BuildingSubsystems() {
           robot gets hold of your mechanism.
         </p>
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Box
-            variant="concept"
-            tag="REGION 1 · FIELDS"
-            title="The hardware"
-            code={<code>private final TalonFX motor = ...</code>}
-          >
-            <p>
-              One field per physical device, all <code>private</code> and all{" "}
-              <code>final</code>. Built once when the mechanism is built, and
-              never handed out.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="REGION 2 · CONSTRUCTOR"
-            title="The setup"
-            code={<code>public Arm() {"{ ... }"}</code>}
-          >
-            <p>
-              Runs once, automatically, the moment the object is created.
-              Everything the motor needs to be told before it turns goes here
-              and nowhere else.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="REGION 3 · METHODS"
-            title="The behavior"
-            code={<code>public void setVoltage(double v)</code>}
-          >
-            <p>
-              What the outside world can ask the arm to do. On this branch there
-              are two of them, and they are the only lines that ever send output
-              to the motor.
-            </p>
-          </Box>
-        </div>
+        <FigureGrid
+          items={[
+            {
+              label: "Region 1 · Fields",
+              term: "The hardware",
+              code: "private final TalonFX motor = ...",
+              body: (
+                <>
+                  One field per physical device, all <code>private</code> and
+                  all <code>final</code>. Built once when the mechanism is
+                  built, and never handed out.
+                </>
+              ),
+            },
+            {
+              label: "Region 2 · Constructor",
+              term: "The setup",
+              code: "public Arm() { ... }",
+              body: "Runs once, automatically, the moment the object is created. Everything the motor needs to be told before it turns goes here and nowhere else.",
+            },
+            {
+              label: "Region 3 · Methods",
+              term: "The behavior",
+              code: "public void setVoltage(double v)",
+              body: "What the outside world can ask the arm to do. On this branch there are two of them, and they are the only lines that ever send output to the motor.",
+            },
+          ]}
+        />
       </LessonSection>
 
       {/* ── step 1 ───────────────────────────────────────────────────── */}
@@ -217,30 +210,28 @@ export default function BuildingSubsystems() {
           </li>
         </ul>
 
-        <Box variant="alert-success" tag="RESULT" title="You should see">
-          <p>
-            Add the imports your editor asks for —{" "}
-            <code>com.ctre.phoenix6.*</code> for the four CTRE types,{" "}
-            <code>org.wpilib.command3.Mechanism</code> for the base class — and
-            every type name in those five lines stops being underlined in red.
-            The class itself still will not compile: it has no closing brace
-            until Step 3.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Add the imports your editor asks
+          for — <code>com.ctre.phoenix6.*</code> for the four CTRE types,{" "}
+          <code>org.wpilib.command3.Mechanism</code> for the base class — and
+          every type name in those five lines stops being underlined in red. The
+          class itself still will not compile: it has no closing brace until
+          Step 3.
+        </p>
 
-        <Box
-          variant="alert-tip"
-          tag="WHY private"
-          title="Nobody outside this class gets the motor"
-        >
-          <p>
-            Every field is <code>private</code>, so no other file can write{" "}
-            <code>arm.motor.setControl(...)</code>. Every request to move the
-            arm has to go through a method the arm chooses to offer. That is the
-            whole point of putting one physical thing in one class, and it is
-            what the next lesson tightens further.
-          </p>
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              Every field is <code>private</code>, so no other file can write{" "}
+              <code>arm.motor.setControl(...)</code>. Every request to move the
+              arm has to go through a method the arm chooses to offer.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY PRIVATE">
+            That is the whole point of putting one physical thing in one class,
+            and it is what the next lesson tightens further.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* ── step 2 ───────────────────────────────────────────────────── */}
@@ -313,38 +304,34 @@ export default function BuildingSubsystems() {
           </p>
         </Box>
 
-        <Box
-          variant="concept"
-          tag="APPLYING IT"
-          title="Why not motor.getConfigurator().apply(config)?"
-        >
-          <p>
+        <Split>
+          <ProseBlock>
+            <p>
+              <code>TalonFXUtil.applyConfigWithRetries(motor, config)</code>{" "}
+              tries up to five times and reports an error to the driver station
+              if all five fail. It is a small helper file that ships on the
+              branch, and you call it on the class itself — there is no{" "}
+              <code>new TalonFXUtil(...)</code> anywhere, because there is
+              nothing to build.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY NOT apply()">
             Phoenix&apos;s own <code>apply(...)</code> sends the configuration
             once and hands back a status code. It does not retry. A CAN bus can
             hiccup while the robot is booting and everything is powering up at
             the same moment, and a config that quietly failed to apply is a
             miserable thing to debug.
-          </p>
-          <p className="mt-3">
-            <code>TalonFXUtil.applyConfigWithRetries(motor, config)</code> tries
-            up to five times and reports an error to the driver station if all
-            five fail. It is a small helper file that ships on the branch, and
-            you call it on the class itself — there is no{" "}
-            <code>new TalonFXUtil(...)</code> anywhere, because there is nothing
-            to build.
-          </p>
-        </Box>
+          </MarginNote>
+        </Split>
 
-        <Box variant="alert-success" tag="RESULT" title="You should see">
-          <p>
-            Type <code>TalonFXUtil.</code> and your editor offers{" "}
-            <code>applyConfigWithRetries</code> straight off the class name, no{" "}
-            <code>new</code> involved. The whole constructor is free of red
-            underlines. The one error still on the file is the missing closing
-            brace — Step 3 adds it, and that is where the first clean build
-            comes from.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Type <code>TalonFXUtil.</code>{" "}
+          and your editor offers <code>applyConfigWithRetries</code> straight
+          off the class name, no <code>new</code> involved. The whole
+          constructor is free of red underlines. The one error still on the file
+          is the missing closing brace — Step 3 adds it, and that is where the
+          first clean build comes from.
+        </p>
       </LessonSection>
 
       {/* ── step 3 ───────────────────────────────────────────────────── */}
@@ -403,14 +390,13 @@ export default function BuildingSubsystems() {
           </p>
         </Box>
 
-        <Box variant="alert-success" tag="RESULT" title="You should see">
-          <p>
-            The closing brace on the last line finishes the class. Run{" "}
-            <code>./gradlew build</code>: <code>BUILD SUCCESSFUL</code>. That is
-            the first build of your own arm, and it passes even though no other
-            file in the project mentions <code>Arm</code> yet.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> The closing brace on the last
+          line finishes the class. Run <code>./gradlew build</code>:{" "}
+          <code>BUILD SUCCESSFUL</code>. That is the first build of your own
+          arm, and it passes even though no other file in the project mentions{" "}
+          <code>Arm</code> yet.
+        </p>
       </LessonSection>
 
       {/* ── the finished file ────────────────────────────────────────── */}
@@ -530,13 +516,12 @@ export default function BuildingSubsystems() {
           </p>
         </Box>
 
-        <Box variant="alert-success" tag="RESULT" title="You should see">
-          <p>
-            Build again. <code>BUILD SUCCESSFUL</code>, with two mechanism
-            classes compiled and still nothing constructing either of them. Step
-            5 is the file that does.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Build again.{" "}
+          <code>BUILD SUCCESSFUL</code>, with two mechanism classes compiled and
+          still nothing constructing either of them. Step 5 is the file that
+          does.
+        </p>
       </LessonSection>
 
       {/* ── step 5 ───────────────────────────────────────────────────── */}
@@ -593,7 +578,7 @@ public class Robot extends OpModeRobot {
         />
 
         <Box
-          variant="alert-success"
+          variant="concept"
           tag="THE LINE THAT STARTS EVERYTHING"
           title="Scheduler.getDefault().run();"
         >
@@ -643,15 +628,14 @@ public class Robot extends OpModeRobot {
           </li>
         </ul>
 
-        <Box variant="alert-success" tag="RESULT" title="You should see">
-          <p>
-            Build one more time. <code>BUILD SUCCESSFUL</code>, with{" "}
-            <code>Scheduler</code> and <code>OpModeRobot</code> both resolving —
-            that is the only proof this file is wired up. Nothing moves yet:
-            there is no OpMode, so there is nothing for the driver station to
-            select and nothing for the scheduler to run.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Build one more time.{" "}
+          <code>BUILD SUCCESSFUL</code>, with <code>Scheduler</code> and{" "}
+          <code>OpModeRobot</code> both resolving — that is the only proof this
+          file is wired up. Nothing moves yet: there is no OpMode, so there is
+          nothing for the driver station to select and nothing for the scheduler
+          to run.
+        </p>
       </LessonSection>
 
       {/* ── did it work ──────────────────────────────────────────────── */}
@@ -664,13 +648,14 @@ public class Robot extends OpModeRobot {
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Run <code>./gradlew build</code>. <strong>You should see:</strong>{" "}
-            <code>BUILD SUCCESSFUL</code>. That is the real check on this page —
-            it means every import resolved and every name you typed exists.
+            Run <code>./gradlew build</code>.{" "}
+            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
+            That is the real check on this page — it means every import resolved
+            and every name you typed exists.
           </li>
           <li>
             Look at your file tree under <code>src/main/java/frc/robot/</code>.{" "}
-            <strong>You should see:</strong> <code>Main.java</code>,{" "}
+            <strong>{"You should see: "}</strong> <code>Main.java</code>,{" "}
             <code>Robot.java</code>, <code>subsystems/Arm.java</code>,{" "}
             <code>subsystems/Flywheel.java</code>,{" "}
             <code>utils/SimStartup.java</code> and{" "}
@@ -682,30 +667,30 @@ public class Robot extends OpModeRobot {
           </li>
           <li>
             Open <code>Arm.java</code> and search it for <code>Command</code>.{" "}
-            <strong>You should see:</strong> one hit, and it is inside the doc
-            comment — &quot;In the next lesson (2-Commands) we wrap them in
+            <strong>{"You should see: "}</strong> one hit, and it is inside the
+            doc comment — &quot;In the next lesson (2-Commands) we wrap them in
             commands.&quot; Not one line of code on this branch builds a
             command. If your file has one, you have got ahead of yourself.
           </li>
           <li>
             Open <code>Robot.java</code> and search for <code>Scheduler</code>.{" "}
-            <strong>You should see:</strong> two hits — the import at the top,
-            and the single call inside <code>robotPeriodic()</code>.
+            <strong>{"You should see: "}</strong> two hits — the import at the
+            top, and the single call inside <code>robotPeriodic()</code>.
           </li>
           <li>
             With Tuner X connected the way <strong>Mechanism Setup</strong>{" "}
             showed, check that all four devices are listed on the{" "}
             <code>canivore</code> bus at IDs 31, 32, 21 and 22.{" "}
-            <strong>You should see:</strong> the same four numbers that appear
-            in your two constructors. The code and the bus have to agree, and
-            this is the last moment where checking is cheap.
+            <strong>{"You should see: "}</strong> the same four numbers that
+            appear in your two constructors. The code and the bus have to agree,
+            and this is the last moment where checking is cheap.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Missing symbols, a silent bench, or the wrong Arm.java"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -778,8 +763,8 @@ public class Robot extends OpModeRobot {
             <strong>Running Your Code</strong>.
           </li>
           <li>
-            <strong>Aiming at an angle.</strong> The CANcoder is wired into the
-            motor&apos;s feedback here, but nothing reads it and nothing
+            <strong>{"Aiming at an angle. "}</strong> The CANcoder is wired into
+            the motor&apos;s feedback here, but nothing reads it and nothing
             corrects for error yet. That is <strong>PID Control</strong>.
           </li>
         </ul>

@@ -129,8 +129,8 @@ export default function PrivacyPage() {
           press play.
         </li>
         <li>
-          <strong>GitHub.</strong> Pages that show workshop code fetch the file
-          from GitHub&apos;s public API while you read, straight from your
+          <strong>{"GitHub. "}</strong> Pages that show workshop code fetch the
+          file from GitHub&apos;s public API while you read, straight from your
           browser. GitHub sees that request.
         </li>
       </ul>

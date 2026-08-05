@@ -1,5 +1,7 @@
 import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import CodeBlock from "@/components/CodeBlock";
@@ -30,27 +32,20 @@ export default function MotionMagic() {
       branch="4-MotionMagic"
       time="Roughly 40 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "Motion Magic puts a plan in between. Instead of handing the PID loop the final angle, the motor hands it a moving target that speeds up, holds a steady speed, and slows down again. The PID loop still does the pushing — it is now chasing something reachable.",
-        ]}
-        concept="Motion Magic does not replace your PID gains. It changes what the gains are aiming at, one loop at a time."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> three small edits to{" "}
-          <code>Arm.java</code> plus one line to delete, the same three edits to{" "}
-          <code>Flywheel.java</code>, and two numbers you pick yourself for the
-          arm. <strong>Roughly 40 minutes</strong>, most of it on those two
-          numbers.
-        </p>
-        <p className="mt-3">
-          <strong>Reference branch:</strong> <code>4-MotionMagic</code> in
-          Workshop-Code. The whole lesson is two files and about thirty changed
-          lines.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "Motion Magic puts a plan in between. Instead of handing the PID loop the final angle, the motor hands it a moving target that speeds up, holds a steady speed, and slows down again. The PID loop still does the pushing — it is now chasing something reachable.",
+          ]}
+          concept="Motion Magic does not replace your PID gains. It changes what the gains are aiming at, one loop at a time."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Three small edits to <code>Arm.java</code> plus one line to delete,
+          the same three edits to <code>Flywheel.java</code>, and two numbers
+          you pick yourself for the arm. Two files, about thirty changed lines,
+          and most of the time goes on those two numbers.
+        </MarginNote>
+      </Split>
 
       {/* ── what a profile is ────────────────────────────────────────── */}
       <LessonSection
@@ -286,26 +281,23 @@ export default function MotionMagic() {
           values, and nothing else:
         </p>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Box
-            variant="concept"
-            tag="ROT/S"
-            title="MotionMagicCruiseVelocity"
-            code="config.MotionMagic.MotionMagicCruiseVelocity"
-          >
-            The flat top of the trapezoid. The fastest the profile is ever
-            allowed to go, in rotations per second.
-          </Box>
-          <Box
-            variant="concept"
-            tag="ROT/S²"
-            title="MotionMagicAcceleration"
-            code="config.MotionMagic.MotionMagicAcceleration"
-          >
-            The slope of both sloped sides. How many rotations per second the
-            profile is allowed to gain — or lose — every second.
-          </Box>
-        </div>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "rot/s",
+              term: <code>MotionMagicCruiseVelocity</code>,
+              code: "config.MotionMagic.MotionMagicCruiseVelocity",
+              body: "The flat top of the trapezoid. The fastest the profile is ever allowed to go, in rotations per second.",
+            },
+            {
+              label: "rot/s²",
+              term: <code>MotionMagicAcceleration</code>,
+              code: "config.MotionMagic.MotionMagicAcceleration",
+              body: "The slope of both sloped sides. How many rotations per second the profile is allowed to gain — or lose — every second.",
+            },
+          ]}
+        />
 
         <Box
           variant="alert-warning"
@@ -557,8 +549,8 @@ import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            <strong>Find the motor&apos;s free speed.</strong> Free speed is how
-            fast a motor spins with nothing attached to it. CTRE&apos;s
+            <strong>{"Find the motor&apos;s free speed. "}</strong> Free speed
+            is how fast a motor spins with nothing attached to it. CTRE&apos;s
             published dyno data for the Kraken X44 gives 7758 RPM under
             trapezoidal commutation, which is about{" "}
             <strong>129 rotations per second</strong>. That is the motor, in
@@ -820,7 +812,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             to roughly horizontal so it has somewhere to travel from.
           </li>
           <li>
-            Hold the left trigger. <strong>You should see:</strong> the arm
+            Hold the left trigger. <strong>{"You should see: "}</strong> the arm
             leave gently, arrive gently, and settle without bouncing. The
             difference from the PID lesson is loudest at the very start of the
             move, where the arm used to snap.
@@ -828,17 +820,17 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           <li>
             <strong>Make the profile obvious.</strong> Set cruise velocity to{" "}
             <code>0.25</code> and acceleration to <code>0.5</code>, redeploy,
-            and hold the trigger again. <strong>You should see:</strong> the
-            same 90° move take about a second and a half instead of about half a
-            second — and this time the arm visibly holds one steady speed
+            and hold the trigger again. <strong>{"You should see: "}</strong>{" "}
+            the same 90° move take about a second and a half instead of about
+            half a second — and this time the arm visibly holds one steady speed
             through the middle before slowing down. That flat middle is the
             cruise phase. At 2 and 4 there was no room for it. Nothing about the
             gains changed.
           </li>
           <li>
-            Release the trigger mid-move. <strong>You should see:</strong> the
-            arm keep going to the vertical target and hold there, exactly as if
-            you had never let go. That surprises people, and it is worth
+            Release the trigger mid-move. <strong>{"You should see: "}</strong>{" "}
+            the arm keep going to the vertical target and hold there, exactly as
+            if you had never let go. That surprises people, and it is worth
             understanding. The request you sent was{" "}
             <code>withPosition(VERTICAL_POSITION)</code> — the <em>final</em>{" "}
             target, not the next step along the way. Motion Magic builds the
@@ -852,22 +844,22 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           </li>
           <li>
             Put the arm&apos;s numbers back to 2 and 4, then hold A for the
-            flywheel. <strong>You should see:</strong> essentially an instant
-            spin-up. At 1000 rot/s², the ramp is 0.075 seconds long.
+            flywheel. <strong>{"You should see: "}</strong> essentially an
+            instant spin-up. At 1000 rot/s², the ramp is 0.075 seconds long.
           </li>
           <li>
-            <strong>Make that one visible too.</strong> Set the flywheel&apos;s
-            acceleration to <code>50.0</code> and hold A.{" "}
-            <strong>You should see:</strong> a spin-up you can watch and hear,
-            taking about a second and a half — 75 divided by 50. Put it back to{" "}
-            <code>1000.0</code>.
+            <strong>{"Make that one visible too. "}</strong> Set the
+            flywheel&apos;s acceleration to <code>50.0</code> and hold A.{" "}
+            <strong>{"You should see: "}</strong> a spin-up you can watch and
+            hear, taking about a second and a half — 75 divided by 50. Put it
+            back to <code>1000.0</code>.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="The wrong request type, a dead arm, or an arm that hunts"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>

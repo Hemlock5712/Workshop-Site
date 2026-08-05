@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -126,7 +127,7 @@ public class Arm extends Mechanism {
         <Box
           variant="alert-warning"
           tag="THE TELLS"
-          title="Six things that mean it wrote v2"
+          title="The tells that mean it wrote v2"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -406,11 +407,22 @@ you change anything in this project.`}
         id="prompt-1-make-it-read-before"
         title="Prompt 1 — make it read before it writes"
       >
-        <p className="prose-body measure">
-          Start with a question you can grade. You already know what this line
-          does, which is exactly why it is a good first prompt: you are testing
-          the assistant, not the code.
-        </p>
+        <Split>
+          <ProseBlock>
+            <p>
+              Start with a question you can grade. You already know what this
+              line does, which is exactly why it is a good first prompt: you are
+              testing the assistant, not the code.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY START HERE">
+            This prompt changes nothing, so the worst case is a wrong
+            explanation you can catch by opening the file. If the answer is
+            vague, or it starts talking about <code>SubsystemBase</code>, you
+            have learned something useful before letting it write anything —
+            that session is not grounded, and you should point it at the skills.
+          </MarginNote>
+        </Split>
 
         <p className="prose-body measure">
           Both prompts below use the <code>2-Commands</code> layout, where the
@@ -428,8 +440,9 @@ you change anything in this project.`}
           <li>
             Open your robot project folder in the assistant — the same folder
             you have been editing, with <code>build.gradle</code> at the top of
-            it. <strong>You should see:</strong> it reports the project it is
-            working in. Claude Code also says it loaded <code>CLAUDE.md</code>.
+            it. <strong>{"You should see: "}</strong> it reports the project it
+            is working in. Claude Code also says it loaded{" "}
+            <code>CLAUDE.md</code>.
           </li>
           <li>
             Paste this prompt:
@@ -456,19 +469,6 @@ I have finished the Commands lesson. Do not change any files.`}
             marks a command that never finishes.
           </li>
         </ol>
-
-        <Box
-          variant="concept"
-          title="Why this prompt is the safe one to run first"
-        >
-          <p>
-            It changes nothing, so the worst case is a wrong explanation you can
-            catch by opening the file. If the answer is vague, or it starts
-            talking about <code>SubsystemBase</code>, you have learned something
-            useful before letting it write anything — that session is not
-            grounded, and you should point it at the skills.
-          </p>
-        </Box>
 
         <CollapsibleSection title="The real Arm.java on 2-Commands — check its answer against this">
           <GitHubContent
@@ -515,8 +515,8 @@ src/main/java/frc/robot/opmodes/TeleopOpMode.java as:
 Show me the diff before you write anything.`}
               />
             </div>
-            <strong>You should see:</strong> a proposed change to exactly two
-            files and nothing else.
+            <strong>{"You should see: "}</strong> a proposed change to exactly
+            two files and nothing else.
           </li>
           <li>
             Compare the <code>Arm.java</code> half against this. The new method
@@ -574,8 +574,8 @@ Show me the diff before you write anything.`}
           </li>
           <li>
             Accept the change, then run <code>gradlew build</code>.{" "}
-            <strong>You should see:</strong> <code>BUILD SUCCESSFUL</code>. Do
-            this before you run the robot, every time.
+            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
+            Do this before you run the robot, every time.
           </li>
         </ol>
 
@@ -606,25 +606,26 @@ Show me the diff before you write anything.`}
           </li>
           <li>
             Hold the left trigger for a moment, then release.{" "}
-            <strong>You should see:</strong> the arm pushes one way, exactly as
-            it did before. Nothing you added has broken what was already there.
+            <strong>{"You should see: "}</strong> the arm pushes one way,
+            exactly as it did before. Nothing you added has broken what was
+            already there.
           </li>
           <li>
-            Hold B. <strong>You should see:</strong> the arm pushes the{" "}
+            Hold B. <strong>{"You should see: "}</strong> the arm pushes the{" "}
             <em>other</em> way. Slower than the left trigger, because 3.0 V is
             half of 6.0 V.
           </li>
           <li>
-            Release B. <strong>You should see:</strong> the arm stops, because{" "}
-            <code>onFalse(arm.stop())</code> takes over. If it keeps going, the{" "}
-            <code>onFalse</code> half of the binding is missing.{" "}
+            Release B. <strong>{"You should see: "}</strong> the arm stops,
+            because <code>onFalse(arm.stop())</code> takes over. If it keeps
+            going, the <code>onFalse</code> half of the binding is missing.{" "}
             <code>onTrue</code> schedules a hold, and a hold never ends by
             itself — the only reason releasing B stops the arm is that{" "}
             <code>arm.stop()</code> takes the arm away from it.
           </li>
           <li>
-            Press A while still holding B. <strong>You should see:</strong> the
-            flywheel spins and the arm carries on. They are different
+            Press A while still holding B. <strong>{"You should see: "}</strong>{" "}
+            the flywheel spins and the arm carries on. They are different
             mechanisms, so nothing is being fought over.
           </li>
         </ol>
@@ -632,7 +633,7 @@ Show me the diff before you write anything.`}
         <Box
           variant="alert-warning"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="It writes v2, forgets .named(), or edits only one of the two files"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -732,9 +733,9 @@ Show me the diff before you write anything.`}
         >
           <p>
             An assistant is a teammate, not an autopilot. Read every change,
-            build before you run, and make sure <em>you</em> can explain what
-            the code does. &quot;The AI wrote it&quot; will not help you at a
-            competition with six minutes on the clock.
+            build before you run, and make sure <em>{"you "}</em> can explain
+            what the code does. &quot;The AI wrote it&quot; will not help you at
+            a competition with six minutes on the clock.
           </p>
           <p className="mt-3">
             The 2027 stack is alpha software, so APIs shift between releases.

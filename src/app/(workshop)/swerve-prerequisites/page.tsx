@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
@@ -31,21 +33,18 @@ export default function SwervePrerequisites() {
       ]}
       time="About 15 minutes of reading"
     >
-      <KeyConceptSection
-        description={[
-          "What you do have to understand is how a swerve robot answers two questions — which way is forward, and where am I on the field. Four ideas cover that, and every page after this one leans on all four.",
-        ]}
-        concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll get:</strong> the vocabulary the next six
-          pages assume — field-centric driving, <code>Pose2d</code>, the
-          field&apos;s coordinate frame, and odometry.{" "}
-          <strong>About 15 minutes of reading.</strong>
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "What you do have to understand is how a swerve robot answers two questions — which way is forward, and where am I on the field. Four ideas cover that, and every page after this one leans on all four.",
+          ]}
+          concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
+        />
+        <MarginNote label="WHAT YOU'LL GET">
+          The vocabulary the next six pages assume — field-centric driving,{" "}
+          <code>Pose2d</code>, the field&apos;s coordinate frame, and odometry.
+        </MarginNote>
+      </Split>
 
       {/* ── 1. WHAT SWERVE IS ────────────────────────────────────────── */}
       <LessonSection
@@ -106,33 +105,39 @@ export default function SwervePrerequisites() {
           meant.
         </p>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <Box variant="alert-info" title="Robot-centric">
-            <p>
-              Forward means the direction the robot&apos;s front is pointing.
-              Spin the robot and forward spins with it.
-            </p>
-            <p className="mt-3">
-              Fine while the robot is pointing away from you. The moment it
-              turns around, its left is your right and every input is mirrored.
-              Needs no gyro — the robot does not have to know its heading to
-              drive relative to itself.
-            </p>
-          </Box>
-
-          <Box variant="alert-success" title="Field-centric">
-            <p>
-              Forward means down the field, away from your driver station, no
-              matter which way the robot is facing.
-            </p>
-            <p className="mt-3">
-              Push the stick away from you and the robot moves away from you,
-              even if it has to drive backwards to do it. This is what makes a
-              swerve robot drivable by a human. It needs the gyro, because the
-              code has to subtract the robot&apos;s heading out of your request.
-            </p>
-          </Box>
-        </div>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "Answer 1",
+              term: "Robot-centric",
+              body: (
+                <>
+                  Forward means the direction the robot&apos;s front is
+                  pointing. Spin the robot and forward spins with it. Fine while
+                  the robot is pointing away from you; the moment it turns
+                  around, its left is your right and every input is mirrored.
+                  Needs no gyro — the robot does not have to know its heading to
+                  drive relative to itself.
+                </>
+              ),
+            },
+            {
+              label: "Answer 2",
+              term: "Field-centric",
+              body: (
+                <>
+                  Forward means down the field, away from your driver station,
+                  no matter which way the robot is facing. Push the stick away
+                  from you and the robot moves away from you, even if it has to
+                  drive backwards to do it. This is what makes a swerve robot
+                  drivable by a human. It needs the gyro, because the code has
+                  to subtract the robot&apos;s heading out of your request.
+                </>
+              ),
+            },
+          ]}
+        />
 
         <p>
           The workshop code only ever drives field-centric. The teleop OpMode
@@ -186,9 +191,9 @@ export default function SwervePrerequisites() {
       >
         <p>
           A <code>Pose2d</code> is three numbers in one package. It answers{" "}
-          <em>where on the field</em> and <em>which way around</em> at the same
-          time. The robot&apos;s current position is a <code>Pose2d</code>. So
-          is a spot you want to drive to.
+          <em>where on the field</em> and <em>{"which way around "}</em> at the
+          same time. The robot&apos;s current position is a <code>Pose2d</code>.
+          So is a spot you want to drive to.
         </p>
 
         <ImageBlock
@@ -239,7 +244,7 @@ export default function SwervePrerequisites() {
           </p>
           <p className="mt-3">
             This is the one that catches people, because the section above said
-            forward <em>does</em> flip. Both are true, and they are about
+            forward <em>{"does "}</em> flip. Both are true, and they are about
             different things. The driver&apos;s forward flips so driving feels
             the same from either end of the field. The coordinate frame stays
             put so that two poses can be compared at all. A red robot parked
@@ -259,11 +264,11 @@ export default function SwervePrerequisites() {
         title="Odometry, and why it goes wrong"
       >
         <p>
-          <strong>Odometry</strong> is how the robot keeps a running answer to
-          &quot;where am I.&quot; Every loop the drivetrain reads how far each
-          wheel turned and which way that wheel was pointing, works out how far
-          the robot moved in that slice of time, and adds it to the pose. You
-          never call any of that. You read the answer with{" "}
+          <strong>{"Odometry "}</strong> is how the robot keeps a running answer
+          to &quot;where am I.&quot; Every loop the drivetrain reads how far
+          each wheel turned and which way that wheel was pointing, works out how
+          far the robot moved in that slice of time, and adds it to the pose.
+          You never call any of that. You read the answer with{" "}
           <code>drivetrain.getPose()</code>.
         </p>
 

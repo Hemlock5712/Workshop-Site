@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -35,24 +36,23 @@ export default function SwerveCalibration() {
       ]}
       time="Budget an afternoon"
     >
-      <KeyConceptSection
-        description={[
-          "There is almost no code on this page. What you produce is a set of measured numbers and one changed word — and an odometry reading you are willing to trust, which is what every page after this one is built on.",
-        ]}
-        concept="Calibration is measuring your robot and writing the measurements into TunerConstants.java."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll produce:</strong> four CANcoder offset
-          constants; measured values for <code>kWheelRadius</code>,{" "}
-          <code>kSpeedAt12Volts</code> and <code>kSlipCurrent</code>; tuned{" "}
-          <code>steerGains</code> and <code>driveGains</code>, which are several
-          numbers each; plus one changed word and a smaller deadband in{" "}
-          <code>TeleopOpMode.java</code>. <strong>Budget an afternoon</strong> —
-          steps 3, 4 and 5 each need the floor and a robot somebody is driving.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "There is almost no code on this page. What you produce is a set of measured numbers and one changed word — and an odometry reading you are willing to trust, which is what every page after this one is built on.",
+          ]}
+          concept="Calibration is measuring your robot and writing the measurements into TunerConstants.java."
+        />
+        <MarginNote label="WHAT YOU'LL PRODUCE">
+          Four CANcoder offset constants; measured values for{" "}
+          <code>kWheelRadius</code>, <code>kSpeedAt12Volts</code> and{" "}
+          <code>kSlipCurrent</code>; tuned <code>steerGains</code> and{" "}
+          <code>driveGains</code>, which are several numbers each; plus one
+          changed word and a smaller deadband in <code>TeleopOpMode.java</code>.
+          Steps 3, 4 and 5 each need the floor and a robot somebody is driving,
+          which is what makes this an afternoon.
+        </MarginNote>
+      </Split>
 
       {/* ── WHY HERE ─────────────────────────────────────────────────── */}
       <LessonSection
@@ -397,7 +397,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             </li>
           </ol>
           <p>
-            <strong>You should see:</strong> re-enable, push the left stick
+            <strong>{"You should see: "}</strong> re-enable, push the left stick
             straight forward, and the robot goes straight down the carpet. Sight
             along a seam or a tape line. If it curves consistently to one side,
             a module is zeroed wrong; if it wanders, come back to this after
@@ -460,8 +460,8 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             not expect.
           </p>
           <p>
-            <strong>You should see:</strong> the verification loop is already
-            built. <code>Telemetry.java</code> publishes{" "}
+            <strong>{"You should see: "}</strong> the verification loop is
+            already built. <code>Telemetry.java</code> publishes{" "}
             <code>Drivetrain/ModuleStates</code> (what the modules are actually
             doing) and <code>Drivetrain/ModuleTargets</code> (what they were
             asked to do). Put the angle from both on the same AdvantageScope
@@ -479,9 +479,9 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           <p>
             Odometry counts wheel rotations and multiplies by a radius to get
             distance. The radius in the file is what the wheel measures on a
-            bench. The radius you want is the <em>effective</em> one: the wheel
-            squashed under the robot&apos;s weight, sinking into carpet, with
-            however much tread is left on it. It usually comes out a little
+            bench. The radius you want is the <em>{"effective "}</em> one: the
+            wheel squashed under the robot&apos;s weight, sinking into carpet,
+            with however much tread is left on it. It usually comes out a little
             smaller than the bench number, and it drifts as the tread wears — so
             this is a measurement to repeat late in the season, not once.
           </p>
@@ -518,7 +518,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 //      (5.00 / 4.80) * 2.167 = 2.257 in`}
           />
           <p>
-            <strong>You should see:</strong> put the new radius in{" "}
+            <strong>{"You should see: "}</strong> put the new radius in{" "}
             <code>kWheelRadius</code>, redeploy, and run the same test again.
             The log and the tape measure should now agree, and the gap that is
             left should be small enough to argue about. If the correction made
@@ -539,10 +539,10 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             through the wrong radius.
           </p>
           <p>
-            It also has to happen <em>before</em> step 7. The constant means
-            &quot;how fast this robot goes with 12 volts applied to the drive
-            motors,&quot; which is a question you can only ask while the drive
-            request is still open-loop voltage. It is, right now.
+            It also has to happen <em>{"before "}</em> step 7. The constant
+            means &quot;how fast this robot goes with 12 volts applied to the
+            drive motors,&quot; which is a question you can only ask while the
+            drive request is still open-loop voltage. It is, right now.
           </p>
           <ol className="ml-5 list-decimal space-y-2">
             <li>
@@ -561,31 +561,34 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               Put that number in <code>kSpeedAt12Volts</code>.
             </li>
           </ol>
-          <Box variant="alert-warning" title="This is not your speed limit">
-            <p>
-              The generated file says so directly:{" "}
-              <em>
-                &quot;This is NOT the desired max robot speed - see maxSpeed in
-                TeleopOpMode instead.&quot;
-              </em>{" "}
-              It is a measurement of what the robot can do, and the drivetrain
-              uses it to work out how much of its ability a given stick position
-              is asking for.
-            </p>
-            <p className="mt-3">
+          <Split>
+            <ProseBlock>
+              <p>
+                That number is not your speed limit. The generated file says so
+                directly:{" "}
+                <em>
+                  &quot;This is NOT the desired max robot speed - see maxSpeed
+                  in TeleopOpMode instead.&quot;
+                </em>{" "}
+                It is a measurement of what the robot can do, and the drivetrain
+                uses it to work out how much of its ability a given stick
+                position is asking for. Do not lie to{" "}
+                <code>kSpeedAt12Volts</code> about what the robot can do — every
+                closed-loop calculation downstream believes it.
+              </p>
+            </ProseBlock>
+            <MarginNote label="CAPPING NEW DRIVERS">
               On the branch, <code>TeleopOpMode</code> happens to read it
               straight into <code>maxSpeed</code>, so full stick means full
               speed. If you want new drivers capped at something gentler, scale
-              it there. Do not lie to <code>kSpeedAt12Volts</code> about what
-              the robot can do — every closed-loop calculation downstream
-              believes it.
-            </p>
-          </Box>
+              it there.
+            </MarginNote>
+          </Split>
           <p>
-            <strong>You should see:</strong> a trace that ramps up and then goes
-            flat, and a plateau somewhere near the 4.54 the file shipped with.
-            If it comes out wildly higher or lower, suspect the file before you
-            suspect the robot: check step 3 first, then check that{" "}
+            <strong>{"You should see: "}</strong> a trace that ramps up and then
+            goes flat, and a plateau somewhere near the 4.54 the file shipped
+            with. If it comes out wildly higher or lower, suspect the file
+            before you suspect the robot: check step 3 first, then check that{" "}
             <code>kDriveGearRatio</code> matches the gearing your modules are
             actually built with.
           </p>
@@ -638,38 +641,34 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               wheels start to slip,&quot; which is exactly what you measured.
             </li>
           </ol>
-          <Box
-            variant="alert-warning"
-            title="You may be measuring the limit, not the tire"
-          >
-            <p>
-              The drive motors are already limited. The shipped{" "}
-              <code>kSlipCurrent</code> of 120 A goes into the module factory as
-              a stator limit, and <code>driveInitialConfigs</code> in the same
-              file sets a 70 A supply limit. Phoenix configs stay in the device
-              after your code applies them.
-            </p>
-            <p className="mt-3">
-              So if the current trace flattens at 120 A and the wheel never
-              breaks loose, your robot&apos;s real slip point is above the
-              limit, and the plateau you are staring at is the limit itself.
-              Raise <code>kSlipCurrent</code> temporarily, redeploy, and run the
-              ramp again — then put the measured value in when you have one.
-            </p>
-          </Box>
-          <Box variant="alert-warning" title="Too low costs you acceleration">
-            <p>
+          <Split>
+            <ProseBlock>
+              <p>
+                You may be measuring the limit rather than the tire. The drive
+                motors are already limited: the shipped{" "}
+                <code>kSlipCurrent</code> of 120 A goes into the module factory
+                as a stator limit, and <code>driveInitialConfigs</code> in the
+                same file sets a 70 A supply limit, and Phoenix configs stay in
+                the device after your code applies them. So if the current trace
+                flattens at 120 A and the wheel never breaks loose, your
+                robot&apos;s real slip point is above the limit and the plateau
+                you are staring at is the limit itself. Raise{" "}
+                <code>kSlipCurrent</code> temporarily, redeploy, and run the
+                ramp again — then put the measured value in when you have one.
+              </p>
+            </ProseBlock>
+            <MarginNote label="TOO LOW COSTS YOU ACCELERATION">
               This limit caps torque, and torque is acceleration. Set it well
               under the slip point and the robot is safe, predictable and slow
               off the line. Some teams shave a few amps off the measured value
               for margin; that is a judgment call about your carpet, not a rule.
               Measure first, then decide how much you are giving away.
-            </p>
-          </Box>
+            </MarginNote>
+          </Split>
           <p>
-            <strong>You should see:</strong> redeploy, then floor it from a dead
-            stop on carpet. The robot should launch without the squeal and the
-            little sideways hop that wheel spin gives you.
+            <strong>{"You should see: "}</strong> redeploy, then floor it from a
+            dead stop on carpet. The robot should launch without the squeal and
+            the little sideways hop that wheel spin gives you.
           </p>
           <DocumentationButton
             href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
@@ -706,13 +705,14 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             the robot to stay put while you find the rough number.
           </p>
           <p>
-            <strong>You should see:</strong> the same two signals as step 2, but
-            the speed component this time — <code>Drivetrain/ModuleStates</code>{" "}
-            against <code>Drivetrain/ModuleTargets</code>. Drive around, then
-            look at the plot. Tuned means the measured speed sits on the
-            commanded speed through changes of direction, not only in a straight
-            line. A constant gap between them is kV; a gap that only appears at
-            low speed is kS; a slow recovery after a change is kP.
+            <strong>{"You should see: "}</strong> the same two signals as step
+            2, but the speed component this time —{" "}
+            <code>Drivetrain/ModuleStates</code> against{" "}
+            <code>Drivetrain/ModuleTargets</code>. Drive around, then look at
+            the plot. Tuned means the measured speed sits on the commanded speed
+            through changes of direction, not only in a straight line. A
+            constant gap between them is kV; a gap that only appears at low
+            speed is kS; a slow recovery after a change is kP.
           </p>
         </div>
 
@@ -814,15 +814,18 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           </p>
         </div>
 
-        <Box variant="alert-tip" title="Glue the module encoders down">
-          <p>
+        <Split>
+          <ProseBlock>
+            <p>One last mechanical thing: glue the module encoders down.</p>
+          </ProseBlock>
+          <MarginNote label="WHY GLUE THEM">
             Step 1&apos;s zeros are stored against a physical sensor position.
             If a CANcoder shifts a couple of degrees in its mount during a hard
             collision, every zero you saved is now wrong, and the robot drifts
-            in a way that looks exactly like bad odometry. Glue them, and
-            re-check the zeros after any impact hard enough to make you look.
-          </p>
-        </Box>
+            in a way that looks exactly like bad odometry. Re-check the zeros
+            after any impact hard enough to make you look.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* ── DID IT WORK ──────────────────────────────────────────────── */}
@@ -843,37 +846,38 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             pace, not creeping.
           </li>
           <li>
-            Stop on the start mark. <strong>You should see:</strong> the robot
-            physically back on the tape, and <code>Drivetrain/Pose</code> back
-            near (0, 0) after twelve meters of driving. A drift of a meter means
-            something above is not calibrated.
+            Stop on the start mark. <strong>{"You should see: "}</strong> the
+            robot physically back on the tape, and <code>Drivetrain/Pose</code>{" "}
+            back near (0, 0) after twelve meters of driving. A drift of a meter
+            means something above is not calibrated.
           </li>
           <li>
-            <strong>You should see:</strong> pull the log up in AdvantageScope
-            and put <code>Drivetrain/ModuleStates</code> and{" "}
+            <strong>{"You should see: "}</strong> pull the log up in
+            AdvantageScope and put <code>Drivetrain/ModuleStates</code> and{" "}
             <code>Drivetrain/ModuleTargets</code> on one plot. Through all four
             corners the measured traces should sit on the commanded ones. That
             is steps 2 and 6 confirmed together.
           </li>
           <li>
-            <strong>You should see:</strong> hands off the sticks at the end,
-            the speed component of <code>Drivetrain/ModuleTargets</code> flat at
-            zero. That is the deadband from step 7.
+            <strong>{"You should see: "}</strong> hands off the sticks at the
+            end, the speed component of <code>Drivetrain/ModuleTargets</code>{" "}
+            flat at zero. That is the deadband from step 7.
           </li>
           <li>
             Now check the seeding distinction is real. Turn the robot 90° in
-            place and press the left bumper. <strong>You should see:</strong>{" "}
-            pushing the stick forward now drives the robot in the new direction
-            — and the x and y in <code>Drivetrain/Pose</code> did not jump when
-            you pressed it. The bumper moved the driver&apos;s forward, not the
-            robot&apos;s position.
+            place and press the left bumper.{" "}
+            <strong>{"You should see: "}</strong> pushing the stick forward now
+            drives the robot in the new direction — and the x and y in{" "}
+            <code>Drivetrain/Pose</code> did not jump when you pressed it. The
+            bumper moved the driver&apos;s forward, not the robot&apos;s
+            position.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="A rotated square, a robot that got worse, or numbers in the wrong units"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>
@@ -994,22 +998,19 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
       {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
       <LessonSection id="what-s-next" title="What's next">
-        <Box variant="alert-success" title="Up next: Vision">
-          <p>
-            Odometry now measures your robot correctly, and it still does not
-            know where on the field it started. Vision closes that gap: a
-            Limelight reads AprilTags, works out where the robot must be for
-            that view to make sense, and feeds the answer into the pose you
-            calibrated — with a trust weight, because a distant tag is worth
-            less than a close one.
-          </p>
-          <p className="mt-3">
-            The distinction from this page comes straight back. With a single
-            tag in view the camera code leans on your gyro heading, so an
-            uncalibrated heading turns a good camera into a confidently wrong
-            position.
-          </p>
-        </Box>
+        <p>
+          Odometry now measures your robot correctly, and it still does not know
+          where on the field it started. <strong>Vision</strong> closes that
+          gap: a Limelight reads AprilTags, works out where the robot must be
+          for that view to make sense, and feeds the answer into the pose you
+          calibrated — with a trust weight, because a distant tag is worth less
+          than a close one.
+        </p>
+        <p>
+          The distinction from this page comes straight back. With a single tag
+          in view the camera code leans on your gyro heading, so an uncalibrated
+          heading turns a good camera into a confidently wrong position.
+        </p>
 
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"

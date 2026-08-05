@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import ImageBlock from "@/components/ImageBlock";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -30,55 +31,29 @@ export default function Hardware() {
       ]}
       time="About 45 minutes, longer if firmware needs updating"
     >
-      {/* Beginner-Friendly Introduction */}
-      <Box
-        variant="alert-info"
-        title="New to Robot Hardware? Start Here"
-        className="mb-8"
-      >
-        <p className="mb-3">
+      {/* Introduction. The beginner floor is in the rail beside it rather
+          than in the column: the room is mixed, and a second-year student does
+          not need to be told what a motor is before being told what to wire. */}
+      <Split>
+        <KeyConceptSection
+          title="Hardware Setup: Building the Foundation"
+          description="Overview of the motors, sensors, and controllers you'll connect for this workshop."
+          concept="Solid hardware configuration enables precise and reliable robot control."
+        />
+        <MarginNote label="IF THIS IS NEW">
           Think of your robot like a remote control car, but much smarter. Just
-          like a car needs:
-        </p>
-        <ul className="list-disc list-inside space-y-2 mb-3">
-          <li>
-            <strong>
-              <GlossaryTerm term="motor">Motors</GlossaryTerm>
-            </strong>
-            : like the wheels that make it move
-          </li>
-          <li>
-            <strong>
-              <GlossaryTerm term="motor controller">Controllers</GlossaryTerm>
-            </strong>
-            : like the remote control that tells motors what to do
-          </li>
-          <li>
-            <strong>
-              <GlossaryTerm term="sensor">Sensors</GlossaryTerm>
-            </strong>
-            : like a speedometer that tells you how fast you&apos;re going
-          </li>
-          <li>
-            <strong>A brain</strong>: like the electronics inside that process
-            everything
-          </li>
-        </ul>
-        <p>
-          This page explains the specific robot parts you&apos;ll use in this
-          workshop and what each one does. If terms like &quot;
-          <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>&quot; or &quot;
-          <GlossaryTerm term="encoder">encoder</GlossaryTerm>&quot; are new to
-          you, that&apos;s fine. We&apos;ll explain each one as it comes up.
-        </p>
-      </Box>
-
-      {/* Introduction */}
-      <KeyConceptSection
-        title="Hardware Setup: Building the Foundation"
-        description="Overview of the motors, sensors, and controllers you'll connect for this workshop."
-        concept="Solid hardware configuration enables precise and reliable robot control."
-      />
+          like a car, it needs <GlossaryTerm term="motor">motors</GlossaryTerm>{" "}
+          — the wheels that make it move;{" "}
+          <GlossaryTerm term="motor controller">controllers</GlossaryTerm> — the
+          remote control that tells motors what to do;{" "}
+          <GlossaryTerm term="sensor">sensors</GlossaryTerm> — a speedometer
+          that tells you how fast you are going; and a brain, the electronics
+          inside that process everything. If terms like{" "}
+          <GlossaryTerm term="can bus">CAN bus</GlossaryTerm> or{" "}
+          <GlossaryTerm term="encoder">encoder</GlossaryTerm> are new to you,
+          that is fine — this page explains each one as it comes up.
+        </MarginNote>
+      </Split>
 
       <LessonSection id="hardware-components" title="Hardware Components">
         <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
@@ -101,7 +76,7 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-[var(--tx2)] mb-3">
-              <strong>What it is:</strong> A{" "}
+              <strong>{"What it is: "}</strong> A{" "}
               <GlossaryTerm term="motor">motor</GlossaryTerm> with a built-in
               &quot;brain&quot; (
               <GlossaryTerm term="motor controller">controller</GlossaryTerm>).
@@ -150,7 +125,7 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-[var(--tx2)] mb-3">
-              <strong>What it is:</strong> A{" "}
+              <strong>{"What it is: "}</strong> A{" "}
               <GlossaryTerm term="sensor">sensor</GlossaryTerm> that measures
               exactly where a rotating part is positioned. It can tell you
               &quot;the arm is at 45 degrees.&quot; (The part on the parts list
@@ -158,7 +133,7 @@ export default function Hardware() {
               calls it a CANcoder.)
             </p>
             <p className="text-[var(--tx2)] mb-3">
-              <strong>Why you need it:</strong> The{" "}
+              <strong>{"Why you need it: "}</strong> The{" "}
               <GlossaryTerm term="encoder">encoder</GlossaryTerm> built into
               your motor gets set to 0 degrees every time it powers on, which
               causes problems if the arm doesn&apos;t start in the same position
@@ -204,15 +179,15 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="text-[var(--tx2)] mb-3">
-              <strong>What it is:</strong> A device that creates a high-speed
-              &quot;conversation network&quot; for all your robot parts. Think
-              of it like a Wi-Fi router, but instead of connecting phones and
-              laptops, it connects motors and sensors.
+              <strong>{"What it is: "}</strong> A device that creates a
+              high-speed &quot;conversation network&quot; for all your robot
+              parts. Think of it like a Wi-Fi router, but instead of connecting
+              phones and laptops, it connects motors and sensors.
             </p>
             <p className="text-[var(--tx2)] mb-3">
-              <strong>Why you need it:</strong> Just like you can&apos;t have 10
-              people all talking at once in a small room, robot parts need an
-              organized way to communicate. The CANivore runs{" "}
+              <strong>{"Why you need it: "}</strong> Just like you can&apos;t
+              have 10 people all talking at once in a small room, robot parts
+              need an organized way to communicate. The CANivore runs{" "}
               <strong>CAN FD</strong> (a faster version of the CAN network with
               room for much more data) so everything can talk without getting
               confused. Swerve drivetrains often need one because the robot

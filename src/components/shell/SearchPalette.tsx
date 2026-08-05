@@ -331,7 +331,7 @@ export default function SearchPalette() {
                   color: "var(--tx2)",
                 }}
               >
-                <span className="mono w-[22px] shrink-0 text-center">→</span>
+                <span className="mono w-[22px] shrink-0 text-center">→</span>{" "}
                 Open the full search page for “{trimmed}”
               </Command.Item>
             )}

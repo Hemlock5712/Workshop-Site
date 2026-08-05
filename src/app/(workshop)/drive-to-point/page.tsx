@@ -9,6 +9,7 @@ import DocumentationButton from "@/components/DocumentationButton";
 import GitHubContent from "@/components/GitHubContent";
 import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
 
 export default function DriveToPoint() {
@@ -36,29 +37,20 @@ export default function DriveToPoint() {
       branch="5-DriveToPoint"
       time="Roughly 45 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "The command that does it is under ninety lines. Odometry says where the robot is. A Pose2d says where it should be. Three PID controllers turn the gap between them into a speed, and that speed goes to the drivetrain as one field-relative request.",
-        ]}
-        concept="Driving to a point is subtraction with a gain on it. The arithmetic is the simple part — the hard part is trusting the pose you are subtracting from."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>Branch:</strong> <code>5-DriveToPoint</code> (PR #11). It adds
-          four files and edits two. Two of the new files are the ones you write
-          here: <code>src/main/java/frc/robot/utils/ClassicCommand.java</code>{" "}
-          (123 lines, copied in) and{" "}
-          <code>src/main/java/frc/robot/commands/DriveToPoint.java</code> (87
-          lines).
-        </p>
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> two bindings. Hold{" "}
-          <strong>A</strong> and the robot drives to the field origin. Hold{" "}
-          <strong>B</strong> and it drives to (3 m, 2 m) facing 180°.{" "}
-          <strong>Roughly 45 minutes.</strong>
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "The command that does it is under ninety lines. Odometry says where the robot is. A Pose2d says where it should be. Three PID controllers turn the gap between them into a speed, and that speed goes to the drivetrain as one field-relative request.",
+            "The branch adds four files and edits two. Two of the new ones are what you write here: utils/ClassicCommand.java, 123 lines copied in, and commands/DriveToPoint.java, 87 lines you type.",
+          ]}
+          concept="Driving to a point is subtraction with a gain on it. The arithmetic is the simple part — the hard part is trusting the pose you are subtracting from."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Two bindings. Hold <strong>A</strong> and the robot drives to the
+          field origin. Hold <strong>B</strong> and it drives to (3 m, 2 m)
+          facing 180°.
+        </MarginNote>
+      </Split>
 
       <Box
         variant="alert-warning"
@@ -271,28 +263,25 @@ Pose2d currentPose = drivetrain.getPose();`}
           </p>
         </Box>
 
-        <Box
-          variant="alert-info"
-          tag="NOTE"
-          title="ClassicCommand is a file, not a framework class"
-        >
-          <p>
-            WPILib does not ship it. It is 123 lines sitting in{" "}
-            <code>utils/</code> on the branch, and the robot template ships its
-            own copy. It is there because the older command framework worked
-            this way and the shape is still useful. Copy it in and forget about
-            it.
-          </p>
-          <p className="mt-3">
+        <Split>
+          <ProseBlock>
+            <p>
+              <code>ClassicCommand</code> is a file, not a framework class.
+              WPILib does not ship it: it is 123 lines sitting in{" "}
+              <code>utils/</code> on the branch, and the robot template ships
+              its own copy. Copy it in and forget about it. What matters here is
+              the result — <code>new DriveToPoint(...)</code> is a normal{" "}
+              <code>Command</code>, and you bind it to a button like any other.
+            </p>
+          </ProseBlock>
+          <MarginNote label="IF YOU ARE CURIOUS">
             Inside, it turns your four methods into an ordinary{" "}
-            <code>Command</code>. How it does that is written in the advanced
-            dialect you meet at the end of the course — you never need to read
-            it, and <strong>Drive to Tag, Written as a Coroutine</strong> takes
-            the lid off if you are curious. What matters here is the result:{" "}
-            <code>new DriveToPoint(...)</code> is a normal <code>Command</code>,
-            and you bind it to a button like any other.
-          </p>
-        </Box>
+            <code>Command</code>, written in the advanced dialect you meet at
+            the end of the course. You never need to read it;{" "}
+            <strong>Drive to Tag, Written as a Coroutine</strong> takes the lid
+            off.
+          </MarginNote>
+        </Split>
 
         <Box
           variant="alert-warning"
@@ -479,25 +468,24 @@ public class DriveToPoint extends ClassicCommand {
           field is what <code>execute()</code> reads two steps from now.
         </p>
 
-        <Box variant="concept" title="Why heading needs enableContinuousInput">
-          <p>
+        <Split>
+          <ProseBlock>
+            <p>
+              <code>enableContinuousInput(-Math.PI, Math.PI)</code> tells the
+              heading controller that its two ends are the same place, so it
+              takes the short route. <code>Math.PI</code> is 3.14159…, half a
+              turn in radians — this controller works in radians throughout, not
+              degrees. The X and Y controllers get no such call, and should not.
+              Meters do not wrap.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHAT GOES WRONG WITHOUT IT">
             Angles wrap around and plain subtraction does not know that. A robot
             at 179° asked to reach −179° has a real error of 2°, but{" "}
-            <code>−179 − 179</code> is −358, so an untreated controller would
-            spin the robot almost all the way around the long way.
-          </p>
-          <p className="mt-3">
-            <code>enableContinuousInput(-Math.PI, Math.PI)</code> tells the
-            controller that those two ends are the same place, and it takes the
-            short route. <code>Math.PI</code> is 3.14159…, which is half a turn
-            in radians — the heading controller works in radians throughout, not
-            degrees.
-          </p>
-          <p className="mt-3">
-            The X and Y controllers get no such call, and should not. Meters do
-            not wrap.
-          </p>
-        </Box>
+            <code>−179 − 179</code> is −358, so an untreated controller spins
+            the robot almost all the way around the long way.
+          </MarginNote>
+        </Split>
 
         <p className="prose-body-sm measure">
           <strong>Visible result:</strong> the file compiles for the first time.
@@ -707,27 +695,24 @@ import org.wpilib.math.geometry.Rotation2d;
         .whileTrue(new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));`}
         />
 
-        <p className="prose-body measure">
-          <code>whileTrue</code>, because this command never finishes on its own
-          — press and hold, release and it is canceled. No paired{" "}
-          <code>whileFalse</code> this time; <code>end()</code> already sends
-          the stop request.
-        </p>
-
-        <Box
-          variant="alert-info"
-          tag="NOTE · NAMING"
-          title="A hold the branch does not label"
-        >
-          <p>
-            By the naming convention from Chaining Commands, a command that
-            never finishes should carry a <code>(hold)</code> suffix — this one
+        <Split>
+          <ProseBlock>
+            <p>
+              <code>whileTrue</code>, because this command never finishes on its
+              own — press and hold, release and it is canceled. No paired{" "}
+              <code>whileFalse</code> this time; <code>end()</code> already
+              sends the stop request.
+            </p>
+          </ProseBlock>
+          <MarginNote label="A HOLD THE BRANCH DOES NOT LABEL">
+            By the naming convention from Chaining Commands a command that never
+            finishes should carry a <code>(hold)</code> suffix, so this one
             would be <code>DriveToPoint (hold)</code>. The branch names it{" "}
             <code>&quot;DriveToPoint&quot;</code> and leaves it there. Worth
-            noticing rather than copying: the next lesson gives this command a
+            noticing rather than copying — the next lesson gives this command a
             real ending, at which point the suffix would be wrong anyway.
-          </p>
-        </Box>
+          </MarginNote>
+        </Split>
 
         <p className="prose-body-sm measure">
           <strong>Visible result:</strong> the robot moves on its own for the
@@ -1019,53 +1004,54 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
         >
           <li>
             Start the simulator and enable Teleop.{" "}
-            <strong>You should see:</strong> the robot sitting still, joysticks
-            working as they have all through Workshop #2.
+            <strong>{"You should see: "}</strong> the robot sitting still,
+            joysticks working as they have all through Workshop #2.
           </li>
           <li>
             Drive a few meters away from where it started with the left stick,
             and turn it with the right. Then hold <strong>A</strong>.{" "}
-            <strong>You should see:</strong> the robot drive itself back toward
-            where it began and rotate to 0° on the way — not spin first and
-            drive second. Both happen at once, which is what three independent
-            controllers buy you.
+            <strong>{"You should see: "}</strong> the robot drive itself back
+            toward where it began and rotate to 0° on the way — not spin first
+            and drive second. Both happen at once, which is what three
+            independent controllers buy you.
           </li>
           <li>
             While still holding <strong>A</strong>, push the left stick.{" "}
-            <strong>You should see:</strong> nothing. <code>DriveToPoint</code>{" "}
-            requires the drivetrain, so it outranks the joystick default command
-            for as long as it runs. The sticks come back the moment you release.
+            <strong>{"You should see: "}</strong> nothing.{" "}
+            <code>DriveToPoint</code> requires the drivetrain, so it outranks
+            the joystick default command for as long as it runs. The sticks come
+            back the moment you release.
           </li>
           <li>
             Release <strong>A</strong> halfway through the trip, with the sticks
-            centered. <strong>You should see:</strong> the robot stop, not coast
-            on at its last speed. Two things make that happen —{" "}
+            centered. <strong>{"You should see: "}</strong> the robot stop, not
+            coast on at its last speed. Two things make that happen —{" "}
             <code>end(true)</code> sends <code>SwerveRequest.Idle</code>, and
             the joystick default command takes the drivetrain back and asks for
             nothing.
           </li>
           <li>
-            Hold <strong>B</strong>. <strong>You should see:</strong> the robot
-            drive to (3, 2) and turn to 180°.
+            Hold <strong>B</strong>. <strong>{"You should see: "}</strong> the
+            robot drive to (3, 2) and turn to 180°.
           </li>
           <li>
             Keep holding <strong>B</strong> after it arrives.{" "}
-            <strong>You should see:</strong> the robot sit on the target and{" "}
-            <em>keep working</em> — small corrections, never handing the
+            <strong>{"You should see: "}</strong> the robot sit on the target
+            and <em>keep working</em> — small corrections, never handing the
             drivetrain back. Correct behavior, not a bug:{" "}
             <code>isFinished()</code> returns <code>false</code>, so the only
             way out is the button.
           </li>
           <li>
             Open Glass or AdvantageScope and graph <code>Drivetrain/Pose</code>{" "}
-            for that run. <strong>You should see:</strong> X settle near 3, Y
-            near 2, heading near 180°. How near is the tuning conversation.
+            for that run. <strong>{"You should see: "}</strong> X settle near 3,
+            Y near 2, heading near 180°. How near is the tuning conversation.
           </li>
           <li>
             Graph <code>Drivetrain/TranslationSpeedMps</code> for the same run.{" "}
-            <strong>You should see:</strong> speed jump almost immediately to
-            whatever the drivetrain can do, hold there, then fall off steeply at
-            the end. That shape is the missing speed limit from the section
+            <strong>{"You should see: "}</strong> speed jump almost immediately
+            to whatever the drivetrain can do, hold there, then fall off steeply
+            at the end. That shape is the missing speed limit from the section
             above, drawn out. The next lesson turns it into a trapezoid.
           </li>
         </ol>
@@ -1073,7 +1059,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Confidently wrong, creeping in forever, or not compiling"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>
@@ -1141,18 +1127,16 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
           </li>
         </ul>
 
-        <Box variant="alert-success" title="Up next: Profiled Drive to Point">
-          <p>
-            One file changes and both faults go away. Instead of turning
-            distance into speed, the command works out the entire trip before
-            the robot moves — speed up, cruise, slow down — and then follows it.
-            PID stops being the driver and becomes a small correction on top,
-            which is why the gains drop from 10 / 10 / 7 to 3.0 / 3.0 / 4.0
-            (also marked <code>TODO: tune</code> on that branch). And because
-            the plan knows how long the trip takes, the command finally has a
-            finish line.
-          </p>
-        </Box>
+        <p>
+          <strong>Profiled Drive to Point</strong> changes one file and both
+          faults go away. Instead of turning distance into speed, the command
+          works out the entire trip before the robot moves — speed up, cruise,
+          slow down — and then follows it. PID stops being the driver and
+          becomes a small correction on top, which is why the gains drop from 10
+          / 10 / 7 to 3.0 / 3.0 / 4.0 (also marked <code>TODO: tune</code> on
+          that branch). And because the plan knows how long the trip takes, the
+          command finally has a finish line.
+        </p>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/Workshop-Code/pull/11"

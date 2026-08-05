@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -42,29 +43,20 @@ export default function VisionImplementation() {
       branch="3-Limelight"
       time="About an hour"
     >
-      <KeyConceptSection
-        description={[
-          "An AprilTag sighting is the opposite: it is absolute, it is occasional, and it is noisy. This page wires the two together, so the camera nudges odometry back toward reality every time it sees a tag.",
-        ]}
-        concept="Vision does not replace odometry. It corrects it, one sighting at a time, weighted by how much that sighting is worth."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> a <code>Limelight</code>{" "}
-          class that reads the camera every loop and feeds pose corrections into
-          the drivetrain, plus the single line in <code>Robot</code> that turns
-          it on. <strong>About an hour</strong>, and most of that is camera
-          setup, not code.
-        </p>
-        <p className="mt-3">
-          <strong>The whole branch is three files:</strong>{" "}
-          <code>LimelightHelpers.java</code> and{" "}
-          <code>subsystems/Limelight.java</code> are added, and{" "}
-          <code>Robot.java</code> gains one import and one line in its
-          constructor. No OpMode changes, no new bindings, nothing else.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "An AprilTag sighting is the opposite: it is absolute, it is occasional, and it is noisy. This page wires the two together, so the camera nudges odometry back toward reality every time it sees a tag.",
+          ]}
+          concept="Vision does not replace odometry. It corrects it, one sighting at a time, weighted by how much that sighting is worth."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          A <code>Limelight</code> class that reads the camera every loop and
+          feeds pose corrections into the drivetrain, plus the single line in{" "}
+          <code>Robot</code> that turns it on. Most of the hour is camera setup,
+          not code.
+        </MarginNote>
+      </Split>
 
       <Box
         variant="alert-warning"
@@ -230,9 +222,9 @@ export default function VisionImplementation() {
             <strong>Enter the camera offsets.</strong> Measure where the camera
             sits relative to the center of the robot, and at what angle, and
             type those numbers in. AprilTag solving produces the{" "}
-            <em>camera&apos;s</em> pose; the offsets are what turn it into the
-            robot&apos;s pose. Get them wrong and every measurement you fuse is
-            shifted by the same amount, forever.
+            <em>{"camera&apos;s "}</em> pose; the offsets are what turn it into
+            the robot&apos;s pose. Get them wrong and every measurement you fuse
+            is shifted by the same amount, forever.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
@@ -262,11 +254,12 @@ export default function VisionImplementation() {
           </li>
         </ol>
 
-        <Box variant="alert-success" title="You should see">
-          Hold a tag in front of the camera and the web interface reports the
-          tag&apos;s ID. If it does not, no amount of Java will help — go back
-          through the pipeline and exposure settings.
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Hold a tag in front of the
+          camera and the web interface reports the tag&apos;s ID. If it does
+          not, no amount of Java will help — go back through the pipeline and
+          exposure settings.
+        </p>
       </LessonSection>
 
       {/* ── STEP 2 ───────────────────────────────────────────────────── */}
@@ -329,11 +322,12 @@ export default function VisionImplementation() {
           in the corner of the field.
         </p>
 
-        <Box variant="alert-success" title="You should see">
-          Build the project. It compiles, and every import in the new file
-          resolves. If you see red on <code>org.wpilib.*</code> imports, you
-          took a fresh download instead of the branch&apos;s copy.
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Build the project. It compiles,
+          and every import in the new file resolves. If you see red on{" "}
+          <code>org.wpilib.*</code> imports, you took a fresh download instead
+          of the branch&apos;s copy.
+        </p>
 
         <CollapsibleSection title="Read the whole file: LimelightHelpers.java">
           <GitHubContent
@@ -681,11 +675,12 @@ drivetrain.addVisionMeasurement(
           shutter opened.
         </p>
 
-        <Box variant="alert-success" title="You should see">
+        <p>
+          <strong>{"You should see: "}</strong>
           <code>./gradlew build</code> succeeds. Nothing calls the class yet, so
           a clean build is the whole check at this point — it catches the
           mistyped field name and the missing import before you deploy.
-        </Box>
+        </p>
 
         <CollapsibleSection title="Read the whole file: Limelight.java">
           <GitHubContent
@@ -750,11 +745,12 @@ Limelight.registerAll(drivetrain, "limelight");`}
           </p>
         </Box>
 
-        <Box variant="alert-success" title="You should see">
-          Deploy, and the robot code stays up — no crash on startup, and the
-          Driver Station reports robot code as normal. A camera that is not on
-          the network does not throw; it just never sends a correction.
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Deploy, and the robot code stays
+          up — no crash on startup, and the Driver Station reports robot code as
+          normal. A camera that is not on the network does not throw; it just
+          never sends a correction.
+        </p>
 
         <CollapsibleSection title="Read the whole file: Robot.java">
           <GitHubContent
@@ -782,42 +778,43 @@ Limelight.registerAll(drivetrain, "limelight");`}
           </li>
           <li>
             Cover the camera with your hand and push the robot a meter sideways.{" "}
-            <strong>You should see:</strong> the pose moves, because the wheels
-            still turn. Uncover the camera. <strong>You should see:</strong> the
-            pose settles toward the place the tag says the robot is, over a
-            second or so rather than in one frame. That gradual pull is the
-            error bar doing its job.
+            <strong>{"You should see: "}</strong> the pose moves, because the
+            wheels still turn. Uncover the camera.{" "}
+            <strong>{"You should see: "}</strong> the pose settles toward the
+            place the tag says the robot is, over a second or so rather than in
+            one frame. That gradual pull is the error bar doing its job.
           </li>
           <li>
             Drive the robot around for thirty seconds with the camera covered,
             spinning and scrubbing the wheels on purpose. Odometry will drift
             noticeably. Uncover the camera in front of a tag.{" "}
-            <strong>You should see:</strong> the pose walk back to the truth.
+            <strong>{"You should see: "}</strong> the pose walk back to the
+            truth.
           </li>
           <li>
             Back away from the tag past four meters.{" "}
-            <strong>You should see:</strong> corrections stop entirely. That is{" "}
-            <code>MAX_TAG_DISTANCE_METERS</code>, working as designed.
+            <strong>{"You should see: "}</strong> corrections stop entirely.
+            That is <code>MAX_TAG_DISTANCE_METERS</code>, working as designed.
           </li>
           <li>
             Line the robot up so it sees two tags at once, then move so it sees
-            only one. <strong>You should see:</strong> the two-tag pose is
+            only one. <strong>{"You should see: "}</strong> the two-tag pose is
             visibly steadier. With one tag the correction is weaker and slower,
             because <code>tagCount * tagCount</code> is 1 instead of 4.
           </li>
           <li>
             With a single tag in view, watch the rotation component of{" "}
             <code>Drivetrain/Pose</code> while a correction lands.{" "}
-            <strong>You should see:</strong> the position moves and the heading
-            does not budge. That is <code>IGNORE_VISION_HEADING</code> keeping
-            MegaTag2 out of the heading.
+            <strong>{"You should see: "}</strong> the position moves and the
+            heading does not budge. That is <code>IGNORE_VISION_HEADING</code>{" "}
+            keeping MegaTag2 out of the heading.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="A pose that never moves, a pose that teleports, and single-tag weirdness"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>
@@ -1001,13 +998,11 @@ Limelight.registerAll(drivetrain, "limelight");`}
 
       {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
       <LessonSection id="what-s-next" title="What's next">
-        <Box variant="alert-success" title="Up next: Dynamic Flywheel Control">
-          <p>
-            Now that the drivetrain knows where it is, you can work out how far
-            away the goal is and pick a flywheel speed to match — a shot that
-            adjusts itself instead of one speed that only works from one spot.
-          </p>
-        </Box>
+        <p>
+          Now that the drivetrain knows where it is, you can work out how far
+          away the goal is and pick a flywheel speed to match — a shot that
+          adjusts itself instead of one speed that only works from one spot.
+        </p>
 
         <Box
           variant="alert-warning"

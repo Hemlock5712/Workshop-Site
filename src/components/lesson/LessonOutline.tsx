@@ -97,13 +97,18 @@ export default function LessonOutline({
                   className="flex items-center gap-2.5 py-[5px] text-note leading-[1.35]"
                   style={{ color: on ? "var(--tx)" : "var(--tx3)" }}
                 >
+                  {/* The tick grows by transform, not by width: the third of
+                      the site's three animated indicators, and the same
+                      reasoning as the two progress fills in the shell. Fixed
+                      16px box, scaled down to 8px when inactive, so the row's
+                      layout never depends on which section you are in. */}
                   <span
                     aria-hidden="true"
-                    className="block h-[1.5px] shrink-0"
+                    className="block h-[1.5px] w-4 shrink-0 origin-left"
                     style={{
-                      width: on ? 16 : 8,
+                      transform: on ? "scaleX(1)" : "scaleX(0.5)",
                       background: on ? "var(--accent)" : "var(--rule)",
-                      transition: "width 0.25s",
+                      transition: "transform 0.25s",
                     }}
                   />
                   <span>{entry.label}</span>

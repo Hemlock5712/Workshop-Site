@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -67,24 +69,22 @@ public class Robot extends OpModeRobot {
 }`}
         />
 
-        <Box variant="alert-info" title="Where the logs go">
-          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
-            <li>
-              <strong>Simulation:</strong> a <code>.wpilog</code> under{" "}
-              <code>./logs</code> in your project.
-            </li>
-            <li>
-              <strong>On SystemCore:</strong> a USB drive if one is plugged in,
-              otherwise <code>/home/systemcore/logs</code>.
-            </li>
-            <li>
-              <strong>Phoenix 6 devices</strong> additionally log to a{" "}
-              <code>.hoot</code> file (high-rate signal data) that you can open
-              in Tuner X or AdvantageScope, so you get that extra detail for
-              free.
-            </li>
-          </ul>
-        </Box>
+        <h3 className="display measure m-0 text-lede">Where the logs go</h3>
+        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+          <li>
+            <strong>Simulation:</strong> a <code>.wpilog</code> under{" "}
+            <code>./logs</code> in your project.
+          </li>
+          <li>
+            <strong>On SystemCore:</strong> a USB drive if one is plugged in,
+            otherwise <code>/home/systemcore/logs</code>.
+          </li>
+          <li>
+            <strong>Phoenix 6 devices</strong> additionally log to a{" "}
+            <code>.hoot</code> file (high-rate signal data) that you can open in
+            Tuner X or AdvantageScope, so you get that extra detail for free.
+          </li>
+        </ul>
       </LessonSection>
 
       {/* What you get for free */}
@@ -97,26 +97,23 @@ public class Robot extends OpModeRobot {
           captured with no further code:
         </p>
 
-        <Box variant="alert-tip" title="Captured for free">
-          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
-            <li>
-              <strong>Every NetworkTables value change</strong>, including
-              everything your telemetry publishes (more below)
-            </li>
-            <li>
-              <strong>Console output</strong>: anything printed to stdout/stderr
-            </li>
-            <li>
-              <strong>Driver-Station data</strong> (via{" "}
-              <code>startDataLog</code>): alliance, mode, match time, and full
-              joystick axes/buttons
-            </li>
-            <li>
-              <strong>Phoenix 6 signals</strong> in the <code>.hoot</code> file:
-              motor positions, velocities, currents, temperatures
-            </li>
-          </ul>
-        </Box>
+        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+          <li>
+            <strong>Every NetworkTables value change</strong>, including
+            everything your telemetry publishes (more below)
+          </li>
+          <li>
+            <strong>Console output</strong>: anything printed to stdout/stderr
+          </li>
+          <li>
+            <strong>Driver-Station data</strong> (via <code>startDataLog</code>
+            ): alliance, mode, match time, and full joystick axes/buttons
+          </li>
+          <li>
+            <strong>Phoenix 6 signals</strong> in the <code>.hoot</code> file:
+            motor positions, velocities, currents, temperatures
+          </li>
+        </ul>
       </LessonSection>
 
       {/* Logging your own values */}
@@ -316,46 +313,46 @@ public class Telemetry {
           </div>
         </div>
 
-        <Box variant="alert-info" title="Where the data lives in NetworkTables">
-          <p className="mb-3 text-sm text-[var(--tx2)]">
-            Your published values land under whatever table you chose, and the
-            auto-captured data sits alongside it:
-          </p>
-          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
-            <li>
-              <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …:
-              your telemetry struct publishers
-            </li>
-            <li>
-              <code>SmartDashboard/...</code>: anything you sent via{" "}
-              <code>SmartDashboard.put*</code>
-            </li>
-            <li>
-              Driver-Station and joystick data captured by{" "}
-              <code>startDataLog</code>
-            </li>
-          </ul>
-        </Box>
+        <h3 className="display measure m-0 text-lede">
+          Where the data lives in NetworkTables
+        </h3>
+        <p className="mb-3 text-sm text-[var(--tx2)]">
+          Your published values land under whatever table you chose, and the
+          auto-captured data sits alongside it:
+        </p>
+        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+          <li>
+            <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …:
+            your telemetry struct publishers
+          </li>
+          <li>
+            <code>SmartDashboard/...</code>: anything you sent via{" "}
+            <code>SmartDashboard.put*</code>
+          </li>
+          <li>
+            Driver-Station and joystick data captured by{" "}
+            <code>startDataLog</code>
+          </li>
+        </ul>
 
-        <Box variant="alert-tip" title="AdvantageScope Pro Tips">
-          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
-            <li>
-              <strong>Overlay multiple signals:</strong> compare target vs
-              actual on the same graph
-            </li>
-            <li>
-              <strong>Video sync:</strong> line log data up with match video
-            </li>
-            <li>
-              <strong>Save layouts:</strong> reusable dashboards for quick
-              analysis
-            </li>
-            <li>
-              <strong>Drag struct types in:</strong> drop a logged{" "}
-              <code>Pose2d</code> onto the 2D/3D field view directly
-            </li>
-          </ul>
-        </Box>
+        <h3 className="display measure m-0 text-lede">AdvantageScope tips</h3>
+        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+          <li>
+            <strong>Overlay multiple signals:</strong> compare target vs actual
+            on the same graph
+          </li>
+          <li>
+            <strong>Video sync:</strong> line log data up with match video
+          </li>
+          <li>
+            <strong>Save layouts:</strong> reusable dashboards for quick
+            analysis
+          </li>
+          <li>
+            <strong>Drag struct types in:</strong> drop a logged{" "}
+            <code>Pose2d</code> onto the 2D/3D field view directly
+          </li>
+        </ul>
 
         <DocumentationButton
           href="https://docs.advantagescope.org/"
@@ -366,43 +363,56 @@ public class Telemetry {
 
       {/* Best Practices */}
       <LessonSection id="logging-best-practices" title="Logging Best Practices">
-        <div className="grid md:grid-cols-2 gap-6">
-          <Box variant="alert-success" title="Do">
-            <ul className="list-disc list-inside space-y-2">
-              <li>
-                Log sensor inputs, motor outputs, and target setpoints together
-              </li>
-              <li>
-                Use hierarchical keys (<code>Subsystem/Parameter</code>)
-              </li>
-              <li>
-                Prefer struct types (<code>Pose2d</code>,{" "}
-                <code>SwerveModuleVelocity[]</code>) over flattened number
-                arrays
-              </li>
-              <li>
-                Start DataLogManager first thing in Robot&apos;s constructor
-              </li>
-              <li>
-                Download logs after every match and review between matches
-              </li>
-            </ul>
-          </Box>
-
-          <Box variant="alert-danger" title="Don&rsquo;t">
-            <ul className="list-disc list-inside space-y-2">
-              <li>Log high-frequency strings (use numbers or booleans)</li>
-              <li>
-                Publish so much that NetworkTables traffic hurts loop timing
-              </li>
-              <li>
-                Forget a USB drive on the robot if you want the log off the
-                controller easily
-              </li>
-              <li>Ignore loop-overrun warnings from excessive publishing</li>
-            </ul>
-          </Box>
-        </div>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "Do",
+              term: "Worth doing every season",
+              body: (
+                <ul className="m-0 list-disc space-y-2 pl-5">
+                  <li>
+                    Log sensor inputs, motor outputs, and target setpoints
+                    together
+                  </li>
+                  <li>
+                    Use hierarchical keys (<code>Subsystem/Parameter</code>)
+                  </li>
+                  <li>
+                    Prefer struct types (<code>Pose2d</code>,{" "}
+                    <code>SwerveModuleVelocity[]</code>) over flattened number
+                    arrays
+                  </li>
+                  <li>
+                    Start DataLogManager first thing in Robot&apos;s constructor
+                  </li>
+                  <li>
+                    Download logs after every match and review between matches
+                  </li>
+                </ul>
+              ),
+            },
+            {
+              label: "Don't",
+              term: "What it costs you",
+              body: (
+                <ul className="m-0 list-disc space-y-2 pl-5">
+                  <li>Log high-frequency strings (use numbers or booleans)</li>
+                  <li>
+                    Publish so much that NetworkTables traffic hurts loop timing
+                  </li>
+                  <li>
+                    Forget a USB drive on the robot if you want the log off the
+                    controller easily
+                  </li>
+                  <li>
+                    Ignore loop-overrun warnings from excessive publishing
+                  </li>
+                </ul>
+              ),
+            },
+          ]}
+        />
       </LessonSection>
 
       {/* Resources */}
@@ -544,50 +554,43 @@ public class Telemetry {
           </li>
         </ul>
 
-        <Box
-          variant="alert-info"
-          tag="NOT A LOGGER"
-          title="AdvantageScope is the viewer"
-        >
-          <p>
-            <strong>AdvantageScope</strong> gets mentioned alongside the names
-            above, but it does not write logs — it reads them. It opens{" "}
-            <code>.wpilog</code> and <code>.hoot</code> files whatever wrote
-            them, which is why you use it here without using AdvantageKit.
-          </p>
-        </Box>
-
-        <Box
-          variant="alert-info"
-          tag="ON THE HORIZON"
-          title="A new WPILib Telemetry API is in development"
-        >
-          WPILib is working on a first-class telemetry framework: a static{" "}
-          <code>Telemetry.log(&quot;name&quot;, value)</code> API with pluggable
-          backends for NetworkTables and log files (
-          <a
-            href="https://github.com/wpilibsuite/allwpilib/pull/7773"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            allwpilib PR #7773
-          </a>
-          ). As of mid-2026 it is still an open draft: not merged, not in any
-          2027 alpha. If it ships, this workshop will likely adopt it in place
-          of hand-rolled NetworkTables publishing. Until then, DataLogManager is
-          the shipped, supported path.
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              <strong>AdvantageScope</strong> gets mentioned alongside the names
+              above, but it does not write logs — it reads them. It opens{" "}
+              <code>.wpilog</code> and <code>.hoot</code> files whatever wrote
+              them, which is why you use it here without using AdvantageKit.
+            </p>
+          </ProseBlock>
+          <MarginNote label="ON THE HORIZON">
+            WPILib is working on a first-class telemetry framework: a static{" "}
+            <code>Telemetry.log(&quot;name&quot;, value)</code> API with
+            pluggable backends for NetworkTables and log files (
+            <a
+              href="https://github.com/wpilibsuite/allwpilib/pull/7773"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              allwpilib PR #7773
+            </a>
+            ). As of mid-2026 it is still an open draft: not merged, not in any
+            2027 alpha. If it ships, this workshop will likely adopt it in place
+            of hand-rolled NetworkTables publishing. Until then, DataLogManager
+            is the shipped, supported path.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* What's Next Section */}
-      <LessonSection id="what-s-next" title="What's Next?">
-        <Box variant="alert-success" title="Up Next: Drive to Point">
-          DataLogManager is now recording your pose, velocities, and module
-          states. That pays off in the next lesson: when a drive-to-point run
-          looks wrong, the PID setpoints, errors, and motor outputs are already
-          in the log.
-        </Box>
+      <LessonSection id="what-s-next" title="What's next">
+        <p>
+          <code>DataLogManager</code> is now recording your pose, velocities,
+          and module states. That pays off in the next lesson: when a
+          drive-to-point run looks wrong, the PID setpoints, errors, and motor
+          outputs are already in the log.
+        </p>
       </LessonSection>
     </PageTemplate>
   );

@@ -6,6 +6,7 @@ import Box from "@/components/Box";
 import GitHubContent from "@/components/GitHubContent";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Quiz from "@/components/Quiz";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 
 export default function AddingCommands() {
   return (
@@ -32,39 +33,49 @@ export default function AddingCommands() {
       branch="2-Commands"
       time="Roughly 40 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "A command is a named job the scheduler runs. It owns the mechanism while it runs, so nothing else can touch that motor at the same time. That is the whole reason the door gets closed.",
-        ]}
-        concept="A command is a named job that owns its mechanism while it runs. Making the setter private is what forces everything to go through one."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> three commands on the arm,
-          three on the flywheel, and a teleop OpMode that binds them to the
-          controller. <strong>Roughly 40 minutes.</strong>{" "}
-          <strong>You will not run it yet</strong> — pressing buttons and
-          watching motors turn is two lessons away, on{" "}
+      <Split>
+        <KeyConceptSection
+          description={[
+            "A command is a named job the scheduler runs. It owns the mechanism while it runs, so nothing else can touch that motor at the same time. That is the whole reason the door gets closed.",
+          ]}
+          concept="A command is a named job that owns its mechanism while it runs. Making the setter private is what forces everything to go through one."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Three commands on the arm, three on the flywheel, and a teleop OpMode
+          that binds them to the controller. You will not run any of it yet —
+          pressing buttons and watching motors turn is two lessons away, on{" "}
           <strong>Running Your Code</strong>. The check on this page is a clean
           build.
-        </p>
-      </Box>
+        </MarginNote>
+      </Split>
 
       {/* ── the diff ─────────────────────────────────────────────────── */}
       <LessonSection
         id="what-changes-on-this-branch"
         title="What changes on this branch"
       >
-        <p className="prose-body measure">
-          This lesson is branch <code>2-Commands</code>, one commit on top of{" "}
-          <code>1-Subsystem</code>. It touches four files: <code>Arm.java</code>{" "}
-          and <code>Flywheel.java</code> get commands,{" "}
-          <code>opmodes/TeleopOpMode.java</code> is brand new, and{" "}
-          <code>Robot.java</code> only has its comment updated. The mechanisms
-          are already public fields on <code>Robot</code> from last lesson, so
-          nothing has to be registered anywhere.
-        </p>
+        <Split>
+          <ProseBlock>
+            <p>
+              This lesson is branch <code>2-Commands</code>, one commit on top
+              of <code>1-Subsystem</code>. It touches four files:{" "}
+              <code>Arm.java</code> and <code>Flywheel.java</code> get commands,{" "}
+              <code>opmodes/TeleopOpMode.java</code> is brand new, and{" "}
+              <code>Robot.java</code> only has its comment updated. The
+              mechanisms are already public fields on <code>Robot</code> from
+              last lesson, so nothing has to be registered anywhere.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY CLOSE THE DOOR">
+            The scheduler tracks which command owns which mechanism. If two
+            commands both need the arm, the second cancels the first — one of
+            them wins, on purpose, and you can find out which. That bookkeeping
+            only works for commands. A plain <code>setVoltage(6.0)</code> goes
+            around all of it: two callers, two different numbers, same loop, and
+            the motor takes whichever ran last. <code>private</code> is what
+            makes the bookkeeping unavoidable.
+          </MarginNote>
+        </Split>
 
         <CodeBlock
           language="java"
@@ -81,21 +92,6 @@ public Command stop()     { ... }
 
 private void setVoltage(double voltage) { ... }`}
         />
-
-        <Box variant="concept" title="Why bother closing the door?">
-          <p>
-            The scheduler tracks which command owns which mechanism. If two
-            commands both need the arm, the second one cancels the first — one
-            of them wins, on purpose, and you can find out which. That
-            bookkeeping only works for commands.
-          </p>
-          <p className="mt-3">
-            A plain <code>setVoltage(6.0)</code> call goes around all of it. Two
-            callers, two different numbers, same loop, and the motor takes
-            whichever one ran last. Making the setter <code>private</code> is
-            what makes the bookkeeping unavoidable.
-          </p>
-        </Box>
       </LessonSection>
 
       {/* ── step 1 ───────────────────────────────────────────────────── */}
@@ -122,7 +118,7 @@ private void setVoltage(double voltage) { ... }`}
         </p>
 
         <p className="prose-body measure">
-          <strong>You should see:</strong> nothing breaks. Nothing outside{" "}
+          <strong>{"You should see: "}</strong> nothing breaks. Nothing outside{" "}
           <code>Arm</code> was calling <code>setVoltage</code> yet, so the build
           still passes. That is the moment to add the commands, before anything
           comes to depend on the open door.
@@ -274,9 +270,9 @@ public Command stop() {
         </p>
 
         <p className="prose-body measure">
-          <strong>You should see:</strong> <code>./gradlew build</code> passes,
-          and your <code>Arm</code> now has three public methods that all return{" "}
-          <code>Command</code> and one private one that returns{" "}
+          <strong>{"You should see: "}</strong> <code>./gradlew build</code>{" "}
+          passes, and your <code>Arm</code> now has three public methods that
+          all return <code>Command</code> and one private one that returns{" "}
           <code>void</code>.
         </p>
       </LessonSection>
@@ -462,9 +458,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         </ul>
 
         <p className="prose-body measure">
-          <strong>You should see:</strong> <code>./gradlew build</code> passes
-          with the new file in place. That is the last check this page can give
-          you — the buttons are real, but you need the simulator from{" "}
+          <strong>{"You should see: "}</strong> <code>./gradlew build</code>{" "}
+          passes with the new file in place. That is the last check this page
+          can give you — the buttons are real, but you need the simulator from{" "}
           <strong>Running Your Code</strong> to press them.
         </p>
       </LessonSection>
@@ -655,39 +651,39 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
         >
           <li>
             Run <code>./gradlew build</code> (or{" "}
-            <em>WPILib: Build Robot Code</em>). <strong>You should see:</strong>{" "}
-            <code>BUILD SUCCESSFUL</code>.
+            <em>WPILib: Build Robot Code</em>).{" "}
+            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
           </li>
           <li>
             In <code>Arm.java</code>, count the public methods.{" "}
-            <strong>You should see:</strong> exactly three, all returning{" "}
+            <strong>{"You should see: "}</strong> exactly three, all returning{" "}
             <code>Command</code>, plus the constructor. <code>setVoltage</code>{" "}
             is <code>private</code> and returns <code>void</code>.
           </li>
           <li>
             Count the same in <code>Flywheel.java</code>.{" "}
-            <strong>You should see:</strong> the same three, with{" "}
+            <strong>{"You should see: "}</strong> the same three, with{" "}
             <code>leader::stopMotor</code> in <code>stop()</code> rather than{" "}
             <code>motor::stopMotor</code>.
           </li>
           <li>
             Check every command name ends in <code>(hold)</code>.{" "}
-            <strong>You should see:</strong> six names, six suffixes. If one is
-            missing, add it now — the suffix is what makes a stuck routine
-            diagnosable later.
+            <strong>{"You should see: "}</strong> six names, six suffixes. If
+            one is missing, add it now — the suffix is what makes a stuck
+            routine diagnosable later.
           </li>
           <li>
             <strong>Break it on purpose.</strong> Delete the{" "}
             <code>.named(&quot;runSlow (hold)&quot;)</code> from{" "}
             <code>runSlow()</code> and build again.{" "}
-            <strong>You should see:</strong> a compile error pointing at that
-            line. A builder is not a <code>Command</code>. Put it back.
+            <strong>{"You should see: "}</strong> a compile error pointing at
+            that line. A builder is not a <code>Command</code>. Put it back.
           </li>
           <li>
             <strong>Break it the other way.</strong> Add{" "}
             <code>arm.setVoltage(6.0);</code> to the <code>TeleopOpMode</code>{" "}
-            constructor and build. <strong>You should see:</strong> an error
-            saying <code>setVoltage</code> has private access in{" "}
+            constructor and build. <strong>{"You should see: "}</strong> an
+            error saying <code>setVoltage</code> has private access in{" "}
             <code>Arm</code>. That error is the entire point of this lesson.
             Delete the line.
           </li>
@@ -696,7 +692,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="Missing names, misordered builders, missing imports"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -748,7 +744,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
       </LessonSection>
 
       {/* ── what's next ──────────────────────────────────────────────── */}
-      <LessonSection id="where-this-goes-next" title="Where this goes next">
+      <LessonSection id="where-this-goes-next" title="What's next">
         <p className="prose-body measure">
           You have six commands and one command per button. Three pages build on
           that:

@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -8,6 +9,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import DocumentationButton from "@/components/DocumentationButton";
 import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
 
 export default function ProfiledDriveToPoint() {
@@ -36,29 +38,20 @@ export default function ProfiledDriveToPoint() {
       branch="6-ProfiledToPoint"
       time="Roughly 45 minutes to read and make the change"
     >
-      <KeyConceptSection
-        description={[
-          "This lesson changes one file. Before the robot moves, the command works out the entire trip — speed up, cruise, slow down — and then follows that plan. PID stops being the driver and becomes the small correction on top.",
-        ]}
-        concept="Feedforward is the speed the plan says you should be going right now. Feedback (PID) is the small nudge that covers the gap between the plan and where the robot actually is."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>Branch:</strong> <code>6-ProfiledToPoint</code>, one commit
-          past <code>5-DriveToPoint</code> (PR #12). It touches{" "}
-          <strong>one file</strong> —{" "}
-          <code>src/main/java/frc/robot/commands/DriveToPoint.java</code>, which
-          grows from 87 lines to 120. Nothing else on the branch changes, not
-          even the button bindings.
-        </p>
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> the same class, the same
-          button, but the robot ramps up, cruises, slows down and stops on its
-          own. <strong>Roughly 45 minutes</strong> to read and make the change.
-          Tuning it on a real robot takes longer.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "This lesson changes one file. Before the robot moves, the command works out the entire trip — speed up, cruise, slow down — and then follows that plan. PID stops being the driver and becomes the small correction on top.",
+            "That one file is src/main/java/frc/robot/commands/DriveToPoint.java, and it grows from 87 lines to 120. Nothing else on the branch changes — not even the button bindings.",
+          ]}
+          concept="Feedforward is the speed the plan says you should be going right now. Feedback (PID) is the small nudge that covers the gap between the plan and where the robot actually is."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          The same class and the same button, but the robot ramps up, cruises,
+          slows down and stops on its own. Reading it and making the change is
+          the quick part; tuning it on a real robot takes longer.
+        </MarginNote>
+      </Split>
 
       {/* ── the problem ──────────────────────────────────────────────── */}
       <LessonSection
@@ -135,8 +128,8 @@ protected void execute() {
 
         <Box variant="concept" title="The only question you ask the plan">
           <p>
-            &quot;It is <em>t</em> seconds into the trip. Where should the robot
-            be right now, and how fast should it be going?&quot;
+            &quot;It is <em>{"t "}</em> seconds into the trip. Where should the
+            robot be right now, and how fast should it be going?&quot;
           </p>
           <p className="mt-3">
             The answer comes back as a <code>LinearPath.State</code>, which
@@ -153,26 +146,31 @@ protected void execute() {
           and <strong>3.0 m/s²</strong> acceleration:
         </p>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Box variant="alert-info" tag="PHASE 1" title="Speed up">
-            <p>
-              Gain 3.0 m/s of speed every second. Reaching 2.5 m/s takes about{" "}
-              <strong>0.83 s</strong> and covers about <strong>1.04 m</strong>.
-            </p>
-          </Box>
-          <Box variant="alert-info" tag="PHASE 2" title="Cruise">
-            <p>
-              Hold 2.5 m/s for whatever distance is left in the middle. On a
-              short trip there is no middle and this phase never happens.
-            </p>
-          </Box>
-          <Box variant="alert-info" tag="PHASE 3" title="Slow down">
-            <p>
-              Shed 3.0 m/s of speed every second, timed so the robot arrives at
-              the goal with a planned speed of zero.
-            </p>
-          </Box>
-        </div>
+        <FigureGrid
+          items={[
+            {
+              label: "Phase 1",
+              term: "Speed up",
+              body: (
+                <>
+                  Gain 3.0 m/s of speed every second. Reaching 2.5 m/s takes
+                  about <strong>0.83 s</strong> and covers about{" "}
+                  <strong>1.04 m</strong>.
+                </>
+              ),
+            },
+            {
+              label: "Phase 2",
+              term: "Cruise",
+              body: "Hold 2.5 m/s for whatever distance is left in the middle. On a short trip there is no middle and this phase never happens.",
+            },
+            {
+              label: "Phase 3",
+              term: "Slow down",
+              body: "Shed 3.0 m/s of speed every second, timed so the robot arrives at the goal with a planned speed of zero.",
+            },
+          ]}
+        />
 
         <p className="prose-body measure">
           Speeding up and slowing down each need about 1.04 m, so a trip has to
@@ -713,48 +711,48 @@ driver
             course.
           </li>
           <li>
-            Hold <strong>B</strong>. <strong>You should see:</strong> the robot
-            eases away instead of snapping to full power, holds a steady speed
-            through the middle, and eases off at the end. From the field origin
-            the B goal is about 3.6 m away — comfortably past the 2.1 m needed
-            to reach cruise speed, so all three phases happen.
+            Hold <strong>B</strong>. <strong>{"You should see: "}</strong> the
+            robot eases away instead of snapping to full power, holds a steady
+            speed through the middle, and eases off at the end. From the field
+            origin the B goal is about 3.6 m away — comfortably past the 2.1 m
+            needed to reach cruise speed, so all three phases happen.
           </li>
           <li>
             Keep holding <strong>B</strong> after it arrives.{" "}
-            <strong>You should see:</strong> the robot stops and stays stopped.
-            The command finished on its own; the button no longer matters. On{" "}
-            <code>5-DriveToPoint</code> it would still be pushing.
+            <strong>{"You should see: "}</strong> the robot stops and stays
+            stopped. The command finished on its own; the button no longer
+            matters. On <code>5-DriveToPoint</code> it would still be pushing.
           </li>
           <li>
             Open Glass or AdvantageScope and graph{" "}
             <code>Drivetrain/TranslationSpeedMps</code> — the key{" "}
             <code>Telemetry.java</code> publishes.{" "}
-            <strong>You should see:</strong> a trapezoid. A ramp up, a flat top
-            near 2.5, a ramp down to zero. That flat top is the proof the plan
-            is in charge, and it is the shape the old version could never
+            <strong>{"You should see: "}</strong> a trapezoid. A ramp up, a flat
+            top near 2.5, a ramp down to zero. That flat top is the proof the
+            plan is in charge, and it is the shape the old version could never
             produce.
           </li>
           <li>
             Now graph <code>Drivetrain/Pose</code> for the same run.{" "}
-            <strong>You should see:</strong> it settle close to (3, 2) with a
-            heading near 180°. How close is the tuning conversation — see the
+            <strong>{"You should see: "}</strong> it settle close to (3, 2) with
+            a heading near 180°. How close is the tuning conversation — see the
             failure list below.
           </li>
           <li>
             Hold <strong>A</strong> from where the robot stopped, sending it
-            back to <code>Pose2d.kZero</code>. <strong>You should see:</strong>{" "}
-            the same trapezoid in the other direction, and the robot turning
-            back to 0° as it drives rather than spinning first and driving
-            second. Keep holding until it stops on its own — a quick tap
-            releases the button, and <code>whileTrue</code> cancels the command
-            when the button comes up.
+            back to <code>Pose2d.kZero</code>.{" "}
+            <strong>{"You should see: "}</strong> the same trapezoid in the
+            other direction, and the robot turning back to 0° as it drives
+            rather than spinning first and driving second. Keep holding until it
+            stops on its own — a quick tap releases the button, and{" "}
+            <code>whileTrue</code> cancels the command when the button comes up.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Weaving, lunging, or stopping short"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>

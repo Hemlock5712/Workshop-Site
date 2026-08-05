@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -33,25 +34,20 @@ export default function FinishLines() {
       branch="5-GettersAndSetters"
       time="Roughly 30 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "PID and Motion Magic gave the arm a target. This page adds the other half — a way to read where the arm really is, compare it to where it is headed, and end the step on arrival instead of on a clock.",
-        ]}
-        concept="A finish line is a question the command asks every loop, not a number of seconds."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> three new methods on each
-          mechanism, and a Y button that waits for the arm to reach vertical
-          before it spins the flywheel. <strong>Roughly 30 minutes.</strong>
-        </p>
-        <p className="mt-3">
-          <strong>Reference branch:</strong> <code>5-GettersAndSetters</code> in
-          Workshop-Code — three files, about eighty lines. The branch name says
-          Java accessors; the lesson is finish lines.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "PID and Motion Magic gave the arm a target. This page adds the other half — a way to read where the arm really is, compare it to where it is headed, and end the step on arrival instead of on a clock.",
+          ]}
+          concept="A finish line is a question the command asks every loop, not a number of seconds."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Three new methods on each mechanism, and a Y button that waits for the
+          arm to reach vertical before it spins the flywheel. Three files, about
+          eighty lines. The branch name says Java accessors; the lesson is
+          finish lines.
+        </MarginNote>
+      </Split>
 
       {/* ── the problem ──────────────────────────────────────────────── */}
       <LessonSection id="a-stopwatch-is-a-guess" title="A stopwatch is a guess">
@@ -400,7 +396,7 @@ import org.wpilib.units.measure.Angle;`}
 .until(arm.isAtTarget())`}
         />
 
-        <Box variant="alert-danger" tag="DON'T" title="Leaving the name off">
+        <Box variant="alert-warning" tag="DON'T" title="Leaving the name off">
           <p>
             <code>.until(...)</code> hands you a builder, not a{" "}
             <code>Command</code> — the same way{" "}
@@ -635,49 +631,49 @@ import org.wpilib.units.measure.Angle;`}
             to somewhere near horizontal first, so it has a distance to travel.
           </li>
           <li>
-            Hold Y. <strong>You should see:</strong> the arm swings toward
+            Hold Y. <strong>{"You should see: "}</strong> the arm swings toward
             vertical while the flywheel stays completely still. The moment the
             arm settles, the flywheel starts.
           </li>
           <li>
             Release Y, move the arm by hand to a <em>different</em> starting
-            angle, and hold Y again. <strong>You should see:</strong> the
+            angle, and hold Y again. <strong>{"You should see: "}</strong> the
             handoff happens at a different moment than last time. That is the
             difference from the timeout version, which started the flywheel at
             exactly one second every single run regardless of where the arm was.
           </li>
           <li>
-            Keep holding Y. <strong>You should see:</strong> the flywheel keeps
-            spinning and never stops by itself. Correct — the last step is a
-            hold, so the group is a hold.
+            Keep holding Y. <strong>{"You should see: "}</strong> the flywheel
+            keeps spinning and never stops by itself. Correct — the last step is
+            a hold, so the group is a hold.
           </li>
           <li>
-            Release Y. <strong>You should see:</strong> the flywheel stops,
+            Release Y. <strong>{"You should see: "}</strong> the flywheel stops,
             because <code>whileFalse(flywheel.stop())</code> takes over.
           </li>
           <li>
             <strong>Now break it on purpose.</strong> Change{" "}
             <code>POSITION_TOLERANCE_DEGREES</code> to <code>0.01</code> and
-            redeploy. Hold Y. <strong>You should see:</strong> the arm arrives
-            and sits at vertical, and the flywheel never starts. The step is
-            waiting for a hundredth of a degree, which the arm and the CANcoder
-            cannot hold. This is what a stuck condition looks like — no error,
-            no log line, a routine that sits there.
+            redeploy. Hold Y. <strong>{"You should see: "}</strong> the arm
+            arrives and sits at vertical, and the flywheel never starts. The
+            step is waiting for a hundredth of a degree, which the arm and the
+            CANcoder cannot hold. This is what a stuck condition looks like — no
+            error, no log line, a routine that sits there.
           </li>
           <li>
             <strong>Now prove the seatbelt.</strong> Leave the tolerance at{" "}
             <code>0.01</code> and add <code>.withTimeout(Seconds.of(3.0))</code>{" "}
             after the <code>.named(...)</code>. Hold Y.{" "}
-            <strong>You should see:</strong> the flywheel starts three seconds
-            in. The routine gave up on the condition and moved on. Put the
-            tolerance back to <code>1.0</code> and keep the timeout.
+            <strong>{"You should see: "}</strong> the flywheel starts three
+            seconds in. The routine gave up on the condition and moved on. Put
+            the tolerance back to <code>1.0</code> and keep the timeout.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Y does nothing, or the flywheel jumps the gun"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>

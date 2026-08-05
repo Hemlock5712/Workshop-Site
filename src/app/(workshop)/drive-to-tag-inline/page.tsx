@@ -7,6 +7,7 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import DocumentationButton from "@/components/DocumentationButton";
 import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
 
 export default function DriveToTagInline() {
@@ -32,47 +33,36 @@ export default function DriveToTagInline() {
       branch="7-InlineCommands"
       time="Roughly an hour to read and understand"
     >
-      <KeyConceptSection
-        title="One loop, one file, the whole job"
-        description={[
-          "All of that lives in one coroutine body — a single while loop inside a single file. That is the style the branch name is pointing at, and it is the last thing this course teaches.",
-        ]}
-        concept="A coroutine body is a whole command lifecycle written top to bottom: setup, loop, finish, cleanup."
-      />
+      <Split>
+        <KeyConceptSection
+          title="One loop, one file, the whole job"
+          description={[
+            "All of that lives in one coroutine body — a single while loop inside a single file. That is the style the branch name is pointing at, and it is the last thing this course teaches.",
+            "The branch adds one file, commands/DriveToTagInline.java, 136 lines of it, and four lines in opmodes/TeleopOpMode.java. Nothing else changes.",
+          ]}
+          concept="A coroutine body is a whole command lifecycle written top to bottom: setup, loop, finish, cleanup."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Hold X and the robot drives to one meter in front of AprilTag 1,
+          squares up to it, and stops. Reading it and understanding it is the
+          quick part; tuning it on a real robot takes longer.
+        </MarginNote>
+      </Split>
 
-      <Box variant="alert-warning" tag="WHAT YOU'LL BUILD">
+      <Box variant="alert-warning" tag="READ FIRST">
         <p>
           Everything else here builds one idea at a time. This page puts six of
           them in one file and expects you to already know five. If any of the
-          list below is unfamiliar, go back to that lesson first — this page
+          list above is unfamiliar, go back to that lesson first — this page
           will not re-teach it.
         </p>
-
         <p className="mt-3">
-          <strong>Branch:</strong> <code>7-InlineCommands</code>, one commit
-          past <code>6-ProfiledToPoint</code>. It adds one file (
-          <code>commands/DriveToTagInline.java</code>, 136 lines) and four lines
-          in <code>opmodes/TeleopOpMode.java</code>.
-        </p>
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> hold X and the robot drives
-          to one meter in front of AprilTag 1, squares up to it, and stops.{" "}
-          <strong>Roughly an hour</strong> to read and understand. Tuning it on
-          a real robot takes longer.
-        </p>
-      </Box>
-
-      <Box
-        variant="alert-info"
-        tag="ABOUT THE BRANCH NAME"
-        title="7-InlineCommands is not a beginner lesson"
-      >
-        <p>
-          The name reads like an introduction to writing commands. It is not.
-          There is nothing beginner about this branch — &quot;inline&quot; here
-          means the whole feature is written inline, in one block, instead of
-          being split across four lifecycle methods. It is the advanced dialect,
-          and it sits at the end of the course for that reason.
+          The branch name reads like an introduction to writing commands. It is
+          not. There is nothing beginner about <code>7-InlineCommands</code> —
+          &quot;inline&quot; here means the whole feature is written inline, in
+          one block, instead of being split across four lifecycle methods. It is
+          the advanced dialect, and it sits at the end of the course for that
+          reason.
         </p>
       </Box>
 
@@ -168,7 +158,7 @@ gradlew build`}
         />
 
         <p className="prose-body measure">
-          <strong>You should see:</strong> the build succeeds, and{" "}
+          <strong>{"You should see: "}</strong> the build succeeds, and{" "}
           <code>src/main/java/frc/robot/commands/</code> now holds two files —{" "}
           <code>DriveToPoint.java</code> from the last lesson and{" "}
           <code>DriveToTagInline.java</code>, which is new. Nothing else on the
@@ -345,19 +335,20 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
           </li>
         </ul>
 
-        <Box
-          variant="alert-info"
-          tag="NOTE · SCOPE"
-          title="Locals, not fields — and that is on purpose"
-        >
-          <p>
-            All four of those are local variables in a static method. The
-            coroutine body below is a lambda that closes over them, so they stay
-            alive as long as the command does. Because <code>create(...)</code>{" "}
-            runs once per call, every command you build gets its own fresh set
-            of controllers.
-          </p>
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              All four of those are local variables in a static method — not
+              fields, and that is on purpose. The coroutine body below is a
+              lambda that closes over them, so they stay alive as long as the
+              command does.
+            </p>
+          </ProseBlock>
+          <MarginNote label="ONE SET PER COMMAND">
+            Because <code>create(...)</code> runs once per call, every command
+            you build gets its own fresh set of controllers.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* ── step 4 ───────────────────────────────────────────────────── */}
@@ -414,18 +405,20 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
           </li>
         </ul>
 
-        <Box
-          variant="alert-tip"
-          tag="WHY THE NULL CHECK"
-          title="No tag when you press the button is normal"
-        >
-          <p>
-            If the camera cannot see the tag at the moment you press X, there is
-            nothing to seed from, so the seeding is skipped entirely. That is
-            fine — the loop below refuses to drive without a reading anyway, and
-            the first loop that gets one will still start from a sensible place.
-          </p>
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              Both of those sit behind a null check, because no tag in frame at
+              the moment you press X is a normal thing to happen.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY THE NULL CHECK">
+            If the camera cannot see the tag when you press X there is nothing
+            to seed from, so the seeding is skipped entirely. That is fine — the
+            loop below refuses to drive without a reading anyway, and the first
+            loop that gets one will still start from a sensible place.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* ── step 5 ───────────────────────────────────────────────────── */}
@@ -613,26 +606,25 @@ while (true) {
           </p>
         </Box>
 
-        <Box
-          variant="alert-info"
-          tag="READING CODE CRITICALLY"
-          title="That comment gives the wrong reason"
-        >
-          <p>
-            The comment on that line — &quot;a fresh controller claims to be at
-            its goal&quot; — is what the author believed, and the same claim
-            appears in the robot template. Go and read{" "}
-            <code>ProfiledPIDController</code> and it does not hold: the{" "}
-            <code>m_haveMeasurement</code> guard means a fresh controller
-            reports <strong>false</strong>, not true.
-          </p>
-          <p className="mt-3">
-            The placement is still right and the check is still correct. Only
-            the stated reason is wrong. This is worth doing once yourself,
-            because it is the whole skill: when a comment and the library
-            disagree, the library is what runs.
-          </p>
-        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              The comment on that line — &quot;a fresh controller claims to be
+              at its goal&quot; — is what the author believed, and the same
+              claim appears in the robot template. Go and read{" "}
+              <code>ProfiledPIDController</code> and it does not hold: the{" "}
+              <code>m_haveMeasurement</code> guard means a fresh controller
+              reports <strong>false</strong>, not true. The placement is still
+              right and the check is still correct. Only the stated reason is
+              wrong.
+            </p>
+          </ProseBlock>
+          <MarginNote label="READING CODE CRITICALLY">
+            This one is worth doing yourself at least once, because it is the
+            whole skill: when a comment and the library disagree, the library is
+            what runs.
+          </MarginNote>
+        </Split>
 
         <Box
           variant="alert-warning"
@@ -692,14 +684,27 @@ while (true) {
     .named("DriveToTagInline");`}
         />
 
-        <p className="prose-body measure">
-          The same two lines appear twice, and that duplication is the price of
-          the coroutine style. A <code>ClassicCommand</code> has one{" "}
-          <code>end(boolean interrupted)</code> that runs either way. A
-          coroutine body does not: if the scheduler cancels the command, the
-          body is dropped mid-loop and the lines after the loop never execute.{" "}
-          <code>.whenCanceled(...)</code> is the hook that covers that case.
-        </p>
+        <Split>
+          <ProseBlock>
+            <p>
+              The same two lines appear twice, and that duplication is the price
+              of the coroutine style. A <code>ClassicCommand</code> has one{" "}
+              <code>end(boolean interrupted)</code> that runs either way. A
+              coroutine body does not: if the scheduler cancels the command, the
+              body is dropped mid-loop and the lines after the loop never
+              execute. <code>.whenCanceled(...)</code> is the hook that covers
+              that case.
+            </p>
+          </ProseBlock>
+          <MarginNote label="AND IN THAT ORDER">
+            <code>drivetrain.run(...)</code> hands back a builder, not a
+            finished <code>Command</code>. <code>.whenCanceled(...)</code> is a
+            builder method and <code>.named(&quot;...&quot;)</code> is the
+            terminal that turns the builder into a command, so once you have
+            called <code>.named(...)</code> there is nothing left to attach to.
+            The order in the file is the only order that compiles.
+          </MarginNote>
+        </Split>
 
         <Box
           variant="alert-danger"
@@ -733,21 +738,6 @@ while (true) {
             and nothing else on this branch reads the targeting outputs. Call
             this one hygiene: leave it in so the next command that does read
             them gets a clean camera.
-          </p>
-        </Box>
-
-        <Box
-          variant="alert-info"
-          tag="NOTE · ORDER"
-          title="whenCanceled comes before named"
-        >
-          <p>
-            <code>drivetrain.run(...)</code> hands back a builder, not a
-            finished <code>Command</code>. <code>.whenCanceled(...)</code> is a
-            builder method, and <code>.named(&quot;...&quot;)</code> is the
-            terminal that turns the builder into a command. Once you have called{" "}
-            <code>.named(...)</code> there is no builder left to attach anything
-            to — so the order in the file is the only order that compiles.
           </p>
         </Box>
       </LessonSection>
@@ -836,25 +826,27 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
             every other swerve lesson.
           </li>
           <li>
-            Drive with the left stick. <strong>You should see:</strong> the
+            Drive with the left stick. <strong>{"You should see: "}</strong> the
             robot moves, because the default joystick command owns the
             drivetrain.
           </li>
           <li>
-            Hold X and keep pushing the stick. <strong>You should see:</strong>{" "}
-            the robot stops dead and the sticks do nothing.{" "}
-            <code>DriveToTagInline</code> requires the drivetrain, so scheduling
-            it interrupts the default command, and the guard clause is sending{" "}
-            <code>Idle</code> every loop.
+            Hold X and keep pushing the stick.{" "}
+            <strong>{"You should see: "}</strong> the robot stops dead and the
+            sticks do nothing. <code>DriveToTagInline</code> requires the
+            drivetrain, so scheduling it interrupts the default command, and the
+            guard clause is sending <code>Idle</code> every loop.
           </li>
           <li>
-            Keep holding X for ten seconds. <strong>You should see:</strong>{" "}
-            nothing at all happen, and no error. The command is looking for a
-            tag and there is no camera to find one with. Correct.
+            Keep holding X for ten seconds.{" "}
+            <strong>{"You should see: "}</strong> nothing at all happen, and no
+            error. The command is looking for a tag and there is no camera to
+            find one with. Correct.
           </li>
           <li>
-            Release X. <strong>You should see:</strong> the sticks work again
-            immediately, because the default command reclaims the drivetrain.
+            Release X. <strong>{"You should see: "}</strong> the sticks work
+            again immediately, because the default command reclaims the
+            drivetrain.
           </li>
         </ol>
 
@@ -876,37 +868,37 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         >
           <li>
             Open the Limelight web dashboard and confirm it is seeing the tag
-            before you touch anything. <strong>You should see:</strong> the tag
-            outlined in the video feed and the right ID reported.
+            before you touch anything. <strong>{"You should see: "}</strong> the
+            tag outlined in the video feed and the right ID reported.
           </li>
           <li>
-            Enable, hold X. <strong>You should see:</strong> the wheels turn to
-            an angle and start driving. On blocks, watch the wheel{" "}
+            Enable, hold X. <strong>{"You should see: "}</strong> the wheels
+            turn to an angle and start driving. On blocks, watch the wheel{" "}
             <em>directions</em> — that is your sign check, and it is free.
           </li>
           <li>
             Cover the camera with your hand while holding X.{" "}
-            <strong>You should see:</strong> the wheels stop within a loop or
-            two. Uncover it and they start again. That is the guard clause
+            <strong>{"You should see: "}</strong> the wheels stop within a loop
+            or two. Uncover it and they start again. That is the guard clause
             working.
           </li>
           <li>
             Wheels turning the right way? Put it on the floor, clear the area,
-            and try it for real. <strong>You should see:</strong> a smooth ramp
-            up, a cruise, and a slow-down as the profile runs out — then the
-            robot stops and the command ends.
+            and try it for real. <strong>{"You should see: "}</strong> a smooth
+            ramp up, a cruise, and a slow-down as the profile runs out — then
+            the robot stops and the command ends.
           </li>
           <li>
-            Measure the gap. <strong>You should see:</strong> roughly one meter
-            from the tag, within a few centimeters, and the robot square to the
-            tag rather than at an angle.
+            Measure the gap. <strong>{"You should see: "}</strong> roughly one
+            meter from the tag, within a few centimeters, and the robot square
+            to the tag rather than at an angle.
           </li>
         </ol>
 
         <Box
-          variant="alert-danger"
+          variant="alert-warning"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="X does nothing, the robot goes the wrong way, or it never lets go"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>
@@ -1085,7 +1077,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
               <code>create(drivetrain, camera, targetTagId)</code> — three.
             </li>
             <li>
-              <strong>The standoff moves off the robot.</strong> The branch
+              <strong>{"The standoff moves off the robot. "}</strong> The branch
               takes it as that fourth argument and uses it as the distance
               controller&apos;s goal. The template has no such argument: its
               distance goal is <code>0.0</code>, and the standoff is set on the
@@ -1124,8 +1116,8 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
               frame before the target-space data fills in.
             </li>
             <li>
-              <strong>Different names.</strong> The branch&apos;s command is
-              named <code>&quot;DriveToTagInline&quot;</code>; the
+              <strong>{"Different names. "}</strong> The branch&apos;s command
+              is named <code>&quot;DriveToTagInline&quot;</code>; the
               template&apos;s is named <code>&quot;DriveToTag&quot;</code>. The
               template also ships a separate{" "}
               <code>commands/DriveToTag.java</code>, the{" "}

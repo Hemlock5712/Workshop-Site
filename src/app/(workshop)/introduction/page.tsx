@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
@@ -84,22 +85,21 @@ export default function Introduction() {
       ]}
       time="about an hour"
     >
-      <KeyConceptSection
-        description={[
-          "Nothing here assumes you have written code before. It does assume the hardware is in front of you. Every lesson ends with something you can hear and watch move, which is the whole reason the course is shaped this way.",
-        ]}
-        concept="Read the pages in order. Each one leaves you with code that runs, and the next one changes that same code."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>How long:</strong> Workshop #1 is {workshop1.length} lessons,
-          Workshop #2 is {workshop2.length}, and Advanced Topics adds{" "}
-          {advanced.length}. Every lesson page opens with its own estimate —
-          most run 20 to 45 minutes, a few run about an hour. That makes each
-          workshop several hours of work. Plan on more than one sitting.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "Nothing here assumes you have written code before. It does assume the hardware is in front of you. Every lesson ends with something you can hear and watch move, which is the whole reason the course is shaped this way.",
+          ]}
+          concept="Read the pages in order. Each one leaves you with code that runs, and the next one changes that same code."
+        />
+        <MarginNote label="HOW LONG">
+          Workshop #1 is {workshop1.length} lessons, Workshop #2 is{" "}
+          {workshop2.length}, and Advanced Topics adds {advanced.length}. Every
+          lesson page opens with its own estimate — most run 20 to 45 minutes, a
+          few run about an hour. That makes each workshop several hours of work.
+          Plan on more than one sitting.
+        </MarginNote>
+      </Split>
 
       {/* ── hardware is not optional ─────────────────────────────────── */}
       <LessonSection

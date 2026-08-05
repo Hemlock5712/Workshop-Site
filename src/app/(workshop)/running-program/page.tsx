@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -39,21 +40,19 @@ export default function RunningProgram() {
       branch="2-Commands"
       time="Roughly 40 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "The thing that makes this work is called hardware simulation, and the name oversells the word simulation. Your laptop stands in for the robot controller. The motors are real, the CAN bus is real, and the arm on the bench is the arm that moves.",
-        ]}
-        concept="Hardware simulation replaces the robot controller, not the robot. Everything downstream of the CANivore is real hardware."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> nothing new. You run the code
-          you already have and watch four buttons drive two mechanisms. Then you
-          make two buttons fight over the same arm on purpose, and learn who
-          wins. <strong>Roughly 40 minutes</strong>, most of it at the bench.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "The thing that makes this work is called hardware simulation, and the name oversells the word simulation. Your laptop stands in for the robot controller. The motors are real, the CAN bus is real, and the arm on the bench is the arm that moves.",
+          ]}
+          concept="Hardware simulation replaces the robot controller, not the robot. Everything downstream of the CANivore is real hardware."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          Nothing new. You run the code you already have and watch four buttons
+          drive two mechanisms. Then you make two buttons fight over the same
+          arm on purpose, and learn who wins. Most of it happens at the bench.
+        </MarginNote>
+      </Split>
 
       {/* ── what hardware simulation is ──────────────────────────────── */}
       <LessonSection
@@ -92,23 +91,22 @@ export default function RunningProgram() {
           </p>
         </Box>
 
-        <Box variant="concept" title="Two consequences worth naming">
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              <strong>The hardware is required.</strong> Nothing on this page
-              works without a CANivore and powered motors. There is no
+        <Split>
+          <ProseBlock>
+            <p>
+              <strong>{"The hardware is required. "}</strong>Nothing on this
+              page works without a CANivore and powered motors. There is no
               motors-optional route through Workshop&nbsp;#1 — the whole
               run-and-tune loop from here to Motion Magic is done against real
               devices.
-            </li>
-            <li>
-              <strong>The numbers you see are honest.</strong> When you tune PID
-              two lessons from now, you are tuning against actual friction,
-              actual gravity and actual gear lash. Nothing has been smoothed out
-              for you.
-            </li>
-          </ul>
-        </Box>
+            </p>
+          </ProseBlock>
+          <MarginNote label="THE NUMBERS ARE HONEST">
+            When you tune PID two lessons from now, you are tuning against
+            actual friction, actual gravity and actual gear lash. Nothing has
+            been smoothed out for you.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       {/* ── CANivore USB toggle ──────────────────────────────────────── */}
@@ -118,11 +116,11 @@ export default function RunningProgram() {
       >
         <p className="mb-3">
           Before running anything here you <strong>must</strong> turn{" "}
-          <strong>OFF</strong> the &quot;CANivore USB&quot; setting in Tuner X.
-          Two things cannot own the CAN bus at once: with it on, Tuner X holds
-          the bus and the simulator cannot reach your motors. This is the same
-          toggle you turned <em>on</em> for bench testing — one switch, two
-          positions, explained in full on{" "}
+          <strong>{"OFF "}</strong> the &quot;CANivore USB&quot; setting in
+          Tuner X. Two things cannot own the CAN bus at once: with it on, Tuner
+          X holds the bus and the simulator cannot reach your motors. This is
+          the same toggle you turned <em>on</em> for bench testing — one switch,
+          two positions, explained in full on{" "}
           <a
             href="/mechanism-setup#canivore-usb"
             className="underline font-medium"
@@ -131,10 +129,10 @@ export default function RunningProgram() {
           </a>
           .
         </p>
-        <Box variant="alert-warning" title="Steps" className="mt-3">
-          Open Tuner X → Go to CANivore settings → Disable &quot;CANivore
-          USB&quot;
-        </Box>
+        <p className="m-0">
+          Open Tuner X, go to CANivore settings, and disable &quot;CANivore
+          USB&quot;.
+        </p>
       </Box>
 
       <LessonSection
@@ -193,8 +191,8 @@ export default function RunningProgram() {
             The stack runs on <strong>Java 25</strong> and deploys to{" "}
             <strong>SystemCore</strong> (<code>./gradlew deploy</code> targets{" "}
             <code>/home/systemcore</code>). The mode list comes straight from
-            your code: a missing OpMode is <em>not</em> a compile error. If your
-            mode doesn&apos;t show up on the driver station, check that the
+            your code: a missing OpMode is <em>{"not "}</em> a compile error. If
+            your mode doesn&apos;t show up on the driver station, check that the
             class:
           </p>
           <ul className="list-disc list-inside space-y-1">
@@ -261,9 +259,9 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         >
           <li>
             In Tuner X, turn <strong>CANivore USB off</strong> and close the
-            control window. <strong>You should see:</strong> your devices drop
-            out of the Tuner X list. That is correct — you are handing the bus
-            over.
+            control window. <strong>{"You should see: "}</strong> your devices
+            drop out of the Tuner X list. That is correct — you are handing the
+            bus over.
           </li>
           <li>
             Plug the controller into the laptop, and confirm the mechanism is
@@ -272,8 +270,8 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           <li>
             From the project folder, run <code>./gradlew simulateJava</code> (or{" "}
             <em>WPILib: Simulate Robot Code</em> in VS Code).{" "}
-            <strong>You should see:</strong> two windows open — the simulation
-            GUI and a driver station window — and the console print{" "}
+            <strong>{"You should see: "}</strong> two windows open — the
+            simulation GUI and a driver station window — and the console print{" "}
             <code>********** Robot program startup complete **********</code>.
           </li>
           <li>
@@ -285,42 +283,43 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           </li>
           <li>
             Pick <strong>Teleop</strong> from the mode list on the driver
-            station. <strong>You should see:</strong>{" "}
+            station. <strong>{"You should see: "}</strong>{" "}
             <code>********** Starting OpMode Teleop **********</code> in the
             console. That line is your OpMode constructor running and your four
             bindings coming into existence.
           </li>
           <li>
-            Click <strong>Enable</strong>. <strong>You should see:</strong>{" "}
+            Click <strong>Enable</strong>. <strong>{"You should see: "}</strong>{" "}
             nothing move. Correct — every command on this branch is attached to
             a button, and nothing is holding a button yet.
           </li>
           <li>
             Hold the <strong>left trigger</strong>.{" "}
-            <strong>You should see:</strong> the arm push at 6&nbsp;V and keep
-            pushing for as long as you hold. Release it and the arm stops. That
-            is <code>onTrue(arm.runFast())</code> and{" "}
+            <strong>{"You should see: "}</strong> the arm push at 6&nbsp;V and
+            keep pushing for as long as you hold. Release it and the arm stops.
+            That is <code>onTrue(arm.runFast())</code> and{" "}
             <code>onFalse(arm.stop())</code>.
           </li>
           <li>
             Hold the <strong>right trigger</strong>.{" "}
-            <strong>You should see:</strong> the flywheel spin up hard. Release
-            it and the flywheel <em>keeps spinning</em>, more gently. Not a bug:
-            that binding releases into <code>flywheel.runSlow()</code>, not{" "}
-            <code>stop()</code>. It is the one pair on the branch that undoes
-            into a different speed rather than into zero.
+            <strong>{"You should see: "}</strong> the flywheel spin up hard.
+            Release it and the flywheel <em>keeps spinning</em>, more gently.
+            Not a bug: that binding releases into{" "}
+            <code>flywheel.runSlow()</code>, not <code>stop()</code>. It is the
+            one pair on the branch that undoes into a different speed rather
+            than into zero.
           </li>
           <li>
             Press and release <strong>A</strong>.{" "}
-            <strong>You should see:</strong> the flywheel go to full, then stop
-            completely. A and the right trigger drive the same mechanism and
-            release into different commands, which is why the flywheel ends up
-            somewhere different depending on which one you let go of.
+            <strong>{"You should see: "}</strong> the flywheel go to full, then
+            stop completely. A and the right trigger drive the same mechanism
+            and release into different commands, which is why the flywheel ends
+            up somewhere different depending on which one you let go of.
           </li>
           <li>
             Hold <strong>B</strong>, your own binding.{" "}
-            <strong>You should see:</strong> the arm push gently at 3&nbsp;V and
-            stop on release.
+            <strong>{"You should see: "}</strong> the arm push gently at
+            3&nbsp;V and stop on release.
           </li>
           <li>
             Click <strong>Disable</strong> before you walk away. Leave the
@@ -331,7 +330,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong the first time"
+          title="Java 25, a missing mode, and a motor that will not turn"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -352,7 +351,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               a mode that never prints never started.
             </li>
             <li>
-              <strong>Teleop is selected but no motor turns.</strong> Three
+              <strong>{"Teleop is selected but no motor turns. "}</strong> Three
               candidates, most likely first. CANivore USB is still ON, so Tuner
               X still owns the bus. The controller is not on port&nbsp;0 — check
               the Joysticks panel. Or the driver station still says Disabled;
@@ -385,23 +384,24 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         >
           <li>
             Enable, and hold the <strong>left trigger</strong> down.{" "}
-            <strong>You should see:</strong> the arm at 6&nbsp;V. The command
-            holding the arm is <code>runFast (hold)</code>.
+            <strong>{"You should see: "}</strong> the arm at 6&nbsp;V. The
+            command holding the arm is <code>runFast (hold)</code>.
           </li>
           <li>
             <strong>Keeping the left trigger down</strong>, press and hold{" "}
-            <strong>B</strong>. <strong>You should see:</strong> the arm slow
-            down to 3&nbsp;V, immediately. B won. <code>runFast (hold)</code>{" "}
-            was canceled the moment <code>runSlow (hold)</code> was scheduled.
+            <strong>B</strong>. <strong>{"You should see: "}</strong> the arm
+            slow down to 3&nbsp;V, immediately. B won.{" "}
+            <code>runFast (hold)</code> was canceled the moment{" "}
+            <code>runSlow (hold)</code> was scheduled.
           </li>
           <li>
             <strong>Release B. Keep holding the left trigger.</strong>{" "}
-            <strong>You should see:</strong> the arm stop — and stay stopped,
-            even though the left trigger is still down. This is the part people
-            do not predict.
+            <strong>{"You should see: "}</strong> the arm stop — and stay
+            stopped, even though the left trigger is still down. This is the
+            part people do not predict.
           </li>
           <li>
-            Release the left trigger too. <strong>You should see:</strong>{" "}
+            Release the left trigger too. <strong>{"You should see: "}</strong>{" "}
             nothing change. The arm was already stopped.
           </li>
         </ol>
@@ -534,10 +534,10 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           <strong>Watch it on the bench.</strong> Stop the simulator, delete{" "}
           <code>.onFalse(arm.stop())</code> from your B binding so it reads{" "}
           <code>driver.b().onTrue(arm.runSlow());</code>, and run it again. Hold
-          B, then release. <strong>You should see:</strong> the arm keep pushing
-          after you let go, with nothing on screen suggesting anything is wrong.
-          The command that asked for 3&nbsp;V is long gone; the 3&nbsp;V is
-          still there. Disable to stop it, then put the{" "}
+          B, then release. <strong>{"You should see: "}</strong> the arm keep
+          pushing after you let go, with nothing on screen suggesting anything
+          is wrong. The command that asked for 3&nbsp;V is long gone; the
+          3&nbsp;V is still there. Disable to stop it, then put the{" "}
           <code>.onFalse(...)</code> back.
         </p>
       </LessonSection>

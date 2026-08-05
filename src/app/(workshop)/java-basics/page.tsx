@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -30,25 +31,20 @@ export default function JavaBasics() {
       ]}
       time="Roughly 40 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "Every example below is copied out of real robot code — the arm and flywheel you build at Mechanisms and Commands. There are no animals, shapes, or bank accounts on this page.",
-        ]}
-        concept="You will read far more Java on this site than you write. Reading is the skill this page builds."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll get:</strong> you can open a mechanism file,
-          point at any line, and say what it does.{" "}
-          <strong>Roughly 40 minutes.</strong>
-        </p>
-        <p className="mt-3">
-          One honest limit: this is not a Java course. It covers the twelve
-          things this site actually uses and then stops. If some Java feature is
-          not on this page, you will not need it here.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "Every example below is copied out of real robot code — the arm and flywheel you build at Mechanisms and Commands. There are no animals, shapes, or bank accounts on this page.",
+          ]}
+          concept="You will read far more Java on this site than you write. Reading is the skill this page builds."
+        />
+        <MarginNote label="WHAT YOU'LL GET">
+          You can open a mechanism file, point at any line, and say what it
+          does. One honest limit: this is not a Java course. It covers the
+          twelve things this site actually uses and then stops. If some Java
+          feature is not on this page, you will not need it here.
+        </MarginNote>
+      </Split>
 
       {/* ── the whole file ───────────────────────────────────────────── */}
       <LessonSection
@@ -334,8 +330,9 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
           <li>
             <code>final</code> — <code>motor</code> will point at this one
             TalonFX for the rest of the object&apos;s life. You cannot later
-            write <code>motor = </code> something else. It does <em>not</em>{" "}
-            freeze the motor: <code>motor.setControl(...)</code> still works.
+            write <code>motor = </code> something else. It does{" "}
+            <em>{"not "}</em> freeze the motor:{" "}
+            <code>motor.setControl(...)</code> still works.
           </li>
           <li>
             <code>TalonFX</code> — the type. What kind of thing goes in the box.
@@ -1022,7 +1019,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
           On triggers this site writes <code>.negate()</code> rather than{" "}
           <code>!</code>. <code>driver.leftTrigger().negate()</code>, on the
           State Machines branch, means &quot;while the left trigger is{" "}
-          <em>not</em> pulled.&quot;
+          <em>{"not "}</em> pulled.&quot;
         </p>
       </LessonSection>
 
@@ -1040,15 +1037,15 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
           <li>
             Scroll back to the full <code>Arm.java</code> at the top of this
             page. Put your finger on the line where the fields stop and the
-            constructor starts. <strong>You should see:</strong>{" "}
+            constructor starts. <strong>{"You should see: "}</strong>{" "}
             <code>public Arm() {"{"}</code> on line 31 of the block, directly
             after the <code>voltageOut</code> field.
           </li>
           <li>
             Find the one local variable in that file.{" "}
-            <strong>You should see:</strong> <code>config</code>, and nothing
-            else. Seven lines in that file carry an <code>=</code>. Four declare
-            fields. One declares <code>config</code>. The two{" "}
+            <strong>{"You should see: "}</strong> <code>config</code>, and
+            nothing else. Seven lines in that file carry an <code>=</code>. Four
+            declare fields. One declares <code>config</code>. The two{" "}
             <code>config.MotorOutput</code> lines declare nothing at all — they
             set a value on an object that already exists, which is a different
             job from making a new variable.
@@ -1057,7 +1054,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
             Now the real exercise. Below is a complete piece of the{" "}
             <code>Arm</code> you write at <strong>Commands</strong>. Name every
             part of it out loud, then check yourself.{" "}
-            <strong>You should see:</strong> the seven questions under it
+            <strong>{"You should see: "}</strong> the seven questions under it
             answered without scrolling back up this page.
           </li>
         </ol>
@@ -1087,7 +1084,7 @@ public Command runSlow() {
           </li>
           <li>
             What does <code>runSlow</code> hand back, and what does it{" "}
-            <em>not</em> do?
+            <em>{"not "}</em> do?
           </li>
           <li>
             Where is <code>runRepeatedly</code> defined? It is not in this file.
@@ -1144,17 +1141,11 @@ public Command runSlow() {
           </ol>
         </CollapsibleSection>
 
-        <Box
-          variant="alert-success"
-          tag="YOU ARE READY"
-          title="Seven out of seven, without scrolling"
-        >
-          <p>
-            If you can answer all seven from memory, the next three lessons are
-            readable and you should move on. Five or six is fine too — the
-            pieces you missed will come back, in real code, within two pages.
-          </p>
-        </Box>
+        <p>
+          If you can answer all seven from memory, the next three lessons are
+          readable and you should move on. Five or six is fine too — the pieces
+          you missed will come back, in real code, within two pages.
+        </p>
       </LessonSection>
 
       {/* ── if it didn't work ────────────────────────────────────────── */}
@@ -1162,14 +1153,14 @@ public Command runSlow() {
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Fields you cannot spot, lambdas that never ran, snippets that will not compile"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>
               <strong>
                 You cannot tell a field from a local variable at a glance.
               </strong>{" "}
-              Look at which braces the line sits <em>directly</em> inside.
+              Look at which braces the line sits <em>{"directly "}</em> inside.
               Directly inside the class braces means a field, and it lives as
               long as the object does. Inside a method&apos;s or
               constructor&apos;s braces means local, and it is gone at the

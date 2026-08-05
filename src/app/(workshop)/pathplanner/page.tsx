@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -71,21 +72,19 @@ export default function AutonomousRoutines() {
         </p>
       </Box>
 
-      <KeyConceptSection
-        description={[
-          "Inside the class you build one command in the constructor, schedule it when the robot is enabled, and cancel it when the mode ends. The command is a Command.sequence of drive legs — the same chaining you learned in Workshop #1, applied to a drivetrain instead of an arm.",
-        ]}
-        concept="Autonomous = an @Autonomous class holding one Command.sequence of DriveToPoint legs."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> one new file — an{" "}
-          <code>@Autonomous</code> OpMode that drives two legs, one after the
-          other, and appears by name on the driver station.{" "}
-          <strong>Roughly 30 minutes</strong>, most of it deciding on poses.
-        </p>
-      </Box>
+      <Split>
+        <KeyConceptSection
+          description={[
+            "Inside the class you build one command in the constructor, schedule it when the robot is enabled, and cancel it when the mode ends. The command is a Command.sequence of drive legs — the same chaining you learned in Workshop #1, applied to a drivetrain instead of an arm.",
+          ]}
+          concept="Autonomous = an @Autonomous class holding one Command.sequence of DriveToPoint legs."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          One new file — an <code>@Autonomous</code> OpMode that drives two
+          legs, one after the other, and appears by name on the driver station.
+          Most of the time goes on deciding the poses, not on the code.
+        </MarginNote>
+      </Split>
 
       {/* ── the leg ──────────────────────────────────────────────────── */}
       <LessonSection
@@ -250,15 +249,13 @@ public class AutonomousOpMode extends PeriodicOpMode {
           </li>
         </ul>
 
-        <Box variant="alert-tip" tag="RESULT" title="What you should see">
-          <p>
-            Build the project. <strong>Two Leg Auto</strong> now appears by name
-            in the driver station&apos;s list of autonomous modes. You have not
-            run it yet — the poses are still placeholders and odometry is still
-            unseeded — but the routine is discoverable, which is the first
-            checkpoint.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Build the project.{" "}
+          <strong>{"Two Leg Auto "}</strong> now appears by name in the driver
+          station&apos;s list of autonomous modes. You have not run it yet — the
+          poses are still placeholders and odometry is still unseeded — but the
+          routine is discoverable, which is the first checkpoint.
+        </p>
       </LessonSection>
 
       {/* ── 2. real poses ────────────────────────────────────────────── */}
@@ -308,15 +305,13 @@ public class AutonomousOpMode extends PeriodicOpMode {
           , and type those numbers into the file.
         </p>
 
-        <Box variant="alert-tip" tag="RESULT" title="What you should see">
-          <p>
-            Rebuild. <code>AutonomousOpMode.java</code> still compiles, and the
-            two <code>Pose2d</code> literals are your measured numbers instead
-            of the placeholder <code>2.0, 0.0</code> and <code>2.0, 1.5</code>.
-            Delete the <code>TODO</code> comment above them once they are your
-            numbers.
-          </p>
-        </Box>
+        <p>
+          <strong>{"You should see: "}</strong> Rebuild.{" "}
+          <code>AutonomousOpMode.java</code> still compiles, and the two{" "}
+          <code>Pose2d</code> literals are your measured numbers instead of the
+          placeholder <code>2.0, 0.0</code> and <code>2.0, 1.5</code>. Delete
+          the <code>TODO</code> comment above them once they are your numbers.
+        </p>
       </LessonSection>
 
       {/* ── 3. seeding ───────────────────────────────────────────────── */}
@@ -350,8 +345,8 @@ public class AutonomousOpMode extends PeriodicOpMode {
           <p>
             <code>drivetrain.seedFieldCentric()</code> — the one bound to the
             left bumper in your <code>TeleopOpMode</code> — resets the{" "}
-            <em>driver&apos;s</em> forward direction so that pushing the stick
-            away drives away from the driver. It changes nothing about the
+            <em>{"driver&apos;s "}</em> forward direction so that pushing the
+            stick away drives away from the driver. It changes nothing about the
             robot&apos;s x and y. The two operations get confused constantly
             because both sound like &quot;reset the robot.&quot;{" "}
             <Link
@@ -394,23 +389,24 @@ public class AutonomousOpMode extends PeriodicOpMode {
           </li>
         </ol>
 
-        <Box
-          variant="alert-info"
-          tag="HEADING"
-          title="Single-tag sightings lean on the gyro"
-        >
-          <p>
+        <Split>
+          <ProseBlock>
+            <p>
+              Two tags in view at the start is worth arranging, because a single
+              tag leans on the gyro.
+            </p>
+          </ProseBlock>
+          <MarginNote label="WHY ONE TAG IS WORSE">
             The <code>Limelight</code> class uses MegaTag1 when two or more tags
-            are visible, and falls back to MegaTag2 for a single tag. MegaTag2
+            are visible and falls back to MegaTag2 for a single tag. MegaTag2
             trusts the gyro for heading rather than the tags — the file pins its
             heading trust to <code>IGNORE_VISION_HEADING = 9_999_999</code> to
             say so. Its javadoc puts it plainly:{" "}
             <em>
               &quot;seed the gyro, or single-tag results will be off.&quot;
-            </em>{" "}
-            Two tags in view at start is worth arranging.
-          </p>
-        </Box>
+            </em>
+          </MarginNote>
+        </Split>
 
         <Box
           variant="alert-warning"
@@ -583,45 +579,45 @@ public class AutonomousOpMode extends PeriodicOpMode {
       <LessonSection id="did-it-work" title="Did it work?">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Build the project. <strong>You should see:</strong> it compiles, and{" "}
-            <strong>Two Leg Auto</strong> is in the autonomous list on the
-            driver station.
+            Build the project. <strong>{"You should see: "}</strong> it
+            compiles, and <strong>Two Leg Auto</strong> is in the autonomous
+            list on the driver station.
           </li>
           <li>
             Start the routine one of the two ways above.{" "}
-            <strong>You should see:</strong> the robot leaves immediately —{" "}
+            <strong>{"You should see: "}</strong> the robot leaves immediately —{" "}
             <code>start()</code> schedules on enable, so there is no delay.
           </li>
           <li>
-            Watch leg one. <strong>You should see:</strong> a smooth ramp up to
-            speed, a cruise, and a slow-down into the goal — not a lurch. That
-            ramp is <code>LinearPath</code>; it is the difference between{" "}
+            Watch leg one. <strong>{"You should see: "}</strong> a smooth ramp
+            up to speed, a cruise, and a slow-down into the goal — not a lurch.
+            That ramp is <code>LinearPath</code>; it is the difference between{" "}
             <code>5-DriveToPoint</code> and <code>6-ProfiledToPoint</code>.
           </li>
           <li>
-            Watch the handover. <strong>You should see:</strong> the robot stops
-            at the first pose, then starts the second leg — including the turn
-            to 90 degrees. One leg finishing is what releases the drivetrain for
-            the next.
+            Watch the handover. <strong>{"You should see: "}</strong> the robot
+            stops at the first pose, then starts the second leg — including the
+            turn to 90 degrees. One leg finishing is what releases the
+            drivetrain for the next.
           </li>
           <li>
-            Watch the end. <strong>You should see:</strong> after the last leg
-            the robot sits still. The sequence is finished, and each leg idles
-            the drivetrain in its own cleanup.
+            Watch the end. <strong>{"You should see: "}</strong> after the last
+            leg the robot sits still. The sequence is finished, and each leg
+            idles the drivetrain in its own cleanup.
           </li>
           <li>
             Check <code>Drivetrain/Pose</code> against your goal.{" "}
-            <strong>You should see:</strong> close, but not exact. The three PID
-            gains and the profile constraints in <code>DriveToPoint</code> are
-            both marked <code>TODO: tune</code> on the branch — that gap is
-            tuning work, not a bug.
+            <strong>{"You should see: "}</strong> close, but not exact. The
+            three PID gains and the profile constraints in{" "}
+            <code>DriveToPoint</code> are both marked <code>TODO: tune</code> on
+            the branch — that gap is tuning work, not a bug.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="Not on the driver station, smoothly wrong, or dead still"
         >
           <ul className="ml-4 list-disc space-y-3">
             <li>
@@ -738,26 +734,25 @@ public class AutonomousOpMode extends PeriodicOpMode {
       />
 
       {/* ── what's next ──────────────────────────────────────────────── */}
-      <LessonSection id="what-s-next" title="What's next?">
-        <Box variant="alert-success" title="That is the end of Workshop #2">
-          <p>
-            You have a swerve drive that logs, sees AprilTags, drives to a pose
-            on a profile, and runs a routine on its own. Everything you have
-            written since Workshop #1 has been in one dialect: chaining —{" "}
-            <code>Command.sequence</code>, <code>Command.race</code>,{" "}
-            <code>.withTimeout(...)</code>, <code>.until(...)</code>.
-          </p>
-          <p className="mt-3">
-            Advanced Topics is where the other two dialects live. Next up is{" "}
-            <Link href="/coroutines" className="underline hover:no-underline">
-              Coroutines
-            </Link>
-            : the style for routines that need loops, branches, or a hold that
-            has to span several steps. It starts by asking you to check out a
-            mechanism-track branch again, so keep this one somewhere you can get
-            back to it.
-          </p>
-        </Box>
+      <LessonSection id="what-s-next" title="What's next">
+        <p>
+          That is the end of Workshop #2. You have a swerve drive that logs,
+          sees AprilTags, drives to a pose on a profile, and runs a routine on
+          its own. Everything you have written since Workshop #1 has been in one
+          dialect: chaining — <code>Command.sequence</code>,{" "}
+          <code>Command.race</code>, <code>.withTimeout(...)</code>,{" "}
+          <code>.until(...)</code>.
+        </p>
+        <p>
+          Advanced Topics is where the other two dialects live. Next up is{" "}
+          <Link href="/coroutines" className="underline hover:no-underline">
+            Coroutines
+          </Link>
+          : the style for routines that need loops, branches, or a hold that has
+          to span several steps. It starts by asking you to check out a
+          mechanism-track branch again, so keep this one somewhere you can get
+          back to it.
+        </p>
       </LessonSection>
     </PageTemplate>
   );

@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -46,22 +48,20 @@ export default function SwerveDriveProject() {
       branch="1-Swerve"
       time="about an hour"
     >
-      <KeyConceptSection
-        description={[
-          "The rest of the swerve project — the drivetrain class, the Mechanism wrapper, the teleop controls — is already in the workshop code. Your job on this page is to produce a TunerConstants.java that describes your robot, drop it in, and drive.",
-        ]}
-        concept="Tuner X measures your drivetrain and writes TunerConstants.java. You swap that one file into a project that already works."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> a robot you can drive around
-          with a controller, field-centric, with a{" "}
+      <Split>
+        <KeyConceptSection
+          description={[
+            "The rest of the swerve project — the drivetrain class, the Mechanism wrapper, the teleop controls — is already in the workshop code. Your job on this page is to produce a TunerConstants.java that describes your robot, drop it in, and drive.",
+          ]}
+          concept="Tuner X measures your drivetrain and writes TunerConstants.java. You swap that one file into a project that already works."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          A robot you can drive around with a controller, field-centric, with a{" "}
           <code>TunerConstants.java</code> that holds your own CAN IDs,
-          dimensions and module offsets. <strong>Budget about an hour</strong> —
-          most of it is the generator testing one module at a time.
-        </p>
-      </Box>
+          dimensions and module offsets. Most of the hour is the generator
+          testing one module at a time.
+        </MarginNote>
+      </Split>
 
       <Box variant="alert-info" title="Quick start: download the baseline code">
         <p className="mb-4">
@@ -179,8 +179,8 @@ export default function SwerveDriveProject() {
                 common way this page goes wrong.
               </p>
               <p className="mt-2">
-                <strong>You should see:</strong> thirteen devices listed, every
-                ID different, no duplicate-ID warning and no red firmware
+                <strong>{"You should see: "}</strong> thirteen devices listed,
+                every ID different, no duplicate-ID warning and no red firmware
                 badges. If a device is missing, it is a wiring or termination
                 problem, and it will not become a software problem later — fix
                 it here.
@@ -202,8 +202,8 @@ export default function SwerveDriveProject() {
                 behind a <strong>New Project</strong> button.
               </p>
               <p className="mt-2">
-                <strong>You should see:</strong> a wizard that starts by asking
-                for the robot&apos;s physical dimensions, not for code.
+                <strong>{"You should see: "}</strong> a wizard that starts by
+                asking for the robot&apos;s physical dimensions, not for code.
               </p>
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function SwerveDriveProject() {
                 wheel radius. Yours will differ.
               </p>
               <p className="mt-2">
-                <strong>You should see:</strong> the wizard accept all four
+                <strong>{"You should see: "}</strong> the wizard accept all four
                 without complaint. Say the numbers back to yourself before you
                 move on — wheelbase and trackwidth are the pair people swap, and
                 on a square robot the swap is invisible until the robot turns
@@ -287,10 +287,10 @@ export default function SwerveDriveProject() {
                 robot sideways over a long drive.
               </p>
               <p className="mt-2">
-                <strong>You should see:</strong> one module moving at a time,
-                and it should be the corner the wizard named. If a different
-                corner moves, two CAN IDs are swapped — go back to step 1 and
-                fix the IDs rather than working around it here.
+                <strong>{"You should see: "}</strong> one module moving at a
+                time, and it should be the corner the wizard named. If a
+                different corner moves, two CAN IDs are swapped — go back to
+                step 1 and fix the IDs rather than working around it here.
               </p>
             </div>
           </div>
@@ -315,8 +315,8 @@ export default function SwerveDriveProject() {
                 IDs all have to come from the same run.
               </p>
               <p className="mt-2">
-                <strong>You should see:</strong> your own CAN IDs in the new
-                file, and a <code>kCANBus</code> line naming your CANivore
+                <strong>{"You should see: "}</strong> your own CAN IDs in the
+                new file, and a <code>kCANBus</code> line naming your CANivore
                 rather than the example&apos;s.
               </p>
             </div>
@@ -341,7 +341,7 @@ export default function SwerveDriveProject() {
                 showed.
               </p>
               <p className="mt-2">
-                <strong>You should see:</strong> the driver station listing{" "}
+                <strong>{"You should see: "}</strong> the driver station listing{" "}
                 <strong>Teleop</strong> as a mode you can select. Modules point
                 straight when you enable, and nothing spins on its own.
               </p>
@@ -572,41 +572,52 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
           sticks and it is still running — it is now asking for zero.
         </p>
 
-        <Box variant="concept" title="A real default command versus idle()">
-          <p>
-            Every mechanism already has a default command. You saw it on{" "}
-            <Link href="/adding-commands" className={linkStyle}>
-              Commands
-            </Link>
-            : <code>Mechanism</code>&apos;s own constructor calls{" "}
-            <code>setDefaultCommand(idle())</code>, and <code>idle()</code>{" "}
-            parks at the lowest priority and sends <em>nothing at all</em>. It
-            does not zero the last request, which is why canceling an arm
-            command leaves the arm pushing.
-          </p>
-          <p className="mt-3">
-            The drivetrain replaces that with a default that actually commands
-            the hardware. The difference shows up the moment a command is
-            canceled:
-          </p>
-          <ul className="ml-4 mt-3 list-disc space-y-2">
-            <li>
-              <strong>
-                Arm, default is <code>idle()</code>:
-              </strong>{" "}
-              release the button and the last voltage stays latched. Something
-              has to actively send zero, which is what <code>arm.stop()</code>{" "}
-              is for.
-            </li>
-            <li>
-              <strong>Drivetrain, default is the joystick drive:</strong>{" "}
-              release the button and the joystick command comes straight back.
-              Hands off the sticks means a request for zero speed, every loop.
-              There is no <code>drivetrain.stop()</code> in the workshop code,
-              and it is not needed.
-            </li>
-          </ul>
-        </Box>
+        <p>
+          Every mechanism already has a default command. You saw it on{" "}
+          <Link href="/adding-commands" className={linkStyle}>
+            Commands
+          </Link>
+          : <code>Mechanism</code>&apos;s own constructor calls{" "}
+          <code>setDefaultCommand(idle())</code>, and <code>idle()</code> parks
+          at the lowest priority and sends <em>nothing at all</em>. It does not
+          zero the last request, which is why canceling an arm command leaves
+          the arm pushing. The drivetrain replaces that with a default that
+          actually commands the hardware, and the difference shows up the moment
+          a command is canceled.
+        </p>
+
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "Arm",
+              term: (
+                <>
+                  Default is <code>idle()</code>
+                </>
+              ),
+              body: (
+                <>
+                  Release the button and the last voltage stays latched.
+                  Something has to actively send zero, which is what{" "}
+                  <code>arm.stop()</code> is for.
+                </>
+              ),
+            },
+            {
+              label: "Drivetrain",
+              term: "Default is the joystick drive",
+              body: (
+                <>
+                  Release the button and the joystick command comes straight
+                  back. Hands off the sticks means a request for zero speed,
+                  every loop. There is no <code>drivetrain.stop()</code> in the
+                  workshop code, and it is not needed.
+                </>
+              ),
+            },
+          ]}
+        />
 
         <p>
           That is the property every later page leans on. When Drive to Point
@@ -616,8 +627,8 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         </p>
 
         <Box
-          variant="alert-info"
-          tag="NOTE · SCOPE"
+          variant="concept"
+          tag="SCOPE"
           title="Why the default is set in the OpMode, not in Robot"
         >
           <p>
@@ -735,50 +746,51 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Select <strong>Teleop</strong> and enable, hands off the controller.{" "}
-            <strong>You should see:</strong> all four wheels stationary and all
-            four modules holding whatever angle they were already at. Any
+            <strong>{"You should see: "}</strong> all four wheels stationary and
+            all four modules holding whatever angle they were already at. Any
             creeping means a stick is not centered or the deadband is wrong.
           </li>
           <li>
             Push the left stick straight forward.{" "}
-            <strong>You should see:</strong> all four modules point the same way
-            and all four wheels turn in the same direction. One wheel spinning
-            backwards is an inversion answer given during the generator&apos;s
-            module test; one module facing sideways is a CANcoder offset.
+            <strong>{"You should see: "}</strong> all four modules point the
+            same way and all four wheels turn in the same direction. One wheel
+            spinning backwards is an inversion answer given during the
+            generator&apos;s module test; one module facing sideways is a
+            CANcoder offset.
           </li>
           <li>
-            Push the right stick sideways. <strong>You should see:</strong> the
-            four modules splay into a rotation pattern, each one tangent to a
-            circle around the robot&apos;s center.
+            Push the right stick sideways. <strong>{"You should see: "}</strong>{" "}
+            the four modules splay into a rotation pattern, each one tangent to
+            a circle around the robot&apos;s center.
           </li>
           <li>
             Put the robot on the floor, point it away from you, and push the
-            left stick forward. <strong>You should see:</strong> it drives away
-            from you in a straight line.
+            left stick forward. <strong>{"You should see: "}</strong> it drives
+            away from you in a straight line.
           </li>
           <li>
             Now turn the robot 90° in place with the right stick, then push the
-            left stick forward again. <strong>You should see:</strong> the robot
-            still travels in the same direction across the floor as it did the
-            first time, even though it is now pointing sideways. That is
+            left stick forward again. <strong>{"You should see: "}</strong> the
+            robot still travels in the same direction across the floor as it did
+            the first time, even though it is now pointing sideways. That is
             field-centric driving working.
           </li>
           <li>
             Press the left bumper, then push the left stick forward.{" "}
-            <strong>You should see:</strong> &quot;forward&quot; is now whatever
-            way the robot was pointing when you pressed it.
+            <strong>{"You should see: "}</strong> &quot;forward&quot; is now
+            whatever way the robot was pointing when you pressed it.
           </li>
           <li>
-            Release everything. <strong>You should see:</strong> the robot stop
-            immediately and stay stopped. That is the default command asking for
-            zero — not the absence of a command.
+            Release everything. <strong>{"You should see: "}</strong> the robot
+            stop immediately and stay stopped. That is the default command
+            asking for zero — not the absence of a command.
           </li>
         </ol>
 
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Three things that go wrong here"
+          title="A missing device, one module fighting the others, or nothing at all"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
@@ -911,22 +923,20 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
 
       {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
       <LessonSection id="what-s-next" title="What's next">
-        <Box variant="alert-success" title="Up next: Logging">
-          <p>
-            You have a robot that drives, built on constants you have not
-            measured yet. Before you measure them, turn on logging — several of
-            the calibration steps work by driving the robot, stopping, and
-            reading a number out of the log afterward. That is not something you
-            can do by watching.
-          </p>
-          <p className="mt-3">
-            <strong>Logging</strong> is two lines in <code>Robot</code>&apos;s
-            constructor and a look at what the drivetrain is already publishing.
-            Then <strong>Swerve Calibration</strong> replaces the example
-            numbers in <code>TunerConstants.java</code> with measurements off
-            your own robot.
-          </p>
-        </Box>
+        <p>
+          You have a robot that drives, built on constants you have not measured
+          yet. Before you measure them, turn on logging — several of the
+          calibration steps work by driving the robot, stopping, and reading a
+          number out of the log afterward. That is not something you can do by
+          watching.
+        </p>
+        <p>
+          <strong>Logging</strong> is two lines in <code>Robot</code>&apos;s
+          constructor and a look at what the drivetrain is already publishing.
+          Then <strong>Swerve Calibration</strong> replaces the example numbers
+          in <code>TunerConstants.java</code> with measurements off your own
+          robot.
+        </p>
       </LessonSection>
     </PageTemplate>
   );

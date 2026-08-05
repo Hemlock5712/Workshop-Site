@@ -36,7 +36,7 @@ export default function PIDControl() {
         <>
           Phoenix Tuner X connected, with the CANivore-USB toggle set the way{" "}
           <strong>Hardware Setup</strong> describes, and the CANcoder zeroed the
-          way <strong>Mechanism Setup</strong> describes.
+          way <strong>{"Mechanism Setup "}</strong> describes.
         </>,
       ]}
       branch="3-PID"
@@ -193,8 +193,8 @@ export default function PIDControl() {
         <p>
           The timeout is still a guess at how long the arm needs. The arm still
           cannot tell you when it has arrived — that arrives on{" "}
-          <strong>Finish Lines</strong>, two lessons from here, and it is where
-          this exact line becomes <code>.until(arm::isAtTarget)</code>.
+          <strong>{"Finish Lines "}</strong>, two lessons from here, and it is
+          where this exact line becomes <code>.until(arm::isAtTarget)</code>.
         </p>
 
         <Box
@@ -266,9 +266,10 @@ export default function PIDControl() {
               <code>P = kP × error</code>. Bigger gap, harder push.
             </p>
             <p className="mt-2">
-              <strong>Units on the arm:</strong> volts per <em>rotation</em> of
-              error. An arm error is a small number — a 27° miss is only 0.075
-              rotations — so kP has to be large to produce a useful voltage.
+              <strong>Units on the arm:</strong> volts per{" "}
+              <em>{"rotation "}</em> of error. An arm error is a small number —
+              a 27° miss is only 0.075 rotations — so kP has to be large to
+              produce a useful voltage.
             </p>
             <p className="mt-2">
               <strong>Too little:</strong> the arm stops short and sits there.{" "}
@@ -290,10 +291,10 @@ export default function PIDControl() {
               accumulated error.
             </p>
             <p className="mt-2">
-              <strong>On this branch:</strong> never set. Phoenix&apos;s default
-              is 0 and it stays 0. The gap kI would erase is the gap kG and kS
-              are already handling on an arm, and a wound-up integral term turns
-              a mechanism unpredictable.
+              <strong>{"On this branch: "}</strong> never set. Phoenix&apos;s
+              default is 0 and it stays 0. The gap kI would erase is the gap kG
+              and kS are already handling on an arm, and a wound-up integral
+              term turns a mechanism unpredictable.
             </p>
           </Box>
 
@@ -444,8 +445,8 @@ export default function PIDControl() {
           </p>
           <p className="mt-3">
             That is what the CANcoder zeroing step on{" "}
-            <strong>Mechanism Setup</strong> is for, and why the arm reads its
-            position from the CANcoder rather than the motor&apos;s rotor:
+            <strong>{"Mechanism Setup "}</strong> is for, and why the arm reads
+            its position from the CANcoder rather than the motor&apos;s rotor:
           </p>
           <div className="mt-3">
             <CodeBlock
@@ -631,9 +632,9 @@ private void setPosition(double rotations) {
           </p>
 
           <p>
-            <strong>You should see:</strong> the project compiles. Deploy it and
-            press the left trigger and nothing moves. Correct — all four gains
-            are zero.
+            <strong>{"You should see: "}</strong> the project compiles. Deploy
+            it and press the left trigger and nothing moves. Correct — all four
+            gains are zero.
           </p>
         </div>
 
@@ -691,11 +692,12 @@ private void setVelocity(double rps) {
           </p>
 
           <p>
-            <strong>You should see:</strong> press A and the flywheel spins up
-            and holds a roughly steady speed. That is <code>kV</code> doing all
-            the work by itself — 0.125 volts per rotation-per-second times a 75
-            rps request is about 9.4 volts, sent before any error exists. With{" "}
-            <code>kP</code> at zero, nothing corrects whatever that misses by.
+            <strong>{"You should see: "}</strong> press A and the flywheel spins
+            up and holds a roughly steady speed. That is <code>kV</code> doing
+            all the work by itself — 0.125 volts per rotation-per-second times a
+            75 rps request is about 9.4 volts, sent before any error exists.
+            With <code>kP</code> at zero, nothing corrects whatever that misses
+            by.
           </p>
         </div>
 
@@ -785,10 +787,10 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           </Box>
 
           <p>
-            <strong>You should see:</strong> the flywheel responds to A and to
-            the right trigger, and the arm does nothing at all. Two buttons that
-            command two angles and produce zero motion is precisely where the
-            tuning procedure starts.
+            <strong>{"You should see: "}</strong> the flywheel responds to A and
+            to the right trigger, and the arm does nothing at all. Two buttons
+            that command two angles and produce zero motion is precisely where
+            the tuning procedure starts.
           </p>
         </div>
       </LessonSection>
@@ -850,10 +852,10 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           </h3>
           <p>The branch already is. Deploy, enable, hold the left trigger.</p>
           <p>
-            <strong>You should see:</strong> nothing. Not a twitch. Every term
-            is multiplied by zero, so the motor is being sent 0 volts. If the
-            arm moves here, something else is commanding that motor and you need
-            to find it before you tune anything.
+            <strong>{"You should see: "}</strong> nothing. Not a twitch. Every
+            term is multiplied by zero, so the motor is being sent 0 volts. If
+            the arm moves here, something else is commanding that motor and you
+            need to find it before you tune anything.
           </p>
         </div>
 
@@ -892,10 +894,10 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             at that position <em>is</em> kG. Put it in the file and redeploy.
           </p>
           <p>
-            <strong>You should see:</strong> hold the left trigger so the closed
-            loop is running. With kP still at zero the arm will not travel
-            anywhere — but it stops falling. Lift it by hand, let go, and it
-            stays roughly where you left it, at any angle. That is the cosine
+            <strong>{"You should see: "}</strong> hold the left trigger so the
+            closed loop is running. With kP still at zero the arm will not
+            travel anywhere — but it stops falling. Lift it by hand, let go, and
+            it stays roughly where you left it, at any angle. That is the cosine
             working.
           </p>
           <p>
@@ -928,9 +930,9 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             until just before the motor moves.&quot;
           </p>
           <p>
-            <strong>You should see:</strong> back in the robot code, no visible
-            change at all. kS is small and the arm is still not being driven
-            anywhere. That is expected.
+            <strong>{"You should see: "}</strong> back in the robot code, no
+            visible change at all. kS is small and the arm is still not being
+            driven anywhere. That is expected.
           </p>
           <p>
             <strong>Too high:</strong> once kP is in, the arm buzzes or shivers
@@ -967,9 +969,9 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             </li>
           </ol>
           <p>
-            <strong>You should see:</strong> holding the left trigger drives the
-            arm to vertical; holding B drives it to horizontal; releasing leaves
-            it parked wherever it was last commanded.
+            <strong>{"You should see: "}</strong> holding the left trigger
+            drives the arm to vertical; holding B drives it to horizontal;
+            releasing leaves it parked wherever it was last commanded.
           </p>
           <Split>
             <ProseBlock>
@@ -982,8 +984,8 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
               </p>
             </ProseBlock>
             <MarginNote label="WHY 160 IS NOT ABSURD">
-              kP is volts per <em>rotation</em> of error, and the arm turns in
-              fractions of a rotation. At the file&apos;s suggested 160, an
+              kP is volts per <em>{"rotation "}</em> of error, and the arm turns
+              in fractions of a rotation. At the file&apos;s suggested 160, an
               error of 0.075 rotations — 27° — already asks for the full 12
               volts. The flywheel&apos;s kP will look tiny by comparison because
               its error is measured in rotations <em>per second</em>, and a
@@ -1005,8 +1007,8 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             possible without introducing jittering to the response.&quot;
           </p>
           <p>
-            <strong>You should see:</strong> the arm arrives at the target and
-            settles, instead of arriving and bouncing.
+            <strong>{"You should see: "}</strong> the arm arrives at the target
+            and settles, instead of arriving and bouncing.
           </p>
           <p>
             <strong>Too low:</strong> the bounce is still there.{" "}
@@ -1147,50 +1149,50 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Deploy with all four gains at <code>0.0</code> and hold the left
-            trigger. <strong>You should see:</strong> no motion at all.
+            trigger. <strong>{"You should see: "}</strong> no motion at all.
           </li>
           <li>
             Put your measured kG in and redeploy. Hold the left trigger, then
             lift the arm by hand to horizontal and let go.{" "}
-            <strong>You should see:</strong> it holds itself up instead of
+            <strong>{"You should see: "}</strong> it holds itself up instead of
             falling.
           </li>
           <li>
-            Add kS and redeploy. <strong>You should see:</strong> no visible
-            change. If the arm buzzes at rest later on, come back and halve
-            this.
+            Add kS and redeploy. <strong>{"You should see: "}</strong> no
+            visible change. If the arm buzzes at rest later on, come back and
+            halve this.
           </li>
           <li>
             Add kP and redeploy. Hold the left trigger.{" "}
-            <strong>You should see:</strong> the arm actually travels to
+            <strong>{"You should see: "}</strong> the arm actually travels to
             vertical.
           </li>
           <li>
-            Add kD and redeploy. <strong>You should see:</strong> the arm
+            Add kD and redeploy. <strong>{"You should see: "}</strong> the arm
             arrives and settles instead of bouncing.
           </li>
           <li>
-            Hold B. <strong>You should see:</strong> the arm swings to
-            horizontal. Release. <strong>You should see:</strong> it stays there
-            — it does not go limp, because Phoenix is still holding the last
-            position request.
+            Hold B. <strong>{"You should see: "}</strong> the arm swings to
+            horizontal. Release. <strong>{"You should see: "}</strong> it stays
+            there — it does not go limp, because Phoenix is still holding the
+            last position request.
           </li>
           <li>
-            Hold A. <strong>You should see:</strong> the flywheel spins up and
-            holds a steady speed. Release and it stops, because{" "}
+            Hold A. <strong>{"You should see: "}</strong> the flywheel spins up
+            and holds a steady speed. Release and it stops, because{" "}
             <code>whileFalse(flywheel.stop())</code> takes over.
           </li>
           <li>
             Let A go, then hold the right trigger.{" "}
-            <strong>You should see:</strong> the same wheel running noticeably
-            slower — <code>25.0</code> rotations per second instead of{" "}
-            <code>75.0</code>. That is the speed you compare against in Tuner X
-            when you tune kV.
+            <strong>{"You should see: "}</strong> the same wheel running
+            noticeably slower — <code>25.0</code> rotations per second instead
+            of <code>75.0</code>. That is the speed you compare against in Tuner
+            X when you tune kV.
           </li>
           <li>
             Re-point your chaining routine to <code>arm.vertical()</code> and
-            hold Y. <strong>You should see:</strong> the arm drives to vertical
-            for one second, <em>then</em> the flywheel starts.
+            hold Y. <strong>{"You should see: "}</strong> the arm drives to
+            vertical for one second, <em>then</em> the flywheel starts.
           </li>
         </ol>
 
@@ -1349,7 +1351,7 @@ config.Feedback.withRemoteCANcoder(encoder);`}
       </section>
 
       {/* ── what's next ──────────────────────────────────────────────── */}
-      <LessonSection id="what-comes-next" title="What comes next">
+      <LessonSection id="what-comes-next" title="What's next">
         <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Motion Magic</strong> keeps every gain you measured here and
@@ -1360,7 +1362,7 @@ config.Feedback.withRemoteCANcoder(encoder);`}
             again.
           </li>
           <li>
-            <strong>Finish Lines</strong> is where the arm learns to answer
+            <strong>{"Finish Lines "}</strong> is where the arm learns to answer
             &quot;am I there yet?&quot; Right now nothing in your code can ask.
             That is why your chaining routine still guesses with{" "}
             <code>.withTimeout(Seconds.of(1.0))</code>, and it is the last thing

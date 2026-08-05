@@ -1,4 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
+import FigureGrid from "@/components/lesson/FigureGrid";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
@@ -36,25 +38,23 @@ export default function Triggers() {
       branch="2-Commands"
       time="Roughly 25 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "The part worth slowing down for is not what you write. It is where you write it. A binding typed inside an OpMode constructor belongs to that OpMode and disappears when the mode changes. A binding typed inside the Robot constructor lasts for the whole program.",
-        ]}
-        concept="A Trigger fires a Command. Where you type the binding decides how long it lives."
-      />
-
-      <Box variant="alert-info" tag="WHAT YOU'LL BUILD">
-        <p className="mt-3">
-          <strong>What you&apos;ll build:</strong> a fourth button binding of
-          your own, and a clear rule for where every binding in the project
-          belongs. <strong>Roughly 25 minutes.</strong> Nothing moves yet — the
-          controller does not get pressed until{" "}
+      <Split>
+        <KeyConceptSection
+          description={[
+            "The part worth slowing down for is not what you write. It is where you write it. A binding typed inside an OpMode constructor belongs to that OpMode and disappears when the mode changes. A binding typed inside the Robot constructor lasts for the whole program.",
+          ]}
+          concept="A Trigger fires a Command. Where you type the binding decides how long it lives."
+        />
+        <MarginNote label="WHAT YOU'LL BUILD">
+          A fourth button binding of your own, and a clear rule for where every
+          binding in the project belongs. Nothing moves yet — the controller
+          does not get pressed until{" "}
           <a href="/running-program" className="underline">
             Running Your Code
           </a>
           , so every check on this page is a build check.
-        </p>
-      </Box>
+        </MarginNote>
+      </Split>
 
       {/* ── what a Trigger is ────────────────────────────────────────── */}
       <LessonSection
@@ -325,33 +325,35 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           constructor to type the line into.
         </p>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Box
-            variant="concept"
-            tag="OPMODE · LIFETIME OF THE MODE"
-            title="Typed in an OpMode constructor"
-          >
-            <p>
-              Where almost every binding goes. It exists while that OpMode is
-              the selected mode and is removed when the mode changes. All three
-              of your controller bindings are here.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="GLOBAL · LIFETIME OF THE PROGRAM"
-            title="Typed in the Robot constructor"
-          >
-            <p>
-              Runs before any OpMode is selected, so there is no mode to belong
-              to and the binding lasts as long as the robot program does. Your{" "}
-              <code>Robot()</code> on <code>2-Commands</code> is empty — you
-              have none. The team&apos;s template has exactly one, and that is
-              the right number.
-            </p>
-          </Box>
-        </div>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "OpMode · lifetime of the mode",
+              term: "Typed in an OpMode constructor",
+              body: (
+                <>
+                  Where almost every binding goes. It exists while that OpMode
+                  is the selected mode and is removed when the mode changes. All
+                  three of your controller bindings are here.
+                </>
+              ),
+            },
+            {
+              label: "Global · lifetime of the program",
+              term: "Typed in the Robot constructor",
+              body: (
+                <>
+                  Runs before any OpMode is selected, so there is no mode to
+                  belong to and the binding lasts as long as the robot program
+                  does. Your <code>Robot()</code> on <code>2-Commands</code> is
+                  empty — you have none. The team&apos;s template has exactly
+                  one, and that is the right number.
+                </>
+              ),
+            },
+          ]}
+        />
 
         <h3 className="display m-0 text-aside">
           The OpMode case, which is the one you have
@@ -520,20 +522,20 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         >
           <li>
             Read your constructor top to bottom.{" "}
-            <strong>You should see:</strong> the two local declarations, then
-            four bindings, then the constructor&apos;s closing brace — and no
-            binding anywhere outside it.
+            <strong>{"You should see: "}</strong> the two local declarations,
+            then four bindings, then the constructor&apos;s closing brace — and
+            no binding anywhere outside it.
           </li>
           <li>
             Run <code>./gradlew build</code> (or{" "}
-            <em>WPILib: Build Robot Code</em>). <strong>You should see:</strong>{" "}
-            <code>BUILD SUCCESSFUL</code>.
+            <em>WPILib: Build Robot Code</em>).{" "}
+            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
           </li>
           <li>
             <strong>Break it on purpose.</strong> Delete{" "}
             <code>.onFalse(arm.stop())</code> from your new line, leaving{" "}
             <code>driver.b().onTrue(arm.runSlow());</code>. Build again.{" "}
-            <strong>You should see:</strong> <code>BUILD SUCCESSFUL</code>{" "}
+            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>{" "}
             again. That is the point of the exercise. A missing release binding
             is not a compile error — it is an arm that starts pushing on the
             first press and never stops. Put the <code>.onFalse(...)</code>{" "}
@@ -543,14 +545,14 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             <strong>Break it the other way.</strong> Cut your B line out of the
             constructor and paste it above the constructor, next to the{" "}
             <code>driver</code> field. Build again.{" "}
-            <strong>You should see:</strong> the build fail. A binding is a
+            <strong>{"You should see: "}</strong> the build fail. A binding is a
             statement, and statements live inside constructors and methods — and
             even if Java allowed it there, <code>arm</code> is a local variable
             of the constructor and does not exist at field level. Put the line
             back inside the constructor.
           </li>
           <li>
-            Build one last time. <strong>You should see:</strong>{" "}
+            Build one last time. <strong>{"You should see: "}</strong>{" "}
             <code>BUILD SUCCESSFUL</code>, with four bindings in the
             constructor. Pressing them is the next lesson.
           </li>
@@ -559,7 +561,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="Four things that go wrong here"
+          title="No TeleopOpMode, unresolved symbols, or an arm that never stops"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
