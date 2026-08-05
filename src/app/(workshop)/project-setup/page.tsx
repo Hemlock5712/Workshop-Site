@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
@@ -57,17 +58,19 @@ export default function ProjectSetup() {
         </p>
       </Box>
 
-      <div className="bg-[var(--bg2)] rounded-lg p-8 shadow-lg border border-[var(--rule)]">
-        <h2 className="display measure-wide m-0 mb-6">
-          The Workshop Path: Clone the 2027-Template
-        </h2>
-        <p className="text-[var(--tx2)] mb-6">
+      <LessonSection
+        id="clone-the-template"
+        title="The workshop path: clone the 2027-Template"
+      >
+        <p className="prose-body measure">
           This is the path the workshop follows. Four steps and you have a
           building project with the OpMode wiring, mechanisms folder, and
           GradleRIO 2027 alpha configuration already in place.
         </p>
 
-        <div className="space-y-4">
+        {/* `measure`: without the card that used to wrap these, the step rows
+            would run the article's full 954px. Body copy caps at the measure. */}
+        <div className="measure space-y-4">
           <div className="flex items-start space-x-3">
             <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               1
@@ -135,13 +138,13 @@ export default function ProjectSetup() {
             </div>
           </div>
         </div>
-      </div>
+      </LessonSection>
 
-      <div className="bg-[var(--bg2)] rounded-lg p-8 shadow-lg border border-[var(--rule)]">
-        <h2 className="display measure-wide m-0 mb-6">
-          Alternative: Creating a Blank WPILib Project
-        </h2>
-        <p className="text-[var(--tx2)] mb-6">
+      <LessonSection
+        id="blank-project-alternative"
+        title="Alternative: creating a blank WPILib project"
+      >
+        <p className="prose-body measure">
           For reference, this is how you&apos;d create a project from
           WPILib&apos;s built-in generator. Note that the generated skeleton
           does <em>{"not "}</em> include the OpMode structure this workshop
@@ -149,7 +152,7 @@ export default function ProjectSetup() {
           is exactly why we clone the template instead.
         </p>
 
-        <div className="space-y-4">
+        <div className="measure space-y-4">
           <div className="flex items-start space-x-3">
             <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
               1
@@ -276,20 +279,17 @@ export default function ProjectSetup() {
             </div>
           </div>
         </div>
-      </div>
+      </LessonSection>
 
-      <iframe
-        src="https://www.youtube.com/embed/Y8ExsyaCC34"
-        title="Project Setup Tutorial"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="w-full h-full aspect-video rounded-lg"
-      />
-
-      <Box variant="alert-tip" title="Next Step" className="mt-4">
-        After creating your project, the next section covers the Command-Based
-        Framework, where you&apos;ll start adding mechanisms and commands.
-      </Box>
+      <LessonSection id="watch-it-done" title="Watch it done">
+        <iframe
+          src="https://www.youtube.com/embed/Y8ExsyaCC34"
+          title="Project Setup Tutorial"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full aspect-video rounded-lg"
+        />
+      </LessonSection>
 
       <Quiz
         questions={[

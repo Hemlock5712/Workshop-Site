@@ -176,16 +176,17 @@ export default function MechanismCAD() {
             </div>
           </Box>
         </div>
+      </LessonSection>
 
-        {/* Arm Bill of Materials */}
-        <div className="mt-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-          <BillOfMaterials items={armBOMData} title="Arm Mechanism" />
-        </div>
-
-        {/* Shooter Bill of Materials */}
-        <div className="mt-8 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-          <BillOfMaterials items={shooterBOMData} title="Shooter Mechanism" />
-        </div>
+      {/* The two parts lists — the second thing this page's title promises, and
+          previously unreachable from the rail because they sat inside the 3D
+          models section. No inset wrappers here: the `px-*` they used to carry
+          existed only to cancel the models section's `-mx-*` bleed, and this
+          section has no bleed to cancel, so the tables render at the same
+          width they did before. */}
+      <LessonSection id="bill-of-materials" title="Bill of materials">
+        <BillOfMaterials items={armBOMData} title="Arm Mechanism" />
+        <BillOfMaterials items={shooterBOMData} title="Shooter Mechanism" />
       </LessonSection>
 
       {/* Next Steps */}
