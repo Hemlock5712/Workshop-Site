@@ -1,7 +1,42 @@
-import type { ReactNode } from "react";
+import { Children, isValidElement, type ReactNode } from "react";
 import NavFooter, { type NavOverride } from "@/components/NavFooter";
 import LessonOutline from "@/components/lesson/LessonOutline";
+import LessonSection from "@/components/lesson/LessonSection";
 import LessonKicker from "@/components/lesson/LessonKicker";
+
+/**
+ * Read the sections off the children so the outline rail can be server-
+ * rendered. `LessonOutline` still rescans the DOM once mounted — this is only
+ * about the first paint, and about the rail surviving a page where JS never
+ * arrives.
+ *
+ * It walks by component identity rather than by markup, so it stays honest
+ * for the same reason the DOM scan is: nothing is hand-maintained, and a
+ * section that isn't really there cannot appear in the rail. Fragments and
+ * arrays are traversed because pages nest sections inside both.
+ */
+function collectSections(
+  nodes: ReactNode,
+  out: { id: string; label: string }[] = []
+): { id: string; label: string }[] {
+  Children.forEach(nodes, (child) => {
+    if (!isValidElement(child)) return;
+    if (child.type === LessonSection) {
+      const p = child.props as {
+        id?: string;
+        title?: ReactNode;
+        outlineLabel?: string;
+      };
+      const label =
+        p.outlineLabel ?? (typeof p.title === "string" ? p.title : undefined);
+      if (p.id && label) out.push({ id: p.id, label });
+      return;
+    }
+    const p = child.props as { children?: ReactNode };
+    if (p?.children) collectSections(p.children, out);
+  });
+  return out;
+}
 
 interface PageTemplateProps {
   /**
@@ -92,7 +127,11 @@ export default function PageTemplate({
     // returns null. `gap-14` still applies, so the sticky rail keeps its
     // breathing room on the 27 pages that do have sections.
     <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-4 pt-14 sm:px-6 md:px-10 min-[1240px]:grid-cols-[auto_minmax(0,auto)] min-[1240px]:justify-center">
-      <LessonOutline branch={branch} time={time} />
+      <LessonOutline
+        branch={branch}
+        time={time}
+        initialEntries={collectSections(children)}
+      />
 
       {/* `id` + `tabIndex` so the skip link can land *past* the outline rail.
           Targeting `#main-content` was not a bypass: the rail's nav lives

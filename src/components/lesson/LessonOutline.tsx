@@ -23,13 +23,27 @@ interface Entry {
 export default function LessonOutline({
   branch,
   time,
+  initialEntries = [],
 }: {
   branch?: string;
   time?: string;
+  /**
+   * The sections as `PageTemplate` reads them off its own children, so the rail
+   * is in the HTML the server sends. Scanning the DOM is still the source of
+   * truth once mounted — this only removes the window before that happens.
+   *
+   * That window was not theoretical. On /pid-control and /drive-to-tag-inline,
+   * the two heaviest pages, hydration takes 3-4 seconds on this dev server, and
+   * for all of it the rail rendered nothing while the column beside it sat
+   * empty except for the time estimate. It read as a broken page, and it was
+   * the first thing the site's owner reported. It also meant the outline
+   * vanished completely wherever JS failed.
+   */
+  initialEntries?: Entry[];
 }) {
   const pathname = usePathname();
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [active, setActive] = useState<string>("");
+  const [entries, setEntries] = useState<Entry[]>(initialEntries);
+  const [active, setActive] = useState<string>(initialEntries[0]?.id ?? "");
 
   // Collect sections. Re-runs per route so client navigation rebuilds it.
   useEffect(() => {
