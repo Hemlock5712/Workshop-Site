@@ -23,6 +23,17 @@ interface BoxProps {
   // Concept variant only
   code?: ReactNode;
   uses?: ReactNode;
+  /**
+   * Concept variant only. Drops the body back to `--text-aside` for a Box
+   * used as a cell in a multi-column comparison row, where the column is
+   * ~300px and the reading size would be four words a line.
+   *
+   * A concept Box in the reading column is *not* compact: it is a paragraph
+   * a student reads, at the width they read everything else at, so it gets
+   * `--text-body` like the rest of the column. The site had this backwards —
+   * all 39 full-measure Boxes rendered at the six comparison cells' size.
+   */
+  compact?: boolean;
 }
 
 /**
@@ -63,6 +74,7 @@ export default function Box({
   tag,
   code,
   uses,
+  compact = false,
 }: BoxProps) {
   if (variant !== "concept") {
     const meta = VARIANT_META[variant];
@@ -125,12 +137,18 @@ export default function Box({
       // phone. Without this the Box refused to shrink and pushed
       // /motion-magic 72px past the viewport instead of letting the code
       // slot's own `overflow-x: auto` scroll.
-      className={cn("measure flex min-w-0 flex-col gap-3 p-6", className)}
+      className={cn("measure flex min-w-0 flex-col gap-3 p-pad", className)}
       style={{
         background: "var(--bg2)",
         border: "1px solid var(--rule)",
         borderLeft: "3px solid var(--accent)",
         borderRadius: 3,
+        // The one panel inset is `--spacing-pad`, and it is measured to the
+        // *text*, not to the box. This Box's accent bar is 3px where every
+        // other panel's border is 1px, so without the 2px back-off its
+        // heading sat two pixels right of a `.module`'s heading — the same
+        // class of near-miss the 447/448/449 triple was.
+        paddingLeft: "calc(var(--spacing-pad) - 2px)",
       }}
     >
       {tag && (
@@ -149,7 +167,7 @@ export default function Box({
         </p>
       )}
       <div
-        className="lesson-prose flex-1 text-aside"
+        className={`lesson-prose flex-1 ${compact ? "text-aside" : "text-body"}`}
         style={{
           fontFamily: "var(--font-serif)",
           color: "var(--tx2)",

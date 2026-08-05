@@ -143,14 +143,7 @@ function formatDate(dateString: string): string {
 
 function LoadingCard({ label }: { label: string }) {
   return (
-    <div
-      className="p-8"
-      style={{
-        background: "var(--bg2)",
-        border: "1px solid var(--rule)",
-        borderRadius: 3,
-      }}
-    >
+    <div className="module">
       <LoadingLabel label={label} className="" />
     </div>
   );
@@ -182,10 +175,7 @@ function ErrorCard({
   onRetry: () => void;
 }) {
   return (
-    <div
-      className="rounded-lg p-6"
-      style={{ background: "var(--bg2)", border: "1px solid var(--rule)" }}
-    >
+    <div className="module">
       <h3
         className="display m-0 mb-2 text-lede"
         style={{ color: "var(--err)" }}
@@ -401,7 +391,7 @@ function FileView({
   return (
     <div className={className}>
       <div className="card mb-6 overflow-hidden">
-        <div className="border-b border-[var(--rule)] p-4">
+        <div className="border-b border-[var(--rule)] p-pad">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <span className="font-mono text-lg font-medium text-[var(--tx)]">
@@ -443,9 +433,14 @@ function FileView({
         </div>
       </div>
 
-      <div className="bg-[var(--bg2)] text-[var(--tx)] rounded-lg p-6">
+      {/* Not a panel. It was `--bg2` on `--bg2` — invisible wherever this embed
+          sits inside a card — and its `p-6` was a second inset that put this
+          heading a couple of pixels off every other heading in the block. It
+          is a note about the viewer above it, so it sits on the same left edge
+          as the viewer. */}
+      <div className="text-[var(--tx)]">
         <h5 className="display m-0 mb-3 flex items-center gap-2 text-aside">
-          <Folder className="w-5 h-5" /> Live from GitHub
+          <Folder className="w-5 h-5" aria-hidden="true" /> Live from GitHub
         </h5>
         <p className="max-w-[70ch] text-note text-[var(--tx2)]">
           This file is displayed directly from the GitHub repository. Click
@@ -647,7 +642,7 @@ function PRView({
   return (
     <div className={`my-8 ${className}`}>
       <div className="card mb-6">
-        <div className="p-6 border-b border-[var(--rule)]">
+        <div className="p-pad border-b border-[var(--rule)]">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
@@ -700,7 +695,7 @@ function PRView({
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-pad">
           <div className="flex items-center justify-between mb-4">
             <h5 className="display m-0 text-aside">
               {focusFile ? `${focusFile} Changes` : "Files Changed"}
@@ -818,9 +813,11 @@ function PRView({
         </div>
       </div>
 
-      <div className="bg-[var(--bg2)] text-[var(--tx)] rounded-lg p-6">
+      {/* Same as the note under FileView: a note, not a panel. */}
+      <div className="text-[var(--tx)]">
         <h5 className="display m-0 mb-3 flex items-center gap-2 text-aside">
-          <GraduationCap className="w-5 h-5" /> Workshop Learning
+          <GraduationCap className="w-5 h-5" aria-hidden="true" /> Workshop
+          Learning
         </h5>
         <p className="max-w-[70ch] text-note text-[var(--tx2)]">
           This pull request demonstrates real-world development practices.

@@ -272,7 +272,7 @@ public class Telemetry {
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-[var(--bg2)] p-6 rounded-lg border border-[var(--rule)]">
+          <div className="module">
             <h3 className="display m-0 mb-4 text-lede">
               Real-Time Data Viewing
             </h3>
@@ -293,7 +293,7 @@ public class Telemetry {
             </ol>
           </div>
 
-          <div className="bg-[var(--bg2)] p-6 rounded-lg border border-[var(--rule)]">
+          <div className="module">
             <h3 className="display m-0 mb-4 text-lede">
               Post-Match Log Analysis
             </h3>

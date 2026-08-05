@@ -706,7 +706,7 @@ export default function InteractivePidPlayground() {
   };
 
   return (
-    <section className="module relative p-5 sm:p-6" style={{ paddingTop: 40 }}>
+    <section className="module relative" style={{ paddingTop: 40 }}>
       <span className="module-tag">PID · LIVE TUNER</span>
       {/* ── Toolbar ──────────────────────────── */}
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">

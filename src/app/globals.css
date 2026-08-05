@@ -399,6 +399,29 @@ h3,
   border-radius: var(--r);
 }
 
+/* The panel inset, said once.
+   It used to be said at every call site and never twice the same: `p-5` in
+   `ContentCard`, `p-5 sm:p-6` in the PID playground, `p-pad` on /introduction,
+   `p-6` in `Box`, and — the visible cost — a `p-6` wrapper around an
+   already-`p-6` panel in `ComparisonWithCodeWalkthrough`. Three sibling panels
+   on /pid-control therefore inset their content by 24, 24+1 and 25px, which
+   reads as a shimmer down the left edge rather than as three decisions.
+
+   `@layer components`, not unlayered: `ContentCard`'s tagged form genuinely
+   needs more room at the top (the `.module-tag` sits in the corner), and
+   unlayered here would beat its `pt-9` utility. Layered, a call site that
+   names its exception still wins — the same arrangement as the `.lesson-body`
+   prose default.
+
+   Measured to the *text*, not to the box: anything whose border is not 1px
+   backs its inset off by the difference (see `Box`'s 3px accent bar), so the
+   content edges coincide even where the chassis differ. */
+@layer components {
+  .module {
+    padding: var(--spacing-pad);
+  }
+}
+
 .module-tag {
   position: absolute;
   top: -1px;

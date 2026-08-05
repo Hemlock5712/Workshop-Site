@@ -259,7 +259,12 @@ export default function PIDControl() {
         </h3>
 
         <div className="grid gap-6 md:grid-cols-3">
-          <Box variant="concept" title="kP — Proportional" uses="Always">
+          <Box
+            variant="concept"
+            title="kP — Proportional"
+            uses="Always"
+            compact
+          >
             <p>
               Output per unit of error, right now.{" "}
               <code>error = target − measured</code>, and{" "}
@@ -280,6 +285,7 @@ export default function PIDControl() {
           <Box
             variant="concept"
             title="kI — Integral"
+            compact
             uses="Almost never on this stack"
           >
             <p>
@@ -301,6 +307,7 @@ export default function PIDControl() {
           <Box
             variant="concept"
             title="kD — Derivative"
+            compact
             uses="Whenever kP overshoots"
           >
             <p>
@@ -334,6 +341,7 @@ export default function PIDControl() {
           <Box
             variant="concept"
             title="kS — Static"
+            compact
             uses="Both mechanisms here"
           >
             <p>
@@ -350,6 +358,7 @@ export default function PIDControl() {
           <Box
             variant="concept"
             title="kG — Gravity"
+            compact
             uses="Arms and elevators only"
           >
             <p>
@@ -367,6 +376,7 @@ export default function PIDControl() {
           <Box
             variant="concept"
             title="kV — Velocity"
+            compact
             uses="Velocity loops — the flywheel"
           >
             <p>

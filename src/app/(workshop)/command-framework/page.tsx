@@ -550,7 +550,7 @@ private void setVoltage(double voltage) {
           </li>
         </ul>
 
-        <div className="bg-[var(--bg2)] rounded-lg p-6 border-l-4 border-[var(--rule)]">
+        <div className="module">
           <h3 className="display m-0 mb-4 text-lede">
             Ground truth for this lesson
           </h3>

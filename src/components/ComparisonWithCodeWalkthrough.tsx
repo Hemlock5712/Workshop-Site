@@ -33,19 +33,37 @@ export interface ImplementationContent {
 
 interface ComparisonWithCodeWalkthroughProps {
   content: ImplementationContent;
-  /** Defaults to `p-6 space-y-6`; override for tighter / wider panels. */
+  /**
+   * Defaults to `p-pad space-y-step`. This block owns the *only* inset in its
+   * subtree — see the note on the component below — so an override should
+   * change the rhythm, not the padding.
+   */
   className?: string;
 }
 
+/**
+ * One inset, not three.
+ *
+ * This used to be a `p-6` wrapper around three `p-6` panels, each of them
+ * `bg-[var(--bg2)]` — the same colour as the `.card` MechanismTabs wraps them
+ * in. So the panels were invisible as panels and the only thing their padding
+ * did was indent the content a second time. Two of them differed from the
+ * third by a 1px border, which is where /pid-control's 447 / 448 / 449 heading
+ * edges came from: three sibling headings a pixel apart, which nobody chose.
+ *
+ * Now the wrapper carries `--spacing-pad` once and the three blocks below are
+ * plain content, separated by the stack rhythm. Their headings share one left
+ * edge with every other panel heading on the site.
+ */
 export default function ComparisonWithCodeWalkthrough({
   content,
-  className = "p-6 space-y-6",
+  className = "p-pad space-y-step",
 }: ComparisonWithCodeWalkthroughProps) {
   return (
     <div className={className}>
       {content.caution && <div>{content.caution}</div>}
 
-      <div className="min-w-0 bg-[var(--bg2)] rounded-lg p-6">
+      <div className="min-w-0">
         <h3 className="display m-0 mb-4 text-lede">
           Before &amp; After: Implementation
         </h3>

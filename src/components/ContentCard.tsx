@@ -40,9 +40,20 @@ export default function ContentCard({
 
   return (
     <div
-      className={`module relative ${tag ? "px-5 pb-5 pt-9" : "p-5"} ${className}`.trim()}
+      // The inset comes from `.module` now. Only the tagged form overrides it,
+      // and only at the top, where the `.module-tag` sits in the corner.
+      className={`module relative ${tag ? "pt-9" : ""} ${className}`.trim()}
       style={
-        stripe ? { borderLeftWidth: 3, borderLeftColor: stripe } : undefined
+        stripe
+          ? {
+              borderLeftWidth: 3,
+              borderLeftColor: stripe,
+              // Back the left inset off by the 2px the stripe adds over a
+              // 1px border, so the text lands on the panel edge every other
+              // panel's text lands on.
+              paddingLeft: "calc(var(--spacing-pad) - 2px)",
+            }
+          : undefined
       }
     >
       {tag && <span className="module-tag">{tag}</span>}

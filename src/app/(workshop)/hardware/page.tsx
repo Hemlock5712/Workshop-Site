@@ -357,7 +357,7 @@ export default function Hardware() {
         id="updating-your-ctre-products"
         title="Updating Your CTRE Products"
       >
-        <ContentCard className="p-8">
+        <ContentCard>
           <h3 className="display m-0 mb-4 text-lede">Using Phoenix Tuner</h3>
 
           <div className="space-y-4">
@@ -544,7 +544,7 @@ export default function Hardware() {
       </LessonSection>
 
       <LessonSection id="let-s-run-some-motors" title="Let's Run Some Motors">
-        <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-6">
+        <div className="module" style={{ borderColor: "var(--accent)" }}>
           <h3
             className="display m-0 mb-4 text-aside"
             style={{ color: "var(--accent)" }}

@@ -23,7 +23,7 @@ export default function ArchitectureDiagram({
 }: ArchitectureDiagramProps) {
   if (variant === "simple") {
     return (
-      <div className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)]">
+      <div className="module">
         <h3 className="text-xl font-bold text-[var(--tx)] mb-6 text-center flex items-center justify-center gap-2">
           <Map className="w-6 h-6" />
           How Command-Based Programming Works
@@ -133,7 +133,15 @@ export default function ArchitectureDiagram({
         </div>
 
         {/* Real Example */}
-        <div className="mt-6 bg-[var(--bg2)] rounded-lg p-4 border-l-4 border-[var(--accent)]">
+        {/* `p-pad`, and the left inset backed off by the 3px the accent bar
+            adds over a 1px border — the same arithmetic as `Box`'s concept
+            variant, so this heading lands on the panel text edge instead of
+            two pixels off it. No background: it is `--bg2` inside a `--bg2`
+            panel, so the fill never showed. */}
+        <div
+          className="mt-6 rounded-lg p-pad border-l-4 border-[var(--accent)]"
+          style={{ paddingLeft: "calc(var(--spacing-pad) - 3px)" }}
+        >
           <h4 className="font-bold text-[var(--accent)] mb-2 flex items-center gap-2">
             <BookOpen className="w-5 h-5" />
             Real Example: Raising an Arm
@@ -169,7 +177,7 @@ export default function ArchitectureDiagram({
 
   // Detailed variant with more technical information
   return (
-    <div className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)]">
+    <div className="module">
       <h3 className="text-xl font-bold text-[var(--tx)] mb-6 text-center flex items-center justify-center gap-2">
         <Map className="w-6 h-6" />
         Command-Based Architecture (Detailed)

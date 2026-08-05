@@ -201,7 +201,7 @@ export default function Introduction() {
           {ROADMAP.map((section) => {
             const lessons = getLessonsBySection(section.id);
             return (
-              <div key={section.id} className="module p-pad">
+              <div key={section.id} className="module">
                 <h3 className="display m-0 mb-2 text-lede">
                   {section.heading}
                 </h3>
