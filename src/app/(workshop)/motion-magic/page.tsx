@@ -63,8 +63,8 @@ export default function MotionMagic() {
           <div
             className="rounded-md border p-4"
             style={{
-              borderColor: "var(--line)",
-              background: "var(--bg-elev)",
+              borderColor: "var(--rule)",
+              background: "var(--bg2)",
             }}
           >
             <svg
@@ -86,7 +86,7 @@ export default function MotionMagic() {
                 y1="60"
                 x2="292"
                 y2="60"
-                stroke="var(--line)"
+                stroke="var(--rule)"
                 strokeWidth="1"
                 strokeDasharray="4 3"
               />
@@ -95,7 +95,7 @@ export default function MotionMagic() {
                 y1="60"
                 x2="100"
                 y2="160"
-                stroke="var(--line)"
+                stroke="var(--rule)"
                 strokeWidth="1"
                 strokeDasharray="4 3"
               />
@@ -104,7 +104,7 @@ export default function MotionMagic() {
                 y1="60"
                 x2="220"
                 y2="160"
-                stroke="var(--line)"
+                stroke="var(--rule)"
                 strokeWidth="1"
                 strokeDasharray="4 3"
               />
@@ -113,7 +113,7 @@ export default function MotionMagic() {
                 y1="22"
                 x2="40"
                 y2="160"
-                stroke="var(--fg-mute)"
+                stroke="var(--tx2)"
                 strokeWidth="1.5"
               />
               <line
@@ -121,20 +121,20 @@ export default function MotionMagic() {
                 y1="160"
                 x2="300"
                 y2="160"
-                stroke="var(--fg-mute)"
+                stroke="var(--tx2)"
                 strokeWidth="1.5"
               />
-              <text x="46" y="52" fontSize="10" fill="var(--fg-mute)">
+              <text x="46" y="52" fontSize="10" fill="var(--tx2)">
                 cruise velocity
               </text>
-              <text x="106" y="112" fontSize="10" fill="var(--fg-mute)">
+              <text x="106" y="112" fontSize="10" fill="var(--tx2)">
                 slope = acceleration
               </text>
               <text
                 x="70"
                 y="176"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
               >
                 speed up
@@ -143,7 +143,7 @@ export default function MotionMagic() {
                 x="160"
                 y="176"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
               >
                 cruise
@@ -152,7 +152,7 @@ export default function MotionMagic() {
                 x="250"
                 y="176"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
               >
                 slow down
@@ -161,7 +161,7 @@ export default function MotionMagic() {
                 x="170"
                 y="194"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
               >
                 time
@@ -170,7 +170,7 @@ export default function MotionMagic() {
                 x="14"
                 y="91"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
                 transform="rotate(-90 14 91)"
               >
@@ -186,8 +186,8 @@ export default function MotionMagic() {
           <div
             className="rounded-md border p-4"
             style={{
-              borderColor: "var(--line)",
-              background: "var(--bg-elev)",
+              borderColor: "var(--rule)",
+              background: "var(--bg2)",
             }}
           >
             <svg
@@ -209,7 +209,7 @@ export default function MotionMagic() {
                 y1="60"
                 x2="292"
                 y2="60"
-                stroke="var(--line)"
+                stroke="var(--rule)"
                 strokeWidth="1"
                 strokeDasharray="4 3"
               />
@@ -218,7 +218,7 @@ export default function MotionMagic() {
                 y1="22"
                 x2="40"
                 y2="160"
-                stroke="var(--fg-mute)"
+                stroke="var(--tx2)"
                 strokeWidth="1.5"
               />
               <line
@@ -226,20 +226,20 @@ export default function MotionMagic() {
                 y1="160"
                 x2="300"
                 y2="160"
-                stroke="var(--fg-mute)"
+                stroke="var(--tx2)"
                 strokeWidth="1.5"
               />
-              <text x="46" y="52" fontSize="10" fill="var(--fg-mute)">
+              <text x="46" y="52" fontSize="10" fill="var(--tx2)">
                 cruise velocity — never reached
               </text>
-              <text x="112" y="128" fontSize="10" fill="var(--fg-mute)">
+              <text x="112" y="128" fontSize="10" fill="var(--tx2)">
                 same slope, shorter trip
               </text>
               <text
                 x="170"
                 y="194"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
               >
                 time
@@ -248,7 +248,7 @@ export default function MotionMagic() {
                 x="14"
                 y="91"
                 fontSize="10"
-                fill="var(--fg-mute)"
+                fill="var(--tx2)"
                 textAnchor="middle"
                 transform="rotate(-90 14 91)"
               >

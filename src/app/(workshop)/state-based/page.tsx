@@ -485,7 +485,7 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Start the simulator and click Enable.{" "}
@@ -803,7 +803,7 @@ spinUp.exitStateMachine().when(driver.back());`}
       <CollapsibleSection title="What the machine does every loop">
         <ol
           className="ml-5 list-decimal space-y-2 text-note leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             The current state starts as the one you passed to{" "}
@@ -849,7 +849,7 @@ spinUp.exitStateMachine().when(driver.back());`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>Chaining</strong> — <code>Command.sequence</code>,{" "}

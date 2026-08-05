@@ -123,19 +123,19 @@ export default function SwerveCalibration() {
               <tr>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   Operation
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   What it changes
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   What it does <em>not</em> change
                 </th>
@@ -145,14 +145,14 @@ export default function SwerveCalibration() {
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>seedFieldCentric()</code>
                   <div className="mt-1 text-note">left bumper, on demand</div>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Which way the driver&apos;s sticks call &quot;forward.&quot;
                   Whatever direction the robot is facing right now becomes
@@ -160,7 +160,7 @@ export default function SwerveCalibration() {
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Where the robot is. It never supplies an x or a y.
                 </td>
@@ -168,14 +168,14 @@ export default function SwerveCalibration() {
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>applyOperatorPerspective()</code>
                   <div className="mt-1 text-note">every loop, automatic</div>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   The same &quot;forward,&quot; but from the alliance color: 0°
                   on blue, 180° on red, so the sticks feel the same from either
@@ -183,7 +183,7 @@ export default function SwerveCalibration() {
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Where the robot is. Also never an x or a y.
                 </td>
@@ -191,7 +191,7 @@ export default function SwerveCalibration() {
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>resetPose(Pose2d)</code>
                   <div className="mt-1 text-note">
@@ -200,14 +200,14 @@ export default function SwerveCalibration() {
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Where the robot thinks it is: a real x, y and heading on the
                   field, in meters from the blue corner.
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Anything about the sticks.
                 </td>

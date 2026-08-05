@@ -555,7 +555,7 @@ export default function Hardware() {
           <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
               <h4 className="display m-0 mb-3 text-aside">Quick Test Steps:</h4>
-              <ol className="list-decimal list-inside space-y-2 text-[var(--foreground)]">
+              <ol className="list-decimal list-inside space-y-2 text-[var(--tx)]">
                 <li>Open up your motor in Phoenix Tuner</li>
                 <li>
                   Click <strong>Config</strong>
@@ -574,7 +574,7 @@ export default function Hardware() {
               </ol>
             </div>
 
-            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--border)]">
+            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
               <h4 className="display m-0 mb-2 flex items-center gap-2 text-aside">
                 <Zap className="w-4 h-4" />
                 Safety First

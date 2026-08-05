@@ -115,7 +115,7 @@ export default function Coroutines() {
 
         <ul
           className="ml-5 list-disc space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>coroutine.fork(command)</code> — start a command and keep
@@ -162,7 +162,7 @@ export default function Coroutines() {
         <CollapsibleSection title="Three more you will see, but do not need yet">
           <ul
             className="ml-5 list-disc space-y-2"
-            style={{ color: "var(--fg-mute)" }}
+            style={{ color: "var(--tx2)" }}
           >
             <li>
               <code>coroutine.park()</code> — stop here permanently. Nothing
@@ -568,7 +568,7 @@ coroutine.await(
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Build. If it compiles, your <code>.named(...)</code> and{" "}

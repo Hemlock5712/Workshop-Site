@@ -133,14 +133,14 @@ export default function MechanismSetup() {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-note">
             <thead>
-              <tr style={{ borderBottom: "1px solid var(--line)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
                 <th className="py-2 pr-4 font-semibold">Device</th>
                 <th className="py-2 pr-4 font-semibold">CAN ID</th>
                 <th className="py-2 font-semibold">In the code</th>
               </tr>
             </thead>
             <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="py-2 pr-4">Arm motor (TalonFX)</td>
                 <td className="py-2 pr-4">
                   <code>31</code>
@@ -149,7 +149,7 @@ export default function MechanismSetup() {
                   <code>new TalonFX(31, canivore)</code>
                 </td>
               </tr>
-              <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="py-2 pr-4">Arm encoder (CANcoder)</td>
                 <td className="py-2 pr-4">
                   <code>32</code>
@@ -158,7 +158,7 @@ export default function MechanismSetup() {
                   <code>new CANcoder(32, canivore)</code>
                 </td>
               </tr>
-              <tr style={{ borderBottom: "1px solid var(--line-soft)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="py-2 pr-4">Flywheel leader (TalonFX)</td>
                 <td className="py-2 pr-4">
                   <code>21</code>

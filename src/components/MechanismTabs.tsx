@@ -27,16 +27,16 @@ export default function MechanismTabs({
       <h2 className="display-section m-0">{sectionTitle}</h2>
 
       <Tabs.Root defaultValue="arm" className="card">
-        <Tabs.List className="flex border-b border-[var(--border)]">
+        <Tabs.List className="flex border-b border-[var(--rule)]">
           <Tabs.Trigger
             value="arm"
-            className="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
+            className="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-[var(--tx2)] hover:text-[var(--tx)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
           >
             Arm Mechanism
           </Tabs.Trigger>
           <Tabs.Trigger
             value="flywheel"
-            className="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
+            className="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-[var(--tx2)] hover:text-[var(--tx)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
           >
             Flywheel Mechanism
           </Tabs.Trigger>

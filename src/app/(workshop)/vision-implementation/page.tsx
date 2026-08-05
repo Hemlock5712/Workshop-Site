@@ -596,7 +596,7 @@ drivetrain.addVisionMeasurement(
         <div className="overflow-x-auto">
           <table className="w-full text-ui" style={{ color: "var(--tx2)" }}>
             <thead>
-              <tr className="border-b" style={{ borderColor: "var(--line)" }}>
+              <tr className="border-b" style={{ borderColor: "var(--rule)" }}>
                 <th className="py-2 pr-4 text-left font-semibold">Tags seen</th>
                 <th className="py-2 pr-4 text-left font-semibold">
                   Average distance
@@ -607,27 +607,27 @@ drivetrain.addVisionMeasurement(
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b" style={{ borderColor: "var(--line)" }}>
+              <tr className="border-b" style={{ borderColor: "var(--rule)" }}>
                 <td className="py-2 pr-4">1</td>
                 <td className="py-2 pr-4">1.0 m</td>
                 <td className="py-2">0.33 m</td>
               </tr>
-              <tr className="border-b" style={{ borderColor: "var(--line)" }}>
+              <tr className="border-b" style={{ borderColor: "var(--rule)" }}>
                 <td className="py-2 pr-4">1</td>
                 <td className="py-2 pr-4">2.0 m</td>
                 <td className="py-2">0.77 m</td>
               </tr>
-              <tr className="border-b" style={{ borderColor: "var(--line)" }}>
+              <tr className="border-b" style={{ borderColor: "var(--rule)" }}>
                 <td className="py-2 pr-4">2</td>
                 <td className="py-2 pr-4">2.0 m</td>
                 <td className="py-2">0.19 m</td>
               </tr>
-              <tr className="border-b" style={{ borderColor: "var(--line)" }}>
+              <tr className="border-b" style={{ borderColor: "var(--rule)" }}>
                 <td className="py-2 pr-4">2</td>
                 <td className="py-2 pr-4">4.0 m</td>
                 <td className="py-2">0.44 m</td>
               </tr>
-              <tr className="border-b" style={{ borderColor: "var(--line)" }}>
+              <tr className="border-b" style={{ borderColor: "var(--rule)" }}>
                 <td className="py-2 pr-4">3</td>
                 <td className="py-2 pr-4">4.0 m</td>
                 <td className="py-2">0.20 m</td>

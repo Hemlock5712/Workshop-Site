@@ -118,7 +118,7 @@ export default function FinishLines() {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>getPosition()</code> reads <code>encoder</code> — the CANcoder
@@ -338,7 +338,7 @@ import org.wpilib.units.measure.Angle;`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>arm.vertical()</code> — the hold. Re-sends its position
@@ -619,7 +619,7 @@ import org.wpilib.units.measure.Angle;`}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Build the project. It should compile clean. If it does not, skip to

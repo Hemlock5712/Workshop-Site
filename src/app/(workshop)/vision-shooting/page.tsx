@@ -134,19 +134,19 @@ export default function DynamicFlywheel() {
               <tr>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   Distance (m)
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   Speed (rot/s)
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   Where the number comes from
                 </th>
@@ -156,19 +156,19 @@ export default function DynamicFlywheel() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   0.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   0.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   In the table — <code>table.put(0.0, 0.0)</code>
                 </td>
@@ -176,19 +176,19 @@ export default function DynamicFlywheel() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   1.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   10.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   In the table — <code>table.put(1.0, 10.0)</code>
                 </td>
@@ -196,19 +196,19 @@ export default function DynamicFlywheel() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   1.5
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   20.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <em>Not in the table.</em> Halfway between the two rows above,
                   so halfway between 10 and 30.
@@ -217,19 +217,19 @@ export default function DynamicFlywheel() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   2.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   30.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   In the table — <code>table.put(2.0, 30.0)</code>
                 </td>
@@ -237,19 +237,19 @@ export default function DynamicFlywheel() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   3.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top font-mono"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   60.0
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   In the table — <code>table.put(3.0, 60.0)</code>
                 </td>

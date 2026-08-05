@@ -550,11 +550,11 @@ private void setVoltage(double voltage) {
           </li>
         </ul>
 
-        <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
+        <div className="bg-[var(--bg2)] rounded-lg p-6 border-l-4 border-[var(--rule)]">
           <h3 className="display m-0 mb-4 text-lede">
             Ground truth for this lesson
           </h3>
-          <p className="text-[var(--foreground)] mb-4">
+          <p className="text-[var(--tx)] mb-4">
             Every code block above was trimmed out of one of these files, not
             written for the page. Three of them are on branch{" "}
             <code>2-Commands</code> of the workshop code:{" "}

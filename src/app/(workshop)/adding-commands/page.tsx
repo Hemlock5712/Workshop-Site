@@ -154,7 +154,7 @@ public Command runSlow() {
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>() -&gt; setVoltage(SLOW_VOLTAGE)</code> is a lambda: a scrap
@@ -431,7 +431,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>@Teleop(name = &quot;Teleop&quot;)</code> is a label. The
@@ -582,7 +582,7 @@ Command               named(String name);`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>whenCanceled(...)</code> runs a scrap of cleanup code when the
@@ -647,7 +647,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Run <code>./gradlew build</code> (or{" "}
@@ -752,7 +752,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>Triggers</strong>, next — where{" "}

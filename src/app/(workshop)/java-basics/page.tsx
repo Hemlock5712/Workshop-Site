@@ -125,7 +125,7 @@ public class Arm extends Mechanism {
 
         <ol
           className="ml-5 list-decimal space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>
@@ -236,7 +236,7 @@ public class Robot extends OpModeRobot {
       >
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>{"{"}</code> opens a block and <code>{"}"}</code> closes it.
@@ -321,7 +321,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>private</code> — only code inside <code>Arm.java</code> can
@@ -392,7 +392,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Same name as the class, and no return type in front of it. That is
@@ -459,7 +459,7 @@ public void setVoltage(double voltage) {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>public</code> — who is allowed to call it.
@@ -564,7 +564,7 @@ public Command runSlow() {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>runRepeatedly(...)</code> hands back a{" "}
@@ -638,7 +638,7 @@ public Command runSlow() {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             The <code>()</code> on the left is the input list. Empty here — this
@@ -895,7 +895,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>@Teleop(name = &quot;Teleop&quot;)</code> is how the framework
@@ -1032,7 +1032,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Scroll back to the full <code>Arm.java</code> at the top of this
@@ -1073,7 +1073,7 @@ public Command runSlow() {
 
         <ol
           className="ml-5 list-decimal space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             What are <code>private</code>, <code>static</code> and{" "}

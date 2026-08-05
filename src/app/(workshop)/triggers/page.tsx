@@ -137,7 +137,7 @@ public static Trigger disabled() {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>onTrue(cmd)</code> — schedules <code>cmd</code> the loop the
@@ -518,7 +518,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Read your constructor top to bottom.{" "}

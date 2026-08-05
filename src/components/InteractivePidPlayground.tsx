@@ -91,12 +91,10 @@ function Slider({
           >
             {label}
           </label>
-          <span className="font-mono text-micro text-[var(--muted-foreground)]">
-            {unit}
-          </span>
+          <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
         <span
-          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
+          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
           aria-hidden
         >
           {value.toFixed(precision)}
@@ -716,7 +714,7 @@ export default function InteractivePidPlayground() {
           <span
             className="font-mono inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-meta font-semibold"
             style={{
-              background: "var(--bg-elev)",
+              background: "var(--bg2)",
               border: `1px solid ${regimeStyle.cssVar}`,
               color: regimeStyle.cssVar,
               letterSpacing: "0.08em",
@@ -736,29 +734,29 @@ export default function InteractivePidPlayground() {
             {regimeStyle.label}
           </span>
           <div
-            className="flex items-center gap-x-3 text-meta text-[var(--muted-foreground)] tabular-nums"
+            className="flex items-center gap-x-3 text-meta text-[var(--tx2)] tabular-nums"
             aria-label="Performance metrics"
           >
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.overshootDeg.toFixed(1)}°
               </span>{" "}
               overshoot
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.steadyStateErrorDeg.toFixed(1)}°
               </span>{" "}
               final err
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {settlingStr}
               </span>{" "}
               settle
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.peakVoltage.toFixed(1)} V
               </span>{" "}
               peak
@@ -768,7 +766,7 @@ export default function InteractivePidPlayground() {
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-meta font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+          className="inline-flex items-center gap-1 rounded-md border border-[var(--rule)] bg-[var(--bg2)] px-2 py-1 text-meta font-medium text-[var(--tx)] transition-colors hover:bg-[var(--rule)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1"
           aria-label="Reset all gains and the target to defaults"
         >
           <RotateCcw className="h-3 w-3" />
@@ -777,10 +775,10 @@ export default function InteractivePidPlayground() {
       </header>
 
       {/* ── Target picker ───────────────────── */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--rule)] bg-[var(--bg)] px-3 py-2">
         <label
           htmlFor="pid-target"
-          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
+          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--tx2)]"
         >
           <TargetIcon className="h-3.5 w-3.5" aria-hidden />
           Target
@@ -805,17 +803,17 @@ export default function InteractivePidPlayground() {
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--foreground)]">
+        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
           {targetDeg}°
         </span>
-        <span className="font-mono text-micro text-[var(--muted-foreground)]">
+        <span className="font-mono text-micro text-[var(--tx2)]">
           {(targetDeg / 360).toFixed(3)} rot
         </span>
       </div>
 
       {/* ── Visualization ───────────────────── */}
       <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:gap-5">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:aspect-square md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:aspect-square md:p-3">
           <ArmViz
             responseTheta={response.theta}
             targetDeg={physicsTargetDeg}
@@ -825,7 +823,7 @@ export default function InteractivePidPlayground() {
             isDark={isDark}
           />
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:p-3">
           <div
             ref={containerRef}
             className="pid-plot w-full"
@@ -833,7 +831,7 @@ export default function InteractivePidPlayground() {
             aria-label={`Response plot for a step to ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (stepping from zero to the target at one second), solid is the actual arm angle over five seconds.`}
             role="img"
           />
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--muted-foreground)]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--tx2)]">
             <span className="inline-flex items-center gap-1">
               <span
                 aria-hidden
@@ -867,7 +865,7 @@ export default function InteractivePidPlayground() {
       </div>
 
       {/* ── Tuning hint ─────────────────────── */}
-      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
         <Lightbulb
           className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
@@ -912,9 +910,8 @@ export default function InteractivePidPlayground() {
         RPM free per CTRE dyno data; ≈ 103 N·m / 310 RPM at the arm; back-EMF
         modelled, ±12 V saturation). Gains use Phoenix 6 / WPILib mechanism-side
         units. Drop these values straight into a{" "}
-        <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
-        with{" "}
-        <span className="font-mono text-[var(--foreground)]">
+        <span className="font-mono text-[var(--tx)]">Slot0Configs</span> with{" "}
+        <span className="font-mono text-[var(--tx)]">
           SensorToMechanismRatio&nbsp;=&nbsp;25
         </span>
         .

@@ -103,7 +103,7 @@ export default function DriveToPoint() {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>X</strong> — meters down the length of the field, increasing
@@ -195,7 +195,7 @@ Pose2d currentPose = drivetrain.getPose();`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>Once, at the start:</strong> clear out the three PID
@@ -406,7 +406,7 @@ public class DriveToPoint extends ClassicCommand {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>ForwardPerspectiveValue.BlueAlliance</code> — the velocities
@@ -738,9 +738,9 @@ import org.wpilib.math.geometry.Rotation2d;
                 <th
                   className="border px-3 py-2 text-left"
                   style={{
-                    borderColor: "var(--line)",
-                    color: "var(--fg)",
-                    background: "var(--bg-elev)",
+                    borderColor: "var(--rule)",
+                    color: "var(--tx)",
+                    background: "var(--bg2)",
                   }}
                 >
                   &nbsp;
@@ -748,9 +748,9 @@ import org.wpilib.math.geometry.Rotation2d;
                 <th
                   className="border px-3 py-2 text-left"
                   style={{
-                    borderColor: "var(--line)",
-                    color: "var(--fg)",
-                    background: "var(--bg-elev)",
+                    borderColor: "var(--rule)",
+                    color: "var(--tx)",
+                    background: "var(--bg2)",
                   }}
                 >
                   <code>config.Slot0.kP</code> (PID Control)
@@ -758,32 +758,32 @@ import org.wpilib.math.geometry.Rotation2d;
                 <th
                   className="border px-3 py-2 text-left"
                   style={{
-                    borderColor: "var(--line)",
-                    color: "var(--fg)",
-                    background: "var(--bg-elev)",
+                    borderColor: "var(--rule)",
+                    color: "var(--tx)",
+                    background: "var(--bg2)",
                   }}
                 >
                   <code>new PIDController(...)</code> (here)
                 </th>
               </tr>
             </thead>
-            <tbody style={{ color: "var(--fg-mute)" }}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   Runs on
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   the TalonFX itself, at its own high rate
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   your code, once per scheduler loop
                 </td>
@@ -791,19 +791,19 @@ import org.wpilib.math.geometry.Rotation2d;
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   Error is in
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   rotations of one mechanism
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   meters, or radians of heading
                 </td>
@@ -811,19 +811,19 @@ import org.wpilib.math.geometry.Rotation2d;
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   Output is
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   volts, for one motor
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   a velocity, for the whole chassis
                 </td>
@@ -831,19 +831,19 @@ import org.wpilib.math.geometry.Rotation2d;
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   Configured by
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   a Phoenix config object, applied once at startup
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   a constructor argument, in Java
                 </td>
@@ -1000,7 +1000,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Start the simulator and enable Teleop.{" "}
@@ -1113,7 +1113,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>The motion is ugly.</strong> The controller has no idea what

@@ -295,7 +295,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
 
         <ul
           className="ml-5 list-disc space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>
@@ -389,7 +389,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
 
         <ul
           className="ml-5 list-disc space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>setPriorityTagID</code> tells the camera which tag matters, so
@@ -819,7 +819,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Run <code>gradlew simulateJava</code> and Enable, the same way as
@@ -864,7 +864,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Open the Limelight web dashboard and confirm it is seeing the tag
@@ -972,7 +972,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         <div className="overflow-x-auto">
           <table className="w-full text-left text-note leading-relaxed">
             <thead>
-              <tr style={{ color: "var(--fg)" }}>
+              <tr style={{ color: "var(--tx)" }}>
                 <th className="py-2 pr-4 font-semibold">Phase</th>
                 <th className="py-2 pr-4 font-semibold">
                   <code>DriveToPoint</code>
@@ -982,7 +982,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
                 </th>
               </tr>
             </thead>
-            <tbody style={{ color: "var(--fg-mute)" }}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td className="py-2 pr-4">Setup</td>
                 <td className="py-2 pr-4">
@@ -1066,7 +1066,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         <CollapsibleSection title="Workshop-Code vs. 2027-Template — the differences">
           <ul
             className="ml-5 list-disc space-y-3"
-            style={{ color: "var(--fg-mute)" }}
+            style={{ color: "var(--tx2)" }}
           >
             <li>
               <strong>Different number of arguments.</strong> The branch is{" "}

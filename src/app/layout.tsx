@@ -53,7 +53,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${instrumentSans.variable} ${jetbrainsMono.variable} ${newsreader.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}
+        className={`${instrumentSans.variable} ${jetbrainsMono.variable} ${newsreader.variable} antialiased bg-[var(--bg)] text-[var(--tx)]`}
         suppressHydrationWarning={true}
       >
         <ThemeProvider

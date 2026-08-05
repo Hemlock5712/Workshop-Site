@@ -366,7 +366,7 @@ Command.race(
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Add the <code>Lift Then Spin (hold)</code> binding to your{" "}
@@ -458,7 +458,7 @@ Command.race(
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <code>.until(...)</code> — end a hold when something is actually{" "}

@@ -224,8 +224,8 @@ export default function SwerveDriveProject() {
               <div
                 className="mt-3 rounded-lg border p-4"
                 style={{
-                  borderColor: "var(--line)",
-                  background: "var(--bg-elev)",
+                  borderColor: "var(--rule)",
+                  background: "var(--bg2)",
                 }}
               >
                 <ul
@@ -390,19 +390,19 @@ export default function SwerveDriveProject() {
               <tr>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   File
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   Who wrote it
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   What it is for
                 </th>
@@ -412,19 +412,19 @@ export default function SwerveDriveProject() {
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>TunerConstants.java</code>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Tuner X, from your measurements
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Every number about your robot. Never edit by hand except when
                   calibration tells you to.
@@ -433,19 +433,19 @@ export default function SwerveDriveProject() {
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>CommandSwerveDrivetrain.java</code>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Tuner X, then lightly edited
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Motors, odometry, the simulation thread, and keeping
                   &quot;forward&quot; matched to your alliance color.
@@ -454,19 +454,19 @@ export default function SwerveDriveProject() {
               <tr>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>DriveMechanism.java</code>
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   The workshop, by hand
                 </td>
                 <td
                   className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   The <code>Mechanism</code>. Commands, pose readings, telemetry
                   registration. This is what an OpMode talks to.

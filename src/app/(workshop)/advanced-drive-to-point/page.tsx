@@ -96,7 +96,7 @@ protected void execute() {
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>The motion is ugly.</strong> Full power off the line, wheels
@@ -466,9 +466,9 @@ protected boolean isFinished() {
                 <th
                   className="border px-3 py-2 text-left"
                   style={{
-                    borderColor: "var(--line)",
-                    color: "var(--fg)",
-                    background: "var(--bg-elev)",
+                    borderColor: "var(--rule)",
+                    color: "var(--tx)",
+                    background: "var(--bg2)",
                   }}
                 >
                   &nbsp;
@@ -476,9 +476,9 @@ protected boolean isFinished() {
                 <th
                   className="border px-3 py-2 text-left"
                   style={{
-                    borderColor: "var(--line)",
-                    color: "var(--fg)",
-                    background: "var(--bg-elev)",
+                    borderColor: "var(--rule)",
+                    color: "var(--tx)",
+                    background: "var(--bg2)",
                   }}
                 >
                   <code>5-DriveToPoint</code>
@@ -486,32 +486,32 @@ protected boolean isFinished() {
                 <th
                   className="border px-3 py-2 text-left"
                   style={{
-                    borderColor: "var(--line)",
-                    color: "var(--fg)",
-                    background: "var(--bg-elev)",
+                    borderColor: "var(--rule)",
+                    color: "var(--tx)",
+                    background: "var(--bg2)",
                   }}
                 >
                   <code>6-ProfiledToPoint</code>
                 </th>
               </tr>
             </thead>
-            <tbody style={{ color: "var(--fg-mute)" }}>
+            <tbody style={{ color: "var(--tx2)" }}>
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   PID compares against
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   the final goal pose
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   <code>setpoint.pose</code> — where the plan says the robot
                   should be <em>this loop</em>
@@ -520,19 +520,19 @@ protected boolean isFinished() {
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   Typical error
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   meters, for most of the trip
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   centimeters, the whole trip
                 </td>
@@ -540,19 +540,19 @@ protected boolean isFinished() {
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   PID&apos;s job
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   produce the entire commanded velocity
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   add a correction on top of <code>setpoint.velocity</code>
                 </td>
@@ -560,19 +560,19 @@ protected boolean isFinished() {
               <tr>
                 <td
                   className="border px-3 py-2 font-semibold"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   X / Y / heading kP
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   10 / 10 / 7
                 </td>
                 <td
                   className="border px-3 py-2"
-                  style={{ borderColor: "var(--line)" }}
+                  style={{ borderColor: "var(--rule)" }}
                 >
                   3.0 / 3.0 / 4.0
                 </td>
@@ -704,7 +704,7 @@ driver
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Start the simulator and enable Teleop, the same way you have all

@@ -140,19 +140,17 @@
 /* ─────────────────────────────────────────────────────────────────
    Design tokens
 
-   Two naming schemes, one set of values.
+   One naming scheme. These short names (--bg, --bg2, --bg3, --tx, --tx2,
+   --tx3, --rule, --rule-soft, --accent, --accent-ink, --accent-soft,
+   --mark, --lift, --code-bg) are the whole colour vocabulary, and every
+   component consumes them directly.
 
-   The short names (--bg, --bg2, --bg3, --tx, --tx2, --tx3, --rule,
-   --rule-soft, --accent, --accent-ink, --mark, --lift, --code-bg) are
-   the design's own vocabulary and what every component written for
-   this redesign consumes.
-
-   The longer legacy names (--bg-elev, --fg-mute, --line, --card,
-   --background, …) alias onto them. Roughly thirty lesson pages and a
-   dozen older components still read those, so they resolve to the same
-   colour rather than a second, drifting palette. Add new styling in the
-   short vocabulary; the aliases are a compatibility surface, not a
-   parallel system.
+   There used to be a second set of longer aliases (--bg-elev, --fg-mute,
+   --line, --card, --background, …) resolving to the same values, for
+   pages written before the redesign. All 347 uses were migrated onto the
+   short names and the alias block is gone; there is nothing left to
+   alias onto. If you find one of those names in a diff, it is a
+   regression — it is no longer defined and will render as nothing.
 
    Dark is the default and the design's primary state. Light is the
    `html:not(.dark)` branch — next-themes writes `.dark` on <html>.
@@ -210,32 +208,11 @@
   --r: 3px;
   --r-lg: 8px;
 
-  /* ── Legacy aliases ───────────────────────────────────────────────
-     Older components read these names. They are the same colours. */
-  --bg-elev: var(--bg2);
-  --bg-elev-2: var(--bg3);
-  --fg: var(--tx);
-  --fg-mute: var(--tx2);
-  --fg-dim: var(--tx3);
-  --line: var(--rule);
-  --line-soft: var(--rule-soft);
-  --accent-fg: var(--accent-ink);
-  --primary-lifted: var(--lift);
-  --primary-soft: oklch(0.76 0.12 262 / 0.18);
-  --brand: var(--lift);
-  --brand-2: var(--lift);
-  --brand-fg: var(--accent-ink);
+  /* The dot grid behind the home hero. Its own two names because the dot
+     is a rule colour used as a fill and the pitch is a layout constant,
+     not a spacing rung — see `.grid-bg`. */
   --grid-dot: var(--rule-soft);
   --grid-size: 24px;
-  --background: var(--bg);
-  --foreground: var(--tx);
-  --muted: var(--bg2);
-  --muted-foreground: var(--tx2);
-  --card: var(--bg2);
-  --card-foreground: var(--tx);
-  --border: var(--rule);
-  --primary: var(--lift);
-  --primary-foreground: var(--tx);
 }
 
 .dark {
@@ -278,8 +255,6 @@ html:not(.dark) {
 
   --ok: oklch(0.52 0.13 155);
   --err: oklch(0.53 0.19 27);
-
-  --primary-soft: oklch(0.34 0.14 265 / 0.1);
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -893,14 +868,14 @@ h3,
     to right,
     var(--slider-accent, var(--accent)) 0%,
     var(--slider-accent, var(--accent)) var(--slider-fill, 0%),
-    var(--line) var(--slider-fill, 0%),
-    var(--line) 100%
+    var(--rule) var(--slider-fill, 0%),
+    var(--rule) 100%
   );
 }
 .pid-slider::-moz-range-track {
   height: 5px;
   border-radius: 999px;
-  background: var(--line);
+  background: var(--rule);
 }
 .pid-slider::-moz-range-progress {
   height: 5px;

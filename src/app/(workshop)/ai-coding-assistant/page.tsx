@@ -228,7 +228,7 @@ public class Arm extends Mechanism {
             <h4 className="display m-0 text-aside">
               <code>robot-description</code>
             </h4>
-            <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="text-sm" style={{ color: "var(--tx2)" }}>
               The map of the code: OpModes, Mechanisms, commands, and where each
               piece lives. It carries the biggest surprise for anyone coming
               from Commands v2 — the &quot;there is no RobotContainer&quot;
@@ -241,7 +241,7 @@ public class Arm extends Mechanism {
             <h4 className="display m-0 text-aside">
               <code>game-info</code>
             </h4>
-            <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="text-sm" style={{ color: "var(--tx2)" }}>
               Field and alliance conventions the code enforces:
               blue-alliance-origin coordinates, operator-perspective flipping,
               and the AprilTag conventions. Its game-piece and field-zone
@@ -253,7 +253,7 @@ public class Arm extends Mechanism {
             <h4 className="display m-0 text-aside">
               <code>run-sim</code>
             </h4>
-            <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="text-sm" style={{ color: "var(--tx2)" }}>
               How to run the robot in simulation, including a headless{" "}
               <code>gradlew simulateJavaAgent</code> task that enables the robot
               without anyone clicking Enable — so the assistant can run a
@@ -265,7 +265,7 @@ public class Arm extends Mechanism {
             <h4 className="display m-0 text-aside">
               <code>log-reading</code>
             </h4>
-            <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="text-sm" style={{ color: "var(--tx2)" }}>
               Where <code>.wpilog</code> and <code>.hoot</code> files land,
               which telemetry keys this robot actually publishes, and how to
               analyse a run — in AdvantageScope or with a script the assistant
@@ -280,7 +280,7 @@ public class Arm extends Mechanism {
             <h4 className="display m-0 text-aside">
               <code>teaching</code>
             </h4>
-            <p className="text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="text-sm" style={{ color: "var(--tx2)" }}>
               Teacher mode is <strong>on by default</strong>. It tells the
               assistant to explain things the way a student needs them: plain
               words first, one idea at a time, a pointer to the exact file and
@@ -310,11 +310,11 @@ public class Arm extends Mechanism {
             <div className="flex items-center gap-2">
               <Terminal
                 className="h-5 w-5"
-                style={{ color: "var(--primary-lifted)" }}
+                style={{ color: "var(--accent)" }}
               />
               <h4 className="display m-0 text-aside">Claude Code</h4>
             </div>
-            <p className="flex-1 text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="flex-1 text-sm" style={{ color: "var(--tx2)" }}>
               Anthropic&apos;s coding agent, in the terminal or as a VS Code
               extension. It reads <code>CLAUDE.md</code> on startup and finds
               the skills on its own, so there is nothing to configure.
@@ -331,13 +331,10 @@ public class Arm extends Mechanism {
 
           <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Blocks
-                className="h-5 w-5"
-                style={{ color: "var(--primary-lifted)" }}
-              />
+              <Blocks className="h-5 w-5" style={{ color: "var(--accent)" }} />
               <h4 className="display m-0 text-aside">GitHub Copilot</h4>
             </div>
-            <p className="flex-1 text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="flex-1 text-sm" style={{ color: "var(--tx2)" }}>
               Lives inside VS Code, which you already have open for WPILib.
               Agent mode edits files and runs Gradle tasks. Free for verified
               students through GitHub Education.
@@ -354,13 +351,10 @@ public class Arm extends Mechanism {
 
           <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Bot
-                className="h-5 w-5"
-                style={{ color: "var(--primary-lifted)" }}
-              />
+              <Bot className="h-5 w-5" style={{ color: "var(--accent)" }} />
               <h4 className="display m-0 text-aside">OpenAI Codex</h4>
             </div>
-            <p className="flex-1 text-sm" style={{ color: "var(--fg-mute)" }}>
+            <p className="flex-1 text-sm" style={{ color: "var(--tx2)" }}>
               OpenAI&apos;s coding agent, as a CLI and an IDE extension.
               Configure it with an <code>AGENTS.md</code> file that points at
               the template&apos;s skill files.
@@ -435,7 +429,7 @@ you change anything in this project.`}
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Open your robot project folder in the assistant — the same folder
@@ -498,7 +492,7 @@ I have finished the Commands lesson. Do not change any files.`}
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Paste this prompt in the same session:
@@ -598,7 +592,7 @@ Show me the diff before you write anything.`}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Run the code and enable the robot the way{" "}
@@ -696,7 +690,7 @@ Show me the diff before you write anything.`}
 
         <ul
           className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             &quot;Why won&apos;t the flywheel spin when I press A? Read{" "}

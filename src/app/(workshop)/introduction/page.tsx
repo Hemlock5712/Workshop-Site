@@ -216,7 +216,7 @@ export default function Introduction() {
                     <li key={lesson.slug}>
                       <Link
                         href={lesson.slug}
-                        className="flex items-baseline gap-3 rounded-md border border-[var(--line-soft)] bg-[var(--bg)] p-3 transition-colors hover:border-[var(--accent)]"
+                        className="flex items-baseline gap-3 rounded-md border border-[var(--rule-soft)] bg-[var(--bg)] p-3 transition-colors hover:border-[var(--accent)]"
                       >
                         <span
                           className="mono shrink-0 text-micro"

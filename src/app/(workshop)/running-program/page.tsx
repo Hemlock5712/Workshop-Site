@@ -255,7 +255,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       <LessonSection id="did-it-work" title="Did it work?">
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             In Tuner X, turn <strong>CANivore USB off</strong> and close the
@@ -380,7 +380,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             Enable, and hold the <strong>left trigger</strong> down.{" "}
@@ -471,7 +471,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
 
         <ol
           className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--fg-mute)" }}
+          style={{ color: "var(--tx2)" }}
         >
           <li>
             <strong>It finishes on its own.</strong> Its work is done and it

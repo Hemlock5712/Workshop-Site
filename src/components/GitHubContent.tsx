@@ -255,9 +255,7 @@ export default function GitHubContent({
     title || description ? (
       <div className="mb-6">
         {title && <h3 className="display m-0 mb-2 text-title">{title}</h3>}
-        {description && (
-          <p className="text-[var(--muted-foreground)]">{description}</p>
-        )}
+        {description && <p className="text-[var(--tx2)]">{description}</p>}
       </div>
     ) : null;
 
@@ -274,14 +272,14 @@ export default function GitHubContent({
     <div className={className}>
       {header}
       <div className="card">
-        <div className="border-b border-[var(--border)]">
+        <div className="border-b border-[var(--rule)]">
           <div className="flex flex-wrap">
             <button
               onClick={() => setActiveTab("ide")}
               className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "ide"
                   ? "border-[var(--accent)] text-[var(--accent)]"
-                  : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                  : "border-transparent text-[var(--tx2)] hover:text-[var(--tx)]"
               }`}
             >
               <Code className="w-4 h-4" />
@@ -292,7 +290,7 @@ export default function GitHubContent({
               className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "diff"
                   ? "border-[var(--accent)] text-[var(--accent)]"
-                  : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                  : "border-transparent text-[var(--tx2)] hover:text-[var(--tx)]"
               }`}
             >
               <GitPullRequest className="w-4 h-4" />
@@ -403,10 +401,10 @@ function FileView({
   return (
     <div className={className}>
       <div className="card mb-6 overflow-hidden">
-        <div className="border-b border-[var(--border)] p-4">
+        <div className="border-b border-[var(--rule)] p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <span className="font-mono text-lg font-medium text-[var(--foreground)]">
+              <span className="font-mono text-lg font-medium text-[var(--tx)]">
                 {filename}
               </span>
               <span className="px-2 py-1 bg-[var(--bg2)] text-[var(--accent)] rounded text-xs font-medium">
@@ -414,7 +412,7 @@ function FileView({
               </span>
             </div>
 
-            <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
+            <div className="flex items-center space-x-4 text-sm text-[var(--tx2)]">
               {fileSize !== undefined && (
                 <span>{formatFileSize(fileSize)}</span>
               )}
@@ -422,14 +420,14 @@ function FileView({
                 href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[var(--muted)] text-[var(--foreground)] px-3 py-1 rounded hover:bg-[var(--border)] transition-colors text-sm font-medium flex items-center gap-1"
+                className="bg-[var(--bg2)] text-[var(--tx)] px-3 py-1 rounded hover:bg-[var(--rule)] transition-colors text-sm font-medium flex items-center gap-1"
               >
                 View on GitHub <ExternalLink className="w-4 h-4" />
               </a>
             </div>
           </div>
 
-          <div className="mt-2 text-sm text-[var(--muted-foreground)]">
+          <div className="mt-2 text-sm text-[var(--tx2)]">
             {repository} / {filePath.replace(filename, "").replace(/\/$/, "")}
           </div>
         </div>
@@ -445,7 +443,7 @@ function FileView({
         </div>
       </div>
 
-      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
+      <div className="bg-[var(--bg2)] text-[var(--tx)] rounded-lg p-6">
         <h5 className="display m-0 mb-3 flex items-center gap-2 text-aside">
           <Folder className="w-5 h-5" /> Live from GitHub
         </h5>
@@ -649,14 +647,14 @@ function PRView({
   return (
     <div className={`my-8 ${className}`}>
       <div className="card mb-6">
-        <div className="p-6 border-b border-[var(--border)]">
+        <div className="p-6 border-b border-[var(--rule)]">
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
                     prData.merged_at
-                      ? "bg-[var(--muted)] text-[var(--foreground)]"
+                      ? "bg-[var(--bg2)] text-[var(--tx)]"
                       : prData.state === "closed"
                         ? "bg-[var(--bg2)] text-[var(--err)] text-[var(--err)]"
                         : "bg-[var(--bg2)] text-[var(--ok)] text-[var(--ok)]"
@@ -676,14 +674,14 @@ function PRView({
                     </>
                   )}
                 </span>
-                <span className="text-[var(--muted-foreground)] text-sm">
+                <span className="text-[var(--tx2)] text-sm">
                   #{prData.number}
                 </span>
               </div>
 
               <h4 className="display m-0 mb-3 text-lede">{prData.title}</h4>
 
-              <div className="flex items-center space-x-4 text-sm text-[var(--muted-foreground)]">
+              <div className="flex items-center space-x-4 text-sm text-[var(--tx2)]">
                 <span>created {formatDate(prData.created_at)}</span>
                 {prData.merged_at && (
                   <span>merged {formatDate(prData.merged_at)}</span>
@@ -729,7 +727,7 @@ function PRView({
             return (
               <div
                 key={index}
-                className="border border-[var(--border)] rounded-lg overflow-hidden mb-4 last:mb-0"
+                className="border border-[var(--rule)] rounded-lg overflow-hidden mb-4 last:mb-0"
               >
                 <div className="bg-[var(--bg2)] dark:bg-[#2d2d30] px-4 py-3 border-b border-[var(--rule)] flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -820,7 +818,7 @@ function PRView({
         </div>
       </div>
 
-      <div className="bg-[var(--card)] text-[var(--foreground)] rounded-lg p-6">
+      <div className="bg-[var(--bg2)] text-[var(--tx)] rounded-lg p-6">
         <h5 className="display m-0 mb-3 flex items-center gap-2 text-aside">
           <GraduationCap className="w-5 h-5" /> Workshop Learning
         </h5>

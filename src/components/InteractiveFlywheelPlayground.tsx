@@ -92,12 +92,10 @@ function Slider({
           >
             {label}
           </label>
-          <span className="font-mono text-micro text-[var(--muted-foreground)]">
-            {unit}
-          </span>
+          <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
         <span
-          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
+          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
           aria-hidden
         >
           {value.toFixed(precision)}
@@ -617,7 +615,7 @@ export default function InteractiveFlywheelPlayground() {
   void FLY_HOLD_PHASE_SEC; // kept for future explicit references
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-[0_1px_2px_rgb(0_0_0_/_0.04)] sm:p-6">
+    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--bg2)] p-5 shadow-[0_1px_2px_rgb(0_0_0_/_0.04)] sm:p-6">
       {/* ── Toolbar ──────────────────────────── */}
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
@@ -632,29 +630,29 @@ export default function InteractiveFlywheelPlayground() {
             {regimeStyle.label}
           </span>
           <div
-            className="flex items-center gap-x-3 text-meta text-[var(--muted-foreground)] tabular-nums"
+            className="flex items-center gap-x-3 text-meta text-[var(--tx2)] tabular-nums"
             aria-label="Performance metrics"
           >
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.overshootRpm.toFixed(0)}
               </span>{" "}
               rpm overshoot
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.steadyStateErrorRpm.toFixed(0)}
               </span>{" "}
               final err
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {settlingStr}
               </span>{" "}
               settle
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.peakVoltage.toFixed(1)} V
               </span>{" "}
               peak
@@ -664,7 +662,7 @@ export default function InteractiveFlywheelPlayground() {
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-meta font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+          className="inline-flex items-center gap-1 rounded-md border border-[var(--rule)] bg-[var(--bg2)] px-2 py-1 text-meta font-medium text-[var(--tx)] transition-colors hover:bg-[var(--rule)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1"
           aria-label="Reset all gains and the target to defaults"
         >
           <RotateCcw className="h-3 w-3" />
@@ -673,10 +671,10 @@ export default function InteractiveFlywheelPlayground() {
       </header>
 
       {/* ── Target picker ───────────────────── */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--rule)] bg-[var(--bg)] px-3 py-2">
         <label
           htmlFor="fly-target"
-          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
+          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--tx2)]"
         >
           <Gauge className="h-3.5 w-3.5" aria-hidden />
           Target
@@ -701,17 +699,17 @@ export default function InteractiveFlywheelPlayground() {
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--foreground)]">
+        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
           {targetRpm} rpm
         </span>
-        <span className="font-mono text-micro text-[var(--muted-foreground)]">
+        <span className="font-mono text-micro text-[var(--tx2)]">
           {(targetRpm / 60).toFixed(1)} rps
         </span>
       </div>
 
       {/* ── Visualization ───────────────────── */}
       <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:gap-5">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:aspect-square md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:aspect-square md:p-3">
           <FlywheelViz
             responseAngleRad={response.angleRad}
             responseRpm={response.velocityRpm}
@@ -720,7 +718,7 @@ export default function InteractiveFlywheelPlayground() {
             isDark={isDark}
           />
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:p-3">
           <div
             ref={containerRef}
             className="pid-plot w-full"
@@ -728,7 +726,7 @@ export default function InteractiveFlywheelPlayground() {
             aria-label={`Velocity-response plot for the flywheel target of ${targetRpm} RPM. Dashed is the commanded target, solid is the measured wheel speed.`}
             role="img"
           />
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--muted-foreground)]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--tx2)]">
             <span className="inline-flex items-center gap-1">
               <span
                 aria-hidden
@@ -752,7 +750,7 @@ export default function InteractiveFlywheelPlayground() {
       </div>
 
       {/* ── Tuning hint ─────────────────────── */}
-      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
         <Lightbulb
           className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
@@ -794,11 +792,8 @@ export default function InteractiveFlywheelPlayground() {
         stall, 7758&nbsp;RPM free per CTRE dyno data; back-EMF modelled,
         ±12&nbsp;V saturation). Gains use Phoenix 6 / WPILib velocity-control
         units. Drop them straight into a{" "}
-        <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
-        on a{" "}
-        <span className="font-mono text-[var(--foreground)]">
-          VelocityVoltage
-        </span>{" "}
+        <span className="font-mono text-[var(--tx)]">Slot0Configs</span> on a{" "}
+        <span className="font-mono text-[var(--tx)]">VelocityVoltage</span>{" "}
         request.
       </p>
     </section>

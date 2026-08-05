@@ -76,19 +76,19 @@ export default function PIDControl() {
               <tr>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   On <code>2-Commands</code>
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   On <code>3-PID</code>
                 </th>
                 <th
                   className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--line)", color: "var(--fg)" }}
+                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
                 >
                   What it means now
                 </th>
@@ -98,19 +98,19 @@ export default function PIDControl() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>arm.runSlow()</code> / <code>arm.runFast()</code>
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>arm.vertical()</code> / <code>arm.horizontal()</code>
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Angles, not voltages. <code>0.25</code> rotations (90°) and{" "}
                   <code>0.5</code> rotations (180°).
@@ -119,19 +119,19 @@ export default function PIDControl() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>arm.stop()</code>
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <strong>deleted</strong>
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   A canceled position hold leaves the arm parked at its target.
                   Nothing to stop. See the box below.
@@ -140,20 +140,20 @@ export default function PIDControl() {
               <tr>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   <code>flywheel.runSlow()</code> / <code>runFast()</code> /{" "}
                   <code>stop()</code>
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   same three names
                 </td>
                 <td
                   className="border-b px-3 py-2 align-top"
-                  style={{ borderColor: "var(--line-soft)" }}
+                  style={{ borderColor: "var(--rule-soft)" }}
                 >
                   Same names, new meaning: <code>25.0</code> and{" "}
                   <code>75.0</code> rotations per second instead of 3 V and 6 V.
