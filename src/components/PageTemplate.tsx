@@ -86,7 +86,16 @@ export default function PageTemplate({
     <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-4 pt-14 sm:px-6 md:px-10 min-[1240px]:grid-cols-[184px_minmax(0,auto)] min-[1240px]:justify-center">
       <LessonOutline branch={branch} time={time} />
 
-      <article className="lesson-body measure-wide pb-[120px]">
+      {/* `id` + `tabIndex` so the skip link can land *past* the outline rail.
+          Targeting `#main-content` was not a bypass: the rail's nav lives
+          inside that element, so focus arrived above it and Tab still walked
+          all nine links before the first line of the lesson. Focus lands
+          inside `<main>` either way, so the arrow keys still scroll. */}
+      <article
+        id="lesson-article"
+        tabIndex={-1}
+        className="lesson-body measure-wide pb-[120px] focus:outline-none"
+      >
         <header className="split mb-[52px] items-end">
           <div>
             <LessonKicker />

@@ -35,15 +35,23 @@ const CookieBanner: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-3 flex-shrink-0">
+          {/* Neither button changes its background on hover. Accept used to go
+              `hover:bg-[var(--bg2)]` while keeping `--accent-ink` for its
+              label, which put a near-black word on a near-black panel — 1.02:1
+              in dark, 1.01:1 in light. The word "Accept" disappeared under the
+              cursor, on the first control a first-time visitor ever touches.
+              Decline's identical hover was a no-op, because the banner is
+              already `--bg2`. The primary dims like the home page's primary
+              button; the secondary borrows the topbar search button's hover. */}
           <button
             onClick={handleDecline}
-            className="cursor-pointer px-4 py-2 text-sm border border-[var(--rule)] rounded-md text-[var(--tx2)] hover:bg-[var(--bg2)] transition-colors"
+            className="cursor-pointer rounded-md border border-[var(--rule)] px-4 py-2 text-note text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
           >
             Decline
           </button>
           <button
             onClick={handleAccept}
-            className="cursor-pointer px-4 py-2 text-sm bg-[var(--accent)] text-[var(--accent-ink)] rounded-md hover:bg-[var(--bg2)] transition-colors"
+            className="cursor-pointer rounded-md bg-[var(--accent)] px-4 py-2 text-note font-semibold text-[var(--accent-ink)] transition-opacity hover:opacity-90"
           >
             Accept
           </button>
