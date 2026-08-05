@@ -8,8 +8,10 @@
  * something — it is measuring one element, not guessing at document height.
  *
  * The rail is 70px and the main column is inset by exactly that much. Below
- * 640px the rail keeps its width (it is the only way to reach the curriculum),
- * but the topbar and page padding tighten around it.
+ * 640px the rail is still there — it is the only way to reach the curriculum —
+ * but it drops its progress spine and collapses to 48px, and the inset here
+ * has to follow it or `<main>` overhangs the viewport and every page scrolls
+ * sideways. The two numbers are a pair; change one and change the other.
  */
 
 import { type ReactNode } from "react";
@@ -35,7 +37,7 @@ function ShellFrame({ children }: { children: ReactNode }) {
         ref={mainRef}
         id="main-content"
         tabIndex={-1}
-        className="ml-[70px] h-screen overflow-y-auto focus:outline-none"
+        className="ml-12 h-screen overflow-y-auto focus:outline-none sm:ml-[70px]"
         style={{ background: "var(--bg)", color: "var(--tx)" }}
       >
         <Topbar />

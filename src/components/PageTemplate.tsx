@@ -23,9 +23,13 @@ interface PageTemplateProps {
    * who reads this on the bus needs to know the arm has to be on a bench.
    */
   needs?: ReactNode[];
-  /** Workshop-Code branch this lesson is written against, e.g. `3-PID`. */
+  /**
+   * Workshop-Code branch this lesson is written against, e.g. `3-PID`. In the
+   * outline rail from 1240px up, and on a compact line under the lede below
+   * that — a student on a phone has to be able to read what they must type.
+   */
   branch?: string;
-  /** Honest time estimate, shown in the outline rail. */
+  /** Honest time estimate. Sits wherever `branch` does. */
   time?: string;
   /**
    * Optional explicit Previous link. Omit to auto-derive from
@@ -74,7 +78,12 @@ export default function PageTemplate({
     // the article stayed as wide as its 660px measure inside a 290px phone
     // viewport and every lesson scrolled sideways. `justify-center` only
     // applies once there are actually two tracks to centre.
-    <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-6 pt-14 md:px-10 min-[1240px]:grid-cols-[184px_minmax(0,auto)] min-[1240px]:justify-center">
+    //
+    // The inset steps 16 → 24 → 40px. 16px below `sm` is not a style choice:
+    // the rail plus two 24px margins left a 272px column on a 390px phone,
+    // which is ~37 characters of Newsreader a line, and the 8px each side is
+    // worth about 3 characters.
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-14 px-4 pt-14 sm:px-6 md:px-10 min-[1240px]:grid-cols-[184px_minmax(0,auto)] min-[1240px]:justify-center">
       <LessonOutline branch={branch} time={time} />
 
       <article className="lesson-body measure-wide pb-[120px]">
@@ -101,6 +110,57 @@ export default function PageTemplate({
               )}
             </h1>
             {lede && <p className="lesson-lede m-0">{lede}</p>}
+
+            {/* Branch and time, for everyone who cannot see the outline rail.
+                The rail is `min-[1240px]` only, so below that these two strings
+                were on no viewport at all — and the branch is the one thing on
+                the page a student has to type (`git clone -b 3-PID`). A phone
+                held next to a laptop could not show it. Hidden from 1240px up,
+                where the rail says it already; never both. */}
+            {(branch || time) && (
+              <div
+                data-lesson-meta
+                className="mt-flow flex flex-wrap items-baseline gap-x-control gap-y-tight min-[1240px]:hidden"
+              >
+                {branch && (
+                  <span className="flex items-baseline gap-tight">
+                    <span className="micro">Branch</span>
+                    <span
+                      className="mono"
+                      style={{
+                        fontSize: "var(--text-meta)",
+                        color: "var(--accent)",
+                      }}
+                    >
+                      {branch}
+                    </span>
+                  </span>
+                )}
+                {branch && time && (
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      fontSize: "var(--text-meta)",
+                      color: "var(--rule)",
+                    }}
+                  >
+                    ·
+                  </span>
+                )}
+                {time && (
+                  <span
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontStyle: "italic",
+                      fontSize: "var(--text-note)",
+                      color: "var(--tx3)",
+                    }}
+                  >
+                    {time}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {needs && needs.length > 0 && (

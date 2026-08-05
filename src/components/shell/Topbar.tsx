@@ -41,7 +41,10 @@ export default function Topbar() {
 
   return (
     <div
-      className="sticky top-0 z-[35] flex items-center gap-3 px-6 py-2.5 lg:gap-[18px] lg:px-10"
+      // `px-4` below `sm` to match the lesson body's inset at the same size —
+      // the breadcrumb sits directly above the H1, so the two have to start on
+      // the same vertical.
+      className="sticky top-0 z-[35] flex items-center gap-3 px-4 py-2.5 sm:px-6 lg:gap-[18px] lg:px-10"
       style={{
         background: "var(--bg)",
         borderBottom: "1px solid var(--rule-soft)",

@@ -9,6 +9,15 @@
  * which meant a student reading lesson 15 spent a fifth of the viewport on
  * links to lessons they had already done. The tree still exists — it is one
  * click away behind MENU — but the default state is reading.
+ *
+ * Below 640px it is 48px and holds only the two controls plus the toggle. The
+ * argument against the old sidebar applies to the rail's own furniture: 70px is
+ * 18% of a 390px screen, and everything the progress spine occupied was
+ * `aria-hidden` ornament — a vertical PROGRESS label, an empty track and a `00`
+ * readout — while the reading column underneath it was 272px, about 37
+ * characters a line. The spine is a desk affordance and it goes at phone
+ * sizes; the three controls stay, at 44px targets, because the curriculum is
+ * only reachable through MENU.
  */
 
 import Image from "next/image";
@@ -22,18 +31,21 @@ export default function AppRail() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 top-0 z-40 flex w-[70px] flex-col items-center justify-between py-[18px]"
+      className="fixed bottom-0 left-0 top-0 z-40 flex w-12 flex-col items-center justify-between py-[18px] sm:w-[70px]"
       style={{
         background: "var(--bg)",
         borderRight: "1px solid var(--rule-soft)",
       }}
     >
       <div className="flex flex-col items-center gap-[18px]">
+        {/* The hit box is 44px on a phone and 36px — the mark's own size — from
+            `sm` up, where there is a cursor. The mark never changes size; only
+            the target around it does. */}
         <Link
           href="/"
           title="Back to the workshop home"
           aria-label="Back to the workshop home"
-          className="block rounded-lg opacity-90 transition-opacity hover:opacity-100"
+          className="flex h-11 w-11 items-center justify-center rounded-lg opacity-90 transition-opacity hover:opacity-100 sm:h-9 sm:w-9"
         >
           <Image
             src="/images/gray-matter-logo.jpg"
@@ -50,7 +62,7 @@ export default function AppRail() {
           onClick={toggleNav}
           aria-label="Open curriculum menu"
           aria-expanded={navOpen}
-          className="group flex w-11 cursor-pointer flex-col items-center gap-[5px] rounded-[9px] pb-[7px] pt-2 transition-colors"
+          className="group flex min-h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[5px] rounded-[9px] pb-[7px] pt-2 transition-colors sm:min-h-0 sm:justify-start"
           style={{
             border: "1px solid var(--rule)",
             background: navOpen ? "var(--accent-soft)" : "var(--bg2)",
@@ -78,9 +90,14 @@ export default function AppRail() {
 
       {/* Scroll progress through the current page. Vertical because the rail
           is vertical, and because a horizontal bar at the top of a long
-          lesson reads as a loading indicator. */}
+          lesson reads as a loading indicator.
+
+          Gone below 640px. It is the whole reason the rail was 70px wide, it
+          is `aria-hidden` so it was never reaching a screen reader either, and
+          on a phone the page's own scrollbar already says this. */}
       <div
-        className="flex w-full flex-1 flex-col items-center justify-center gap-[14px] py-6"
+        className="hidden w-full flex-1 flex-col items-center justify-center gap-[14px] py-6 sm:flex"
+        data-progress-spine
         aria-hidden="true"
       >
         <span
@@ -121,7 +138,7 @@ export default function AppRail() {
       </div>
 
       <AnimatedThemeToggler
-        className="flex h-[34px] w-[34px] cursor-pointer items-center justify-center rounded-lg bg-transparent transition-colors"
+        className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-lg bg-transparent transition-colors sm:h-[34px] sm:w-[34px]"
         style={{ border: "1px solid var(--rule)", color: "var(--tx2)" }}
       />
     </div>
