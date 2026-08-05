@@ -430,7 +430,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               <a
                 href="/pid-control#tune-ks"
                 className="font-semibold underline decoration-1 underline-offset-2"
-                style={{ color: "var(--info)" }}
+                style={{ color: "var(--accent)" }}
               >
                 kS — the smallest output that breaks it loose
               </a>
@@ -439,7 +439,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               <a
                 href="/pid-control#tune-kp"
                 className="font-semibold underline decoration-1 underline-offset-2"
-                style={{ color: "var(--info)" }}
+                style={{ color: "var(--accent)" }}
               >
                 kP — raise until it oscillates, then back off
               </a>
@@ -448,7 +448,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               <a
                 href="/pid-control#tune-kd"
                 className="font-semibold underline decoration-1 underline-offset-2"
-                style={{ color: "var(--info)" }}
+                style={{ color: "var(--accent)" }}
               >
                 kD — as much as you can get without jitter
               </a>
@@ -692,7 +692,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             <a
               href="/pid-control#tune-flywheel"
               className="font-semibold underline decoration-1 underline-offset-2"
-              style={{ color: "var(--info)" }}
+              style={{ color: "var(--accent)" }}
             >
               The velocity-loop order: kV, then kS, then kP
             </a>

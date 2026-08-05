@@ -62,7 +62,7 @@ Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
 ### Application Structure
 
-- **Framework**: Next.js 15.4.6 with App Router (`src/app/` directory)
+- **Framework**: Next.js 16.2.12 with App Router (`src/app/` directory)
 - **UI Library**: React 19.1.0
 - **Styling**: Tailwind CSS 4 with dark mode support
 - **Theme Management**: next-themes for theme state and system preference detection
@@ -141,8 +141,14 @@ paragraphs may not.
 ### Route Organization
 
 Lesson order, drawer grouping, the syllabus, and prev/next all come from
-`src/data/lessons.ts` — the single source of truth. The order follows
-`context/ia-audit.md` §2; read that before moving anything.
+`src/data/lessons.ts` — the single source of truth. The information-architecture
+plan that set this order was applied here and the plan file retired, so
+`lessons.ts` is now the only authority; there is no `context/ia-audit.md` to
+consult. Two branch names still mislead and are worth knowing before you move
+anything: `5-GettersAndSetters` is where command composition actually debuts,
+and `7-InlineCommands` is an advanced coroutine, not a basics lesson. The
+swerve track is not linear — `4-DynamicFlywheel` is a dead-end spur, and
+`5-DriveToPoint` forks off `2-Logging`.
 
 **`/` is not in `LESSONS`.** Home is the landing page, not lesson 00 — the
 course is 29 lessons and the counter says so.
@@ -237,9 +243,43 @@ from Discord and old slides: `/logging-options` → `/logging-implementation`,
 
 ### Design Principles
 
-- Comprehensive design checklist in `/context/design-principles.md`
-- Brand style guide in `/context/style-guide.md`
-- When making visual (front-end, UI/UX) changes, always refer to these files for guidance
+**`src/app/globals.css` is the design authority.** Read it before making any
+visual change — it is a design document as much as a stylesheet, and it
+explains _why_ at every decision: why the measure is 660px, why light-mode
+`--tx3` sits at 0.525 and not 0.565, why code blocks stay dark in both themes,
+why the radius scale is 2-3px, why `min-width: 0` is load-bearing.
+
+The rules that matter, all enforced there:
+
+- **Tokens only, never a Tailwind colour scale.** `text-slate-600`,
+  `bg-blue-50`, `border-primary-200` and friends are unregistered and render
+  as nothing. Surfaces `--bg` / `--bg2` / `--bg3`, text `--tx` / `--tx2` /
+  `--tx3`, rules `--rule` / `--rule-soft`, `--accent` (+ `--accent-ink`,
+  `--accent-soft`). Signals are `--ok` and `--err` — two, and only two.
+- **The type scale is named.** `--text-micro` / `--text-meta` / `--text-note`
+  / `--text-ui` / `--text-aside` / `--text-body` / `--text-lede` /
+  `--text-title`, plus the `.display` ramp. Do not write inline `fontSize` or
+  `text-[Npx]`: 536 of those were swept out, and each one is how the site
+  drifted into twenty-seven sizes against four named steps.
+- **Spacing is named too**: `--spacing-chip` / `tight` / `control` / `flow` /
+  `pad` / `block` / `panel` / `stack`.
+- **Body copy never leaves `--measure`.** Code, tables and figures may cross
+  into the gutter via `.measure-wide`; paragraphs may not.
+- **One accent hue.** If something must stand out and is not the primary
+  action, use a mono micro-label (`.micro`), not a second colour.
+- **Asides are budgeted.** Roughly two per `LessonSection`, one
+  `alert-danger` per lesson. There were 297 of them and a warning stopped
+  meaning anything; the "why" belongs in a `<MarginNote>` in the gutter.
+
+There is no `context/design-principles.md` or `context/style-guide.md` — both
+were deleted in August 2026. The first was generic "S-Tier SaaS Dashboard"
+boilerplate prescribing a persistent sidebar and admin tables, which describes
+neither this site nor its design; the second documented a colour palette that
+no longer exists. Do not reinstate either.
+
+`context/narration-voice.md` does still exist and is worth reading before
+writing prose. It measures cadence rather than asserting rules, and its
+findings apply to the website, not just the video scripts.
 
 ### Quick Visual Check
 
@@ -247,7 +287,7 @@ IMMEDIATELY after implementing any front-end change:
 
 1. **Identify what changed** - Review the modified components/pages
 2. **Navigate to affected pages** - Use `mcp__playwright__browser_navigate` to visit each changed view
-3. **Verify design compliance** - Compare against `/context/design-principles.md` and `/context/style-guide.md`
+3. **Verify design compliance** - Compare against `src/app/globals.css` and the rules above
 4. **Validate feature implementation** - Ensure the change fulfills the user's specific request
 5. **Check acceptance criteria** - Review any provided context files or requirements
 6. **Capture evidence** - Take full page screenshot at desktop viewport (1440px) of each changed view

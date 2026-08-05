@@ -194,12 +194,16 @@
   --measure: 660px;
   --gutter: 250px;
 
-  /* ── Semantic signals ── kept for Box variants and diagrams. Pulled
-     toward the accent's warmth so they read as one family. */
+  /* ── Semantic signals ── two, and only two. `--ok` is the "you should now
+     see this" check; `--err` is the one case where a second hue earns its
+     keep, because "do not do this" has to outrank everything around it.
+
+     There were four. `--warn` was never used once — a warning is a mono
+     label and a hairline here, not a colour — and `--info` coloured four
+     links on one page while the other sixty-three used `--accent`. Both are
+     gone rather than left as an invitation to start a third palette. */
   --ok: oklch(0.78 0.13 155);
-  --warn: oklch(0.82 0.15 92);
   --err: oklch(0.71 0.17 27);
-  --info: oklch(0.75 0.12 240);
 
   /* Radii. This design is nearly square — 2-3px, not pills. */
   --r-sm: 2px;
@@ -273,9 +277,7 @@ html:not(.dark) {
   --code-bg: oklch(0.155 0.038 265);
 
   --ok: oklch(0.52 0.13 155);
-  --warn: oklch(0.55 0.14 75);
   --err: oklch(0.53 0.19 27);
-  --info: oklch(0.5 0.13 245);
 
   --primary-soft: oklch(0.34 0.14 265 / 0.1);
 }

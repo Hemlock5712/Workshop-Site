@@ -49,12 +49,6 @@ export interface SectionMeta {
   num: string;
   /** One sentence on what the group covers. Shown on the syllabus. */
   blurb: string;
-  /**
-   * Whether the sidebar wraps this section in a collapsible group header.
-   * `main` items live at the top with no header; the workshop / advanced
-   * sections are each their own collapsible group.
-   */
-  collapsible: boolean;
 }
 
 /**
@@ -69,7 +63,6 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "00",
     blurb:
       "What the workshop is, what you need installed, and the CAD for the mechanisms.",
-    collapsible: false,
   },
   {
     id: "workshop1",
@@ -77,7 +70,6 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "01",
     blurb:
       "One motor at a time. Wire it, command it, then close the loop around a sensor.",
-    collapsible: true,
   },
   {
     id: "workshop2",
@@ -85,14 +77,12 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "02",
     blurb:
       "The whole robot. Swerve, logging, calibration, vision, and driving to a pose.",
-    collapsible: true,
   },
   {
     id: "advanced",
     title: "Advanced Topics",
     num: "03",
     blurb: "The other two command dialects, and where each one earns its keep.",
-    collapsible: true,
   },
 ];
 
