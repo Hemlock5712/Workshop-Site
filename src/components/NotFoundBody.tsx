@@ -58,7 +58,7 @@ export default function NotFoundBody() {
         <div className="mt-9 flex flex-wrap items-center gap-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2.5 whitespace-nowrap px-[22px] py-[13px] text-sm font-semibold transition-opacity hover:opacity-90"
+            className="inline-flex items-center gap-2.5 whitespace-nowrap px-[22px] py-[13px] text-note font-semibold transition-opacity hover:opacity-90"
             style={{
               borderRadius: 2,
               background: "var(--accent)",
@@ -72,7 +72,7 @@ export default function NotFoundBody() {
           <button
             type="button"
             onClick={openSearch}
-            className="inline-flex cursor-pointer items-center gap-2.5 whitespace-nowrap px-[18px] py-[13px] text-sm transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
+            className="inline-flex cursor-pointer items-center gap-2.5 whitespace-nowrap px-[18px] py-[13px] text-note transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
             style={{
               borderRadius: 2,
               border: "1px solid var(--rule)",

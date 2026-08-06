@@ -147,10 +147,16 @@ export default function CurriculumDrawer() {
               {String(doneCount).padStart(2, "0")} / {LESSON_COUNT} done
             </span>
           </span>
+          {/* The label is 11px mono with no padding, which made the control
+              itself ~55×17px — under the 24px floor, on the primary dismiss
+              for a full-screen overlay, on a phone. The backdrop behind it is
+              also a close button and does meet the size, so this was never a
+              hard failure, but it is the affordance a reader aims at. Padding
+              and a 44px floor below `sm`; the label is unchanged. */}
           <button
             type="button"
             onClick={closeNav}
-            className="mono shrink-0 cursor-pointer border-0 bg-transparent"
+            className="mono -mr-2.5 flex min-h-11 shrink-0 cursor-pointer items-center border-0 bg-transparent px-2.5 sm:min-h-0 sm:py-1"
             style={{
               fontSize: "var(--text-meta)",
               letterSpacing: "0.1em",
@@ -164,7 +170,7 @@ export default function CurriculumDrawer() {
         <Link
           href="/"
           onClick={closeNav}
-          className="mx-[-14px] mb-6 flex items-center gap-3 rounded-[4px] px-3.5 py-3 text-sm font-semibold transition-colors"
+          className="mx-[-14px] mb-6 flex items-center gap-3 rounded-[4px] px-3.5 py-3 text-note font-semibold transition-colors"
           style={{
             border: "1px solid var(--rule)",
             background: "var(--bg3)",
@@ -237,7 +243,11 @@ export default function CurriculumDrawer() {
                     href={lesson.slug}
                     onClick={closeNav}
                     aria-current={current ? "page" : undefined}
-                    className="-mx-2.5 flex items-baseline gap-3 rounded-[3px] px-2.5 py-[7px] transition-colors hover:bg-[var(--accent-soft)]"
+                    // `min-h-11` below `sm`. These are 29 rows of tap target
+                    // stacked on a phone, and at `py-[7px]` they were ~39px —
+                    // close enough to be hit, close enough to mis-hit the one
+                    // above. Desktop keeps the tighter rhythm.
+                    className="-mx-2.5 flex min-h-11 items-center gap-3 rounded-[3px] px-2.5 py-[7px] transition-colors hover:bg-[var(--accent-soft)] sm:min-h-0 sm:items-baseline"
                     style={{
                       fontFamily: "var(--font-serif)",
                       fontSize: "var(--text-aside)",

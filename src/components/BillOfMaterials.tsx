@@ -171,16 +171,48 @@ export default function BillOfMaterials({
       <html>
         <head>
           <title>Bill of Materials - ${title}</title>
+          <!-- This sheet is the one thing on the site that leaves it: a
+               student takes it to a mentor to get parts ordered. It was Arial
+               over #ddd rules, which is what a print stylesheet looks like
+               when nobody wrote one. It cannot use the site's tokens — a new
+               window has no stylesheet — so it states the two things that
+               carry the identity on paper: the serif the site reads in, and
+               a hairline rule instead of a filled header band. Colours are
+               print-safe greys, not the screen palette; the screen palette
+               is built for a lit display and prints as mud. -->
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; font-weight: bold; }
-            .total { font-weight: bold; margin-top: 20px; }
+            body {
+              font-family: Newsreader, Georgia, "Times New Roman", serif;
+              margin: 28px;
+              color: #1a1a1a;
+            }
+            h1 { font-size: 22px; font-weight: 400; margin: 0 0 2px; }
+            .kicker {
+              font-family: ui-monospace, "Courier New", monospace;
+              font-size: 9px;
+              letter-spacing: 0.14em;
+              text-transform: uppercase;
+              color: #6b6b6b;
+              margin: 0 0 14px;
+            }
+            table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 12px; }
+            th, td { border-bottom: 1px solid #d8d8d8; padding: 7px 8px; text-align: left; vertical-align: top; }
+            th {
+              font-family: ui-monospace, "Courier New", monospace;
+              font-size: 9px;
+              font-weight: 400;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: #6b6b6b;
+              border-bottom: 1px solid #1a1a1a;
+            }
+            .total { font-weight: 600; margin-top: 18px; font-size: 14px; }
+            @media print { body { margin: 0; } }
           </style>
         </head>
         <body>
-          <h1>Bill of Materials - ${title}</h1>
+          <p class="kicker">Gray Matter Workshop · Bill of materials</p>
+          <h1>${title}</h1>
           <p>Items needed to purchase:</p>
           <table>
             <thead>
@@ -327,7 +359,7 @@ export default function BillOfMaterials({
     <ContentCard>
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-2xl font-bold text-[var(--tx)]">
+          <h3 className="text-title font-bold text-[var(--tx)]">
             {title} - Bill of Materials
           </h3>
           <button
@@ -366,22 +398,22 @@ export default function BillOfMaterials({
         <div className="bg-[var(--bg2)] rounded-lg p-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="text-center">
-              <div className="text-sm text-[var(--tx2)]">Total Items</div>
-              <div className="text-xl font-bold text-[var(--tx)]">
+              <div className="text-note text-[var(--tx2)]">Total Items</div>
+              <div className="text-lede font-bold text-[var(--tx)]">
                 {items.length}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-[var(--tx2)]">Full Price</div>
-              <div className="text-xl font-bold text-[var(--accent)]">
+              <div className="text-note text-[var(--tx2)]">Full Price</div>
+              <div className="text-lede font-bold text-[var(--accent)]">
                 ${originalTotalCost.toFixed(2)}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-[var(--tx2)]">
+              <div className="text-note text-[var(--tx2)]">
                 With 3D Print $5 + CTRE Recycled
               </div>
-              <div className="text-xl font-bold text-[var(--ok)]">
+              <div className="text-lede font-bold text-[var(--ok)]">
                 $
                 {(
                   originalTotalCost -
@@ -456,7 +488,7 @@ export default function BillOfMaterials({
                   onChange={(e) => handle3DPrintingToggle(e.target.checked)}
                   className="w-4 h-4 text-[var(--accent)] border-[var(--rule)] bg-[var(--bg3)] rounded focus:ring-2 focus:ring-[var(--accent)]"
                 />
-                <span className="text-sm text-[var(--tx2)]">
+                <span className="text-note text-[var(--tx2)]">
                   3D Print for $5 Total
                 </span>
               </label>
@@ -467,13 +499,13 @@ export default function BillOfMaterials({
                   onChange={(e) => handleCTRERecyclingToggle(e.target.checked)}
                   className="w-4 h-4 text-[var(--accent)] border-[var(--rule)] bg-[var(--bg3)] rounded focus:ring-2 focus:ring-[var(--accent)]"
                 />
-                <span className="text-sm text-[var(--tx2)]">
+                <span className="text-note text-[var(--tx2)]">
                   Recycle CTRE Parts (Kraken, CANivore, CANcoder)
                 </span>
               </label>
               <button
                 onClick={printNeededItems}
-                className="inline-flex items-center px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--bg2)] transition-colors text-sm font-medium"
+                className="inline-flex items-center px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--bg2)] transition-colors text-note font-medium"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -497,21 +529,21 @@ export default function BillOfMaterials({
           <div className="bg-[var(--bg2)] rounded-lg p-4 mb-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="text-center">
-                <div className="text-sm text-[var(--tx2)]">Showing Items</div>
-                <div className="text-xl font-bold text-[var(--tx)]">
+                <div className="text-note text-[var(--tx2)]">Showing Items</div>
+                <div className="text-lede font-bold text-[var(--tx)]">
                   {filteredAndSortedItems.length} / {items.length}
                 </div>
               </div>
               <div className="text-center">
-                <div className="text-sm text-[var(--tx2)]">Current Cost</div>
-                <div className="text-xl font-bold text-[var(--accent)]">
+                <div className="text-note text-[var(--tx2)]">Current Cost</div>
+                <div className="text-lede font-bold text-[var(--accent)]">
                   ${totalCost.toFixed(2)}
                 </div>
               </div>
               {savings > 0 && (
                 <div className="text-center">
-                  <div className="text-sm text-[var(--tx2)]">Savings</div>
-                  <div className="text-xl font-bold text-[var(--ok)]">
+                  <div className="text-note text-[var(--tx2)]">Savings</div>
+                  <div className="text-lede font-bold text-[var(--ok)]">
                     -${savings.toFixed(2)}
                   </div>
                 </div>
@@ -524,11 +556,11 @@ export default function BillOfMaterials({
               <table className="min-w-full border-collapse">
                 <thead>
                   <tr className="bg-[var(--bg2)]">
-                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)]">
+                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)]">
                       Own
                     </th>
                     <th
-                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("partDescription")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -541,7 +573,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("quantity")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -554,7 +586,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("vendor")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -567,7 +599,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("partNumber")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -580,7 +612,7 @@ export default function BillOfMaterials({
                       </div>
                     </th>
                     <th
-                      className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
+                      className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)] cursor-pointer hover:bg-[var(--bg3)]"
                       onClick={() => handleSort("pricePerUnit")}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -592,13 +624,13 @@ export default function BillOfMaterials({
                         />
                       </div>
                     </th>
-                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)]">
+                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)]">
                       Link
                     </th>
-                    <th className="border border-[var(--rule)] px-2 py-3 text-center text-sm font-semibold text-[var(--tx)] w-48">
+                    <th className="border border-[var(--rule)] px-2 py-3 text-center text-note font-semibold text-[var(--tx)] w-48">
                       Notes
                     </th>
-                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-sm font-semibold text-[var(--tx)]">
+                    <th className="border border-[var(--rule)] px-4 py-3 text-center text-note font-semibold text-[var(--tx)]">
                       3D Print
                     </th>
                   </tr>
@@ -626,26 +658,26 @@ export default function BillOfMaterials({
                             className="w-4 h-4 text-[var(--accent)] border-[var(--rule)] bg-[var(--bg3)] rounded focus:ring-2 focus:ring-[var(--accent)]"
                           />
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-[var(--tx)] text-center">
                           <div className="flex items-center justify-center gap-2">
                             {item.partDescription}
                             {isCTREPart(item) && (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[var(--bg2)] text-[var(--accent)]">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-meta font-medium bg-[var(--bg2)] text-[var(--accent)]">
                                 CTRE
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-[var(--tx)] text-center">
                           {item.quantity}
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-[var(--tx)] text-center">
                           {item.vendor}
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] font-mono text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-[var(--tx)] font-mono text-center">
                           {item.partNumber || "N/A"}
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-[var(--tx)] text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-[var(--tx)] text-center">
                           <div className="flex flex-col items-center">
                             <span
                               className={
@@ -657,15 +689,15 @@ export default function BillOfMaterials({
                               ${effectivePrice.toFixed(2)}
                             </span>
                             {isDiscounted && (
-                              <span className="text-xs text-[var(--tx2)] line-through">
+                              <span className="text-meta text-[var(--tx2)] line-through">
                                 ${item.pricePerUnit.toFixed(2)}
                               </span>
                             )}
                           </div>
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-center">
                           {item.vendor === "Custom" ? (
-                            <span className="text-[var(--tx2)] text-xs">
+                            <span className="text-[var(--tx2)] text-meta">
                               Files in Repository
                             </span>
                           ) : (
@@ -692,15 +724,15 @@ export default function BillOfMaterials({
                             </a>
                           )}
                         </td>
-                        <td className="border border-[var(--rule)] px-2 py-3 text-xs text-[var(--tx2)] w-48">
+                        <td className="border border-[var(--rule)] px-2 py-3 text-meta text-[var(--tx2)] w-48">
                           <div className="break-words" title={item.notes}>
                             {item.notes}
                           </div>
                         </td>
-                        <td className="border border-[var(--rule)] px-4 py-3 text-sm text-center">
+                        <td className="border border-[var(--rule)] px-4 py-3 text-note text-center">
                           {item.is3DPrinted ? (
                             <div className="flex items-center justify-center gap-2">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[var(--bg2)] text-[var(--ok)]">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-meta font-medium bg-[var(--bg2)] text-[var(--ok)]">
                                 Yes
                               </span>
                               {item.printedModelLink && (
@@ -728,7 +760,7 @@ export default function BillOfMaterials({
                               )}
                             </div>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[var(--bg2)] text-[var(--tx)]">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-meta font-medium bg-[var(--bg2)] text-[var(--tx)]">
                               No
                             </span>
                           )}
@@ -741,7 +773,7 @@ export default function BillOfMaterials({
             </div>
           </div>
 
-          <div className="mt-4 text-sm text-[var(--tx2)]">
+          <div className="mt-4 text-note text-[var(--tx2)]">
             <p className="mb-2">
               <strong>Note:</strong> Prices are estimates and may vary. Please
               check vendor websites for current pricing and availability.

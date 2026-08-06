@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
+import { readPlotTheme } from "@/lib/plotTheme";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import { useShallow } from "zustand/react/shallow";
@@ -37,7 +38,6 @@ type GainKey = keyof FlywheelGains;
 interface SliderProps {
   label: string;
   unit: string;
-  axisColor: string;
   value: number;
   min: number;
   max: number;
@@ -50,7 +50,6 @@ interface SliderProps {
 function Slider({
   label,
   unit,
-  axisColor,
   value,
   min,
   max,
@@ -76,15 +75,6 @@ function Slider({
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-2">
         <div className="flex items-baseline gap-1.5">
-          {/* The gain colour lives on the swatch and the slider track, not
-              on the label text. As text it was 2.9:1 against the panel for kI
-              and 3.3:1 for kG — the colour has to survive being read, and
-              these are 13px. The swatch keeps the slider-to-trace mapping. */}
-          <span
-            aria-hidden="true"
-            className="inline-block h-2 w-2 shrink-0 rounded-full"
-            style={{ background: axisColor }}
-          />
           <label
             htmlFor={id}
             className="font-mono text-note font-semibold"
@@ -117,7 +107,6 @@ function Slider({
         className="pid-slider w-full"
         style={
           {
-            ["--slider-accent" as string]: axisColor,
             ["--slider-fill" as string]: `${pct}%`,
           } as React.CSSProperties
         }
@@ -153,7 +142,6 @@ const REGIME_STYLE: Record<
 interface SliderConfig {
   key: GainKey;
   label: string;
-  axisColor: string;
   ariaDescription: string;
 }
 
@@ -161,19 +149,16 @@ const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kP",
     label: "kP",
-    axisColor: "#dc2626",
     ariaDescription: "Proportional gain.",
   },
   {
     key: "kI",
     label: "kI",
-    axisColor: "#ca8a04",
     ariaDescription: "Integral gain.",
   },
   {
     key: "kD",
     label: "kD",
-    axisColor: "#2563eb",
     ariaDescription: "Derivative gain.",
   },
 ];
@@ -182,13 +167,11 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kS",
     label: "kS",
-    axisColor: "#7c3aed",
     ariaDescription: "Static friction feedforward.",
   },
   {
     key: "kV",
     label: "kV",
-    axisColor: "#0891b2",
     ariaDescription: "Velocity feedforward: back-EMF compensation.",
   },
 ];
@@ -200,7 +183,6 @@ interface FlywheelVizProps {
   responseRpm: Float64Array;
   durationSec: number;
   reducedMotion: boolean;
-  isDark: boolean;
 }
 
 const FLY_VB = 220;
@@ -213,7 +195,6 @@ function FlywheelViz({
   responseRpm,
   durationSec,
   reducedMotion,
-  isDark,
 }: FlywheelVizProps) {
   const rotorRef = useRef<SVGGElement>(null);
   const rpmLabelRef = useRef<SVGTextElement>(null);
@@ -265,11 +246,11 @@ function FlywheelViz({
     return () => cancelAnimationFrame(frameId);
   }, [responseAngleRad, responseRpm, durationSec, reducedMotion, placeRotor]);
 
-  const housing = isDark ? "#475569" : "#cbd5e1";
-  const housingTrim = isDark ? "#64748b" : "#94a3b8";
-  const wheel1 = isDark ? "#9fbcd9" : "#264060";
-  const wheel2 = isDark ? "#c1d4e7" : "#4a73a0";
-  const hub = isDark ? "#0d233f" : "#0d233f";
+  const housing = "var(--rule)";
+  const housingTrim = "var(--tx3)";
+  const wheel1 = "var(--lift)";
+  const wheel2 = "color-mix(in oklch, var(--lift) 55%, var(--tx))";
+  const hub = "var(--bg)";
 
   // Spoke positions (evenly distributed around the wheel)
   const spokes = [0, 60, 120, 180, 240, 300];
@@ -345,7 +326,7 @@ function FlywheelViz({
               y1={FLY_CENTER.y}
               x2={x2}
               y2={y2}
-              stroke={isDark ? "#1e293b" : "#e2e8f0"}
+              stroke={"var(--bg3)"}
               strokeWidth={2}
               strokeLinecap="round"
             />
@@ -356,7 +337,7 @@ function FlywheelViz({
           cx={FLY_CENTER.x + (FLY_RADIUS - 14)}
           cy={FLY_CENTER.y}
           r={5}
-          fill={isDark ? "#fbbf24" : "#f59e0b"}
+          fill={"var(--accent)"}
         />
         {/* Hub */}
         <circle cx={FLY_CENTER.x} cy={FLY_CENTER.y} r={9} fill={hub} />
@@ -364,7 +345,7 @@ function FlywheelViz({
           cx={FLY_CENTER.x}
           cy={FLY_CENTER.y}
           r={3.5}
-          fill={isDark ? "#cbd5e1" : "#cbd5e1"}
+          fill={"var(--tx2)"}
         />
       </g>
 
@@ -376,7 +357,7 @@ function FlywheelViz({
         fontSize={13}
         fontWeight={600}
         textAnchor="end"
-        fill={isDark ? "#e2e8f0" : "#0d233f"}
+        fill={"var(--tx)"}
         fontFamily="ui-monospace, monospace"
       >
         0 rpm
@@ -392,7 +373,6 @@ export default function InteractiveFlywheelPlayground() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const isDark = mounted && resolvedTheme === "dark";
 
   const gains = useFlywheelStore(
     useShallow((s) => ({
@@ -466,21 +446,29 @@ export default function InteractiveFlywheelPlayground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const plotRef = useRef<uPlot | null>(null);
 
-  const accent = useMemo(
-    () => ({
-      target: isDark ? "#64748b" : "#94a3b8",
-      actual: isDark ? "#7da4cb" : "#264060",
-      actualFillTop: isDark
-        ? "rgba(125, 164, 203, 0.28)"
-        : "rgba(38, 64, 96, 0.16)",
-      actualFillBottom: isDark
-        ? "rgba(125, 164, 203, 0)"
-        : "rgba(38, 64, 96, 0)",
-      grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
-      text: isDark ? "#94a3b8" : "#64748b",
-    }),
-    [isDark]
-  );
+  // Resolved from the `--plot-*` tokens, not branched on `isDark`.
+  //
+  // It has to be *resolved*: uPlot paints to a 2D canvas context, and
+  // `strokeStyle = "var(--accent)"` is not a colour a canvas can parse — it
+  // silently draws nothing. The SVG mechanism beside this chart can and does
+  // use `var()` directly, because SVG is DOM and resolves it normally.
+  //
+  // `resolvedTheme` stays in the dependency list as the *signal* that the
+  // class on <html> changed and the values need re-reading; the values
+  // themselves are no longer a copy kept in this file.
+  const accent = useMemo(() => {
+    const t = readPlotTheme();
+    return {
+      target: t.target,
+      setpoint: t.setpoint,
+      actual: t.actual,
+      actualFillTop: t.actualFill,
+      actualFillBottom: t.actualFade,
+      grid: t.grid,
+      text: t.ink,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedTheme, mounted]);
 
   const buildPlot = useCallback(() => {
     if (!containerRef.current) return;
@@ -600,7 +588,6 @@ export default function InteractiveFlywheelPlayground() {
         key={cfg.key}
         label={cfg.label}
         unit={range.unit}
-        axisColor={cfg.axisColor}
         value={gains[cfg.key]}
         min={range.min}
         max={range.max}
@@ -615,7 +602,7 @@ export default function InteractiveFlywheelPlayground() {
   void FLY_HOLD_PHASE_SEC; // kept for future explicit references
 
   return (
-    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--bg2)] p-5 shadow-[0_1px_2px_rgb(0_0_0_/_0.04)] sm:p-6">
+    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--bg2)] p-5 shadow-sm sm:p-6">
       {/* ── Toolbar ──────────────────────────── */}
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
@@ -694,7 +681,7 @@ export default function InteractiveFlywheelPlayground() {
           className="pid-slider min-w-0 flex-1"
           style={
             {
-              ["--slider-accent" as string]: "#475569",
+              ["--slider-accent" as string]: "var(--accent)",
               ["--slider-fill" as string]: `${((targetRpm - FLY_TARGET_RANGE_RPM.min) / (FLY_TARGET_RANGE_RPM.max - FLY_TARGET_RANGE_RPM.min)) * 100}%`,
             } as React.CSSProperties
           }
@@ -715,7 +702,6 @@ export default function InteractiveFlywheelPlayground() {
             responseRpm={response.velocityRpm}
             durationSec={physics.durationSec}
             reducedMotion={reducedMotion}
-            isDark={isDark}
           />
         </div>
         <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:p-3">

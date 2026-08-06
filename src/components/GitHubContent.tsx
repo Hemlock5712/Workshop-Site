@@ -23,6 +23,18 @@ import {
   type GitHubPRData,
 } from "@/lib/githubSchemas";
 
+/**
+ * Every request in this file goes through `/api/github`, never straight to
+ * `api.github.com`. The reason is in that route's own header comment: GitHub's
+ * anonymous limit is per IP, and a classroom is one IP. The proxy is a shared
+ * CDN cache in front of the same data, so the room costs one request instead
+ * of one per student.
+ */
+const api = (params: Record<string, string | number>) =>
+  `/api/github?${new URLSearchParams(
+    Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)]))
+  ).toString()}`;
+
 interface PRRef {
   number: number;
   focusFile?: string;
@@ -48,10 +60,14 @@ interface GitHubContentProps {
  * design uses anywhere else, and the label already says more than the ring
  * did. So the label won, and it is now one component.
  *
- * `onCode` picks the ink for the fixed `#1e1e1e` code panel, where `--tx3`
- * would be near-black in light theme. `aria-live` because a sighted student
- * watches the label appear and a screen-reader user otherwise gets silence
- * until the file lands.
+ * `onCode` switches to `--code-tx2` for the fixed `#1e1e1e` Monaco panel,
+ * which stays dark in both themes and so cannot use `--tx3` (that inverts and
+ * goes near-black on paper). The hand-picked `#464d5b` that used to stand in
+ * measured 1.96:1 there — the one thing on screen during a 3 MB download, and
+ * effectively invisible. `--code-tx2` measures 6.2:1 on the same panel.
+ *
+ * `aria-live` because a sighted student watches the label appear and a
+ * screen-reader user otherwise gets silence until the file lands.
  */
 function LoadingLabel({
   label,
@@ -68,7 +84,7 @@ function LoadingLabel({
       style={{
         fontSize: "var(--text-micro)",
         letterSpacing: "0.1em",
-        color: onCode ? "#464d5b" : "var(--tx3)",
+        color: onCode ? "var(--code-tx2)" : "var(--tx3)",
       }}
       aria-live="polite"
     >
@@ -155,10 +171,14 @@ function LoadingCard({ label }: { label: string }) {
  * It used to print the raw failure — "Failed to Load File" over "Failed to
  * fetch file: Not Found" and a repo/path line — which reads as though
  * something in *their* project is wrong. It is not: these files are fetched
- * live from a public repo while the page renders, and the usual cause is
- * GitHub's anonymous rate limit. So the copy says whose fault it is, offers
- * the two things that actually help (wait and retry, or read it on GitHub),
- * and leaves the technical detail in the console where it belongs.
+ * from a public repo through `/api/github` while the page renders. So the copy
+ * says whose fault it is, offers the two things that actually help (retry, or
+ * read it on GitHub), and leaves the technical detail in the console.
+ *
+ * It used to name GitHub's anonymous rate limit as the likely cause, because
+ * it was — the embeds called `api.github.com` from the browser and a classroom
+ * shares one IP. The proxy's shared cache took that failure mode away, so the
+ * copy no longer explains it.
  *
  * `--err` colours the heading only. A whole card washed in the error colour
  * made a rate-limited embed look like a broken robot.
@@ -266,7 +286,7 @@ export default function GitHubContent({
           <div className="flex flex-wrap">
             <button
               onClick={() => setActiveTab("ide")}
-              className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
+              className={`px-4 sm:px-6 py-3 text-note font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "ide"
                   ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--tx2)] hover:text-[var(--tx)]"
@@ -277,7 +297,7 @@ export default function GitHubContent({
             </button>
             <button
               onClick={() => setActiveTab("diff")}
-              className={`px-4 sm:px-6 py-3 text-sm font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
+              className={`px-4 sm:px-6 py-3 text-note font-medium border-b-2 flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "diff"
                   ? "border-[var(--accent)] text-[var(--accent)]"
                   : "border-transparent text-[var(--tx2)] hover:text-[var(--tx)]"
@@ -333,7 +353,12 @@ function FileView({
       try {
         setLoading(true);
         setFailed(false);
-        const endpoint = `https://api.github.com/repos/${repository}/contents/${filePath}?ref=${branch}`;
+        const endpoint = api({
+          resource: "file",
+          repo: repository,
+          path: filePath,
+          ref: branch,
+        });
         const response = await fetch(endpoint);
         if (!response.ok) {
           throw new Error(
@@ -377,7 +402,7 @@ function FileView({
       <div className={className}>
         <ErrorCard
           heading="This code embed didn’t load"
-          detail={`The file is pulled live from GitHub while you read, and that request failed. Nothing is wrong with your project or your install. GitHub also limits how many anonymous requests a browser can make in an hour, so this often clears up on its own — try again in a few minutes, or read ${filePath.split("/").pop() || filePath} on GitHub.`}
+          detail={`The file is pulled from GitHub while you read, and that request failed. Nothing is wrong with your project or your install — this is usually a brief outage between this site and GitHub, and retrying clears it. You can also read ${filePath.split("/").pop() || filePath} on GitHub directly.`}
           href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -394,15 +419,15 @@ function FileView({
         <div className="border-b border-[var(--rule)] p-pad">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <span className="font-mono text-lg font-medium text-[var(--tx)]">
+              <span className="font-mono text-aside font-medium text-[var(--tx)]">
                 {filename}
               </span>
-              <span className="px-2 py-1 bg-[var(--bg2)] text-[var(--accent)] rounded text-xs font-medium">
+              <span className="px-2 py-1 bg-[var(--bg2)] text-[var(--accent)] rounded text-meta font-medium">
                 {language.toUpperCase()}
               </span>
             </div>
 
-            <div className="flex items-center space-x-4 text-sm text-[var(--tx2)]">
+            <div className="flex items-center space-x-4 text-note text-[var(--tx2)]">
               {fileSize !== undefined && (
                 <span>{formatFileSize(fileSize)}</span>
               )}
@@ -410,14 +435,14 @@ function FileView({
                 href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[var(--bg2)] text-[var(--tx)] px-3 py-1 rounded hover:bg-[var(--rule)] transition-colors text-sm font-medium flex items-center gap-1"
+                className="bg-[var(--bg2)] text-[var(--tx)] px-3 py-1 rounded hover:bg-[var(--rule)] transition-colors text-note font-medium flex items-center gap-1"
               >
                 View on GitHub <ExternalLink className="w-4 h-4" />
               </a>
             </div>
           </div>
 
-          <div className="mt-2 text-sm text-[var(--tx2)]">
+          <div className="mt-2 text-note text-[var(--tx2)]">
             {repository} / {filePath.replace(filename, "").replace(/\/$/, "")}
           </div>
         </div>
@@ -497,7 +522,12 @@ function PRView({
 
           if (file.status !== "added") {
             try {
-              const originalUrl = `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.base.sha}`;
+              const originalUrl = api({
+                resource: "file",
+                repo,
+                path: file.filename,
+                ref: prData.base.sha,
+              });
               const originalResponse = await fetch(originalUrl);
               if (originalResponse.ok) {
                 const originalData = parseGitHub(
@@ -514,7 +544,12 @@ function PRView({
 
           if (file.status !== "removed") {
             try {
-              const modifiedUrl = `https://api.github.com/repos/${repo}/contents/${file.filename}?ref=${prData.head.sha}`;
+              const modifiedUrl = api({
+                resource: "file",
+                repo,
+                path: file.filename,
+                ref: prData.head.sha,
+              });
               const modifiedResponse = await fetch(modifiedUrl);
               if (modifiedResponse.ok) {
                 const modifiedData = parseGitHub(
@@ -553,7 +588,11 @@ function PRView({
         setLoading(true);
         setFailed(false);
 
-        const prUrl = `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}`;
+        const prUrl = api({
+          resource: "pr",
+          repo: repository,
+          number: pullRequestNumber,
+        });
         const prResponse = await fetch(prUrl);
         if (!prResponse.ok) {
           throw new Error(
@@ -567,7 +606,11 @@ function PRView({
         );
         setPRData(prResult);
 
-        const filesUrl = `https://api.github.com/repos/${repository}/pulls/${pullRequestNumber}/files`;
+        const filesUrl = api({
+          resource: "pr-files",
+          repo: repository,
+          number: pullRequestNumber,
+        });
         const filesResponse = await fetch(filesUrl);
         if (!filesResponse.ok) {
           throw new Error(
@@ -631,7 +674,7 @@ function PRView({
       <div className={`my-8 ${className}`}>
         <ErrorCard
           heading="This diff didn’t load"
-          detail="The changed files are pulled live from GitHub while you read, and that request failed. Nothing is wrong with your project or your install. GitHub also limits how many anonymous requests a browser can make in an hour, so this often clears up on its own — try again in a few minutes, or read the pull request on GitHub."
+          detail="The changed files are pulled from GitHub while you read, and that request failed. Nothing is wrong with your project or your install — this is usually a brief outage between this site and GitHub, and retrying clears it. You can also read the pull request on GitHub directly."
           href={`https://github.com/${repository}/pull/${pullRequestNumber}`}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -647,7 +690,7 @@ function PRView({
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-3">
                 <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${
+                  className={`px-2 py-1 rounded-full text-meta font-medium flex items-center gap-1 ${
                     prData.merged_at
                       ? "bg-[var(--bg2)] text-[var(--tx)]"
                       : prData.state === "closed"
@@ -669,14 +712,14 @@ function PRView({
                     </>
                   )}
                 </span>
-                <span className="text-[var(--tx2)] text-sm">
+                <span className="text-[var(--tx2)] text-note">
                   #{prData.number}
                 </span>
               </div>
 
               <h4 className="display m-0 mb-3 text-lede">{prData.title}</h4>
 
-              <div className="flex items-center space-x-4 text-sm text-[var(--tx2)]">
+              <div className="flex items-center space-x-4 text-note text-[var(--tx2)]">
                 <span>created {formatDate(prData.created_at)}</span>
                 {prData.merged_at && (
                   <span>merged {formatDate(prData.merged_at)}</span>
@@ -688,7 +731,7 @@ function PRView({
               href={prData.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[var(--accent)] text-[var(--accent-ink)] px-4 py-2 rounded-lg hover:bg-[var(--bg2)] transition-colors text-sm font-medium flex items-center gap-1"
+              className="bg-[var(--accent)] text-[var(--accent-ink)] px-4 py-2 rounded-lg hover:bg-[var(--bg2)] transition-colors text-note font-medium flex items-center gap-1"
             >
               View on GitHub <ExternalLink className="w-4 h-4" />
             </a>
@@ -700,7 +743,7 @@ function PRView({
             <h5 className="display m-0 text-aside">
               {focusFile ? `${focusFile} Changes` : "Files Changed"}
             </h5>
-            <div className="flex items-center space-x-4 text-sm">
+            <div className="flex items-center space-x-4 text-note">
               <span className="flex items-center text-[var(--ok)]">
                 <span className="w-3 h-3 bg-[var(--bg2)] rounded-full mr-2"></span>
                 +{files.reduce((sum, file) => sum + file.additions, 0)}{" "}
@@ -726,11 +769,11 @@ function PRView({
               >
                 <div className="bg-[var(--bg2)] dark:bg-[#2d2d30] px-4 py-3 border-b border-[var(--rule)] flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <span className="font-mono text-sm font-medium text-[var(--tx)]">
+                    <span className="font-mono text-note font-medium text-[var(--tx)]">
                       {file.filename}
                     </span>
                     <span
-                      className={`px-2 py-1 rounded text-xs ${
+                      className={`px-2 py-1 rounded text-meta ${
                         file.status === "added"
                           ? "bg-[var(--accent)] text-[var(--accent-ink)]"
                           : file.status === "removed"
@@ -740,11 +783,11 @@ function PRView({
                     >
                       {file.status}
                     </span>
-                    <span className="text-xs bg-[var(--bg3)] text-[var(--tx3)] px-2 py-1 rounded font-medium">
+                    <span className="text-meta bg-[var(--bg3)] text-[var(--tx3)] px-2 py-1 rounded font-medium">
                       {language.toUpperCase()}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-3 text-sm">
+                  <div className="flex items-center space-x-3 text-note">
                     {file.additions > 0 && (
                       <span className="text-[var(--ok)] font-medium">
                         +{file.additions}

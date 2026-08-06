@@ -10,7 +10,7 @@ function ShortcutKeys({ keys }: { keys: string[] }) {
       {keys.map((key, index) => (
         <kbd
           key={`${key}-${index}`}
-          className="px-2 py-1 text-xs bg-[var(--bg2)] border border-[var(--rule)] rounded font-mono"
+          className="px-2 py-1 text-meta bg-[var(--bg2)] border border-[var(--rule)] rounded font-mono"
         >
           {key}
         </kbd>
@@ -67,14 +67,14 @@ export default function KeyboardShortcutsHelp() {
             {shortcuts.map((shortcut, index) => (
               <div key={index} className="flex items-center gap-3">
                 <ShortcutKeys keys={shortcut.keys} />
-                <span className="text-sm text-[var(--tx2)] flex-1">
+                <span className="text-note text-[var(--tx2)] flex-1">
                   {shortcut.description}
                 </span>
               </div>
             ))}
           </div>
 
-          <Dialog.Description className="mt-4 pt-3 border-t border-[var(--rule)] text-xs text-[var(--tx2)]">
+          <Dialog.Description className="mt-4 pt-3 border-t border-[var(--rule)] text-meta text-[var(--tx2)]">
             Press <ShortcutKeys keys={["Esc"]} /> to close this dialog.
           </Dialog.Description>
         </Dialog.Content>

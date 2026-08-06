@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
+import { readPlotTheme } from "@/lib/plotTheme";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import { useShallow } from "zustand/react/shallow";
@@ -36,7 +37,6 @@ type GainKey = keyof ControllerGains;
 interface SliderProps {
   label: string;
   unit: string;
-  axisColor: string;
   value: number;
   min: number;
   max: number;
@@ -49,7 +49,6 @@ interface SliderProps {
 function Slider({
   label,
   unit,
-  axisColor,
   value,
   min,
   max,
@@ -75,15 +74,6 @@ function Slider({
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-2">
         <div className="flex items-baseline gap-1.5">
-          {/* The gain colour lives on the swatch and the slider track, not
-              on the label text. As text it was 2.9:1 against the panel for kI
-              and 3.3:1 for kG — the colour has to survive being read, and
-              these are 13px. The swatch keeps the slider-to-trace mapping. */}
-          <span
-            aria-hidden="true"
-            className="inline-block h-2 w-2 shrink-0 rounded-full"
-            style={{ background: axisColor }}
-          />
           <label
             htmlFor={id}
             className="font-mono text-note font-semibold"
@@ -116,7 +106,6 @@ function Slider({
         className="pid-slider w-full"
         style={
           {
-            ["--slider-accent" as string]: axisColor,
             ["--slider-fill" as string]: `${pct}%`,
           } as React.CSSProperties
         }
@@ -150,7 +139,6 @@ const REGIME_STYLE: Record<Regime, { label: string; cssVar: string }> = {
 interface SliderConfig {
   key: GainKey;
   label: string;
-  axisColor: string;
   ariaDescription: string;
 }
 
@@ -158,19 +146,16 @@ const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kP",
     label: "kP",
-    axisColor: "#dc2626",
     ariaDescription: "Proportional gain.",
   },
   {
     key: "kI",
     label: "kI",
-    axisColor: "#ca8a04",
     ariaDescription: "Integral gain.",
   },
   {
     key: "kD",
     label: "kD",
-    axisColor: "#2563eb",
     ariaDescription: "Derivative gain.",
   },
 ];
@@ -179,19 +164,16 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kS",
     label: "kS",
-    axisColor: "#7c3aed",
     ariaDescription: "Static friction feedforward.",
   },
   {
     key: "kV",
     label: "kV",
-    axisColor: "#0891b2",
     ariaDescription: "Velocity feedforward.",
   },
   {
     key: "kG",
     label: "kG",
-    axisColor: "#16a34a",
     ariaDescription: "Gravity feedforward.",
   },
 ];
@@ -211,7 +193,6 @@ interface ArmVizProps {
   initialDeg: number;
   durationSec: number;
   reducedMotion: boolean;
-  isDark: boolean;
 }
 
 const ARM_VB = 220;
@@ -226,7 +207,6 @@ function ArmViz({
   initialDeg,
   durationSec,
   reducedMotion,
-  isDark,
 }: ArmVizProps) {
   const armLineRef = useRef<SVGLineElement>(null);
   const ballRef = useRef<SVGCircleElement>(null);
@@ -284,12 +264,12 @@ function ArmViz({
   const tx = ARM_PIVOT.x + ARM_LENGTH * Math.cos(tRad);
   const ty = ARM_PIVOT.y - ARM_LENGTH * Math.sin(tRad);
 
-  const gradStart = isDark ? "#9fbcd9" : "#264060";
-  const gradEnd = isDark ? "#c1d4e7" : "#4a73a0";
-  const ghost = isDark ? "#64748b" : "#94a3b8";
-  const tickColor = isDark ? "#475569" : "#cbd5e1";
-  const mount = isDark ? "#475569" : "#cbd5e1";
-  const ballStroke = isDark ? "#0d233f" : "#fff";
+  const gradStart = "var(--lift)";
+  const gradEnd = "color-mix(in oklch, var(--lift) 55%, var(--tx))";
+  const ghost = "var(--tx3)";
+  const tickColor = "var(--rule)";
+  const mount = "var(--rule)";
+  const ballStroke = "var(--bg)";
 
   // Half-circle protractor sweep from -90° (bottom) to +90° (top)
   const arcStart = {
@@ -425,18 +405,8 @@ function ArmViz({
         strokeWidth={1.75}
       />
 
-      <circle
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y}
-        r={4.5}
-        fill={isDark ? "#cbd5e1" : "#0d233f"}
-      />
-      <circle
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y}
-        r={1.75}
-        fill={isDark ? "#0d233f" : "#cbd5e1"}
-      />
+      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={4.5} fill={"var(--tx2)"} />
+      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={1.75} fill={"var(--bg2)"} />
 
       {/* Live angle readout — bottom-right corner */}
       <text
@@ -446,7 +416,7 @@ function ArmViz({
         fontSize={13}
         fontWeight={600}
         textAnchor="end"
-        fill={isDark ? "#e2e8f0" : "#0d233f"}
+        fill={"var(--tx)"}
         fontFamily="ui-monospace, monospace"
       >
         0°
@@ -462,7 +432,6 @@ export default function InteractivePidPlayground() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const isDark = mounted && resolvedTheme === "dark";
 
   const gains = usePidStore(
     useShallow((s) => ({
@@ -548,22 +517,29 @@ export default function InteractivePidPlayground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const plotRef = useRef<uPlot | null>(null);
 
-  const accent = useMemo(
-    () => ({
-      target: isDark ? "#64748b" : "#94a3b8",
-      setpoint: isDark ? "#f59e0b" : "#b45309",
-      actual: isDark ? "#7da4cb" : "#264060",
-      actualFillTop: isDark
-        ? "rgba(125, 164, 203, 0.28)"
-        : "rgba(38, 64, 96, 0.16)",
-      actualFillBottom: isDark
-        ? "rgba(125, 164, 203, 0)"
-        : "rgba(38, 64, 96, 0)",
-      grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
-      text: isDark ? "#94a3b8" : "#64748b",
-    }),
-    [isDark]
-  );
+  // Resolved from the `--plot-*` tokens, not branched on `isDark`.
+  //
+  // It has to be *resolved*: uPlot paints to a 2D canvas context, and
+  // `strokeStyle = "var(--accent)"` is not a colour a canvas can parse — it
+  // silently draws nothing. The SVG arm beside this chart can and does use
+  // `var()` directly, because SVG is DOM and resolves it normally.
+  //
+  // `resolvedTheme` stays in the dependency list as the *signal* that the
+  // class on <html> changed and the values need re-reading; the values
+  // themselves are no longer a copy kept in this file.
+  const accent = useMemo(() => {
+    const t = readPlotTheme();
+    return {
+      target: t.target,
+      setpoint: t.setpoint,
+      actual: t.actual,
+      actualFillTop: t.actualFill,
+      actualFillBottom: t.actualFade,
+      grid: t.grid,
+      text: t.ink,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedTheme, mounted]);
 
   const buildPlot = useCallback(() => {
     if (!containerRef.current) return;
@@ -693,7 +669,6 @@ export default function InteractivePidPlayground() {
         key={cfg.key}
         label={cfg.label}
         unit={range.unit}
-        axisColor={cfg.axisColor}
         value={gains[cfg.key]}
         min={range.min}
         max={range.max}
@@ -798,7 +773,7 @@ export default function InteractivePidPlayground() {
           className="pid-slider min-w-0 flex-1"
           style={
             {
-              ["--slider-accent" as string]: "#475569",
+              ["--slider-accent" as string]: "var(--accent)",
               ["--slider-fill" as string]: `${((targetDeg - TARGET_RANGE_DEG.min) / (TARGET_RANGE_DEG.max - TARGET_RANGE_DEG.min)) * 100}%`,
             } as React.CSSProperties
           }
@@ -820,7 +795,6 @@ export default function InteractivePidPlayground() {
             initialDeg={initialDeg}
             durationSec={physics.durationSec}
             reducedMotion={reducedMotion}
-            isDark={isDark}
           />
         </div>
         <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:p-3">

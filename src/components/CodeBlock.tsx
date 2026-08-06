@@ -71,7 +71,7 @@ export default async function CodeBlock({
         >
           <span
             className="mono truncate"
-            style={{ fontSize: "var(--text-meta)", color: "#c9ced6" }}
+            style={{ fontSize: "var(--text-meta)", color: "var(--code-tx)" }}
           >
             {label ?? language}
           </span>
@@ -129,10 +129,10 @@ export default async function CodeBlock({
                     className="sticky left-0 select-none pr-3.5 text-right"
                     style={{
                       background: "var(--code-bg)",
-                      color: isMarked ? "var(--accent)" : "#7d8698",
+                      color: isMarked ? "var(--accent)" : "var(--code-tx2)",
                       borderRight: isMarked
                         ? "2px solid var(--accent)"
-                        : "1px solid #1a2032",
+                        : "1px solid var(--rule-soft)",
                       paddingLeft: 14,
                     }}
                   >

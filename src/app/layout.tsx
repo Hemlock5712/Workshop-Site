@@ -6,7 +6,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 /**
- * Three families, three jobs — see `context/style-guide.md`.
+ * Three families, three jobs. The reasoning lives in `globals.css`, which is
+ * this design's authority; `context/style-guide.md`, which this used to cite,
+ * documented a colour palette that no longer exists and was deleted.
  *
  *   Instrument Sans  UI chrome, labels, buttons. Never body copy.
  *   Newsreader       Body copy and every display heading. Optical sizing is
@@ -56,6 +58,18 @@ export default function RootLayout({
         className={`${instrumentSans.variable} ${jetbrainsMono.variable} ${newsreader.variable} antialiased bg-[var(--bg)] text-[var(--tx)]`}
         suppressHydrationWarning={true}
       >
+        {/* Marks the document as "JavaScript is running", before first paint.
+            Everything that hides itself waiting for script — today that is the
+            home page's scroll reveal, see `.reveal` in globals.css — gates its
+            hidden state on this class, so a visitor whose JS never arrives
+            gets the resolved state rather than a blank section. Same technique
+            and the same placement next-themes uses for its own pre-paint
+            class. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("js")`,
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

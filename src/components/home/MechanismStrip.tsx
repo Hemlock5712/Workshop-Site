@@ -18,6 +18,17 @@
  * Reveal is one-way and idempotent. Scrolling back up does not re-hide, and
  * `prefers-reduced-motion` drops the transitions via the global rule in
  * globals.css, leaving the resolved state.
+ *
+ * The hidden state lives in CSS (`.reveal` in globals.css) and not in an
+ * inline style, and that is not a tidying preference. Inline `opacity: 0`
+ * shipped in the server HTML, so on any page where JS did not arrive — blocked,
+ * a chunk that 404'd, a phone that gave up — all four figures and their
+ * captions stayed invisible permanently. The CSS form only hides under
+ * `html.js`, a class set by a blocking inline script in the root layout, so
+ * the hidden state cannot exist unless something is running that can undo it.
+ * Doing the same flip in an effect was the other option and is worse: it
+ * paints visible, then hides, then animates back in — a flash for everyone, to
+ * fix a case that affects almost no one.
  */
 
 import Image from "next/image";
@@ -194,20 +205,18 @@ export default function MechanismStrip() {
             {group.mechanisms.map((mech, i) => {
               const key = `${gi}-${i}`;
               const on = revealed.has(key);
-              const delay = `${i * 0.09}s`;
               return (
                 <figure
                   key={mech.title}
                   data-reveal={key}
-                  className="m-0"
+                  data-revealed={on ? "true" : "false"}
+                  className="reveal m-0"
                   style={{
                     borderRight:
                       i < group.mechanisms.length - 1
                         ? "1px solid var(--rule-soft)"
                         : undefined,
-                    opacity: on ? 1 : 0,
-                    transform: on ? "none" : "translateY(26px)",
-                    transition: `opacity 0.7s ease ${delay}, transform 0.7s cubic-bezier(0.2,0.7,0.3,1) ${delay}`,
+                    ["--reveal-delay" as string]: `${i * 0.09}s`,
                   }}
                 >
                   <div
@@ -222,22 +231,14 @@ export default function MechanismStrip() {
                       alt={mech.alt}
                       fill
                       sizes="(min-width: 640px) 50vw, 100vw"
-                      className="object-cover"
-                      style={{
-                        filter: on
-                          ? "grayscale(0) saturate(1.05)"
-                          : "grayscale(1) brightness(0.8)",
-                        transition: `filter 0.9s ease ${0.16 + i * 0.09}s`,
-                      }}
+                      className="reveal-img object-cover"
                     />
                     <div
                       aria-hidden="true"
-                      className="pointer-events-none absolute inset-0"
+                      className="reveal-wash pointer-events-none absolute inset-0"
                       style={{
                         background: "var(--accent)",
                         mixBlendMode: "overlay",
-                        opacity: on ? 0 : 0.35,
-                        transition: `opacity 0.9s ease ${delay}`,
                       }}
                     />
                   </div>

@@ -1,211 +1,162 @@
 "use client";
 
-import {
-  forwardRef,
-  Suspense,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Center, Html, OrbitControls, useGLTF } from "@react-three/drei";
-import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+/**
+ * A mechanism, in 3D, with a control bar under it.
+ *
+ * This file deliberately imports nothing from `three`. It owns the frame, the
+ * approach gate and the controls; `ModelCanvas` owns the scene and is pulled
+ * in through `next/dynamic` the first time the viewer comes near the viewport.
+ * Before that the page costs nothing for a model nobody has scrolled to — and
+ * /mechanism-cad has two of them.
+ *
+ * The controls sit in a bar rather than floating over the model. Four overlay
+ * chips would occlude the thing they exist to look at, and at a phone's touch
+ * sizes they would have to be bigger than the model is tall. The bar also
+ * gives the view presets somewhere legible to live, which is what makes this
+ * usable without a mouse: orbit is a drag gesture and has no keyboard
+ * equivalent, so the four angles a student actually needs are buttons.
+ */
+
+import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+import type { ViewName } from "@/components/model/ModelCanvas";
+
+const ModelCanvas = dynamic(() => import("@/components/model/ModelCanvas"), {
+  ssr: false,
+});
 
 interface ModelViewerProps {
   url: string;
-  width?: number;
-  height?: number;
+  /** Accessible name — what this model is. Required: a canvas has no alt text. */
+  label: string;
   className?: string;
+  /** Approximate download, e.g. `1.6 MB`. Shown before the model is fetched. */
+  weight?: string;
 }
 
-export interface ModelViewerRef {
-  resetCamera: () => void;
-}
+const VIEW_LABELS: ReadonlyArray<{ name: ViewName; label: string }> = [
+  { name: "home", label: "Reset" },
+  { name: "front", label: "Front" },
+  { name: "side", label: "Side" },
+  { name: "top", label: "Top" },
+];
 
-interface ModelViewerPropsWithReset extends ModelViewerProps {
-  showResetButton?: boolean;
-}
-
-const DEFAULT_CAMERA_POSITION: [number, number, number] = [80, 650, 380];
-const DEFAULT_TARGET: [number, number, number] = [0, 0, 0];
-
-function Model({ url, onLoaded }: { url: string; onLoaded: () => void }) {
-  const gltf = useGLTF(url);
-
-  useEffect(() => {
-    onLoaded();
-  }, [onLoaded, gltf]);
-
-  return (
-    <Center>
-      <primitive object={gltf.scene} />
-    </Center>
-  );
-}
-
-/* The other rotating ring on the site, retired for the same reason as the one
-   in `GitHubContent`: a quiet mono micro-label is the idiom here, and it says
-   more than the ring did. */
-function LoadingFallback() {
-  return (
-    <Html center>
-      <div
-        className="mono px-4 py-2.5 whitespace-nowrap"
-        style={{
-          fontSize: "var(--text-micro)",
-          letterSpacing: "0.1em",
-          background: "var(--bg2)",
-          border: "1px solid var(--rule)",
-          borderRadius: 3,
-          color: "var(--tx3)",
-        }}
-        aria-live="polite"
-      >
-        loading 3D model…
-      </div>
-    </Html>
-  );
-}
-
-function CameraTracker({
-  onPositionChange,
-}: {
-  onPositionChange: (position: [number, number, number]) => void;
-}) {
-  useFrame(({ camera }) => {
-    const next: [number, number, number] = [
-      Math.round(camera.position.x * 100) / 100,
-      Math.round(camera.position.y * 100) / 100,
-      Math.round(camera.position.z * 100) / 100,
-    ];
-
-    onPositionChange(next);
+export default function ModelViewer({
+  url,
+  label,
+  className = "",
+  weight,
+}: ModelViewerProps) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const readoutRef = useRef<HTMLSpanElement>(null);
+  const [near, setNear] = useState(false);
+  // A nonce rather than a bare name, so pressing Reset twice from a dragged
+  // camera moves it back both times.
+  const [view, setView] = useState<{ name: ViewName; nonce: number }>({
+    name: "home",
+    nonce: 0,
   });
 
-  return null;
-}
-
-const ModelViewer = forwardRef<ModelViewerRef, ModelViewerPropsWithReset>(
-  function ModelViewer(
-    { url, width, height, className = "", showResetButton = false },
-    ref
-  ) {
-    const controlsRef = useRef<OrbitControlsImpl | null>(null);
-    const [cameraPosition, setCameraPosition] = useState<
-      [number, number, number]
-    >(DEFAULT_CAMERA_POSITION);
-
-    const handleCameraPositionUpdate = useCallback(
-      (next: [number, number, number]) => {
-        setCameraPosition((prev) =>
-          prev[0] === next[0] && prev[1] === next[1] && prev[2] === next[2]
-            ? prev
-            : next
-        );
+  // Mount the scene once the viewer is within a screen of the viewport. The
+  // `rootMargin` is what keeps this from reading as lazy: by the time the
+  // model is on screen it has usually already started decoding.
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setNear(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setNear(true);
+          observer.disconnect();
+        }
       },
-      []
+      { root: document.getElementById("main-content"), rootMargin: "100% 0px" }
     );
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
 
-    const applyDefaultCamera = useCallback(() => {
-      const controls = controlsRef.current;
-      const camera = controls?.object;
-      if (!controls || !camera) {
-        return;
-      }
-
-      camera.position.set(
-        DEFAULT_CAMERA_POSITION[0],
-        DEFAULT_CAMERA_POSITION[1],
-        DEFAULT_CAMERA_POSITION[2]
-      );
-      controls.target.set(
-        DEFAULT_TARGET[0],
-        DEFAULT_TARGET[1],
-        DEFAULT_TARGET[2]
-      );
-      controls.update();
-      handleCameraPositionUpdate(DEFAULT_CAMERA_POSITION);
-    }, [handleCameraPositionUpdate]);
-
-    const handleModelLoaded = useCallback(() => {
-      applyDefaultCamera();
-    }, [applyDefaultCamera]);
-
-    useImperativeHandle(ref, () => ({
-      resetCamera: applyDefaultCamera,
-    }));
-
-    useEffect(() => {
-      const id = requestAnimationFrame(() => applyDefaultCamera());
-      return () => cancelAnimationFrame(id);
-    }, [applyDefaultCamera, url]);
-
-    const containerStyle = useMemo(
-      () => ({
-        width: width ? `${width}px` : undefined,
-        height: height ? `${height}px` : undefined,
-      }),
-      [width, height]
-    );
-
-    return (
+  return (
+    <div className="measure-wide">
       <div
-        className={`relative bg-[var(--bg2)] rounded-lg overflow-hidden ${className}`}
-        style={containerStyle}
+        ref={frameRef}
+        role="img"
+        aria-label={`${label}, an interactive 3D model. Use the view buttons below to change angle.`}
+        className={`relative overflow-hidden ${className}`.trim()}
+        style={{
+          background: "var(--bg2)",
+          border: "1px solid var(--rule)",
+          borderBottom: "none",
+          borderTopLeftRadius: 3,
+          borderTopRightRadius: 3,
+        }}
       >
-        <Canvas camera={{ position: DEFAULT_CAMERA_POSITION, fov: 45 }}>
-          <ambientLight intensity={0.6} />
-          <directionalLight position={[10, 10, 10]} intensity={1} />
-          <directionalLight position={[-10, -10, -5]} intensity={0.5} />
-
-          <Suspense fallback={<LoadingFallback />}>
-            <Model url={url} onLoaded={handleModelLoaded} />
-          </Suspense>
-
-          <OrbitControls
-            ref={controlsRef}
-            enablePan
-            enableZoom
-            enableRotate
-            makeDefault
-            minDistance={150}
-            maxDistance={1500}
-          />
-
-          <CameraTracker onPositionChange={handleCameraPositionUpdate} />
-        </Canvas>
-
-        {/* Explicit colours rather than `bg-black/70 text-white`: that pair
-            measured 1:1 in the audit, because the translucent utility wasn't
-            resolving and the white text was landing on the page background. */}
-        <div
-          className="mono absolute left-2 top-2 rounded px-2 py-1 text-xs"
-          style={{
-            background: "oklch(0.135 0.04 265 / 0.82)",
-            color: "oklch(0.9 0.01 260)",
-            border: "1px solid var(--rule)",
-          }}
-        >
-          Camera: [{cameraPosition[0]}, {cameraPosition[1]}, {cameraPosition[2]}
-          ]
-        </div>
-
-        {showResetButton && (
-          <button
-            type="button"
-            onClick={applyDefaultCamera}
-            className="absolute top-2 right-2 border border-[var(--rule)] bg-[var(--bg2)] text-[var(--tx2)] hover:border-[var(--accent)] hover:text-[var(--accent)] text-xs px-3 py-1 rounded font-medium transition-colors"
-            title="Reset camera to default position"
-          >
-            Reset View
-          </button>
+        {near ? (
+          <ModelCanvas url={url} view={view} readout={readoutRef} />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <span
+              className="mono"
+              style={{
+                fontSize: "var(--text-micro)",
+                letterSpacing: "0.1em",
+                color: "var(--tx3)",
+              }}
+            >
+              {weight ? `3D model · ${weight}` : "3D model"}
+            </span>
+          </div>
         )}
       </div>
-    );
-  }
-);
 
-export default ModelViewer;
+      <div
+        className="flex flex-wrap items-center gap-tight px-3 py-2"
+        style={{
+          background: "var(--bg2)",
+          border: "1px solid var(--rule)",
+          borderBottomLeftRadius: 3,
+          borderBottomRightRadius: 3,
+        }}
+      >
+        <span className="micro mr-1 hidden sm:inline">View</span>
+        {VIEW_LABELS.map((v) => (
+          <button
+            key={v.name}
+            type="button"
+            onClick={() =>
+              setView((p) => ({ name: v.name, nonce: p.nonce + 1 }))
+            }
+            className="mono flex min-h-11 cursor-pointer items-center px-3 transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] sm:min-h-0 sm:py-1.5"
+            style={{
+              fontSize: "var(--text-micro)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              border: "1px solid var(--rule)",
+              borderRadius: 2,
+              background: "var(--bg)",
+              color: "var(--tx2)",
+            }}
+          >
+            {v.label}
+          </button>
+        ))}
+
+        {/* Live telemetry for a sighted reader orienting themselves. It changes
+            every frame, so it is hidden from assistive tech — announcing three
+            numbers sixty times a second is not information. */}
+        <span
+          aria-hidden="true"
+          className="mono tabular ml-auto hidden whitespace-nowrap md:inline"
+          style={{ fontSize: "var(--text-micro)", color: "var(--tx3)" }}
+        >
+          <span className="micro mr-1.5">Camera</span>
+          <span ref={readoutRef}>—</span>
+        </span>
+      </div>
+    </div>
+  );
+}

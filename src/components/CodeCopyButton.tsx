@@ -30,7 +30,7 @@ export default function CodeCopyButton({ code }: { code: string }) {
         fontSize: "var(--text-micro)",
         letterSpacing: "0.1em",
         textTransform: "uppercase",
-        color: "#7f8793",
+        color: "var(--code-tx2)",
       }}
     >
       {copied ? "copied" : "copy"}

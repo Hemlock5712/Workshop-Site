@@ -164,10 +164,16 @@ export default function Box({
           {tag}
         </div>
       )}
+      {/* `h3`, not `h4`. A concept Box sits inside a `LessonSection`, whose
+          heading is the `h2` — so `h4` skipped a level, and it did it on
+          nearly every lesson: `/pid-control`, `/adding-commands` and
+          `/swerve-calibration` all rendered `h1 h2 … h4` with nothing in
+          between. Heading navigation is how a screen-reader user reads a
+          20,000-character page without listening to all of it. */}
       {title && (
-        <h4 className="display m-0 text-lede" style={{ color: "var(--tx)" }}>
+        <h3 className="display m-0 text-lede" style={{ color: "var(--tx)" }}>
           {title}
-        </h4>
+        </h3>
       )}
       {subtitle && (
         <p className="m-0 font-semibold text-ui" style={{ color: "var(--tx)" }}>
@@ -187,10 +193,10 @@ export default function Box({
         <div
           className="mono p-3 text-meta"
           style={{
-            background: "#030718",
+            background: "var(--code-bg)",
             border: "1px solid var(--rule)",
             borderRadius: 2,
-            color: "#dadee5",
+            color: "var(--code-tx)",
             overflowX: "auto",
           }}
         >

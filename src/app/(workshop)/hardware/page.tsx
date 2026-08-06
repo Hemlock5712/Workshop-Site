@@ -89,10 +89,10 @@ export default function Hardware() {
               in, making wiring simpler and saving space on your robot.
             </p>
             <div className="bg-[var(--bg2)] p-3 rounded-lg">
-              <p className="text-sm text-[var(--tx2)] mb-2">
+              <p className="text-note text-[var(--tx2)] mb-2">
                 <strong>What you need to know:</strong>
               </p>
-              <ul className="text-sm text-[var(--tx2)] list-disc list-inside space-y-1">
+              <ul className="text-note text-[var(--tx2)] list-disc list-inside space-y-1">
                 <li>Strong enough to lift heavy arms and spin flywheels</li>
                 <li>Spins up to about 125 times per second</li>
                 <li>
@@ -141,10 +141,10 @@ export default function Hardware() {
               position.
             </p>
             <div className="bg-[var(--bg2)] p-3 rounded-lg">
-              <p className="text-sm text-[var(--tx2)] mb-2">
+              <p className="text-note text-[var(--tx2)] mb-2">
                 <strong>What you need to know:</strong>
               </p>
-              <ul className="text-sm text-[var(--tx2)] list-disc list-inside space-y-1">
+              <ul className="text-note text-[var(--tx2)] list-disc list-inside space-y-1">
                 <li>
                   Remembers position even when the robot is turned off (absolute
                   position)
@@ -194,10 +194,10 @@ export default function Hardware() {
               controller&apos;s built-in network would be overwhelmed with data.
             </p>
             <div className="bg-[var(--bg2)] p-3 rounded-lg">
-              <p className="text-sm text-[var(--tx2)] mb-2">
+              <p className="text-note text-[var(--tx2)] mb-2">
                 <strong>What you need to know:</strong>
               </p>
-              <ul className="text-sm text-[var(--tx2)] list-disc list-inside space-y-1">
+              <ul className="text-note text-[var(--tx2)] list-disc list-inside space-y-1">
                 <li>Connects to your computer via USB cable</li>
                 <li>
                   All motors and sensors plug into this with{" "}
@@ -234,7 +234,7 @@ export default function Hardware() {
               >
                 Full <GlossaryTerm term="pid">PID</GlossaryTerm> Control
               </h4>
-              <p className="text-sm text-[var(--tx2)]">
+              <p className="text-note text-[var(--tx2)]">
                 Complete <GlossaryTerm term="pid">PID</GlossaryTerm>{" "}
                 implementation with kP, kI, kD, and advanced filtering options
                 that other vendors don&apos;t provide.
@@ -244,7 +244,7 @@ export default function Hardware() {
               <h4 className="display m-0 mb-2 text-aside">
                 <GlossaryTerm term="feedforward">Feedforward (FF)</GlossaryTerm>
               </h4>
-              <p className="text-sm text-[var(--tx2)]">
+              <p className="text-note text-[var(--tx2)]">
                 Built-in{" "}
                 <GlossaryTerm term="feedforward">feedforward</GlossaryTerm>{" "}
                 control for gravity compensation and velocity control that
@@ -260,7 +260,7 @@ export default function Hardware() {
                   Motion Profiling
                 </GlossaryTerm>
               </h4>
-              <p className="text-sm text-[var(--tx2)]">
+              <p className="text-note text-[var(--tx2)]">
                 <GlossaryTerm term="motion magic">Motion Magic</GlossaryTerm>{" "}
                 and motion profiling for smooth, controlled movements.
               </p>
@@ -272,7 +272,7 @@ export default function Hardware() {
               >
                 Rotations Units
               </h4>
-              <p className="text-sm text-[var(--tx2)]">
+              <p className="text-note text-[var(--tx2)]">
                 Motor positions measured in rotations instead of encoder ticks
                 or radians.
               </p>
@@ -362,14 +362,14 @@ export default function Hardware() {
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
-              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
                 ✓
               </span>
               <div>
                 <p className="font-medium">
                   Open Phoenix Tuner and connect to your robot
                 </p>
-                <p className="text-[var(--tx2)] text-sm">
+                <p className="text-[var(--tx2)] text-note">
                   If you have issues connecting to your robot,
                   <a
                     href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
@@ -384,14 +384,14 @@ export default function Hardware() {
             </div>
 
             <div className="flex items-start space-x-3">
-              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
                 ✓
               </span>
               <div>
                 <p className="font-medium">
                   Batch update all products of the same model
                 </p>
-                <p className="text-[var(--tx2)] text-sm">
+                <p className="text-[var(--tx2)] text-note">
                   Select one of the devices and then click the batch update
                   icons
                 </p>
@@ -399,12 +399,12 @@ export default function Hardware() {
             </div>
 
             <div className="flex items-start space-x-3">
-              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
                 ✓
               </span>
               <div>
                 <p className="font-medium">Verify Updates</p>
-                <p className="text-[var(--tx2)] text-sm">
+                <p className="text-[var(--tx2)] text-note">
                   The device cards will be green if the firmware is the latest
                 </p>
               </div>
@@ -432,7 +432,7 @@ export default function Hardware() {
               className="w-full h-full aspect-video rounded-lg"
             />
 
-            <p className="text-[var(--tx2)] text-sm">
+            <p className="text-[var(--tx2)] text-note">
               Use Phoenix Tuner to update your motor firmware. Select devices
               and use batch update to get every motor on the latest firmware.
             </p>
@@ -459,7 +459,7 @@ export default function Hardware() {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="text-sm">
+                <tbody className="text-note">
                   <tr className="border-b border-[var(--rule-soft)]">
                     <td className="py-3 px-3 align-top">
                       <div className="flex items-center whitespace-nowrap">
@@ -579,7 +579,7 @@ export default function Hardware() {
                 <Zap className="w-4 h-4" />
                 Safety First
               </h4>
-              <p className="text-sm text-[var(--tx2)]">
+              <p className="text-note text-[var(--tx2)]">
                 Always start with low voltage values when testing motors. Make
                 sure your mechanism can move freely and won&apos;t cause damage.
               </p>

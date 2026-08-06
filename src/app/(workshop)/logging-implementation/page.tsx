@@ -70,7 +70,7 @@ public class Robot extends OpModeRobot {
         />
 
         <h3 className="display measure m-0 text-lede">Where the logs go</h3>
-        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+        <ul className="list-disc list-inside space-y-2 text-note text-[var(--tx2)]">
           <li>
             <strong>Simulation:</strong> a <code>.wpilog</code> under{" "}
             <code>./logs</code> in your project.
@@ -97,7 +97,7 @@ public class Robot extends OpModeRobot {
           captured with no further code:
         </p>
 
-        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+        <ul className="list-disc list-inside space-y-2 text-note text-[var(--tx2)]">
           <li>
             <strong>Every NetworkTables value change</strong>, including
             everything your telemetry publishes (more below)
@@ -210,7 +210,7 @@ public class Telemetry {
         </CollapsibleSection>
 
         <Box variant="alert-warning" title="Performance Considerations">
-          <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+          <ul className="list-disc list-inside space-y-2 text-note text-[var(--tx2)]">
             <li>
               <strong>Use hierarchical keys</strong> (e.g.{" "}
               <code>&quot;Arm/Position&quot;</code>) so the log stays organized.
@@ -276,10 +276,10 @@ public class Telemetry {
             <h3 className="display m-0 mb-4 text-lede">
               Real-Time Data Viewing
             </h3>
-            <p className="text-sm text-[var(--tx2)] mb-3">
+            <p className="text-note text-[var(--tx2)] mb-3">
               Everything you publish to NetworkTables is visible live.
             </p>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-[var(--tx2)]">
+            <ol className="list-decimal list-inside space-y-2 text-note text-[var(--tx2)]">
               <li>Open AdvantageScope on your driver station</li>
               <li>Select &quot;Connect to Robot&quot; from the menu</li>
               <li>Enter your team number or robot address</li>
@@ -297,11 +297,11 @@ public class Telemetry {
             <h3 className="display m-0 mb-4 text-lede">
               Post-Match Log Analysis
             </h3>
-            <p className="text-sm text-[var(--tx2)] mb-3">
+            <p className="text-note text-[var(--tx2)] mb-3">
               Pull <code>.wpilog</code> files off the USB drive or download them
               from the robot with AdvantageScope.
             </p>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-[var(--tx2)]">
+            <ol className="list-decimal list-inside space-y-2 text-note text-[var(--tx2)]">
               <li>Open Preferences and set the robot address / log folder</li>
               <li>Click &quot;File&quot; &gt; &quot;Download Logs...&quot;</li>
               <li>Select the logs to download (newest at top)</li>
@@ -316,11 +316,11 @@ public class Telemetry {
         <h3 className="display measure m-0 text-lede">
           Where the data lives in NetworkTables
         </h3>
-        <p className="mb-3 text-sm text-[var(--tx2)]">
+        <p className="mb-3 text-note text-[var(--tx2)]">
           Your published values land under whatever table you chose, and the
           auto-captured data sits alongside it:
         </p>
-        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+        <ul className="list-disc list-inside space-y-2 text-note text-[var(--tx2)]">
           <li>
             <code>Drivetrain/Pose</code>, <code>Drivetrain/Velocity</code>, …:
             your telemetry struct publishers
@@ -336,7 +336,7 @@ public class Telemetry {
         </ul>
 
         <h3 className="display measure m-0 text-lede">AdvantageScope tips</h3>
-        <ul className="list-disc list-inside space-y-2 text-sm text-[var(--tx2)]">
+        <ul className="list-disc list-inside space-y-2 text-note text-[var(--tx2)]">
           <li>
             <strong>Overlay multiple signals:</strong> compare target vs actual
             on the same graph

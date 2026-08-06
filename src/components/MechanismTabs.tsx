@@ -30,13 +30,13 @@ export default function MechanismTabs({
         <Tabs.List className="flex border-b border-[var(--rule)]">
           <Tabs.Trigger
             value="arm"
-            className="px-pad py-3 text-sm font-medium border-b-2 border-transparent text-[var(--tx2)] hover:text-[var(--tx)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
+            className="px-pad py-3 text-note font-medium border-b-2 border-transparent text-[var(--tx2)] hover:text-[var(--tx)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
           >
             Arm Mechanism
           </Tabs.Trigger>
           <Tabs.Trigger
             value="flywheel"
-            className="px-pad py-3 text-sm font-medium border-b-2 border-transparent text-[var(--tx2)] hover:text-[var(--tx)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
+            className="px-pad py-3 text-note font-medium border-b-2 border-transparent text-[var(--tx2)] hover:text-[var(--tx)] data-[state=active]:border-[var(--accent)] data-[state=active]:text-[var(--tx2)] transition-colors"
           >
             Flywheel Mechanism
           </Tabs.Trigger>

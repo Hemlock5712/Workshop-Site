@@ -1,10 +1,48 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Bot, Disc3, ArrowUpDown } from "lucide-react";
-import InteractivePidPlayground from "@/components/InteractivePidPlayground";
-import InteractiveFlywheelPlayground from "@/components/InteractiveFlywheelPlayground";
-import InteractiveElevatorPlayground from "@/components/InteractiveElevatorPlayground";
 import { useMechanismToggle, type Mechanism } from "@/lib/flywheelStore";
+
+/**
+ * One of these renders at a time, and each carries its own simulation and a
+ * copy of uPlot. Statically imported, all three rode along on every page that
+ * showed any of them — so a student reading /pid-control downloaded the
+ * elevator and the flywheel to look at an arm.
+ *
+ * `ssr: false` because they read `resolvedTheme` and mutate SVG through refs;
+ * there is nothing useful to prerender. The placeholder holds the height so
+ * the lesson does not jump when the real one lands.
+ */
+const PLACEHOLDER = () => (
+  <div
+    className="mono flex h-[420px] items-center justify-center"
+    style={{
+      fontSize: "var(--text-micro)",
+      letterSpacing: "0.1em",
+      color: "var(--tx3)",
+      background: "var(--bg2)",
+      border: "1px solid var(--rule)",
+      borderRadius: 3,
+    }}
+    aria-live="polite"
+  >
+    loading playground…
+  </div>
+);
+
+const InteractivePidPlayground = dynamic(
+  () => import("@/components/InteractivePidPlayground"),
+  { ssr: false, loading: PLACEHOLDER }
+);
+const InteractiveFlywheelPlayground = dynamic(
+  () => import("@/components/InteractiveFlywheelPlayground"),
+  { ssr: false, loading: PLACEHOLDER }
+);
+const InteractiveElevatorPlayground = dynamic(
+  () => import("@/components/InteractiveElevatorPlayground"),
+  { ssr: false, loading: PLACEHOLDER }
+);
 
 const OPTIONS: ReadonlyArray<{
   value: Mechanism;
@@ -65,7 +103,10 @@ export default function MechanismPlayground() {
               <label
                 key={opt.value}
                 title={opt.desc}
-                className="quiz-option inline-flex cursor-pointer items-center gap-1.5 px-3 py-1.5 transition-colors"
+                // `min-h-11` below `sm`: at `py-1.5` these were 28px tall, and
+                // they are the control a student on a phone taps most on this
+                // page. Desktop keeps the compact height — there is a cursor.
+                className="quiz-option inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-3 transition-colors sm:min-h-0 sm:py-1.5"
                 style={{
                   borderRadius: 2,
                   background: active ? "var(--accent-soft)" : "transparent",

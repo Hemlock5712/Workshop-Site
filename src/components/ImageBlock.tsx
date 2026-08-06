@@ -41,12 +41,23 @@ export default function ImageBlock({
           background: "var(--bg2)",
         }}
       >
+        {/* `sizes` matters more here than the `width`/`height` pair does.
+            Without it Next emits a fixed 1x/2x srcset off `width` — 800w and
+            1600w — and a 390px phone downloads one of those to paint a 358px
+            figure. The sources are not small (the mechanism photos are 4.6 MB
+            each before optimisation), so that is the difference between a
+            lesson that loads on a hotspot and one that does not.
+
+            The two numbers are the layout: a figure is `measure-wide`, which
+            is 954px, and below the 1240px collapse it is the full column. */}
         <Image
           src={src}
           alt={alt}
           width={width}
           height={height}
           priority={priority}
+          sizes="(max-width: 1240px) 100vw, 954px"
+          loading={priority ? undefined : "lazy"}
           className="h-auto w-full object-contain"
           style={{ maxHeight: "70vh" }}
         />

@@ -132,7 +132,7 @@ export default function CodeBlockLive({
         >
           <span
             className="mono truncate"
-            style={{ fontSize: "var(--text-meta)", color: "#c9ced6" }}
+            style={{ fontSize: "var(--text-meta)", color: "var(--code-tx)" }}
           >
             {label ?? language}
           </span>
@@ -174,7 +174,7 @@ export default function CodeBlockLive({
             fontFamily: "var(--font-mono)",
             fontSize: "var(--text-note)",
             lineHeight: "22px",
-            color: "#e6edf3",
+            color: "var(--code-tx)",
           }}
         >
           {(rendered ?? plainLines).map((line, i) => (
@@ -185,8 +185,8 @@ export default function CodeBlockLive({
                   className="sticky left-0 select-none pr-3.5 text-right"
                   style={{
                     background: "var(--code-bg)",
-                    color: "#7d8698",
-                    borderRight: "1px solid #1a2032",
+                    color: "var(--code-tx2)",
+                    borderRight: "1px solid var(--rule-soft)",
                     paddingLeft: 14,
                   }}
                 >

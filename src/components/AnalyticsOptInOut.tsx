@@ -34,7 +34,7 @@ export function OptInOutOfCookies() {
 
   return (
     <div className="flex flex-col border border-[var(--rule)] rounded-lg p-2 mb-8">
-      <span className="text-lg font-bold">Cookie Preferences</span>
+      <span className="text-aside font-bold">Cookie Preferences</span>
       <div className="flex flex-row items-center justify-between gap-2 w-full">
         <span>
           {consentGiven === "granted" && "You have opted in to cookies."}

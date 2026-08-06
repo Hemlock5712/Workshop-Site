@@ -186,6 +186,22 @@
   /* Code sits a step darker than the page, in both themes. */
   --code-bg: oklch(0.135 0.04 265);
 
+  /* ── Code ink ──
+     `--code-bg` is dark in *both* themes, so anything sitting on it cannot
+     use `--tx` / `--tx2` / `--tx3` — those invert, and a code panel does not.
+     Every call site worked that out for itself and picked a hex, which is how
+     the code chrome ended up with five inks (#c9ced6, #dadee5, #e6edf3,
+     #7d8698, #7f8793) that nobody chose as a set, and one — #464d5b, the
+     label under the loading diff — that measured 1.96:1 against Monaco's
+     #1e1e1e and was, in practice, invisible. That was the only thing on
+     screen during a 3 MB download.
+
+     Two rungs, declared once, outside the theme branches because they are the
+     same in both. Measured on `--code-bg`: 14.9:1 and 7.5:1. On Monaco's own
+     #1e1e1e, which is a shade lighter: 12.4:1 and 6.2:1. */
+  --code-tx: oklch(0.9 0.012 260);
+  --code-tx2: oklch(0.7 0.018 260);
+
   /* ── Measure ── the two numbers the lesson grid is built from.
      `--measure` is the text column; `--gutter` is the margin-note rail
      beside it. Changing these re-flows every lesson page. */
@@ -213,6 +229,42 @@
      not a spacing rung — see `.grid-bg`. */
   --grid-dot: var(--rule-soft);
   --grid-size: 24px;
+
+  /* ── Plot ──────────────────────────────────────────────────────────
+     The three interactive playgrounds — arm, flywheel, elevator — plot a
+     response curve on a canvas, and canvas cannot read `var()`. So the
+     roles are named here and `readPlotTheme()` resolves them through
+     `getComputedStyle` at paint time. That indirection is the only reason
+     these exist as their own names rather than being used directly.
+
+     They were 77 hard-coded hex values across the three files: Tailwind's
+     slate ramp for the machinery, and a six-hue categorical set
+     (#dc2626 #ca8a04 #2563eb #7c3aed #0891b2 #16a34a) for the gain
+     sliders — the exact palette this design swept out, surviving as
+     literals in the three components a student spends the longest with.
+     Six hues that carried nothing: the slider beside each one is already
+     labelled kP, kI, kD, kS, kV, kG.
+
+     What is left is three roles that genuinely differ, and they are
+     distinguished by dash pattern as well as by colour, so the reading
+     never depends on hue alone:
+
+       target    where you asked it to go     neutral, dashed
+       setpoint  where the profile says it    `--lift`, hairline
+                 should be right now
+       actual    where it actually is         `--accent`, solid + fill
+
+     `--lift` is the site's sanctioned second hue for diagram strokes, and
+     it is the right one here: against `--accent` it separates by ΔE 17 in
+     normal vision and ≥16 under deuteranopia, protanopia and tritanopia,
+     and both clear 3:1 against the plot surface in both themes. */
+  --plot-ink: var(--tx3);
+  --plot-grid: oklch(0.615 0.022 260 / 0.16);
+  --plot-target: var(--tx3);
+  --plot-setpoint: var(--lift);
+  --plot-actual: var(--accent);
+  --plot-actual-fill: oklch(0.755 0.155 55 / 0.26);
+  --plot-actual-fade: oklch(0.755 0.155 55 / 0);
 }
 
 .dark {
@@ -244,7 +296,18 @@ html:not(.dark) {
      needs more weight to hold AA against paper. */
   --accent: oklch(0.545 0.175 45);
   --accent-ink: oklch(0.99 0.01 85);
-  --accent-soft: oklch(0.545 0.175 45 / 0.1);
+  /* 0.07, not 0.1, and the reason is the same class of measurement as --tx3
+     above. `--accent-soft` is not only a hover wash — it is the surface under
+     accent-coloured text in three places: the topbar's "✓ complete" pill, the
+     current lesson in the curriculum drawer, and the selected row in the ⌘K
+     palette. Accent on accent-soft is the one pairing where raising the alpha
+     lowers the contrast, because the wash moves toward the ink. At 0.1 it
+     measured 4.33:1 over --bg — under AA on the two places this site confirms
+     a student's progress. 0.07 measures 4.52:1 over --bg and 4.74:1 over
+     --bg2, and the wash is still 1.10:1 against the page, which is the same
+     visibility band --rule-soft (1.14:1) already lives in and is trusted for.
+     Dark mode is nowhere near the line at 0.14 (7.09:1) and does not move. */
+  --accent-soft: oklch(0.545 0.175 45 / 0.07);
 
   --mark: oklch(0.72 0.17 52 / 0.22);
   --lift: oklch(0.34 0.14 265);
@@ -255,6 +318,14 @@ html:not(.dark) {
 
   --ok: oklch(0.52 0.13 155);
   --err: oklch(0.53 0.19 27);
+
+  /* Plot — the three role names resolve through `--tx3` / `--lift` /
+     `--accent` and follow the theme on their own. Only the two literal
+     alphas have to be restated, because paper needs a heavier grid to
+     stay visible and a lighter fill to stay out of the way. */
+  --plot-grid: oklch(0.525 0.028 265 / 0.2);
+  --plot-actual-fill: oklch(0.545 0.175 45 / 0.14);
+  --plot-actual-fade: oklch(0.545 0.175 45 / 0);
 }
 
 /* ─────────────────────────────────────────────────────────────────
@@ -365,6 +436,51 @@ summary:focus-visible,
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ── Scroll reveal ─────────────────────────────────────────────────
+   Used by the home page's mechanism strip. The resolved state is the
+   default and the hidden state is the exception, gated on `html.js`,
+   which the inline script in the root layout sets before first paint.
+
+   That gate is the whole point. When the hidden state was an inline
+   `opacity: 0` waiting on an IntersectionObserver, it shipped in the
+   server HTML — so a visitor whose JavaScript never ran got four
+   permanently invisible figures where the "what you'll program"
+   section should be. Written this way the hidden state cannot outlive
+   the thing that clears it.
+
+   `--reveal-delay` staggers siblings; the image and the accent wash
+   run slightly behind the figure so the colour resolves after the
+   card has landed. All three transitions are dropped by the
+   reduced-motion rule above, which leaves the resolved state. */
+.reveal {
+  transition:
+    opacity 0.7s ease var(--reveal-delay, 0s),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) var(--reveal-delay, 0s);
+}
+
+.reveal-img {
+  filter: grayscale(0) saturate(1.05);
+  transition: filter 0.9s ease calc(var(--reveal-delay, 0s) + 0.16s);
+}
+
+.reveal-wash {
+  opacity: 0;
+  transition: opacity 0.9s ease var(--reveal-delay, 0s);
+}
+
+html.js .reveal[data-revealed="false"] {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+html.js .reveal[data-revealed="false"] .reveal-img {
+  filter: grayscale(1) brightness(0.8);
+}
+
+html.js .reveal[data-revealed="false"] .reveal-wash {
+  opacity: 0.35;
 }
 
 /* ─────────────────────────────────────────────────────────────────

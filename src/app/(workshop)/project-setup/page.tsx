@@ -72,12 +72,12 @@ export default function ProjectSetup() {
             would run the article's full 954px. Body copy caps at the measure. */}
         <div className="measure space-y-4">
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               1
             </span>
             <div>
               <p className="font-medium">Clone the template</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 <code>
                   git clone -b 2027-dev
                   https://github.com/Hemlock5712/2027-Template.git Workshop
@@ -89,12 +89,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               2
             </span>
             <div>
               <p className="font-medium">Open the folder in VS Code</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Use the WPILib 2027 alpha VS Code install from the Prerequisites
                 page. Avoid OneDrive-synced locations; they break Gradle builds.
               </p>
@@ -102,12 +102,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               3
             </span>
             <div>
               <p className="font-medium">Set your team number</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Edit <code>.wpilib/wpilib_preferences.json</code> and set{" "}
                 <code>teamNumber</code> to your FRC team number. Deploys
                 won&apos;t find your robot without it.
@@ -116,12 +116,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               4
             </span>
             <div>
               <p className="font-medium">Build once to verify</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Run <code>./gradlew build</code> (or WPILib: Build Robot Code).
                 A clean build means Java 25, the vendordeps, and the alpha
                 toolchain are all in place. Then read the template&apos;s{" "}
@@ -154,40 +154,40 @@ export default function ProjectSetup() {
 
         <div className="measure space-y-4">
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               1
             </span>
             <div>
               <p className="font-medium">Open VSCode</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Launch Visual Studio Code with the WPILib extension installed.
               </p>
             </div>
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               2
             </span>
             <div>
               <p className="font-medium">
                 Select the WPILib Logo in Top Right Corner
               </p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Click on the WPILib logo/icon in the top right corner of VSCode.
               </p>
             </div>
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               3
             </span>
             <div>
               <p className="font-medium">
                 Select &quot;Create a New Project&quot;
               </p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 From the WPILib menu, choose the &quot;Create a new
                 project&quot; option.
               </p>
@@ -195,14 +195,14 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               4
             </span>
             <div>
               <p className="font-medium">
                 Select &quot;Select a project type (Example or Template)&quot;
               </p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Choose Template → Java →{" "}
                 <strong>Command Robot Skeleton (Advanced)</strong>. This
                 generates the classic project layout; the workshop path above
@@ -212,7 +212,7 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               5
             </span>
             <div>
@@ -227,24 +227,24 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               6
             </span>
             <div>
               <p className="font-medium">Project Name &quot;Workshop&quot;</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Enter &quot;Workshop&quot; as your project name.
               </p>
             </div>
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               7
             </span>
             <div>
               <p className="font-medium">Team Number</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Enter your FRC team number. This is required for deploying code
                 to your robot.
               </p>
@@ -252,14 +252,14 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               8
             </span>
             <div>
               <p className="font-medium">
                 Check &quot;Enable Desktop Support&quot;
               </p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 This allows you to test your robot code on your computer without
                 a robot.
               </p>
@@ -267,12 +267,12 @@ export default function ProjectSetup() {
           </div>
 
           <div className="flex items-start space-x-3">
-            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
+            <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
               9
             </span>
             <div>
               <p className="font-medium">Generate Project</p>
-              <p className="text-[var(--tx2)] text-sm">
+              <p className="text-[var(--tx2)] text-note">
                 Click &quot;Generate Project&quot; and then open the new project
                 when prompted.
               </p>

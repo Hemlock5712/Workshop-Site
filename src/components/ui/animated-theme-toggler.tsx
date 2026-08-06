@@ -27,8 +27,21 @@ export const AnimatedThemeToggler = ({
   const toggleTheme = useCallback(async () => {
     if (!buttonRef.current || !mounted) return;
 
+    // The circular wipe below is a Web Animations call, not a CSS animation,
+    // and that distinction is the bug it used to have. globals.css kills
+    // motion with `animation: none !important` under
+    // `prefers-reduced-motion` — which removes *CSS* animations. It has no
+    // effect on an `Element.animate()` object animating `clip-path`, so a
+    // reduced-motion reader got a 400ms full-viewport wipe on every toggle,
+    // from the one control on the site that is on every single page. The
+    // stylesheet's own heading says every animation in the design is opt-out;
+    // this is what makes that true.
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     // Check if browser supports View Transitions API
-    if (!("startViewTransition" in document)) {
+    if (reduced || !("startViewTransition" in document)) {
       setTheme(resolvedTheme === "dark" ? "light" : "dark");
       return;
     }

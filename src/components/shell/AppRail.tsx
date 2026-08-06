@@ -116,12 +116,19 @@ export default function AppRail() {
           className="relative w-[2px] flex-1 overflow-hidden rounded-sm"
           style={{ maxHeight: 260, background: "var(--rule-soft)" }}
         >
+          {/* `scaleY`, not `height` — the last of the four animated
+              indicators to be brought onto the transform. The other three
+              (the topbar counter, the drawer counter, the outline tick) each
+              carry a note saying why; this one animated `height` on every
+              scroll frame, which is a layout pass per frame for a bar 2px
+              wide. Composited it costs nothing, and on a plain fill the
+              result is pixel-identical. */}
           <div
-            className="absolute left-0 right-0 top-0"
+            className="absolute inset-x-0 top-0 h-full origin-top"
             style={{
-              height: `${pct}%`,
+              transform: `scaleY(${pct / 100})`,
               background: "var(--accent)",
-              transition: "height 0.1s linear",
+              transition: "transform 0.1s linear",
             }}
           />
         </div>

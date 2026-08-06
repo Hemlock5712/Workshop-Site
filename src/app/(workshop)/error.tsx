@@ -63,7 +63,7 @@ export default function WorkshopError({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex cursor-pointer items-center gap-2.5 whitespace-nowrap px-[22px] py-[13px] text-sm font-semibold transition-opacity hover:opacity-90"
+            className="inline-flex cursor-pointer items-center gap-2.5 whitespace-nowrap px-[22px] py-[13px] text-note font-semibold transition-opacity hover:opacity-90"
             style={{
               borderRadius: 2,
               background: "var(--accent)",
@@ -75,7 +75,7 @@ export default function WorkshopError({
 
           <Link
             href="/"
-            className="inline-flex items-center gap-2.5 whitespace-nowrap px-[18px] py-[13px] text-sm transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
+            className="inline-flex items-center gap-2.5 whitespace-nowrap px-[18px] py-[13px] text-note transition-colors hover:border-[var(--accent)] hover:text-[var(--tx)]"
             style={{
               borderRadius: 2,
               border: "1px solid var(--rule)",

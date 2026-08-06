@@ -126,7 +126,7 @@ export default function Home() {
           {firstLesson && (
             <Link
               href={firstLesson.slug}
-              className="inline-flex items-center gap-2.5 whitespace-nowrap px-[26px] py-[15px] text-sm font-semibold transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-2.5 whitespace-nowrap px-[26px] py-[15px] text-note font-semibold transition-opacity hover:opacity-90"
               style={{
                 borderRadius: 2,
                 background: "var(--accent)",

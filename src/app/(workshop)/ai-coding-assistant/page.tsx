@@ -225,10 +225,10 @@ public class Arm extends Mechanism {
 
         <div className="grid gap-4 md:grid-cols-2">
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="display m-0 text-aside">
+            <h3 className="display m-0 text-aside">
               <code>robot-description</code>
-            </h4>
-            <p className="text-sm" style={{ color: "var(--tx2)" }}>
+            </h3>
+            <p className="text-note" style={{ color: "var(--tx2)" }}>
               The map of the code: OpModes, Mechanisms, commands, and where each
               piece lives. It carries the biggest surprise for anyone coming
               from Commands v2 — the &quot;there is no RobotContainer&quot;
@@ -238,10 +238,10 @@ public class Arm extends Mechanism {
           </ContentCard>
 
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="display m-0 text-aside">
+            <h3 className="display m-0 text-aside">
               <code>game-info</code>
-            </h4>
-            <p className="text-sm" style={{ color: "var(--tx2)" }}>
+            </h3>
+            <p className="text-note" style={{ color: "var(--tx2)" }}>
               Field and alliance conventions the code enforces:
               blue-alliance-origin coordinates, operator-perspective flipping,
               and the AprilTag conventions. Its game-piece and field-zone
@@ -250,10 +250,10 @@ public class Arm extends Mechanism {
           </ContentCard>
 
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="display m-0 text-aside">
+            <h3 className="display m-0 text-aside">
               <code>run-sim</code>
-            </h4>
-            <p className="text-sm" style={{ color: "var(--tx2)" }}>
+            </h3>
+            <p className="text-note" style={{ color: "var(--tx2)" }}>
               How to run the robot in simulation, including a headless{" "}
               <code>gradlew simulateJavaAgent</code> task that enables the robot
               without anyone clicking Enable — so the assistant can run a
@@ -262,10 +262,10 @@ public class Arm extends Mechanism {
           </ContentCard>
 
           <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h4 className="display m-0 text-aside">
+            <h3 className="display m-0 text-aside">
               <code>log-reading</code>
-            </h4>
-            <p className="text-sm" style={{ color: "var(--tx2)" }}>
+            </h3>
+            <p className="text-note" style={{ color: "var(--tx2)" }}>
               Where <code>.wpilog</code> and <code>.hoot</code> files land,
               which telemetry keys this robot actually publishes, and how to
               analyse a run — in AdvantageScope or with a script the assistant
@@ -277,10 +277,10 @@ public class Arm extends Mechanism {
             tag="SKILL"
             className="flex flex-col gap-2 md:col-span-2"
           >
-            <h4 className="display m-0 text-aside">
+            <h3 className="display m-0 text-aside">
               <code>teaching</code>
-            </h4>
-            <p className="text-sm" style={{ color: "var(--tx2)" }}>
+            </h3>
+            <p className="text-note" style={{ color: "var(--tx2)" }}>
               Teacher mode is <strong>on by default</strong>. It tells the
               assistant to explain things the way a student needs them: plain
               words first, one idea at a time, a pointer to the exact file and
@@ -312,9 +312,9 @@ public class Arm extends Mechanism {
                 className="h-5 w-5"
                 style={{ color: "var(--accent)" }}
               />
-              <h4 className="display m-0 text-aside">Claude Code</h4>
+              <h3 className="display m-0 text-aside">Claude Code</h3>
             </div>
-            <p className="flex-1 text-sm" style={{ color: "var(--tx2)" }}>
+            <p className="flex-1 text-note" style={{ color: "var(--tx2)" }}>
               Anthropic&apos;s coding agent, in the terminal or as a VS Code
               extension. It reads <code>CLAUDE.md</code> on startup and finds
               the skills on its own, so there is nothing to configure.
@@ -323,7 +323,7 @@ public class Arm extends Mechanism {
               href="https://claude.com/claude-code"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[var(--accent)] hover:underline"
+              className="text-note text-[var(--accent)] hover:underline"
             >
               claude.com/claude-code
             </a>
@@ -332,9 +332,9 @@ public class Arm extends Mechanism {
           <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <Blocks className="h-5 w-5" style={{ color: "var(--accent)" }} />
-              <h4 className="display m-0 text-aside">GitHub Copilot</h4>
+              <h3 className="display m-0 text-aside">GitHub Copilot</h3>
             </div>
-            <p className="flex-1 text-sm" style={{ color: "var(--tx2)" }}>
+            <p className="flex-1 text-note" style={{ color: "var(--tx2)" }}>
               Lives inside VS Code, which you already have open for WPILib.
               Agent mode edits files and runs Gradle tasks. Free for verified
               students through GitHub Education.
@@ -343,7 +343,7 @@ public class Arm extends Mechanism {
               href="https://github.com/features/copilot"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[var(--accent)] hover:underline"
+              className="text-note text-[var(--accent)] hover:underline"
             >
               github.com/features/copilot
             </a>
@@ -352,9 +352,9 @@ public class Arm extends Mechanism {
           <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5" style={{ color: "var(--accent)" }} />
-              <h4 className="display m-0 text-aside">OpenAI Codex</h4>
+              <h3 className="display m-0 text-aside">OpenAI Codex</h3>
             </div>
-            <p className="flex-1 text-sm" style={{ color: "var(--tx2)" }}>
+            <p className="flex-1 text-note" style={{ color: "var(--tx2)" }}>
               OpenAI&apos;s coding agent, as a CLI and an IDE extension.
               Configure it with an <code>AGENTS.md</code> file that points at
               the template&apos;s skill files.
@@ -363,7 +363,7 @@ public class Arm extends Mechanism {
               href="https://openai.com/codex"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-[var(--accent)] hover:underline"
+              className="text-note text-[var(--accent)] hover:underline"
             >
               openai.com/codex
             </a>
