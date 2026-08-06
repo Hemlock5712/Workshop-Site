@@ -58,10 +58,30 @@ const nextConfig: NextConfig = {
   //
   //   cacheComponents: true,
   // Dev-only. Next blocks /_next/* requests whose Origin isn't localhost,
-  // which silently breaks client chunks, the image optimiser and HMR when you
-  // open the dev server from another device on the LAN (phone, second laptop).
-  // Add whatever address the dev machine answers on; ignored in production.
-  allowedDevOrigins: ["192.168.1.118"],
+  // which silently breaks the HMR socket and the client chunks behind it when
+  // you open the dev server from another device on the LAN (phone, second
+  // laptop) — or from this machine's own LAN address. Ignored in production.
+  //
+  // A subnet wildcard rather than the single address this used to hold. The
+  // literal `192.168.1.118` was correct when it was written and rotted the
+  // next time the router handed out a lease: the machine came back as .119,
+  // every /_next request from that origin started answering 403, and the
+  // failure is invisible in a way that costs an hour. Nothing appears in the
+  // dev-server output the browser is pointed at, there is no page error, and
+  // the SSR'd HTML is perfect — so the page renders, and then simply doesn't
+  // hydrate. What you see is a MENU button that does nothing and a home page
+  // whose mechanism photos never fade in, because `MechanismStrip` holds them
+  // at `opacity: 0` until an IntersectionObserver that never runs says
+  // otherwise. Neither symptom points anywhere near this line.
+  //
+  // Next matches these per DNS label, so `*` fills exactly one octet
+  // (`matchWildcardDomain` in next/dist/server/app-render/csrf-protection).
+  // Both common private ranges are covered so this survives a move between
+  // networks as well as a new lease.
+  // `127.0.0.1` is in the list because Next's built-in allowance is the string
+  // "localhost" and nothing else — the loopback IP is a different origin to
+  // the browser and fails the same silent way.
+  allowedDevOrigins: ["127.0.0.1", "192.168.*.*", "10.*.*.*"],
   images: {
     // Modern formats first — Next will pick the best one the browser accepts.
     // AVIF is ~30 % smaller than WebP on photos but slower to encode; WebP

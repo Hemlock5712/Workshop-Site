@@ -4,14 +4,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Server Rules
 
-**NEVER run development servers automatically** - The user will start/stop servers manually. Do not use commands like:
+**You may start and stop the dev server yourself.** `pnpm dev`, `pnpm start`,
+and stopping them are all yours to run. This replaces an earlier rule that
+reserved server management for the user; it was changed in August 2026 because
+verifying a front-end change means loading the page, and waiting on a human to
+restart turned a two-minute check into a several-round handoff.
 
-- `npm run dev`
-- `npm start`
-- `bun dev`
-- Any server-starting commands
+**Run exactly one at a time.** This is the rule that actually matters, and it
+is not a style preference — two dev servers on the same checkout share one
+`.next`, and if they are running different bundlers they destroy each other's
+output. A webpack `next dev` and a Turbopack `next dev --turbopack` in
+parallel emptied `.next/static` while `.next/dev/static` filled up, so every
+route served HTML with 404s for every chunk and nothing hydrated. It reads
+exactly like a broken build. Before starting one, check nothing is already
+listening:
 
-The user will handle server management themselves.
+```bash
+netstat -ano | grep LISTENING | grep -E ":300[0-9]\b"
+```
+
+Note that `next dev` falls through to 3001, 3002 … when 3000 is taken, so a
+second server starts _successfully_ and gives no warning that a first one
+exists.
+
+**Never delete `.next` while a server is running or starting.** Wait for the
+process to exit — not just for the port to stop answering. A `rm -rf` on a
+multi-gigabyte `.next` takes long enough that a restart begun in the meantime
+initialises against a directory still being emptied, comes up without
+`routes-manifest.json`, and 500s on every route.
 
 ## Project Overview
 
