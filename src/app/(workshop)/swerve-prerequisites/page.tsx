@@ -36,12 +36,12 @@ export default function SwervePrerequisites() {
       <Split>
         <KeyConceptSection
           description={[
-            "What you do have to understand is how a swerve robot answers two questions — which way is forward, and where am I on the field. Four ideas cover that, and every page after this one leans on all four.",
+            "What you do have to understand is how a swerve robot answers two questions, which way is forward, and where am I on the field. Four ideas cover that, and every page after this one leans on all four.",
           ]}
           concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
         />
         <MarginNote label="WHAT YOU'LL GET">
-          The vocabulary the next six pages assume — field-centric driving,{" "}
+          The vocabulary the next six pages assume: field-centric driving,{" "}
           <code>Pose2d</code>, the field&apos;s coordinate frame, and odometry.
         </MarginNote>
       </Split>
@@ -90,7 +90,7 @@ export default function SwervePrerequisites() {
           </Link>
           : Kraken motors, a CANcoder in each module to report the steering
           angle, and a CANivore carrying the bus. Swerve adds one device the arm
-          never needed — a <strong>Pigeon 2 gyro</strong>, which reports which
+          never needed: a <strong>Pigeon 2 gyro</strong>, which reports which
           way the robot is facing. <code>TunerConstants.java</code> lists it as{" "}
           <code>kPigeonId</code>, alongside three device IDs and a corner
           position for each of the four modules.
@@ -117,7 +117,7 @@ export default function SwervePrerequisites() {
                   pointing. Spin the robot and forward spins with it. Fine while
                   the robot is pointing away from you; the moment it turns
                   around, its left is your right and every input is mirrored.
-                  Needs no gyro — the robot does not have to know its heading to
+                  Needs no gyro: the robot does not have to know its heading to
                   drive relative to itself.
                 </>
               ),
@@ -206,15 +206,14 @@ export default function SwervePrerequisites() {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <strong>X</strong> — meters down the length of the field, increasing
+            <strong>X</strong>: meters down the length of the field, increasing
             away from the blue driver station.
           </li>
           <li>
-            <strong>Y</strong> — meters across the field, increasing to the
-            left.
+            <strong>Y</strong>: meters across the field, increasing to the left.
           </li>
           <li>
-            <strong>Rotation</strong> — a <code>Rotation2d</code>, the direction
+            <strong>Rotation</strong>: a <code>Rotation2d</code>, the direction
             the front of the robot points. 0° faces down the field along
             increasing X. You build one with{" "}
             <code>Rotation2d.fromDegrees(180)</code>, or take a ready-made
@@ -279,18 +278,18 @@ export default function SwervePrerequisites() {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <strong>Slip.</strong> A wheel spinning on carpet without moving the
+            <strong>Slip:</strong> A wheel spinning on carpet without moving the
             robot still reports distance. Odometry counts it as travel.
           </li>
           <li>
-            <strong>A wheel radius that is slightly wrong.</strong> Distance per
+            <strong>A wheel radius that is slightly wrong:</strong> Distance per
             rotation comes from a number in <code>TunerConstants.java</code>. If
-            that number is off by 1 percent, every distance is off by 1 percent
-            — 10 centimeters for every 10 meters driven, always in the same
+            that number is off by 1 percent, every distance is off by 1 percent:
+            10 centimeters for every 10 meters driven, always in the same
             direction.
           </li>
           <li>
-            <strong>Being moved without driving.</strong> Get shoved, get
+            <strong>Being moved without driving:</strong> Get shoved, get
             pinned, get lifted: the wheels do not turn, so as far as odometry is
             concerned nothing happened.
           </li>
@@ -306,7 +305,7 @@ export default function SwervePrerequisites() {
           <ul className="ml-4 list-disc space-y-2">
             <li>
               <strong>Measure the numbers it is built on.</strong> Wheel radius,
-              top speed, steering offsets — that is{" "}
+              top speed, steering offsets: that is{" "}
               <Link href="/swerve-calibration" className={linkClass}>
                 Swerve Calibration
               </Link>
@@ -315,7 +314,7 @@ export default function SwervePrerequisites() {
             <li>
               <strong>Give it something that does look at the field.</strong> A
               camera reading AprilTags knows where it is in absolute terms.{" "}
-              <code>DriveMechanism</code> already has the door for it —{" "}
+              <code>DriveMechanism</code> already has the door for it:{" "}
               <code>addVisionMeasurement(...)</code>, described in its own
               comment as &quot;Feeds a camera position estimate into the
               drivetrain so it can correct odometry.&quot; That is{" "}
@@ -340,23 +339,23 @@ export default function SwervePrerequisites() {
       >
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <strong>Field-centric driving</strong> — the next page. The teleop
+            <strong>Field-centric driving</strong>: the next page. The teleop
             default command is a field-centric request wired straight to the
             sticks.
           </li>
           <li>
-            <strong>Odometry and drift</strong> — the two pages named in the box
+            <strong>Odometry and drift</strong>: the two pages named in the box
             above.
           </li>
           <li>
             <strong>
               <code>Pose2d</code> and <code>Rotation2d</code>
-            </strong>{" "}
-            — Drive to Point and the autonomous page, where a pose stops being a
+            </strong>
+            : Drive to Point and the autonomous page, where a pose stops being a
             reading and becomes a destination.
           </li>
           <li>
-            <strong>The blue-corner frame</strong> — all of the above. It is why
+            <strong>The blue-corner frame</strong>: all of the above. It is why
             the camera is asked for a blue-origin estimate, and why a drive
             command pins its velocities to that frame instead of the
             driver&apos;s.
@@ -370,7 +369,7 @@ export default function SwervePrerequisites() {
 
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html"
-          title="CTRE — Tuner X Swerve Project Generator"
+          title="CTRE: Tuner X Swerve Project Generator"
           icon={<Book className="w-5 h-5" />}
         />
       </LessonSection>
@@ -380,7 +379,7 @@ export default function SwervePrerequisites() {
           {
             id: 1,
             question:
-              "You are driving field-centric. The robot is facing your driver station — its front points at you. You push the left stick away from yourself. What does the robot do?",
+              "You are driving field-centric. The robot is facing your driver station: its front points at you. You push the left stick away from yourself. What does the robot do?",
             options: [
               "Drives toward you, because forward means the direction the robot faces",
               "Drives away from you, backwards, because forward is a field direction and not the robot's",
@@ -403,21 +402,21 @@ export default function SwervePrerequisites() {
             ],
             correctAnswer: 1,
             explanation:
-              "To turn a field direction into wheel motion, the code has to subtract the robot's current heading out of your request — so it needs to know that heading. That is the Pigeon 2 gyro, listed in TunerConstants.java as kPigeonId. Robot-centric needs no heading, because everything is already relative to the robot.",
+              "To turn a field direction into wheel motion, the code has to subtract the robot's current heading out of your request, so it needs to know that heading. That is the Pigeon 2 gyro, listed in TunerConstants.java as kPigeonId. Robot-centric needs no heading, because everything is already relative to the robot.",
           },
           {
             id: 3,
             question:
               "Your robot is on the red alliance. Your driver pushes the stick away from the red driver station and the robot moves away from them. What happened to the coordinate frame odometry reports?",
             options: [
-              "It flipped too — (0, 0) moved to the red corner",
+              "It flipped too: (0, 0) moved to the red corner",
               "Nothing. (0, 0) stays in the blue corner; only the driver's idea of forward flipped",
               "It rotated 90 degrees",
               "Odometry is disabled on the red alliance",
             ],
             correctAnswer: 1,
             explanation:
-              'Two separate things. applyOperatorPerspective flips what the sticks call forward — 0 degrees on blue, 180 on red — so driving feels the same from either end. The pose frame never moves: DriveMechanism.getPose() says "(0, 0) is always the blue alliance corner. It does not flip when you are on red." A red robot at its own wall reports a large X.',
+              'Two separate things. applyOperatorPerspective flips what the sticks call forward, 0 degrees on blue, 180 on red, so driving feels the same from either end. The pose frame never moves: DriveMechanism.getPose() says "(0, 0) is always the blue alliance corner. It does not flip when you are on red." A red robot at its own wall reports a large X.',
           },
           {
             id: 4,

@@ -113,7 +113,7 @@ export default function Topbar() {
       <button
         type="button"
         onClick={openSearch}
-        title={`Search the workshop — ${palette}`}
+        title={`Search the workshop: ${palette}`}
         // `min-w-0` and no floor on the width: the rail already takes 70px, so
         // at a 360px viewport this button and the breadcrumb are sharing a
         // 290px column. A `min-w-[150px]` here pushed the bar wider than the

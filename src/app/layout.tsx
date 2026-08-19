@@ -44,7 +44,7 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: "Gray Matter Coding Workshop",
   description:
-    "FRC Programming Workshop covering best practices, hardware setup, command-based programming, and PID tuning",
+    "FRC Programming Workshop covering proven patterns, hardware setup, command-based programming, and PID tuning",
 };
 
 export default function RootLayout({

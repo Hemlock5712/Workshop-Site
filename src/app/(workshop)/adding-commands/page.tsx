@@ -17,7 +17,7 @@ export default function AddingCommands() {
       needs={[
         <>
           The <code>Arm</code> and <code>Flywheel</code> from{" "}
-          <strong>Mechanisms</strong> — branch <code>1-Subsystem</code>, with{" "}
+          <strong>Mechanisms</strong>: branch <code>1-Subsystem</code>, with{" "}
           <code>public void setVoltage(double)</code> on both.
         </>,
         <>
@@ -42,7 +42,7 @@ export default function AddingCommands() {
         />
         <MarginNote label="WHAT YOU'LL BUILD">
           Three commands on the arm, three on the flywheel, and a teleop OpMode
-          that binds them to the controller. You will not run any of it yet —
+          that binds them to the controller. You will not run any of it yet:
           pressing buttons and watching motors turn is two lessons away, on{" "}
           <strong>Running Your Code</strong>. The check on this page is a clean
           build.
@@ -68,7 +68,7 @@ export default function AddingCommands() {
           </ProseBlock>
           <MarginNote label="WHY CLOSE THE DOOR">
             The scheduler tracks which command owns which mechanism. If two
-            commands both need the arm, the second cancels the first — one of
+            commands both need the arm, the second cancels the first: one of
             them wins, on purpose, and you can find out which. That bookkeeping
             only works for commands. A plain <code>setVoltage(6.0)</code> goes
             around all of it: two callers, two different numbers, same loop, and
@@ -79,7 +79,7 @@ export default function AddingCommands() {
 
         <CodeBlock
           language="java"
-          title="Arm.java — the shape of the change"
+          title="Arm.java: the shape of the change"
           code={`// BEFORE (1-Subsystem): anything in the project can push a voltage.
 public void setVoltage(double voltage) { ... }
 public void stop() { ... }
@@ -113,8 +113,8 @@ private void setVoltage(double voltage) { ... }`}
         />
 
         <p className="prose-body measure">
-          Delete the old <code>public void stop()</code> while you are in there
-          — a command with the same name replaces it in step 3.
+          Delete the old <code>public void stop()</code> while you are in there.
+          A command with the same name replaces it in step 3.
         </p>
 
         <p className="prose-body measure">
@@ -134,7 +134,7 @@ private void setVoltage(double voltage) { ... }`}
 
         <CodeBlock
           language="java"
-          title="Arm.java — the two voltages and runSlow()"
+          title="Arm.java: the two voltages and runSlow()"
           code={`// Voltages for the two example commands.
 private static final double SLOW_VOLTAGE = 3.0;
 private static final double FAST_VOLTAGE = 6.0;
@@ -211,9 +211,9 @@ runRepeatedly( ... )             // a NeedsNameBuilderStage — a half-built com
             wrong. Both <code>NeedsNameBuilderStage</code> and{" "}
             <code>Command</code> carry WPILib&apos;s <code>@NoDiscard</code>{" "}
             annotation, and the compiler plugin reports it when the result of
-            such a call is discarded — a builder or a command written as a
+            such a call is discarded: a builder or a command written as a
             statement on its own line and then never used. <code>Command</code>
-            &apos;s version supplies the message —{" "}
+            &apos;s version supplies the message:{" "}
             <em>
               &quot;Commands must be used! Did you mean to fork it or bind it to
               a trigger?&quot;
@@ -231,7 +231,7 @@ runRepeatedly( ... )             // a NeedsNameBuilderStage — a half-built com
         id="runfast-and-stop"
         title={
           <>
-            Step 3 — <code>runFast()</code> and <code>stop()</code>
+            Step 3: <code>runFast()</code> and <code>stop()</code>
           </>
         }
         outlineLabel="runFast() and stop()"
@@ -244,7 +244,7 @@ runRepeatedly( ... )             // a NeedsNameBuilderStage — a half-built com
 
         <CodeBlock
           language="java"
-          title="Arm.java — all three commands"
+          title="Arm.java: all three commands"
           code={`/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
 public Command runSlow() {
   return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
@@ -289,10 +289,10 @@ public Command stop() {
       >
         <p className="prose-body measure">
           <code>runRepeatedly</code> is a <code>while (true)</code> loop. There
-          is no exit. A command built with it never finishes on its own — it
-          runs until something else takes the mechanism away from it. The team
-          calls that a <strong>hold</strong>, and every hold on this robot is
-          named with the suffix so you can spot one at a glance.
+          is no exit. A command built with it never finishes on its own: it runs
+          until something else takes the mechanism away from it. The team calls
+          that a <strong>hold</strong>, and every hold on this robot is named
+          with the suffix so you can spot one at a glance.
         </p>
 
         <Box
@@ -304,13 +304,13 @@ public Command stop() {
             Every command you wrote on this page is a hold, including{" "}
             <code>stop()</code>. Later, when you start putting commands in a
             list and running them in order, a hold in that list stops the list
-            there forever. Nothing crashes — the routine just sits.
+            there forever. Nothing crashes: the routine just sits.
           </p>
           <p className="mt-3">
             That is why the suffix is in the name: when a routine seems frozen,
             look at what it is sitting on. If the name says <code>(hold)</code>,
-            you have found the bug. The fix — giving a hold an ending — is the
-            first thing <strong>Chaining Commands</strong> teaches.
+            you have found the bug. <strong>Chaining Commands</strong> starts by
+            showing you how to give a hold an ending.
           </p>
         </Box>
 
@@ -343,7 +343,7 @@ public Command stop() {
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — same three commands, leader motor"
+          title="Flywheel.java: same three commands, leader motor"
           code={`private static final double SLOW_VOLTAGE = 3.0;
 private static final double FAST_VOLTAGE = 6.0;
 
@@ -439,7 +439,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             registered in <code>Robot.java</code>.
           </li>
           <li>
-            The bindings live in the <strong>constructor</strong> — code that
+            The bindings live in the <strong>constructor</strong>: code that
             runs once, when the OpMode is built. They are set up one time, not
             every loop.
           </li>
@@ -460,7 +460,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         <p className="prose-body measure">
           <strong>{"You should see: "}</strong> <code>./gradlew build</code>{" "}
           passes with the new file in place. That is the last check this page
-          can give you — the buttons are real, but you need the simulator from{" "}
+          can give you: the buttons are real, but you need the simulator from{" "}
           <strong>Running Your Code</strong> to press them.
         </p>
       </LessonSection>
@@ -473,7 +473,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         <p className="prose-body measure">
           Look at those three bindings again. Not one of them is a single call.
           Every <code>onTrue</code> has an <code>onFalse</code> behind it. That
-          is not style — leave the second half off and the motor never stops.
+          is not style: leave the second half off and the motor never stops.
           There are two separate reasons for that, and both are worth knowing.
         </p>
 
@@ -497,7 +497,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           </strong>{" "}
           When a command ends or is canceled with nothing to replace it, the
           mechanism goes back to its <strong>default command</strong>. You never
-          set one on the arm — you did not have to. <code>Mechanism</code>
+          set one on the arm: you did not have to. <code>Mechanism</code>
           &apos;s own constructor already did it, and here is exactly what it
           set. No branch in the mechanism track ever calls{" "}
           <code>setDefaultCommand</code>; every mechanism runs the
@@ -506,7 +506,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <CodeBlock
           language="java"
-          title="Mechanism.java, WPILib 2027.0.0-alpha-6 — the default command every mechanism gets"
+          title="Mechanism.java, WPILib 2027.0.0-alpha-6: the default command every mechanism gets"
           code={`public Command idle() {
   return run(Coroutine::park).withPriority(Command.LOWEST_PRIORITY).named(getName() + "[IDLE]");
 }`}
@@ -545,8 +545,8 @@ public class TeleopOpMode extends PeriodicOpMode {
           <code>LOWEST_PRIORITY</code> is what keeps idling out of the way. It
           is <code>Integer.MIN_VALUE</code>, so any command at all outranks it
           and can take the mechanism. Yours never set a priority, so they all
-          sit at <code>DEFAULT_PRIORITY</code>, which is 0 — which is exactly
-          why <code>arm.stop()</code> is able to interrupt{" "}
+          sit at <code>DEFAULT_PRIORITY</code>, which is 0, which is exactly why{" "}
+          <code>arm.stop()</code> is able to interrupt{" "}
           <code>arm.runFast()</code>. Equal counts.
         </p>
 
@@ -555,7 +555,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           releases to <code>flywheel.runSlow()</code>, not{" "}
           <code>flywheel.stop()</code>. A wheel left turning at 3 V does not
           have to spin up from dead the next time you want it. The pair does not
-          have to be do-and-undo — it has to be do-and-then-what.
+          have to be do-and-undo: it has to be do-and-then-what.
         </p>
       </LessonSection>
 
@@ -573,7 +573,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <CodeBlock
           language="java"
-          title="NeedsNameBuilderStage — the whole interface"
+          title="NeedsNameBuilderStage: the whole interface"
           code={`NeedsNameBuilderStage whenCanceled(Runnable onCancel);
 NeedsNameBuilderStage withPriority(int priority);
 NeedsNameBuilderStage until(BooleanSupplier endCondition);
@@ -629,7 +629,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
         <p className="prose-body measure">
           Compare this against what you typed. The{" "}
           <strong>GitHub Changes</strong> tab shows the whole{" "}
-          <code>1-Subsystem</code> → <code>2-Commands</code> diff — all four
+          <code>1-Subsystem</code> → <code>2-Commands</code> diff: all four
           files, side by side, which is the fastest way to check you did not
           miss anything. Read the block of comments above <code>runSlow()</code>{" "}
           too; THE ONE RULE is written out in the source itself.
@@ -669,8 +669,8 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
           <li>
             Check every command name ends in <code>(hold)</code>.{" "}
             <strong>{"You should see: "}</strong> six names, six suffixes. If
-            one is missing, add it now — the suffix is what makes a stuck
-            routine diagnosable later.
+            one is missing, add it now: the suffix is what makes a stuck routine
+            diagnosable later.
           </li>
           <li>
             <strong>Break it on purpose.</strong> Delete the{" "}
@@ -699,8 +699,8 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
               <strong>
                 &quot;incompatible types: NeedsNameBuilderStage cannot be
                 converted to Command&quot;
-              </strong>{" "}
-              — a <code>.named(...)</code> is missing from that method. javac
+              </strong>
+              : A <code>.named(...)</code> is missing from that method. javac
               prints the package-qualified names, so what you actually see is{" "}
               <code>org.wpilib.command3.NeedsNameBuilderStage</code> and{" "}
               <code>org.wpilib.command3.Command</code>.
@@ -709,21 +709,21 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
               <strong>
                 &quot;cannot find symbol: method withPriority(int), location:
                 interface Command&quot;
-              </strong>{" "}
-              — a builder method landed <em>after</em> <code>.named(...)</code>.
+              </strong>
+              : A builder method landed <em>after</em> <code>.named(...)</code>.
               The same error shows up for <code>whenCanceled</code>. Once the
               name has run you are holding a <code>Command</code>, and a{" "}
               <code>Command</code> does not have those two. Move the builder
               call in front of the name.
               <br />
               Note that <code>until</code> and <code>withTimeout</code> are{" "}
-              <em>not</em> in that group — both exist on <code>Command</code>{" "}
+              <em>not</em> in that group: both exist on <code>Command</code>{" "}
               itself, which is why{" "}
               <code>arm.vertical().until(arm::isAtTarget)</code> compiles later
               on <strong>Finish Lines</strong>.
             </li>
             <li>
-              <strong>&quot;cannot find symbol: class Command&quot;</strong> —
+              <strong>&quot;cannot find symbol: class Command&quot;</strong>:
               the import is missing. Add{" "}
               <code>import org.wpilib.command3.Command;</code> at the top of{" "}
               <code>Arm.java</code> and <code>Flywheel.java</code>. Check the
@@ -734,7 +734,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
               <strong>
                 The OpMode builds but does not appear on the driver station
               </strong>{" "}
-              (you will hit this two lessons from now) — the class has to sit in{" "}
+              (you will hit this two lessons from now): the class has to sit in{" "}
               <code>frc.robot.opmodes</code> and carry{" "}
               <code>@Teleop(name = &quot;...&quot;)</code>. The framework finds
               it by that annotation and nothing else.
@@ -755,21 +755,21 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            <strong>Triggers</strong>, next — where{" "}
+            <strong>Triggers</strong>, next, where{" "}
             <code>driver.leftTrigger().onTrue(...)</code> comes from, what else
             can be a trigger, and why the bindings in that constructor disappear
             on their own when the OpMode changes.
           </li>
           <li>
-            <strong>Chaining Commands</strong> — how to give a hold an ending
-            and run several of these commands from one button, in order. That is
+            <strong>Chaining Commands</strong>: how to give a hold an ending and
+            run several of these commands from one button, in order. That is
             where <code>Command.sequence</code>, <code>Command.race</code> and{" "}
             <code>.withTimeout(...)</code> arrive, and where the{" "}
             <code>onTrue</code>/<code>onFalse</code> pair gets replaced by a
             single <code>whileTrue</code>.
           </li>
           <li>
-            <strong>Coroutines</strong>, at the end of the course — a second way
+            <strong>Coroutines</strong>, at the end of the course: a second way
             to write a command body, as one block of code that pauses itself
             from the inside. It is the advanced dialect and you will not need it
             for a long while. Everything between here and there is chaining.
@@ -801,8 +801,8 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
               'In runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)"), what does runRepeatedly(...) hand back before .named(...) runs?',
             options: [
               "A finished Command, ready to schedule",
-              "A NeedsNameBuilderStage — a half-built command that is not a Command until it is named",
-              "void — runRepeatedly schedules the command immediately",
+              "A NeedsNameBuilderStage: a half-built command that is not a Command until it is named",
+              "void: runRepeatedly schedules the command immediately",
               "A Runnable that the scheduler wraps later",
             ],
             correctAnswer: 1,
@@ -814,24 +814,24 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
             question:
               "Every command on this branch is a hold. What makes it one?",
             options: [
-              "The (hold) suffix in the name — the framework reads it",
+              "The (hold) suffix in the name: the framework reads it",
               "runRepeatedly wraps the body in a while (true) loop, so the command never finishes on its own",
               "Holds are scheduled at HIGHEST_PRIORITY so nothing can cancel them",
               "The command is bound with onTrue rather than onFalse",
             ],
             correctAnswer: 1,
             explanation:
-              "runRepeatedly builds a while (true) loop around the body. There is no exit, so the command runs until something takes the mechanism away from it. The (hold) suffix is a naming convention that makes that visible to you — the framework does not read it.",
+              "runRepeatedly builds a while (true) loop around the body. There is no exit, so the command runs until something takes the mechanism away from it. The (hold) suffix is a naming convention that makes that visible to you: the framework does not read it.",
           },
           {
             id: 4,
             question:
               "You bind driver.a().onTrue(flywheel.runFast()) and leave the onFalse off. You release A. What happens?",
             options: [
-              "The flywheel stops — releasing the button cancels the command, and canceling stops the motor",
+              "The flywheel stops: releasing the button cancels the command, and canceling stops the motor",
               "runFast() is never canceled, so it keeps re-sending 6 V for the rest of the match",
               "The command is canceled but the wheel keeps spinning anyway",
-              "The build fails — onTrue requires a matching onFalse",
+              "The build fails: onTrue requires a matching onFalse",
             ],
             correctAnswer: 1,
             explanation:
@@ -843,7 +843,7 @@ runRepeatedly(...).withPriority(5).named("x")   // compiles`}
             options: [
               "After .named(...), because a command must exist before you can hook it",
               "Before .named(...), because it is a NeedsNameBuilderStage method and .named(...) ends the builder",
-              "Either position compiles — it is a style preference",
+              "Either position compiles: it is a style preference",
               "It is passed as a second argument to runRepeatedly",
             ],
             correctAnswer: 1,

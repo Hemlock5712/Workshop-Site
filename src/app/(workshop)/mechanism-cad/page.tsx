@@ -20,7 +20,7 @@ export default function MechanismCAD() {
     <PageTemplate
       title="The two mechanisms, in 3D, with the parts lists"
       emphasis="with the parts lists"
-      lede="Every lesson in Workshop #1 drives one of these two. If your team already has an old competition arm or shooter, use that and skip this page — it exists for teams who need to build one."
+      lede="Every lesson in Workshop #1 drives one of these two. If your team already has an old competition arm or shooter, use that and skip this page: it exists for teams who need to build one."
       needs={[
         <>Nothing installed. The models spin in the browser.</>,
         <>
@@ -63,7 +63,7 @@ export default function MechanismCAD() {
             <h3 className="display m-0 text-lede">Flywheel Mechanism</h3>
             <p>
               This is the mechanism you&apos;ll be programming in this workshop.
-              Drag to orbit the model and scroll to zoom — or use the view
+              Drag to orbit the model and scroll to zoom, or use the view
               buttons under it to jump to a fixed angle.
             </p>
 
@@ -143,7 +143,7 @@ export default function MechanismCAD() {
           </div>
         </div>
 
-        <Box variant="alert-info" title="File Format Guide">
+        <Box variant="alert-info" title="File format guide">
           {/* `h4`, not `h5`. These sit under the section's `h2` with an `h3`
               between, so `h5` skipped a level and left the page's heading
               outline unnavigable. */}

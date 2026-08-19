@@ -248,7 +248,7 @@ export default function PIDControl() {
         </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html"
-          title="CTRE — Manual PID tuning"
+          title="CTRE: Manual PID tuning"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>

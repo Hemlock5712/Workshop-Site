@@ -211,7 +211,7 @@ export default function DynamicPathPlanning() {
         </ol>
         <DocumentationButton
           href="https://pathplanner.dev/pplib-pathfinding.html"
-          title="PathPlanner — Path finding and dynamic obstacles"
+          title="PathPlanner: Path finding and dynamic obstacles"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>

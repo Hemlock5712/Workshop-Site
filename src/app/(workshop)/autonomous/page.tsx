@@ -131,7 +131,7 @@ routine = Command.sequence(leaveStart, stop).named("Leave Start");`}
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/LeaveStartAuto.java"
-          title="LeaveStartAuto.java — lifecycle and behavior together"
+          title="LeaveStartAuto.java: lifecycle and behavior together"
           code={`package frc.robot.opmodes;
 
 import static org.wpilib.units.Units.Seconds;

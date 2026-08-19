@@ -74,7 +74,7 @@ export default function FinishLines() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Arm.java"
-          title="Arm.java — the mechanism owns the measurement"
+          title="Arm.java: the mechanism owns the measurement"
           code={`private static final double POSITION_TOLERANCE_ROT = 0.01;
 
 public boolean isAtTarget() {

@@ -152,7 +152,7 @@ export default function Prerequisites() {
             </span>
           </h3>
           <p className="prose-body m-0">
-            A dashboard shows live values while the robot runs — whatever your
+            A dashboard shows live values while the robot runs: whatever your
             code publishes to NetworkTables, WPILib&apos;s shared table of live
             data. Workshop #1 does not need one; the bench work happens entirely
             in Tuner X. Install it when you reach{" "}
@@ -170,9 +170,9 @@ export default function Prerequisites() {
           <p>
             On older FRC code, a dashboard held a drop-down that chose the
             autonomous routine. This stack has no such chooser. Each mode is its
-            own class with a name in its annotation —{" "}
+            own class with a name in its annotation:{" "}
             <code>@Teleop(name = &quot;Teleop&quot;)</code>,{" "}
-            <code>@Autonomous(name = &quot;Drive To Pose&quot;)</code> — and
+            <code>@Autonomous(name = &quot;Drive To Pose&quot;)</code>: and
             those names are what the driver sees on the Driver Station. The
             driver picks one there, and that is the only one the robot builds.
           </p>
@@ -228,13 +228,13 @@ export default function Prerequisites() {
       {/* ── java ─────────────────────────────────────────────────────── */}
       <LessonSection
         id="java-nothing-to-install"
-        title="Java — nothing to install, and nothing to learn first"
+        title="Java: nothing to install, and nothing to learn first"
       >
         <ProseBlock>
           <p>
             You do not need to know Java before you start. You do need to read
             it. Robot code on this site is Java from the first lesson that has
-            code in it, and it does not stay at the beginner end for long —
+            code in it, and it does not stay at the beginner end for long:
             lambdas, method references, and class declarations all show up in
             Workshop #2.
           </p>
@@ -301,7 +301,7 @@ export default function Prerequisites() {
       >
         <ul className="list-disc space-y-control">
           <li>
-            <strong>The assembled mechanism.</strong> The arm or the flywheel
+            <strong>The assembled mechanism:</strong> The arm or the flywheel
             from{" "}
             <Link href="/mechanism-cad" className={linkStyle}>
               Mechanism CAD
@@ -312,26 +312,26 @@ export default function Prerequisites() {
             the hardware below.
           </li>
           <li>
-            <strong>A Kraken X44.</strong> The motor Tuner X controls, with its{" "}
+            <strong>A Kraken X44:</strong> The motor Tuner X controls, with its{" "}
             <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm>{" "}
             controller built into the case, so there is no separate controller
             to wire.
           </li>
           <li>
-            <strong>{"A CANcoder. "}</strong> The WCP ThroughBore encoder is a
+            <strong>{"A CANcoder: "}</strong> The WCP ThroughBore encoder is a
             CANcoder inside, which is why the code calls it one. It reports the
             arm&apos;s real angle and remembers that angle after a power cycle.
             The arm build uses one; the flywheel build does not.
           </li>
           <li>
-            <strong>A CANivore.</strong> Plugs into a USB port on your laptop
+            <strong>A CANivore:</strong> Plugs into a USB port on your laptop
             and runs the CAN bus that the motor and encoder sit on. This is the
             connection Tuner X uses to reach the bench hardware in Workshop #1.
             Name yours <code>canivore</code> so the same hardware handoff can be
             used when robot programming begins in Workshop #2.
           </li>
           <li>
-            <strong>A charged battery and its cable.</strong> A fresh one gives
+            <strong>A charged battery and its cable:</strong> A fresh one gives
             about 12 V. Bench tests on{" "}
             <Link href="/mechanism-setup" className={linkStyle}>
               Mechanism Setup

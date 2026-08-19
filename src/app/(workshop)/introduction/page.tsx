@@ -20,31 +20,31 @@ const ROADMAP: ReadonlyArray<{
 }> = [
   {
     id: "workshop1",
-    heading: "Workshop #1 — Hardware & CTRE",
+    heading: "Workshop #1: Hardware & CTRE",
     blurb:
       "Wire and identify the hardware, then tune PID and Motion Magic entirely in Phoenix Tuner X. No Java yet.",
   },
   {
     id: "workshop2",
-    heading: "Workshop #2 — Robot Programming",
+    heading: "Workshop #2: Robot Programming",
     blurb:
       "Learn the Java you need, create the project, and build its Commands v3 structure from Robot.java through mechanisms and logging.",
   },
   {
     id: "workshop3",
-    heading: "Workshop #3 — Swerve & Autonomous",
+    heading: "Workshop #3: Swerve & Autonomous",
     blurb:
       "Generate and calibrate a swerve drive, design a path, and run it from an autonomous OpMode.",
   },
   {
     id: "workshop4",
-    heading: "Workshop #4 — Vision & Navigation",
+    heading: "Workshop #4: Vision & Navigation",
     blurb:
       "Correct odometry with vision, drive to a pose, profile the motion, and reason about dynamic paths.",
   },
   {
     id: "workshop5",
-    heading: "Workshop #5 — Advanced Commands",
+    heading: "Workshop #5: Advanced Commands",
     blurb:
       "Build longer behaviors with command composition, finish conditions, coroutines, and state machines.",
   },
@@ -67,7 +67,7 @@ export default function Introduction() {
           <strong>Hardware, for real.</strong> Workshop #1 runs on a Kraken X44
           motor, a ThroughBore encoder (a CANcoder inside), and a CANivore.
           Workshop #3 adds a swerve drivetrain, and Workshop #4 adds a Limelight
-          camera. There is no version of this course you can do without them —
+          camera. There is no version of this course you can do without them:
           see the note below.
         </>,
         <>
@@ -134,7 +134,7 @@ export default function Introduction() {
           title="CTRE hardware, and nothing else"
         >
           <p>
-            Every page names the actual device — Kraken, TalonFX, CANcoder,
+            Every page names the actual device: Kraken, TalonFX, CANcoder,
             CANivore, Phoenix 6. There are no &quot;if you are using a different
             motor controller&quot; branches anywhere on the site, because the
             workshop supplies the hardware and every team following along builds
@@ -167,7 +167,7 @@ export default function Introduction() {
             <code>org.wpilib</code>.
           </li>
           <li>
-            <strong>SystemCore</strong> — the robot controller your code deploys
+            <strong>SystemCore</strong>: the robot controller your code deploys
             to.
           </li>
           <li>
@@ -207,7 +207,7 @@ export default function Introduction() {
         <p>
           The same list lives in the sidebar, and the arrows at the bottom of
           every page walk it in order. Lessons marked <em>optional</em> are side
-          trips — skip one and the next lesson still works.
+          trips: skip one and the next lesson still works.
         </p>
 
         <div className="flex flex-col gap-6">
@@ -299,7 +299,7 @@ export default function Introduction() {
           its friends. Two goals shaped it. The first is that you learn the
           patterns good FRC teams already use, instead of inventing your own and
           finding out in week five. The second is that the code holds up at a
-          competition — where a match lasts two and a half minutes, nobody can
+          competition, where a match lasts two and a half minutes, nobody can
           reach the robot, and the thing that breaks is never the thing you
           tested.
         </p>

@@ -37,8 +37,8 @@ export default function SwerveDriveProject() {
           The swerve concepts from{" "}
           <Link href="/swerve-prerequisites" className={linkStyle}>
             Swerve Drive Prerequisites
-          </Link>{" "}
-          — module anatomy, and field-centric versus robot-centric driving.
+          </Link>
+          : module anatomy, plus field-centric and robot-centric driving.
         </>,
         <>
           A tape measure, and the robot up on blocks so all four wheels can turn
@@ -51,7 +51,7 @@ export default function SwerveDriveProject() {
       <Split>
         <KeyConceptSection
           description={[
-            "The rest of the swerve project — the drivetrain class, the Mechanism wrapper, the teleop controls — is already in the workshop code. Your job on this page is to produce a TunerConstants.java that describes your robot, drop it in, and drive.",
+            "The rest of the swerve project, the drivetrain class, the Mechanism wrapper, the teleop controls, is already in the workshop code. Your job on this page is to produce a TunerConstants.java that describes your robot, drop it in, and drive.",
           ]}
           concept="Tuner X measures your drivetrain and writes TunerConstants.java. You swap that one file into a project that already works."
         />
@@ -67,8 +67,8 @@ export default function SwerveDriveProject() {
         <p className="mb-4">
           You do not have to build the project from nothing. Download the
           workshop swerve project, which is the code shown on this page. Change
-          the team number in <code>.wpilib/wpilib_preferences.json</code> — it
-          ships as <code>5712</code> — and replace{" "}
+          the team number in <code>.wpilib/wpilib_preferences.json</code>: it
+          ships as <code>5712</code>: and replace{" "}
           <code>TunerConstants.java</code> with the one you generate below.
         </p>
         <a
@@ -91,9 +91,9 @@ export default function SwerveDriveProject() {
           The generator can emit a complete project, but that is not how this
           workshop uses it. The only piece you keep is{" "}
           <code>src/main/java/frc/robot/generated/TunerConstants.java</code>.
-          Everything else in the swerve project — the drivetrain class, the{" "}
+          Everything else in the swerve project: the drivetrain class, the{" "}
           <code>Mechanism</code> that wraps it, the teleop controls, the
-          telemetry — is code you already have and will read further down this
+          telemetry: is code you already have and will read further down this
           page.
         </p>
 
@@ -113,7 +113,7 @@ export default function SwerveDriveProject() {
           <ul className="ml-4 list-disc space-y-1">
             <li>
               The CAN bus name, and one drive ID, steer ID and CANcoder ID per
-              module — twelve device IDs in total, plus the Pigeon 2.
+              module: twelve device IDs in total, plus the Pigeon 2.
             </li>
             <li>
               <code>kDriveGearRatio</code> and <code>kSteerGearRatio</code>, and{" "}
@@ -142,7 +142,7 @@ export default function SwerveDriveProject() {
         <Box
           variant="alert-warning"
           tag="ABOUT TUNER X"
-          title="No screenshots — look for the state, not the button"
+          title="No screenshots: look for the state, not the button"
         >
           <p>
             Tuner X moves its controls around between releases, so a labeled
@@ -174,7 +174,7 @@ export default function SwerveDriveProject() {
                 Power the robot, connect Tuner X, and look at the device list.
                 All thirteen devices have to be on the same CAN bus: eight
                 TalonFX, four CANcoders and one Pigeon 2. Assign IDs now and
-                write them down module by module — you will type them into the
+                write them down module by module: you will type them into the
                 generator in step 3, and a swapped pair is the single most
                 common way this page goes wrong.
               </p>
@@ -182,8 +182,8 @@ export default function SwerveDriveProject() {
                 <strong>{"You should see: "}</strong> thirteen devices listed,
                 every ID different, no duplicate-ID warning and no red firmware
                 badges. If a device is missing, it is a wiring or termination
-                problem, and it will not become a software problem later — fix
-                it here.
+                problem, and it will not become a software problem later: fix it
+                here.
               </p>
             </div>
           </div>
@@ -233,20 +233,20 @@ export default function SwerveDriveProject() {
                   style={{ color: "var(--tx2)" }}
                 >
                   <li>
-                    <strong>Wheelbase</strong> — front-to-back distance between
+                    <strong>Wheelbase</strong>: front-to-back distance between
                     module centers.
                   </li>
                   <li>
-                    <strong>Trackwidth</strong> — side-to-side distance between
+                    <strong>Trackwidth</strong>: side-to-side distance between
                     module centers.
                   </li>
                   <li>
-                    <strong>Wheel diameter</strong> — of the tread that touches
+                    <strong>Wheel diameter</strong>: of the tread that touches
                     the carpet, on a wheel that has been driven on.
                   </li>
                   <li>
-                    <strong>Drive gear ratio</strong> — motor rotations per
-                    wheel rotation, from your module&apos;s spec sheet.
+                    <strong>Drive gear ratio</strong>: motor rotations per wheel
+                    rotation, from your module&apos;s spec sheet.
                   </li>
                 </ul>
               </div>
@@ -260,7 +260,7 @@ export default function SwerveDriveProject() {
               <p className="mt-2">
                 <strong>{"You should see: "}</strong> the wizard accept all four
                 without complaint. Say the numbers back to yourself before you
-                move on — wheelbase and trackwidth are the pair people swap, and
+                move on: wheelbase and trackwidth are the pair people swap, and
                 on a square robot the swap is invisible until the robot turns
                 and the modules fight each other.
               </p>
@@ -283,14 +283,14 @@ export default function SwerveDriveProject() {
                 corner: an inversion flag for the steer motor and the encoder,
                 and a CANcoder offset measured with that wheel pointed straight.
                 Physically hold the wheels straight when it asks, and take that
-                part seriously — half a degree of error per module walks the
+                part seriously: half a degree of error per module walks the
                 robot sideways over a long drive.
               </p>
               <p className="mt-2">
                 <strong>{"You should see: "}</strong> one module moving at a
                 time, and it should be the corner the wizard named. If a
-                different corner moves, two CAN IDs are swapped — go back to
-                step 1 and fix the IDs rather than working around it here.
+                different corner moves, two CAN IDs are swapped: go back to step
+                1 and fix the IDs rather than working around it here.
               </p>
             </div>
           </div>
@@ -310,7 +310,7 @@ export default function SwerveDriveProject() {
                 <code>
                   src/main/java/frc/robot/generated/TunerConstants.java
                 </code>{" "}
-                in the workshop project. Replace the whole file — do not
+                in the workshop project. Replace the whole file: do not
                 hand-merge fields, because the offsets, the inversions and the
                 IDs all have to come from the same run.
               </p>
@@ -351,7 +351,7 @@ export default function SwerveDriveProject() {
 
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
-          title="CTRE — Tuner X Swerve Project Generator"
+          title="CTRE: Tuner X Swerve Project Generator"
           icon={<Book className="w-5 h-5" />}
         />
       </LessonSection>
@@ -477,14 +477,14 @@ export default function SwerveDriveProject() {
         </div>
 
         <p>
-          <code>DriveMechanism</code> is the one to read closely — it is the
-          only one of the three you would ever add to. Its public surface is
-          small: <code>applyRequest(...)</code> and{" "}
-          <code>seedFieldCentric()</code> return commands,{" "}
-          <code>setControl(...)</code> sends one request straight through,{" "}
-          <code>getPose()</code> and <code>getFieldVelocity()</code> read the
-          drivetrain, and <code>addVisionMeasurement(...)</code> is the door the
-          camera comes in through two lessons from now.
+          <code>DriveMechanism</code> is the one to read closely: it is the only
+          one of the three you would ever add to. Its public surface is small:{" "}
+          <code>applyRequest(...)</code> and <code>seedFieldCentric()</code>{" "}
+          return commands, <code>setControl(...)</code> sends one request
+          straight through, <code>getPose()</code> and{" "}
+          <code>getFieldVelocity()</code> read the drivetrain, and{" "}
+          <code>addVisionMeasurement(...)</code> is the door the camera comes in
+          through two lessons from now.
         </p>
 
         <GitHubContent
@@ -524,7 +524,7 @@ export default function SwerveDriveProject() {
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — the joystick drive, set as the default"
+          title="TeleopOpMode.java: the joystick drive, set as the default"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
           code={`public TeleopOpMode(Robot robot) {
     final DriveMechanism drivetrain = robot.drivetrain;
@@ -547,14 +547,14 @@ export default function SwerveDriveProject() {
 
         <p>
           Read the shape rather than the algebra. <code>applyRequest(...)</code>{" "}
-          is an ordinary command factory — it builds a hold with{" "}
+          is an ordinary command factory: it builds a hold with{" "}
           <code>runRepeatedly</code>, exactly like <code>arm.runFast()</code>{" "}
           does:
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveMechanism.java — the factory being handed to setDefaultCommand"
+          title="DriveMechanism.java: the factory being handed to setDefaultCommand"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
           code={`/** Returns a command that keeps sending the given control request to the drivetrain. */
 public Command applyRequest(Supplier<SwerveRequest> request) {
@@ -565,7 +565,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         <p>
           So the default command is a hold that re-reads the sticks every loop
           and re-sends a fresh <code>FieldCentric</code> request. Let go of the
-          sticks and it is still running — it is now asking for zero.
+          sticks and it is still running: it is now asking for zero.
         </p>
 
         <p>
@@ -618,7 +618,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         <p>
           That is the property every later page leans on. When Drive to Point
           takes the drivetrain to run an automatic move, the driver gets control
-          back the instant that command ends — not because anything cleaned up,
+          back the instant that command ends: not because anything cleaned up,
           but because the default underneath was never anything else.
         </p>
 
@@ -629,7 +629,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         >
           <p>
             <code>setDefaultCommand</code> makes a binding, and bindings are
-            scoped to wherever you make them — the same rule{" "}
+            scoped to wherever you make them: the same rule{" "}
             <Link href="/triggers" className={linkStyle}>
               Triggers
             </Link>{" "}
@@ -664,7 +664,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
             A default command must require the mechanism it is the default for,
             and it must not require any other mechanism. Break either one and
             you get an <code>IllegalArgumentException</code> the moment the line
-            runs — not a compile error, so it lands as a crash on the driver
+            runs: not a compile error, so it lands as a crash on the driver
             station.
           </p>
           <p className="mt-3">
@@ -686,11 +686,11 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
         <p>
           Two details in that file worth noticing. <code>maxSpeed</code> is read
           straight out of <code>TunerConstants.kSpeedAt12Volts</code>, so full
-          stick means the top speed the constants claim your robot has — which
-          is one more reason to measure that number rather than guess it. And
-          the request ships as <code>DriveRequestType.OpenLoopVoltage</code>:
-          stick position becomes volts, with no wheel-speed loop. Both of those
-          are calibration work, on the next-but-one page.
+          stick means the top speed the constants claim your robot has, which is
+          one more reason to measure that number rather than guess it. And the
+          request ships as <code>DriveRequestType.OpenLoopVoltage</code>: stick
+          position becomes volts, with no wheel-speed loop. Both of those are
+          calibration work, on the next-but-one page.
         </p>
       </LessonSection>
 
@@ -723,8 +723,8 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
           <p className="mt-3">
             <Link href="/swerve-calibration#seeding" className={linkStyle}>
               Swerve Calibration lays the three of them out side by side
-            </Link>{" "}
-            — <code>seedFieldCentric()</code>,{" "}
+            </Link>
+            : <code>seedFieldCentric()</code>,{" "}
             <code>applyOperatorPerspective()</code> and{" "}
             <code>resetPose(Pose2d)</code>. Read that section before you start
             trusting <code>getPose()</code> for anything.
@@ -779,7 +779,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
           <li>
             Release everything. <strong>{"You should see: "}</strong> the robot
             stop immediately and stay stopped. That is the default command
-            asking for zero — not the absence of a command.
+            asking for zero: not the absence of a command.
           </li>
         </ol>
 
@@ -807,7 +807,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
                 other three go straight.
               </strong>{" "}
               An inversion or an offset for that corner is wrong. Do not patch
-              it by hand in the file — re-run the generator&apos;s module test
+              it by hand in the file: re-run the generator&apos;s module test
               for that module, because inversion and offset are measured
               together and a hand-edited pair will disagree.
             </li>
@@ -819,7 +819,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
               and that the robot is enabled. If both are right, the{" "}
               <code>setDefaultCommand</code> line is missing or commented out.
               With only <code>idle()</code> underneath, the drivetrain sits
-              there sending nothing — which looks identical to broken wiring and
+              there sending nothing, which looks identical to broken wiring and
               is not.
             </li>
           </ul>
@@ -836,7 +836,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
               "Why is the drivetrain split into CommandSwerveDrivetrain and DriveMechanism instead of being one class?",
             options: [
               "To keep generated code and hand-written code in separate folders",
-              "CommandSwerveDrivetrain already extends CTRE's generated swerve class, and a Java class can only extend one thing — so it cannot also extend Mechanism",
+              "CommandSwerveDrivetrain already extends CTRE's generated swerve class, and a Java class can only extend one thing, so it cannot also extend Mechanism",
               "Mechanism does not work with swerve drivetrains",
               "So the drivetrain can be used without the command framework",
             ],
@@ -863,14 +863,14 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
             question:
               "The arm's default command is idle(). The drivetrain's is the joystick drive. What is the practical difference when a command on each one is canceled?",
             options: [
-              "None — canceling always stops the motors",
+              "None: canceling always stops the motors",
               "idle() zeroes the output; the joystick drive holds the last request",
               "idle() sends nothing at all, so the arm keeps applying its last voltage; the joystick drive keeps commanding, so hands-off sticks mean a request for zero speed",
               "The drivetrain refuses the cancellation until the driver presses a button",
             ],
             correctAnswer: 2,
             explanation:
-              "idle() parks at the lowest priority and issues no output — it does not zero the last request, which is why arm.stop() has to exist. The drivetrain's default is a real command that re-reads the sticks every loop, so centered sticks are an active request for zero.",
+              "idle() parks at the lowest priority and issues no output: it does not zero the last request, which is why arm.stop() has to exist. The drivetrain's default is a real command that re-reads the sticks every loop, so centered sticks are an active request for zero.",
           },
           {
             id: 4,
@@ -878,7 +878,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
               "Why is setDefaultCommand called in TeleopOpMode's constructor rather than in Robot's?",
             options: [
               "Robot runs too early for the scheduler to accept it",
-              "The default command needs this OpMode's controller, and an OpMode's bindings are scoped to it — an autonomous mode should not inherit a stick-driven default",
+              "The default command needs this OpMode's controller, and an OpMode's bindings are scoped to it: an autonomous mode should not inherit a stick-driven default",
               "A default command can only be set on a mechanism that is already running a command",
               "It is a style preference; either location behaves identically",
             ],
@@ -891,7 +891,7 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
             question:
               "Which command is a legal default command for the drivetrain?",
             options: [
-              "Any command at all — the scheduler does not check",
+              "Any command at all: the scheduler does not check",
               "One that requires the drivetrain and nothing else",
               "One that requires no mechanisms, so it can never conflict",
               "One that requires the drivetrain plus every mechanism it might interrupt",
@@ -906,13 +906,13 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
               "You press the left bumper, which runs seedFieldCentric(). What changed?",
             options: [
               "The robot's x and y on the field are now zero",
-              "Which direction the driver's sticks call forward — and nothing about where the robot is",
+              "Which direction the driver's sticks call forward, and nothing about where the robot is",
               "The CANcoder offsets stored in TunerConstants.java",
               "The top speed the drivetrain is allowed to command",
             ],
             correctAnswer: 1,
             explanation:
-              "seedFieldCentric() is a heading reference and nothing else. It never supplies an x or a y. Setting a real field position is resetPose(Pose2d), a different method — the Swerve Calibration page compares all three operations side by side.",
+              "seedFieldCentric() is a heading reference and nothing else. It never supplies an x or a y. Setting a real field position is resetPose(Pose2d), a different method: the Swerve Calibration page compares all three operations side by side.",
           },
         ]}
       />

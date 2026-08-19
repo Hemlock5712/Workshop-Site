@@ -19,9 +19,8 @@ export default function CommandFramework() {
       needs={[
         <>
           <strong>What you need first:</strong> the vocabulary from{" "}
-          <strong>The Java You Need</strong> — class, field, method,
-          constructor, lambda, method reference. Every code block below uses all
-          six.
+          <strong>The Java You Need</strong>: class, field, method, constructor,
+          lambda, method reference. Every code block below uses all six.
         </>,
         <>
           <strong>Also useful:</strong> the robot template you cloned in{" "}
@@ -30,7 +29,7 @@ export default function CommandFramework() {
         </>,
         <>
           <strong>What you get:</strong> the four words the rest of the workshop
-          is written in — trigger, mechanism, command, scheduler — plus the one
+          is written in (trigger, mechanism, command, scheduler), plus the one
           rule that causes more stuck robots than anything else.
         </>,
       ]}
@@ -46,7 +45,7 @@ export default function CommandFramework() {
           concept="Triggers start Commands. Commands drive Mechanisms. The scheduler runs the loop and settles who owns what."
         />
         <MarginNote label="WHAT YOU'LL BUILD">
-          Nothing, on this page. There is no code to write here — you start
+          Nothing, on this page. There is no code to write here: you start
           writing on the next one.
         </MarginNote>
       </Split>
@@ -119,7 +118,7 @@ export default function CommandFramework() {
 
         <CodeBlock
           language="java"
-          title="Robot.java — trimmed to the two things this page is about"
+          title="Robot.java: trimmed to the two things this page is about"
           filename="src/main/java/frc/robot/Robot.java"
           code={`public class Robot extends OpModeRobot {
   // The robot's mechanisms. Public so OpModes can use them.
@@ -168,7 +167,7 @@ export default function CommandFramework() {
           </li>
           <li>Promote the queued commands to the running set.</li>
           <li>
-            Run every command in the running set — one step each, then hand
+            Run every command in the running set: one step each, then hand
             control back so the next one gets its turn.
           </li>
         </ol>
@@ -180,7 +179,7 @@ export default function CommandFramework() {
         >
           <p>
             Some jobs are not actions on a mechanism. Reading a camera, pushing
-            numbers to a dashboard, refreshing an LED strip — these need to
+            numbers to a dashboard, refreshing an LED strip: these need to
             happen every tick but they do not own any hardware.{" "}
             <code>addPeriodic</code> is where they go:
           </p>
@@ -192,7 +191,7 @@ export default function CommandFramework() {
             />
           </div>
           <p className="mt-3">
-            That exact line is real — the vision lesson&apos;s{" "}
+            That exact line is real: the vision lesson&apos;s{" "}
             <code>Limelight</code> class registers each camera this way. Do not
             reach for it to move a motor; motors go through commands, so the
             scheduler can arbitrate who owns them.
@@ -207,8 +206,8 @@ export default function CommandFramework() {
       >
         <p>
           This is the part of the framework that earns its keep. A command
-          declares which mechanisms it needs — a command built by{" "}
-          <code>arm.runFast()</code> needs the arm — and while that command is
+          declares which mechanisms it needs: a command built by{" "}
+          <code>arm.runFast()</code> needs the arm, and while that command is
           running, it <strong>owns</strong> the arm. No second command touches
           that motor at the same time. You never write the code that enforces
           this; the scheduler does it.
@@ -230,8 +229,8 @@ export default function CommandFramework() {
           <p>
             Every mechanism has a <strong>default command</strong>, and unless
             you set one yourself it is <code>idle()</code>. An idle command owns
-            the mechanism at the lowest possible priority — so anything can take
-            it away — and it sends <em>nothing at all</em> to the motor.
+            the mechanism at the lowest possible priority, so anything can take
+            it away, and it sends <em>nothing at all</em> to the motor.
           </p>
           <p className="mt-3">
             Read that last part twice, because it surprises everyone: idle does
@@ -262,8 +261,8 @@ export default function CommandFramework() {
 
         <p>
           The split is two files deep. <code>Robot</code> holds the mechanisms
-          as <code>public final</code> fields and runs the scheduler — you saw
-          it above. Each mode is then its own separate class, tagged with{" "}
+          as <code>public final</code> fields and runs the scheduler: you saw it
+          above. Each mode is then its own separate class, tagged with{" "}
           <code>@Teleop</code>, <code>@Autonomous</code> or{" "}
           <code>@Utility</code>. The framework finds those classes by their tag
           and lists them on the driver station, and each one is handed the{" "}
@@ -272,7 +271,7 @@ export default function CommandFramework() {
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — the shape of every mode class"
+          title="TeleopOpMode.java: the shape of every mode class"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
           code={`@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
@@ -323,7 +322,7 @@ public class TeleopOpMode extends PeriodicOpMode {
       >
         <p>
           A <strong>hold</strong> is a command whose body runs again on every
-          tick — re-sending the same request fifty times a second — and never
+          tick, re-sending the same request fifty times a second, and never
           reaches an end. Two reasons that is the house style here. The request
           survives a motor controller rebooting mid-match, because the very next
           tick sends it again. And a command that never ends is a command that
@@ -338,7 +337,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <CodeBlock
           language="java"
-          title="Arm.java — a hold, its voltage, and the setter it calls"
+          title="Arm.java: a hold, its voltage, and the setter it calls"
           filename="Workshop-Code, branch 2-Commands · subsystems/Arm.java"
           code={`private static final double FAST_VOLTAGE = 6.0;
 
@@ -377,7 +376,7 @@ private void setVoltage(double voltage) {
             Put a hold in a list of steps and the list stops there{" "}
             <em>forever</em>. Step two never runs, because step one never
             reaches an end. No exception is thrown and no error appears in the
-            log — the routine sits there looking broken.
+            log: the routine sits there looking broken.
           </p>
           <p className="mt-3">
             It is not a bug in the framework. A hold is <em>supposed</em> to run
@@ -399,18 +398,18 @@ private void setVoltage(double voltage) {
           title="Two ways to give a hold an ending"
         >
           <p>
-            Diagnosing is all you can do today, and that is fine — you have no
+            Diagnosing is all you can do today, and that is fine: you have no
             multi-step routines yet to get stuck. Both cures are named lessons
             further down the sidebar:
           </p>
           <ul className="ml-4 mt-3 list-disc space-y-2">
             <li>
-              <code>.withTimeout(...)</code> — end the hold after a fixed amount
+              <code>.withTimeout(...)</code>: end the hold after a fixed amount
               of time. Blunt, but it works on the very first commands you write.
               That is <strong>Chaining Commands</strong>.
             </li>
             <li>
-              <code>.until(arm::isAtTarget)</code> — end the hold when the
+              <code>.until(arm::isAtTarget)</code>: end the hold when the
               mechanism reports that it actually arrived. Better, but it needs a
               mechanism that can measure itself, which yours cannot do yet. That
               is <strong>Finish Lines</strong>.
@@ -433,20 +432,20 @@ private void setVoltage(double voltage) {
             Open <code>src/main/java/frc/robot/Robot.java</code>.{" "}
             <strong>{"You should see: "}</strong>{" "}
             <code>extends OpModeRobot</code> on the class line, and a few{" "}
-            <code>public final</code> fields — <code>drivetrain</code>,{" "}
+            <code>public final</code> fields: <code>drivetrain</code>,{" "}
             <code>arm</code>, <code>flywheel</code>. Those are the mechanisms.
           </li>
           <li>
             Search that same file for <code>robotPeriodic</code>.{" "}
             <strong>{"You should see: "}</strong> one method, containing exactly
-            one line — <code>Scheduler.getDefault().run();</code>. That is the
+            one line: <code>Scheduler.getDefault().run();</code>. That is the
             whole engine.
           </li>
           <li>
             Look through the file list for a file called{" "}
             <code>RobotContainer.java</code>.{" "}
             <strong>{"You should see: "}</strong> there isn&apos;t one. A
-            full-text search is a different matter — the name does turn up, in
+            full-text search is a different matter: the name does turn up, in
             the comments at the top of <code>Robot.java</code> and{" "}
             <code>TeleopOpMode.java</code> and in the template&apos;s markdown
             docs, every time to say the thing does not exist here. What matters
@@ -457,7 +456,7 @@ private void setVoltage(double voltage) {
             Open the folder <code>src/main/java/frc/robot/opmodes/</code>.{" "}
             <strong>{"You should see: "}</strong> six classes. Each one is a
             separate mode the driver station can run. Open two of them and look
-            at the line above <code>public class</code> —{" "}
+            at the line above <code>public class</code>:{" "}
             <code>TeleopOpMode</code> is tagged <code>@Teleop</code>,{" "}
             <code>UtilityOpMode</code> is tagged{" "}
             <code>@Utility(name = &quot;Stow&quot;)</code>. The tag is what puts
@@ -467,11 +466,10 @@ private void setVoltage(double voltage) {
             Open <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>{" "}
             and search it for <code>(hold)</code>.{" "}
             <strong>{"You should see: "}</strong> five hits. Three of them are
-            command names — <code>vertical (hold)</code>,{" "}
-            <code>horizontal (hold)</code>, <code>scoring (hold)</code> — and
-            the other two are in the comment block above them, where the file
-            states the rule for itself. Three commands, three holds, no
-            exceptions.
+            command names: <code>vertical (hold)</code>,{" "}
+            <code>horizontal (hold)</code>, <code>scoring (hold)</code>: and the
+            other two are in the comment block above them, where the file states
+            the rule for itself. Three commands, three holds, no exceptions.
           </li>
         </ol>
 
@@ -527,24 +525,24 @@ private void setVoltage(double voltage) {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <strong>Chaining</strong> — gluing commands into one bigger command
+            <strong>Chaining</strong>: gluing commands into one bigger command
             so a single button runs several things in order. This is the style
             almost everything on this team is written in.{" "}
             <strong>Chaining Commands</strong>.
           </li>
           <li>
-            <strong>Finish lines</strong> — ending a step when a mechanism
+            <strong>Finish lines</strong>: ending a step when a mechanism
             reports it has arrived, rather than after a fixed time.{" "}
             <strong>Finish Lines</strong>.
           </li>
           <li>
-            <strong>Coroutines</strong> — a second way of writing a command,
+            <strong>Coroutines</strong>: a second way of writing a command,
             where the body pauses itself from the inside. Reach for it when one
             hold has to span many steps. <strong>Coroutines</strong>, in
             Workshop #5.
           </li>
           <li>
-            <strong>State machines</strong> — the robot is always in exactly one
+            <strong>State machines</strong>: the robot is always in exactly one
             named state, and buttons move it between them.{" "}
             <strong>State Machines</strong>, in Workshop #5.
           </li>
@@ -568,27 +566,27 @@ private void setVoltage(double voltage) {
           <div className="flex flex-col gap-3">
             <DocumentationButton
               href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/ONBOARDING.md"
-              title="2027-Template ONBOARDING.md — Holds never finish"
+              title="2027-Template ONBOARDING.md: Holds never finish"
               icon={<GitBranch className="w-5 h-5" />}
             />
             <DocumentationButton
               href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/Robot.java"
-              title="Workshop-Code 2-Commands — Robot.java, the mechanisms and the scheduler tick"
+              title="Workshop-Code 2-Commands: Robot.java, the mechanisms and the scheduler tick"
               icon={<GitBranch className="w-5 h-5" />}
             />
             <DocumentationButton
               href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-              title="Workshop-Code 2-Commands — TeleopOpMode.java, bindings in the constructor"
+              title="Workshop-Code 2-Commands: TeleopOpMode.java, bindings in the constructor"
               icon={<GitBranch className="w-5 h-5" />}
             />
             <DocumentationButton
               href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/subsystems/Arm.java"
-              title="Workshop-Code 2-Commands — Arm.java, the arm you build in two lessons"
+              title="Workshop-Code 2-Commands: Arm.java, the arm you build in two lessons"
               icon={<GitBranch className="w-5 h-5" />}
             />
             <DocumentationButton
               href="https://github.com/Hemlock5712/Workshop-Code/blob/3-Limelight/src/main/java/frc/robot/subsystems/Limelight.java"
-              title="Workshop-Code 3-Limelight — Limelight.java, the addPeriodic call"
+              title="Workshop-Code 3-Limelight: Limelight.java, the addPeriodic call"
               icon={<GitBranch className="w-5 h-5" />}
             />
           </div>
@@ -615,10 +613,10 @@ private void setVoltage(double voltage) {
             question:
               "What are the three pieces of the command-based framework, and which one owns hardware?",
             options: [
-              "Inputs, Logic, Outputs — Outputs owns hardware",
-              "Triggers, Mechanisms, Commands — Mechanisms owns hardware",
-              "Sensors, Subsystems, Scheduler — Subsystems owns hardware",
-              "Buttons, Routines, Motors — Motors owns hardware",
+              "Inputs, Logic, Outputs: Outputs owns hardware",
+              "Triggers, Mechanisms, Commands: Mechanisms owns hardware",
+              "Sensors, Subsystems, Scheduler: Subsystems owns hardware",
+              "Buttons, Routines, Motors: Motors owns hardware",
             ],
             correctAnswer: 1,
             explanation:
@@ -629,7 +627,7 @@ private void setVoltage(double voltage) {
             question:
               "Robot.java calls Scheduler.getDefault().run() inside robotPeriodic(). What breaks if you delete that line?",
             options: [
-              "Nothing — the scheduler starts itself when the first command is built",
+              "Nothing: the scheduler starts itself when the first command is built",
               "Every command on the robot stops running: triggers are never checked and nothing is ever scheduled",
               "Only autonomous stops working; teleop bindings run directly off the driver station",
               "The motors keep running but stop logging",
@@ -643,10 +641,10 @@ private void setVoltage(double voltage) {
             question:
               "One command has the arm. A button fires and a second command that also needs the arm gets scheduled. Both have the ordinary priority. Who ends up with the arm?",
             options: [
-              "The command that was already running — a mechanism cannot be taken away",
+              "The command that was already running: a mechanism cannot be taken away",
               "The new command; the one that was running is canceled",
               "Both run at once and their voltages are added together",
-              "Neither — the scheduler drops both and runs the default command",
+              "Neither: the scheduler drops both and runs the default command",
             ],
             correctAnswer: 1,
             explanation:
@@ -658,13 +656,13 @@ private void setVoltage(double voltage) {
               'A routine has been stuck for eight seconds, and the command it is sitting on is named "runFast (hold)". What does that name tell you?',
             options: [
               "The command crashed and the scheduler is retrying it",
-              "It is a hold, which never finishes on its own — so whatever is waiting on it will wait forever",
+              "It is a hold, which never finishes on its own, so whatever is waiting on it will wait forever",
               "The mechanism is busy and the command has not started yet",
               "Nothing useful; command names are decorative",
             ],
             correctAnswer: 1,
             explanation:
-              "That is what the (hold) suffix is for. A hold has no ending by design, so anything waiting on one waits forever. The two ways to give a hold an ending — .withTimeout(...) and .until(...) — arrive in Chaining Commands and Finish Lines.",
+              "That is what the (hold) suffix is for. A hold has no ending by design, so anything waiting on one waits forever. Chaining Commands and Finish Lines introduce two ways to give a hold an ending: .withTimeout(...) and .until(...).",
           },
           {
             id: 5,
@@ -672,13 +670,13 @@ private void setVoltage(double voltage) {
               "No command is claiming the flywheel. What is the mechanism doing?",
             options: [
               "Nothing is running, and the motor has been switched off",
-              "Its default command — idle() — owns it at the lowest priority and sends no output at all, so the motor keeps applying whatever request it last received",
+              "Its default command, idle(), owns it at the lowest priority and sends no output at all, so the motor keeps applying whatever request it last received",
               "The scheduler re-runs the last command that finished",
               "It throws an error until something claims it",
             ],
             correctAnswer: 1,
             explanation:
-              "Every mechanism defaults to idle(). Idle owns the mechanism so anything can take it, but it commands nothing — it does not zero the previous request. Canceling a command is not the same as stopping a motor, which is why a separate stop() command exists.",
+              "Every mechanism defaults to idle(). Idle owns the mechanism so anything can take it, but it commands nothing: it does not zero the previous request. Canceling a command is not the same as stopping a motor, which is why a separate stop() command exists.",
           },
         ]}
       />

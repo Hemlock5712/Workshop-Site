@@ -249,7 +249,7 @@ export default function MechanismSetup() {
         </ul>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/index.html"
-          title="CTRE — Phoenix Tuner X"
+          title="CTRE: Phoenix Tuner X"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>

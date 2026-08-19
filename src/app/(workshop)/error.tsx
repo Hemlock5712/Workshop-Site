@@ -54,7 +54,7 @@ export default function WorkshopError({
           }}
         >
           Something on the page threw on its way to the screen. That is a fault
-          on this site, not in your robot project or in anything you installed —
+          on this site, not in your robot project or in anything you installed:
           try it again, and if it keeps happening the rest of the workshop is
           still fine.
         </p>

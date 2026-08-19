@@ -96,7 +96,7 @@ export default function RunningProgram() {
             <p>
               <strong>{"The hardware is required. "}</strong>Nothing on this
               page works without a CANivore and powered motors. There is no
-              motors-optional route through Workshop&nbsp;#1 — the whole
+              motors-optional route through Workshop&nbsp;#1: the whole
               run-and-tune loop from here to Motion Magic is done against real
               devices.
             </p>
@@ -119,7 +119,7 @@ export default function RunningProgram() {
           <strong>{"OFF "}</strong> the &quot;CANivore USB&quot; setting in
           Tuner X. Two things cannot own the CAN bus at once: with it on, Tuner
           X holds the bus and the simulator cannot reach your motors. This is
-          the same toggle you turned <em>on</em> for bench testing — one switch,
+          the same toggle you turned <em>on</em> for bench testing: one switch,
           two positions, explained in full on{" "}
           <a
             href="/mechanism-setup#canivore-usb"
@@ -137,7 +137,7 @@ export default function RunningProgram() {
 
       <LessonSection
         id="hardware-simulation-setup"
-        title="Hardware Simulation Setup"
+        title="Hardware simulation setup"
       >
         <iframe
           src="https://www.youtube.com/embed/xsR7m6ToUFE"
@@ -222,7 +222,7 @@ export default function RunningProgram() {
           This is <code>opmodes/TeleopOpMode.java</code> on{" "}
           <code>2-Commands</code>, live from the repository. Three bindings,
           made in the constructor, scoped to this OpMode. Your copy should match
-          it plus the B binding you added on <strong>Triggers</strong> — four
+          it plus the B binding you added on <strong>Triggers</strong>: four
           bindings in total, and every one of them a pair.
         </p>
 
@@ -247,7 +247,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
 
         <p className="prose-body measure">
           Two of those four bindings drive the arm. Two drive the flywheel. Hold
-          on to that — it is the experiment at the bottom of this page.
+          on to that: it is the experiment at the bottom of this page.
         </p>
       </LessonSection>
 
@@ -260,7 +260,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           <li>
             In Tuner X, turn <strong>CANivore USB off</strong> and close the
             control window. <strong>{"You should see: "}</strong> your devices
-            drop out of the Tuner X list. That is correct — you are handing the
+            drop out of the Tuner X list. That is correct: you are handing the
             bus over.
           </li>
           <li>
@@ -270,8 +270,8 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           <li>
             From the project folder, run <code>./gradlew simulateJava</code> (or{" "}
             <em>WPILib: Simulate Robot Code</em> in VS Code).{" "}
-            <strong>{"You should see: "}</strong> two windows open — the
-            simulation GUI and a driver station window — and the console print{" "}
+            <strong>{"You should see: "}</strong> two windows open, the
+            simulation GUI and a driver station window, and the console print{" "}
             <code>********** Robot program startup complete **********</code>.
           </li>
           <li>
@@ -290,8 +290,8 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           </li>
           <li>
             Click <strong>Enable</strong>. <strong>{"You should see: "}</strong>{" "}
-            nothing move. Correct — every command on this branch is attached to
-            a button, and nothing is holding a button yet.
+            nothing move. Correct: every command on this branch is attached to a
+            button, and nothing is holding a button yet.
           </li>
           <li>
             Hold the <strong>left trigger</strong>.{" "}
@@ -323,7 +323,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           </li>
           <li>
             Click <strong>Disable</strong> before you walk away. Leave the
-            program running — the next section uses it.
+            program running: the next section uses it.
           </li>
         </ol>
 
@@ -345,7 +345,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             <li>
               <strong>Teleop is not in the mode list.</strong> OpModes are found
               by scanning classes while the program runs, so a mistake here is
-              never a compile error — the mode is silently absent. Walk the
+              never a compile error: the mode is silently absent. Walk the
               four-item checklist above. Then read the console: selecting a mode
               prints <code>********** Starting OpMode ... **********</code>, so
               a mode that never prints never started.
@@ -353,7 +353,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             <li>
               <strong>{"Teleop is selected but no motor turns. "}</strong> Three
               candidates, most likely first. CANivore USB is still ON, so Tuner
-              X still owns the bus. The controller is not on port&nbsp;0 — check
+              X still owns the bus. The controller is not on port&nbsp;0: check
               the Joysticks panel. Or the driver station still says Disabled;
               the scheduler runs either way, so your bindings fire and commands
               start, but no real motor moves until you click Enable. A burst of
@@ -396,7 +396,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           </li>
           <li>
             <strong>Release B. Keep holding the left trigger.</strong>{" "}
-            <strong>{"You should see: "}</strong> the arm stop — and stay
+            <strong>{"You should see: "}</strong> the arm stop, and stay
             stopped, even though the left trigger is still down. This is the
             part people do not predict.
           </li>
@@ -414,11 +414,11 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           </p>
           <ul className="ml-4 mt-3 list-disc space-y-1">
             <li>
-              <strong>Strictly lower priority</strong> than the running command
-              — the new one is turned away and nothing changes.
+              <strong>Strictly lower priority</strong> than the running command:
+              the new one is turned away and nothing changes.
             </li>
             <li>
-              <strong>Equal or higher priority</strong> — the running command is
+              <strong>Equal or higher priority</strong>: the running command is
               canceled and the new one takes the mechanism.
             </li>
           </ul>
@@ -426,8 +426,8 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             Every command you have written runs at the default priority, which
             is <code>0</code>. Equal counts, so{" "}
             <strong>the newest press always wins</strong>. That is the whole
-            rule. There is no queue, no waiting, and no error — the older
-            command is gone.
+            rule. There is no queue, no waiting, and no error: the older command
+            is gone.
           </p>
         </Box>
 
@@ -440,7 +440,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             Releasing B scheduled <code>arm.stop()</code>. That command needs
             the arm too, so it took the arm from <code>runSlow (hold)</code> by
             the same rule and started sending zero. The left trigger was held
-            down the whole time and did not get the arm back — because{" "}
+            down the whole time and did not get the arm back, because{" "}
             <code>onTrue</code> fires on the <em>press</em>, once, and never
             again while you hold. A button that is already down has nothing left
             to fire.
@@ -475,7 +475,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         >
           <li>
             <strong>It finishes on its own.</strong> Its work is done and it
-            returns. None of your commands do this —{" "}
+            returns. None of your commands do this:{" "}
             <code>runRepeatedly(...)</code> builds a hold, and a hold never
             finishes. That is what the <code>(hold)</code> in the name is
             telling you.
@@ -491,7 +491,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             <strong>Its binding cancels it.</strong>{" "}
             <code>whileTrue(command)</code> starts the command when the question
             turns true and cancels it when the question turns false.{" "}
-            <code>onTrue</code> and <code>onFalse</code> never cancel anything —
+            <code>onTrue</code> and <code>onFalse</code> never cancel anything:
             they only ever schedule. That difference is the whole reason your
             bindings come in pairs.
           </li>
@@ -551,7 +551,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             question:
               "In hardware simulation, what is being simulated and what is real?",
             options: [
-              "Everything is simulated — the motors, the physics, and the controller",
+              "Everything is simulated: the motors, the physics, and the controller",
               "The robot controller is stood in for by your laptop; the CANivore, the CAN bus and the motors are all real hardware",
               "The motors are simulated but the controller is real",
               "It models the arm's physics so you can test without hardware",
@@ -580,7 +580,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               "You hold the left trigger (arm.runFast(), 6 V), then press B (arm.runSlow(), 3 V) without letting go. What happens?",
             options: [
               "B is ignored, because the arm is already claimed by runFast",
-              "The arm drops to 3 V — runSlow is scheduled at equal priority, so it takes the arm and runFast is canceled",
+              "The arm drops to 3 V: runSlow is scheduled at equal priority, so it takes the arm and runFast is canceled",
               "Both commands run and the voltages add up to 9 V",
               "The scheduler throws an error about conflicting requirements",
             ],
@@ -594,7 +594,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               "In that same experiment you release B while still holding the left trigger. Why does the arm stop instead of going back to 6 V?",
             options: [
               "Releasing B cancels runSlow, and canceling a command stops the motor",
-              "onFalse scheduled arm.stop(), and onTrue only fires on the press — a button already held has nothing left to fire",
+              "onFalse scheduled arm.stop(), and onTrue only fires on the press: a button already held has nothing left to fire",
               "The left trigger binding expired after a few seconds",
               "runFast automatically resumes on the next scheduler tick",
             ],
@@ -608,13 +608,13 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               "A command holding the arm is canceled and nothing replaces it. What does the motor do?",
             options: [
               "It stops, because canceling releases the motor",
-              "It keeps applying the last voltage — the mechanism falls back to idle(), which sends no output and does not zero the last request",
+              "It keeps applying the last voltage: the mechanism falls back to idle(), which sends no output and does not zero the last request",
               "It coasts to a stop over about a second",
               "It faults, because no command owns the mechanism",
             ],
             correctAnswer: 1,
             explanation:
-              "idle() parks at the lowest priority and issues nothing at all. Phoenix keeps applying the last request it was given. Stopping the command and stopping the motor are different actions — something has to actively send zero every loop, which is exactly what stop() does.",
+              "idle() parks at the lowest priority and issues nothing at all. Phoenix keeps applying the last request it was given. Stopping the command and stopping the motor are different actions: something has to actively send zero every loop, which is exactly what stop() does.",
           },
           {
             id: 6,
@@ -622,7 +622,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               "On the 2027 OpMode stack, how do you choose whether teleop or an autonomous routine runs?",
             options: [
               "Edit a settings file on the robot and redeploy",
-              "Select the @Teleop or @Autonomous class by name on the driver station — picking it constructs that OpMode",
+              "Select the @Teleop or @Autonomous class by name on the driver station: picking it constructs that OpMode",
               "Set a boolean flag in the Robot class",
               "The robot picks automatically based on the match timer",
             ],

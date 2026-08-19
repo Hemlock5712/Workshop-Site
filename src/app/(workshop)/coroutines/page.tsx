@@ -20,7 +20,7 @@ export default function Coroutines() {
         <>
           An <code>Arm</code> with <code>vertical()</code> and{" "}
           <code>isAtTarget()</code>, and a <code>Flywheel</code> with{" "}
-          <code>runFast()</code> and <code>isAtTarget()</code> — all from{" "}
+          <code>runFast()</code> and <code>isAtTarget()</code>: all from{" "}
           <strong>Finish Lines</strong>.
         </>,
         <>
@@ -44,7 +44,7 @@ export default function Coroutines() {
           concept="A coroutine pauses and resumes, so a routine reads as a plain list of steps."
         />
         <MarginNote label="WHAT YOU'LL BUILD">
-          One new file — <code>RaiseAndShootOpMode.java</code>, an autonomous
+          One new file: <code>RaiseAndShootOpMode.java</code>, an autonomous
           routine that raises the arm, spins up the flywheel while the arm keeps
           holding, and shoots.
         </MarginNote>
@@ -96,8 +96,8 @@ export default function Coroutines() {
             </li>
           </ul>
           <p className="mt-3">
-            Everything else — two steps in order, a step with a time limit, a
-            step run while something is held — is a job for{" "}
+            Everything else, two steps in order, a step with a time limit, a
+            step run while something is held, is a job for{" "}
             <code>Command.sequence</code> and <code>Command.race</code>. Do not
             rewrite working chained routines into coroutines.
           </p>
@@ -118,20 +118,20 @@ export default function Coroutines() {
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            <code>coroutine.fork(command)</code> — start a command and keep
+            <code>coroutine.fork(command)</code>: start a command and keep
             going. It runs underneath you until you cancel it or the routine
             ends.
           </li>
           <li>
-            <code>coroutine.await(command)</code> — run a command and stop here
+            <code>coroutine.await(command)</code>: run a command and stop here
             until it finishes.
           </li>
           <li>
-            <code>coroutine.waitUntil(condition)</code> — stop here until the
+            <code>coroutine.waitUntil(condition)</code>: stop here until the
             condition is true.
           </li>
           <li>
-            <code>coroutine.yield()</code> — stop here for exactly one scheduler
+            <code>coroutine.yield()</code>: stop here for exactly one scheduler
             loop, then carry on. This is the one you need when you write your
             own loop; it is what lets other commands run while your loop is
             going. You will use it on{" "}
@@ -148,7 +148,7 @@ export default function Coroutines() {
             <code>arm.vertical()</code> is a hold. It re-sends its position
             request every loop and never finishes on its own.{" "}
             <code>coroutine.await(arm.vertical())</code> would therefore sit
-            there for the rest of the match. Nothing errors and nothing logs —
+            there for the rest of the match. Nothing errors and nothing logs:
             the routine stops at that line.
           </p>
           <p className="mt-3">
@@ -165,16 +165,16 @@ export default function Coroutines() {
             style={{ color: "var(--tx2)" }}
           >
             <li>
-              <code>coroutine.park()</code> — stop here permanently. Nothing
+              <code>coroutine.park()</code>: stop here permanently. Nothing
               after it ever runs, and the command has to be canceled from
               outside. This is what <code>Mechanism.idle()</code> is built from.
             </li>
             <li>
-              <code>coroutine.awaitAll(commands)</code> — wait for every one of
+              <code>coroutine.awaitAll(commands)</code>: wait for every one of
               them to finish.
             </li>
             <li>
-              <code>coroutine.awaitAny(commands)</code> — wait for the first one
+              <code>coroutine.awaitAny(commands)</code>: wait for the first one
               to finish, then cancel the rest.
             </li>
           </ul>
@@ -191,20 +191,20 @@ export default function Coroutines() {
 
         {/* step 1 */}
         <h3 className="display m-0 text-aside">
-          Step 1 — Make the file and the empty shell
+          Step 1: Make the file and the empty shell
         </h3>
 
         <p className="prose-body measure">
           New file:{" "}
           <code>src/main/java/frc/robot/opmodes/RaiseAndShootOpMode.java</code>.
-          It is a whole OpMode, so it looks like <code>TeleopOpMode</code> —
+          It is a whole OpMode, so it looks like <code>TeleopOpMode</code>:
           annotation on the class, mechanisms pulled out of <code>Robot</code>{" "}
           in the constructor.
         </p>
 
         <CodeBlock
           language="java"
-          title="RaiseAndShootOpMode.java — the shell"
+          title="RaiseAndShootOpMode.java: the shell"
           code={`package frc.robot.opmodes;
 
 import frc.robot.Robot;
@@ -246,8 +246,8 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
         <p className="prose-body measure">
           Three things here are worth naming.{" "}
           <code>Command.noRequirements</code> builds a command that claims no
-          mechanism of its own — the forked commands claim theirs, one at a
-          time, which is the whole point.{" "}
+          mechanism of its own: the forked commands claim theirs, one at a time,
+          which is the whole point.{" "}
           <code>.named(&quot;Raise And Shoot&quot;)</code> is the same mandatory
           terminal every group needs. And building the routine in the
           constructor does not run it: a built <code>Command</code> sits inert
@@ -271,7 +271,7 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
 
         {/* step 2 */}
         <h3 className="display m-0 text-aside">
-          Step 2 — Start the arm hold with <code>fork</code>
+          Step 2: Start the arm hold with <code>fork</code>
         </h3>
 
         <CodeBlock
@@ -285,7 +285,7 @@ coroutine.fork(arm.vertical());`}
           <strong>Result:</strong> run it and the arm does essentially nothing.
           That is correct, and it is worth understanding. The body has no lines
           after the fork, so the routine reaches its end on the very first pass
-          — and ending a routine cancels everything it forked. The hold is
+          , and ending a routine cancels everything it forked. The hold is
           created and destroyed in the same breath. Step 3 gives the routine
           something to wait for.
         </p>
@@ -295,15 +295,15 @@ coroutine.fork(arm.vertical());`}
             Writing <code>arm.vertical();</code> without the{" "}
             <code>coroutine.fork(...)</code> around it compiles fine and has no
             effect at all. You built a <code>Command</code> object and then
-            threw it away. Every command needs someone to schedule it — a
-            trigger binding, <code>Scheduler.getDefault().schedule(...)</code>,
-            or <code>fork</code> / <code>await</code>.
+            threw it away. Every command needs someone to schedule it: a trigger
+            binding, <code>Scheduler.getDefault().schedule(...)</code>, or{" "}
+            <code>fork</code> / <code>await</code>.
           </p>
         </Box>
 
         {/* step 3 */}
         <h3 className="display m-0 text-aside">
-          Step 3 — Wait for the arm, with a seatbelt
+          Step 3: Wait for the arm, with a seatbelt
         </h3>
 
         <p className="prose-body measure">
@@ -365,7 +365,7 @@ Command.waitUntil(arm::isAtTarget).named("wait for the arm").withTimeout(Seconds
 
         {/* step 4 */}
         <h3 className="display m-0 text-aside">
-          Step 4 — The flywheel, exactly the same pair
+          Step 4: The flywheel, exactly the same pair
         </h3>
 
         <CodeBlock
@@ -388,7 +388,7 @@ coroutine.await(
         </p>
 
         {/* step 5 */}
-        <h3 className="display m-0 text-aside">Step 5 — Shoot</h3>
+        <h3 className="display m-0 text-aside">Step 5: Shoot</h3>
 
         <CodeBlock
           language="java"
@@ -399,7 +399,7 @@ coroutine.await(
         <p className="prose-body measure">
           Nothing in that line fires a shot, and that is not an omission.{" "}
           <code>6-Coroutines</code> has two mechanisms, <code>Arm</code> and{" "}
-          <code>Flywheel</code> — there is no feeder and no indexer to build a
+          <code>Flywheel</code>: there is no feeder and no indexer to build a
           shoot command out of. So &quot;shoot&quot; here means &quot;hold the
           flywheel at speed for a second while a piece is fed in by hand,&quot;
           and the wait is the placeholder where a real feeder command would go.
@@ -408,13 +408,13 @@ coroutine.await(
         <p className="prose-body measure">
           <code>wait(Time)</code> is <code>waitUntil</code>&apos;s timed
           sibling: it pauses for a fixed duration instead of for a condition.
-          Both forks keep running while it pauses. One second is a guess — this
+          Both forks keep running while it pauses. One second is a guess: this
           is the line you shorten once you have watched a real game piece leave
           the wheel.
         </p>
 
         {/* step 6 */}
-        <h3 className="display m-0 text-aside">Step 6 — Fall off the end</h3>
+        <h3 className="display m-0 text-aside">Step 6: Fall off the end</h3>
 
         <CodeBlock
           language="java"
@@ -432,8 +432,8 @@ coroutine.await(
             <p>
               Canceling is not stopping, though. The arm and flywheel fall back
               to <code>idle()</code>, which issues no output and does not clear
-              the last request, so Phoenix keeps applying it — the same
-              behaviour you saw on <strong>Chaining Commands</strong>.
+              the last request, so Phoenix keeps applying it: the same behaviour
+              you saw on <strong>Chaining Commands</strong>.
             </p>
           </ProseBlock>
           <MarginNote label="WHY THE BRANCH GETS AWAY WITH IT">
@@ -469,13 +469,13 @@ coroutine.await(
           <code>DriveStowDriveOpMode</code>. Drive to a pose, hold the stow pose
           while driving to a second one. Same behaviour, same file structure,
           two dialects. (<code>DriveToPose</code> and <code>robot.stow()</code>{" "}
-          are template classes — they are not on any Workshop-Code branch, so
+          are template classes: they are not on any Workshop-Code branch, so
           read these, do not paste them.)
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveStowDriveChainedOpMode.java — chaining"
+          title="DriveStowDriveChainedOpMode.java: chaining"
           code={`routine =
     Command.sequence(
             // Leg 1: DriveToPose finishes on its own, so it can sit in a sequence as-is.
@@ -494,7 +494,7 @@ coroutine.await(
 
         <CodeBlock
           language="java"
-          title="DriveStowDriveOpMode.java — coroutine"
+          title="DriveStowDriveOpMode.java: coroutine"
           code={`routine =
     Command.noRequirements(
             coroutine -> {
@@ -537,7 +537,7 @@ coroutine.await(
               running as long as that request is active. You should never fall
               back to idle while a motor is still holding a setpoint.&quot;
             </em>{" "}
-            It also says when the cheaper option is fine —{" "}
+            It also says when the cheaper option is fine:{" "}
             <em>
               &quot;that&apos;s fine for trivial logic or plain onboard
               (open-loop) motors&quot;
@@ -553,12 +553,12 @@ coroutine.await(
         <div className="flex flex-col gap-3">
           <DocumentationButton
             href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
-            title="DriveStowDriveOpMode.java — the coroutine version"
+            title="DriveStowDriveOpMode.java: the coroutine version"
             icon={<GitBranch className="w-5 h-5" />}
           />
           <DocumentationButton
             href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-            title="DriveStowDriveChainedOpMode.java — the chained version"
+            title="DriveStowDriveChainedOpMode.java: the chained version"
             icon={<GitBranch className="w-5 h-5" />}
           />
         </div>
@@ -595,7 +595,7 @@ coroutine.await(
           </li>
           <li>
             <strong>{"You should see: "}</strong> as soon as the arm settles,
-            the flywheel spins up to 75 rotations per second — and the arm is
+            the flywheel spins up to 75 rotations per second, and the arm is
             still being held while it does. That is the fork earning its place.
           </li>
           <li>
@@ -604,7 +604,7 @@ coroutine.await(
             commanded.
           </li>
           <li>
-            <strong>{"Time it. "}</strong> A healthy run is short — however long
+            <strong>{"Time it. "}</strong> A healthy run is short: however long
             the arm takes, plus however long the flywheel takes, plus one
             second. If it takes almost exactly seven seconds every single time,
             that is 3&nbsp;+&nbsp;3&nbsp;+&nbsp;1: both waits hit their timeout
@@ -657,7 +657,7 @@ coroutine.await(
               </strong>{" "}
               Almost always the decorator order: <code>.withTimeout(...)</code>{" "}
               written before <code>.named(...)</code>. The builder does not have
-              a <code>withTimeout</code> — only the named <code>Command</code>{" "}
+              a <code>withTimeout</code>: only the named <code>Command</code>{" "}
               does.
             </li>
             <li>
@@ -667,7 +667,7 @@ coroutine.await(
               </strong>{" "}
               The import is missing. Add{" "}
               <code>import static org.wpilib.units.Units.Seconds;</code> at the
-              top. If you are sure you already added it, add it again — every
+              top. If you are sure you already added it, add it again: every
               compile runs <code>spotlessApply</code>, and{" "}
               <code>removeUnusedImports()</code> strips the import out of the
               file on disk until a line actually uses it.
@@ -681,7 +681,7 @@ coroutine.await(
         <p className="prose-body measure">
           You have now seen every dialect the site uses except one.{" "}
           <strong>State Machines</strong> is the next branch on this track, one
-          commit further along, and it goes back to chaining — states are built
+          commit further along, and it goes back to chaining: states are built
           with <code>Command.parallel</code>. Then{" "}
           <strong>{"Drive to Tag, Written as a Coroutine "}</strong>comes back
           to this page&apos;s material with the fourth verb, <code>yield</code>,
@@ -716,14 +716,14 @@ coroutine.await(
             question:
               'Why is it .named("wait for the arm").withTimeout(Seconds.of(3.0)) and not the other way around?',
             options: [
-              "Style only — either order compiles",
+              "Style only: either order compiles",
               "withTimeout must come last so the scheduler reads the name first",
               "Command.waitUntil(...) returns a builder; .named(...) turns it into a Command, and .withTimeout(...) is a Command method",
               "Timeouts can only be applied to commands that have no requirements",
             ],
             correctAnswer: 2,
             explanation:
-              "Command.waitUntil(...) hands back a builder stage, not a finished Command. That stage has named, until, whenCanceled and withPriority — no withTimeout. Naming it produces a Command, and .withTimeout(Time) is a method on Command. Reversing the two does not compile.",
+              "Command.waitUntil(...) hands back a builder stage, not a finished Command. That stage has named, until, whenCanceled and withPriority: no withTimeout. Naming it produces a Command, and .withTimeout(Time) is a method on Command. Reversing the two does not compile.",
           },
           {
             id: 3,
@@ -751,7 +751,7 @@ coroutine.await(
             ],
             correctAnswer: 1,
             explanation:
-              "Ending the routine cancels everything it forked — that is the bookkeeping a coroutine does for you, and the last comment in the file. Note that canceled is not the same as stopped: the mechanisms fall back to idle(), which sends no output and does not clear the last request, so Phoenix keeps applying it.",
+              "Ending the routine cancels everything it forked: that is the bookkeeping a coroutine does for you, and the last comment in the file. Note that canceled is not the same as stopped: the mechanisms fall back to idle(), which sends no output and does not clear the last request, so Phoenix keeps applying it.",
           },
           {
             id: 5,
@@ -759,7 +759,7 @@ coroutine.await(
               "Your routine drives to a pose, then drives to a second pose, and nothing needs to be held across both legs. Which dialect should you use?",
             options: [
               "A coroutine, because coroutines are the newer and more capable dialect",
-              "Chaining — Command.sequence handles it, and the template calls chaining 'as far as most routines ever need to go'",
+              "Chaining: Command.sequence handles it, and the template calls chaining 'as far as most routines ever need to go'",
               "Either, but a coroutine will run faster",
               "A coroutine, because Command.sequence cannot hold two drive legs",
             ],

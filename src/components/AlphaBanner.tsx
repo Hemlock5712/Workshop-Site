@@ -31,7 +31,7 @@ export default function AlphaBanner() {
           color: "var(--tx3)",
         }}
       >
-        WPILib 2027 is still in alpha — these pages change as the APIs settle.
+        WPILib 2027 is still in alpha: these pages change as the APIs settle.
       </span>
     </div>
   );

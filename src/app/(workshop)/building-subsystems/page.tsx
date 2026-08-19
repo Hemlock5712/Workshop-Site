@@ -19,8 +19,8 @@ export default function BuildingSubsystems() {
       lede="A mechanism is one physical part of the robot, written as one Java class: the arm, the flywheel, later the drivetrain. The class owns that part's motors and sensors, sets them up once, and is the only code in the project allowed to touch them."
       needs={[
         <>
-          A working toolchain, from <strong>Project Setup</strong> — Java 25,
-          the vendordeps and the 2027 alpha, proven by one clean{" "}
+          A working toolchain, from <strong>Project Setup</strong>: Java 25, the
+          vendordeps and the 2027 alpha, proven by one clean{" "}
           <code>./gradlew build</code>.
         </>,
         <>
@@ -32,7 +32,7 @@ export default function BuildingSubsystems() {
         </>,
         <>
           Your bench devices answering in Tuner X on the bus named{" "}
-          <code>canivore</code>, from <strong>Mechanism Setup</strong> — arm
+          <code>canivore</code>, from <strong>Mechanism Setup</strong>: arm
           motor <code>31</code>, arm encoder <code>32</code>, flywheel{" "}
           <code>21</code> and <code>22</code>.
         </>,
@@ -42,7 +42,7 @@ export default function BuildingSubsystems() {
     >
       <KeyConceptSection
         description={[
-          "This page builds two of them and hands them to the robot. Neither class writes a command of its own yet — that is the next lesson. What they do have is real hardware: CAN IDs, a CANivore, an encoder wired into the motor's feedback, and a configuration that gets retried if the bus hiccups on boot.",
+          "This page builds two of them and hands them to the robot. Neither class writes a command of its own yet: that is the next lesson. What they do have is real hardware: CAN IDs, a CANivore, an encoder wired into the motor's feedback, and a configuration that gets retried if the bus hiccups on boot.",
           "The last file you write is the shortest and the most important. It is the one that starts the scheduler.",
         ]}
         concept="One class per physical thing. Hardware in private fields, configuration in the constructor, and one line in Robot.java that makes the whole framework run."
@@ -51,9 +51,7 @@ export default function BuildingSubsystems() {
       <Split>
         <ProseBlock>
           <p>
-            <strong>
-              Which project you work in — read this before Step 1.
-            </strong>{" "}
+            <strong>Which project you work in: read this before Step 1.</strong>{" "}
             Not the 2027-Template clone from <strong>Project Setup</strong>.
             That template is the finished robot: twenty-odd Java files under{" "}
             <code>frc/robot/</code>, an <code>opmodes</code> folder with six
@@ -76,7 +74,7 @@ export default function BuildingSubsystems() {
       />
 
       <p>
-        That clone is the finished version of this page — six Java files, and
+        That clone is the finished version of this page: six Java files, and
         this page writes three of them. To type the code yourself, delete{" "}
         <code>subsystems/Arm.java</code> and{" "}
         <code>subsystems/Flywheel.java</code> and start from the class line in
@@ -103,7 +101,7 @@ export default function BuildingSubsystems() {
 
         <CodeBlock
           language="java"
-          title="Arm.java — from the branch's own doc comment"
+          title="Arm.java: from the branch's own doc comment"
           hideControls
           code={`/**
  * The arm. One TalonFX motor plus a CANcoder that measures the arm's angle.
@@ -118,9 +116,9 @@ export default function BuildingSubsystems() {
         />
 
         <p>
-          Take that at face value. Everything about commands — making the setter{" "}
+          Take that at face value. Everything about commands: making the setter{" "}
           <code>private</code>, <code>runRepeatedly(...)</code>, naming them,
-          the <code>(hold)</code> suffix — lands on the next page, against the
+          the <code>(hold)</code> suffix: lands on the next page, against the
           branch that adds it. What you learn here is the part that never
           changes: where hardware lives, where configuration goes, and how the
           robot gets hold of your mechanism.
@@ -160,13 +158,13 @@ export default function BuildingSubsystems() {
       <LessonSection id="the-arm-s-hardware" title="The arm's hardware fields">
         <p>
           Open <code>src/main/java/frc/robot/subsystems/Arm.java</code> in your
-          clone — empty if you deleted it, the finished file if you did not —
-          and start with the class line and four fields.
+          clone, empty if you deleted it, the finished file if you did not, and
+          start with the class line and four fields.
         </p>
 
         <CodeBlock
           language="java"
-          title="Arm.java — the class line and the fields"
+          title="Arm.java: the class line and the fields"
           filename="src/main/java/frc/robot/subsystems/Arm.java"
           code={`public class Arm extends Mechanism {
   private final CANBus canivore = new CANBus("canivore");
@@ -183,7 +181,7 @@ export default function BuildingSubsystems() {
             rather than a plain object. Building one registers it with the
             scheduler, so the scheduler knows the arm exists and can later
             arbitrate who owns it. The base constructor also installs a default{" "}
-            <code>idle()</code> command on every mechanism — that is the
+            <code>idle()</code> command on every mechanism: that is the
             scheduler&apos;s fallback for a mechanism nothing else is
             commanding, and <strong>Commands</strong> builds on it. Next lesson{" "}
             <code>Mechanism</code> is also where <code>runRepeatedly(...)</code>{" "}
@@ -197,7 +195,7 @@ export default function BuildingSubsystems() {
           </li>
           <li>
             <code>31</code>, <code>32</code>, <code>21</code> and{" "}
-            <code>22</code> are CAN device IDs — the numbers in the table on{" "}
+            <code>22</code> are CAN device IDs: the numbers in the table on{" "}
             <strong>Mechanism Setup</strong>. Each device on the bus answers to
             exactly one. If your bench hardware ended up with different IDs,
             change these numbers to match. Do not leave the code and the
@@ -212,8 +210,8 @@ export default function BuildingSubsystems() {
 
         <p>
           <strong>{"You should see: "}</strong> Add the imports your editor asks
-          for — <code>com.ctre.phoenix6.*</code> for the four CTRE types,{" "}
-          <code>org.wpilib.command3.Mechanism</code> for the base class — and
+          for: <code>com.ctre.phoenix6.*</code> for the four CTRE types,{" "}
+          <code>org.wpilib.command3.Mechanism</code> for the base class, and
           every type name in those five lines stops being underlined in red. The
           class itself still will not compile: it has no closing brace until
           Step 3.
@@ -247,7 +245,7 @@ export default function BuildingSubsystems() {
 
         <CodeBlock
           language="java"
-          title="Arm.java — the constructor"
+          title="Arm.java: the constructor"
           code={`  public Arm() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to move by hand
@@ -263,7 +261,7 @@ export default function BuildingSubsystems() {
         <Box
           variant="concept"
           tag="NEUTRAL MODE"
-          title="Coast, not Brake — and it is a choice"
+          title="Coast, not Brake: and it is a choice"
         >
           <p>
             <strong>Neutral mode</strong> is what the motor does when nothing is
@@ -277,7 +275,7 @@ export default function BuildingSubsystems() {
             going to be pushing this arm around on a bench all day. A
             competition arm carrying real weight usually wants{" "}
             <code>Brake</code>, or it drops the instant you disable the robot.
-            One word, two very different behaviors — decide it on purpose.
+            One word, two very different behaviors: decide it on purpose.
           </p>
         </Box>
 
@@ -289,7 +287,7 @@ export default function BuildingSubsystems() {
           <p>
             A TalonFX counts its own rotor turns. That count starts at zero
             every time the motor controller powers on, so it has no idea where
-            the arm physically is. The CANcoder does — it is an{" "}
+            the arm physically is. The CANcoder does: it is an{" "}
             <strong>absolute</strong> encoder mounted on the arm, and it knows
             its angle the moment it boots.
           </p>
@@ -310,7 +308,7 @@ export default function BuildingSubsystems() {
               <code>TalonFXUtil.applyConfigWithRetries(motor, config)</code>{" "}
               tries up to five times and reports an error to the driver station
               if all five fail. It is a small helper file that ships on the
-              branch, and you call it on the class itself — there is no{" "}
+              branch, and you call it on the class itself: there is no{" "}
               <code>new TalonFXUtil(...)</code> anywhere, because there is
               nothing to build.
             </p>
@@ -329,7 +327,7 @@ export default function BuildingSubsystems() {
           and your editor offers <code>applyConfigWithRetries</code> straight
           off the class name, no <code>new</code> involved. The whole
           constructor is free of red underlines. The one error still on the file
-          is the missing closing brace — Step 3 adds it, and that is where the
+          is the missing closing brace: Step 3 adds it, and that is where the
           first clean build comes from.
         </p>
       </LessonSection>
@@ -341,7 +339,7 @@ export default function BuildingSubsystems() {
       >
         <CodeBlock
           language="java"
-          title="Arm.java — the two methods"
+          title="Arm.java: the two methods"
           code={`  /**
    * Push the arm with a fixed voltage. Positive voltage moves the arm counter-clockwise.
    *
@@ -363,8 +361,8 @@ export default function BuildingSubsystems() {
           request object you built as a field, and{" "}
           <code>motor.setControl(...)</code> sends it. The motor holds that
           request until something replaces it. Nothing here reads a sensor,
-          nothing aims at a target, and nothing corrects itself — ask for 6 V
-          and you get 6 V, whatever the arm does with it.
+          nothing aims at a target, and nothing corrects itself: ask for 6 V and
+          you get 6 V, whatever the arm does with it.
         </p>
 
         <Box
@@ -376,15 +374,15 @@ export default function BuildingSubsystems() {
             Right now any file in the project can call{" "}
             <code>arm.setVoltage(6.0)</code>. The branch is open about why: the
             methods are public &quot;so you can call them and watch the arm
-            move.&quot; Nothing on this branch does call them — there is no
-            OpMode yet — so for one lesson the arm is a readable surface with no
+            move.&quot; Nothing on this branch does call them, there is no
+            OpMode yet, so for one lesson the arm is a readable surface with no
             framework in front of it.
           </p>
           <p className="mt-3">
             It is also the problem the next page fixes. Two callers, two
             different numbers, the same loop, and the motor takes whichever ran
             last. On <strong>Commands</strong> the setter becomes{" "}
-            <code>private</code> and the arm hands out commands instead — which
+            <code>private</code> and the arm hands out commands instead, which
             is the single change that lets the scheduler stop two things
             fighting over one motor.
           </p>
@@ -406,7 +404,7 @@ export default function BuildingSubsystems() {
       >
         <p>
           Here is the whole of <code>Arm.java</code> on <code>1-Subsystem</code>
-          , imports and all, pulled straight from the repository — around sixty
+          , imports and all, pulled straight from the repository: around sixty
           lines including the comments. Compare it against what you typed,
           especially the import list, which is the part people miss.
         </p>
@@ -425,13 +423,13 @@ export default function BuildingSubsystems() {
       >
         <p>
           Same three regions, same pattern, one new idea. The flywheel has two
-          TalonFX motors — a leader on CAN <code>21</code> and a follower on CAN{" "}
-          <code>22</code> — and the code only ever talks to the leader.
+          TalonFX motors: a leader on CAN <code>21</code> and a follower on CAN{" "}
+          <code>22</code>: and the code only ever talks to the leader.
         </p>
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — fields and constructor"
+          title="Flywheel.java: fields and constructor"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
           code={`public class Flywheel extends Mechanism {
   private final CANBus canivore = new CANBus("canivore");
@@ -459,7 +457,7 @@ export default function BuildingSubsystems() {
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — the two methods"
+          title="Flywheel.java: the two methods"
           code={`  /**
    * Spin the flywheel with a fixed voltage.
    *
@@ -487,7 +485,7 @@ export default function BuildingSubsystems() {
             </code>{" "}
             is told to CAN 22 exactly once, in the constructor, and then never
             again. From that point on, whatever output the leader is given, the
-            follower mirrors — running the opposite way, because of how the two
+            follower mirrors: running the opposite way, because of how the two
             motors are mounted.
           </p>
           <p className="mt-3">
@@ -496,8 +494,8 @@ export default function BuildingSubsystems() {
             passes a boolean there, it is not this API. And if you flip{" "}
             <code>Opposed</code> to match a guide that says both motors should
             spin the same way, you will fight your correctly-wired flywheel all
-            afternoon — <strong>Mechanism Setup</strong> has the bench check
-            that proves which direction is right.
+            afternoon: <strong>Mechanism Setup</strong> has the bench check that
+            proves which direction is right.
           </p>
         </Box>
 
@@ -510,7 +508,7 @@ export default function BuildingSubsystems() {
             Every branch on the mechanism track ships this two-motor flywheel.
             The <strong>2027-Template</strong>, which is a different robot,
             ships a single-motor flywheel with no <code>Follower</code> at all.
-            So do not treat the template as a line-for-line check on this file —
+            So do not treat the template as a line-for-line check on this file:
             the branch is the ground truth for the lesson code, and the two are
             allowed to disagree.
           </p>
@@ -538,7 +536,7 @@ export default function BuildingSubsystems() {
 
         <CodeBlock
           language="java"
-          title="Robot.java — the whole file"
+          title="Robot.java: the whole file"
           filename="src/main/java/frc/robot/Robot.java"
           code={`package frc.robot;
 
@@ -584,7 +582,7 @@ public class Robot extends OpModeRobot {
         >
           <p>
             <code>robotPeriodic()</code> is called for you, over and over, for
-            as long as the robot is powered on — every 20 milliseconds, so{" "}
+            as long as the robot is powered on: every 20 milliseconds, so{" "}
             <strong>fifty times a second</strong>. The one line inside it hands
             control to the scheduler for a single pass: check every trigger,
             work out which command owns which mechanism, run one step of
@@ -592,7 +590,7 @@ public class Robot extends OpModeRobot {
           </p>
           <p className="mt-3">
             Delete it and the project still compiles. The mechanisms still get
-            built. Nothing else in the entire workshop ever happens again — no
+            built. Nothing else in the entire workshop ever happens again: no
             trigger is checked, no command ever takes a step. Every page after
             this one is standing on this line.
           </p>
@@ -602,11 +600,11 @@ public class Robot extends OpModeRobot {
           <li>
             <code>extends OpModeRobot</code> is the top of the whole program.
             There is no <code>RobotContainer</code> on this stack and there
-            never will be — if a tutorial has you create one, it is describing a
+            never will be, if a tutorial has you create one, it is describing a
             different framework.
           </li>
           <li>
-            <code>public final Arm arm = new Arm();</code> — <code>public</code>{" "}
+            <code>public final Arm arm = new Arm();</code>: <code>public</code>{" "}
             so the OpModes you write next lesson can reach it as{" "}
             <code>robot.arm</code>, <code>final</code> so exactly one arm exists
             for the whole match.
@@ -631,7 +629,7 @@ public class Robot extends OpModeRobot {
         <p>
           <strong>{"You should see: "}</strong> Build one more time.{" "}
           <code>BUILD SUCCESSFUL</code>, with <code>Scheduler</code> and{" "}
-          <code>OpModeRobot</code> both resolving — that is the only proof this
+          <code>OpModeRobot</code> both resolving: that is the only proof this
           file is wired up. Nothing moves yet: there is no OpMode, so there is
           nothing for the driver station to select and nothing for the scheduler
           to run.
@@ -650,7 +648,7 @@ public class Robot extends OpModeRobot {
           <li>
             Run <code>./gradlew build</code>.{" "}
             <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
-            That is the real check on this page — it means every import resolved
+            That is the real check on this page: it means every import resolved
             and every name you typed exists.
           </li>
           <li>
@@ -668,13 +666,13 @@ public class Robot extends OpModeRobot {
           <li>
             Open <code>Arm.java</code> and search it for <code>Command</code>.{" "}
             <strong>{"You should see: "}</strong> one hit, and it is inside the
-            doc comment — &quot;In the next lesson (2-Commands) we wrap them in
+            doc comment: &quot;In the next lesson (2-Commands) we wrap them in
             commands.&quot; Not one line of code on this branch builds a
             command. If your file has one, you have got ahead of yourself.
           </li>
           <li>
             Open <code>Robot.java</code> and search for <code>Scheduler</code>.{" "}
-            <strong>{"You should see: "}</strong> two hits — the import at the
+            <strong>{"You should see: "}</strong> two hits: the import at the
             top, and the single call inside <code>robotPeriodic()</code>.
           </li>
           <li>
@@ -702,7 +700,7 @@ public class Robot extends OpModeRobot {
               A missing import. <code>Mechanism</code> comes from{" "}
               <code>org.wpilib.command3</code>, the CTRE types from{" "}
               <code>com.ctre.phoenix6.*</code>, and <code>TalonFXUtil</code>{" "}
-              from <code>frc.robot.utils</code> — which only resolves if that
+              from <code>frc.robot.utils</code>: which only resolves if that
               helper file is in your project at all. The embedded file above has
               the full import list; copy it.
             </li>
@@ -716,7 +714,7 @@ public class Robot extends OpModeRobot {
               <code>new CANBus(&quot;canivore&quot;)</code> is talking to
               nothing; a device ID in your code does not match the bench; or
               Tuner X still owns the bus. Tuner X and your robot code cannot
-              both drive the same motor — see the CANivore USB toggle on{" "}
+              both drive the same motor: see the CANivore USB toggle on{" "}
               <strong>Mechanism Setup</strong>.
             </li>
             <li>
@@ -746,7 +744,7 @@ public class Robot extends OpModeRobot {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <strong>Commands, and the private setter.</strong>{" "}
+            <strong>Commands, and the private setter:</strong>{" "}
             <code>runRepeatedly(...)</code>, the mandatory{" "}
             <code>.named(...)</code>, the <code>(hold)</code> convention, and
             what happens to a mechanism nothing is commanding. All of it is the
@@ -754,16 +752,16 @@ public class Robot extends OpModeRobot {
             <code>2-Commands</code>.
           </li>
           <li>
-            <strong>Buttons.</strong> Binding a command to a controller needs an
+            <strong>Buttons:</strong> Binding a command to a controller needs an
             OpMode, and there is no OpMode on this branch.{" "}
             <strong>Triggers</strong>.
           </li>
           <li>
-            <strong>Actually running it.</strong> Three pages away, on{" "}
+            <strong>Actually running it:</strong> Three pages away, on{" "}
             <strong>Running Your Code</strong>.
           </li>
           <li>
-            <strong>{"Aiming at an angle. "}</strong> The CANcoder is wired into
+            <strong>{"Aiming at an angle: "}</strong> The CANcoder is wired into
             the motor&apos;s feedback here, but nothing reads it and nothing
             corrects for error yet. That is <strong>PID Control</strong>.
           </li>
@@ -788,7 +786,7 @@ public class Robot extends OpModeRobot {
               "Mechanism is an interface you implement, so Arm writes implements Mechanism",
               "Mechanism is a class you extend, so Arm writes extends Mechanism",
               "Mechanism is final, so you wrap one in a helper class instead of subclassing",
-              "Mechanism is an empty marker — extending it changes nothing about the class",
+              "Mechanism is an empty marker: extending it changes nothing about the class",
             ],
             correctAnswer: 1,
             explanation:
@@ -800,7 +798,7 @@ public class Robot extends OpModeRobot {
               "On branch 1-Subsystem, what can the Arm class actually do?",
             options: [
               "Drive to an angle you ask for, using the CANcoder as feedback",
-              "Push a fixed voltage at the motor, and stop it — that is the whole class",
+              "Push a fixed voltage at the motor, and stop it: that is the whole class",
               "Run three named commands: runSlow(), runFast() and stop()",
               "Nothing, because a mechanism with no commands cannot be constructed",
             ],
@@ -820,7 +818,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 1,
             explanation:
-              "Neutral mode is what the motor does when nothing is commanding it. Coast lets the shaft spin freely; Brake makes it resist motion and hold roughly still. The branch chooses Coast and explains itself on that line — `// easy to move by hand`. A competition arm carrying weight usually wants Brake, or it drops the moment you disable.",
+              "Neutral mode is what the motor does when nothing is commanding it. Coast lets the shaft spin freely; Brake makes it resist motion and hold roughly still. The branch chooses Coast and explains itself on that line: `// easy to move by hand`. A competition arm carrying weight usually wants Brake, or it drops the moment you disable.",
           },
           {
             id: 4,
@@ -834,21 +832,21 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 1,
             explanation:
-              "Follower tells one TalonFX to copy another's output. The second argument is a MotorAlignmentValue — not a true/false flag — and Opposed means the follower runs backwards relative to the leader, which is correct for how these two motors are mounted. It is told once in the constructor; after that the class only ever talks to the leader.",
+              "Follower tells one TalonFX to copy another's output. The second argument is a MotorAlignmentValue, not a true/false flag, and Opposed means the follower runs backwards relative to the leader, which is correct for how these two motors are mounted. It is told once in the constructor; after that the class only ever talks to the leader.",
           },
           {
             id: 5,
             question:
               "Robot.java has @Override public void robotPeriodic() { Scheduler.getDefault().run(); }. What breaks if you delete that method?",
             options: [
-              "Nothing — the scheduler starts itself when the first Mechanism is constructed",
+              "Nothing: the scheduler starts itself when the first Mechanism is constructed",
               "The mechanisms are never built, so robot.arm is null",
               "Every command in the project stops running: no trigger is checked and no command is ever stepped",
               "Only default commands stop; commands bound to buttons keep running",
             ],
             correctAnswer: 2,
             explanation:
-              "robotPeriodic() is called for you every 20 ms, fifty times a second, and that one line asks the scheduler for a single pass — check the triggers, settle who owns which mechanism, step every running command. The mechanisms are fields on Robot, so they would still be constructed; nothing would ever move them. This is the line the rest of the workshop stands on.",
+              "robotPeriodic() is called for you every 20 ms, fifty times a second, and that one line asks the scheduler for a single pass: check the triggers, settle who owns which mechanism, step every running command. The mechanisms are fields on Robot, so they would still be constructed; nothing would ever move them. This is the line the rest of the workshop stands on.",
           },
         ]}
       />

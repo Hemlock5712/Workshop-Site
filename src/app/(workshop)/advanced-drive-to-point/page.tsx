@@ -41,8 +41,8 @@ export default function ProfiledDriveToPoint() {
       <Split>
         <KeyConceptSection
           description={[
-            "This lesson changes one file. Before the robot moves, the command works out the entire trip — speed up, cruise, slow down — and then follows that plan. PID stops being the driver and becomes the small correction on top.",
-            "That one file is src/main/java/frc/robot/commands/DriveToPoint.java, and it grows from 87 lines to 120. Nothing else on the branch changes — not even the button bindings.",
+            "This lesson changes one file. Before the robot moves, the command works out the entire trip, speed up, cruise, slow down, and then follows that plan. PID stops being the driver and becomes the small correction on top.",
+            "That one file is src/main/java/frc/robot/commands/DriveToPoint.java, and it grows from 87 lines to 120. Nothing else on the branch changes: not even the button bindings.",
           ]}
           concept="Feedforward is the speed the plan says you should be going right now. Feedback (PID) is the small nudge that covers the gap between the plan and where the robot actually is."
         />
@@ -65,7 +65,7 @@ export default function ProfiledDriveToPoint() {
 
         <CodeBlock
           language="java"
-          title="5-DriveToPoint — DriveToPoint.java, the version you have now"
+          title="5-DriveToPoint: DriveToPoint.java, the version you have now"
           code={`private final PIDController xController = new PIDController(10, 0, 0);
 private final PIDController yController = new PIDController(10, 0, 0);
 private final PIDController headingController = new PIDController(7, 0, 0);
@@ -121,7 +121,7 @@ protected void execute() {
       >
         <p className="prose-body measure">
           Phoenix 6 ships a straight-line trip planner called{" "}
-          <code>LinearPath</code>. You hand it two sets of limits — how fast and
+          <code>LinearPath</code>. You hand it two sets of limits: how fast and
           how hard the robot may drive, and how fast and how hard it may turn.
           Then, every loop, you ask it one question:
         </p>
@@ -142,7 +142,7 @@ protected void execute() {
         <p className="prose-body measure">
           Plot that planned speed against time and you get a trapezoid, which is
           where the name <code>TrapezoidProfile</code> comes from. Using the
-          branch&apos;s own driving limits — <strong>2.5 m/s</strong> top speed
+          branch&apos;s own driving limits: <strong>2.5 m/s</strong> top speed
           and <strong>3.0 m/s²</strong> acceleration:
         </p>
 
@@ -176,8 +176,8 @@ protected void execute() {
           Speeding up and slowing down each need about 1.04 m, so a trip has to
           be longer than roughly <strong>2.1 m</strong> before the robot ever
           touches 2.5 m/s. Anything shorter is a triangle: speed up, then
-          straight into slowing down. The plan handles that on its own — there
-          is no special case for you to write.
+          straight into slowing down. The plan handles that on its own: there is
+          no special case for you to write.
         </p>
       </LessonSection>
 
@@ -200,7 +200,7 @@ protected void execute() {
 
         <CodeBlock
           language="java"
-          title="Top of DriveToPoint.java — new lines only"
+          title="Top of DriveToPoint.java: new lines only"
           code={`import com.ctre.phoenix6.Utils;                          // the robot's clock
 import com.ctre.phoenix6.swerve.utility.LinearPath;      // the trip planner
 import org.wpilib.math.trajectory.TrapezoidProfile;      // the shape of the plan`}
@@ -218,7 +218,7 @@ import org.wpilib.math.trajectory.TrapezoidProfile;      // the shape of the pla
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java — a new field, next to the controllers"
+          title="DriveToPoint.java: a new field, next to the controllers"
           code={`// The trip planner. First pair of limits: top speed (m/s) and acceleration (m/s²) for
 // driving. Second pair: the same for turning (rad/s, rad/s²).
 // TODO: tune to what your drivetrain can do.
@@ -229,15 +229,15 @@ private final LinearPath path =
         />
 
         <p className="prose-body measure">
-          <code>Math</code> is a class Java ships with. You never build one —
-          you call things on it by name. <code>Math.PI</code> is the constant
+          <code>Math</code> is a class Java ships with. You never build one: you
+          call things on it by name. <code>Math.PI</code> is the constant
           3.14159…, which is half a turn in radians, so the turning limits read
           as half a turn per second and one full turn per second squared.
         </p>
 
         <p className="prose-body-sm measure">
           <strong>Visible result:</strong> the project compiles again and the
-          imports stop being grayed out. The robot behaves exactly as before —
+          imports stop being grayed out. The robot behaves exactly as before:
           nothing reads <code>path</code> yet.
         </p>
 
@@ -253,7 +253,7 @@ private final LinearPath path =
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java — replace the three controllers"
+          title="DriveToPoint.java: replace the three controllers"
           code={`// BEFORE (5-DriveToPoint): PID produced the entire commanded velocity.
 private final PIDController xController = new PIDController(10, 0, 0);
 private final PIDController yController = new PIDController(10, 0, 0);
@@ -269,7 +269,7 @@ private final PIDController headingController = new PIDController(4.0, 0.0, 0.0)
 
         <p className="prose-body-sm measure">
           <strong>Visible result:</strong> nothing good, yet. Run it now and the
-          robot is <em>worse</em> — the X and Y gains are about a third of what
+          robot is <em>worse</em>: the X and Y gains are about a third of what
           they were, heading is roughly half, and nothing has replaced the speed
           they were producing. Steps 5 to 7 put the plan in charge. Do not stop
           here.
@@ -284,14 +284,14 @@ private final PIDController headingController = new PIDController(4.0, 0.0, 0.0)
           Four things change together: the field, the constructor parameter, the
           assignment and the <code>@param</code> line in the javadoc above the
           constructor. Your editor&apos;s rename refactor does all of them at
-          once. The constructor is otherwise untouched — the{" "}
+          once. The constructor is otherwise untouched: the{" "}
           <code>enableContinuousInput</code> call carries over from the last
           lesson, minus its comment.
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java — the field and the constructor"
+          title="DriveToPoint.java: the field and the constructor"
           code={`// BEFORE (5-DriveToPoint)
 private final Pose2d targetPose;
 
@@ -325,7 +325,7 @@ public DriveToPoint(DriveMechanism drivetrain, Pose2d goal) {
 
         <p className="prose-body-sm measure">
           <strong>Visible result:</strong> the project compiles and the robot
-          behaves exactly as it did after step 3 — a rename refactor updates{" "}
+          behaves exactly as it did after step 3: a rename refactor updates{" "}
           <code>execute()</code> for you. Miss it and step 6 will not compile,
           because the new <code>execute()</code> asks for <code>goal</code>.
         </p>
@@ -343,7 +343,7 @@ public DriveToPoint(DriveMechanism drivetrain, Pose2d goal) {
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java — two new fields, and initialize()"
+          title="DriveToPoint.java: two new fields, and initialize()"
           code={`// Where the robot was, and how fast it was moving, when the command started. The whole
 // trip is planned from this one snapshot.
 private LinearPath.State startState = new LinearPath.State();
@@ -376,7 +376,7 @@ protected void initialize() {
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java — the new control loop"
+          title="DriveToPoint.java: the new control loop"
           code={`/** Runs every robot loop while the command is active. */
 @Override
 protected void execute() {
@@ -414,7 +414,7 @@ protected void execute() {
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java — isFinished()"
+          title="DriveToPoint.java: isFinished()"
           code={`/**
  * Done when the planned trip time is up. The plan knows how long the whole trip takes, so
  * "am I done" is just a time check - no position tolerances needed.
@@ -427,7 +427,7 @@ protected boolean isFinished() {
 
         <p className="prose-body-sm measure">
           <strong>Visible result:</strong> the robot arrives and stops, without
-          you releasing the button. <code>end(boolean)</code> is unchanged — it
+          you releasing the button. <code>end(boolean)</code> is unchanged: it
           still sends <code>new SwerveRequest.Idle()</code>, and it runs whether
           the command finished on its own or was interrupted.
         </p>
@@ -439,10 +439,10 @@ protected boolean isFinished() {
         >
           <p>
             <code>path.isFinished(t)</code> asks whether the <em>plan</em> is
-            over, not whether the robot arrived. If the robot fell behind — the
+            over, not whether the robot arrived. If the robot fell behind, the
             limits were too aggressive, or the gains are too low to close the
-            gap — the command ends anyway, wherever the robot happens to be.
-            That is the trade you are making for a finish line that never hangs.
+            gap, the command ends anyway, wherever the robot happens to be. That
+            is the trade you are making for a finish line that never hangs.
           </p>
         </Box>
       </LessonSection>
@@ -455,7 +455,7 @@ protected boolean isFinished() {
         <p className="prose-body measure">
           A PID controller answers one question:{" "}
           <em>how far off am I, and what speed should that be worth?</em> What
-          changed between the two branches is not the question — it is the error
+          changed between the two branches is not the question: it is the error
           being fed in.
         </p>
 
@@ -607,7 +607,7 @@ protected boolean isFinished() {
             The limits are deliberately timid for the same reason. A 2.5 m/s
             cruise is a little over half of the{" "}
             <code>kSpeedAt12Volts = 4.54</code> m/s in the checked-in{" "}
-            <code>TunerConstants.java</code> — and that file is itself the
+            <code>TunerConstants.java</code>: and that file is itself the
             generator&apos;s example, not a measurement of your drivetrain.
             Leaving headroom means the PID correction has somewhere to go when
             the robot falls behind. A plan that asks for the robot&apos;s
@@ -654,7 +654,7 @@ protected boolean isFinished() {
           </p>
           <p className="mt-3">
             <strong>Feedback answers &quot;how far off am I?&quot;</strong> It
-            covers everything the plan cannot know about — wheel slip, carpet, a
+            covers everything the plan cannot know about: wheel slip, carpet, a
             nudge from another robot, odometry drift.
           </p>
         </Box>
@@ -672,7 +672,7 @@ protected boolean isFinished() {
       <LessonSection id="the-whole-file" title="The whole file">
         <p className="prose-body measure">
           120 lines, and you have now seen every part that changed. The{" "}
-          <strong>GitHub Changes</strong> tab is PR #12 — one file, one commit,
+          <strong>GitHub Changes</strong> tab is PR #12: one file, one commit,
           59 lines added and 26 removed. Reading it side by side is the fastest
           way to check your own edit.
         </p>
@@ -694,7 +694,7 @@ protected boolean isFinished() {
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — already there, nothing to add"
+          title="TeleopOpMode.java: already there, nothing to add"
           code={`// Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
 driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
 driver
@@ -714,7 +714,7 @@ driver
             Hold <strong>B</strong>. <strong>{"You should see: "}</strong> the
             robot eases away instead of snapping to full power, holds a steady
             speed through the middle, and eases off at the end. From the field
-            origin the B goal is about 3.6 m away — comfortably past the 2.1 m
+            origin the B goal is about 3.6 m away: comfortably past the 2.1 m
             needed to reach cruise speed, so all three phases happen.
           </li>
           <li>
@@ -725,7 +725,7 @@ driver
           </li>
           <li>
             Open Glass or AdvantageScope and graph{" "}
-            <code>Drivetrain/TranslationSpeedMps</code> — the key{" "}
+            <code>Drivetrain/TranslationSpeedMps</code>: the key{" "}
             <code>Telemetry.java</code> publishes.{" "}
             <strong>{"You should see: "}</strong> a trapezoid. A ramp up, a flat
             top near 2.5, a ramp down to zero. That flat top is the proof the
@@ -735,7 +735,7 @@ driver
           <li>
             Now graph <code>Drivetrain/Pose</code> for the same run.{" "}
             <strong>{"You should see: "}</strong> it settle close to (3, 2) with
-            a heading near 180°. How close is the tuning conversation — see the
+            a heading near 180°. How close is the tuning conversation: see the
             failure list below.
           </li>
           <li>
@@ -744,7 +744,7 @@ driver
             <strong>{"You should see: "}</strong> the same trapezoid in the
             other direction, and the robot turning back to 0° as it drives
             rather than spinning first and driving second. Keep holding until it
-            stops on its own — a quick tap releases the button, and{" "}
+            stops on its own: a quick tap releases the button, and{" "}
             <code>whileTrue</code> cancels the command when the button comes up.
           </li>
         </ol>
@@ -783,7 +783,7 @@ driver
               </strong>{" "}
               The finish line is the plan&apos;s clock, so the command stops
               when the plan says the trip is over. Either the robot could not
-              keep up with the limits — lower 2.5 / 3.0 until it can — or the
+              keep up with the limits: lower 2.5 / 3.0 until it can, or the
               gains are too small to close the last of the gap. Graph{" "}
               <code>Drivetrain/TranslationSpeedMps</code> again: if the measured
               speed never reaches the flat top, the limits are the problem, not
@@ -827,8 +827,8 @@ driver
             Phoenix 6 also ships a <code>WheelForceCalculator</code>, which
             works out a force for each individual swerve module from the
             robot&apos;s mass and its moment of inertia, and feeds those forces
-            to the drivetrain as a second kind of feedforward. It is a genuine
-            class and a genuine technique.
+            to the drivetrain as a second kind of feedforward. It is a separate
+            class that implements an established technique.
           </p>
           <p className="mt-3">
             <strong>The workshop code does not use it,</strong> and you do not
@@ -841,7 +841,7 @@ driver
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/Workshop-Code/pull/12"
-          title="PR #12 — Update Drive to point to use profiled PID"
+          title="PR #12: Update Drive to point to use profiled PID"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
@@ -856,7 +856,7 @@ driver
               "6-ProfiledToPoint drops the PID gains from 10 / 10 / 7 to 3.0 / 3.0 / 4.0. Why?",
             options: [
               "Smaller gains are always safer, whatever the controller is doing",
-              "PID no longer produces the driving velocity — it only corrects the small gap between the plan and the measured pose",
+              "PID no longer produces the driving velocity: it only corrects the small gap between the plan and the measured pose",
               "LinearPath requires gains below 5.0",
               "The lower gains make the robot reach the goal faster",
             ],
@@ -870,7 +870,7 @@ driver
               "What does path.calculate(t, startState, goal) hand back each loop?",
             options: [
               "The distance remaining to the goal",
-              "A LinearPath.State — the pose the robot should be at right now, and the velocity it should be moving at",
+              "A LinearPath.State: the pose the robot should be at right now, and the velocity it should be moving at",
               "A finished Command you can bind to a button",
               "The forces each swerve module should apply",
             ],
@@ -889,7 +889,7 @@ driver
             ],
             correctAnswer: 1,
             explanation:
-              "One line. The plan already knows the speed the robot should be going, so that speed IS the feedforward. Each of its three components — vx, vy, omega — then gets its PID correction added before the sum is sent to the drivetrain.",
+              "One line. The plan already knows the speed the robot should be going, so that speed IS the feedforward. Each of its three components, vx, vy, omega, then gets its PID correction added before the sum is sent to the drivetrain.",
           },
           {
             id: 4,
@@ -903,14 +903,14 @@ driver
             ],
             correctAnswer: 1,
             explanation:
-              "First value is the cruise velocity (m/s), second is the acceleration (m/s²). The second Constraints in the same constructor — Math.PI and 2.0 * Math.PI — is the same pair for turning, in rad/s and rad/s². The branch marks all four TODO: tune.",
+              "The first Constraints pair sets cruise velocity to 2.5 m/s and acceleration to 3.0 m/s². The second pair sets the turning limits to Math.PI rad/s and 2.0 * Math.PI rad/s². The branch marks all four TODO: tune.",
           },
           {
             id: 5,
             question: "How does isFinished() decide the command is done?",
             options: [
               "It checks whether the measured pose is within a tolerance of the goal",
-              "It returns path.isFinished(elapsedTime) — the planned trip time is up",
+              "It returns path.isFinished(elapsedTime): the planned trip time is up",
               "It never finishes; the driver releases the button",
               "It waits for all three PID controllers to report atSetpoint()",
             ],

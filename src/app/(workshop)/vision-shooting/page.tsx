@@ -32,7 +32,7 @@ export default function DynamicFlywheel() {
         <>
           A flywheel on the bench: two Krakens, CAN IDs <strong>21</strong> and{" "}
           <strong>22</strong>, on the CANivore. You met this mechanism in
-          Workshop&nbsp;#1 — the same two motors on the same CAN IDs, and the
+          Workshop&nbsp;#1: the same two motors on the same CAN IDs, and the
           distance lookup is the new part.
         </>,
       ]}
@@ -42,7 +42,7 @@ export default function DynamicFlywheel() {
       <Split>
         <KeyConceptSection
           description={[
-            "The drivetrain already knows roughly where it is on the field. So the flywheel can ask it, work out how far away the goal is, and look up the speed that works at that distance — every loop, while the robot is still moving.",
+            "The drivetrain already knows roughly where it is on the field. So the flywheel can ask it, work out how far away the goal is, and look up the speed that works at that distance: every loop, while the robot is still moving.",
           ]}
           concept="A lookup table turns a handful of measured shots into a speed for every distance in between."
         />
@@ -52,7 +52,7 @@ export default function DynamicFlywheel() {
           from a lookup table, bound to the A button. Typing it in and watching
           the numbers move is the short part. Filling the table with speeds that
           actually score is a separate session, on a real field, with a pile of
-          game pieces — more on that below.
+          game pieces: more on that below.
         </MarginNote>
       </Split>
 
@@ -68,10 +68,10 @@ export default function DynamicFlywheel() {
         </p>
         <p className="mt-3">
           The next lesson, <strong>Drive to Point</strong>, uses{" "}
-          <code>5-DriveToPoint</code> — and that branch forks off{" "}
+          <code>5-DriveToPoint</code>: and that branch forks off{" "}
           <code>2-Logging</code> instead. Compare the two and git reports them
           as <em>diverged</em>: ahead 1, behind 2. Its <code>subsystems/</code>{" "}
-          folder holds exactly three files —{" "}
+          folder holds exactly three files:{" "}
           <code>CommandSwerveDrivetrain.java</code>,{" "}
           <code>DriveMechanism.java</code> and <code>Limelight.java</code>.{" "}
           <strong>
@@ -81,7 +81,7 @@ export default function DynamicFlywheel() {
         </p>
         <p className="mt-3">
           Check out <code>5-DriveToPoint</code> after this lesson and the
-          flywheel you built disappears. That is not a mistake in your work — it
+          flywheel you built disappears. That is not a mistake in your work: it
           is how the repository is laid out. Two ways to keep it:
         </p>
         <ul className="ml-4 mt-3 list-disc space-y-1">
@@ -117,10 +117,10 @@ export default function DynamicFlywheel() {
 
         <p>
           <code>InterpolatingDoubleTreeMap</code> is the WPILib class that does
-          the filling in. You hand it pairs — a distance and the speed that
-          works at that distance — and ask it for any distance you like. Between
-          two rows it draws a straight line and reads the answer off it. That is
-          all &quot;linear interpolation&quot; means.
+          the filling in. You hand it pairs, a distance and the speed that works
+          at that distance, and ask it for any distance you like. Between two
+          rows it draws a straight line and reads the answer off it. That is all
+          &quot;linear interpolation&quot; means.
         </p>
 
         <p>
@@ -278,7 +278,7 @@ export default function DynamicFlywheel() {
             <code>60.0</code>.
           </p>
           <p className="mt-3">
-            That is the safe choice — an extrapolated speed at 9 meters would be
+            That is the safe choice: an extrapolated speed at 9 meters would be
             a guess with nothing behind it. But it means a shot from beyond your
             furthest measured point is quietly wrong, and the robot gives no
             sign. Measure out to the furthest distance you ever plan to shoot
@@ -298,16 +298,16 @@ export default function DynamicFlywheel() {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <code>src/main/java/frc/robot/utils/TalonFXUtil.java</code> — a
-            small helper. Phoenix&apos;s <code>apply(...)</code> sends a
-            configuration to a motor once and reports whether it landed; it does
-            not retry. This helper tries up to five times, which covers the
-            short CAN hiccups that happen while a robot boots, and reports to
-            the driver station if all five fail. The swerve track has not needed
-            it until now.
+            <code>src/main/java/frc/robot/utils/TalonFXUtil.java</code>: a small
+            helper. Phoenix&apos;s <code>apply(...)</code> sends a configuration
+            to a motor once and reports whether it landed; it does not retry.
+            This helper tries up to five times, which covers the short CAN
+            hiccups that happen while a robot boots, and reports to the driver
+            station if all five fail. The swerve track has not needed it until
+            now.
           </li>
           <li>
-            <code>src/main/java/frc/robot/subsystems/Flywheel.java</code> — the
+            <code>src/main/java/frc/robot/subsystems/Flywheel.java</code>: the
             lesson.
           </li>
         </ul>
@@ -329,14 +329,14 @@ export default function DynamicFlywheel() {
         <p>
           Everything below sits{" "}
           <strong>inside the class braces and above the constructor</strong>.
-          These are field declarations — each one names a thing the mechanism
+          These are field declarations: each one names a thing the mechanism
           owns for as long as the robot is on. None of them is a statement you
           could drop into a method.
         </p>
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — class declaration and fields"
+          title="Flywheel.java: class declaration and fields"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
           code={`public class Flywheel extends Mechanism {
   // Field point we are shooting at, blue-alliance origin (meters). TODO: set the real goal.
@@ -375,8 +375,8 @@ export default function DynamicFlywheel() {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <code>TARGET</code> is a <code>Translation2d</code> — an x and a y
-            in meters, measured from the blue-alliance corner of the field, the
+            <code>TARGET</code> is a <code>Translation2d</code>: an x and a y in
+            meters, measured from the blue-alliance corner of the field, the
             same origin the pose uses. <code>(3, 5)</code> is a placeholder, and
             the branch says so in its own comment:{" "}
             <code>TODO: set the real goal</code>.
@@ -398,7 +398,7 @@ export default function DynamicFlywheel() {
         </ul>
 
         <p>
-          <strong>{"You should see: "}</strong> Nothing yet — the file will not
+          <strong>{"You should see: "}</strong> Nothing yet: the file will not
           compile until it has a constructor. What you should see is red
           squiggles on the <em>imports</em> only if you typed a package name
           wrong. Grab the import block below if you want to be sure.
@@ -443,7 +443,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — the constructor"
+          title="Flywheel.java: the constructor"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
           code={`  public Flywheel(DriveMechanism drivetrain) {
     this.drivetrain = drivetrain;
@@ -487,8 +487,8 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         >
           <p>
             <code>kV = 0.125</code> is a real number: volts per rotation per
-            second. That one term is doing all the work — ask for 60 rot/s and
-            it applies about 7.5 volts, which gets the wheel roughly there.
+            second. That one term is doing all the work: ask for 60 rot/s and it
+            applies about 7.5 volts, which gets the wheel roughly there.
           </p>
           <p className="mt-3">
             <code>kS = 0.0</code> and <code>kP = 0.0</code> are placeholders. As
@@ -505,7 +505,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           <strong>{"You should see: "}</strong>
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
           Every <code>final</code> field now gets assigned, which is what Step 1
-          was missing. The class still does nothing — no command, no binding.
+          was missing. The class still does nothing: no command, no binding.
         </p>
       </LessonSection>
 
@@ -520,7 +520,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — the two private helpers"
+          title="Flywheel.java: the two private helpers"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
           code={`  /** Distance (meters) from where the robot thinks it is to the target. */
   private double distanceToTarget() {
@@ -537,7 +537,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <p>
           Read that first line right to left. <code>drivetrain.getPose()</code>{" "}
-          hands back a <code>Pose2d</code> — a position <em>and</em> a heading.{" "}
+          hands back a <code>Pose2d</code>: a position <em>and</em> a heading.{" "}
           <code>.getTranslation()</code> throws the heading away and keeps the x
           and y. <code>.getDistance(TARGET)</code> is the straight-line distance
           between two points, the one you would measure with a tape.
@@ -546,7 +546,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         <p>
           Notice the wording of the comment the branch put there:{" "}
           <em>where the robot thinks it is</em>. That is deliberate. The pose is
-          wheel odometry corrected by AprilTag sightings — a good estimate, not
+          wheel odometry corrected by AprilTag sightings: a good estimate, not
           ground truth. The number this method returns inherits every bit of
           error in it.
         </p>
@@ -575,7 +575,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         <p>
           <strong>{"You should see: "}</strong>
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>.
-          Nothing calls either method yet, so nothing moves — the checkpoint is
+          Nothing calls either method yet, so nothing moves: the checkpoint is
           that <code>RotationsPerSecond</code> and <code>Translation2d</code>{" "}
           resolved and the two publishers are in scope.
         </p>
@@ -588,7 +588,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
       >
         <p>
           Here is the whole point of the lesson in one method.{" "}
-          <code>runRepeatedly(...)</code> runs its body every scheduler loop —
+          <code>runRepeatedly(...)</code> runs its body every scheduler loop:
           about fifty times a second. So the distance is measured again, the
           table is asked again, and the motor is given a new speed again, fifty
           times a second, while the robot is still driving.
@@ -596,7 +596,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <CodeBlock
           language="java"
-          title="Flywheel.java — the commands, with the branch's own comment block"
+          title="Flywheel.java: the commands, with the branch's own comment block"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
           code={`  // Both commands below are HOLDS: runRepeatedly runs the action every loop and never finishes.
   // Never make a sequence wait on a hold. Need an ending? Add it where you use the command:
@@ -627,7 +627,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             </p>
             <p>
               <code>runRepeatedly(...)</code> never finishes on its own, so both
-              names end in <code>(hold)</code> — the site&apos;s convention is
+              names end in <code>(hold)</code>: the site&apos;s convention is
               that every hold says so. That suffix is not decoration; it is a
               warning to the next person who reads it. Put{" "}
               <code>distanceShoot()</code> into a{" "}
@@ -664,7 +664,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           <code>gradlew build</code> ends in <code>BUILD SUCCESSFUL</code>, and{" "}
           <code>Flywheel.java</code> is finished: two public commands,{" "}
           <code>distanceShoot()</code> and <code>stop()</code>. Nothing runs
-          either one yet — no <code>Robot</code> field owns the flywheel and no
+          either one yet: no <code>Robot</code> field owns the flywheel and no
           button is bound to it. That is Step 5.
         </p>
       </LessonSection>
@@ -674,7 +674,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         id="own-it-in-robot"
         title={
           <>
-            Step 5 — Own it in <code>Robot</code>, bind it in{" "}
+            Step 5: Own it in <code>Robot</code>, bind it in{" "}
             <code>TeleopOpMode</code>
           </>
         }
@@ -687,7 +687,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <CodeBlock
           language="java"
-          title="Robot.java — the flywheel joins the drivetrain"
+          title="Robot.java: the flywheel joins the drivetrain"
           filename="src/main/java/frc/robot/Robot.java"
           code={`public class Robot extends OpModeRobot {
   public final DriveMechanism drivetrain = new DriveMechanism();
@@ -706,7 +706,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             read one before it is declared. Put the flywheel line <em>above</em>{" "}
             the drivetrain line and the build stops with{" "}
             <code>illegal forward reference</code>, pointing at{" "}
-            <code>drivetrain</code>. That is the good outcome — the compiler
+            <code>drivetrain</code>. That is the good outcome: the compiler
             catches it by name instead of leaving you a null to chase at the
             field. Declare the drivetrain above anything that takes it as an
             argument.
@@ -721,7 +721,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — inside the constructor"
+          title="TeleopOpMode.java: inside the constructor"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
           code={`    // Hold A: spin the flywheel at the speed picked from the live distance to the goal.
     driver.a().whileTrue(robot.flywheel.distanceShoot());`}
@@ -740,7 +740,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         >
           <p>
             The branch binds <code>whileTrue</code> and nothing else. Release A
-            and the command is canceled — but canceling hands the mechanism back
+            and the command is canceled, but canceling hands the mechanism back
             to <code>idle()</code>, and <code>idle()</code> sends{" "}
             <em>nothing</em>. It does not zero the last request. Phoenix carries
             on applying the last speed it was given, so the wheel keeps
@@ -768,7 +768,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           Start the robot code and a <code>Flywheel</code> table appears in your
           dashboard tree with <code>DistanceToTargetMeters</code> and{" "}
           <code>TargetVelocityRps</code> under it, before you press A. If the
-          table is missing, <code>Robot</code> never built the flywheel — check
+          table is missing, <code>Robot</code> never built the flywheel: check
           the field you just added.
         </p>
       </LessonSection>
@@ -779,9 +779,9 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         title="The four numbers in the table are not your numbers"
       >
         <p>
-          0, 10, 30, 60 are placeholders. The branch says so in its own comment
-          — <code>Tune these points with real test shots</code> — and they were
-          never measured on your shooter, with your wheels, your compression or
+          0, 10, 30, 60 are placeholders. The branch&apos;s comment says{" "}
+          <code>Tune these points with real test shots</code>. Those values were
+          never measured on your shooter, with your wheels, your compression, or
           your game piece.
         </p>
 
@@ -801,8 +801,8 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           <li>
             <strong>Park at one distance and stay there.</strong> Tape mark on
             the carpet. Read <code>Flywheel/DistanceToTargetMeters</code> and
-            check the robot agrees with your tape measure. If it does not, stop
-            — your odometry is the problem, not the flywheel.
+            check the robot agrees with your tape measure. If it does not, stop.
+            Your odometry is the problem, not the flywheel.
           </li>
           <li>
             <strong>Hunt for the speed by hand.</strong> Change the number in{" "}
@@ -824,8 +824,8 @@ import org.wpilib.networktables.NetworkTableInstance;`}
           <li>
             <strong>Test in between.</strong> Stand halfway between two measured
             distances and shoot. That is the interpolation doing its job. If it
-            misses there, add a row between them — that is the only reason to
-            add rows.
+            misses there, add a row between them: that is the only reason to add
+            rows.
           </li>
         </ol>
 
@@ -853,7 +853,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
         <p>
           Everything above, in one piece, straight off the branch. The
           &quot;GitHub Changes&quot; tab shows the four-file diff against{" "}
-          <code>3-Limelight</code> — that diff is exactly this lesson.
+          <code>3-Limelight</code>: that diff is exactly this lesson.
         </p>
 
         <GitHubContent
@@ -897,7 +897,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             <code>DistanceToTargetMeters</code> changing smoothly as you move.
             Drive toward the point you put in <code>TARGET</code> and it should
             fall; drive away and it should climb. Check it against a tape
-            measure once — the robot&apos;s idea of the distance is only as good
+            measure once: the robot&apos;s idea of the distance is only as good
             as your odometry.
           </li>
           <li>
@@ -917,7 +917,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             Drive out past 3 meters, still holding A.{" "}
             <strong>{"You should see: "}</strong> the speed climb to{" "}
             <code>60.0</code> and then stop climbing, however far you go. Not a
-            bug — that is the end of the table.
+            bug: that is the end of the table.
           </li>
           <li>
             Release A. <strong>{"You should see: "}</strong> with the
@@ -956,7 +956,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
               <code>runRepeatedly(...)</code> hands back a builder, not a
               finished <code>Command</code>, and{" "}
               <code>.named(&quot;...&quot;)</code> is what turns it into one.
-              Every command has to have a name — WPILib makes an unnamed one a
+              Every command has to have a name: WPILib makes an unnamed one a
               build error. The other version of this mistake is adding a second{" "}
               <code>.named(...)</code> to a command that already has one.
             </li>
@@ -978,14 +978,14 @@ import org.wpilib.networktables.NetworkTableInstance;`}
               The follower is aligned the wrong way. It must be{" "}
               <code>
                 new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed)
-              </code>{" "}
-              — <code>Opposed</code> is what makes the follower spin backward
-              relative to the leader, which is what the branch&apos;s comment
-              prescribes. Also confirm the leader really is CAN&nbsp;21 and the
-              follower CAN&nbsp;22, not swapped. If the driver station shows a{" "}
+              </code>
+              . <code>Opposed</code> makes the follower spin backward relative
+              to the leader, which is what the branch&apos;s comment prescribes.
+              Also confirm the leader really is CAN&nbsp;21 and the follower
+              CAN&nbsp;22, not swapped. If the driver station shows a{" "}
               <em>failed to configure after 5 attempts</em> error naming a
               device ID, that is <code>TalonFXUtil</code> telling you the motor
-              never got its configuration — check CAN wiring first.
+              never got its configuration: check CAN wiring first.
             </li>
           </ul>
         </Box>
@@ -1014,8 +1014,8 @@ import org.wpilib.networktables.NetworkTableInstance;`}
 
         <p>
           The pattern you learned here is bigger than flywheels. Any time a
-          mechanism needs a number that depends on where the robot is standing —
-          a hood angle, a wrist position, how long to hold a feeder — the same
+          mechanism needs a number that depends on where the robot is standing,
+          a hood angle, a wrist position, how long to hold a feeder, the same
           three pieces apply: a lookup table of measured pairs, a distance
           computed from the pose, and a <code>runRepeatedly</code> command that
           redoes both every loop.
@@ -1045,14 +1045,14 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             question:
               "The last row of the table is table.put(3.0, 60.0). The robot drives out to 5 meters. What does the map return?",
             options: [
-              "60.0 — it stops at the last row and does not extrapolate",
-              "100.0 — it keeps the line going past the last row",
-              "0.0 — the distance is out of range",
+              "60.0: it stops at the last row and does not extrapolate",
+              "100.0: it keeps the line going past the last row",
+              "0.0: the distance is out of range",
               "It throws an error you have to catch",
             ],
             correctAnswer: 0,
             explanation:
-              "Past the last row the map hands back the value at that row, every time. That is the safe choice — an extrapolated speed would be a guess with no measurement behind it — but it means shots from beyond your furthest measured distance are quietly wrong. Measure out as far as you plan to shoot.",
+              "Past the last row the map hands back the value at that row, every time. That is the safe choice, an extrapolated speed would be a guess with no measurement behind it, but it means shots from beyond your furthest measured distance are quietly wrong. Measure out as far as you plan to shoot.",
           },
           {
             id: 3,
@@ -1066,7 +1066,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
             ],
             correctAnswer: 1,
             explanation:
-              "A distance measured once is the distance you were at when you pressed the button. Drive two meters and the speed is wrong, with nothing to tell you. runRepeatedly re-runs its body every scheduler loop — about fifty times a second — so measure, look up and send all happen again while the robot is still moving.",
+              "A distance measured once is the distance you were at when you pressed the button. Drive two meters and the speed is wrong, with nothing to tell you. runRepeatedly re-runs its body every scheduler loop, about fifty times a second, so measure, look up and send all happen again while the robot is still moving.",
           },
           {
             id: 4,
@@ -1102,7 +1102,7 @@ import org.wpilib.networktables.NetworkTableInstance;`}
               "The branch binds driver.a().whileTrue(robot.flywheel.distanceShoot()) and nothing else. You release A. What happens to the wheel?",
             options: [
               "It stops, because canceling a command stops its motors",
-              "It keeps spinning — idle() sends no output and does not zero the last request, so Phoenix keeps applying it",
+              "It keeps spinning: idle() sends no output and does not zero the last request, so Phoenix keeps applying it",
               "It coasts to a stop within one scheduler loop",
               "The robot code throws an error because no command owns the mechanism",
             ],

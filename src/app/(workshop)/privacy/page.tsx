@@ -111,8 +111,7 @@ export default function PrivacyPage() {
         Every page also loads <strong>Vercel Analytics</strong> and{" "}
         <strong>Vercel Speed Insights</strong>. The first counts page views. The
         second measures how fast pages load and draw on your device. Both run on
-        every page, and the cookie banner does not control them &mdash; it
-        controls PostHog only.
+        every page. The cookie banner controls PostHog only.
       </p>
       <p>
         <strong>TODO(verify):</strong> how long Vercel keeps server logs for
@@ -123,13 +122,13 @@ export default function PrivacyPage() {
       <h2>5. Videos and code come from other companies</h2>
       <ul>
         <li>
-          <strong>YouTube.</strong> Several lessons embed a YouTube player. The
+          <strong>YouTube:</strong> Several lessons embed a YouTube player. The
           player loads from youtube.com as soon as the page opens, so Google
           sees your IP address and can set its own cookies whether or not you
           press play.
         </li>
         <li>
-          <strong>{"GitHub. "}</strong> Pages that show workshop code fetch the
+          <strong>{"GitHub: "}</strong> Pages that show workshop code fetch the
           file from GitHub&apos;s public API while you read, straight from your
           browser. GitHub sees that request.
         </li>

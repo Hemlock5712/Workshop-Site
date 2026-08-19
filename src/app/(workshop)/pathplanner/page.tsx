@@ -127,8 +127,8 @@ export default function PathPlannerLesson() {
             obstacle.
           </li>
           <li>
-            Add holonomic rotation targets only where the robot truly needs to
-            change facing.
+            Add holonomic rotation targets only where the robot needs to change
+            facing.
           </li>
           <li>
             Apply slower constraints near tight geometry instead of slowing the
@@ -192,7 +192,7 @@ export default function PathPlannerLesson() {
         </p>
         <DocumentationButton
           href="https://pathplanner.dev/gui-editing-paths-and-autos.html"
-          title="PathPlanner — Editing paths and autos"
+          title="PathPlanner: Editing paths and autos"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>

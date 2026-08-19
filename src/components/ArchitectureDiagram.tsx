@@ -73,7 +73,7 @@ export default function ArchitectureDiagram({
               </div>
               <h4 className="font-bold text-[var(--ok)] mb-1">Commands</h4>
               <p className="text-note text-[var(--ok)]">
-                Actions the robot performs — most are holds
+                Actions the robot performs: most are holds
               </p>
               <p className="text-meta text-[var(--ok)] mt-2 italic">
                 {"\"...run the 'runFast (hold)' command\""}
@@ -156,16 +156,16 @@ export default function ArchitectureDiagram({
           style={{ paddingLeft: "calc(var(--spacing-pad) - 3px)" }}
         >
           <h4 className="font-bold text-[var(--accent)] mb-2 flex items-center gap-2">
-            <BookOpen className="w-5 h-5" />
-            Real Example: Raising an Arm
+            <BookOpen className="w-5 h-5" />A real example: raising an arm
           </h4>
           <div className="text-note text-[var(--tx2)] space-y-1">
             <p>
               1. <strong>Trigger:</strong> the driver squeezes the left trigger
             </p>
             <p>
-              2. <strong>Command:</strong> <code>arm.runFast()</code> — named{" "}
-              {'"runFast (hold)"'} — starts, and takes ownership of the Arm
+              2. <strong>Command:</strong> the scheduler starts{" "}
+              <code>arm.runFast()</code>, named {'"runFast (hold)"'}, and gives
+              it ownership of the Arm
             </p>
             <p>
               3. <strong>Mechanism:</strong> the Arm re-sends its 6-volt request
@@ -178,7 +178,7 @@ export default function ArchitectureDiagram({
             <p>
               5. <strong>Release:</strong> the binding starts{" "}
               <code>arm.stop()</code>, which takes the arm away from{" "}
-              <code>runFast</code> — canceling on its own would not stop the
+              <code>runFast</code>. Canceling it on its own would not stop the
               motor
             </p>
           </div>

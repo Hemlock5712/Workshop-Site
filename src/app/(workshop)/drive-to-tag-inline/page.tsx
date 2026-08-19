@@ -18,16 +18,16 @@ export default function DriveToTagInline() {
       lede="This command drives the robot to a spot in front of an AprilTag using nothing but the camera. No odometry, no field map, no pose estimate. It reads where the robot sits relative to the tag, works out three speeds, sends them to the drivetrain, and does it again next loop."
       needs={[
         <>
-          <strong>Coroutines</strong> — <code>coroutine.yield()</code> and what
-          a coroutine body is.
+          <strong>Coroutines</strong>: <code>coroutine.yield()</code> and what a
+          coroutine body is.
         </>,
         <>
-          <strong>Vision</strong> — the Limelight, AprilTags, and{" "}
+          <strong>Vision</strong>: the Limelight, AprilTags, and{" "}
           <code>LimelightHelpers</code>.
         </>,
         <>
-          <strong>Profiled Drive to Point</strong> — trapezoid profiles, PID
-          plus feedforward, and <code>TrapezoidProfile.Constraints</code>.
+          <strong>Profiled Drive to Point</strong>: trapezoid profiles, PID plus
+          feedforward, and <code>TrapezoidProfile.Constraints</code>.
         </>,
       ]}
       branch="7-InlineCommands"
@@ -37,7 +37,7 @@ export default function DriveToTagInline() {
         <KeyConceptSection
           title="One loop, one file, the whole job"
           description={[
-            "All of that lives in one coroutine body — a single while loop inside a single file. That is the style the branch name is pointing at, and it is the last thing this course teaches.",
+            "All of that lives in one coroutine body: a single while loop inside a single file. That is the style the branch name is pointing at, and it is the last thing this course teaches.",
             "The branch adds one file, commands/DriveToTagInline.java, 136 lines of it, and four lines in opmodes/TeleopOpMode.java. Nothing else changes.",
           ]}
           concept="A coroutine body is a whole command lifecycle written top to bottom: setup, loop, finish, cleanup."
@@ -53,12 +53,12 @@ export default function DriveToTagInline() {
         <p>
           Everything else here builds one idea at a time. This page puts six of
           them in one file and expects you to already know five. If any of the
-          list above is unfamiliar, go back to that lesson first — this page
-          will not re-teach it.
+          list above is unfamiliar, go back to that lesson first: this page will
+          not re-teach it.
         </p>
         <p className="mt-3">
           The branch name reads like an introduction to writing commands. It is
-          not. There is nothing beginner about <code>7-InlineCommands</code> —
+          not. There is nothing beginner about <code>7-InlineCommands</code>:
           &quot;inline&quot; here means the whole feature is written inline, in
           one block, instead of being split across four lifecycle methods. It is
           the advanced dialect, and it sits at the end of the course for that
@@ -75,7 +75,7 @@ export default function DriveToTagInline() {
           On Drive to Point you wrote a <code>ClassicCommand</code> with four
           separate methods. This command does the same four things, but they are
           four <em>places in one block of code</em> instead of four methods.
-          Read the skeleton before the real file — the whole page hangs off it.
+          Read the skeleton before the real file: the whole page hangs off it.
         </p>
 
         <CodeBlock
@@ -159,7 +159,7 @@ gradlew build`}
 
         <p className="prose-body measure">
           <strong>{"You should see: "}</strong> the build succeeds, and{" "}
-          <code>src/main/java/frc/robot/commands/</code> now holds two files —{" "}
+          <code>src/main/java/frc/robot/commands/</code> now holds two files:{" "}
           <code>DriveToPoint.java</code> from the last lesson and{" "}
           <code>DriveToTagInline.java</code>, which is new. Nothing else on the
           branch changed except four lines of{" "}
@@ -177,14 +177,14 @@ gradlew build`}
           <strong>field space</strong>: a <code>Pose2d</code> measured from the
           blue corner. This one works in <strong>target space</strong>, which
           means the origin is the tag itself and everything is measured from
-          there. That is what lets it work with no odometry at all — it never
+          there. That is what lets it work with no odometry at all: it never
           needs to know where it is on the field, only where it is relative to
           the thing it is driving at.
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveToTagInline.java — the private helper at the bottom of the file"
+          title="DriveToTagInline.java: the private helper at the bottom of the file"
           code={`/**
  * The robot's pose in the tag's frame, or null when the camera isn't looking at our tag.
  *
@@ -214,9 +214,9 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
           arrived. That last one matters more than it looks: the tag ID and the
           pose are published separately, so there are frames where the camera
           knows which tag it is looking at but has not filled in where the robot
-          is. <code>Pose3d.kZero</code> is what that looks like — all zeros —
-          and driving on all zeros would mean driving at a tag that is exactly
-          under the robot.
+          is. <code>Pose3d.kZero</code> is what that looks like, all zeros, and
+          driving on all zeros would mean driving at a tag that is exactly under
+          the robot.
         </p>
 
         <Box
@@ -255,8 +255,8 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
           <p>
             Profiled Drive to Point looked different. There, one CTRE{" "}
             <code>LinearPath</code> planned the entire trip up front, and three
-            plain <code>PIDController</code>s — kP of <code>3.0</code>,{" "}
-            <code>3.0</code> and <code>4.0</code> — trimmed the robot back onto
+            plain <code>PIDController</code>s: kP of <code>3.0</code>,{" "}
+            <code>3.0</code> and <code>4.0</code>: trimmed the robot back onto
             that plan.
           </p>
           <p className="mt-3">
@@ -270,7 +270,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
 
         <CodeBlock
           language="java"
-          title="DriveToTagInline.java — inside create(...), before the return"
+          title="DriveToTagInline.java: inside create(...), before the return"
           code={`public static Command create(
     DriveMechanism drivetrain, String limelightName, int targetTagId, double standoffMeters) {
   // One profiled PID per axis: the profile plans a smooth ramp, PID trims the drift.
@@ -313,7 +313,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
             </strong>{" "}
             Angles wrap. Without this, a controller told to go from{" "}
             <code>+3.0</code> rad to <code>-3.0</code> rad takes the long way
-            round — nearly a full turn — instead of the 0.28 rad shortcut across
+            round, nearly a full turn, instead of the 0.28 rad shortcut across
             the wrap. Distance and sideways do not wrap, so they do not get it.
           </li>
           <li>
@@ -338,7 +338,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
         <Split>
           <ProseBlock>
             <p>
-              All four of those are local variables in a static method — not
+              All four of those are local variables in a static method: not
               fields, and that is on purpose. The coroutine body below is a
               lambda that closes over them, so they stay alive as long as the
               command does.
@@ -356,14 +356,14 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
         id="seed-the-profiles-the-initialize"
         title={
           <>
-            4. Seed the profiles — the <code>initialize</code> half
+            4. Seed the profiles: the <code>initialize</code> half
           </>
         }
-        outlineLabel="Seed the profiles — the initialize half"
+        outlineLabel="Seed the profiles: the initialize half"
       >
         <CodeBlock
           language="java"
-          title="DriveToTagInline.java — the top of the coroutine body"
+          title="DriveToTagInline.java: the top of the coroutine body"
           code={`return drivetrain
     .run(
         (Coroutine coroutine) -> {
@@ -414,7 +414,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
           </ProseBlock>
           <MarginNote label="WHY THE NULL CHECK">
             If the camera cannot see the tag when you press X there is nothing
-            to seed from, so the seeding is skipped entirely. That is fine — the
+            to seed from, so the seeding is skipped entirely. That is fine: the
             loop below refuses to drive without a reading anyway, and the first
             loop that gets one will still start from a sensible place.
           </MarginNote>
@@ -426,10 +426,10 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
         id="the-loop-the-execute-half"
         title={
           <>
-            5. The loop — the <code>execute</code> half
+            5. The loop: the <code>execute</code> half
           </>
         }
-        outlineLabel="The loop — the execute half"
+        outlineLabel="The loop: the execute half"
       >
         <p className="prose-body measure">
           Everything from here to the <code>break</code> runs once per robot
@@ -441,7 +441,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
 
         <CodeBlock
           language="java"
-          title="DriveToTagInline.java — the guard clause"
+          title="DriveToTagInline.java: the guard clause"
           code={`// One pass per robot loop.
 while (true) {
   robotInTag = readRobotInTag(limelightName, targetTagId);
@@ -458,7 +458,7 @@ while (true) {
           When there is no usable reading the command does not give up and it
           does not guess. It stops driving, yields, and looks again. That is why
           the loop is <code>while (true)</code> with a <code>break</code> in the
-          middle rather than <code>while (!atGoal)</code> — the condition it
+          middle rather than <code>while (!atGoal)</code>: the condition it
           needs is not always answerable.
         </p>
 
@@ -479,7 +479,7 @@ while (true) {
 
         <CodeBlock
           language="java"
-          title="DriveToTagInline.java — three numbers, three speeds"
+          title="DriveToTagInline.java: three numbers, three speeds"
           code={`  // Which number is which is explained on readRobotInTag below.
   double measuredDistance = robotInTag.getZ();
   double measuredLateral = robotInTag.getX();
@@ -500,7 +500,7 @@ while (true) {
 
         <p className="prose-body measure">
           Each line is the same <em>shape</em> of sum as Profiled Drive to Point
-          — plan plus correction — but the plan now lives inside each controller
+          , plan plus correction, but the plan now lives inside each controller
           rather than in one <code>LinearPath</code> off to the side.{" "}
           <code>calculate(measurement, goal)</code> steps that controller&apos;s
           profile forward and returns the PID correction;{" "}
@@ -513,7 +513,7 @@ while (true) {
           Two of the three goals are <code>0.0</code>, because &quot;centered on
           the tag&quot; and &quot;square to the tag&quot; are both zero in the
           tag&apos;s own frame. The distance goal is <code>standoffMeters</code>
-          , the fourth argument to <code>create(...)</code> — you do not want to
+          , the fourth argument to <code>create(...)</code>: you do not want to
           drive to zero distance, because zero distance is inside the tag.
         </p>
       </LessonSection>
@@ -521,7 +521,7 @@ while (true) {
       {/* ── the fiddly parts ─────────────────────────────────────────── */}
       <LessonSection
         id="three-things-about-this-code-that"
-        title="Three things about this code that are genuinely awkward"
+        title="Three awkward parts of this code"
       >
         <p className="prose-body measure">
           These are not rough edges to skip past. They are the reason this page
@@ -538,16 +538,16 @@ while (true) {
             <code>new ProfiledPIDController(0.0, 0.0, 0.0, ...)</code>. No P, no
             I, no D. So <code>calculate(...)</code> returns zero every time, and
             the only thing in each sum that is not zero is{" "}
-            <code>getSetpoint().velocity</code> — the profile&apos;s planned
+            <code>getSetpoint().velocity</code>: the profile&apos;s planned
             speed.
           </p>
           <p className="mt-3">
             That is deliberate. The profile alone will get the robot most of the
             way there, and a command that drives open-loop off a plan is far
             safer to switch on for the first time than one with an untuned gain
-            in it. The file leaves you a one-line TODO above the controllers —{" "}
-            <code>tune the speed limits and kP on your robot</code> — and no
-            more than that.
+            in it. The file leaves you a one-line TODO above the controllers:{" "}
+            <code>tune the speed limits and kP on your robot</code>: and no more
+            than that.
           </p>
           <p className="mt-3">
             Which direction to move kP is written down in{" "}
@@ -592,9 +592,9 @@ while (true) {
             not been given a measurement cannot answer it. In WPILib&apos;s
             source, <code>atGoal()</code> is{" "}
             <code>atSetpoint() &amp;&amp; goal.equals(setpoint)</code>, and{" "}
-            <code>atSetpoint()</code> starts with two flags —{" "}
-            <code>m_haveMeasurement</code> and <code>m_haveSetpoint</code> —
-            that are only set inside <code>calculate(...)</code>. Worse for us,{" "}
+            <code>atSetpoint()</code> starts with two flags:{" "}
+            <code>m_haveMeasurement</code> and <code>m_haveSetpoint</code>: that
+            are only set inside <code>calculate(...)</code>. Worse for us,{" "}
             <code>reset(...)</code> clears <code>m_haveMeasurement</code> again,
             and <code>reset(...)</code> is exactly what the seeding step does.
           </p>
@@ -609,9 +609,9 @@ while (true) {
         <Split>
           <ProseBlock>
             <p>
-              The comment on that line — &quot;a fresh controller claims to be
-              at its goal&quot; — is what the author believed, and the same
-              claim appears in the robot template. Go and read{" "}
+              The comment on that line, &quot;a fresh controller claims to be at
+              its goal&quot;, is what the author believed, and the same claim
+              appears in the robot template. Go and read{" "}
               <code>ProfiledPIDController</code> and it does not hold: the{" "}
               <code>m_haveMeasurement</code> guard means a fresh controller
               reports <strong>false</strong>, not true. The placement is still
@@ -652,8 +652,8 @@ while (true) {
             enough when you start roughly lined up, and the heading controller
             is driving toward square the whole time. Start badly off-angle and
             the approach will curve. The template&apos;s version of this file
-            adds a rotation step for that case — see the comparison at the
-            bottom of this page.
+            adds a rotation step for that case: see the comparison at the bottom
+            of this page.
           </p>
         </Box>
       </LessonSection>
@@ -663,14 +663,14 @@ while (true) {
         id="clean-up-twice-the-end"
         title={
           <>
-            6. Clean up twice — the <code>end</code> half
+            6. Clean up twice: the <code>end</code> half
           </>
         }
-        outlineLabel="Clean up twice — the end half"
+        outlineLabel="Clean up twice: the end half"
       >
         <CodeBlock
           language="java"
-          title="DriveToTagInline.java — after the loop, and the cancel hook"
+          title="DriveToTagInline.java: after the loop, and the cancel hook"
           code={`          // Cleanup, on a normal finish.
           drivetrain.setControl(new SwerveRequest.Idle());
           LimelightHelpers.setPriorityTagID(limelightName, -1); // -1 = no priority
@@ -731,8 +731,8 @@ while (true) {
           <p className="mt-3">
             The second line is quieter. Skip it and the priority tag ID stays
             set to 1 after the command ends, so the camera&apos;s targeting
-            outputs — <code>tv</code>, <code>tid</code>, and the target-space
-            pose — stay pinned to that tag until something sets it again. The
+            outputs: <code>tv</code>, <code>tid</code>, and the target-space
+            pose: stay pinned to that tag until something sets it again. The
             botpose estimates your <code>Limelight</code> subsystem feeds to
             odometry are computed from every visible tag and are not affected,
             and nothing else on this branch reads the targeting outputs. Call
@@ -751,7 +751,7 @@ while (true) {
 
         <CodeBlock
           language="java"
-          title="opmodes/TeleopOpMode.java — in the constructor"
+          title="opmodes/TeleopOpMode.java: in the constructor"
           code={`// Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
 driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
 driver
@@ -769,7 +769,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
           <code>Robot.java</code> passes to{" "}
           <code>Limelight.registerAll(drivetrain, &quot;limelight&quot;)</code>,
           and both have to match the name set on the camera itself. Tag ID{" "}
-          <code>1</code> is a placeholder — the branch says so in the comment.
+          <code>1</code> is a placeholder: the branch says so in the comment.
         </p>
 
         <p className="prose-body measure">
@@ -784,7 +784,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
       <LessonSection id="the-whole-file" title="The whole file">
         <p className="prose-body measure">
           136 lines, and you have now read all of them in pieces. Read it once
-          more end to end — the point of this style is that it reads as one
+          more end to end: the point of this style is that it reads as one
           story, and you cannot see that in fragments.
         </p>
 
@@ -808,7 +808,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
             simulation (no camera there).&quot; So in sim{" "}
             <code>getTV(&quot;limelight&quot;)</code> is false,{" "}
             <code>readRobotInTag</code> returns null every loop, and the command
-            idles forever. That is the correct result, not a bug — and it still
+            idles forever. That is the correct result, not a bug, and it still
             proves something worth checking.
           </p>
         </Box>
@@ -851,8 +851,8 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         </ol>
 
         <p className="prose-body measure">
-          That sequence tests the plumbing — requirements, the binding,
-          cancellation, the guard clause — which is most of what goes wrong. The
+          That sequence tests the plumbing, requirements, the binding,
+          cancellation, the guard clause, which is most of what goes wrong. The
           driving itself needs the real thing.
         </p>
 
@@ -874,7 +874,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
           <li>
             Enable, hold X. <strong>{"You should see: "}</strong> the wheels
             turn to an angle and start driving. On blocks, watch the wheel{" "}
-            <em>directions</em> — that is your sign check, and it is free.
+            <em>directions</em>: that is your sign check, and it is free.
           </li>
           <li>
             Cover the camera with your hand while holding X.{" "}
@@ -885,8 +885,8 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
           <li>
             Wheels turning the right way? Put it on the floor, clear the area,
             and try it for real. <strong>{"You should see: "}</strong> a smooth
-            ramp up, a cruise, and a slow-down as the profile runs out — then
-            the robot stops and the command ends.
+            ramp up, a cruise, and a slow-down as the profile runs out: then the
+            robot stops and the command ends.
           </li>
           <li>
             Measure the gap. <strong>{"You should see: "}</strong> roughly one
@@ -903,16 +903,15 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
           <ul className="ml-4 list-disc space-y-3">
             <li>
               <strong>
-                On the robot, holding X does nothing — no motion, no error,
-                ever.
+                On the robot, holding X does nothing: no motion, no error, ever.
               </strong>{" "}
               <code>readRobotInTag</code> is returning null on every loop, and
               there are three reasons it can. The camera name in your binding
               does not match the camera&apos;s actual NetworkTables name. Or the
-              tag ID does not match the tag in front of you — the binding ships
-              with <code>1</code> as a placeholder. Or the camera genuinely
-              cannot see the tag. Check the Limelight dashboard before you
-              change any code; it tells you which of the three it is.
+              tag ID does not match the tag in front of you: the binding ships
+              with <code>1</code> as a placeholder. Or the camera cannot see the
+              tag. Check the Limelight dashboard before you change any code; it
+              tells you which of the three it is.
             </li>
             <li>
               <strong>
@@ -920,9 +919,9 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
                 spins.
               </strong>{" "}
               A sign. This is expected on the first run and the file warns about
-              it. Work out which axis by what the robot did — away from the tag
+              it. Work out which axis by what the robot did: away from the tag
               is <code>forward</code>, wrong-way sideways is{" "}
-              <code>sideways</code>, spinning is <code>turn</code> — then negate
+              <code>sideways</code>, spinning is <code>turn</code>: then negate
               that one value and only that one.
             </li>
             <li>
@@ -964,8 +963,8 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
         <p className="prose-body measure">
           <code>DriveToPoint.java</code> is sitting in the same folder on this
           branch, and it is the other dialect. Open both and read them next to
-          each other. Different jobs — one drives to a field pose off odometry,
-          the other to a tag off the camera — but the same four phases, arranged
+          each other. Different jobs, one drives to a field pose off odometry,
+          the other to a tag off the camera, but the same four phases, arranged
           two different ways.
         </p>
 
@@ -1036,15 +1035,15 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
 
         <Box variant="concept" title="Which one should you write?">
           <p>
-            Write the classic style when the phases are genuinely separate, when
-            other people on your team are still learning, or when the command is
-            long enough that four labeled methods are a favor to the next
-            reader. Write the coroutine style when the routine is a sequence of
-            steps that reads naturally top to bottom, or when it needs a pile of
-            state that would otherwise become fields nobody can keep track of.
+            Write the classic style when the phases are separate, when other
+            people on your team are still learning, or when the command is long
+            enough that four labeled methods are a favor to the next reader.
+            Write the coroutine style when the routine is a sequence of steps
+            that reads naturally top to bottom, or when it needs a pile of state
+            that would otherwise become fields nobody can keep track of.
           </p>
           <p className="mt-3">
-            Most of this team&apos;s code is neither — it is chained commands.
+            Most of this team&apos;s code is neither: it is chained commands.
             Reach for one of these two only when chaining cannot say what you
             mean.
           </p>
@@ -1063,18 +1062,18 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
           errors, so here is what differs.
         </p>
 
-        <CollapsibleSection title="Workshop-Code vs. 2027-Template — the differences">
+        <CollapsibleSection title="Workshop-Code vs. 2027-Template: the differences">
           <ul
             className="ml-5 list-disc space-y-3"
             style={{ color: "var(--tx2)" }}
           >
             <li>
-              <strong>Different number of arguments.</strong> The branch is{" "}
+              <strong>Different number of arguments:</strong> The branch is{" "}
               <code>
                 create(drivetrain, limelightName, targetTagId, standoffMeters)
-              </code>{" "}
-              — four. The template is{" "}
-              <code>create(drivetrain, camera, targetTagId)</code> — three.
+              </code>
+              . The branch takes four arguments. The template&apos;s{" "}
+              <code>create(drivetrain, camera, targetTagId)</code> takes three.
             </li>
             <li>
               <strong>{"The standoff moves off the robot. "}</strong> The branch
@@ -1116,17 +1115,17 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
               frame before the target-space data fills in.
             </li>
             <li>
-              <strong>{"Different names. "}</strong> The branch&apos;s command
+              <strong>{"Different names: "}</strong> The branch&apos;s command
               is named <code>&quot;DriveToTagInline&quot;</code>; the
               template&apos;s is named <code>&quot;DriveToTag&quot;</code>. The
               template also ships a separate{" "}
               <code>commands/DriveToTag.java</code>, the{" "}
-              <code>ClassicCommand</code> version of this exact behavior — that
+              <code>ClassicCommand</code> version of this exact behavior: that
               file does not exist on the branch, where the classic comparison is{" "}
               <code>DriveToPoint</code>.
             </li>
             <li>
-              <strong>Different import path.</strong>{" "}
+              <strong>Different import path:</strong>{" "}
               <code>frc.robot.LimelightHelpers</code> on the branch,{" "}
               <code>frc.robot.subsystems.vision.LimelightHelpers</code> in the
               template.
@@ -1147,7 +1146,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/commands/DriveToTag.java"
-          title="DriveToTag.java — the template's ClassicCommand version"
+          title="DriveToTag.java: the template's ClassicCommand version"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
@@ -1183,7 +1182,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
             ],
             correctAnswer: 1,
             explanation:
-              "Everything between the opening of the coroutine body and the while loop runs exactly once, when the command is scheduled — that is initialize. The controllers built in create(...) are earlier still: create(...) runs once when the command object is made, which for a button binding is when the OpMode constructor runs, not when you press the button.",
+              "Everything between the opening of the coroutine body and the while loop runs exactly once, when the command is scheduled: that is initialize. The controllers built in create(...) are earlier still: create(...) runs once when the command object is made, which for a button binding is when the OpMode constructor runs, not when you press the button.",
           },
           {
             id: 2,
@@ -1210,26 +1209,26 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
             ],
             correctAnswer: 1,
             explanation:
-              "In WPILib's source, atGoal() is atSetpoint() && goal.equals(setpoint), and atSetpoint() is gated on m_haveMeasurement and m_haveSetpoint — both set only inside calculate(...), and m_haveMeasurement is cleared again by reset(...), which is what the seeding step calls. Note that the branch's comment on that line gives a different reason (“a fresh controller claims to be at its goal”) which the controller's source contradicts: a fresh controller reports false. The placement is right; the comment's reasoning is not.",
+              "In WPILib's source, atGoal() is atSetpoint() && goal.equals(setpoint), and atSetpoint() is gated on m_haveMeasurement and m_haveSetpoint: both set only inside calculate(...), and m_haveMeasurement is cleared again by reset(...), which is what the seeding step calls. Note that the branch's comment on that line gives a different reason (“a fresh controller claims to be at its goal”) which the controller's source contradicts: a fresh controller reports false. The placement is right; the comment's reasoning is not.",
           },
           {
             id: 4,
             question:
               "All three controllers ship with kP, kI and kD set to 0.0. What is driving the robot?",
             options: [
-              "Nothing — the command is broken as shipped",
+              "Nothing: the command is broken as shipped",
               "The profile's planned velocity, added to each PID output as a feedforward term",
               "The SwerveRequest applies a default speed when the PID output is zero",
               "The setTolerance values act as a minimum speed",
             ],
             correctAnswer: 1,
             explanation:
-              "Each of the three sums is calculate(...) + getSetpoint().velocity. With the gains at zero, calculate(...) contributes nothing and the profile's planned velocity does all the driving. That is a safe way to switch a new command on for the first time — but it also means nothing corrects error, so if the robot stops short, it stays short.",
+              "Each of the three sums is calculate(...) + getSetpoint().velocity. With the gains at zero, calculate(...) contributes nothing and the profile's planned velocity does all the driving. That is a safe way to switch a new command on for the first time, but it also means nothing corrects error, so if the robot stops short, it stays short.",
           },
           {
             id: 5,
             question:
-              "Why does the cleanup appear twice — once after the loop and once in .whenCanceled(...)?",
+              "Why does the cleanup appear twice: once after the loop and once in .whenCanceled(...)?",
             options: [
               "It is a mistake in the branch; one copy could be deleted",
               "Because a canceled coroutine is dropped mid-loop, so the lines after the loop never run",
@@ -1238,7 +1237,7 @@ driver.x().whileTrue(DriveToTagInline.create(drivetrain, "limelight", 1, 1.0));`
             ],
             correctAnswer: 1,
             explanation:
-              "Breaking out of the loop falls through to the cleanup below it. Being interrupted does not — the body is dropped where it stands and nothing after the loop executes. .whenCanceled(...) is the only hook that covers that path, which is why both copies are needed. A ClassicCommand avoids the duplication with a single end(boolean interrupted).",
+              "Breaking out of the loop falls through to the cleanup below it. Being interrupted does not: the body is dropped where it stands and nothing after the loop executes. .whenCanceled(...) is the only hook that covers that path, which is why both copies are needed. A ClassicCommand avoids the duplication with a single end(boolean interrupted).",
           },
         ]}
       />

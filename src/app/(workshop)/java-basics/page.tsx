@@ -52,14 +52,14 @@ export default function JavaBasics() {
       >
         <p className="prose-body measure">
           Below is the entire arm mechanism at the earliest point in the course.
-          Read it once now. It will look like noise, and that is fine — the rest
+          Read it once now. It will look like noise, and that is fine: the rest
           of the page is this file, taken apart. Only the three-line license
           comment at the very top has been cut.
         </p>
 
         <CodeBlock
           language="java"
-          title="src/main/java/frc/robot/subsystems/Arm.java — Workshop-Code, branch 1-Subsystem"
+          title="src/main/java/frc/robot/subsystems/Arm.java: Workshop-Code, branch 1-Subsystem"
           code={`package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
@@ -134,15 +134,15 @@ public class Arm extends Mechanism {
             from.
           </li>
           <li>
-            <strong>Fields.</strong> The things the arm owns — a bus, a motor,
-            an encoder, a voltage request. Four lines.
+            <strong>Fields:</strong> The things the arm owns: a bus, a motor, an
+            encoder, a voltage request. Four lines.
           </li>
           <li>
-            <strong>A constructor</strong> — <code>public Arm()</code>. Setup
+            <strong>A constructor</strong>: <code>public Arm()</code>. Setup
             that runs once.
           </li>
           <li>
-            <strong>Methods</strong> — <code>setVoltage(...)</code> and{" "}
+            <strong>Methods</strong>: <code>setVoltage(...)</code> and{" "}
             <code>stop()</code>. The things the arm can do.
           </li>
         </ol>
@@ -160,7 +160,7 @@ public class Arm extends Mechanism {
         />
 
         <p className="prose-body measure">
-          <code>class Arm</code> describes an arm. On its own it does nothing —
+          <code>class Arm</code> describes an arm. On its own it does nothing:
           it is a drawing, not a robot. Somewhere else a line says{" "}
           <code>new Arm()</code>, and <em>that</em> builds one real arm from the
           drawing. The drawing is the <strong>class</strong>. What you get back
@@ -169,9 +169,9 @@ public class Arm extends Mechanism {
 
         <p className="prose-body measure">
           One class, as many objects as you want. The flywheel uses the same{" "}
-          <code>TalonFX</code> class twice —{" "}
+          <code>TalonFX</code> class twice:{" "}
           <code>new TalonFX(21, canivore)</code> and{" "}
-          <code>new TalonFX(22, canivore)</code> — and gets two separate motors.
+          <code>new TalonFX(22, canivore)</code>: and gets two separate motors.
         </p>
 
         <p className="prose-body measure">
@@ -191,7 +191,7 @@ public class Arm extends Mechanism {
 
         <CodeBlock
           language="java"
-          title="src/main/java/frc/robot/Robot.java — branch 1-Subsystem (license and doc comment trimmed)"
+          title="src/main/java/frc/robot/Robot.java: branch 1-Subsystem (license and doc comment trimmed)"
           code={`package frc.robot;
 
 import frc.robot.subsystems.Arm;
@@ -247,8 +247,8 @@ public class Robot extends OpModeRobot {
             contains the constructor block, which contains five statements.
           </li>
           <li>
-            Every statement ends in <code>;</code>. Lines that open a block —{" "}
-            <code>public Arm() {"{"}</code> — do not, because they are not
+            Every statement ends in <code>;</code>. Lines that open a block:{" "}
+            <code>public Arm() {"{"}</code>: do not, because they are not
             statements.
           </li>
           <li>
@@ -260,7 +260,7 @@ public class Robot extends OpModeRobot {
             <code>{"//"}</code> comments out the rest of the line.{" "}
             <code>{"/* ... */"}</code> comments out a span.{" "}
             <code>{"/** ... */"}</code> is the same thing with a documentation
-            tool reading it — that is the paragraph at the top of{" "}
+            tool reading it: that is the paragraph at the top of{" "}
             <code>Arm.java</code>.
           </li>
         </ul>
@@ -285,7 +285,7 @@ TalonFXConfiguration config = new TalonFXConfiguration();  // a STATEMENT`}
           <p className="mt-3">
             The field goes directly inside the class braces. The statement only
             compiles inside a method or constructor. Swap them and the error
-            does not say &quot;wrong region&quot; — it says something like{" "}
+            does not say &quot;wrong region&quot;: it says something like{" "}
             <code>&lt;identifier&gt; expected</code>, pointing at a line that
             looks perfectly fine.
           </p>
@@ -305,7 +305,7 @@ TalonFXConfiguration config = new TalonFXConfiguration();  // a STATEMENT`}
       >
         <CodeBlock
           language="java"
-          title="Arm.java, branch 1-Subsystem — the four fields"
+          title="Arm.java, branch 1-Subsystem: the four fields"
           code={`private final CANBus canivore = new CANBus("canivore");
 private final TalonFX motor = new TalonFX(31, canivore);
 private final CANcoder encoder = new CANcoder(32, canivore);
@@ -323,31 +323,29 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            <code>private</code> — only code inside <code>Arm.java</code> can
+            <code>private</code>: only code inside <code>Arm.java</code> can
             touch this. No other file can reach <code>motor</code> at all.
           </li>
           <li>
-            <code>final</code> — <code>motor</code> will point at this one
+            <code>final</code>: <code>motor</code> will point at this one
             TalonFX for the rest of the object&apos;s life. You cannot later
             write <code>motor = </code> something else. It does{" "}
             <em>{"not "}</em> freeze the motor:{" "}
             <code>motor.setControl(...)</code> still works.
           </li>
           <li>
-            <code>TalonFX</code> — the type. What kind of thing goes in the box.
+            <code>TalonFX</code>: the type. What kind of thing goes in the box.
           </li>
           <li>
-            <code>motor</code> — the name you use everywhere else in the file.
+            <code>motor</code>: the name you use everywhere else in the file.
           </li>
           <li>
-            <code>=</code> — put the thing on the right into the box on the
-            left.
+            <code>=</code>: put the thing on the right into the box on the left.
           </li>
           <li>
-            <code>new TalonFX(31, canivore)</code> — <code>new</code> is the
-            word that builds an object. The <code>31</code> and{" "}
-            <code>canivore</code> are handed to <code>TalonFX</code>: CAN ID 31,
-            on the CANivore bus.
+            <code>new TalonFX(31, canivore)</code>: <code>new</code> is the word
+            that builds an object. The <code>31</code> and <code>canivore</code>{" "}
+            are handed to <code>TalonFX</code>: CAN ID 31, on the CANivore bus.
           </li>
         </ul>
 
@@ -363,7 +361,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
             branch later it becomes <code>private</code>, and that single word
             is most of the Commands lesson. Once nothing outside the arm can
             shove a voltage at the motor, every request has to arrive as a
-            command — and the scheduler can keep two commands from fighting over
+            command, and the scheduler can keep two commands from fighting over
             the same motor.
           </p>
         </Box>
@@ -376,7 +374,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
       >
         <CodeBlock
           language="java"
-          title="Arm.java, branch 1-Subsystem — the constructor"
+          title="Arm.java, branch 1-Subsystem: the constructor"
           code={`public Arm() {
   TalonFXConfiguration config = new TalonFXConfiguration();
   config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to move by hand
@@ -428,7 +426,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
           <p>
             The driver&apos;s buttons are wired up inside{" "}
             <code>TeleopOpMode</code>&apos;s constructor. Runs once, when the
-            mode starts — not every loop. The Triggers lesson is built on that
+            mode starts: not every loop. The Triggers lesson is built on that
             fact, so it is worth having straight now.
           </p>
         </Box>
@@ -441,7 +439,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
       >
         <CodeBlock
           language="java"
-          title="Arm.java, branch 1-Subsystem — the first method on the site"
+          title="Arm.java, branch 1-Subsystem: the first method on the site"
           code={`/**
  * Push the arm with a fixed voltage. Positive voltage moves the arm counter-clockwise.
  *
@@ -461,30 +459,30 @@ public void setVoltage(double voltage) {
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            <code>public</code> — who is allowed to call it.
+            <code>public</code>: who is allowed to call it.
           </li>
           <li>
-            <code>void</code> — what it hands back when it finishes:{" "}
+            <code>void</code>: what it hands back when it finishes:{" "}
             <strong>nothing</strong>. You call this for its effect, not for an
             answer.
           </li>
           <li>
-            <code>setVoltage</code> — the name.
+            <code>setVoltage</code>: the name.
           </li>
           <li>
-            <code>(double voltage)</code> — the parameter list. One value comes
+            <code>(double voltage)</code>: the parameter list. One value comes
             in, it is a <code>double</code>, and inside the method body it is
             called <code>voltage</code>.
           </li>
           <li>
-            <code>{"{"}</code> — the body starts here and runs to the matching{" "}
+            <code>{"{"}</code>: the body starts here and runs to the matching{" "}
             <code>{"}"}</code>.
           </li>
         </ul>
 
         <p className="prose-body measure">
           Three type words show up constantly. <code>double</code> is a number
-          that can have a decimal point — <code>3.0</code>, <code>6.0</code>,{" "}
+          that can have a decimal point: <code>3.0</code>, <code>6.0</code>,{" "}
           <code>0.25</code>. <code>boolean</code> is <code>true</code> or{" "}
           <code>false</code> and nothing else. <code>void</code> only ever
           appears as a return type and means the method hands nothing back.
@@ -504,7 +502,7 @@ public void setVoltage(double voltage) {
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 5-GettersAndSetters — you will write this later"
+          title="Arm.java, branch 5-GettersAndSetters: you will write this later"
           code={`/** True when the arm has reached its target angle. */
 public boolean isAtTarget() {
   return getPosition().isNear(getTargetPosition(), tolerance);
@@ -526,7 +524,7 @@ public boolean isAtTarget() {
         <p className="prose-body measure">
           <code>return</code> hands a value back to whoever called the method,
           and stops the method right there. In <code>isAtTarget()</code> the
-          value handed back is a <code>true</code> or a <code>false</code> —
+          value handed back is a <code>true</code> or a <code>false</code>:
           which matches the everyday idea that a function gives you an answer.
         </p>
 
@@ -537,7 +535,7 @@ public boolean isAtTarget() {
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 2-Commands — a method that returns a Command"
+          title="Arm.java, branch 2-Commands: a method that returns a Command"
           code={`// Voltages for the two example commands.
 private static final double SLOW_VOLTAGE = 3.0;
 
@@ -550,7 +548,7 @@ public Command runSlow() {
         <p className="prose-body measure">
           <code>runSlow()</code> does not move the arm. It builds a{" "}
           <code>Command</code> object and hands it to you. Something else runs
-          it later. Nothing about the word <code>return</code> tells you that —
+          it later. Nothing about the word <code>return</code> tells you that:
           the return type <code>Command</code> is the only clue, and it is the
           one to read first on any method you meet.
         </p>
@@ -567,7 +565,7 @@ public Command runSlow() {
         >
           <li>
             <code>runRepeatedly(...)</code> hands back a{" "}
-            <strong>builder</strong> — a half-finished command. Not a{" "}
+            <strong>builder</strong>: a half-finished command. Not a{" "}
             <code>Command</code> yet.
           </li>
           <li>
@@ -586,7 +584,7 @@ public Command runSlow() {
           <code>.named(...)</code>, <code>.withPriority(...)</code> and{" "}
           <code>.whenCanceled(...)</code>. A finished <code>Command</code>{" "}
           offers <code>.until(...)</code>, <code>.withTimeout(...)</code>,{" "}
-          <code>.andThen(...)</code> and <code>.alongWith(...)</code> — but no{" "}
+          <code>.andThen(...)</code> and <code>.alongWith(...)</code>: but no{" "}
           <code>.named(...)</code>. The two sets overlap in places and neither
           one contains the other.
         </p>
@@ -625,7 +623,7 @@ public Command runSlow() {
       >
         <p className="prose-body measure">
           <code>runRepeatedly</code> needs a chunk of code to run every loop.
-          Not a number and not an object — <em>code</em>. A lambda is how you
+          Not a number and not an object: <em>code</em>. A lambda is how you
           write a chunk of code down and hand it over.
         </p>
 
@@ -640,7 +638,7 @@ public Command runSlow() {
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            The <code>()</code> on the left is the input list. Empty here — this
+            The <code>()</code> on the left is the input list. Empty here: this
             code needs nothing handed to it.
           </li>
           <li>
@@ -662,9 +660,9 @@ public Command runSlow() {
             Call <code>arm.runSlow()</code> and <code>setVoltage(3.0)</code>{" "}
             does <strong>not</strong> happen. <code>runSlow()</code> builds a
             command and hands it back, with the lambda parked inside it, unused.
-            The lambda first runs when the scheduler runs that command — and
-            then it runs every loop, fifty times a second, for as long as the
-            command is scheduled.
+            The lambda first runs when the scheduler runs that command, and then
+            it runs every loop, fifty times a second, for as long as the command
+            is scheduled.
           </p>
           <p className="mt-3">
             The mistake looks like this: you call <code>arm.runSlow()</code>{" "}
@@ -675,14 +673,14 @@ public Command runSlow() {
 
         <p className="prose-body measure">
           Lambdas come in two shapes. One expression, as above. Or braces and
-          several statements, each with its own semicolon — and if there are
+          several statements, each with its own semicolon, and if there are
           inputs, they get names. This is the actual source of{" "}
           <code>runRepeatedly</code> inside WPILib:
         </p>
 
         <CodeBlock
           language="java"
-          title="Mechanism.java, WPILib 2027.0.0-alpha-6 — a lambda with one input and a block body"
+          title="Mechanism.java, WPILib 2027.0.0-alpha-6: a lambda with one input and a block body"
           code={`public NeedsNameBuilderStage runRepeatedly(Runnable loopBody) {
   return run(
       coroutine -> {
@@ -695,7 +693,7 @@ public Command runSlow() {
         />
 
         <p className="prose-body measure">
-          Do not worry about <code>coroutine.yield()</code> — that is the last
+          Do not worry about <code>coroutine.yield()</code>: that is the last
           lesson on the site. What matters here is the shape: one named input on
           the left of the arrow, braces on the right, several statements inside.
           It is also a straight answer to a question <strong>Commands</strong>{" "}
@@ -717,7 +715,7 @@ public Command runSlow() {
       >
         <CodeBlock
           language="java"
-          title="Arm.java, branch 2-Commands — the stop command"
+          title="Arm.java, branch 2-Commands: the stop command"
           code={`/** Stop the arm motor and keep it stopped. Never finishes. */
 public Command stop() {
   return runRepeatedly(motor::stopMotor).named("stop (hold)");
@@ -752,15 +750,15 @@ public Command stop() {
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java, branch 5-GettersAndSetters — a method handed over as a value"
+          title="TeleopOpMode.java, branch 5-GettersAndSetters: a method handed over as a value"
           code={`arm.vertical().until(arm::isAtTarget).named("vertical until at target")`}
         />
 
         <p className="prose-body measure">
           <code>.until(...)</code> has to ask &quot;are we there yet?&quot; over
           and over, every loop, for as long as the command runs. So it cannot
-          take an answer — it needs the question. Java&apos;s name for
-          &quot;code that takes nothing and hands back a <code>boolean</code>
+          take an answer: it needs the question. Java&apos;s name for &quot;code
+          that takes nothing and hands back a <code>boolean</code>
           &quot; is <code>BooleanSupplier</code>, and that is what{" "}
           <code>arm::isAtTarget</code> is.
         </p>
@@ -769,7 +767,7 @@ public Command stop() {
           That line also settles the builder question from section 6.{" "}
           <code>arm.vertical()</code> hands back a finished <code>Command</code>
           , and <code>.until(...)</code> on a <code>Command</code> hands back a
-          builder again — so <code>.named(...)</code> is legal at the end of the
+          builder again, so <code>.named(...)</code> is legal at the end of the
           chain. Adding a condition puts you back in the middle of building
           something, and anything in the middle of being built still needs a
           name.
@@ -781,7 +779,7 @@ public Command stop() {
             called. <code>arm.isAtTarget()</code> is a single <code>true</code>{" "}
             or <code>false</code>, decided at the moment that line ran. Hand the
             second one to <code>.until(...)</code> and you have frozen the
-            answer forever — if the arm was not there when the binding was
+            answer forever, if the arm was not there when the binding was
             created, it never will be.
           </p>
           <p className="mt-3">
@@ -807,12 +805,12 @@ public Command stop() {
           The last line of the arm&apos;s constructor is{" "}
           <code>TalonFXUtil.applyConfigWithRetries(motor, config)</code>. Search
           the whole project for <code>new TalonFXUtil(</code> and there is none.
-          There is a dot, and no object in front of it — only a class name.
+          There is a dot, and no object in front of it: only a class name.
         </p>
 
         <CodeBlock
           language="java"
-          title="src/main/java/frc/robot/utils/TalonFXUtil.java, branch 1-Subsystem — signature only"
+          title="src/main/java/frc/robot/utils/TalonFXUtil.java, branch 1-Subsystem: signature only"
           code={`public static boolean applyConfigWithRetries(TalonFX motor, TalonFXConfiguration config) {`}
         />
 
@@ -875,7 +873,7 @@ private static final double FAST_VOLTAGE = 6.0;`}
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java, branch 2-Commands — the top of the driver's OpMode"
+          title="TeleopOpMode.java, branch 2-Commands: the top of the driver's OpMode"
           code={`@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
@@ -899,7 +897,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           <li>
             <code>@Teleop(name = &quot;Teleop&quot;)</code> is how the framework
             finds this class. Nothing you write ever calls{" "}
-            <code>new TeleopOpMode(...)</code> — the framework does, when
+            <code>new TeleopOpMode(...)</code>: the framework does, when
             &quot;Teleop&quot; is picked on the driver station. Delete the
             annotation and the mode disappears from the list, with no compile
             error to tell you why. <code>@Autonomous</code> and{" "}
@@ -919,7 +917,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         </ul>
 
         <p className="prose-body measure">
-          Notice <code>final Arm arm = robot.arm;</code> in the constructor — a
+          Notice <code>final Arm arm = robot.arm;</code> in the constructor: a
           local variable, marked <code>final</code>, holding a shortcut to a{" "}
           <code>public</code> field on another object. Every idea in that line
           has now appeared on this page.
@@ -940,7 +938,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 5-GettersAndSetters — the static form"
+          title="Arm.java, branch 5-GettersAndSetters: the static form"
           code={`import static org.wpilib.units.Units.Degrees;
 
 // ...later in the same file:
@@ -962,7 +960,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
           <p>
             Imports and the surrounding class are usually left off so the point
             of the block is visible. If you paste one into your editor and it
-            reports <code>cannot find symbol</code>, an import is missing — the
+            reports <code>cannot find symbol</code>, an import is missing: the
             code is fine. Blocks that show a file name in their header are the
             complete thing.
           </p>
@@ -979,7 +977,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
 
         <CodeBlock
           language="java"
-          title="commands/DriveToPoint.java, branch 5-DriveToPoint — trimmed"
+          title="commands/DriveToPoint.java, branch 5-DriveToPoint: trimmed"
           code={`public class DriveToPoint extends ClassicCommand {
   private final DriveMechanism drivetrain;
   private final Pose2d targetPose;
@@ -1009,7 +1007,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
           <code>&gt;=</code> compare numbers. <code>==</code> asks
           &quot;equal?&quot; and <code>!=</code> asks &quot;not equal?&quot;.{" "}
           <code>&amp;&amp;</code> is and, <code>||</code> is or, and a leading{" "}
-          <code>!</code> flips true and false — it is one character and it
+          <code>!</code> flips true and false: it is one character and it
           reverses the meaning of everything after it, so read for it
           deliberately.
         </p>
@@ -1045,7 +1043,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
             <strong>{"You should see: "}</strong> <code>config</code>, and
             nothing else. Seven lines in that file carry an <code>=</code>. Four
             declare fields. One declares <code>config</code>. The two{" "}
-            <code>config.MotorOutput</code> lines declare nothing at all — they
+            <code>config.MotorOutput</code> lines declare nothing at all: they
             set a value on an object that already exists, which is a different
             job from making a new variable.
           </li>
@@ -1060,7 +1058,7 @@ private final Angle tolerance = Degrees.of(POSITION_TOLERANCE_DEGREES);`}
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 2-Commands — name every part"
+          title="Arm.java, branch 2-Commands: name every part"
           code={`// Voltages for the two example commands.
 private static final double SLOW_VOLTAGE = 3.0;
 
@@ -1112,7 +1110,7 @@ public Command runSlow() {
             </li>
             <li>
               A number that can carry a decimal point. The value is{" "}
-              <code>3.0</code> — three volts.
+              <code>3.0</code>: three volts.
             </li>
             <li>
               It hands back a <code>Command</code> object. It does not move the
@@ -1123,9 +1121,9 @@ public Command runSlow() {
               what <code>extends</code> buys you.
             </li>
             <li>
-              A lambda — a chunk of code handed over as a value. It runs when
-              the scheduler runs this command, and then every loop after that,
-              not when <code>runSlow()</code> is called.
+              A lambda: a chunk of code handed over as a value. It runs when the
+              scheduler runs this command, and then every loop after that, not
+              when <code>runSlow()</code> is called.
             </li>
             <li>
               On the builder that <code>runRepeatedly(...)</code> handed back.
@@ -1142,7 +1140,7 @@ public Command runSlow() {
 
         <p>
           If you can answer all seven from memory, the next three lessons are
-          readable and you should move on. Five or six is fine too — the pieces
+          readable and you should move on. Five or six is fine too: the pieces
           you missed will come back, in real code, within two pages.
         </p>
       </LessonSection>
@@ -1164,7 +1162,7 @@ public Command runSlow() {
               long as the object does. Inside a method&apos;s or
               constructor&apos;s braces means local, and it is gone at the
               closing brace. In <code>Arm.java</code>, <code>motor</code> is a
-              field and <code>config</code> is local — try to use{" "}
+              field and <code>config</code> is local: try to use{" "}
               <code>config</code> from <code>setVoltage</code> and you get{" "}
               <code>cannot find symbol</code>.
             </li>
@@ -1175,15 +1173,15 @@ public Command runSlow() {
               This one produces no error at all, which is what makes it nasty.
               You call <code>arm.runSlow()</code>, nothing moves, nothing logs.{" "}
               <code>runSlow()</code> only built a <code>Command</code> and
-              handed it to you. A command handed to nobody never runs — it has
-              to be bound to a button or scheduled.
+              handed it to you. A command handed to nobody never runs: it has to
+              be bound to a button or scheduled.
             </li>
             <li>
               <strong>
                 You pasted a snippet from this site and it will not compile.
               </strong>{" "}
               <code>cannot find symbol: class Command</code> means an import is
-              missing — most blocks here are one method, not a whole file.{" "}
+              missing: most blocks here are one method, not a whole file.{" "}
               <code>&lt;identifier&gt; expected</code> usually means the
               opposite kind of mistake: a statement pasted where a field
               belongs, or a method pasted inside another method.
@@ -1193,14 +1191,14 @@ public Command runSlow() {
 
         <p className="prose-body measure">
           If a specific word still has no meaning attached to it, leave it for
-          now — every one of these constructs reappears in real code within the
+          now: every one of these constructs reappears in real code within the
           next three lessons, and reading them in place beats re-reading this
           page.
         </p>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/Workshop-Code/blob/1-Subsystem/src/main/java/frc/robot/subsystems/Arm.java"
-          title="Arm.java on 1-Subsystem — the file from this page"
+          title="Arm.java on 1-Subsystem: the file from this page"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
@@ -1215,7 +1213,7 @@ public Command runSlow() {
               "Immediately, when runSlow() is called",
               "Once, at the moment the command is scheduled",
               "Every loop, for as long as the scheduler is running that command",
-              "Never — a lambda is only a description",
+              "Never: a lambda is only a description",
             ],
             correctAnswer: 2,
             explanation:
@@ -1226,14 +1224,14 @@ public Command runSlow() {
             question:
               "Why is it motor::stopMotor and not motor.stopMotor() inside runRepeatedly(...)?",
             options: [
-              ":: is a style preference — both compile",
+              ":: is a style preference: both compile",
               ":: hands the method over to be called later; () calls it right now and hands back nothing",
               ":: is required whenever the method takes no arguments",
               "motor.stopMotor() would stop the motor twice",
             ],
             correctAnswer: 1,
             explanation:
-              "runRepeatedly needs a Runnable — code it can call every loop. motor::stopMotor is shorthand for () -> motor.stopMotor(). Writing motor.stopMotor() calls the method on the spot and produces nothing to hand over, so it does not compile.",
+              "runRepeatedly needs a Runnable: code it can call every loop. motor::stopMotor is shorthand for () -> motor.stopMotor(). Writing motor.stopMotor() calls the method on the spot and produces nothing to hand over, so it does not compile.",
           },
           {
             id: 3,
@@ -1241,18 +1239,18 @@ public Command runSlow() {
               "In arm.vertical().until(arm::isAtTarget), what is arm::isAtTarget?",
             options: [
               "A single true or false, worked out when that line ran",
-              "A BooleanSupplier — the method itself, handed over so it can be asked every loop",
+              "A BooleanSupplier: the method itself, handed over so it can be asked every loop",
               "A field on Arm holding the arm's state",
               "A Command that finishes when the arm arrives",
             ],
             correctAnswer: 1,
             explanation:
-              "until(...) has to re-ask the question every loop, so it needs the method, not one answer. arm.isAtTarget() with parentheses would freeze a single true or false at the moment the binding was created — and if the arm was not there then, it never would be.",
+              "until(...) has to re-ask the question every loop, so it needs the method, not one answer. arm.isAtTarget() with parentheses would freeze a single true or false at the moment the binding was created, and if the arm was not there then, it never would be.",
           },
           {
             id: 4,
             question:
-              "private final TalonFX motor = new TalonFX(31, canivore); — what does final promise?",
+              "private final TalonFX motor = new TalonFX(31, canivore);: what does final promise?",
             options: [
               "The motor cannot be commanded to move",
               "motor will point at this one TalonFX forever; it cannot be reassigned",
@@ -1275,7 +1273,7 @@ public Command runSlow() {
             ],
             correctAnswer: 1,
             explanation:
-              "What you can type after a dot is decided by the type in front of it. named(String) lives on the builder that runRepeatedly(...) hands back, alongside .withPriority(...) and .whenCanceled(...). A Command has no named(String) at all — so runFast(), which already called it, gives you back something with nothing left to name.",
+              "What you can type after a dot is decided by the type in front of it. named(String) lives on the builder that runRepeatedly(...) hands back, alongside .withPriority(...) and .whenCanceled(...). A Command has no named(String) at all, so runFast(), which already called it, gives you back something with nothing left to name.",
           },
         ]}
       />

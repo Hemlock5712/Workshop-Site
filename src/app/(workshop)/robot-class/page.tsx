@@ -47,7 +47,7 @@ export default function RobotClass() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/Robot.java"
-          title="Robot.java — the complete shape"
+          title="Robot.java: the complete shape"
           code={`package frc.robot;
 
 import frc.robot.subsystems.Arm;
@@ -89,7 +89,7 @@ public class Robot extends OpModeRobot {
         </p>
         <Box
           variant="alert-warning"
-          tag="LOAD-BEARING"
+          tag="CRITICAL"
           title="Do not move or duplicate this line"
         >
           <p>
@@ -112,18 +112,17 @@ public class Robot extends OpModeRobot {
           <li>constructing a service used by several mechanisms or modes;</li>
           <li>a safety or diagnostic binding that must exist in every mode;</li>
           <li>
-            registering a background scheduler task that truly has robot-wide
-            lifetime.
+            registering a background scheduler task with robot-wide lifetime.
           </li>
         </ul>
         <p>These belong elsewhere:</p>
         <ul className="ml-5 list-disc space-y-2">
-          <li>driver buttons — put them in the teleop OpMode;</li>
-          <li>an autonomous routine — put it in an autonomous OpMode;</li>
+          <li>driver buttons: put them in the teleop OpMode;</li>
+          <li>an autonomous routine: put it in an autonomous OpMode;</li>
           <li>
-            motor IDs and controller configuration — put them in the mechanism;
+            motor IDs and controller configuration: put them in the mechanism;
           </li>
-          <li>a temporary calibration control — put it in a utility OpMode.</li>
+          <li>a temporary calibration control: put it in a utility OpMode.</li>
         </ul>
       </LessonSection>
 

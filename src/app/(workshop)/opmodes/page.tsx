@@ -67,7 +67,7 @@ export default function OpModes() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          title="TeleopOpMode.java — one binding, one mode"
+          title="TeleopOpMode.java: one binding, one mode"
           code={`package frc.robot.opmodes;
 
 import frc.robot.Robot;
@@ -139,8 +139,8 @@ public void end() {
             Calibration controls belong in a <code>@Utility</code> class.
           </li>
           <li>
-            A binding that truly applies in every mode belongs in{" "}
-            <code>Robot</code>, and should be rare.
+            A binding that applies in every mode belongs in <code>Robot</code>,
+            and should be rare.
           </li>
           <li>
             Motor configuration belongs in the mechanism that owns the motor,

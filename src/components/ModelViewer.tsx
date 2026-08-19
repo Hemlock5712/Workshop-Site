@@ -154,7 +154,7 @@ export default function ModelViewer({
           style={{ fontSize: "var(--text-micro)", color: "var(--tx3)" }}
         >
           <span className="micro mr-1.5">Camera</span>
-          <span ref={readoutRef}>—</span>
+          <span ref={readoutRef}>:</span>
         </span>
       </div>
     </div>

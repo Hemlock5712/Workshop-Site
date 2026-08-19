@@ -378,7 +378,7 @@ function FileView({
         console.error(
           `GitHub embed failed: ${repository}/${filePath} @ ${branch}`,
           err instanceof GitHubSchemaError
-            ? `unexpected response shape — ${err.message}`
+            ? `unexpected response shape: ${err.message}`
             : err
         );
         setFailed(true);
@@ -402,7 +402,7 @@ function FileView({
       <div className={className}>
         <ErrorCard
           heading="This code embed didn’t load"
-          detail={`The file is pulled from GitHub while you read, and that request failed. Nothing is wrong with your project or your install — this is usually a brief outage between this site and GitHub, and retrying clears it. You can also read ${filePath.split("/").pop() || filePath} on GitHub directly.`}
+          detail={`The file is pulled from GitHub while you read, and that request failed. Nothing is wrong with your project or your install. This is usually a brief outage between this site and GitHub, and retrying clears it. You can also read ${filePath.split("/").pop() || filePath} on GitHub directly.`}
           href={`https://github.com/${repository}/blob/${branch}/${filePath}`}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -634,7 +634,7 @@ function PRView({
         console.error(
           `GitHub PR embed failed: ${repository}#${pullRequestNumber}`,
           err instanceof GitHubSchemaError
-            ? `unexpected response shape — ${err.message}`
+            ? `unexpected response shape: ${err.message}`
             : err
         );
         setFailed(true);
@@ -674,7 +674,7 @@ function PRView({
       <div className={`my-8 ${className}`}>
         <ErrorCard
           heading="This diff didn’t load"
-          detail="The changed files are pulled from GitHub while you read, and that request failed. Nothing is wrong with your project or your install — this is usually a brief outage between this site and GitHub, and retrying clears it. You can also read the pull request on GitHub directly."
+          detail="The changed files are pulled from GitHub while you read, and that request failed. Nothing is wrong with your project or your install. This is usually a brief outage between this site and GitHub, and retrying clears it. You can also read the pull request on GitHub directly."
           href={`https://github.com/${repository}/pull/${pullRequestNumber}`}
           onRetry={() => setAttempt((n) => n + 1)}
         />

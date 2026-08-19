@@ -9,10 +9,10 @@ export default function ProjectSetup() {
     <PageTemplate
       title="Start from the team's template, not a blank project"
       emphasis="not a blank project"
-      lede="You clone one repository and run one build. When it finishes clean, you have a project that already knows about Commands v3, OpModes and Phoenix 6 — and you have proved your toolchain works before any lesson depends on it."
+      lede="You clone one repository and run one build. When it finishes clean, you have a project that already knows about Commands v3, OpModes and Phoenix 6, and you have proved your toolchain works before any lesson depends on it."
       needs={[
         <>
-          Everything on <strong>Prerequisites</strong> installed — WPILib 2027,
+          Everything on <strong>Prerequisites</strong> installed: WPILib 2027,
           Java 25, Git.
         </>,
         <>An internet connection. The first build downloads the vendordeps.</>,
@@ -284,7 +284,7 @@ export default function ProjectSetup() {
       <LessonSection id="watch-it-done" title="Watch it done">
         <iframe
           src="https://www.youtube.com/embed/Y8ExsyaCC34"
-          title="Project Setup Tutorial"
+          title="Project setup tutorial"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
           className="w-full h-full aspect-video rounded-lg"
@@ -326,10 +326,10 @@ export default function ProjectSetup() {
             question:
               "Which branch of the 2027-Template should you clone, and why?",
             options: [
-              "main — the default branch is always the newest",
-              "2027-dev — it has the 2027 stack; main is still last season's code",
-              "Either one — they're kept identical",
-              "release — templates always ship from a release branch",
+              "main: the default branch is always the newest",
+              "2027-dev: it has the 2027 stack; main is still last season's code",
+              "Either one: they're kept identical",
+              "release: templates always ship from a release branch",
             ],
             correctAnswer: 1,
             explanation:
@@ -341,7 +341,7 @@ export default function ProjectSetup() {
               "After cloning and setting your team number, how do you check the project is healthy?",
             options: [
               "Deploy straight to the robot and see what happens",
-              "Run ./gradlew build (or WPILib: Build Robot Code) — a clean build means the toolchain and dependencies are in place",
+              "Run ./gradlew build (or WPILib: Build Robot Code): a clean build means the toolchain and dependencies are in place",
               "Open every file and look for red squiggles",
               "You can't check without robot hardware",
             ],

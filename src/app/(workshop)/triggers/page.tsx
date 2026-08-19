@@ -47,8 +47,8 @@ export default function Triggers() {
         />
         <MarginNote label="WHAT YOU'LL BUILD">
           A fourth button binding of your own, and a clear rule for where every
-          binding in the project belongs. Nothing moves yet — the controller
-          does not get pressed until{" "}
+          binding in the project belongs. Nothing moves yet: the controller does
+          not get pressed until{" "}
           <a href="/running-program" className="underline">
             Running Your Code
           </a>
@@ -77,7 +77,7 @@ export default function Triggers() {
 
         <p className="prose-body measure">
           Nothing about a Trigger requires a button.{" "}
-          <code>new Trigger(...)</code> takes a <code>BooleanSupplier</code> —
+          <code>new Trigger(...)</code> takes a <code>BooleanSupplier</code>:
           any lambda or method reference that answers true or false. WPILib
           builds its own robot-mode Triggers exactly that way:
         </p>
@@ -110,7 +110,7 @@ public static Trigger disabled() {
         >
           <p>
             On <code>2-Commands</code>, <code>Arm</code> and{" "}
-            <code>Flywheel</code> expose three commands each and nothing else —
+            <code>Flywheel</code> expose three commands each and nothing else:
             no method anywhere returns a position, a speed, or a true/false
             answer. So there is nothing yet to put inside{" "}
             <code>new Trigger(...)</code>. The first readable condition on a
@@ -120,7 +120,7 @@ public static Trigger disabled() {
             </a>
             , when the arm learns to report whether it got where it was sent:{" "}
             <code>arm::isAtTarget</code>. That is a <code>BooleanSupplier</code>
-            , exactly what <code>new Trigger(...)</code> takes — though Finish
+            , exactly what <code>new Trigger(...)</code> takes, though Finish
             Lines spends it on <code>.until(...)</code> rather than on a
             Trigger.
           </p>
@@ -140,24 +140,24 @@ public static Trigger disabled() {
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            <code>onTrue(cmd)</code> — schedules <code>cmd</code> the loop the
+            <code>onTrue(cmd)</code>: schedules <code>cmd</code> the loop the
             answer changes from false to true. Fires once per press.{" "}
             <strong>It never cancels anything.</strong>
           </li>
           <li>
-            <code>onFalse(cmd)</code> — schedules <code>cmd</code> the loop the
+            <code>onFalse(cmd)</code>: schedules <code>cmd</code> the loop the
             answer changes from true to false. Fires once per release. Also
             never cancels anything.
           </li>
           <li>
-            <code>whileTrue(cmd)</code> — schedules <code>cmd</code> when the
+            <code>whileTrue(cmd)</code>: schedules <code>cmd</code> when the
             answer goes true <em>and cancels it</em> when the answer goes false.
             If <code>cmd</code> ends on its own while the button is still down,
             it is not restarted.
           </li>
           <li>
-            <code>whileFalse(cmd)</code> — the mirror image: schedules{" "}
-            <code>cmd</code> when the answer goes false, cancels it when the
+            <code>whileFalse(cmd)</code> does the opposite. It schedules{" "}
+            <code>cmd</code> when the answer goes false and cancels it when the
             answer goes true.
           </li>
         </ul>
@@ -184,7 +184,7 @@ public static Trigger disabled() {
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — the bindings on 2-Commands"
+          title="TeleopOpMode.java: the bindings on 2-Commands"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
           code={`// Left trigger: push the arm up while held, stop when released.
 driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
@@ -198,7 +198,7 @@ driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());`}
 
         <p className="prose-body measure">
           The reason is the one you met last lesson. <code>onTrue</code>{" "}
-          schedules and nothing more, and <code>arm.runFast()</code> is a hold —
+          schedules and nothing more, and <code>arm.runFast()</code> is a hold:
           it re-sends 6&nbsp;V every loop and never finishes. Leave the second
           call off and that command owns the arm for the rest of the match. What
           ends it is the release binding: <code>arm.stop()</code> needs the arm
@@ -215,7 +215,7 @@ driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());`}
           <p>
             This is why a release half that is meant to stop the mechanism has
             to name a real command. When nothing claims a mechanism it falls
-            back to <code>idle()</code>, which sends <em>no output at all</em> —
+            back to <code>idle()</code>, which sends <em>no output at all</em>:
             it does not zero the last request. Phoenix keeps applying the last
             voltage it was handed. Stopping the motor takes a command that
             actively asks for zero, which is what <code>stop()</code> is for.
@@ -233,7 +233,7 @@ driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());`}
 
         <p className="prose-body measure">
           Now look at the right trigger again. Releasing it does not stop the
-          flywheel — it drops the flywheel back to the slow voltage. That is the
+          flywheel: it drops the flywheel back to the slow voltage. That is the
           real argument for the pair form:{" "}
           <strong>
             the pair form lets you say what happens on release, not only that
@@ -290,7 +290,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           button. &quot;Cancel that group&quot; is a thing{" "}
           <code>whileTrue</code> can do on its own; there is no single command
           you could name in an <code>onFalse</code> that would unwind a group
-          step by step. <code>whileTrue</code> also cannot be half-written — the
+          step by step. <code>whileTrue</code> also cannot be half-written: the
           cancel is built into the verb.
         </p>
 
@@ -305,7 +305,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
             teaches, and rewriting them now costs you the comparison. The switch
             to <code>whileTrue</code>&nbsp;+&nbsp;<code>whileFalse</code>{" "}
             happens on Chaining Commands, on code that has a reason for it. You
-            do add one binding of your own further down this page — that one is
+            do add one binding of your own further down this page: that one is
             the only change to the file.
           </p>
         </Box>
@@ -321,7 +321,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           spins the flywheel in teleop; in autonomous it should mean nothing.
           There is no <code>if (isTeleop)</code> anywhere in this project, and
           no code that removes a binding. Instead, a binding belongs to whatever
-          was running when you created it — and you choose that by picking which
+          was running when you created it, and you choose that by picking which
           constructor to type the line into.
         </p>
 
@@ -347,7 +347,7 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
                   Runs before any OpMode is selected, so there is no mode to
                   belong to and the binding lasts as long as the robot program
                   does. Your <code>Robot()</code> on <code>2-Commands</code> is
-                  empty — you have none. The team&apos;s template has exactly
+                  empty: you have none. The team&apos;s template has exactly
                   one, and that is the right number.
                 </>
               ),
@@ -363,14 +363,14 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           <code>TeleopOpMode</code> is its own class, tagged{" "}
           <code>@Teleop</code>. The framework finds it by that annotation, lists
           it by name on the driver station, and builds it when the driver picks
-          it. Its constructor runs once at that moment — which is exactly when
+          it. Its constructor runs once at that moment, which is exactly when
           you want bindings created. The file&apos;s own javadoc, on the branch,
           says what happens next:
         </p>
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — the shape, with the branch's own comment"
+          title="TeleopOpMode.java: the shape, with the branch's own comment"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
           code={`/**
  * The driver's controls. The framework builds this class when "Teleop" is picked on the driver
@@ -397,7 +397,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           field, so it is built before the constructor body runs; port 0 is the
           first controller on the driver station. <code>arm</code> and{" "}
           <code>flywheel</code> are local shorthands for the mechanisms{" "}
-          <code>Robot</code> owns, and they exist only inside this constructor —
+          <code>Robot</code> owns, and they exist only inside this constructor,
           which is also where every binding has to go.
         </p>
 
@@ -416,7 +416,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           <code>@Teleop</code>, <code>@Autonomous</code> and{" "}
           <code>@Utility</code> each get their own file, their own constructor,
           and therefore their own set of bindings. Adding a second{" "}
-          <code>@Teleop</code> class — a demo layout, a single-driver layout —
+          <code>@Teleop</code> class, a demo layout, a single-driver layout,
           adds another entry on the driver station and another independent set
           of controls.
         </p>
@@ -435,7 +435,7 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <CodeBlock
           language="java"
-          title="Robot.java — the one global binding, from the 2027-Template"
+          title="Robot.java: the one global binding, from the 2027-Template"
           filename="src/main/java/frc/robot/Robot.java"
           code={`public Robot() {
   // ...
@@ -448,8 +448,8 @@ public class TeleopOpMode extends PeriodicOpMode {
         />
 
         <p className="prose-body measure">
-          The command here acts on a swerve drivetrain you do not have yet —
-          that is Workshop&nbsp;#2. The address is the lesson, not the command.{" "}
+          The command here acts on a swerve drivetrain you do not have yet: that
+          is Workshop&nbsp;#2. The address is the lesson, not the command.{" "}
           <code>RobotModeTriggers.disabled()</code> is true whenever the robot
           is disabled, which happens between modes and before any mode has been
           picked, so a binding on it has to outlive every OpMode. Nothing else
@@ -481,8 +481,8 @@ public class TeleopOpMode extends PeriodicOpMode {
         </Box>
 
         <p className="prose-body-sm measure">
-          That first case — a binding created inside a running command, alive
-          only while that command runs — is real and occasionally useful: a
+          That first case, a binding created inside a running command, alive
+          only while that command runs, is real and occasionally useful: a
           routine can expose an abort button that exists only while the routine
           is going. Writing one means writing a command body by hand, which is
           the coroutine dialect. It waits for{" "}
@@ -496,13 +496,13 @@ public class TeleopOpMode extends PeriodicOpMode {
       {/* ── your turn ────────────────────────────────────────────────── */}
       <LessonSection id="add-a-fourth-binding" title="Add a fourth binding">
         <p className="prose-body measure">
-          The branch binds three controls — left trigger, right trigger, A. B is
+          The branch binds three controls: left trigger, right trigger, A. B is
           free. Give it the arm at the gentle voltage. This goes{" "}
           <strong>
             inside <code>public TeleopOpMode(Robot robot)</code>
           </strong>
-          , below the existing A binding — the same block as the other three,
-          not above the constructor and not in a method of its own.
+          , below the existing A binding: the same block as the other three, not
+          above the constructor and not in a method of its own.
         </p>
 
         <CodeBlock
@@ -523,7 +523,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
           <li>
             Read your constructor top to bottom.{" "}
             <strong>{"You should see: "}</strong> the two local declarations,
-            then four bindings, then the constructor&apos;s closing brace — and
+            then four bindings, then the constructor&apos;s closing brace, and
             no binding anywhere outside it.
           </li>
           <li>
@@ -537,7 +537,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             <code>driver.b().onTrue(arm.runSlow());</code>. Build again.{" "}
             <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>{" "}
             again. That is the point of the exercise. A missing release binding
-            is not a compile error — it is an arm that starts pushing on the
+            is not a compile error: it is an arm that starts pushing on the
             first press and never stops. Put the <code>.onFalse(...)</code>{" "}
             back.
           </li>
@@ -546,7 +546,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             constructor and paste it above the constructor, next to the{" "}
             <code>driver</code> field. Build again.{" "}
             <strong>{"You should see: "}</strong> the build fail. A binding is a
-            statement, and statements live inside constructors and methods — and
+            statement, and statements live inside constructors and methods, and
             even if Java allowed it there, <code>arm</code> is a local variable
             of the constructor and does not exist at field level. Put the line
             back inside the constructor.
@@ -570,7 +570,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
                 driver station lists no Teleop mode.
               </strong>{" "}
               You are still on <code>1-Subsystem</code>. That branch has no{" "}
-              <code>opmodes</code> package at all — checking it out removes the
+              <code>opmodes</code> package at all: checking it out removes the
               file this page is about. Switch to <code>2-Commands</code> and the
               folder comes back.
             </li>
@@ -581,7 +581,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               </strong>{" "}
               You have <code>2-Commands</code> checked out but an{" "}
               <code>Arm.java</code> copied in from <code>1-Subsystem</code>.
-              That version has no commands at all — only{" "}
+              That version has no commands at all: only{" "}
               <code>setVoltage(double)</code> and a <code>stop()</code> that
               returns <code>void</code> instead of a <code>Command</code>.
               Restore the branch&apos;s own <code>Arm.java</code> and rebuild.
@@ -605,7 +605,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
                 It compiles, and later the arm runs but never stops.
               </strong>{" "}
               Either the <code>onFalse</code> half is missing, or you bound the
-              release to a command on the wrong mechanism —{" "}
+              release to a command on the wrong mechanism:{" "}
               <code>flywheel.stop()</code> does not take the arm away from{" "}
               <code>arm.runSlow()</code>, so the arm keeps pushing. The release
               command has to need the same mechanism as the press command.
@@ -621,7 +621,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       >
         <p className="prose-body measure">
           This is <code>opmodes/TeleopOpMode.java</code> as it exists on{" "}
-          <code>2-Commands</code> — the file this page has been taking apart.
+          <code>2-Commands</code>: the file this page has been taking apart.
           Yours should match it, plus your B binding.
         </p>
 
@@ -633,14 +633,14 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
 
         <p className="prose-body measure">
           For the global binding, read the template&apos;s <code>Robot</code>{" "}
-          constructor. It is the only global binding the team writes — the same
+          constructor. It is the only global binding the team writes: the same
           single line reappears in the <code>Robot</code> constructor of every
           Workshop&nbsp;#2 branch, and it is always this one binding.
         </p>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/Robot.java"
-          title="Robot.java — the one global binding"
+          title="Robot.java: the one global binding"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
@@ -654,28 +654,28 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             question:
               "You write driver.a().onTrue(flywheel.runFast()) inside TeleopOpMode's constructor. When does that binding go away?",
             options: [
-              "Never — button bindings always last for the whole program",
+              "Never: button bindings always last for the whole program",
               "When the OpMode ends: the driver picks a different mode, the framework tears this OpMode down, and the binding goes with it",
               "Only when you call unbind() on the trigger yourself",
               "When runFast() finishes",
             ],
             correctAnswer: 1,
             explanation:
-              "A binding created in an OpMode constructor belongs to that OpMode. Selecting another mode constructs that OpMode and tears this one down, and its bindings are removed automatically — no cleanup code. Trigger does have a public unbind(), but the scheduler calls it for you when the scope goes inactive. And runFast() is a hold, so it never finishes on its own.",
+              "A binding created in an OpMode constructor belongs to that OpMode. Selecting another mode constructs that OpMode and tears this one down, and its bindings are removed automatically: no cleanup code. Trigger does have a public unbind(), but the scheduler calls it for you when the scope goes inactive. And runFast() is a hold, so it never finishes on its own.",
           },
           {
             id: 2,
             question:
               "Why does 2-Commands write .onFalse(arm.stop()) after .onTrue(arm.runFast()) instead of leaving it off?",
             options: [
-              "Style — the framework rejects an unpaired onTrue at build time",
+              "Style: the framework rejects an unpaired onTrue at build time",
               "onTrue only schedules and never cancels, and runFast() is a hold, so the release binding is what takes the arm away from it",
               "onFalse re-runs the onTrue command in reverse",
               "Without it the arm would run at half voltage",
             ],
             correctAnswer: 1,
             explanation:
-              "onTrue schedules a command on the press and does nothing on the release. runFast() is a hold, so nothing ends it. arm.stop() needs the same mechanism, and a command of equal or higher priority claiming a mechanism interrupts the one already on it — both are at the default priority of 0, so stop() wins by arriving second. Leaving the onFalse off builds fine and leaves the arm pushing.",
+              "onTrue schedules a command on the press and does nothing on the release. runFast() is a hold, so nothing ends it. arm.stop() needs the same mechanism, and a command of equal or higher priority claiming a mechanism interrupts the one already on it: both are at the default priority of 0, so stop() wins by arriving second. Leaving the onFalse off builds fine and leaves the arm pushing.",
           },
           {
             id: 3,
@@ -685,21 +685,21 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
               "Left trigger: arm runs fast while held, stops on release",
               "A: flywheel runs fast while held, stops on release",
               "Right trigger: flywheel runs fast while held, drops back to the slow voltage on release",
-              "None of them — whileTrue plus whileFalse(stop) replaces every onTrue/onFalse pair",
+              "None of them: whileTrue plus whileFalse(stop) replaces every onTrue/onFalse pair",
             ],
             correctAnswer: 2,
             explanation:
-              "whileTrue cancels its command on release, and canceling does not choose what runs next — the mechanism falls back to idle(), which sends no output and does not zero the last request. That is why whileFalse(stop) is the pairing: it actively asks for zero. The right-trigger binding needs the release to START something else (the slow hold), not stop, so whileFalse(stop) is the wrong second half and only naming that second command works. The other two want a stop, so the whileTrue/whileFalse(stop) form expresses them fine.",
+              "whileTrue cancels its command on release, and canceling does not choose what runs next: the mechanism falls back to idle(), which sends no output and does not zero the last request. That is why whileFalse(stop) is the pairing: it actively asks for zero. The right-trigger binding needs the release to START something else (the slow hold), not stop, so whileFalse(stop) is the wrong second half and only naming that second command works. The other two want a stop, so the whileTrue/whileFalse(stop) form expresses them fine.",
           },
           {
             id: 4,
             question:
               "A binding should brake the drivetrain whenever the robot is disabled, in every mode. Where do you type it?",
             options: [
-              "In the Robot constructor, which runs before any OpMode is selected — that makes the binding global",
+              "In the Robot constructor, which runs before any OpMode is selected: that makes the binding global",
               "In every OpMode constructor, one copy each",
               "Inside a command body that is always scheduled",
-              "Nowhere — Commands v3 removed global bindings",
+              "Nowhere: Commands v3 removed global bindings",
             ],
             correctAnswer: 0,
             explanation:
@@ -710,13 +710,13 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             question: "What does new Trigger(...) take as its argument?",
             options: [
               "A button number on the driver station",
-              "A BooleanSupplier — any lambda or method reference that answers true or false",
+              "A BooleanSupplier: any lambda or method reference that answers true or false",
               "A Command to run",
               "The Mechanism the binding should require",
             ],
             correctAnswer: 1,
             explanation:
-              "A Trigger is a yes-or-no question the scheduler polls once per loop. WPILib's own RobotModeTriggers.disabled() is literally new Trigger(RobotState::isDisabled). Buttons are the common source, not the only one — on 2-Commands they are the only one, because nothing on the Arm or Flywheel is readable from outside yet.",
+              "A Trigger is a yes-or-no question the scheduler polls once per loop. WPILib's own RobotModeTriggers.disabled() is literally new Trigger(RobotState::isDisabled). Buttons are the common source, not the only one: on 2-Commands they are the only one, because nothing on the Arm or Flywheel is readable from outside yet.",
           },
         ]}
       />

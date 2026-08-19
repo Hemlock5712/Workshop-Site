@@ -171,7 +171,7 @@ export default function SearchPageContent() {
             }}
           >
             Try fewer words, or the name of the thing rather than a description
-            of it — <em>cruise velocity</em> rather than{" "}
+            of it: <em>cruise velocity</em> rather than{" "}
             <em>how do I make the arm move smoothly</em>.
           </p>
         </div>

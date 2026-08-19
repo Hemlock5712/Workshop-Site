@@ -17,7 +17,7 @@ export default function Hardware() {
       lede="Before any code, every device on the bus needs power, a unique CAN ID, current firmware, and a name you chose. Phoenix Tuner X does all four, and this is the page that owns the CANivore-USB toggle every later lesson refers back to."
       needs={[
         <>
-          The mechanism assembled and wired, with a charged battery — see{" "}
+          The mechanism assembled and wired, with a charged battery: see{" "}
           <strong>Mechanism CAD</strong> if you are building one.
         </>,
         <>
@@ -26,7 +26,7 @@ export default function Hardware() {
         </>,
         <>
           <strong>The real hardware.</strong> There is no simulator path through
-          this page — it is the page where you confirm the devices exist.
+          this page: it is the page where you confirm the devices exist.
         </>,
       ]}
       time="About 45 minutes, longer if firmware needs updating"
@@ -37,21 +37,21 @@ export default function Hardware() {
       <Split>
         <KeyConceptSection
           title="Hardware Setup: Building the Foundation"
-          description="Overview of the motors, sensors, and controllers you'll connect for this workshop."
+          description="The motors, sensors, and controllers you'll connect for this workshop."
           concept="Solid hardware configuration enables precise and reliable robot control."
         />
         <MarginNote label="IF THIS IS NEW">
           Think of your robot like a remote control car, but much smarter. Just
-          like a car, it needs <GlossaryTerm term="motor">motors</GlossaryTerm>{" "}
-          — the wheels that make it move;{" "}
-          <GlossaryTerm term="motor controller">controllers</GlossaryTerm> — the
+          like a car, it needs <GlossaryTerm term="motor">motors</GlossaryTerm>:
+          the wheels that make it move;{" "}
+          <GlossaryTerm term="motor controller">controllers</GlossaryTerm>: the
           remote control that tells motors what to do;{" "}
-          <GlossaryTerm term="sensor">sensors</GlossaryTerm> — a speedometer
-          that tells you how fast you are going; and a brain, the electronics
-          inside that process everything. If terms like{" "}
+          <GlossaryTerm term="sensor">sensors</GlossaryTerm>: a speedometer that
+          tells you how fast you are going; and a brain, the electronics inside
+          that process everything. If terms like{" "}
           <GlossaryTerm term="can bus">CAN bus</GlossaryTerm> or{" "}
           <GlossaryTerm term="encoder">encoder</GlossaryTerm> are new to you,
-          that is fine — this page explains each one as it comes up.
+          that is fine: this page explains each one as it comes up.
         </MarginNote>
       </Split>
 
@@ -219,7 +219,7 @@ export default function Hardware() {
 
       <LessonSection
         id="why-we-choose-ctre-hardware"
-        title="Why We Choose CTRE Hardware"
+        title="Why we choose CTRE hardware"
       >
         <div className="bg-[var(--bg2)] rounded-lg p-8 border border-[var(--rule)]">
           <h3 className="display m-0 mb-4 flex items-center gap-2 text-lede">
@@ -329,13 +329,13 @@ export default function Hardware() {
         id="connecting-to-your-device"
         title="Connecting to Your Device"
       >
-        <Box variant="alert-warning" title="Important Setup Steps">
+        <Box variant="alert-warning" title="Important setup steps">
           <ol className="list-decimal list-inside space-y-2">
             <li>Plug the computer into the CANivore</li>
             <li>
               Make sure &quot;CANivore USB&quot; is checked. It is one toggle
-              with two positions, and you will flip it back later — the full
-              rule is on{" "}
+              with two positions, and you will flip it back later: the full rule
+              is on{" "}
               <a
                 href="/mechanism-setup#canivore-usb"
                 className="underline font-medium"
@@ -355,7 +355,7 @@ export default function Hardware() {
 
       <LessonSection
         id="updating-your-ctre-products"
-        title="Updating Your CTRE Products"
+        title="Updating your CTRE products"
       >
         <ContentCard>
           <h3 className="display m-0 mb-4 text-lede">Using Phoenix Tuner</h3>
@@ -415,7 +415,7 @@ export default function Hardware() {
 
       <LessonSection
         id="motor-update-process-status-colors"
-        title="Motor Update Process & Status Colors"
+        title="Motor update process and status colors"
       >
         <div>
           <ContentCard className="mx-auto flex flex-col gap-4">
@@ -426,7 +426,7 @@ export default function Hardware() {
 
             <iframe
               src="https://www.youtube.com/embed/aktcCtcrEyY"
-              title="Motor Update Process"
+              title="Motor update process"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               className="w-full h-full aspect-video rounded-lg"
@@ -543,7 +543,7 @@ export default function Hardware() {
         />
       </LessonSection>
 
-      <LessonSection id="let-s-run-some-motors" title="Let's Run Some Motors">
+      <LessonSection id="let-s-run-some-motors" title="Run a motor">
         <div className="module" style={{ borderColor: "var(--accent)" }}>
           <h3
             className="display m-0 mb-4 text-aside"

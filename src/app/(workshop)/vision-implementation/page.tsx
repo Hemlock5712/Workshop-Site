@@ -27,7 +27,7 @@ export default function VisionImplementation() {
         </>,
         <>
           Odometry you trust, from <strong>Swerve Calibration</strong>. Vision
-          corrects odometry — if the wheel radius is wrong, vision spends the
+          corrects odometry, if the wheel radius is wrong, vision spends the
           whole match fighting it.
         </>,
         <>
@@ -121,8 +121,8 @@ export default function VisionImplementation() {
             get wrong. Put the camera where it can see the scoring tags{" "}
             <em>while you are actually scoring</em>, and{" "}
             <strong>not at the same height as the tags</strong>. You want the
-            camera looking at a tag from an angle — off to one side, and above
-            or below it. A camera staring at a tag dead-on, level with it, gives
+            camera looking at a tag from an angle: off to one side, and above or
+            below it. A camera staring at a tag dead-on, level with it, gives
             the worst pose estimate you can get.
           </p>
           <p className="mt-3">
@@ -215,8 +215,8 @@ export default function VisionImplementation() {
           <li>
             <strong>Drop the exposure.</strong> Set it as low as the camera can
             go while still finding tags reliably. Low exposure means a short
-            shutter, which means less motion blur while the robot is moving —
-            and a blurred tag is a tag with a wrong answer, not a missing one.
+            shutter, which means less motion blur while the robot is moving, and
+            a blurred tag is a tag with a wrong answer, not a missing one.
           </li>
           <li>
             <strong>Enter the camera offsets.</strong> Measure where the camera
@@ -228,7 +228,7 @@ export default function VisionImplementation() {
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
-                title="Limelight — full 3D tracking and camera pose"
+                title="Limelight: full 3D tracking and camera pose"
                 icon={<Link className="w-5 h-5" />}
               />
             </div>
@@ -241,7 +241,7 @@ export default function VisionImplementation() {
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
-                title="Limelight — ChArUco camera calibration"
+                title="Limelight: ChArUco camera calibration"
                 icon={<Link className="w-5 h-5" />}
               />
             </div>
@@ -257,7 +257,7 @@ export default function VisionImplementation() {
         <p>
           <strong>{"You should see: "}</strong> Hold a tag in front of the
           camera and the web interface reports the tag&apos;s ID. If it does
-          not, no amount of Java will help — go back through the pipeline and
+          not, no amount of Java will help: go back through the pipeline and
           exposure settings.
         </p>
       </LessonSection>
@@ -267,7 +267,7 @@ export default function VisionImplementation() {
         id="add-limelighthelpers-java"
         title={
           <>
-            Step 2 — Add <code>LimelightHelpers.java</code>
+            Step 2: Add <code>LimelightHelpers.java</code>
           </>
         }
         outlineLabel="Add LimelightHelpers.java"
@@ -297,7 +297,7 @@ export default function VisionImplementation() {
 
         <p>
           Two pieces of it matter for this lesson. A <code>PoseEstimate</code>{" "}
-          carries the fields the rest of the page uses — <code>pose</code>,{" "}
+          carries the fields the rest of the page uses: <code>pose</code>,{" "}
           <code>timestampSeconds</code>, <code>tagCount</code>,{" "}
           <code>avgTagDist</code> and <code>isMegaTag2</code>. And there is one
           small method that decides whether an estimate is worth looking at:
@@ -305,7 +305,7 @@ export default function VisionImplementation() {
 
         <CodeBlock
           language="java"
-          title="LimelightHelpers.java — what counts as a valid estimate"
+          title="LimelightHelpers.java: what counts as a valid estimate"
           code={`public static Boolean validPoseEstimate(PoseEstimate pose) {
   return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
 }`}
@@ -315,7 +315,7 @@ export default function VisionImplementation() {
           A <em>fiducial</em> is one detected tag. So this is asking: did we get
           an answer at all, and did at least one tag go into it? When there is
           no data to read, <code>LimelightHelpers</code> hands back a default{" "}
-          <code>PoseEstimate</code> — a pose sitting at the field origin with an
+          <code>PoseEstimate</code>: a pose sitting at the field origin with an
           empty fiducial array. That reading is the one this check exists to
           throw away, and it is the reason a camera that is switched off or
           misnamed produces silence rather than a robot that thinks it is parked
@@ -335,7 +335,7 @@ export default function VisionImplementation() {
             branch="3-Limelight"
             filePath="src/main/java/frc/robot/LimelightHelpers.java"
             title="LimelightHelpers"
-            description="The workshop's copy of Limelight's helper file, migrated to the WPILib 2027 packages. You do not need to read all 1,396 lines — this is the file the Limelight class below calls into."
+            description="The workshop's copy of Limelight's helper file, migrated to the WPILib 2027 packages. You do not need to read all 1,396 lines: this is the file the Limelight class below calls into."
           />
         </CollapsibleSection>
       </LessonSection>
@@ -345,7 +345,7 @@ export default function VisionImplementation() {
         id="write-the-limelight-class"
         title={
           <>
-            Step 3 — Write the <code>Limelight</code> class
+            Step 3: Write the <code>Limelight</code> class
           </>
         }
         outlineLabel="Write the Limelight class"
@@ -362,15 +362,15 @@ export default function VisionImplementation() {
 
         <p>
           A <code>Mechanism</code> exists so the scheduler can hand out
-          exclusive ownership of a piece of hardware — one command at a time
-          gets the arm. A camera drives nothing, so there is nothing to own and
+          exclusive ownership of a piece of hardware: one command at a time gets
+          the arm. A camera drives nothing, so there is nothing to own and
           nothing to fight over. It is a plain class whose <code>update()</code>{" "}
           runs every loop, registered directly on the scheduler:
         </p>
 
         <CodeBlock
           language="java"
-          title="Limelight.java — one camera per name, all on the scheduler"
+          title="Limelight.java: one camera per name, all on the scheduler"
           code={`public static void registerAll(DriveMechanism drivetrain, String... cameraNames) {
   for (String name : cameraNames) {
     Limelight camera = new Limelight(name, drivetrain);
@@ -405,7 +405,7 @@ export default function VisionImplementation() {
 
         <CodeBlock
           language="java"
-          title="Limelight.java — the first half of update()"
+          title="Limelight.java: the first half of update()"
           code={`// Tell the camera which way we are facing (MegaTag2 needs it). NoFlush means the shared
 // flush in registerAll sends it.
 double headingDegrees = drivetrain.getPose().getRotation().getDegrees();
@@ -449,7 +449,7 @@ if (LimelightHelpers.validPoseEstimate(estimate) && estimate.tagCount == 1) {
 
         <CodeBlock
           language="java"
-          title="Limelight.java — reject, or carry on"
+          title="Limelight.java: reject, or carry on"
           code={`// Skip if no tag is in view, or the tags are too far to trust.
 if (!LimelightHelpers.validPoseEstimate(estimate)
     || estimate.avgTagDist > MAX_TAG_DISTANCE_METERS) {
@@ -474,7 +474,7 @@ if (!LimelightHelpers.validPoseEstimate(estimate)
             estimator barely moves for it.
           </p>
           <p className="mt-3">
-            Rejecting is cheap to write and expensive to debug — a filter that
+            Rejecting is cheap to write and expensive to debug: a filter that
             silently drops good data looks exactly like a camera that is not
             working. Weighting degrades instead of disappearing.
           </p>
@@ -490,7 +490,7 @@ if (!LimelightHelpers.validPoseEstimate(estimate)
           this much&quot;, and it blends that against what the wheels say. The
           &quot;give or take&quot; is a <strong>standard deviation</strong>.{" "}
           <code>DriveMechanism.addVisionMeasurement</code> documents its third
-          argument as how much to trust the measurement in x, y and theta —
+          argument as how much to trust the measurement in x, y and theta:
           meters and radians, and bigger numbers mean trust it less.
         </p>
 
@@ -504,7 +504,7 @@ if (!LimelightHelpers.validPoseEstimate(estimate)
 
         <CodeBlock
           language="java"
-          title="Limelight.java — the constants"
+          title="Limelight.java: the constants"
           code={`// How much to trust a sighting: stdDev = coefficient * distance^1.2 / tagCount^2.
 // Bigger stdDev = trust it less. Far tags count less; more tags count more.
 private static final double XY_STD_DEV_COEFFICIENT = 0.333;
@@ -515,7 +515,7 @@ private static final double IGNORE_VISION_HEADING = 9_999_999; // huge = let the
 
         <CodeBlock
           language="java"
-          title="Limelight.java — the second half of update()"
+          title="Limelight.java: the second half of update()"
           code={`// Closer tags and more tags earn more trust. MegaTag1 gives a real heading; MegaTag2 leaves
 // the heading to the gyro.
 double distanceFactor = Math.pow(estimate.avgTagDist, 1.2);
@@ -549,9 +549,9 @@ drivetrain.addVisionMeasurement(
           </li>
           <li>
             <strong>X and Y get the same number.</strong>{" "}
-            <code>VecBuilder.fill(xyStdDev, xyStdDev, headingStdDev)</code> —
-            the model does not claim to know more about sideways error than
-            forwards error.
+            <code>VecBuilder.fill(xyStdDev, xyStdDev, headingStdDev)</code>: the
+            model does not claim to know more about sideways error than forwards
+            error.
           </li>
           <li>
             <strong>The heading is conditional.</strong> That <code>? :</code>{" "}
@@ -645,7 +645,7 @@ drivetrain.addVisionMeasurement(
           Those are calculated from the constants above, not read off a
           dashboard. Note the second and third rows: at the same distance, the
           second tag is worth four times the trust. Note also that a single tag
-          at two meters carries a 0.77 m error bar — the estimator will barely
+          at two meters carries a 0.77 m error bar: the estimator will barely
           move for it, which is the correct amount to move for a measurement
           that shaky.
         </p>
@@ -660,7 +660,7 @@ drivetrain.addVisionMeasurement(
           picture was taken, processed on the camera, and sent over the network
           before your code ever saw it, so by the time you are holding this pose
           the robot has already moved. The estimator needs to know <em>when</em>{" "}
-          the robot was there in order to fold the measurement in correctly.{" "}
+          the robot was there to fold the measurement in correctly.{" "}
           <code>DriveMechanism</code> documents the parameter as &quot;when the
           picture was taken&quot;, and <code>Limelight.java</code> passes the
           Limelight&apos;s own value straight through with no conversion.
@@ -669,7 +669,7 @@ drivetrain.addVisionMeasurement(
         <p>
           The correction has already been made for you inside{" "}
           <code>LimelightHelpers</code>, which builds the field as{" "}
-          <code>(timestamp / 1000000.0) - (latency / 1000.0)</code> — the
+          <code>(timestamp / 1000000.0) - (latency / 1000.0)</code>: the
           NetworkTables server timestamp in microseconds, less the camera&apos;s
           reported processing latency in milliseconds. That is the moment the
           shutter opened.
@@ -678,7 +678,7 @@ drivetrain.addVisionMeasurement(
         <p>
           <strong>{"You should see: "}</strong>
           <code>./gradlew build</code> succeeds. Nothing calls the class yet, so
-          a clean build is the whole check at this point — it catches the
+          a clean build is the whole check at this point: it catches the
           mistyped field name and the missing import before you deploy.
         </p>
 
@@ -698,20 +698,20 @@ drivetrain.addVisionMeasurement(
         id="wire-it-up-in"
         title={
           <>
-            Step 4 — Wire it up in <code>Robot</code>
+            Step 4: Wire it up in <code>Robot</code>
           </>
         }
         outlineLabel="Wire it up in Robot"
       >
         <p>
-          One line, in <code>Robot</code>&apos;s constructor. Not in an OpMode —
+          One line, in <code>Robot</code>&apos;s constructor. Not in an OpMode:
           OpMode bindings are torn down on a mode switch, and vision has to keep
           correcting odometry in teleop, in autonomous and while disabled.
         </p>
 
         <CodeBlock
           language="java"
-          title="Robot.java — inside the constructor"
+          title="Robot.java: inside the constructor"
           code={`// Vision: set up every Limelight in one call. The names must match each camera's name in
 // NetworkTables. Each camera then corrects the drivetrain's odometry with AprilTag sightings
 // every loop. Does nothing in simulation (no camera there).
@@ -728,7 +728,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
             &quot;limelight-back&quot;)
           </code>
           . You also need <code>import frc.robot.subsystems.Limelight;</code> at
-          the top of the file — that and this line are the entire change to{" "}
+          the top of the file: that and this line are the entire change to{" "}
           <code>Robot.java</code>.
         </p>
 
@@ -739,15 +739,15 @@ Limelight.registerAll(drivetrain, "limelight");`}
             reads <code>drivetrain.getPose()</code> for the heading it feeds
             MegaTag2, and calls{" "}
             <code>drivetrain.addVisionMeasurement(...)</code> to hand back its
-            correction. The drivetrain never knows a camera exists — which is
-            why adding, removing or renaming cameras is a one-line change in{" "}
+            correction. The drivetrain never knows a camera exists, which is why
+            adding, removing or renaming cameras is a one-line change in{" "}
             <code>Robot</code>.
           </p>
         </Box>
 
         <p>
           <strong>{"You should see: "}</strong> Deploy, and the robot code stays
-          up — no crash on startup, and the Driver Station reports robot code as
+          up: no crash on startup, and the Driver Station reports robot code as
           normal. A camera that is not on the network does not throw; it just
           never sends a correction.
         </p>
@@ -767,7 +767,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
         <p>
           All of this happens on the real robot. Deploy, put the robot on the
           floor with a tag somewhere it can see, and open the drivetrain
-          telemetry you set up in the Logging lesson —{" "}
+          telemetry you set up in the Logging lesson:{" "}
           <code>Drivetrain/Pose</code> in NetworkTables.
         </p>
 
@@ -823,14 +823,15 @@ Limelight.registerAll(drivetrain, "limelight");`}
               </strong>{" "}
               Almost always the name. The string in{" "}
               <code>registerAll(drivetrain, &quot;limelight&quot;)</code> has to
-              match the camera&apos;s NetworkTables name character for character
-              — <code>limelight-front</code> is a different camera from{" "}
+              match the camera&apos;s NetworkTables name character for
+              character.
+              <code>limelight-front</code> is a different camera from{" "}
               <code>limelight</code>, and a camera that is not there publishes
               nothing, so <code>validPoseEstimate</code> returns false and{" "}
               <code>update()</code> returns every loop with no complaint. Check
               the NetworkTables tree for the table name the camera is actually
               publishing to. (If you are in the simulator, this is also the
-              expected behavior — there is no camera there.)
+              expected behavior: there is no camera there.)
             </li>
             <li>
               <strong>
@@ -842,8 +843,8 @@ Limelight.registerAll(drivetrain, "limelight");`}
               single measurement by the same amount. Measure again from the
               center of the robot, and check the angle as carefully as the
               distances. If the pose lands on the far side of the field, check
-              you are not mixing a red-origin pose into a blue-origin estimator
-              — the code asks for <code>_wpiBlue</code> for a reason.
+              you are not mixing a red-origin pose into a blue-origin estimator.
+              The code asks for <code>_wpiBlue</code> for a reason.
             </li>
             <li>
               <strong>
@@ -851,7 +852,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
               </strong>{" "}
               That is the MegaTag2 path, and MegaTag2 believes whatever heading
               you sent it. A gyro that is off by ten degrees produces a position
-              that is confidently wrong. Seed the heading properly — the
+              that is confidently wrong. Seed the heading properly: the
               distinction between resetting odometry to a known field pose and{" "}
               <code>seedFieldCentric()</code>, which only rotates the
               driver&apos;s idea of forward, is on the Swerve Calibration page,
@@ -883,7 +884,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
 
         <p>
           The template&apos;s version of this class is the same code in a{" "}
-          <code>subsystems/vision/</code> package — same constants, same two
+          <code>subsystems/vision/</code> package: same constants, same two
           conditions, same MegaTag1-first logic. If you graduate this project
           onto the team template, that is where the file lands.
         </p>
@@ -901,7 +902,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
               options: [
                 "MegaTag1, because it is always more accurate",
                 "MegaTag2, because with one tag the tag geometry cannot pin down heading reliably, so the code hands the camera the gyro heading instead",
-                "Neither — a single-tag estimate is rejected",
+                "Neither: a single-tag estimate is rejected",
                 "Both, and it averages them",
               ],
               correctAnswer: 1,
@@ -944,11 +945,11 @@ Limelight.registerAll(drivetrain, "limelight");`}
                 "Five: field boundary, ambiguity, Z-height, distance and tag count",
                 "Two: the estimate is not valid (no tag in frame), or avgTagDist is greater than MAX_TAG_DISTANCE_METERS = 4.0",
                 "One: the pose is outside the field perimeter",
-                "None — every estimate is passed on and the standard deviations sort it out",
+                "None: every estimate is passed on and the standard deviations sort it out",
               ],
               correctAnswer: 1,
               explanation:
-                "The whole filter is `if (!LimelightHelpers.validPoseEstimate(estimate) || estimate.avgTagDist > MAX_TAG_DISTANCE_METERS) return;`. Everything else is handled by weighting rather than rejection — a poor sighting gets a large error bar instead of being discarded.",
+                "The whole filter is `if (!LimelightHelpers.validPoseEstimate(estimate) || estimate.avgTagDist > MAX_TAG_DISTANCE_METERS) return;`. Everything else is handled by weighting rather than rejection: a poor sighting gets a large error bar instead of being discarded.",
             },
             {
               id: 5,
@@ -957,7 +958,7 @@ Limelight.registerAll(drivetrain, "limelight");`}
               options: [
                 "It halves, because tagCount doubles",
                 "It drops to a quarter, because the divisor is tagCount * tagCount",
-                "It stays the same — only distance affects it",
+                "It stays the same: only distance affects it",
                 "It doubles, because more tags means more disagreement",
               ],
               correctAnswer: 1,
@@ -984,13 +985,13 @@ Limelight.registerAll(drivetrain, "limelight");`}
                 "Why is Limelight a plain class registered with Scheduler.getDefault().addPeriodic(...) rather than a Mechanism?",
               options: [
                 "Mechanisms are only for swerve drivetrains",
-                "It drives no hardware, so there is no exclusive ownership for the scheduler to hand out — it only needs to run once per loop",
+                "It drives no hardware, so there is no exclusive ownership for the scheduler to hand out: it only needs to run once per loop",
                 "Cameras cannot be required by commands in Commands v3",
                 "It would work as a Mechanism, but addPeriodic is faster",
               ],
               correctAnswer: 1,
               explanation:
-                "A Mechanism exists so one command at a time can own a piece of hardware. A camera actuates nothing, so there is nothing to own. addPeriodic is the scheduler's escape hatch for per-loop work that is not a command — there is no periodic() method in Commands v3.",
+                "A Mechanism exists so one command at a time can own a piece of hardware. A camera actuates nothing, so there is nothing to own. addPeriodic is the scheduler's escape hatch for per-loop work that is not a command: there is no periodic() method in Commands v3.",
             },
           ]}
         />

@@ -31,42 +31,42 @@ interface TrailerGroup {
 
 const GROUPS: TrailerGroup[] = [
   {
-    heading: "Full Lessons — the deep dives",
+    heading: "Full lessons",
     trailers: [
       {
         file: "commands-lesson.mp4",
-        title: "Commands Deep Dive",
+        title: "Commands walkthrough",
         blurb:
           "Scheduler, three command shapes, requirement conflicts, cancellation, default commands, compositions, bindings (~5 min).",
       },
       {
         file: "state-based-lesson.mp4",
-        title: "State-Based Control — Full Lesson",
+        title: "State-based control: full lesson",
         blurb:
           "Why not ifs, the state graph, every transition kind, adding a state, interrupts (~4 min).",
       },
       {
         file: "pid-lesson.mp4",
-        title: "PID Control — Full Lesson",
+        title: "PID control: full lesson",
         blurb:
           "Sag, ringing, over-damped D, the I term and windup, bump recovery, the tuning procedure, tolerance (~4.5 min).",
       },
       {
         file: "feedforward-lesson.mp4",
-        title: "Feedforward — Full Lesson",
+        title: "Feedforward: full lesson",
         blurb:
           "The whole family: kG on the arm, kS and kV on the flywheel, rapid-fire recovery, how to characterize (~4.5 min).",
       },
       {
         file: "motion-magic-lesson.mp4",
-        title: "Motion Magic — Full Lesson",
+        title: "Motion Magic: full lesson",
         blurb:
           "Trapezoid anatomy, choosing cruise and acceleration, the infeasible-profile failure, velocity variant (~4 min).",
       },
     ],
   },
   {
-    heading: "Workshops 1, 2 & 5 — Hardware and Commands",
+    heading: "Workshops 1, 2 & 5: hardware and commands",
     trailers: [
       {
         file: "introduction-trailer.mp4",
@@ -81,12 +81,12 @@ const GROUPS: TrailerGroup[] = [
       {
         file: "hardware-trailer.mp4",
         title: "Hardware",
-        blurb: "Kraken X44, CANcoder, CANivore — three devices, one bus.",
+        blurb: "Kraken X44, CANcoder, and CANivore share one bus.",
       },
       {
         file: "mechanism-selection-trailer.mp4",
         title: "Mechanism Selection",
-        blurb: "Arm or flywheel — pick the mechanism the workshop follows.",
+        blurb: "Pick the arm or flywheel as the mechanism to follow.",
       },
       {
         file: "project-setup-trailer.mp4",
@@ -101,7 +101,7 @@ const GROUPS: TrailerGroup[] = [
       {
         file: "command-framework-trailer.mp4",
         title: "Command Framework",
-        blurb: "Triggers, mechanisms, commands — and the scheduler.",
+        blurb: "How triggers, mechanisms, and commands reach the scheduler.",
       },
       {
         file: "adding-commands-trailer.mp4",
@@ -126,7 +126,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Workshop 1 — Closed-Loop Control",
+    heading: "Workshop 1: closed-loop control",
     trailers: [
       {
         file: "pid-trailer.mp4",
@@ -136,7 +136,7 @@ const GROUPS: TrailerGroup[] = [
       {
         file: "feedforward-trailer.mp4",
         title: "Feedforward",
-        blurb: "Stop reacting — cancel gravity before the error exists.",
+        blurb: "Cancel gravity before it creates an error.",
       },
       {
         file: "motion-magic-trailer.mp4",
@@ -146,7 +146,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Workshops 3 & 4 — Swerve, Sensing, Autonomy",
+    heading: "Workshops 3 & 4: swerve, sensing, autonomy",
     trailers: [
       {
         file: "swerve-drive-trailer.mp4",

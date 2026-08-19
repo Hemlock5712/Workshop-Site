@@ -195,7 +195,7 @@ export default function MotionMagic() {
         </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html#profiled-tuning"
-          title="CTRE — Profiled tuning"
+          title="CTRE: Profiled tuning"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>

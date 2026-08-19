@@ -50,7 +50,7 @@ export default function LoggingImplementation() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/Robot.java"
-          title="Robot.java — logging starts once"
+          title="Robot.java: logging starts once"
           code={`import org.wpilib.driverstation.DriverStation;
 import org.wpilib.system.DataLogManager;
 
@@ -84,7 +84,7 @@ public Robot() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Arm.java"
-          title="Arm.java — three numbers worth keeping"
+          title="Arm.java: three numbers worth keeping"
           code={`import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTableInstance;
 
@@ -175,7 +175,7 @@ private void record(double position, double target, double volts) {
         </ul>
         <DocumentationButton
           href="https://docs.wpilib.org/en/latest/docs/software/telemetry/datalog.html"
-          title="WPILib — On-robot telemetry recording"
+          title="WPILib: On-robot telemetry recording"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>
