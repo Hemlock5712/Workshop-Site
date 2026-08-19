@@ -14,7 +14,7 @@ export default function JavaBasics() {
     <PageTemplate
       title="About twelve pieces of Java hold up this whole site"
       emphasis="twelve pieces of Java"
-      lede="The specimen is the arm from Workshop-Code branch 1-Subsystem — the version you build at Mechanisms, and deliberately the smallest arm in the course. Fifty-odd lines of a language you may never have seen. This page takes that file apart until nothing in it is a mystery."
+      lede="You have not created a robot project yet, so every example is printed here. The specimen is a small arm class from later in this workshop: real robot code used as a reading exercise, not code you are expected to recognize already."
       needs={[
         <>
           Nothing. No open project, no robot, no simulator, no build. Every file
@@ -22,11 +22,10 @@ export default function JavaBasics() {
           the lessons after this one.
         </>,
         <>
-          The arm in the template you cloned at <strong>Project Setup</strong>{" "}
-          is a different, longer file —{" "}
-          <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>, the
-          finished version. Leave it alone for now. It will make sense by{" "}
-          <strong>Finish Lines</strong>.
+          No command framework knowledge. Words such as <code>Mechanism</code>,{" "}
+          <code>Command</code>, and <code>OpMode</code> appear as type names in
+          a few examples, but their robot behavior is taught after Project
+          Setup.
         </>,
       ]}
       time="Roughly 40 minutes"
@@ -34,7 +33,7 @@ export default function JavaBasics() {
       <Split>
         <KeyConceptSection
           description={[
-            "Every example below is copied out of real robot code — the arm and flywheel you build at Mechanisms and Commands. There are no animals, shapes, or bank accounts on this page.",
+            "Every example below is copied out of robot code you will build later. This page explains only the Java shape; later lessons explain what the robot framework makes those types do.",
           ]}
           concept="You will read far more Java on this site than you write. Reading is the skill this page builds."
         />
@@ -596,9 +595,9 @@ public Command runSlow() {
           <code>.named(...)</code> is the one that only ever lives on a builder,
           and that is the whole reason{" "}
           <code>arm.runFast().named(&quot;lift&quot;)</code> will not compile:{" "}
-          <code>runFast()</code> already called <code>.named(...)</code> on your
-          behalf, so what comes back is a <code>Command</code>, with nothing
-          left to name.
+          <code>runFast()</code> already called <code>.named(...)</code> inside
+          the example, so what comes back is a <code>Command</code>, with
+          nothing left to name.
         </p>
 
         <Box

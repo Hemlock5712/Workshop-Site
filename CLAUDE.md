@@ -50,7 +50,8 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Stack**: `org.wpilib.*` packages (not `edu.wpi.first.*`), Java 25, deploys to **SystemCore** (not roboRIO), Commands v3 (`org.wpilib.command3`), Phoenix 6 alpha, GradleRIO 2027 alpha.
 - **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
 - **Key v3 APIs**: subsystems `extend Mechanism`; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`.
-- **Not used anywhere on the site**: PathPlanner (autonomous uses CTRE `DriveToPose`/`LinearPath` instead), AdvantageKit (logging uses `DataLogManager` only), and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
+- **PathPlanner boundary**: Workshop 3 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
+- **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
 - **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches and PRs. All numbered teaching branches are v3 with linear, lesson-sized histories (rewritten July 2026); the swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
 
 ## Development Commands
@@ -104,7 +105,7 @@ reintroduce them.
 - **`src/components/shell/WorkshopShell.tsx`**: The frame. Owns the single scroll container.
 - **`src/components/shell/AppRail.tsx`**: 70px rail — logo/home, MENU, scroll-progress spine, theme toggle.
 - **`src/components/shell/CurriculumDrawer.tsx`**: Full curriculum overlay behind MENU. Focus-trapped.
-- **`src/components/shell/Topbar.tsx`**: Breadcrumb, search affordance, course-wide "N / 29 finished".
+- **`src/components/shell/Topbar.tsx`**: Breadcrumb, search affordance, and the course-wide derived completion count.
 - **`src/components/shell/SearchPalette.tsx`**: ⌘K palette (cmdk + lazy MiniSearch).
 - **`src/contexts/ShellContext.tsx`**: `navOpen` / `searchOpen` / `scrollPct` / `mainRef`. Owns ⌘K and Escape.
 - **`src/components/PageTemplate.tsx`**: Lesson frame — outline rail + article. Props: `title`, `emphasis`, `lede`, `needs`, `branch`, `time`.
@@ -161,17 +162,15 @@ paragraphs may not.
 ### Route Organization
 
 Lesson order, drawer grouping, the syllabus, and prev/next all come from
-`src/data/lessons.ts` — the single source of truth. The information-architecture
-plan that set this order was applied here and the plan file retired, so
-`lessons.ts` is now the only authority; there is no `context/ia-audit.md` to
-consult. Two branch names still mislead and are worth knowing before you move
-anything: `5-GettersAndSetters` is where command composition actually debuts,
-and `7-InlineCommands` is an advanced coroutine, not a basics lesson. The
-swerve track is not linear — `4-DynamicFlywheel` is a dead-end spur, and
-`5-DriveToPoint` forks off `2-Logging`.
+`src/data/lessons.ts` — the single source of truth. The course is organized as
+five workshops with a strict prerequisite boundary: Workshop 1 is entirely in
+Tuner X, Java starts at Workshop 2, autonomous does not depend on the
+pose-driving material taught in Workshop 4, and command composition is expanded
+in Workshop 5. Historical side routes can remain reachable without appearing in
+`LESSONS`.
 
 **`/` is not in `LESSONS`.** Home is the landing page, not lesson 00 — the
-course is 29 lessons and the counter says so.
+lesson count is derived from `LESSONS`; do not hard-code it in UI copy.
 
 ```
 00 Getting Started:
@@ -179,37 +178,42 @@ course is 29 lessons and the counter says so.
 ├── /prerequisites (Required software & hardware)
 └── /mechanism-cad (optional — CAD files and 3D models)
 
-01 Control Fundamentals:              — mechanism track, chaining dialect
-├── /hardware (CTRE hardware setup; owns the CANivore-USB toggle)
-├── /mechanism-setup (Bench check in Tuner X, before any code)
-├── /project-setup (Clone 2027-Template, one clean build)
-├── /java-basics (The Java You Need — the twelve pieces this site uses)
-├── /command-framework (Trigger / Mechanism / Command / Scheduler)
-├── /building-subsystems (Mechanisms — branch 1-Subsystem)
-├── /adding-commands (Commands — branch 2-Commands)
-├── /triggers (Triggers — branch 2-Commands)
-├── /running-program (First run — branch 2-Commands)
-├── /chaining-commands (Composition — sequence / race / withTimeout)
-├── /pid-control (PID + feedforward — branch 3-PID)
-├── /motion-magic (Profiled movement — branch 4-MotionMagic)
-└── /finish-lines (Getters, isAtTarget, .until — branch 5-GettersAndSetters)
+01 Hardware & CTRE:
+├── /hardware
+├── /mechanism-setup
+├── /pid-control (Tuner X only)
+└── /motion-magic (Tuner X only)
 
-02 Drive & Perception:                — swerve track; NOT linear, see audit §2
-├── /swerve-prerequisites (Vocabulary; no code)
-├── /swerve-drive-project (branch 1-Swerve)
-├── /logging-implementation (branch 2-Logging)
-├── /swerve-calibration (Odometry you can trust)
-├── /vision-implementation (branch 3-Limelight)
-├── /vision-shooting (optional side branch — 4-DynamicFlywheel, a dead end)
-├── /drive-to-point (branch 5-DriveToPoint — forks off 2-Logging)
-├── /advanced-drive-to-point (branch 6-ProfiledToPoint)
-└── /pathplanner (Autonomous routines; slug is historical, no PathPlanner)
+02 Robot Programming:
+├── /java-basics
+├── /project-setup
+├── /command-framework
+├── /adding-commands (Classic Commands)
+├── /opmodes
+├── /robot-class (Robot.java)
+├── /building-subsystems
+├── /running-program
+└── /logging-implementation
 
-03 Advanced Topics:                   — the other two command dialects
-├── /coroutines (branch 6-Coroutines)
-├── /state-based (State Machines — branch 7-StateBased)
-├── /drive-to-tag-inline (branch 7-InlineCommands — hardest page on the site)
-└── /ai-coding-assistant (optional — AI assistants; last on purpose, see lessons.ts)
+03 Swerve & Autonomous:
+├── /swerve-prerequisites
+├── /swerve-drive-project
+├── /swerve-calibration
+├── /pathplanner
+└── /autonomous
+
+04 Vision & Navigation:
+├── /vision-implementation
+├── /drive-to-point
+├── /advanced-drive-to-point
+└── /dynamic-path-planning
+
+05 Advanced Commands:
+├── /chaining-commands
+├── /finish-lines
+├── /coroutines
+├── /state-based
+└── /drive-to-tag-inline (optional example)
 
 Utility (outside lesson navigation):
 ├── /search, /privacy, /video

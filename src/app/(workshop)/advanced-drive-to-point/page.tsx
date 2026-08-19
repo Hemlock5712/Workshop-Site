@@ -807,7 +807,7 @@ driver
 
         <CodeBlock
           language="java"
-          title="What the next lesson builds on"
+          title="Two profiled legs in sequence"
           code={`Command.sequence(
         new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))),
         new DriveToPoint(drivetrain, Pose2d.kZero))
@@ -816,10 +816,10 @@ driver
 
         <p className="prose-body measure">
           On <code>5-DriveToPoint</code> that sequence would stick on the first
-          leg forever — THE ONE RULE, from Chaining Commands. The next lesson,{" "}
-          <strong>Autonomous: Driving to a Pose</strong>, is where you turn that
-          into a real <code>@Autonomous</code> OpMode and deal with seeding the
-          robot&apos;s starting pose.
+          leg forever because the old command never finished. You already know
+          how an autonomous OpMode schedules a routine. The next lesson uses
+          this profiled command as the precise final approach after a dynamic
+          planner handles the trip across open field.
         </p>
 
         <CollapsibleSection title="One name you may run into: WheelForceCalculator">
@@ -930,7 +930,7 @@ driver
             ],
             correctAnswer: 1,
             explanation:
-              "THE ONE RULE from Chaining Commands: nothing may wait on a command that never ends. The old version ran until interrupted, so it would hang a sequence on its first leg. Giving it a real finish line is what makes autonomous routines possible in the next lesson.",
+              "Nothing may wait on a command that never ends. The old version ran until interrupted, so it would hang a sequence on its first leg. Giving it a real finish line makes the command usable in routines and as the final approach after dynamic planning.",
           },
         ]}
       />

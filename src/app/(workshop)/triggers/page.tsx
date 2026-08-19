@@ -489,7 +489,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           <a href="/coroutines" className="underline">
             Coroutines
           </a>{" "}
-          in Advanced Topics. Nothing in Workshop&nbsp;#1 or #2 needs it.
+          in Workshop&nbsp;#5. Nothing earlier in the required path needs it.
         </p>
       </LessonSection>
 

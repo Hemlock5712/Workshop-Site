@@ -1,13 +1,13 @@
 "use client";
 
 /**
- * What you'll program — the four mechanisms, split by which workshop builds
- * them.
+ * What you'll program — the four mechanisms, grouped by the workshop phase
+ * that introduces them.
  *
  * Grouping by workshop rather than running all four in one row is the point:
  * it answers "what do I get out of each evening?" before the syllabus asks
- * anyone to read 29 lesson titles. Workshop #1 is two single-motor mechanisms
- * on a bench; Workshop #2 is the whole robot.
+ * anyone to read the full syllabus. Workshop #1 is two bench mechanisms;
+ * Workshops #3 and #4 add the drivetrain and camera.
  *
  * Each photo starts desaturated under an accent wash and resolves to full
  * colour as it scrolls into view, staggered left to right. The effect is the
@@ -52,8 +52,8 @@ interface MechanismGroup {
 const GROUPS: ReadonlyArray<MechanismGroup> = [
   {
     num: "01",
-    title: "Control Fundamentals",
-    blurb: "Single-motor mechanisms on a bench. One thing moving, done well.",
+    title: "Hardware & CTRE",
+    blurb: "Bench mechanisms tuned in Tuner X before robot code begins.",
     mechanisms: [
       {
         src: "/images/mechanisms/arm.png",
@@ -72,9 +72,9 @@ const GROUPS: ReadonlyArray<MechanismGroup> = [
     ],
   },
   {
-    num: "02",
-    title: "Drive & Perception",
-    blurb: "The whole robot. It drives, it logs, and it works out where it is.",
+    num: "03–04",
+    title: "Swerve & Vision",
+    blurb: "The whole robot: calibrated motion, field pose, and perception.",
     mechanisms: [
       {
         src: "/images/mechanisms/swerve.png",
@@ -154,7 +154,7 @@ export default function MechanismStrip() {
             letterSpacing: "-0.015em",
           }}
         >
-          Four mechanisms. Two workshops.
+          Four mechanisms. Five workshops.
         </h2>
       </div>
 

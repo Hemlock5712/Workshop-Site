@@ -1,5 +1,8 @@
 import { Composition, staticFile } from "remotion";
-import { TrailerVideo } from "./trailer/components/TrailerVideo";
+import {
+  TrailerVideo,
+  type TrailerVideoProps,
+} from "./trailer/components/TrailerVideo";
 import { TRAILERS } from "./trailer/registry";
 import { brand } from "./lib/brand";
 import type { TrailerTimeline } from "./trailer/lib/types";
@@ -17,7 +20,11 @@ export const RemotionRoot = () => {
           width={brand.width}
           height={brand.height}
           defaultProps={{ script, timeline: null as TrailerTimeline | null }}
-          calculateMetadata={async ({ props }) => {
+          calculateMetadata={async ({
+            props,
+          }: {
+            props: TrailerVideoProps;
+          }) => {
             // Duration comes straight from the generated timeline — no
             // checked-in manifest files to go stale.
             try {

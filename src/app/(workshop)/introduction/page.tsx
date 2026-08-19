@@ -20,28 +20,42 @@ const ROADMAP: ReadonlyArray<{
 }> = [
   {
     id: "workshop1",
-    heading: "Workshop #1 — an arm and a flywheel",
+    heading: "Workshop #1 — Hardware & CTRE",
     blurb:
-      "Wire it, check it turns, then write the code that drives it. By the end you hold a button and the arm goes to an angle you chose and stops there.",
+      "Wire and identify the hardware, then tune PID and Motion Magic entirely in Phoenix Tuner X. No Java yet.",
   },
   {
     id: "workshop2",
-    heading: "Workshop #2 — a swerve drive that knows where it is",
+    heading: "Workshop #2 — Robot Programming",
     blurb:
-      "A drivetrain, a log file, a camera, and a robot that drives itself to a point on the field without a driver touching the sticks.",
+      "Learn the Java you need, create the project, and build its Commands v3 structure from Robot.java through mechanisms and logging.",
   },
   {
-    id: "advanced",
-    heading: "Advanced Topics — the other way to write commands",
+    id: "workshop3",
+    heading: "Workshop #3 — Swerve & Autonomous",
     blurb:
-      "Everything above is written in one style. These three pages teach the second one and the two places it earns its keep.",
+      "Generate and calibrate a swerve drive, design a path, and run it from an autonomous OpMode.",
+  },
+  {
+    id: "workshop4",
+    heading: "Workshop #4 — Vision & Navigation",
+    blurb:
+      "Correct odometry with vision, drive to a pose, profile the motion, and reason about dynamic paths.",
+  },
+  {
+    id: "workshop5",
+    heading: "Workshop #5 — Advanced Commands",
+    blurb:
+      "Build longer behaviors with command composition, finish conditions, coroutines, and state machines.",
   },
 ];
 
 export default function Introduction() {
   const workshop1 = getLessonsBySection("workshop1");
   const workshop2 = getLessonsBySection("workshop2");
-  const advanced = getLessonsBySection("advanced");
+  const workshop3 = getLessonsBySection("workshop3");
+  const workshop4 = getLessonsBySection("workshop4");
+  const workshop5 = getLessonsBySection("workshop5");
 
   return (
     <PageTemplate
@@ -52,9 +66,9 @@ export default function Introduction() {
         <>
           <strong>Hardware, for real.</strong> Workshop #1 runs on a Kraken X44
           motor, a ThroughBore encoder (a CANcoder inside), and a CANivore.
-          Workshop #2 adds a swerve drivetrain and a Limelight camera. There is
-          no version of this course you can do without them — see the note
-          below.
+          Workshop #3 adds a swerve drivetrain, and Workshop #4 adds a Limelight
+          camera. There is no version of this course you can do without them —
+          see the note below.
         </>,
         <>
           <strong>Software.</strong>{" "}
@@ -66,8 +80,8 @@ export default function Introduction() {
         </>,
         <>
           <strong>No Java yet.</strong> You do not need to know a line of it to
-          start. Workshop #1 stops and teaches you the twelve pieces this site
-          uses, at{" "}
+          start. Workshop #1 stays entirely inside Tuner X. Workshop #2 begins
+          with the twelve pieces of Java this site uses, at{" "}
           <Link href="/java-basics" className="underline font-medium">
             The Java You Need
           </Link>
@@ -90,14 +104,13 @@ export default function Introduction() {
           description={[
             "Nothing here assumes you have written code before. It does assume the hardware is in front of you. Every lesson ends with something you can hear and watch move, which is the whole reason the course is shaped this way.",
           ]}
-          concept="Read the pages in order. Each one leaves you with code that runs, and the next one changes that same code."
+          concept="Read the pages in order. Each workshop establishes the hardware or software assumptions used by the next one."
         />
         <MarginNote label="HOW LONG">
-          Workshop #1 is {workshop1.length} lessons, Workshop #2 is{" "}
-          {workshop2.length}, and Advanced Topics adds {advanced.length}. Every
-          lesson page opens with its own estimate — most run 20 to 45 minutes, a
-          few run about an hour. That makes each workshop several hours of work.
-          Plan on more than one sitting.
+          The five workshops contain {workshop1.length}, {workshop2.length},{" "}
+          {workshop3.length}, {workshop4.length}, and {workshop5.length}{" "}
+          lessons. Most lessons run 20 to 45 minutes; a few take about an hour.
+          Plan on more than one sitting for the longer workshops.
         </MarginNote>
       </Split>
 
@@ -256,16 +269,15 @@ export default function Introduction() {
 
         <Box
           variant="alert-info"
-          tag="ONE ODD URL"
-          title="Autonomous: Driving to a Pose lives at /pathplanner"
+          tag="PATHPLANNER · 2027 ALPHA"
+          title="Use the editor without importing the old command stack"
         >
           <p>
-            That address is left over from an older version of the course. The
-            page does not teach PathPlanner, and this stack does not use
-            PathPlanner anywhere — autonomous routines drive to a pose with
-            CTRE&apos;s own path code, which you build yourself in the two
-            lessons before it. The URL stays so links printed on old slides keep
-            working.
+            Workshop #3 teaches PathPlanner&apos;s route editor and path
+            vocabulary. Its published Java integration examples still target
+            Commands v2, so the 2027 project does not import those examples. The
+            next lesson builds the autonomous lifecycle with Commands v3 and
+            OpModes.
           </p>
         </Box>
       </LessonSection>

@@ -49,7 +49,7 @@ export interface SearchDoc {
   excerpt: string;
   /** Two-digit course position, or "" for non-lesson routes. */
   lessonNum: string;
-  /** Group title from `lessons.ts` SECTIONS, e.g. "Control Fundamentals". */
+  /** Group title from `lessons.ts` SECTIONS, e.g. "Robot Programming". */
   section: string;
   /** Group number, e.g. "01". */
   sectionNum: string;

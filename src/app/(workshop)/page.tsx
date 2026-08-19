@@ -9,7 +9,7 @@ import { getLessonGroups, getSidebarLabel, LESSON_COUNT } from "@/data/lessons";
  *
  * Three claims, in order: what this is, what order to read it in, and what you
  * end up having built. The syllabus is the centre of the page rather than a
- * link at the bottom — the hardest thing about a 29-lesson course is believing
+ * link at the bottom — the hardest thing about a long course is believing
  * it has a shape, and the fastest way to show that is to show the shape.
  *
  * No hero image, no feature cards. The only photography is the four real
@@ -117,9 +117,9 @@ export default function Home() {
             color: "var(--tx2)",
           }}
         >
-          Twenty-nine lessons, written by hand, from wiring a motor to fusing
-          AprilTag poses into odometry. Every idea lands on real code you can
-          check out, deploy, and break.
+          {LESSON_COUNT} lessons, written by hand, from identifying a motor in
+          Tuner X to fusing AprilTag poses into odometry. Every idea lands on
+          real hardware or code you can run, inspect, and break.
         </p>
 
         <div className="mt-[34px] flex flex-wrap items-center gap-[22px] pb-16">
@@ -154,7 +154,7 @@ export default function Home() {
       </section>
 
       {/* What you'll program comes before the syllabus on purpose: four
-          photographs answer "what do I get out of this?" faster than 29
+          photographs answer "what do I get out of this?" faster than a long
           lesson titles, and they give the syllabus something to be a plan
           *for*. */}
       <MechanismStrip />
@@ -253,7 +253,7 @@ export default function Home() {
             color: "var(--tx3)",
           }}
         >
-          {LESSON_COUNT} lessons · four groups · one code repository
+          {LESSON_COUNT} lessons · five workshops · one code repository
         </p>
       </section>
 

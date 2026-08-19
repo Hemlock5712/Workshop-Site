@@ -66,7 +66,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Workshop 1 — Foundations",
+    heading: "Workshops 1, 2 & 5 — Hardware and Commands",
     trailers: [
       {
         file: "introduction-trailer.mp4",
@@ -126,7 +126,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Closed-Loop Control — watch in order",
+    heading: "Workshop 1 — Closed-Loop Control",
     trailers: [
       {
         file: "pid-trailer.mp4",
@@ -146,7 +146,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Workshop 2 — Swerve, Sensing, Autonomy",
+    heading: "Workshops 3 & 4 — Swerve, Sensing, Autonomy",
     trailers: [
       {
         file: "swerve-drive-trailer.mp4",

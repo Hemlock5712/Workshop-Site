@@ -154,8 +154,8 @@ export default function Prerequisites() {
           <p className="prose-body m-0">
             A dashboard shows live values while the robot runs — whatever your
             code publishes to NetworkTables, WPILib&apos;s shared table of live
-            data. Workshop #1 does not need one; the bench work happens in Tuner
-            X and the simulator. Install it when you reach{" "}
+            data. Workshop #1 does not need one; the bench work happens entirely
+            in Tuner X. Install it when you reach{" "}
             <Link href="/logging-implementation" className={linkStyle}>
               Logging
             </Link>{" "}
@@ -236,17 +236,17 @@ export default function Prerequisites() {
             it. Robot code on this site is Java from the first lesson that has
             code in it, and it does not stay at the beginner end for long —
             lambdas, method references, and class declarations all show up in
-            Workshop #1.
+            Workshop #2.
           </p>
           <p>
             So the workshop teaches the Java it uses, in one lesson.{" "}
             <Link href="/java-basics" className={linkStyle}>
               The Java You Need
             </Link>{" "}
-            comes right after you clone the project, and it takes one real robot
-            file — the arm you are about to build — apart line by line. About
-            twelve pieces of Java hold up this whole site, and that page covers
-            all twelve and then stops.
+            is the first lesson in Workshop #2, before Project Setup, and it
+            takes one future robot file apart line by line. About twelve pieces
+            of Java hold up this whole site, and that page covers all twelve and
+            then stops.
           </p>
           <p>
             Do not go take a Java course first. Read{" "}
@@ -264,15 +264,11 @@ export default function Prerequisites() {
         title="Workshop #1 is a bench workshop"
       >
         <Prose>
-          You check which way a motor turns on{" "}
+          You identify each motor and check which way it turns on{" "}
           <Link href="/mechanism-setup" className={linkStyle}>
-            Mechanism Setup
+            Motor Setup &amp; CAN IDs
           </Link>
-          , you watch it move under your own code on{" "}
-          <Link href="/running-program" className={linkStyle}>
-            Running Your Code
-          </Link>
-          , and you tune it against how it actually behaves on{" "}
+          , then tune PID and Motion Magic against how it actually behaves on{" "}
           <Link href="/pid-control" className={linkStyle}>
             PID Control
           </Link>
@@ -282,23 +278,18 @@ export default function Prerequisites() {
         <Box
           variant="alert-warning"
           tag="READ THIS FIRST"
-          title="Hardware simulation is not a physics simulation"
+          title="Tuner X is the only controller in Workshop #1"
         >
           <p>
-            Workshop #1 runs your code through something WPILib calls Hardware
-            Simulation, and the name misleads people. What is simulated is the
-            robot controller: your code runs on your laptop instead of on a
-            SystemCore. The motor commands are real. They go out over the
-            CANivore to an actual Kraken, which actually spins.
+            Workshop #1 does not create, build, or run a robot project. Phoenix
+            Tuner X owns the CANivore, sends each control request, and plots the
+            response from the real motor and sensor.
           </p>
           <p className="mt-3">
             There is no software-only path through Workshop #1. Without a motor
-            on the bench, nothing moves, and there is nothing to tune. Better
-            you know that here than at{" "}
-            <Link href="/running-program" className="underline">
-              Running Your Code
-            </Link>
-            , ten lessons later.
+            on the bench, nothing moves and there is nothing to tune. Java and
+            hardware simulation begin only after the control behavior has been
+            verified in Tuner X.
           </p>
         </Box>
       </LessonSection>
@@ -321,8 +312,8 @@ export default function Prerequisites() {
             the hardware below.
           </li>
           <li>
-            <strong>A Kraken X44.</strong> The motor your code commands, with
-            its <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm>{" "}
+            <strong>A Kraken X44.</strong> The motor Tuner X controls, with its{" "}
+            <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm>{" "}
             controller built into the case, so there is no separate controller
             to wire.
           </li>
@@ -335,9 +326,9 @@ export default function Prerequisites() {
           <li>
             <strong>A CANivore.</strong> Plugs into a USB port on your laptop
             and runs the CAN bus that the motor and encoder sit on. This is the
-            part that stands in for a robot controller all through Workshop #1.
-            Name yours <code>canivore</code> — the mechanism code on every
-            Workshop #1 branch looks for that exact name.
+            connection Tuner X uses to reach the bench hardware in Workshop #1.
+            Name yours <code>canivore</code> so the same hardware handoff can be
+            used when robot programming begins in Workshop #2.
           </li>
           <li>
             <strong>A charged battery and its cable.</strong> A fresh one gives
@@ -347,18 +338,14 @@ export default function Prerequisites() {
             </Link>{" "}
             run at 6 V, but the motor still needs a real battery behind it.
           </li>
-          <li>
-            <strong>An Xbox-style controller</strong>, plugged into the same
-            laptop. Every button binding in Workshop #1 is written against the
-            first controller on the driver station.
-          </li>
         </ul>
 
         <Box variant="alert-tip" title="What you do not need">
           <p>
             No SystemCore, no radio, no robot. Workshop #1 runs from a laptop, a
-            CANivore, and one mechanism on a table. Workshop #2 moves to a
-            swerve drivetrain, which is a different pile of hardware.
+            CANivore, and one mechanism on a table. Workshop #2 adds an
+            Xbox-style controller for robot programming; Workshop #3 moves to a
+            swerve drivetrain.
           </p>
         </Box>
       </LessonSection>

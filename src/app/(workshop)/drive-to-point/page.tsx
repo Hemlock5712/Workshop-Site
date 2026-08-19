@@ -29,9 +29,10 @@ export default function DriveToPoint() {
           is comparing against.
         </>,
         <>
-          <strong>Chaining Commands</strong>, for <code>whileTrue</code> and for
-          the rule that nothing may wait on a command that never ends. You are
-          about to write a command that never ends.
+          <strong>Classic Commands</strong> and <strong>OpModes</strong> for the
+          command lifecycle and <code>whileTrue</code>. The Autonomous lesson
+          introduced the rule that a sequence cannot pass a command that never
+          ends.
         </>,
       ]}
       branch="5-DriveToPoint"
@@ -639,7 +640,7 @@ public class DriveToPoint extends ClassicCommand {
 
         <Box variant="concept" title="Why this line is not optional">
           <p>
-            On Chaining Commands you saw that canceling a command does{" "}
+            In the Autonomous lesson you saw that canceling a command does{" "}
             <em>not</em> stop a motor. Canceling ends the command; the hardware
             keeps doing whatever it was last told to do.
           </p>
@@ -705,7 +706,7 @@ import org.wpilib.math.geometry.Rotation2d;
             </p>
           </ProseBlock>
           <MarginNote label="A HOLD THE BRANCH DOES NOT LABEL">
-            By the naming convention from Chaining Commands a command that never
+            By the naming convention from Classic Commands, a command that never
             finishes should carry a <code>(hold)</code> suffix, so this one
             would be <code>DriveToPoint (hold)</code>. The branch names it{" "}
             <code>&quot;DriveToPoint&quot;</code> and leaves it there. Worth
@@ -1005,7 +1006,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
           <li>
             Start the simulator and enable Teleop.{" "}
             <strong>{"You should see: "}</strong> the robot sitting still,
-            joysticks working as they have all through Workshop #2.
+            joysticks working as they have since Swerve Setup.
           </li>
           <li>
             Drive a few meters away from where it started with the left stick,
@@ -1217,7 +1218,7 @@ double vy = clamp(yController.calculate(currentPose.getY(), targetPose.getY()), 
             ],
             correctAnswer: 0,
             explanation:
-              "A command that never finishes hangs any sequence it is placed in — THE ONE RULE. That is what keeps this version out of autonomous routines, and it is one of the two things the next lesson fixes.",
+              "A command that never finishes hangs any sequence it is placed in. That is what keeps this version out of autonomous routines, and it is one of the two things the next lesson fixes.",
           },
           {
             id: 6,

@@ -510,15 +510,11 @@ export default function SwerveDriveProject() {
         title="Your first real default command"
       >
         <p>
-          Back on{" "}
-          <Link href="/chaining-commands" className={linkStyle}>
-            Chaining Commands
-          </Link>{" "}
-          there was a loose end: when a group finishes and nothing else claims
-          the mechanism, the motor keeps doing whatever it was last told to do.
-          The arm and the flywheel never had a default command, so nothing took
-          over. The drivetrain is where that changes, and it is the only place
-          in the whole workshop code that calls <code>setDefaultCommand</code>.
+          The command framework introduced a loose end: when a command ends and
+          nothing else claims a mechanism, its built-in <code>idle()</code>
+          default sends no new request. The drivetrain replaces that default
+          with the joystick drive, and it is the only place in the workshop code
+          that calls <code>setDefaultCommand</code>.
         </p>
 
         <p>
@@ -925,17 +921,14 @@ public Command applyRequest(Supplier<SwerveRequest> request) {
       <LessonSection id="what-s-next" title="What's next">
         <p>
           You have a robot that drives, built on constants you have not measured
-          yet. Before you measure them, turn on logging — several of the
-          calibration steps work by driving the robot, stopping, and reading a
-          number out of the log afterward. That is not something you can do by
-          watching.
+          yet. Basic Logging was enabled in Workshop #2; confirm a fresh log is
+          being written before calibration because several steps work by
+          driving, stopping, and reading a measured value afterward.
         </p>
         <p>
-          <strong>Logging</strong> is two lines in <code>Robot</code>&apos;s
-          constructor and a look at what the drivetrain is already publishing.
-          Then <strong>Swerve Calibration</strong> replaces the example numbers
-          in <code>TunerConstants.java</code> with measurements off your own
-          robot.
+          <strong>Swerve Calibration</strong> is next. It replaces the example
+          numbers in <code>TunerConstants.java</code> with measurements from
+          your own robot and extends the basic log with drivetrain telemetry.
         </p>
       </LessonSection>
     </PageTemplate>

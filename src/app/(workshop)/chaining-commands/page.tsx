@@ -463,9 +463,9 @@ Command.race(
           <li>
             <code>.until(...)</code> — end a hold when something is actually{" "}
             <em>true</em> rather than after a fixed time. It needs the mechanism
-            to report its own position, which it cannot do yet. That is{" "}
-            <strong>Finish Lines</strong>, and you will upgrade this very
-            routine there.
+            to expose a named sensor condition, which the current mechanism API
+            does not do yet. <strong>Command Finish Conditions</strong> is next,
+            and you will upgrade this routine there.
           </li>
           <li>
             <code>Command.parallel(...)</code> — run several commands at once

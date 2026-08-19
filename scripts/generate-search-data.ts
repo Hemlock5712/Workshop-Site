@@ -158,8 +158,13 @@ const EXTRA_ROUTES: Record<string, ExtraRoute> = {
   },
 };
 
-/** `/search` returning itself as a result helps nobody. */
-const EXCLUDED_ROUTES = new Set(["/search"]);
+/** Routes that are intentionally outside the required five-workshop path. */
+const EXCLUDED_ROUTES = new Set([
+  "/search",
+  "/ai-coding-assistant",
+  "/triggers",
+  "/vision-shooting",
+]);
 
 /* ── the extractor ────────────────────────────────────────────────────── */
 

@@ -3,7 +3,7 @@
 /**
  * Sticky bar across the top of the scroll container.
  *
- * Left: where you are — `Workshop / 01 Control Fundamentals / PID Control`,
+ * Left: where you are — `Workshop / 01 Hardware & CTRE / PID Tuning`,
  * with a completion pill once the lesson is finished. On non-lesson routes it
  * degrades to the workshop wordmark.
  *

@@ -57,14 +57,13 @@ export default function SwerveCalibration() {
       {/* ── WHY HERE ─────────────────────────────────────────────────── */}
       <LessonSection
         id="why-this-page-sits-between-logging"
-        title="Why this page sits between Logging and Vision"
+        title="Why calibration comes before paths and vision"
       >
         <p>
-          Everything from here on reads <code>drivetrain.getPose()</code>. The
-          next page feeds camera measurements into that pose. Drive to Point
-          steers to field coordinates taken from it. Autonomous strings those
-          together. If the pose is wrong, all of it is wrong by the same amount,
-          and you will spend an evening blaming the camera for a wheel radius.
+          Everything from here on reads <code>drivetrain.getPose()</code>. Path
+          planning uses it as a start, autonomous logs it, vision corrects it,
+          and Drive to Point steers from it. If the pose is wrong, all of those
+          behaviors inherit the same error.
         </p>
 
         <p>
@@ -84,19 +83,22 @@ export default function SwerveCalibration() {
               — <strong>this page</strong>.
             </li>
             <li>
+              Route geometry and a first routine — <strong>PathPlanner</strong>{" "}
+              and <strong>Autonomous</strong>, later in this workshop.
+            </li>
+            <li>
               Camera mounting offsets and AprilTag trust —{" "}
-              <strong>Vision</strong>, next page.
+              <strong>Vision</strong> in Workshop #4.
             </li>
             <li>
               Driving to a point, then profiling that drive — the Drive to Point
-              pages later in Workshop #2.
+              pages later in Workshop #4.
             </li>
           </ol>
           <p className="mt-3">
-            Autonomous routines and mechanism presets come last, because they
-            depend on the field layout and the game piece, and you do not know
-            either until kickoff. Everything on this page you can do today with
-            whatever robot you have.
+            Game-specific autonomous routes still wait for kickoff, but the
+            OpMode and command structure can be tested now with a simple open
+            field route.
           </p>
         </Box>
       </LessonSection>
@@ -271,18 +273,18 @@ driver.leftBumper().onTrue(drivetrain.seedFieldCentric());`}
           <p className="mt-3">
             So on the code you have, the only thing that ever gives odometry an
             absolute field position is <strong>vision</strong>, which is the
-            next page. Until then, treat <code>Drivetrain/Pose</code> as
-            &quot;distance and direction traveled since boot,&quot; which is
-            exactly what steps 3 and 4 below use it for. If you want a real pose
-            reset, you add a wrapper next to <code>setControl</code> and{" "}
-            <code>getPose</code> that forwards to{" "}
+            Vision in Workshop #4. Until then, treat{" "}
+            <code>Drivetrain/Pose</code> as &quot;distance and direction
+            traveled since boot,&quot; which is exactly what steps 3 and 4 below
+            use it for. If you want a real pose reset, you add a wrapper next to{" "}
+            <code>setControl</code> and <code>getPose</code> that forwards to{" "}
             <code>drivetrain.resetPose(pose)</code>.
           </p>
         </Box>
 
         <p>
-          One consequence worth carrying to the next page: with a single tag in
-          view the camera code switches to MegaTag2, which trusts the gyro
+          One consequence worth carrying to the Vision lesson: with a single tag
+          in view the camera code switches to MegaTag2, which trusts the gyro
           heading instead of solving for it. Its own comment says{" "}
           <em>
             &quot;so seed the gyro, or single-tag results will be off.&quot;
@@ -428,7 +430,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           <ul className="ml-5 list-disc space-y-2">
             <li>
               <a
-                href="/pid-control#tune-ks"
+                href="/pid-control#tune-feedforward"
                 className="font-semibold underline decoration-1 underline-offset-2"
                 style={{ color: "var(--accent)" }}
               >
@@ -437,7 +439,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             </li>
             <li>
               <a
-                href="/pid-control#tune-kp"
+                href="/pid-control#tune-feedback"
                 className="font-semibold underline decoration-1 underline-offset-2"
                 style={{ color: "var(--accent)" }}
               >
@@ -446,7 +448,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             </li>
             <li>
               <a
-                href="/pid-control#tune-kd"
+                href="/pid-control#tune-feedback"
                 className="font-semibold underline decoration-1 underline-offset-2"
                 style={{ color: "var(--accent)" }}
               >
@@ -455,9 +457,9 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
             </li>
           </ul>
           <p>
-            Same rules as that page: one number per deploy, approach every gain
-            from below, halve it the moment the module does something you did
-            not expect.
+            Same rules as that page: change one number per test, approach every
+            gain from below, and reduce it the moment the module does something
+            you did not expect.
           </p>
           <p>
             <strong>{"You should see: "}</strong> the verification loop is
@@ -690,7 +692,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           </p>
           <p>
             <a
-              href="/pid-control#tune-flywheel"
+              href="/pid-control#tune-feedforward"
               className="font-semibold underline decoration-1 underline-offset-2"
               style={{ color: "var(--accent)" }}
             >
@@ -910,7 +912,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               Nothing is broken. Odometry measures from wherever the code
               started, not from a point on the field, and nothing on these
               branches sets a field position. Read the seeding section again.
-              The next page is what fixes it.
+              The Vision lesson is what fixes it.
             </li>
           </ul>
         </Box>
@@ -948,7 +950,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
               ],
               correctAnswer: 1,
               explanation:
-                "seedFieldCentric() is a heading reference and nothing else. DriveMechanism's own comment calls it \"resets the field-centric heading so 'forward' matches the driver's current facing.\" Placing the robot at a real field position is resetPose(Pose2d), which nothing in the workshop code calls. Vision is what supplies an absolute pose on the next page.",
+                "seedFieldCentric() is a heading reference and nothing else. DriveMechanism's own comment calls it \"resets the field-centric heading so 'forward' matches the driver's current facing.\" Placing the robot at a real field position is resetPose(Pose2d), which nothing in the workshop code calls. Vision supplies an absolute pose in Workshop #4.",
             },
             {
               id: 3,

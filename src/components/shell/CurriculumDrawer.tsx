@@ -3,7 +3,7 @@
 /**
  * The whole curriculum, on demand. Opens from the rail's MENU button.
  *
- * Shows all 29 lessons grouped by section, numbered in course order, with a
+ * Shows every lesson grouped by section, numbered in course order, with a
  * DONE flag on the ones already finished and the current lesson in accent.
  * The point is that a student can always answer "where am I in this?" without
  * that question costing screen space while they read.

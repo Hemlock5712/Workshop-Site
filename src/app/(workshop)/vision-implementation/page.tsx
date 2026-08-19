@@ -999,24 +999,21 @@ Limelight.registerAll(drivetrain, "limelight");`}
       {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
       <LessonSection id="what-s-next" title="What's next">
         <p>
-          Now that the drivetrain knows where it is, you can work out how far
-          away the goal is and pick a flywheel speed to match — a shot that
-          adjusts itself instead of one speed that only works from one spot.
+          Now that the drivetrain has a vision-corrected field pose, it can
+          measure the X, Y, and heading error to any target pose. Drive to Point
+          turns those three errors into a drivetrain request.
         </p>
 
         <Box
-          variant="alert-warning"
-          tag="BRANCH WARNING"
-          title="That lesson is a side branch"
+          variant="alert-info"
+          tag="NEXT"
+          title="Start simple before adding a profile"
         >
           <p>
-            <code>4-DynamicFlywheel</code> sits one commit on top of{" "}
-            <code>3-Limelight</code>, and nothing after it inherits that work —{" "}
-            <code>5-DriveToPoint</code> forks off <code>2-Logging</code> instead
-            and has neither the flywheel nor its helper class in its tree. The
-            flywheel lesson is worth doing and it is skippable. If you do it,
-            keep a copy of the branch somewhere before you move on to Drive to
-            Point.
+            The basic command deliberately drives straight toward the target
+            with PID. Profiled Drive to Point comes after it and adds planned
+            velocity and acceleration. Keeping those steps separate makes the
+            effect of the profile visible.
           </p>
         </Box>
       </LessonSection>

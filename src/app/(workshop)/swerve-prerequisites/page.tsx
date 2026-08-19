@@ -15,9 +15,9 @@ const linkClass = "underline hover:no-underline font-medium";
 export default function SwervePrerequisites() {
   return (
     <PageTemplate
-      title="Four ideas the rest of Workshop #2 stands on"
+      title="Four ideas the rest of Workshop #3 stands on"
       emphasis="Four ideas"
-      lede="Workshop #2 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
+      lede="Workshop #3 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
       needs={[
         <>
           Nothing installed, nothing typed. There is no code on this page and no
@@ -79,7 +79,7 @@ export default function SwervePrerequisites() {
           </p>
           <p className="mt-3">
             You ask for a chassis speed. Those two files decide what all eight
-            motors do. Nothing in Workshop #2 asks you to compute a wheel angle.
+            motors do. Nothing in Workshop #3 asks you to compute a wheel angle.
           </p>
         </Box>
 
@@ -251,9 +251,9 @@ export default function SwervePrerequisites() {
             against its own wall reports a large X, not zero.
           </p>
           <p className="mt-3">
-            Every pose in Workshop #2 is measured from that same blue corner:
-            what odometry reports, what the camera estimates, and the target you
-            hand a drive command.
+            Every pose in Workshops #3 and #4 is measured from that same blue
+            corner: what odometry reports, what the camera estimates, and the
+            target you hand a drive command.
           </p>
         </Box>
       </LessonSection>

@@ -501,7 +501,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           &apos;s own constructor already did it, and here is exactly what it
           set. No branch in the mechanism track ever calls{" "}
           <code>setDefaultCommand</code>; every mechanism runs the
-          constructor-supplied <code>idle()</code> for the whole of Workshop #1.
+          constructor-supplied <code>idle()</code> for the rest of Workshop #2.
         </p>
 
         <CodeBlock

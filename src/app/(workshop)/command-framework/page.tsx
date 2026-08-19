@@ -88,7 +88,7 @@ export default function CommandFramework() {
               <>
                 <strong>Named actions, mostly holds.</strong> Methods on a
                 mechanism that hand back a <code>Command</code>. Almost every
-                one you write in Workshop #1 is a <em>hold</em>: it keeps
+                one you write in Workshop #2 is a <em>hold</em>: it keeps
                 re-sending the same request and never ends by itself.
               </>
             ),
@@ -541,12 +541,12 @@ private void setVoltage(double voltage) {
             <strong>Coroutines</strong> — a second way of writing a command,
             where the body pauses itself from the inside. Reach for it when one
             hold has to span many steps. <strong>Coroutines</strong>, in
-            Advanced Topics.
+            Workshop #5.
           </li>
           <li>
             <strong>State machines</strong> — the robot is always in exactly one
             named state, and buttons move it between them.{" "}
-            <strong>State Machines</strong>, in Advanced Topics.
+            <strong>State Machines</strong>, in Workshop #5.
           </li>
         </ul>
 
