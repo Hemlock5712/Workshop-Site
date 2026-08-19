@@ -68,6 +68,8 @@ Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/
 - **Code formatting**: `pnpm format` (Prettier with write), `pnpm format:check` (check only)
 - **Search data generation**: `pnpm generate-search` (updates search index; regenerates `src/data/searchData.ts` unformatted — run `pnpm format` afterward or `format:check` will fail)
 - **Spell checking**: `pnpm spell` (cspell on TypeScript and markdown files)
+- **Prose linting**: `pnpm prose` (reading budget, title and heading length, sentence length, em dashes, banned constructions, quiz answer patterning). `--only=pid-control` checks one page, `--sentences` prints every over-length sentence in full, `--json` is machine-readable. A finding marked `(advisory)` does not fail the run
+- **Quiz answer keys**: `npx tsx scripts/quiz-shuffle.ts --all` rotates a patterned answer key without changing any option's text
 - **Full test suite**: `pnpm test` (runs format:check + lint + type-check + build)
 
 Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
@@ -200,6 +202,8 @@ lesson count is derived from `LESSONS`; do not hard-code it in UI copy.
 ├── /swerve-drive-project
 ├── /swerve-calibration
 ├── /pathplanner
+├── /chaining-commands (Command Composition)
+├── /finish-lines (Finish Conditions)
 └── /autonomous
 
 04 Vision & Navigation:
@@ -209,8 +213,6 @@ lesson count is derived from `LESSONS`; do not hard-code it in UI copy.
 └── /dynamic-path-planning
 
 05 Advanced Commands:
-├── /chaining-commands
-├── /finish-lines
 ├── /coroutines
 ├── /state-based
 └── /drive-to-tag-inline (optional example)
@@ -264,7 +266,7 @@ on old slides: `/logging-options` → `/logging-implementation`,
 - All workshop pages should use PageTemplate for consistency. A lesson opens with the sentence that teaches (`title` + `emphasis`), not its filing label — the short label lives in `lessons.ts` and is what the breadcrumb and drawer show
 - Navigation (drawer groups, syllabus, lesson order, prev/next, lesson numbers) is derived from `src/data/lessons.ts` — add/rename/reorder lessons there
 - `LessonSectionId` is the section-id union type in `lessons.ts`; `LessonSection` is the lesson-body component. They were both called `LessonSection` and collided
-- After content edits, regenerate the search index with `pnpm generate-search`; page titles/descriptions for search come from the hardcoded `routeMap` in `scripts/generate-search-data.js`, so update that map when a page's title or focus changes
+- After content edits, regenerate the search index with `pnpm generate-search`. There is no `routeMap` any more: `scripts/generate-search-data.ts` reads `src/data/lessons.ts` directly and fails the build when the lesson list and the filesystem disagree, so a renamed lesson needs no second edit
 - Build process includes comprehensive testing (lint + type-check + build)
 - Search system provides fast fuzzy search across all workshop content using MiniSearch
 - Theme transitions use View Transitions API for smooth animated theme switching
@@ -306,6 +308,32 @@ were deleted in August 2026. The first was generic "S-Tier SaaS Dashboard"
 boilerplate prescribing a persistent sidebar and admin tables, which describes
 neither this site nor its design; the second documented a colour palette that
 no longer exists. Do not reinstate either.
+
+### Writing
+
+**`context/writing-style.md` is the authority on every word a student reads**,
+and `pnpm prose` enforces the mechanical half of it. Read it before writing or
+editing any lesson prose. The short version:
+
+- **A title is a name, not a pitch.** Noun phrase, five words at most: "PID
+  Tuning in Tuner X", not "Tune the motor before a robot program ever touches
+  it". `PageTemplate` no longer takes an `emphasis` prop; the accent-italic
+  phrase inside a sentence-title went with the sentence-titles.
+- **The lesson is the unit of attention, and it is 8 to 12 minutes.** 15 is the
+  hard cap, 6 is the floor. A middle schooler holds focus for 10 to 14 minutes
+  and a high schooler for 15 to 20; a 40-minute lesson is one nobody finishes.
+  Over the cap, split the lesson. Under the floor, the lesson is missing its
+  check and its failure modes.
+- **No em dashes.** An em dash is nearly always a sentence that did not decide
+  where it ended. Use a period or a colon.
+- **The banned list is in the spec and in the linter**: the reversal ("it's not
+  X, it's Y"), the rhetorical triple, the significance close ("which is the
+  whole reason…"), the knowing aside ("think of it as", "under the hood"), and
+  the filler adjectives.
+- **Vary sentence length.** Uniformly short sentences are the loudest tell that
+  a machine wrote the page, and it is the mistake this site made once already.
+- `src/app/(workshop)/pid-control/page.tsx` is the reference implementation.
+  Copy its shape.
 
 `context/narration-voice.md` does still exist and is worth reading before
 writing prose. It measures cadence rather than asserting rules, and its

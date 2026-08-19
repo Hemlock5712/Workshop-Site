@@ -2,23 +2,22 @@ import PageTemplate from "@/components/PageTemplate";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import ImageBlock from "@/components/ImageBlock";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import ContentCard from "@/components/ContentCard";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import GlossaryTerm from "@/components/GlossaryTerm";
-import { Target, Wrench, Smartphone, Zap } from "lucide-react";
+import DocumentationButton from "@/components/DocumentationButton";
+import { BookOpen } from "lucide-react";
 
 export default function Hardware() {
   return (
     <PageTemplate
-      title="Wire it, name it, and make sure it answers"
-      emphasis="make sure it answers"
-      lede="Before any code, every device on the bus needs power, a unique CAN ID, current firmware, and a name you chose. Phoenix Tuner X does all four, and this is the page that owns the CANivore-USB toggle every later lesson refers back to."
+      title="Hardware Setup"
+      lede="Workshop 1 runs on three CTRE devices: a Kraken X44, a CANcoder, and a CANivore. This lesson powers them up, puts them on current firmware, and spins a motor from Phoenix Tuner X. No robot controller, and no code."
       needs={[
         <>
-          The mechanism assembled and wired, with a charged battery: see{" "}
-          <strong>Mechanism CAD</strong> if you are building one.
+          The mechanism assembled and wired, with a charged battery. See{" "}
+          <strong>Mechanism CAD</strong>.
         </>,
         <>
           Phoenix Tuner X installed, from <strong>Prerequisites</strong>, and a
@@ -26,41 +25,46 @@ export default function Hardware() {
         </>,
         <>
           <strong>The real hardware.</strong> There is no simulator path through
-          this page: it is the page where you confirm the devices exist.
+          this lesson.
         </>,
       ]}
-      time="About 45 minutes, longer if firmware needs updating"
+      time="About 25 minutes, longer if the firmware is old"
     >
-      {/* Introduction. The beginner floor is in the rail beside it rather
-          than in the column: the room is mixed, and a second-year student does
-          not need to be told what a motor is before being told what to wire. */}
       <Split>
-        <KeyConceptSection
-          title="Hardware Setup: Building the Foundation"
-          description="The motors, sensors, and controllers you'll connect for this workshop."
-          concept="Solid hardware configuration enables precise and reliable robot control."
-        />
-        <MarginNote label="IF THIS IS NEW">
-          Think of your robot like a remote control car, but much smarter. Just
-          like a car, it needs <GlossaryTerm term="motor">motors</GlossaryTerm>:
-          the wheels that make it move;{" "}
-          <GlossaryTerm term="motor controller">controllers</GlossaryTerm>: the
-          remote control that tells motors what to do;{" "}
-          <GlossaryTerm term="sensor">sensors</GlossaryTerm>: a speedometer that
-          tells you how fast you are going; and a brain, the electronics inside
-          that process everything. If terms like{" "}
-          <GlossaryTerm term="can bus">CAN bus</GlossaryTerm> or{" "}
-          <GlossaryTerm term="encoder">encoder</GlossaryTerm> are new to you,
-          that is fine: this page explains each one as it comes up.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            Every mechanism here is three parts: a motor, a sensor that knows
+            where the mechanism is, and a bus to your laptop. Tuner X is how you
+            talk to all three.
+          </p>
+          <p>
+            Get this wrong and nothing breaks today. It breaks four lessons
+            later: a gain that will not save, a sensor stuck at zero, a motor
+            answering to the wrong name.
+          </p>
+        </div>
+        <MarginNote label="If this is new">
+          A <GlossaryTerm term="motor">motor</GlossaryTerm> spins. A{" "}
+          <GlossaryTerm term="motor controller">motor controller</GlossaryTerm>{" "}
+          decides how fast and how far. A{" "}
+          <GlossaryTerm term="sensor">sensor</GlossaryTerm> reports what the
+          mechanism did. The <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>{" "}
+          is the wire all of them talk over. Read past a term you do not know
+          yet; each one gets defined where it first matters.
         </MarginNote>
       </Split>
 
-      <LessonSection id="hardware-components" title="Hardware Components">
-        <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-8">
+      <LessonSection id="hardware-components" title="The three devices">
+        <p>
+          Find all three on the bench before you plug anything in. Two of them
+          look like plain mechanical parts and are not.
+        </p>
+
+        <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           <ContentCard>
             <ImageBlock
               src="/images/hardware/Kraken44x.png"
-              alt="Kraken Motor"
+              alt="Kraken X44 motor"
               width={250}
               height={200}
               className="mb-4"
@@ -70,46 +74,29 @@ export default function Hardware() {
                 href="https://store.ctr-electronics.com/products/kraken-x44"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--accent)] hover:text-[var(--accent)] underline"
+                className="text-[var(--accent)] underline hover:text-[var(--accent)]"
               >
-                Kraken X44 Brushless Motor
+                Kraken X44
               </a>
             </h3>
-            <p className="text-[var(--tx2)] mb-3">
-              <strong>{"What it is: "}</strong> A{" "}
-              <GlossaryTerm term="motor">motor</GlossaryTerm> with a built-in
-              &quot;brain&quot; (
-              <GlossaryTerm term="motor controller">controller</GlossaryTerm>).
-              Instead of just spinning when you apply power, it can precisely
-              control how fast it spins and exactly where it stops.
+            <p className="mb-3 text-[var(--tx2)]">
+              A brushless motor with its controller built into the back. The{" "}
+              <GlossaryTerm term="talonfx">TalonFX</GlossaryTerm> inside runs
+              position and velocity loops on the motor itself, a thousand times
+              a second.
             </p>
-            <p className="text-[var(--tx2)] mb-3">
-              <strong>Why it&apos;s special:</strong> Most motors need a
-              separate controller box. The Kraken has the controller built right
-              in, making wiring simpler and saving space on your robot.
+            <p className="text-[var(--tx2)]">
+              Free speed is about 125 rotations per second. It also reports its
+              own position over the{" "}
+              <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>, so the motor
+              is a sensor too.
             </p>
-            <div className="bg-[var(--bg2)] p-3 rounded-lg">
-              <p className="text-note text-[var(--tx2)] mb-2">
-                <strong>What you need to know:</strong>
-              </p>
-              <ul className="text-note text-[var(--tx2)] list-disc list-inside space-y-1">
-                <li>Strong enough to lift heavy arms and spin flywheels</li>
-                <li>Spins up to about 125 times per second</li>
-                <li>
-                  Has built-in position sensing so it knows exactly where it is
-                </li>
-                <li>
-                  Communicates with your code through a wire called{" "}
-                  <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>
-                </li>
-              </ul>
-            </div>
           </ContentCard>
 
           <ContentCard>
             <ImageBlock
               src="/images/hardware/Encoder.png"
-              alt="CANcoder"
+              alt="WCP ThroughBore encoder"
               width={250}
               height={200}
               className="mb-4"
@@ -119,51 +106,30 @@ export default function Hardware() {
                 href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--accent)] hover:text-[var(--accent)] underline"
+                className="text-[var(--accent)] underline hover:text-[var(--accent)]"
               >
-                WCP ThroughBore Encoder (CANcoder) – Position Sensor
+                WCP ThroughBore Encoder
               </a>
             </h3>
-            <p className="text-[var(--tx2)] mb-3">
-              <strong>{"What it is: "}</strong> A{" "}
-              <GlossaryTerm term="sensor">sensor</GlossaryTerm> that measures
-              exactly where a rotating part is positioned. It can tell you
-              &quot;the arm is at 45 degrees.&quot; (The part on the parts list
-              is the WCP ThroughBore; it&apos;s a CANcoder inside, so the code
-              calls it a CANcoder.)
+            <p className="mb-3 text-[var(--tx2)]">
+              An absolute position{" "}
+              <GlossaryTerm term="sensor">sensor</GlossaryTerm> that mounts on a
+              rotating shaft and reads a magnet. It still knows the arm angle
+              after the power has been off all week.
             </p>
-            <p className="text-[var(--tx2)] mb-3">
-              <strong>{"Why you need it: "}</strong> The{" "}
-              <GlossaryTerm term="encoder">encoder</GlossaryTerm> built into
-              your motor gets set to 0 degrees every time it powers on, which
-              causes problems if the arm doesn&apos;t start in the same position
-              every time. The CANcoder uses a magnet, so it remembers its
-              position.
+            <p className="text-[var(--tx2)]">
+              The <GlossaryTerm term="encoder">encoder</GlossaryTerm> inside the
+              motor does not. It reads zero wherever it happens to sit at boot.
+              The parts list says ThroughBore. The part is a{" "}
+              <GlossaryTerm term="cancoder">CANcoder</GlossaryTerm> inside, and
+              CANcoder is what the code calls it.
             </p>
-            <div className="bg-[var(--bg2)] p-3 rounded-lg">
-              <p className="text-note text-[var(--tx2)] mb-2">
-                <strong>What you need to know:</strong>
-              </p>
-              <ul className="text-note text-[var(--tx2)] list-disc list-inside space-y-1">
-                <li>
-                  Remembers position even when the robot is turned off (absolute
-                  position)
-                </li>
-                <li>Mounts directly on rotating shafts</li>
-                <li>
-                  Connects through{" "}
-                  <GlossaryTerm term="can bus">CAN bus</GlossaryTerm> like the
-                  Kraken motor
-                </li>
-                <li>Works with hex shafts commonly used in FRC</li>
-              </ul>
-            </div>
           </ContentCard>
 
           <ContentCard>
             <ImageBlock
               src="/images/hardware/CANivore.png"
-              alt="CANivore"
+              alt="CANivore USB to CAN FD adapter"
               width={250}
               height={200}
               className="mb-4"
@@ -173,426 +139,253 @@ export default function Hardware() {
                 href="https://store.ctr-electronics.com/canivore/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--accent)] hover:text-[var(--accent)] underline"
+                className="text-[var(--accent)] underline hover:text-[var(--accent)]"
               >
-                CANivore – Communication Hub
+                CANivore
               </a>
             </h3>
-            <p className="text-[var(--tx2)] mb-3">
-              <strong>{"What it is: "}</strong> A device that creates a
-              high-speed &quot;conversation network&quot; for all your robot
-              parts. Think of it like a Wi-Fi router, but instead of connecting
-              phones and laptops, it connects motors and sensors.
+            <p className="mb-3 text-[var(--tx2)]">
+              A USB adapter that gives your devices their own CAN FD bus. It
+              carries far more data per second than the bus built into the robot
+              controller. Swerve drivetrains fill that one up, so they get a
+              CANivore.
             </p>
-            <p className="text-[var(--tx2)] mb-3">
-              <strong>{"Why you need it: "}</strong> Just like you can&apos;t
-              have 10 people all talking at once in a small room, robot parts
-              need an organized way to communicate. The CANivore runs{" "}
-              <strong>CAN FD</strong> (a faster version of the CAN network with
-              room for much more data) so everything can talk without getting
-              confused. Swerve drivetrains often need one because the robot
-              controller&apos;s built-in network would be overwhelmed with data.
+            <p className="text-[var(--tx2)]">
+              It is also why Workshop 1 needs no robot. The laptop plugs into
+              the CANivore, and the CANivore talks to the devices.
             </p>
-            <div className="bg-[var(--bg2)] p-3 rounded-lg">
-              <p className="text-note text-[var(--tx2)] mb-2">
-                <strong>What you need to know:</strong>
-              </p>
-              <ul className="text-note text-[var(--tx2)] list-disc list-inside space-y-1">
-                <li>Connects to your computer via USB cable</li>
-                <li>
-                  All motors and sensors plug into this with{" "}
-                  <GlossaryTerm term="can bus">CAN</GlossaryTerm> wires
-                </li>
-                <li>
-                  Has LED lights that show if everything is working correctly
-                </li>
-                <li>
-                  Faster communication (CAN FD) than the robot controller&apos;s
-                  built-in CAN network, on SystemCore or the older{" "}
-                  <GlossaryTerm term="roborio">roboRIO</GlossaryTerm>
-                </li>
-              </ul>
-            </div>
           </ContentCard>
         </div>
       </LessonSection>
 
-      <LessonSection
-        id="why-we-choose-ctre-hardware"
-        title="Why we choose CTRE hardware"
-      >
-        <div className="bg-[var(--bg2)] rounded-lg p-8 border border-[var(--rule)]">
-          <h3 className="display m-0 mb-4 flex items-center gap-2 text-lede">
-            <Target className="w-5 h-5" />
-            CTRE&apos;s Unique Advantages
-          </h3>
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4
-                className="display m-0 mb-2 text-aside"
-                style={{ color: "var(--accent)" }}
-              >
-                Full <GlossaryTerm term="pid">PID</GlossaryTerm> Control
-              </h4>
-              <p className="text-note text-[var(--tx2)]">
-                Complete <GlossaryTerm term="pid">PID</GlossaryTerm>{" "}
-                implementation with kP, kI, kD, and advanced filtering options
-                that other vendors don&apos;t provide.
-              </p>
-            </div>
-            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4 className="display m-0 mb-2 text-aside">
-                <GlossaryTerm term="feedforward">Feedforward (FF)</GlossaryTerm>
-              </h4>
-              <p className="text-note text-[var(--tx2)]">
-                Built-in{" "}
-                <GlossaryTerm term="feedforward">feedforward</GlossaryTerm>{" "}
-                control for gravity compensation and velocity control that
-                competitors lack.
-              </p>
-            </div>
-            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4
-                className="display m-0 mb-2 text-aside"
-                style={{ color: "var(--ok)" }}
-              >
-                <GlossaryTerm term="motion magic">
-                  Motion Profiling
-                </GlossaryTerm>
-              </h4>
-              <p className="text-note text-[var(--tx2)]">
-                <GlossaryTerm term="motion magic">Motion Magic</GlossaryTerm>{" "}
-                and motion profiling for smooth, controlled movements.
-              </p>
-            </div>
-            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4
-                className="display m-0 mb-2 text-aside"
-                style={{ color: "var(--accent)" }}
-              >
-                Rotations Units
-              </h4>
-              <p className="text-note text-[var(--tx2)]">
-                Motor positions measured in rotations instead of encoder ticks
-                or radians.
-              </p>
-            </div>
-          </div>
-
-          {/* Phoenix Software Resources - moved inside CTRE advantages */}
-          <div className="mt-8">
-            <h4 className="display m-0 mb-4 flex items-center gap-2 text-lede">
-              <Wrench className="w-5 h-5" />
-              Phoenix Software Resources
-            </h4>
-            <div className="bg-[var(--bg2)] rounded-lg p-6 border border-[var(--rule)]">
-              <div className="grid md:grid-cols-2 gap-4">
-                <a
-                  href="https://v6.docs.ctr-electronics.com/en/stable/docs/canivore/canivore-intro.html"
-                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  → CANivore Introduction
-                </a>
-                <a
-                  href="https://v6.docs.ctr-electronics.com/"
-                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  → Phoenix 6 Documentation
-                </a>
-                <a
-                  href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/"
-                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  → Phoenix 6 API Reference
-                </a>
-                <a
-                  href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
-                  className="block text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  → Phoenix Tuner X Documentation
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </LessonSection>
-
-      <LessonSection
-        id="connecting-to-your-device"
-        title="Connecting to Your Device"
-      >
-        <Box variant="alert-warning" title="Important setup steps">
-          <ol className="list-decimal list-inside space-y-2">
-            <li>Plug the computer into the CANivore</li>
-            <li>
-              Make sure &quot;CANivore USB&quot; is checked. It is one toggle
-              with two positions, and you will flip it back later: the full rule
-              is on{" "}
-              <a
-                href="/mechanism-setup#canivore-usb"
-                className="underline font-medium"
-              >
-                Mechanism Setup
-              </a>
-              .
-            </li>
-            <li>Change &quot;Team # or IP&quot; to &quot;localhost&quot;</li>
-            <li>Your CANivore should now appear in Phoenix Tuner</li>
-            <li>
-              For this workshop, please name your CANivore &quot;canivore&quot;
-            </li>
-          </ol>
-        </Box>
-      </LessonSection>
-
-      <LessonSection
-        id="updating-your-ctre-products"
-        title="Updating your CTRE products"
-      >
-        <ContentCard>
-          <h3 className="display m-0 mb-4 text-lede">Using Phoenix Tuner</h3>
-
-          <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
-                ✓
-              </span>
-              <div>
-                <p className="font-medium">
-                  Open Phoenix Tuner and connect to your robot
-                </p>
-                <p className="text-[var(--tx2)] text-note">
-                  If you have issues connecting to your robot,
-                  <a
-                    href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/connecting.html#connecting-tuner"
-                    className="text-[var(--accent)] underline hover:no-underline ml-1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    view this guide
-                  </a>
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
-                ✓
-              </span>
-              <div>
-                <p className="font-medium">
-                  Batch update all products of the same model
-                </p>
-                <p className="text-[var(--tx2)] text-note">
-                  Select one of the devices and then click the batch update
-                  icons
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-3">
-              <span className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-6 h-6 flex items-center justify-center text-note font-bold">
-                ✓
-              </span>
-              <div>
-                <p className="font-medium">Verify Updates</p>
-                <p className="text-[var(--tx2)] text-note">
-                  The device cards will be green if the firmware is the latest
-                </p>
-              </div>
-            </div>
-          </div>
-        </ContentCard>
-      </LessonSection>
-
-      <LessonSection
-        id="motor-update-process-status-colors"
-        title="Motor update process and status colors"
-      >
-        <div>
-          <ContentCard className="mx-auto flex flex-col gap-4">
-            <h3 className="display m-0 flex items-center gap-2 text-lede">
-              <Smartphone className="w-5 h-5" />
-              How to Update Motors
-            </h3>
-
-            <iframe
-              src="https://www.youtube.com/embed/aktcCtcrEyY"
-              title="Motor update process"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full aspect-video rounded-lg"
-            />
-
-            <p className="text-[var(--tx2)] text-note">
-              Use Phoenix Tuner to update your motor firmware. Select devices
-              and use batch update to get every motor on the latest firmware.
+      <LessonSection id="connecting-to-your-device" title="Connect Tuner X">
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              Power the mechanism first, then run USB from the laptop to the
+              CANivore. There is no team number to type and no robot to find.
             </p>
-          </ContentCard>
-        </div>
-
-        <Box variant="alert-info" title="Card Colors">
-          <p className="mb-3">
-            The color of the device cards is a quick visual indicator of device
-            state. The meaning of the card color is also shown as text
-            underneath the device title.
-          </p>
-
-          <div className="bg-[var(--bg2)] rounded-lg p-4">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-[var(--rule)]">
-                    <th className="py-2 px-3 font-semibold text-[var(--tx)] w-32">
-                      Color
-                    </th>
-                    <th className="py-2 px-3 font-semibold text-[var(--tx)]">
-                      Description
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="text-note">
-                  <tr className="border-b border-[var(--rule-soft)]">
-                    <td className="py-3 px-3 align-top">
-                      <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-[var(--ok)]">Green</strong>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
-                      Device has latest firmware.
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[var(--rule-soft)]">
-                    <td className="py-3 px-3 align-top">
-                      <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-[var(--accent)]">Purple</strong>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
-                      Device has an unexpected/beta firmware version.
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[var(--rule-soft)]">
-                    <td className="py-3 px-3 align-top">
-                      <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-[var(--accent)]">Yellow</strong>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
-                      A new firmware version is available.
-                    </td>
-                  </tr>
-                  <tr className="border-b border-[var(--rule-soft)]">
-                    <td className="py-3 px-3 align-top">
-                      <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-[var(--err)]">Red</strong>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
-                      Device has a duplicate ID.
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-3 align-top">
-                      <div className="flex items-center whitespace-nowrap">
-                        <span className="inline-block w-4 h-4 bg-[var(--bg2)] rounded-full mr-2 flex-shrink-0"></span>
-                        <strong className="text-[var(--accent)]">Blue</strong>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-[var(--tx2)] align-top">
-                      Failed to retrieve list of available firmware.
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
+          <MarginNote label="One toggle, two positions">
+            CANivore USB stays checked for all of Workshop 1, because the laptop
+            owns the bus. It has to come back off once robot code drives the
+            hardware. The full rule is on{" "}
+            <a href="/mechanism-setup#canivore-usb" className="underline">
+              Motor Setup &amp; CAN IDs
+            </a>
+            .
+          </MarginNote>
+        </Split>
 
-          <Box variant="alert-tip" title="Tip" className="mt-4">
-            Always update all motors to the same firmware version for
-            consistency, and use batch update to save time when updating
-            multiple devices.
-          </Box>
-        </Box>
-      </LessonSection>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Open{" "}
+            <GlossaryTerm term="phoenix tuner x">Phoenix Tuner X</GlossaryTerm>{" "}
+            and check <strong>CANivore USB</strong>.
+          </li>
+          <li>
+            Set <strong>Team # or IP</strong> to <code>localhost</code>.
+          </li>
+          <li>
+            The CANivore should appear in the device list within a second.
+          </li>
+          <li>
+            Rename it to <code>canivore</code>. Every later lesson and every
+            code sample uses that name.
+          </li>
+          <li>
+            Open it and confirm the motor and the CANcoder are both listed under
+            it.
+          </li>
+        </ol>
 
-      <LessonSection id="having-issues" title="Having Issues?">
-        <p className="text-[var(--tx2)]">
-          If you are having issues connecting to your CANivore or other devices,
-          make sure to update your CANivore firmware.
+        <p>
+          A CANivore that never shows up is usually running firmware older than
+          the Tuner X you installed. Updating it is the next section.
         </p>
 
         <iframe
           src="https://www.youtube.com/embed/TkScJADvD-Y"
-          title="CANivore Setup"
+          title="CANivore setup"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-          className="w-full h-full aspect-video rounded-lg"
+          className="aspect-video w-full rounded-lg"
+        />
+      </LessonSection>
+
+      <LessonSection
+        id="updating-your-ctre-products"
+        title="Update the firmware"
+      >
+        <p>
+          Tuner X and device firmware are versioned together. A device on old
+          firmware still connects and still answers. It then refuses a
+          configuration, or reports a signal your Phoenix version cannot read.
+        </p>
+
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Select one device, then use the batch update icon to flash every
+            device of that model at once.
+          </li>
+          <li>Update the CANivore itself the same way.</li>
+          <li>
+            Put every device on the same version. Mixed versions on one bus give
+            you failures that come and go.
+          </li>
+          <li>Check the card colours once the flashing finishes.</li>
+        </ol>
+
+        <p>
+          Card colour is the fastest read on the screen. The same meaning is
+          printed under the device name, in words.
+        </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[440px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Card</th>
+                <th className="px-3 py-2 text-left">Meaning</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <strong style={{ color: "var(--ok)" }}>Green</strong>
+                </td>
+                <td className="px-3 py-2">Device has the latest firmware.</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <strong>Yellow</strong>
+                </td>
+                <td className="px-3 py-2">A newer version is available.</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <strong>Purple</strong>
+                </td>
+                <td className="px-3 py-2">
+                  Unexpected or beta firmware version.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <strong style={{ color: "var(--err)" }}>Red</strong>
+                </td>
+                <td className="px-3 py-2">
+                  Duplicate ID. Two devices answer to the same number, and{" "}
+                  <a href="/mechanism-setup" className="underline">
+                    Motor Setup
+                  </a>{" "}
+                  sorts that out.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">
+                  <strong>Blue</strong>
+                </td>
+                <td className="px-3 py-2">
+                  Tuner X could not download the list of firmware versions.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <iframe
+          src="https://www.youtube.com/embed/aktcCtcrEyY"
+          title="Motor update process"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="aspect-video w-full rounded-lg"
         />
       </LessonSection>
 
       <LessonSection id="let-s-run-some-motors" title="Run a motor">
-        <div className="module" style={{ borderColor: "var(--accent)" }}>
-          <h3
-            className="display m-0 mb-4 text-aside"
-            style={{ color: "var(--accent)" }}
-          >
-            Testing Motor Movement
-          </h3>
+        <p>
+          This is the first time the mechanism moves. Voltage Out sends a fixed
+          voltage and nothing else: no target, no soft limits, no stopping at
+          the end of travel.
+        </p>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h4 className="display m-0 mb-3 text-aside">Quick Test Steps:</h4>
-              <ol className="list-decimal list-inside space-y-2 text-[var(--tx)]">
-                <li>Open up your motor in Phoenix Tuner</li>
-                <li>
-                  Click <strong>Config</strong>
-                </li>
-                <li>Click the three dots</li>
-                <li>
-                  Click <strong>Factory Default</strong>
-                </li>
-                <li>
-                  Set the drop-down to <strong>Voltage Out</strong>
-                </li>
-                <li>
-                  Click <strong>DISABLED</strong> to enable
-                </li>
-                <li>Apply voltage to test the motor</li>
-              </ol>
-            </div>
+        <Box variant="alert-danger" title="Before you enable anything">
+          <p>
+            The mechanism is bolted to the bench and nothing is in its path. One
+            person stands at the battery disconnect, and it is not the person on
+            the laptop. Start at 1 volt, not 12. A Voltage Out request runs
+            until you stop it, into the hard stop if that is where the mechanism
+            is pointed.
+          </p>
+        </Box>
 
-            <div className="bg-[var(--bg2)] p-4 rounded-lg border border-[var(--rule)]">
-              <h4 className="display m-0 mb-2 flex items-center gap-2 text-aside">
-                <Zap className="w-4 h-4" />
-                Safety First
-              </h4>
-              <p className="text-note text-[var(--tx2)]">
-                Always start with low voltage values when testing motors. Make
-                sure your mechanism can move freely and won&apos;t cause damage.
-              </p>
-            </div>
-          </div>
-        </div>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Open the motor in Tuner X and click <strong>Config</strong>.
+          </li>
+          <li>
+            Click the three dots, then <strong>Factory Default</strong>.
+            Whatever last season left on this motor is now gone.
+          </li>
+          <li>
+            Set the control drop-down to <strong>Voltage Out</strong>.
+          </li>
+          <li>
+            Click <strong>DISABLED</strong> to enable the device.
+          </li>
+          <li>Apply 1 volt. Watch the mechanism, not the screen.</li>
+          <li>Disable before you touch anything or change any number.</li>
+        </ol>
+
+        <p>
+          One volt may not break a geared arm loose from a standstill. Climb in
+          single volts until it creeps, then stop. You are checking that it
+          moves and which way it goes, not how fast.
+        </p>
 
         <iframe
           src="https://www.youtube.com/embed/cDWF3bj1Juk"
-          title="Motor Test"
+          title="Motor test"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-          className="w-full h-full aspect-video rounded-lg"
+          className="aspect-video w-full rounded-lg"
+        />
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          Power cycle the bench: battery off, USB out, then both back on.
+          Everything you did here is stored on the devices themselves, so none
+          of it should need doing twice.
+        </p>
+
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              The CANivore reconnects as <code>canivore</code>, with Tuner X
+              still pointed at <code>localhost</code>.
+            </li>
+            <li>The motor and the CANcoder are both listed under it.</li>
+            <li>Every device card is green.</li>
+            <li>A volt or two moves the mechanism, and disabling stops it.</li>
+            <li>
+              Turning the mechanism by hand changes the CANcoder position in
+              Tuner X.
+            </li>
+          </ul>
+        </Box>
+
+        <p>
+          Write down which device is which while you can still tell them apart
+          by where they are bolted. Motor Setup begins by giving each one a
+          number, and that goes faster when nobody is guessing.
+        </p>
+
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
+          title="CTRE: Phoenix Tuner X"
+          icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>
 
@@ -600,73 +393,42 @@ export default function Hardware() {
         questions={[
           {
             id: 1,
-            question:
-              "What makes CTRE hardware unique compared to other motor controllers?",
+            question: "What are the three devices used in this workshop?",
             options: [
-              "It's cheaper than all other motor controllers",
-              "Full PID control, feedforward, motion profiling, and rotations units",
-              "It only works with specific robot designs",
-              "It requires less power than other controllers",
+              "Power distribution hub, motor, and joystick",
+              "roboRIO, battery, and radio",
+              "Kraken X44 motor, WCP ThroughBore encoder, and CANivore",
+              "Pneumatic hub, compressor, and solenoid",
             ],
-            correctAnswer: 1,
+            correctAnswer: 2,
             explanation:
-              "CTRE hardware offers a complete PID implementation with kP, kI, kD, built-in feedforward control for gravity and velocity compensation, advanced Motion Magic profiling, and intuitive rotation units instead of encoder ticks or radians.",
+              "A Kraken X44 with its TalonFX controller built in, a WCP ThroughBore encoder for absolute position, and a CANivore for the CAN FD bus.",
           },
           {
             id: 2,
-            question:
-              "What is the purpose of the CANivore in your robot's hardware setup?",
+            question: "What does the CANivore do?",
             options: [
-              "It provides power to all motors",
-              "It's a backup robot controller",
-              "It's a USB device that adds a fast CAN FD network for motors and sensors",
+              "It is a USB adapter that gives motors and sensors a CAN FD bus",
               "It stores robot code and configuration files",
+              "It provides power to all motors",
+              "It is a backup robot controller",
             ],
-            correctAnswer: 2,
+            correctAnswer: 0,
             explanation:
-              "CANivore plugs into a USB port and creates a CAN FD network (the faster version of CAN) so all the motors and sensors get a quick, reliable connection. It's also how this workshop runs real hardware from a laptop, without a robot controller.",
+              "The CANivore plugs into USB and runs a CAN FD bus for the motors and sensors. It is also how this workshop drives real hardware from a laptop, with no robot controller.",
           },
           {
             id: 3,
-            question:
-              "What does a GREEN device card in Phoenix Tuner indicate?",
+            question: "What does a green device card in Tuner X mean?",
             options: [
+              "Tuner X could not read the firmware list",
               "The device needs a firmware update",
               "The device has a duplicate ID",
               "The device has the latest firmware",
-              "Failed to retrieve firmware information",
             ],
-            correctAnswer: 2,
+            correctAnswer: 3,
             explanation:
-              "A green device card indicates that the device has the latest firmware installed and is ready for use.",
-          },
-          {
-            id: 4,
-            question:
-              "What are the three main hardware components used in this workshop?",
-            options: [
-              "roboRIO, battery, and radio",
-              "Kraken X44 motor, WCP ThroughBore Encoder, and CANivore",
-              "Pneumatic hub, compressor, and solenoid",
-              "Power distribution hub, motor, and joystick",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "The workshop uses Kraken X44 brushless motors (with integrated Talon FX controller), WCP ThroughBore Encoders (for absolute position sensing), and CANivore (for CAN FD communication).",
-          },
-          {
-            id: 5,
-            question:
-              "When connecting to your CANivore for the first time, what should you set the 'Team # or IP' field to?",
-            options: [
-              "Your team number",
-              "192.168.1.1",
-              "localhost",
-              "10.0.0.1",
-            ],
-            correctAnswer: 2,
-            explanation:
-              "When connecting to your CANivore via USB, you should set the 'Team # or IP' field to 'localhost' and ensure 'CANivore USB' is checked in Phoenix Tuner X.",
+              "Green means the device is on the latest firmware. Yellow means an update is available, and red means two devices share an ID.",
           },
         ]}
       />

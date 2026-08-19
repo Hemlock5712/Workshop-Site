@@ -10,8 +10,7 @@ import { BookOpen } from "lucide-react";
 export default function DynamicPathPlanning() {
   return (
     <PageTemplate
-      title="Plan from where the robot is, not where you hoped it would be"
-      emphasis="where the robot is"
+      title="Dynamic Path Planning"
       lede="A preplanned path assumes a known start and a mostly known field. Dynamic planning starts from the current vision-corrected pose, finds a collision-free route to a target, and can replace that route when the field changes."
       needs={[
         <>Vision measurements accepted into drivetrain odometry.</>,
@@ -36,10 +35,7 @@ export default function DynamicPathPlanning() {
         </MarginNote>
       </Split>
 
-      <LessonSection
-        id="five-parts"
-        title="Name the five parts before connecting them"
-      >
+      <LessonSection id="five-parts" title="The five parts">
         <FigureGrid
           items={[
             {
@@ -71,10 +67,7 @@ export default function DynamicPathPlanning() {
         />
       </LessonSection>
 
-      <LessonSection
-        id="navigation-grid"
-        title="Treat the navigation grid as safety data"
-      >
+      <LessonSection id="navigation-grid" title="The navigation grid">
         <p>
           The grid marks where the robot center may travel after accounting for
           the full bumper footprint. Inflate fixed obstacles by the robot&apos;s
@@ -112,10 +105,7 @@ export default function DynamicPathPlanning() {
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="replan-policy"
-        title="Write the replan policy before the test"
-      >
+      <LessonSection id="replan-policy" title="Write the replan policy">
         <p>
           Choose measurable triggers rather than “replan whenever it looks
           wrong.”
@@ -166,10 +156,7 @@ export default function DynamicPathPlanning() {
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="final-approach"
-        title="Use dynamic planning for travel, not final alignment"
-      >
+      <LessonSection id="final-approach" title="Travel, not alignment">
         <p>
           Global planning is good at finding a clear route across the field. It
           is not the best tool for the last few centimeters at a scoring

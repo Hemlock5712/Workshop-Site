@@ -40,17 +40,21 @@ function collectSections(
 
 interface PageTemplateProps {
   /**
-   * The lesson's title, as a sentence. Long is fine — this is the display
-   * line, set at up to 74px, and "Tell the arm where to go, not how hard to
-   * push" teaches more than "PID Control" does.
+   * The lesson's name. A noun phrase, five words at the most: "PID Tuning in
+   * Tuner X", "Swerve Calibration", "OpModes".
+   *
+   * This used to be a sentence, on the theory that "Tell the arm where to go,
+   * not how hard to push" teaches more than "PID Control" does. It doesn't. A
+   * student arriving from search, from the drawer, or from a breadcrumb needs
+   * to know what page they are on, and a sentence makes them read the whole
+   * line to find out. The sentence that teaches is the `lede`, one line down,
+   * where it costs nothing. See `context/writing-style.md`.
    */
   title: string;
   /**
-   * Optional italic phrase inside the title, set in the accent colour. Pass
-   * the exact substring of `title` to lift; ignored if it isn't found.
+   * Two or three flat sentences directly under the title: what this lesson
+   * does, what it leaves behind, and any hard prerequisite.
    */
-  emphasis?: string;
-  /** One paragraph, directly under the title. What this lesson is for. */
   lede?: ReactNode;
   /**
    * The "You'll need" panel beside the title: what has to be true before a
@@ -88,7 +92,6 @@ interface PageTemplateProps {
  */
 export default function PageTemplate({
   title,
-  emphasis,
   lede,
   needs,
   branch,
@@ -97,16 +100,6 @@ export default function PageTemplate({
   nextPage,
   children,
 }: PageTemplateProps) {
-  // Split the title around the emphasised phrase so it can be set in italic
-  // accent without the page having to hand-assemble JSX for its own <h1>.
-  const [before, after] =
-    emphasis && title.includes(emphasis)
-      ? [
-          title.slice(0, title.indexOf(emphasis)),
-          title.slice(title.indexOf(emphasis) + emphasis.length),
-        ]
-      : [title, null];
-
   return (
     // `minmax(0, …)` on both breakpoints is load-bearing. With a bare `auto`
     // column plus `justify-center`, the grid track sizes to max-content — so
@@ -146,24 +139,22 @@ export default function PageTemplate({
         <header className="split mb-[52px] items-end">
           <div>
             <LessonKicker />
+            {/* The ceiling came down from 74px when the titles became names
+                rather than sentences. 74px was sized for "Tell the arm where
+                to go, not how hard to push", which fills three lines and reads
+                as a masthead; the same size on "OpModes" is one word occupying
+                a third of the first screen. 56px keeps the display voice and
+                gives the lede and the lesson room above the fold. */}
             <h1
               className="display m-0 mb-[22px]"
               style={{
-                fontSize: "clamp(34px, 5.4vw, 74px)",
-                lineHeight: 0.96,
+                fontSize: "clamp(34px, 4.4vw, 56px)",
+                lineHeight: 1,
                 letterSpacing: "-0.022em",
                 textWrap: "balance",
               }}
             >
-              {before}
-              {after !== null && (
-                <>
-                  <em style={{ fontStyle: "italic", color: "var(--accent)" }}>
-                    {emphasis}
-                  </em>
-                  {after}
-                </>
-              )}
+              {title}
             </h1>
             {lede && <p className="lesson-lede m-0">{lede}</p>}
 

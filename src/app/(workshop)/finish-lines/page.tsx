@@ -1,80 +1,103 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
+import Quiz from "@/components/Quiz";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 
+/**
+ * Lesson 22. It moved out of Workshop 5 alongside Command Composition, because
+ * `/autonomous` is the very next page and every step in its routine ends on a
+ * `.withTimeout(...)`. Taught five lessons later, this page explained a rule
+ * the student had already been made to follow without it.
+ *
+ * It is also the first page on the site to use `.until(...)` and the word
+ * `BooleanSupplier`. `/java-basics` pre-taught both fourteen lessons early and
+ * no longer does, so section one defines them where they first appear.
+ *
+ * The old `debounce` and `audit-a-sequence` sections are gone. The one
+ * load-bearing idea in the first, a condition that goes true too early, is the
+ * third failure shape below. The second was a checklist of things the page had
+ * already said once.
+ */
 export default function FinishLines() {
   return (
     <PageTemplate
-      title="A sequence can continue only when the current step can finish"
-      emphasis="can finish"
-      lede="Most mechanism commands are holds: they keep refreshing a request and never end on their own. Advanced routines work only when each step has an explicit, testable finish condition."
+      title="Finish Conditions"
+      lede="Command Composition ended every step with a stopwatch, and that number was a guess. This lesson ends a step when a sensor reports the mechanism arrived. The stopwatch stays on as a backstop."
       needs={[
-        <>Classic mechanism commands from Workshop 2.</>,
         <>
-          A composed sequence from <strong>More Complex Commands</strong>.
+          <code>Command.sequence</code> and <code>.withTimeout(...)</code>, from{" "}
+          <strong>Command Composition</strong>.
         </>,
-        <>At least one sensor value the mechanism can read.</>,
+        <>
+          An arm position hold that keeps asking for one angle, and gains that
+          reach it.
+        </>,
+        <>
+          Lambdas and method references, from <strong>Java Basics</strong>.
+        </>,
+        <>
+          The simulator running, from <strong>Hardware Simulation</strong>.
+        </>,
       ]}
-      time="About 25 minutes"
+      time="About 20 minutes"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "A hold describes what should remain true while it runs. A step also answers when the routine may move on.",
-            "Put the finish condition at the call site when it belongs to one routine. Put it in a command class when it is part of that command's identity everywhere it is used.",
-          ]}
-          concept="Every command inside a sequence needs one honest finish line and, for physical motion, one defensive timeout."
-        />
-        <MarginNote label="THE FAILURE">
-          If step one is a bare hold, step two is not late. It is unreachable.
-          The scheduler is correctly waiting for a command that promised it
-          would keep running.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            A timeout ends a step after a fixed number of seconds and never asks
+            whether anything happened. Two seconds is plenty for the arm on a
+            fresh battery and short on a tired one.
+          </p>
+          <p>
+            The arm already carries a sensor that says where it is. Compare that
+            reading against the angle the step asked for, and the step can end
+            on arrival rather than on the clock.
+          </p>
+        </div>
+        <MarginNote label="Where this goes">
+          Autonomous is next, and both of its steps end on timeouts. A
+          drivetrain has nothing to ask yet. The arm does, so this is the page
+          that writes the question.
         </MarginNote>
       </Split>
 
-      <LessonSection
-        id="four-finish-lines"
-        title="Choose the finish line that matches the job"
-      >
-        <FigureGrid
-          cols={2}
-          items={[
-            {
-              label: "Elapsed time",
-              term: "withTimeout",
-              body: "Useful as a safety ceiling or for a deliberately timed action. It is weak evidence that a mechanism arrived.",
-            },
-            {
-              label: "Sensor condition",
-              term: "until",
-              body: "Ends when a Boolean condition becomes true, such as position error entering tolerance or a beam break seeing a game piece.",
-            },
-            {
-              label: "Command-owned",
-              term: "isFinished",
-              body: "Best when completion is intrinsic to the command everywhere it runs, such as a path whose profile reaches its end.",
-            },
-            {
-              label: "Operator release",
-              term: "Trigger cancellation",
-              body: "Correct for manual holds in teleop, but not a finish line an autonomous sequence can wait on.",
-            },
-          ]}
-        />
+      <LessonSection id="two-endings" title="Timeouts and conditions">
+        <p>
+          <code>.until(...)</code> wraps a command and ends it on the first loop
+          a condition comes back true. That condition is a{" "}
+          <code>BooleanSupplier</code>: any small piece of code that answers
+          true or false when it is asked. The scheduler asks about fifty times a
+          second.
+        </p>
+        <p>
+          Hand it a method reference. Written as <code>arm::isAtTarget</code>,
+          the condition passes the method itself, so it can be called again on
+          every loop. Add the parentheses and <code>arm.isAtTarget()</code> runs
+          the method on the spot, passing one frozen answer. That will not
+          compile: <code>boolean cannot be converted to BooleanSupplier</code>.
+        </p>
+        <p>
+          <code>.until(...)</code> hands back a builder rather than a{" "}
+          <code>Command</code>, the same way <code>Command.sequence(...)</code>{" "}
+          did. <code>.named(&quot;...&quot;)</code> closes it. Leave the name
+          off and the build fails, because a builder is not a{" "}
+          <code>Command</code>.
+        </p>
       </LessonSection>
 
-      <LessonSection
-        id="sensor-condition"
-        title="Turn a sensor reading into one named condition"
-      >
+      <LessonSection id="sensor-condition" title="The arrival question">
+        <p>
+          The mechanism owns the comparison. Its units, its target, and its
+          tolerance are already in that one file. Put the arithmetic there too,
+          and every call site gets one readable question instead.
+        </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Arm.java"
-          title="Arm.java: the mechanism owns the measurement"
+          title="Arm.java: the arrival check"
           code={`private static final double POSITION_TOLERANCE_ROT = 0.01;
 
 public boolean isAtTarget() {
@@ -82,102 +105,283 @@ public boolean isAtTarget() {
   return Math.abs(error) <= POSITION_TOLERANCE_ROT;
 }`}
         />
-        <p>
-          The OpMode or routine should not reach into the motor controller and
-          repeat this arithmetic. The mechanism owns its sensor units, target,
-          and tolerance, so it offers one readable question:
-          <code>arm.isAtTarget()</code>.
-        </p>
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              <code>targetPositionRot</code> is the angle the last position
+              request asked for. The other half of the subtraction,{" "}
+              <code>getPositionRot()</code>, reads the CANcoder through the
+              motor. The units are mechanism rotations, because{" "}
+              <strong>Mechanisms</strong> made that encoder the feedback source.
+              The tolerance is the number you pick, and a hundredth of a
+              rotation is about three and a half degrees.
+            </p>
+          </div>
+          <MarginNote label="Too tight, too loose">
+            A tolerance smaller than the encoder&apos;s own jitter never comes
+            true. One wider than the job passes before the arm is anywhere
+            useful. Start from where the Tuner X plot settled, then widen it
+            until the step ends on every run.
+          </MarginNote>
+        </Split>
         <Box
           variant="alert-warning"
           tag="NO EXACT EQUALITY"
-          title="Sensors do not land on one perfect number"
+          title="Sensors jitter"
         >
           <p>
-            Never wait for <code>position == target</code>. Noise, quantization,
-            and control error make exact equality unreliable. Define a tolerance
-            in the same mechanism units used by the target.
+            Never wait for <code>position == target</code>. Ask for 0.25
+            rotations and you read 0.2497, then 0.2503. An exact comparison is
+            false forever, so a step waiting on one never ends. Give the
+            tolerance the same units as the target.
           </p>
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="decorate-the-hold"
-        title="Give a hold a local finish line"
-      >
+      <LessonSection id="decorate-the-hold" title="Both endings on one step">
+        <p>
+          <code>arm.vertical()</code> is a hold. It re-sends its position
+          request every loop and never finishes, so it suits a held button and
+          is useless as a member of a list. One call site turns it into a step.
+        </p>
         <CodeBlock
           language="java"
-          title="The condition says success; the timeout says stop waiting"
-          code={`Command raiseArm =
+          title="A condition to finish on, a timeout to give up on"
+          code={`import static org.wpilib.units.Units.Seconds;
+
+Command raiseArm =
     arm.vertical()
         .until(arm::isAtTarget)
+        .named("vertical until at target")
         .withTimeout(Seconds.of(2.0));`}
         />
         <p>
-          <code>arm.vertical()</code> remains a reusable hold. This call site
-          turns it into a finite step for one routine. The sensor condition is
-          the intended finish; the timeout prevents a disconnected sensor or
-          jammed arm from blocking the sequence forever.
+          <code>vertical()</code> itself is untouched and still reusable
+          anywhere. The condition is the ending you want. The timeout is the
+          ending you get when a sensor dies or the arm jams. It goes after{" "}
+          <code>.named(...)</code>, since <code>.withTimeout(...)</code> is a
+          method on <code>Command</code> and not on the builder.
         </p>
-        <Box
-          variant="concept"
-          title="Timeout is a seatbelt, not a success signal"
-        >
+        <Box variant="concept" title="What a timeout proves">
           <p>
-            After the command ends, check whether <code>isAtTarget()</code> is
-            true before performing an action that assumes the arm arrived. A
-            timeout means the wait ended, not that the move succeeded.
+            That the waiting is over. Nothing else. If the next step assumes the
+            arm arrived, ask <code>arm.isAtTarget()</code> again before running
+            it. Or log the answer, so a post-match file separates a success from
+            a step that hit its timeout.
           </p>
         </Box>
+        <p>
+          A routine is those steps in order. Every member needs an ending,
+          including the last one.
+        </p>
+        <CodeBlock
+          language="java"
+          title="Every member ends, so the group ends"
+          code={`Command score =
+    Command.sequence(
+            arm.vertical()
+                .until(arm::isAtTarget)
+                .named("raise arm")
+                .withTimeout(Seconds.of(2.0)),
+            flywheel.runFast().withTimeout(Seconds.of(1.0)),
+            flywheel.stop().withTimeout(Seconds.of(0.1)))
+        .named("Score");`}
+        />
+        <p>
+          The two flywheel members have no arrival to wait for, so their
+          timeouts are the intended ending rather than a backstop. Spinning for
+          one second is the instruction. <code>flywheel.stop()</code> is a hold
+          too, so without a timeout on it the group never finishes either. A
+          tenth of a second is long enough to send zero and release the
+          mechanism. Autonomous stops its drivetrain the same way.
+        </p>
       </LessonSection>
 
       <LessonSection
-        id="debounce"
-        title="Require stability when one sample is not enough"
+        id="never-finishes"
+        title="Conditions that never come true"
       >
         <p>
-          Fast mechanisms can cross the tolerance for one loop and leave again.
-          For a flywheel, shooter angle, or final drive pose, finish only after
-          the measurement remains inside tolerance for several consecutive
-          samples or a short duration. Keep that stability logic behind a named
-          mechanism method such as <code>isReadyToShoot()</code>.
+          A condition that cannot go true is as bad as a bare hold. The sequence
+          sits on that step, nothing throws, nothing logs, and the arm keeps
+          pushing. A fifteen-second autonomous period spends all fifteen on step
+          one.
         </p>
-        <ul className="ml-5 list-disc space-y-2">
-          <li>Position may need error and velocity tolerances together.</li>
-          <li>Velocity may need a minimum time inside the acceptable band.</li>
-          <li>
-            Vision alignment may need a recent target and a heading tolerance.
-          </li>
-          <li>
-            A digital sensor may need debouncing to reject contact bounce.
-          </li>
-        </ul>
+        <FigureGrid
+          cols={3}
+          items={[
+            {
+              label: "Never true",
+              term: "Tolerance too tight",
+              body: (
+                <>
+                  The arm settles half a degree outside the band and stops
+                  there. The plot looks fine. The routine does not move.
+                </>
+              ),
+            },
+            {
+              label: "Never changes",
+              term: "A dead sensor",
+              body: (
+                <>
+                  A CANcoder off the bus reports one value forever, so{" "}
+                  <code>isAtTarget()</code> gives the same answer every loop
+                  whatever the arm does.
+                </>
+              ),
+            },
+            {
+              label: "True too early",
+              term: "Passing through",
+              body: (
+                <>
+                  A fast mechanism crosses the target for one loop on its way
+                  past. The step ends while it is still moving.
+                </>
+              ),
+            },
+          ]}
+        />
+        <p>
+          The timeout covers the first two. It cannot help with the third. For a
+          mechanism that overshoots, require the reading to stay inside
+          tolerance for several loops in a row. Keep that behind the same{" "}
+          <code>isAtTarget()</code>, so no call site changes.
+        </p>
       </LessonSection>
 
-      <LessonSection
-        id="audit-a-sequence"
-        title="Audit every sequence from left to right"
-      >
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          Run it in the simulator, then break it on purpose. You are done when
+          you can tell the two endings apart without watching a clock.
+        </p>
         <ol className="ml-5 list-decimal space-y-3">
-          <li>Name what makes the current step finish.</li>
           <li>
-            Name what happens to the actuator when the step ends or is canceled.
+            Add <code>isAtTarget()</code> to <code>Arm</code>, then bind{" "}
+            <code>raiseArm</code> to a button with <code>onTrue</code> in your{" "}
+            <code>TeleopOpMode</code>. It is a step now, so it ends itself.
           </li>
-          <li>Add a defensive timeout for physical motion.</li>
+          <li>Press it once and time how long the step takes to end.</li>
           <li>
-            Decide whether a timeout should continue, branch to recovery, or
-            abort the routine.
+            Set <code>POSITION_TOLERANCE_ROT</code> to <code>0.0001</code> and
+            press it again.
           </li>
           <li>
-            Log the finish reason so a post-match file distinguishes success
-            from timeout.
+            Leave the tolerance broken, drop <code>.withTimeout(...)</code>, and
+            press it once more.
           </li>
         </ol>
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              The arm reaching its angle and the step ending well under two
+              seconds.
+            </li>
+            <li>
+              At <code>0.0001</code>, the step running the full two seconds
+              every time.
+            </li>
+            <li>
+              With the timeout gone as well, the arm pushing until you disable.
+            </li>
+          </ul>
+        </Box>
         <p>
-          With those answers explicit, the same finite steps can be used by the
-          coroutine and state-machine patterns in the next lessons.
+          Write down the tolerance you settled on and how long the step took at
+          it. That time is the floor for any timeout on this arm. Double it and
+          you have a backstop that will not fire on a good run.
         </p>
       </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "Why does isAtTarget() compare against a tolerance instead of checking whether the position equals the target?",
+            options: [
+              "Tolerance is only needed on hardware; in simulation equality works",
+              "Equality is slower to compute than a subtraction",
+              "A measured angle almost never lands exactly on the target, so an exact check would be false forever and the step would never end",
+              "The double type has no equality operator in Java",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "The encoder measures a real arm and the reading jitters. Ask for 0.25 rotations and you read 0.2497, then 0.2503. An exact comparison would almost never be true, so a step waiting on it would sit there for the rest of the match. You choose how close is close enough, in the same units as the target.",
+          },
+          {
+            id: 2,
+            question:
+              "What does arm::isAtTarget hand to .until(...), and why does arm.isAtTarget() not work in the same place?",
+            options: [
+              "Both work; the double colon is a style preference",
+              "The method itself, so the scheduler can call it every loop. The version with parentheses runs it once and passes a frozen boolean, which does not compile",
+              "A copy of the arm object, which .until then queries each loop",
+              "The method reference is faster because it skips building a lambda",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "arm::isAtTarget is shorthand for () -> arm.isAtTarget(), a question the scheduler can ask about fifty times a second. Writing arm.isAtTarget() runs the method right there and produces one boolean, and .until takes a BooleanSupplier, so javac rejects it: boolean cannot be converted to BooleanSupplier.",
+          },
+          {
+            id: 3,
+            question:
+              "arm.vertical().until(arm::isAtTarget) on its own will not compile. What is missing?",
+            options: [
+              "vertical() is a hold, and holds cannot take a finish condition",
+              "The condition has to be a lambda rather than a method reference",
+              ".until can only be used inside Command.sequence",
+              '.until hands back a builder, and .named("...") is what turns it into a Command',
+            ],
+            correctAnswer: 3,
+            explanation:
+              'Same rule as Command.sequence from Command Composition: these builders are not Commands until they are named. The compiler reports a builder type where a Command was wanted. Write .until(arm::isAtTarget).named("vertical until at target").',
+          },
+          {
+            id: 4,
+            question:
+              "A step ends after exactly the 2.0 seconds its .withTimeout(...) allowed. What do you know about the arm?",
+            options: [
+              "The command failed, so the rest of the sequence was canceled",
+              "It reached its target right at 2.0 seconds",
+              "Nothing. The timeout tells you the waiting is over, not where the arm is",
+              "The condition was never checked, because a timeout overrides it",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Ending on the timeout means the condition was still false when time ran out. The arm may be a degree short, jammed, or reading from a dead encoder. If the next step assumes arrival, ask isAtTarget() again before running it, and log the answer so a post-match file can tell the two endings apart.",
+          },
+          {
+            id: 5,
+            question:
+              "The arm settles a fraction outside tolerance, so the routine sits on that step for the rest of the match. What keeps one bad step from costing the whole autonomous period?",
+            options: [
+              "Keep .until(arm::isAtTarget) and add .withTimeout(Seconds.of(2.0)) after the .named(...)",
+              "Widen the tolerance to a quarter rotation so the check always passes",
+              "Drop .until(...) and go back to a fixed one-second timeout",
+              "Add a verticalAndWait() method to Arm that blocks until the arm arrives",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "The condition stays as the normal ending and the timeout is the backstop, so an arm that never quite arrives costs you one step instead of the whole period. A quarter-rotation tolerance would pass while the arm was still nowhere near its angle. Do not move the waiting into the mechanism either: vertical() says what the hardware does, and how long a caller waits is the caller's business.",
+          },
+          {
+            id: 6,
+            question:
+              "Why is the last member of the sequence flywheel.stop().withTimeout(Seconds.of(0.1)) rather than flywheel.stop()?",
+            options: [
+              "The timeout is what makes stop() outrank runFast() for the mechanism",
+              "Command.sequence requires a timeout on every member",
+              "stop() needs 0.1 seconds to bring the wheel to a halt",
+              "stop() is a hold, so without an ending it never finishes and neither does the group",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "stop() is built with runRepeatedly and never ends on its own, so a group ending on it is a hold as well. A tenth of a second is long enough to send zero and release the mechanism. The step still has to be there: canceling a command does not stop a motor, because idle() sends nothing and Phoenix keeps applying the last request.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

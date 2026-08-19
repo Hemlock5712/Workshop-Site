@@ -59,7 +59,6 @@ const TEXT_PROPS = new Set([
   "title",
   "outlineLabel",
   "lede",
-  "emphasis",
   "description",
   "concept",
   "subtitle",

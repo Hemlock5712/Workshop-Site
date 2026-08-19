@@ -1,180 +1,185 @@
 import PageTemplate from "@/components/PageTemplate";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import Box from "@/components/Box";
 import Link from "next/link";
-import { getLessonsBySection, type LessonSectionId } from "@/data/lessons";
+import { getLessonGroups } from "@/data/lessons";
 
 /**
- * The roadmap below is generated from `src/data/lessons.ts`, the same list
- * the sidebar reads. It used to be two hand-typed link columns and it had
- * drifted badly — wrong order, duplicate entries, six missing pages. Do not
- * hand-list lessons here again. Add the lesson to `lessons.ts` and it shows
- * up in both places.
+ * The roadmap is read straight off `src/data/lessons.ts`: group number, group
+ * title, group blurb, lesson order, lesson numbers, optional flags. There is
+ * no local copy of any of it.
+ *
+ * There used to be a `ROADMAP` const here holding hand-typed headings and
+ * blurbs beside the derived lesson lists, which meant `SECTIONS` in
+ * `lessons.ts` and this file said two different things about the same five
+ * workshops. Add or rename a workshop in `lessons.ts` and this page follows.
  */
-const ROADMAP: ReadonlyArray<{
-  id: LessonSectionId;
-  heading: string;
-  blurb: string;
-}> = [
-  {
-    id: "workshop1",
-    heading: "Workshop #1: Hardware & CTRE",
-    blurb:
-      "Wire and identify the hardware, then tune PID and Motion Magic entirely in Phoenix Tuner X. No Java yet.",
-  },
-  {
-    id: "workshop2",
-    heading: "Workshop #2: Robot Programming",
-    blurb:
-      "Learn the Java you need, create the project, and build its Commands v3 structure from Robot.java through mechanisms and logging.",
-  },
-  {
-    id: "workshop3",
-    heading: "Workshop #3: Swerve & Autonomous",
-    blurb:
-      "Generate and calibrate a swerve drive, design a path, and run it from an autonomous OpMode.",
-  },
-  {
-    id: "workshop4",
-    heading: "Workshop #4: Vision & Navigation",
-    blurb:
-      "Correct odometry with vision, drive to a pose, profile the motion, and reason about dynamic paths.",
-  },
-  {
-    id: "workshop5",
-    heading: "Workshop #5: Advanced Commands",
-    blurb:
-      "Build longer behaviors with command composition, finish conditions, coroutines, and state machines.",
-  },
-];
+const WORKSHOPS = getLessonGroups().filter((group) => group.id !== "main");
+
+/**
+ * Counted off `WORKSHOPS`, not off `LESSON_COUNT`. `LESSON_COUNT` is every
+ * lesson including the three Getting Started pages, which the roadmap below
+ * does not list, so quoting it here printed a total the page then failed to
+ * show.
+ */
+const WORKSHOP_LESSONS = WORKSHOPS.reduce(
+  (total, group) => total + group.lessons.length,
+  0
+);
 
 export default function Introduction() {
-  const workshop1 = getLessonsBySection("workshop1");
-  const workshop2 = getLessonsBySection("workshop2");
-  const workshop3 = getLessonsBySection("workshop3");
-  const workshop4 = getLessonsBySection("workshop4");
-  const workshop5 = getLessonsBySection("workshop5");
-
   return (
     <PageTemplate
-      title="A motor that does nothing, then a robot that finds its own way across the field"
-      emphasis="finds its own way"
-      lede="This site is the written version of Team 5712's programming workshop. You start by making one motor turn. You finish with a swerve drive that drives itself to a spot it located with a camera."
+      title="Workshop Overview"
+      lede="This site is the written version of Team 5712's programming workshop. It starts with one motor on a bench and ends with a swerve drive that finds its own way to a target. Every lesson runs on real CTRE hardware."
       needs={[
         <>
-          <strong>Hardware, for real.</strong> Workshop #1 runs on a Kraken X44
-          motor, a ThroughBore encoder (a CANcoder inside), and a CANivore.
-          Workshop #3 adds a swerve drivetrain, and Workshop #4 adds a Limelight
-          camera. There is no version of this course you can do without them:
-          see the note below.
+          A <strong>Kraken X44</strong>, a <strong>ThroughBore encoder</strong>,
+          and a <strong>CANivore</strong>.
         </>,
         <>
-          <strong>Software.</strong>{" "}
+          Every download on{" "}
           <Link href="/prerequisites" className="underline font-medium">
             Prerequisites
-          </Link>{" "}
-          lists every download you need before lesson one. Install it all first.
-          Nothing later stops to wait for you.
-        </>,
-        <>
-          <strong>No Java yet.</strong> You do not need to know a line of it to
-          start. Workshop #1 stays entirely inside Tuner X. Workshop #2 begins
-          with the twelve pieces of Java this site uses, at{" "}
-          <Link href="/java-basics" className="underline font-medium">
-            The Java You Need
           </Link>
-          , before any lesson asks you to write code. Everything before that
-          page is readable without it.
+          , done before the first hardware lesson.
         </>,
         <>
-          <strong>A mechanism to program.</strong> An old competition arm or
-          shooter works. If you need to build one,{" "}
+          A mechanism to drive.{" "}
           <Link href="/mechanism-cad" className="underline font-medium">
             Mechanism CAD
           </Link>{" "}
-          has the 3D models and the parts lists for both.
+          has models for two.
         </>,
+        <>No Java yet. Workshop 1 never leaves Tuner X.</>,
       ]}
-      time="about an hour"
+      time="8 minutes"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "Nothing here assumes you have written code before. It does assume the hardware is in front of you. Every lesson ends with something you can hear and watch move, which is the whole reason the course is shaped this way.",
-          ]}
-          concept="Read the pages in order. Each workshop establishes the hardware or software assumptions used by the next one."
-        />
-        <MarginNote label="HOW LONG">
-          The five workshops contain {workshop1.length}, {workshop2.length},{" "}
-          {workshop3.length}, {workshop4.length}, and {workshop5.length}{" "}
-          lessons. Most lessons run 20 to 45 minutes; a few take about an hour.
-          Plan on more than one sitting for the longer workshops.
+        <ProseBlock>
+          <p>
+            Nothing here assumes you have written code before. It does assume a
+            mechanism is sitting in front of you, and that someone nearby can
+            cut power to it.
+          </p>
+          <p>
+            Team 5712, Hemlock&apos;s Gray Matter, wrote this workshop and still
+            teaches it in a room. These pages are the same material in the same
+            order, so a team can work through it without us.
+          </p>
+        </ProseBlock>
+        <MarginNote label="How long">
+          {WORKSHOP_LESSONS} lessons in {WORKSHOPS.length} workshops. Reading
+          one takes about ten minutes. Doing it at the bench takes far longer,
+          and nobody finishes a whole workshop in one sitting.
         </MarginNote>
       </Split>
 
       {/* ── hardware is not optional ─────────────────────────────────── */}
-      <LessonSection
-        id="the-hardware-is-the-course"
-        title="The hardware is the course"
-      >
+      <LessonSection id="the-hardware-is-the-course" title="Required hardware">
         <p>
-          Read this before you start, not at lesson thirteen. This workshop has
-          no software-only path. Later pages talk about running your code in
-          &quot;hardware simulation,&quot; and that phrase misleads people: your
-          laptop runs the robot program and drives{" "}
-          <strong>real motors over a CANivore</strong>. It is not a physics
-          model of a robot. Unplug the hardware and there is nothing to watch.
+          There is no software-only path through this workshop. Later lessons
+          talk about running your code in &quot;hardware simulation,&quot; and
+          the phrase misleads people. Your laptop stands in for the robot
+          controller. The motors are real, the CAN bus is real, and the arm on
+          the bench is the arm that moves.
         </p>
 
         <Box
           variant="alert-warning"
           tag="WATCH OUT"
-          title="CTRE hardware, and nothing else"
+          title="Simulation still swings the arm"
         >
           <p>
-            Every page names the actual device: Kraken, TalonFX, CANcoder,
-            CANivore, Phoenix 6. There are no &quot;if you are using a different
-            motor controller&quot; branches anywhere on the site, because the
-            workshop supplies the hardware and every team following along builds
-            the same mechanism. If your shop runs something else, the ideas
-            transfer and the code does not.
+            Nothing about the word simulation makes a mechanism safe. Bolt it
+            down before the first lesson and give it room to swing. Keep one
+            person on the power switch who is not driving the laptop.
           </p>
         </Box>
+
+        <p>
+          Every page names the device it means: Kraken, TalonFX, CANcoder,
+          CANivore, Phoenix 6. There are no branches here for a different motor
+          controller. The workshop supplies the hardware and every team
+          following along builds the same mechanism. If your shop runs something
+          else, the ideas carry over and the code does not.
+        </p>
+
+        <p>
+          The list grows twice. Workshop 3 needs a swerve drivetrain, four
+          modules on a frame that drives. Workshop 4 needs a Limelight bolted to
+          that frame and reachable on the network. You can read both workshops
+          without the parts, but you cannot do them.
+        </p>
       </LessonSection>
 
       {/* ── the stack ────────────────────────────────────────────────── */}
-      <LessonSection
-        id="what-you-are-learning-exactly"
-        title="What you are learning, exactly"
-      >
-        <p>
-          Which version of FRC&apos;s libraries you are learning decides whether
-          outside help is any use to you. FRC programming changed shape for
-          2027, and this site teaches the new shape:
-        </p>
+      <LessonSection id="what-you-are-learning-exactly" title="The 2027 stack">
+        <Split>
+          <ProseBlock>
+            <p>
+              Which version of WPILib you are learning decides whether outside
+              help is any use to you. FRC programming changed shape for 2027,
+              and this site teaches the new shape.
+            </p>
+          </ProseBlock>
+          <MarginNote label="Alpha">
+            WPILib 2027 and Phoenix 6 are both alpha releases, so an API can
+            move between builds.{" "}
+            <Link href="/project-setup" className="underline">
+              Project Setup
+            </Link>{" "}
+            pins the exact versions these pages were written against.
+          </MarginNote>
+        </Split>
 
-        <ul className="ml-4 list-disc space-y-2">
-          <li>
-            <strong>WPILib 2027 alpha</strong>, with{" "}
-            <strong>Commands v3</strong> and <strong>OpModes</strong>.
-            Mechanisms, commands, and triggers, with each robot mode written as
-            its own class.
-          </li>
-          <li>
-            <strong>Java 25</strong>, in packages that start with{" "}
-            <code>org.wpilib</code>.
-          </li>
-          <li>
-            <strong>SystemCore</strong>: the robot controller your code deploys
-            to.
-          </li>
-          <li>
-            <strong>CTRE Phoenix 6</strong>, also an alpha release, for every
-            motor and sensor.
-          </li>
-        </ul>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "Library",
+              term: "WPILib 2027 alpha",
+              body: (
+                <>
+                  Commands v3 and OpModes. Each robot mode is its own class, and
+                  each mechanism hands out the commands that drive it.
+                </>
+              ),
+            },
+            {
+              label: "Language",
+              term: "Java 25",
+              body: (
+                <>
+                  Packages start with <code>org.wpilib</code>. An example that
+                  says <code>edu.wpi.first</code> was written for an older year.
+                </>
+              ),
+            },
+            {
+              label: "Controller",
+              term: "SystemCore",
+              body: (
+                <>
+                  The board your code deploys to. Setup instructions written for
+                  a roboRIO do not apply.
+                </>
+              ),
+            },
+            {
+              label: "Vendor",
+              term: "Phoenix 6 alpha",
+              body: (
+                <>
+                  CTRE&apos;s library, and the only vendor library in the
+                  course. It drives every motor and sensor you touch.
+                </>
+              ),
+            },
+          ]}
+        />
 
         <p>
           Almost every FRC tutorial you find by searching was written for
@@ -182,134 +187,183 @@ export default function Introduction() {
           <code>RobotContainer</code>, import <code>edu.wpi.first</code>{" "}
           packages, and pick autonomous routines from a dashboard dropdown. None
           of that exists here. When an answer from the internet does not match
-          what you see on screen, this is usually why.
+          your screen, that is usually the reason.
+        </p>
+      </LessonSection>
+
+      {/* ── how to read a lesson ─────────────────────────────────────── */}
+      <LessonSection id="how-a-lesson-works" title="Parts of a lesson">
+        <p>
+          Every page on this site is built the same way. Learn the parts once
+          here, instead of puzzling over them on every page that follows.
         </p>
 
-        <Box
-          variant="alert-info"
-          tag="NOTE · API STATUS"
-          title="Alpha software moves"
-        >
-          <p>
-            Both WPILib 2027 and Phoenix 6 are alpha releases, so an API can
-            change between builds.{" "}
-            <Link href="/project-setup" className="underline font-medium">
-              Project Setup
-            </Link>{" "}
-            pins the exact versions this site was written against. Match them
-            and the code on these pages compiles.
-          </p>
-        </Box>
+        <FigureGrid
+          cols={3}
+          items={[
+            {
+              label: "Top",
+              term: "You'll need",
+              body: (
+                <>
+                  Two sentences under the title say what the page does. Beside
+                  them sits a list of what must already be true. A line you
+                  cannot tick is a reason to go back.
+                </>
+              ),
+            },
+            {
+              label: "Margin",
+              term: "Branch and time",
+              body: (
+                <>
+                  Many lessons name a Workshop-Code branch holding the finished
+                  code for that page. The time beside it is a read-through, not
+                  a bench session.
+                </>
+              ),
+            },
+            {
+              label: "Bottom",
+              term: "Check your work",
+              body: (
+                <>
+                  The last section of every lesson is a result you can see,
+                  hear, or measure. It names what should happen at the bench
+                  once the page is done.
+                </>
+              ),
+            },
+          ]}
+        />
+
+        <p>
+          Stop at a failed check. The next lesson assumes the last one worked. A
+          wrong CAN ID at lesson five turns into an hour of confusion at lesson
+          twelve, and by then nobody suspects the wiring.
+        </p>
       </LessonSection>
 
       {/* ── the road ─────────────────────────────────────────────────── */}
       <LessonSection id="the-road-ahead" title="The road ahead">
         <p>
-          The same list lives in the sidebar, and the arrows at the bottom of
-          every page walk it in order. Lessons marked <em>optional</em> are side
-          trips: skip one and the next lesson still works.
+          Read the pages in order. Each workshop assumes the hardware or the
+          code from the one before it. The arrows at the bottom of every page
+          walk that list for you.
+        </p>
+
+        <p>
+          Workshop 1 never opens VS Code. Workshop 2 starts with{" "}
+          <Link href="/java-basics" className="underline font-medium">
+            Java Basics
+          </Link>
+          , which covers the language this site uses before any lesson asks you
+          to write code. Lessons marked optional are side trips: skip one and
+          the next lesson still works.
         </p>
 
         <div className="flex flex-col gap-6">
-          {ROADMAP.map((section) => {
-            const lessons = getLessonsBySection(section.id);
-            return (
-              <div key={section.id} className="module">
-                <h3 className="display m-0 mb-2 text-lede">
-                  {section.heading}
-                </h3>
-                <p
-                  className="mb-4 max-w-[70ch] text-note"
-                  style={{ color: "var(--tx2)" }}
+          {WORKSHOPS.map((group) => (
+            <div key={group.id} className="module">
+              <h3 className="display m-0 mb-2 text-lede">
+                <span
+                  className="mono mr-3 text-micro"
+                  style={{ color: "var(--accent)", letterSpacing: "0.08em" }}
                 >
-                  {section.blurb}
-                </p>
-                <ol className="grid gap-2 sm:grid-cols-2">
-                  {lessons.map((lesson, i) => (
-                    <li key={lesson.slug}>
-                      <Link
-                        href={lesson.slug}
-                        className="flex items-baseline gap-3 rounded-md border border-[var(--rule-soft)] bg-[var(--bg)] p-3 transition-colors hover:border-[var(--accent)]"
+                  {group.num}
+                </span>
+                {group.title}
+              </h3>
+              <p
+                className="mb-4 max-w-[70ch] text-note"
+                style={{ color: "var(--tx2)" }}
+              >
+                {group.blurb}
+              </p>
+              <ol className="grid gap-2 sm:grid-cols-2">
+                {group.lessons.map((lesson) => (
+                  <li key={lesson.slug}>
+                    <Link
+                      href={lesson.slug}
+                      className="flex items-baseline gap-3 rounded-md border border-[var(--rule-soft)] bg-[var(--bg)] p-3 transition-colors hover:border-[var(--accent)]"
+                    >
+                      <span
+                        className="mono shrink-0 text-micro"
+                        style={{
+                          color: "var(--accent)",
+                          letterSpacing: "0.08em",
+                        }}
                       >
-                        <span
-                          className="mono shrink-0 text-micro"
-                          style={{
-                            color: "var(--accent)",
-                            letterSpacing: "0.08em",
-                          }}
-                        >
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
-                        <span
-                          className="text-note font-medium"
-                          style={{ color: "var(--tx)" }}
-                        >
-                          {lesson.title}
-                          {lesson.optional && (
-                            <span
-                              className="mono ml-2 text-micro"
-                              style={{
-                                color: "var(--tx2)",
-                                letterSpacing: "0.08em",
-                                textTransform: "uppercase",
-                              }}
-                            >
-                              optional
-                            </span>
-                          )}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            );
-          })}
+                        {lesson.num}
+                      </span>
+                      <span
+                        className="text-note font-medium"
+                        style={{ color: "var(--tx)" }}
+                      >
+                        {lesson.title}
+                        {lesson.optional && (
+                          <span
+                            className="mono ml-2 text-micro"
+                            style={{
+                              color: "var(--tx2)",
+                              letterSpacing: "0.08em",
+                              textTransform: "uppercase",
+                            }}
+                          >
+                            optional
+                          </span>
+                        )}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          ))}
         </div>
-
-        <Box
-          variant="alert-info"
-          tag="PATHPLANNER · 2027 ALPHA"
-          title="Use the editor without importing the old command stack"
-        >
-          <p>
-            Workshop #3 teaches PathPlanner&apos;s route editor and path
-            vocabulary. Its published Java integration examples still target
-            Commands v2, so the 2027 project does not import those examples. The
-            next lesson builds the autonomous lifecycle with Commands v3 and
-            OpModes.
-          </p>
-        </Box>
       </LessonSection>
 
-      {/* ── who wrote this ───────────────────────────────────────────── */}
-      <LessonSection
-        id="who-this-is-for-and-who"
-        title="Who this is for, and who made it"
-      >
+      {/* ── the check ────────────────────────────────────────────────── */}
+      <LessonSection id="check-your-work" title="Check your work">
         <p>
-          This is written for FRC students, most of them in middle or high
-          school, who have never programmed anything. It is also written for the
-          mentor or lead programmer sitting next to them, which is why the pages
-          say what the code does rather than only what to type.
+          This page has nothing to run. What it has is a shopping list, and the
+          course goes badly for anyone who discovers a missing item at lesson
+          nine. Work through all four before the next page.
         </p>
 
-        <p>
-          Team 5712, Hemlock&apos;s Gray Matter, built this site with help from
-          its friends. Two goals shaped it. The first is that you learn the
-          patterns good FRC teams already use, instead of inventing your own and
-          finding out in week five. The second is that the code holds up at a
-          competition, where a match lasts two and a half minutes, nobody can
-          reach the robot, and the thing that breaks is never the thing you
-          tested.
-        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            A <strong>Kraken X44</strong> and a <strong>CANivore</strong>, with
+            a USB cable long enough to reach your laptop.
+          </li>
+          <li>
+            A <strong>ThroughBore encoder</strong>. The code calls it a{" "}
+            <code>CANcoder</code>, because that is the chip inside it.
+          </li>
+          <li>
+            A mechanism bolted to a bench, powered, with a clear path to swing.
+          </li>
+          <li>
+            A laptop you are allowed to install software on, and a mentor who
+            can approve it if you are not.
+          </li>
+        </ol>
+
+        <Box variant="alert-success" title="You are ready when">
+          <p>
+            All four lines above are true, and the hardware is in front of you
+            rather than on a purchase order. Nothing on that list gets easier to
+            find later in the course.
+          </p>
+        </Box>
 
         <p>
-          Start with{" "}
+          Next is{" "}
           <Link href="/prerequisites" className="underline font-medium">
             Prerequisites
           </Link>
-          .
+          , which is every download and account you need before the hardware
+          gets plugged in.
         </p>
       </LessonSection>
     </PageTemplate>

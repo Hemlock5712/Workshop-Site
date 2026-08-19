@@ -1,103 +1,72 @@
 import PageTemplate from "@/components/PageTemplate";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import ContentCard from "@/components/ContentCard";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { Terminal, Bot, Blocks, BookOpen, FolderTree } from "lucide-react";
+import { BookOpen, FolderTree } from "lucide-react";
 
+/**
+ * Optional lesson. Not in `LESSONS`, and the target of a 308 redirect from
+ * `/ai-assistant` in `next.config.ts`, so the route has to keep answering.
+ *
+ * Rewritten August 2026 against `context/writing-style.md`. It was 26.4
+ * minutes across seven sections with seven asides, most of it spent on a
+ * prompt-by-prompt walkthrough that quoted `Arm.java` and `TeleopOpMode.java`
+ * back in full. Both files are taught on `/adding-commands` already, so the
+ * two Java CodeBlocks that restated them are gone, along with the three
+ * assistant cards and the five skill cards that the directory tree below
+ * already labels.
+ *
+ * What survives is the part no other page carries: this stack postdates the
+ * training data, so an assistant writes Commands v2 with total confidence.
+ * The tells table, the read-before-you-write prompt, and the build-first habit
+ * are the lesson.
+ *
+ * Restored on review, as content a student needs rather than prose: the second
+ * `Arm.java` path a template clone has ("one folder deeper" without
+ * naming `arm/` is not a path); the two filenames a Copilot or Codex session
+ * has to be handed, plus the `AGENTS.md` / `.github/copilot-instructions.md`
+ * that stop you retyping them; the instruction to reuse `SLOW_VOLTAGE` rather
+ * than only the observation that a new constant is wrong; the missing-`onFalse`
+ * diagnostic for an arm that keeps pushing after you let go; and `Running Your
+ * Code` in `needs[]`, which the closing check depends on. Paid for out of the
+ * duplication in the `Split`, never out of a step.
+ *
+ * The alert-danger also claimed counting files caught two of the three
+ * failures. Counting catches one. Reading the diff is what catches a v2 import.
+ */
 export default function AICodingAssistant() {
   return (
     <PageTemplate
-      title="A teammate that types fast and is sometimes confidently wrong"
-      emphasis="confidently wrong"
-      lede="An AI coding assistant works inside your robot project. It reads your files, writes new commands, runs Gradle, and explains what it did. The template you cloned at Project Setup already ships the instructions these tools need."
+      title="AI Coding Assistant"
+      lede="An assistant reads your robot project, writes commands, and runs Gradle. It also writes Commands v2 by default, because v3 is newer than nearly everything it learned from. Optional: nothing else depends on it."
+      needs={[
+        <>
+          The robot project from <strong>Project Setup</strong>, with its{" "}
+          <code>.claude/</code> folder intact.
+        </>,
+        <>
+          The <code>2-Commands</code> code: <code>Arm.java</code> with{" "}
+          <code>runSlow()</code>, <code>runFast()</code> and <code>stop()</code>
+          .
+        </>,
+        <>One assistant installed: Claude Code, Copilot, or Codex.</>,
+        <>
+          Enough Java to argue with a diff, and{" "}
+          <strong>Running Your Code</strong> already done.
+        </>,
+      ]}
       branch="2-Commands"
+      time="25 minutes at a keyboard"
     >
-      <KeyConceptSection
-        description={[
-          "It will also hand you code for the wrong framework, because the framework this workshop teaches is newer than almost everything the model was trained on. Most of this page is about spotting that.",
-        ]}
-        concept="The assistant writes the code. Checking it against the real project is your job, and this page shows you how."
-      />
-
-      <Box
-        variant="alert-info"
-        tag="OPTIONAL · BEFORE YOU START"
-        title="What this page needs, and what you get out of it"
-      >
+      <LessonSection id="commands-v2-by-default" title="Commands v2 by default">
         <p>
-          <strong>This one is optional.</strong> No later lesson depends on it,
-          and nothing earlier does either: you can read it whenever you like.
-        </p>
-        <p className="mt-3">
-          It sits at the end of the course on purpose. An assistant is only
-          useful once you can tell whether it is lying to you, and the way you
-          learn that is by writing the code yourself first. Read it now and it
-          is a tool. Read it at lesson 9 and it is a way to skip lesson 9.
-        </p>
-        <p className="mt-3">
-          The worked examples below run against <code>2-Commands</code>: the
-          branch from <strong>Commands</strong>, near the start of Control
-          Fundamentals. That is deliberate: the point is to check an
-          assistant&rsquo;s answers against code you already understand
-          completely, not to have it explain something new.
-        </p>
-        <ul className="mt-3 ml-4 list-disc space-y-1">
-          <li>
-            The robot project from <strong>Project Setup</strong>. The{" "}
-            <code>.claude/</code> folder has been sitting in it since you cloned
-            it.
-          </li>
-          <li>
-            The <code>2-Commands</code> code from <strong>Commands</strong>:{" "}
-            <code>Arm.java</code> with <code>runSlow()</code>,{" "}
-            <code>runFast()</code> and <code>stop()</code>, and a{" "}
-            <code>TeleopOpMode</code> with three bindings in it. If your project
-            does not look like that yet, check out the <code>2-Commands</code>{" "}
-            branch of{" "}
-            <a
-              href="https://github.com/Hemlock5712/Workshop-Code/tree/2-Commands"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--accent)] hover:underline"
-            >
-              Workshop-Code
-            </a>{" "}
-            and work from there: every file path and identifier on this page
-            comes from that branch.
-          </li>
-          <li>
-            The ability to run the code and press a button, from{" "}
-            <strong>Running Your Code</strong>.
-          </li>
-          <li>One assistant installed. Three options are listed below.</li>
-        </ul>
-        <p className="mt-3">
-          <strong>What you&apos;ll do:</strong> ask an assistant to explain one
-          line of <code>Arm.java</code>, then ask it to add a{" "}
-          <code>runReverse()</code> command on the B button, then check both
-          answers against the real files. <strong>Roughly 20 minutes.</strong>
-        </p>
-      </Box>
-
-      {/* ── THE V2 PROBLEM ───────────────────────────────────────────── */}
-      <LessonSection
-        id="it-will-write-the-wrong-framework"
-        title="It will write the wrong framework"
-      >
-        <p className="prose-body measure">
-          Read this part even if you skip the rest of the page. WPILib 2027 and
-          Commands v3 are newer than the code these models learned from. Nearly
-          every FRC repository on the internet, every tutorial, every forum
-          thread is <strong>Commands v2</strong>. So that is what an assistant
-          reaches for, and it does not hedge: it writes v2 with complete
-          confidence.
+          Read this section even if you skip the rest. Nearly every FRC
+          repository online is Commands v2, so that is what an assistant reaches
+          for. It does not hedge. The code looks right and does not compile.
         </p>
 
         <CodeBlock
@@ -124,67 +93,84 @@ public class Arm extends Mechanism {
 }`}
         />
 
-        <Box
-          variant="alert-warning"
-          tag="THE TELLS"
-          title="The tells that mean it wrote v2"
-        >
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              <code>import edu.wpi.first.…</code> anywhere. Every WPILib import
-              in this project starts <code>org.wpilib.</code>
-            </li>
-            <li>
-              <code>extends SubsystemBase</code>. Here it is{" "}
-              <code>extends Mechanism</code>.
-            </li>
-            <li>
-              A <code>RobotContainer</code> class, or a{" "}
-              <code>SendableChooser</code> for picking an autonomous. Neither
-              exists in this stack. Modes are separate classes in{" "}
-              <code>opmodes/</code> tagged <code>@Teleop</code> or{" "}
-              <code>@Autonomous</code>.
-            </li>
-            <li>
-              <code>SequentialCommandGroup</code>,{" "}
-              <code>ParallelCommandGroup</code>, <code>InstantCommand</code>,{" "}
-              <code>RunCommand</code>. v3 spells those{" "}
-              <code>Command.sequence(...)</code>,{" "}
-              <code>Command.parallel(...)</code>, and the mechanism factories
-              you already use.
-            </li>
-            <li>
-              <code>@Override public void periodic()</code> inside a{" "}
-              <code>Mechanism</code>. A <code>Mechanism</code> has no{" "}
-              <code>periodic()</code>: what it hands you is <code>run</code>,{" "}
-              <code>runRepeatedly</code>, <code>idle</code>,{" "}
-              <code>idleFor</code> and <code>setDefaultCommand</code>. An OpMode
-              does have a <code>periodic()</code>, so seeing one in{" "}
-              <code>TeleopOpMode.java</code> is fine. It is only a tell when it
-              turns up in a mechanism.
-            </li>
-            <li>
-              The word <strong>roboRIO</strong>. This code deploys to
-              SystemCore.
-            </li>
-          </ul>
-        </Box>
+        <p>Six spellings tell you which framework you got.</p>
 
-        <p className="prose-body measure">
-          The fastest check is not reading. It is building. Run{" "}
-          <code>gradlew build</code> and a v2 import fails immediately with
-          something like{" "}
+        <div className="measure-wide overflow-x-auto">
+          <table className="w-full min-w-[520px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">It wrote</th>
+                <th className="px-3 py-2 text-left">This project uses</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>import edu.wpi.first.…</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>org.wpilib.…</code>, on every WPILib import
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>extends SubsystemBase</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>extends Mechanism</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>RobotContainer</code>, <code>SendableChooser</code>
+                </td>
+                <td className="px-3 py-2">
+                  One class per mode under <code>opmodes/</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>SequentialCommandGroup</code>,{" "}
+                  <code>InstantCommand</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>Command.sequence(...)</code> and the mechanism factories
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>periodic()</code> in a mechanism
+                </td>
+                <td className="px-3 py-2">
+                  <code>run</code>, <code>runRepeatedly</code>,{" "}
+                  <code>idle</code>
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">roboRIO</td>
+                <td className="px-3 py-2">SystemCore</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          An OpMode does have a <code>periodic()</code>. A mechanism has none.
+        </p>
+
+        <p>
+          The compiler settles this faster than reading does. Run{" "}
+          <code>gradlew build</code> and a v2 import fails at once with{" "}
           <code>package edu.wpi.first.wpilibj2.command does not exist</code>.
-          Build after every change an assistant makes, before you run anything.
+          Build after every change, before you run anything.
         </p>
       </LessonSection>
 
-      {/* ── WHAT THE TEMPLATE SHIPS ──────────────────────────────────── */}
       <LessonSection
         id="what-the-template-already-tells-the"
-        title="What the template already tells the assistant"
+        title="What the template ships"
       >
-        <p className="prose-body measure">
+        <p>
           The{" "}
           <a
             href="https://github.com/Hemlock5712/2027-Template"
@@ -194,18 +180,9 @@ public class Arm extends Mechanism {
           >
             2027-Template
           </a>{" "}
-          ships with an instruction file and five <strong>Agent Skills</strong>{" "}
-          that describe how this specific robot works. They exist to close the
-          gap above. Grounding the assistant in the real project is the
-          difference between v2 that will not compile and v3 that does.
-        </p>
-
-        <p className="prose-body measure">
-          A <strong>skill</strong> is a folder holding a <code>SKILL.md</code>{" "}
-          file: plain Markdown with a short description at the top saying{" "}
-          <em>when</em> to read it. Your question matches the description, the
-          assistant loads the file, and follows what it says. Because a skill is
-          Markdown, any assistant that can open files can use one.
+          ships an instruction file and five Agent Skills describing this robot.
+          A skill is a folder holding one <code>SKILL.md</code>: plain Markdown,
+          whose top line says when to read it.
         </p>
 
         <CodeBlock
@@ -223,222 +200,60 @@ public class Arm extends Mechanism {
         └── teaching/SKILL.md            ← teacher mode (on by default)`}
         />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h3 className="display m-0 text-aside">
-              <code>robot-description</code>
-            </h3>
-            <p className="text-note" style={{ color: "var(--tx2)" }}>
-              The map of the code: OpModes, Mechanisms, commands, and where each
-              piece lives. It carries the biggest surprise for anyone coming
-              from Commands v2: the &quot;there is no RobotContainer&quot;
-              wiring model. This is the skill an assistant should read before
-              touching anything.
-            </p>
-          </ContentCard>
-
-          <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h3 className="display m-0 text-aside">
-              <code>game-info</code>
-            </h3>
-            <p className="text-note" style={{ color: "var(--tx2)" }}>
-              Field and alliance conventions the code enforces:
-              blue-alliance-origin coordinates, operator-perspective flipping,
-              and the AprilTag conventions. Its game-piece and field-zone
-              sections are marked TODO until a real season game is wired in.
-            </p>
-          </ContentCard>
-
-          <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h3 className="display m-0 text-aside">
-              <code>run-sim</code>
-            </h3>
-            <p className="text-note" style={{ color: "var(--tx2)" }}>
-              How to run the robot in simulation, including a headless{" "}
-              <code>gradlew simulateJavaAgent</code> task that enables the robot
-              without anyone clicking Enable, so the assistant can run a routine
-              by itself and check the result.
-            </p>
-          </ContentCard>
-
-          <ContentCard tag="SKILL" className="flex flex-col gap-2">
-            <h3 className="display m-0 text-aside">
-              <code>log-reading</code>
-            </h3>
-            <p className="text-note" style={{ color: "var(--tx2)" }}>
-              Where <code>.wpilog</code> and <code>.hoot</code> files land,
-              which telemetry keys this robot actually publishes, and how to
-              analyse a run: in AdvantageScope or with a script the assistant
-              writes itself.
-            </p>
-          </ContentCard>
-
-          <ContentCard
-            tag="SKILL"
-            className="flex flex-col gap-2 md:col-span-2"
-          >
-            <h3 className="display m-0 text-aside">
-              <code>teaching</code>
-            </h3>
-            <p className="text-note" style={{ color: "var(--tx2)" }}>
-              Teacher mode is <strong>on by default</strong>. It tells the
-              assistant to explain things the way a student needs them: plain
-              words first, one idea at a time, a pointer to the exact file and
-              line instead of a wall of pasted code. The code it writes is still
-              real, correct code: only the explanations change. A mentor doing
-              focused work can say &quot;teacher mode off&quot; for the session.
-            </p>
-          </ContentCard>
-        </div>
+        <p>
+          Point an assistant at <code>robot-description</code> first. It carries
+          the wiring model, and the surprise for anyone coming from v2: there is
+          no <code>RobotContainer</code>. Teacher mode is on by default and
+          keeps explanations short.
+        </p>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/ONBOARDING.md"
-          title="ONBOARDING.md: there is no RobotContainer"
+          title="ONBOARDING.md: the wiring model"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>
 
-      {/* ── PICK ONE ─────────────────────────────────────────────────── */}
-      <LessonSection id="pick-an-assistant" title="Pick an assistant">
-        <p className="prose-body measure">
-          Any agentic coding tool works, because the skills are ordinary
-          Markdown files. These three are what we see teams using.
-        </p>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Terminal
-                className="h-5 w-5"
-                style={{ color: "var(--accent)" }}
-              />
-              <h3 className="display m-0 text-aside">Claude Code</h3>
-            </div>
-            <p className="flex-1 text-note" style={{ color: "var(--tx2)" }}>
-              Anthropic&apos;s coding agent, in the terminal or as a VS Code
-              extension. It reads <code>CLAUDE.md</code> on startup and finds
-              the skills on its own, so there is nothing to configure.
-            </p>
-            <a
-              href="https://claude.com/claude-code"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-note text-[var(--accent)] hover:underline"
-            >
-              claude.com/claude-code
-            </a>
-          </ContentCard>
-
-          <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Blocks className="h-5 w-5" style={{ color: "var(--accent)" }} />
-              <h3 className="display m-0 text-aside">GitHub Copilot</h3>
-            </div>
-            <p className="flex-1 text-note" style={{ color: "var(--tx2)" }}>
-              Lives inside VS Code, which you already have open for WPILib.
-              Agent mode edits files and runs Gradle tasks. Free for verified
-              students through GitHub Education.
-            </p>
-            <a
-              href="https://github.com/features/copilot"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-note text-[var(--accent)] hover:underline"
-            >
-              github.com/features/copilot
-            </a>
-          </ContentCard>
-
-          <ContentCard tag="ASSISTANT" className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <Bot className="h-5 w-5" style={{ color: "var(--accent)" }} />
-              <h3 className="display m-0 text-aside">OpenAI Codex</h3>
-            </div>
-            <p className="flex-1 text-note" style={{ color: "var(--tx2)" }}>
-              OpenAI&apos;s coding agent, as a CLI and an IDE extension.
-              Configure it with an <code>AGENTS.md</code> file that points at
-              the template&apos;s skill files.
-            </p>
-            <a
-              href="https://openai.com/codex"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-note text-[var(--accent)] hover:underline"
-            >
-              openai.com/codex
-            </a>
-          </ContentCard>
-        </div>
-
-        <Box
-          variant="alert-tip"
-          tag="COPILOT / CODEX"
-          title="Point them at the skill yourself"
-        >
-          <p>
-            Only Claude Code discovers <code>.claude/skills/</code>{" "}
-            automatically. With the other two, name the file in your first
-            message of a session:
-          </p>
-          <div className="mt-3">
-            <CodeBlock
-              language="text"
-              hideControls
-              code={`Read .claude/skills/robot-description/SKILL.md and ONBOARDING.md before
-you change anything in this project.`}
-            />
-          </div>
-          <p className="mt-3">
-            To make that automatic, reference the skills folder from{" "}
-            <code>.github/copilot-instructions.md</code> or{" "}
-            <code>AGENTS.md</code> at the project root.
-          </p>
-        </Box>
-      </LessonSection>
-
-      {/* ── PROMPT 1 ─────────────────────────────────────────────────── */}
-      <LessonSection
-        id="prompt-1-make-it-read-before"
-        title="Prompt 1: make it read before it writes"
-      >
+      <LessonSection id="read-before-it-writes" title="Read before writing">
         <Split>
           <ProseBlock>
             <p>
               Start with a question you can grade. You already know what this
-              line does, which is exactly why it is a good first prompt: you are
-              testing the assistant, not the code.
+              line does, so the answer tells you about the assistant.
             </p>
           </ProseBlock>
-          <MarginNote label="WHY START HERE">
-            This prompt changes nothing, so the worst case is a wrong
-            explanation you can catch by opening the file. If the answer is
-            vague, or it starts talking about <code>SubsystemBase</code>, you
-            have learned something useful before letting it write anything: that
-            session is not grounded, and you should point it at the skills.
+          <MarginNote label="Nothing at risk">
+            The prompt below changes no files, so the worst case is a wrong
+            explanation. An answer mentioning <code>SubsystemBase</code> means
+            the session is not grounded.
           </MarginNote>
         </Split>
 
-        <p className="prose-body measure">
-          Both prompts below use the <code>2-Commands</code> layout, where the
-          arm sits at <code>src/main/java/frc/robot/subsystems/Arm.java</code>.
-          The template clone from <strong>Project Setup</strong> keeps its arm
-          one folder deeper, at{" "}
-          <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>. Change
-          the path in the prompt to match whichever project you have open.
+        <p>
+          Claude Code finds <code>.claude/skills/</code> on its own. Copilot and
+          Codex do not, so name{" "}
+          <code>.claude/skills/robot-description/SKILL.md</code> and{" "}
+          <code>ONBOARDING.md</code> in your first message. To avoid typing that
+          every session, point at the skills folder from <code>AGENTS.md</code>{" "}
+          or <code>.github/copilot-instructions.md</code> at the project root.
         </p>
 
-        <ol
-          className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--tx2)" }}
-        >
+        <p>
+          Check the path before you paste. On <code>2-Commands</code> the arm is
+          at <code>src/main/java/frc/robot/subsystems/Arm.java</code>. A
+          template clone keeps it one folder deeper, at{" "}
+          <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>. Edit the
+          prompt to match the project you have open.
+        </p>
+
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Open your robot project folder in the assistant: the same folder you
-            have been editing, with <code>build.gradle</code> at the top of it.{" "}
-            <strong>{"You should see: "}</strong> it reports the project it is
-            working in. Claude Code also says it loaded <code>CLAUDE.md</code>.
+            Open the project folder in the assistant, the one with{" "}
+            <code>build.gradle</code> in it. <strong>You should see:</strong> it
+            names the project.
           </li>
           <li>
-            Paste this prompt:
+            Paste this prompt.
             <div className="mt-2">
               <CodeBlock
                 language="text"
@@ -453,214 +268,64 @@ I have finished the Commands lesson. Do not change any files.`}
             </div>
           </li>
           <li>
-            Read the answer against the file. <strong>You should see</strong> it
-            hit four things: <code>runRepeatedly</code> re-runs its action every
-            scheduler loop; <code>() -&gt; setVoltage(FAST_VOLTAGE)</code> is
-            the action, and <code>FAST_VOLTAGE</code> is 6.0;{" "}
-            <code>.named(...)</code> is required before you have a{" "}
-            <code>Command</code> at all; and the <code>(hold)</code> in the name
-            marks a command that never finishes.
+            Grade the answer against the file. <strong>You should see</strong>{" "}
+            four things:
+            <ul className="mt-2 ml-5 list-disc space-y-1">
+              <li>
+                <code>runRepeatedly</code> re-runs its action every scheduler
+                loop.
+              </li>
+              <li>
+                <code>FAST_VOLTAGE</code> is 6.0.
+              </li>
+              <li>
+                <code>.named(...)</code> is what makes it a <code>Command</code>
+                .
+              </li>
+              <li>
+                <code>(hold)</code> marks a command that never finishes.
+              </li>
+            </ul>
           </li>
         </ol>
-
-        <CollapsibleSection title="The real Arm.java on 2-Commands: check its answer against this">
-          <GitHubContent
-            repository="Hemlock5712/Workshop-Code"
-            branch="2-Commands"
-            filePath="src/main/java/frc/robot/subsystems/Arm.java"
-          />
-        </CollapsibleSection>
       </LessonSection>
 
-      {/* ── PROMPT 2 ─────────────────────────────────────────────────── */}
-      <LessonSection
-        id="prompt-2-make-it-change-something"
-        title="Prompt 2: make it change something"
-      >
-        <p className="prose-body measure">
-          The arm can go up. It cannot go back down under power. Reverse the
-          voltage and you have a command for that, which is a small enough
-          change that you can check every line of it.
+      <LessonSection id="one-change-at-a-time" title="One change at a time">
+        <p>
+          Now let it write something. Ask for the smallest change you can check
+          line by line: a <code>runReverse()</code> on the arm, bound to B. On{" "}
+          <code>2-Commands</code> only <code>driver.a()</code> is taken, so{" "}
+          <code>b()</code> is free.
         </p>
 
-        <p className="prose-body measure">
-          Bind it to B. On <code>2-Commands</code> the only face button used is{" "}
-          <code>driver.a()</code>, so <code>b()</code> is free: the other two
-          bindings are on the triggers.
-        </p>
-
-        <ol
-          className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--tx2)" }}
-        >
-          <li>
-            Paste this prompt in the same session:
-            <div className="mt-2">
-              <CodeBlock
-                language="text"
-                title="Prompt: one small change"
-                code={`Add a runReverse() command to src/main/java/frc/robot/subsystems/Arm.java
+        <CodeBlock
+          language="text"
+          title="Prompt: one small change"
+          code={`Add a runReverse() command to src/main/java/frc/robot/subsystems/Arm.java
 that pushes -SLOW_VOLTAGE, matching the style of runSlow(). Then bind it in
 src/main/java/frc/robot/opmodes/TeleopOpMode.java as:
 
     driver.b().onTrue(arm.runReverse()).onFalse(arm.stop());
 
 Show me the diff before you write anything.`}
-              />
-            </div>
-            <strong>{"You should see: "}</strong> a proposed change to exactly
-            two files and nothing else.
+        />
+
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Paste it in the same session and read the diff.{" "}
+            <strong>You should see:</strong> exactly two files and nothing else.{" "}
+            <code>SLOW_VOLTAGE</code> is already 3.0, so a minus sign is the
+            whole change. An assistant will often write <code>-3.0</code>
+            instead, or add a <code>REVERSE_VOLTAGE</code> constant. Both
+            compile, and both leave two numbers to keep in step, so ask it to
+            reuse the constant.
           </li>
           <li>
-            Compare the <code>Arm.java</code> half against this. The new method
-            goes in with the other command factories:
-            <div className="mt-2">
-              <CodeBlock
-                language="java"
-                title="Arm.java: the new method, in context"
-                code={`  /** Push the arm with a gentle voltage and keep pushing. Never finishes. */
-  public Command runSlow() {
-    return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
-  }
-
-  /** NEW — push the arm the other way at the same gentle voltage. Never finishes. */
-  public Command runReverse() {
-    return runRepeatedly(() -> setVoltage(-SLOW_VOLTAGE)).named("runReverse (hold)");
-  }
-
-  /** Push the arm with a stronger voltage and keep pushing. Never finishes. */
-  public Command runFast() {
-    return runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)");
-  }`}
-              />
-            </div>
-            <code>SLOW_VOLTAGE</code> is already declared at the top of the
-            class as <code>3.0</code>. A minus sign in front of it is the whole
-            change. Nothing new needs to be added to the file.
-          </li>
-          <li>
-            Compare the <code>TeleopOpMode.java</code> half. The binding is a
-            fourth line in the constructor, in the same shape as the three
-            already there:
-            <div className="mt-2">
-              <CodeBlock
-                language="java"
-                title="TeleopOpMode.java: the constructor, with the new binding last"
-                code={`  public TeleopOpMode(Robot robot) {
-    final Arm arm = robot.arm;
-    final Flywheel flywheel = robot.flywheel;
-
-    // Left trigger: push the arm up while held, stop when released.
-    driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
-
-    // Right trigger: spin fast while held, drop back to the slow voltage when released.
-    driver.rightTrigger().onTrue(flywheel.runFast()).onFalse(flywheel.runSlow());
-
-    // A: spin fast while held, stop when released.
-    driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
-
-    // NEW — B: push the arm the other way while held, stop when released.
-    driver.b().onTrue(arm.runReverse()).onFalse(arm.stop());
-  }`}
-              />
-            </div>
-          </li>
-          <li>
-            Accept the change, then run <code>gradlew build</code>.{" "}
-            <strong>{"You should see: "}</strong> <code>BUILD SUCCESSFUL</code>.
-            Do this before you run the robot, every time.
+            Accept, then run <code>gradlew build</code>.{" "}
+            <strong>You should see:</strong> <code>BUILD SUCCESSFUL</code>. Do
+            this before you run the robot, every time.
           </li>
         </ol>
-
-        <Box
-          variant="alert-info"
-          tag="NOTE · WHY -SLOW_VOLTAGE"
-          title="Reuse the constant, do not add a number"
-        >
-          <p>
-            An assistant will often write <code>-3.0</code> directly, or declare
-            a new <code>REVERSE_VOLTAGE = -3.0</code> beside the others. Both
-            work. Neither is what you asked for, and both mean the arm now has
-            two places to change if 3.0 turns out to be too much. Ask it to use
-            the existing constant.
-          </p>
-        </Box>
-      </LessonSection>
-
-      {/* ── DID IT WORK ──────────────────────────────────────────────── */}
-      <LessonSection id="did-it-work" title="Did it work?">
-        <ol
-          className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--tx2)" }}
-        >
-          <li>
-            Run the code and enable the robot the way{" "}
-            <strong>Running Your Code</strong> showed you.
-          </li>
-          <li>
-            Hold the left trigger for a moment, then release.{" "}
-            <strong>{"You should see: "}</strong> the arm pushes one way,
-            exactly as it did before. Nothing you added has broken what was
-            already there.
-          </li>
-          <li>
-            Hold B. <strong>{"You should see: "}</strong> the arm pushes the{" "}
-            <em>other</em> way. Slower than the left trigger, because 3.0 V is
-            half of 6.0 V.
-          </li>
-          <li>
-            Release B. <strong>{"You should see: "}</strong> the arm stops,
-            because <code>onFalse(arm.stop())</code> takes over. If it keeps
-            going, the <code>onFalse</code> half of the binding is missing.{" "}
-            <code>onTrue</code> schedules a hold, and a hold never ends by
-            itself: the only reason releasing B stops the arm is that{" "}
-            <code>arm.stop()</code> takes the arm away from it.
-          </li>
-          <li>
-            Press A while still holding B. <strong>{"You should see: "}</strong>{" "}
-            the flywheel spins and the arm carries on. They are different
-            mechanisms, so nothing is being fought over.
-          </li>
-        </ol>
-
-        <Box
-          variant="alert-warning"
-          tag="IF IT DIDN'T WORK"
-          title="It writes v2, forgets .named(), or edits only one of the two files"
-        >
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              <strong>
-                The build fails with{" "}
-                <code>
-                  package edu.wpi.first.wpilibj2.command does not exist
-                </code>{" "}
-                or <code>cannot find symbol: class SubsystemBase</code>.
-              </strong>{" "}
-              It wrote Commands v2. Revert the change, tell it to read{" "}
-              <code>ONBOARDING.md</code> and{" "}
-              <code>.claude/skills/robot-description/SKILL.md</code>, and to
-              match the existing methods in <code>Arm.java</code> exactly. Then
-              ask again.
-            </li>
-            <li>
-              <strong>
-                The build fails pointing at your new <code>runReverse()</code>.
-              </strong>{" "}
-              The <code>.named(&quot;...&quot;)</code> is missing. WPILib makes
-              an unnamed command a build error on purpose: a command with no
-              name is invisible in a log when you are trying to work out what
-              the robot is doing.
-            </li>
-            <li>
-              <strong>It builds, but B does nothing.</strong> It edited{" "}
-              <code>Arm.java</code> and forgot <code>TeleopOpMode.java</code>.
-              Open the constructor and count the bindings: there should be four.
-              Assistants lose the second file surprisingly often when a request
-              spans two.
-            </li>
-          </ul>
-        </Box>
 
         <Box
           variant="alert-danger"
@@ -668,78 +333,94 @@ Show me the diff before you write anything.`}
           title="Accept a diff you have not read"
         >
           <p>
-            The temptation is to approve everything and run it. Two of the three
-            failures above are caught by opening the diff and counting the files
-            it touched. A change to <code>Robot.java</code>, a new class you did
-            not ask for, or a rewritten <code>stop()</code> all mean the
-            assistant went further than the request. Say no and re-scope it.
+            Two of the three failures below are caught by reading the diff and
+            counting the files it touched. A change to <code>Robot.java</code>,
+            a class you did not ask for, or a rewritten <code>stop()</code>{" "}
+            means it went past the request. Say no and ask again, narrower.
           </p>
         </Box>
       </LessonSection>
 
-      {/* ── KEEPING IT USEFUL ────────────────────────────────────────── */}
-      <LessonSection
-        id="keeping-it-useful-for-the-rest"
-        title="Keeping it useful for the rest of the season"
-      >
-        <p className="prose-body measure">
-          Four prompts worth keeping, all of which run against code you already
-          have or will have shortly:
+      <LessonSection id="check-your-work" title="Check your work">
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Run the code and enable the robot the way{" "}
+            <strong>Running Your Code</strong> showed you.
+          </li>
+          <li>
+            Hold the left trigger, then release.{" "}
+            <strong>You should see:</strong> the arm pushes one way, exactly as
+            before.
+          </li>
+          <li>
+            Hold B, then release. <strong>You should see:</strong> the arm
+            pushes the other way and more slowly, then stops. 3.0 V is half of
+            6.0 V.
+          </li>
+        </ol>
+
+        <p>
+          <code>onTrue</code> schedules a hold, and a hold never ends by itself.
+          Releasing B works because <code>arm.stop()</code> takes the arm away
+          from it. If the arm keeps pushing after you let go, the{" "}
+          <code>onFalse</code> half of the binding is missing.
         </p>
 
-        <ul
-          className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--tx2)" }}
-        >
-          <li>
-            &quot;Why won&apos;t the flywheel spin when I press A? Read{" "}
-            <code>Flywheel.java</code> and <code>TeleopOpMode.java</code>{" "}
-            first.&quot;
-          </li>
-          <li>
-            &quot;Read the newest log in <code>logs/</code> and tell me when the
-            robot enabled and what the arm was doing.&quot;
-          </li>
-          <li>
-            &quot;Explain what changed between my file and the one on the{" "}
-            <code>3-PID</code> branch, one method at a time.&quot;
-          </li>
-          <li>
-            &quot;Run the sim headless with{" "}
-            <code>gradlew simulateJavaAgent</code> and tell me if anything threw
-            an error.&quot;
-          </li>
-        </ul>
+        <FigureGrid
+          cols={3}
+          items={[
+            {
+              label: "Build fails",
+              term: "It wrote v2",
+              body: (
+                <>
+                  The error names <code>edu.wpi.first</code> or{" "}
+                  <code>SubsystemBase</code>. Revert, tell it to read{" "}
+                  <code>ONBOARDING.md</code> and the{" "}
+                  <code>robot-description</code> skill, then ask again.
+                </>
+              ),
+            },
+            {
+              label: "Build fails",
+              term: "Missing .named()",
+              body: (
+                <>
+                  The error points at your new method. A builder is not a{" "}
+                  <code>Command</code> until it is named, and a nameless command
+                  is invisible in a log.
+                </>
+              ),
+            },
+            {
+              label: "B does nothing",
+              term: "One file edited",
+              body: (
+                <>
+                  It changed <code>Arm.java</code> and forgot{" "}
+                  <code>TeleopOpMode.java</code>. Count the bindings in the
+                  constructor. There should be four.
+                </>
+              ),
+            },
+          ]}
+        />
 
-        <p className="prose-body measure">
-          As your robot grows, the skills go stale. They ship with TODO sections
-          for the parts nobody can fill in yet: the real game, the real field
-          poses, your actual mechanisms. Fill them in as you go. A skill
-          describing last month&apos;s robot misleads an assistant the same way
-          a stale comment misleads a teammate.
-        </p>
-
-        <Box
-          variant="alert-warning"
-          tag="SAFETY · YOU OWN THE CODE"
-          title="Review everything before it touches a real robot"
-        >
+        <Box variant="alert-warning" tag="SAFETY" title="You own the code">
           <p>
-            An assistant is a teammate, not an autopilot. Read every change,
-            build before you run, and make sure <em>{"you "}</em> can explain
-            what the code does. &quot;The AI wrote it&quot; will not help you at
-            a competition with six minutes on the clock.
+            Read every change, build before you run, and be able to explain what
+            the code does. Nobody in the pit cares which tool typed it.
           </p>
           <p className="mt-3">
-            The 2027 stack is alpha software, so APIs shift between releases.
+            The 2027 stack is alpha software, so APIs move between releases.
             When the assistant and the compiler disagree, the compiler is right.
-            When the assistant and the template disagree, the template is right.
+            The template outranks the assistant too.
           </p>
         </Box>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/2027-Template/tree/2027-dev/.claude/skills"
-          title="The five skill files in the template"
+          title="The five skill files"
           icon={<FolderTree className="h-5 w-5" />}
         />
       </LessonSection>
@@ -751,12 +432,12 @@ Show me the diff before you write anything.`}
             question:
               "You ask for a new command and the assistant hands you `public class Arm extends SubsystemBase` with imports from `edu.wpi.first.wpilibj2.command`. What happened?",
             options: [
-              "It wrote Commands v2, because that is what nearly all of its training data contains",
-              "It picked the newer API: v2 is the 2027 version",
               "It read the wrong file in your project",
               "Both spellings work; v3 accepts either import",
+              "It wrote Commands v2, because that is what nearly all of its training data contains",
+              "It picked the newer API: v2 is the 2027 version",
             ],
-            correctAnswer: 0,
+            correctAnswer: 2,
             explanation:
               "Commands v3 and WPILib 2027 are newer than the code these models learned from, and almost every FRC repo online is v2. The v3 spellings are `extends Mechanism` and `org.wpilib.command3`. Ground the session by pointing it at ONBOARDING.md and the robot-description skill.",
           },
@@ -765,55 +446,69 @@ Show me the diff before you write anything.`}
             question:
               "What is the fastest way to find out whether an assistant's change is v2 code?",
             options: [
-              "Read the diff carefully line by line",
               "Run `gradlew build`: wrong-framework imports fail instantly",
               "Deploy it and see whether the robot moves",
               "Ask the assistant whether it used Commands v3",
+              "Read the diff carefully line by line",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "The compiler settles it in seconds: a v2 import fails with something like `package edu.wpi.first.wpilibj2.command does not exist`. Asking the assistant does not help: it was confident the first time. Build after every change, before you run anything.",
+              "The compiler settles it in seconds: a v2 import fails with something like `package edu.wpi.first.wpilibj2.command does not exist`. Asking the assistant does not help, because it was confident the first time. Build after every change, before you run anything.",
           },
           {
             id: 3,
             question: "What is an Agent Skill in this template?",
             options: [
-              "A plugin you install into your assistant",
-              "A folder holding a SKILL.md Markdown file whose description tells the assistant when to read it",
               "A paid feature of Claude Code",
               "A Gradle task that generates documentation",
+              "A plugin you install into your assistant",
+              "A folder holding a SKILL.md Markdown file whose description tells the assistant when to read it",
             ],
-            correctAnswer: 1,
+            correctAnswer: 3,
             explanation:
-              "A skill is plain Markdown. The description at the top says when it applies, and any assistant that can open files can use it. Claude Code finds `.claude/skills/` on its own; with Copilot or Codex you name the file yourself, or reference the folder from AGENTS.md.",
+              "A skill is plain Markdown. The description at the top says when it applies, and any assistant that can open files can use it. Claude Code finds `.claude/skills/` on its own; with Copilot or Codex you name the file yourself.",
           },
           {
             id: 4,
             question:
               'The assistant\'s runReverse() compiles and the arm moves, but it named the command "runReverse" instead of "runReverse (hold)". Why does that matter?',
             options: [
-              "It doesn't: the suffix is decoration",
               "The command will run only once without it",
-              "The name shows up in logs and on the dashboard, and (hold) is how this project marks a command that never finishes",
+              "The name shows up in logs, and (hold) is how this project marks a command that never finishes",
               "WPILib rejects names without a suffix",
+              "It doesn't: the suffix is decoration",
             ],
-            correctAnswer: 2,
+            correctAnswer: 1,
             explanation:
-              "runRepeatedly never finishes on its own, so nothing may ever wait on it. Every hold on the branch carries the (hold) suffix so that a stuck routine sitting on a hold is obvious the moment you read the name. A name that lies about the shape of the command costs you a debugging session later.",
+              "runRepeatedly never finishes on its own, so nothing may ever wait on it. Every hold on the branch carries the (hold) suffix, which makes a routine stuck on a hold obvious the moment you read the name in a log.",
           },
           {
             id: 5,
             question:
+              "The diff for runReverse() touches Arm.java, TeleopOpMode.java and Robot.java. What do you do?",
+            options: [
+              "Accept it: `gradlew build` will fail if the third file is wrong",
+              "Edit Robot.java by hand to match",
+              "Say no and ask again with a narrower scope",
+              "Accept only the Arm.java half, since the binding can wait",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "The request named two files, so a third means the assistant went further than you asked. A build success proves nothing here: the extra edit compiles fine and nobody remembers making it. Counting files in a diff catches most of what goes wrong.",
+          },
+          {
+            id: 6,
+            question:
               "The assistant makes a change that works, and you do not understand it. What is the right next move?",
             options: [
-              "Ship it: it builds and the robot moves",
               "Ask it to explain that one piece again in simpler terms, and open the file yourself",
               "Revert it and write the whole thing by hand",
               "Ask a different assistant for a second opinion",
+              "Ship it: it builds and the robot moves",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "Teacher mode is on by default, so asking for a simpler explanation of one specific piece is exactly what the teaching skill is for. Code you cannot explain is code you cannot debug at a competition, and the assistant will not be sitting in the pit with you.",
+              "Teacher mode is on by default, so asking for a simpler explanation of one specific piece is what it is for. Code you cannot explain is code you cannot debug at a competition, and the assistant will not be sitting in the pit with you.",
           },
         ]}
       />

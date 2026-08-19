@@ -15,8 +15,7 @@ const linkClass = "underline hover:no-underline font-medium";
 export default function SwervePrerequisites() {
   return (
     <PageTemplate
-      title="Four ideas the rest of Workshop #3 stands on"
-      emphasis="Four ideas"
+      title="How Swerve Works"
       lede="Workshop #3 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
       needs={[
         <>
@@ -55,15 +54,14 @@ export default function SwervePrerequisites() {
           On most drivetrains the wheels are bolted facing one direction. To go
           sideways you first have to turn the whole robot. A swerve drive puts a
           module at each of the four corners, and each module has{" "}
-          <strong>two motors</strong>: one spins the wheel, the other points it.
+          <strong>two motors</strong>. One spins the wheel, the other points it.
         </p>
 
         <p>
           Because every wheel can point wherever it likes, the robot can travel
-          in any direction while facing any direction, and the two are
-          independent. It can drive straight down the field while slowly
-          spinning. The word for that is <strong>holonomic</strong> motion, and
-          it is the whole appeal.
+          one way while facing another. The two are independent. It can drive
+          straight down the field while slowly spinning. The word for that is{" "}
+          <strong>holonomic</strong> motion, and it is the whole appeal.
         </p>
 
         <Box variant="concept" title="You never write the swerve math">
@@ -71,11 +69,11 @@ export default function SwervePrerequisites() {
             Turning &quot;move 2 meters per second to the left while turning
             slowly&quot; into eight motor commands is called{" "}
             <strong>kinematics</strong>. Tuner X&apos;s swerve generator writes
-            it for you, in two files you will meet on the next page:{" "}
-            <code>TunerConstants.java</code> (every device ID, gear ratio, wheel
-            radius and gain) and <code>CommandSwerveDrivetrain.java</code> (the
-            drivetrain itself, which its own comment says &quot;owns the
-            hardware and odometry&quot;).
+            it for you, in two files you will meet on the next page.{" "}
+            <code>TunerConstants.java</code> holds every device ID, gear ratio,
+            wheel radius and gain. <code>CommandSwerveDrivetrain.java</code> is
+            the drivetrain itself, and its own comment says it &quot;owns the
+            hardware and odometry&quot;.
           </p>
           <p className="mt-3">
             You ask for a chassis speed. Those two files decide what all eight
@@ -98,7 +96,7 @@ export default function SwervePrerequisites() {
       </LessonSection>
 
       {/* ── 2. FIELD-CENTRIC VS ROBOT-CENTRIC ────────────────────────── */}
-      <LessonSection id="which-way-is-forward" title="Which way is forward?">
+      <LessonSection id="which-way-is-forward" title="Driver forward">
         <p>
           You push the left stick away from you. Which way does the robot go?
           There are two answers, and a swerve robot has to be told which one you
@@ -153,10 +151,10 @@ export default function SwervePrerequisites() {
           title="The driver's forward flips with alliance color. The field frame does not."
         >
           <p>
-            Two drivers stand at opposite ends of the field, and both of them
-            should be able to push the stick away and watch the robot go away.
-            So the code flips what &quot;forward&quot; means depending on which
-            side you are on. <code>DriveMechanism</code> registers{" "}
+            Two drivers stand at opposite ends of the field. Both should be able
+            to push the stick away and watch the robot go away. So the code
+            flips what &quot;forward&quot; means depending on which side you are
+            on. <code>DriveMechanism</code> registers{" "}
             <code>applyOperatorPerspective</code> to run every loop, with the
             comment{" "}
             <em>
@@ -165,8 +163,8 @@ export default function SwervePrerequisites() {
             </em>
           </p>
           <p className="mt-3">
-            The generated drivetrain spells out the two cases:{" "}
-            <em>blue sees forward as 0 degrees, toward the red wall</em>, and{" "}
+            The generated drivetrain spells out the two cases.{" "}
+            <em>Blue sees forward as 0 degrees, toward the red wall</em>, and{" "}
             <em>red sees forward as 180 degrees, toward the blue wall</em>.
           </p>
           <p className="mt-3">
@@ -223,8 +221,8 @@ export default function SwervePrerequisites() {
 
         <p>
           They travel together for a reason. A position with no heading does not
-          say which way the robot is pointing when it arrives, and a heading
-          with no position does not say where it is.
+          say which way the robot points when it arrives. A heading with no
+          position does not say where it is.
         </p>
 
         <Box
@@ -251,8 +249,8 @@ export default function SwervePrerequisites() {
           </p>
           <p className="mt-3">
             Every pose in Workshops #3 and #4 is measured from that same blue
-            corner: what odometry reports, what the camera estimates, and the
-            target you hand a drive command.
+            corner. That covers what odometry reports, what the camera
+            estimates, and the target you hand a drive command.
           </p>
         </Box>
       </LessonSection>
@@ -264,10 +262,10 @@ export default function SwervePrerequisites() {
       >
         <p>
           <strong>{"Odometry "}</strong> is how the robot keeps a running answer
-          to &quot;where am I.&quot; Every loop the drivetrain reads how far
-          each wheel turned and which way that wheel was pointing, works out how
-          far the robot moved in that slice of time, and adds it to the pose.
-          You never call any of that. You read the answer with{" "}
+          to &quot;where am I.&quot; Every loop, the drivetrain reads how far
+          each wheel turned and where it was pointing. It works out how far the
+          robot moved in that slice of time and adds it to the pose. You never
+          call any of that. You read the answer with{" "}
           <code>drivetrain.getPose()</code>.
         </p>
 
@@ -284,9 +282,8 @@ export default function SwervePrerequisites() {
           <li>
             <strong>A wheel radius that is slightly wrong:</strong> Distance per
             rotation comes from a number in <code>TunerConstants.java</code>. If
-            that number is off by 1 percent, every distance is off by 1 percent:
-            10 centimeters for every 10 meters driven, always in the same
-            direction.
+            that number is off by 1 percent, every distance is off by 1 percent.
+            That is 10 centimeters for every 10 meters, always the same way.
           </li>
           <li>
             <strong>Being moved without driving:</strong> Get shoved, get
@@ -315,9 +312,9 @@ export default function SwervePrerequisites() {
               <strong>Give it something that does look at the field.</strong> A
               camera reading AprilTags knows where it is in absolute terms.{" "}
               <code>DriveMechanism</code> already has the door for it:{" "}
-              <code>addVisionMeasurement(...)</code>, described in its own
-              comment as &quot;Feeds a camera position estimate into the
-              drivetrain so it can correct odometry.&quot; That is{" "}
+              <code>addVisionMeasurement(...)</code>. Its own comment describes
+              it as &quot;Feeds a camera position estimate into the drivetrain
+              so it can correct odometry.&quot; That is{" "}
               <Link href="/vision-implementation" className={linkClass}>
                 Vision
               </Link>
@@ -356,8 +353,8 @@ export default function SwervePrerequisites() {
           </li>
           <li>
             <strong>The blue-corner frame</strong>: all of the above. It is why
-            the camera is asked for a blue-origin estimate, and why a drive
-            command pins its velocities to that frame instead of the
+            the camera is asked for a blue-origin estimate. It is also why a
+            drive command pins its velocities to that frame, not the
             driver&apos;s.
           </li>
         </ul>
@@ -381,12 +378,12 @@ export default function SwervePrerequisites() {
             question:
               "You are driving field-centric. The robot is facing your driver station: its front points at you. You push the left stick away from yourself. What does the robot do?",
             options: [
+              "Nothing, until you press the seed-field-centric button",
               "Drives toward you, because forward means the direction the robot faces",
               "Drives away from you, backwards, because forward is a field direction and not the robot's",
               "Spins to face away first, then drives",
-              "Nothing, until you press the seed-field-centric button",
             ],
-            correctAnswer: 1,
+            correctAnswer: 2,
             explanation:
               "Field-centric means forward is fixed to the field, not to the robot. The stick asks for motion away from your driver station, so the robot goes that way regardless of which direction its front happens to point. Robot-centric is the other answer: there, forward would follow the robot's nose and it would drive at you.",
           },
@@ -395,12 +392,12 @@ export default function SwervePrerequisites() {
             question:
               "What does field-centric control need that robot-centric control does not?",
             options: [
-              "A camera",
               "A gyro, so the code knows the robot's heading",
               "A CANivore",
               "Closed-loop drive motors",
+              "A camera",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
               "To turn a field direction into wheel motion, the code has to subtract the robot's current heading out of your request, so it needs to know that heading. That is the Pigeon 2 gyro, listed in TunerConstants.java as kPigeonId. Robot-centric needs no heading, because everything is already relative to the robot.",
           },
@@ -409,12 +406,12 @@ export default function SwervePrerequisites() {
             question:
               "Your robot is on the red alliance. Your driver pushes the stick away from the red driver station and the robot moves away from them. What happened to the coordinate frame odometry reports?",
             options: [
-              "It flipped too: (0, 0) moved to the red corner",
-              "Nothing. (0, 0) stays in the blue corner; only the driver's idea of forward flipped",
               "It rotated 90 degrees",
               "Odometry is disabled on the red alliance",
+              "It flipped too: (0, 0) moved to the red corner",
+              "Nothing. (0, 0) stays in the blue corner; only the driver's idea of forward flipped",
             ],
-            correctAnswer: 1,
+            correctAnswer: 3,
             explanation:
               'Two separate things. applyOperatorPerspective flips what the sticks call forward, 0 degrees on blue, 180 on red, so driving feels the same from either end. The pose frame never moves: DriveMechanism.getPose() says "(0, 0) is always the blue alliance corner. It does not flip when you are on red." A red robot at its own wall reports a large X.',
           },
@@ -429,20 +426,20 @@ export default function SwervePrerequisites() {
             ],
             correctAnswer: 1,
             explanation:
-              "A Pose2d answers where on the field and which way around at once: X meters down the field, Y meters across it, and a Rotation2d for the direction the front of the robot points. Both the robot's current position and a target you drive to are written as one.",
+              "A Pose2d answers both at once. X meters down the field, Y meters across it, and a Rotation2d for the way the front of the robot points. Both the robot's current position and a target you drive to are written as one.",
           },
           {
             id: 5,
             question: "Why does odometry drift over the course of a match?",
             options: [
-              "The gyro loses power between modes",
               "It adds up wheel motion and never checks against the field, so slip and small measurement errors accumulate and are never corrected",
               "The CAN bus drops messages",
               "It resets to zero every time the robot is disabled",
+              "The gyro loses power between modes",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "Odometry is addition. A wheel that slips still reports distance, a wheel radius that is off by 1 percent makes every distance off by 1 percent, and a robot that gets shoved moves without turning a wheel. Nothing in the calculation ever looks at the field, so the error only grows. Calibration slows it down; vision is what actually corrects it.",
+              "Odometry is addition. A slipping wheel still reports distance. A wheel radius off by 1 percent makes every distance off by 1 percent. A shoved robot moves without turning a wheel. Nothing in the calculation ever looks at the field, so the error only grows. Calibration slows it down; vision is what actually corrects it.",
           },
         ]}
       />

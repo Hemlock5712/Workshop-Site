@@ -1,527 +1,294 @@
 import PageTemplate from "@/components/PageTemplate";
-import FigureGrid from "@/components/lesson/FigureGrid";
-import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
-import AlphaStatusNote from "@/components/AlphaStatusNote";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import Link from "next/link";
 import { Book, Download } from "lucide-react";
 
 const linkStyle =
-  "text-[var(--accent)] underline hover:no-underline hover:text-[var(--accent)] hover:text-[var(--accent)] font-medium";
+  "text-[var(--accent)] underline hover:no-underline font-medium";
 
+/**
+ * Rewritten against `context/writing-style.md`, then verified.
+ *
+ * Five sections. The six generator steps stay a numbered procedure, the four
+ * measurements stay a list, and the three files stay a table. Three asides: the
+ * download, the "no screenshots" note this site relies on instead of a stale UI
+ * picture, and the three bench failures.
+ *
+ * The verification pass put back what the rewrite had spent to reach 12
+ * minutes. The "Check yourself" quiz, which the budget may never buy. The
+ * `TunerConstants` field names a student greps for. The example robot's
+ * geometry, 10 inch offsets on a 7.36:1 drive and a 2.167 inch wheel radius,
+ * read off `1-Swerve` to confirm every digit. The two rules the scheduler
+ * enforces on a default command, checked against `commandsv3` `Scheduler.java`,
+ * which throws `IllegalArgumentException` on both. And the reason the call
+ * sits in `TeleopOpMode`, which is that file's own javadoc.
+ *
+ * Paid for out of the download box, which was previewing steps 5 and 6, and
+ * the opening paragraph, which was restating the lede.
+ *
+ * The three file embeds the rewrite dropped stay dropped: the three-file table
+ * accounts for them and the downloaded project contains them. What survives is
+ * the TeleopOpMode constructor, because the default command is the one piece of
+ * code this lesson teaches.
+ */
 export default function SwerveDriveProject() {
   return (
     <PageTemplate
-      title="The swerve code is already written. You supply the measurements."
-      emphasis="You supply the measurements."
-      lede="Nobody on this team writes swerve kinematics by hand. Phoenix Tuner X has a generator that walks your robot, tests each module, and writes one file: TunerConstants.java. Every CAN ID, every gear ratio, every module position and every starting gain lives in that one file."
+      title="Swerve Project Generator"
+      lede="Tuner X measures your drivetrain and writes one file. The rest of the swerve project is already written, so you swap that file in and drive. Have the robot assembled and up on blocks."
       needs={[
         <>
-          An assembled swerve drivetrain: four modules, eight Kraken/TalonFX
-          motors, four CANcoders and a Pigeon 2, all wired to the same CANivore.
+          An assembled drivetrain: eight TalonFX, four CANcoders, one Pigeon 2,
+          one CANivore.
         </>,
+        <>Phoenix Tuner X connected, with firmware current on every device.</>,
         <>
-          Phoenix Tuner X, from{" "}
-          <Link href="/hardware" className={linkStyle}>
-            Hardware Setup
-          </Link>
-          , with firmware already up to date on every device.
+          Module anatomy and field-centric driving from{" "}
+          <strong>Swerve Drive Prerequisites</strong>.
         </>,
-        <>
-          The swerve concepts from{" "}
-          <Link href="/swerve-prerequisites" className={linkStyle}>
-            Swerve Drive Prerequisites
-          </Link>
-          : module anatomy, plus field-centric and robot-centric driving.
-        </>,
-        <>
-          A tape measure, and the robot up on blocks so all four wheels can turn
-          freely.
-        </>,
+        <>A tape measure, and the robot up on blocks.</>,
       ]}
       branch="1-Swerve"
       time="about an hour"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "The rest of the swerve project, the drivetrain class, the Mechanism wrapper, the teleop controls, is already in the workshop code. Your job on this page is to produce a TunerConstants.java that describes your robot, drop it in, and drive.",
-          ]}
-          concept="Tuner X measures your drivetrain and writes TunerConstants.java. You swap that one file into a project that already works."
-        />
-        <MarginNote label="WHAT YOU'LL BUILD">
-          A robot you can drive around with a controller, field-centric, with a{" "}
-          <code>TunerConstants.java</code> that holds your own CAN IDs,
-          dimensions and module offsets. Most of the hour is the generator
-          testing one module at a time.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            Nobody on this team writes swerve kinematics by hand. Everything
+            specific to your robot gets measured: which motor sits at which
+            corner, how far apart the modules are, where each wheel reads zero.
+          </p>
+        </div>
+        <MarginNote label="What you build">
+          Most of the hour goes to the module tests. You finish with a robot you
+          can drive, field-centric, on your own CAN IDs and offsets.
         </MarginNote>
       </Split>
 
-      <Box variant="alert-info" title="Quick start: download the baseline code">
+      <Box variant="alert-info" title="Start from the workshop project">
         <p className="mb-4">
-          You do not have to build the project from nothing. Download the
-          workshop swerve project, which is the code shown on this page. Change
-          the team number in <code>.wpilib/wpilib_preferences.json</code>: it
-          ships as <code>5712</code>: and replace{" "}
-          <code>TunerConstants.java</code> with the one you generate below.
+          Download the swerve project below. It is the code on this page, and
+          steps 5 and 6 are the only two edits it needs.
         </p>
         <a
           href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.0-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center px-6 py-3 border border-[var(--rule)] bg-[var(--bg2)] text-[var(--tx2)] hover:border-[var(--accent)] hover:text-[var(--accent)] rounded-lg transition-colors font-medium gap-2"
+          className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)] px-6 py-3 font-medium text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
-          <Download className="w-5 h-5" />
+          <Download className="h-5 w-5" />
           Download Swerve Project (v3.0, Commands v3)
         </a>
       </Box>
 
-      {/* ── WHAT THE GENERATOR PRODUCES ──────────────────────────────── */}
       <LessonSection
         id="one-file-is-the-whole-output"
-        title="One file is the whole output"
+        title="What the generator writes"
       >
         <p>
-          The generator can emit a complete project, but that is not how this
-          workshop uses it. The only piece you keep is{" "}
+          The generator can write a whole project. Only one file comes back with
+          you:{" "}
           <code>src/main/java/frc/robot/generated/TunerConstants.java</code>.
-          Everything else in the swerve project: the drivetrain class, the{" "}
-          <code>Mechanism</code> that wraps it, the teleop controls, the
-          telemetry: is code you already have and will read further down this
-          page.
         </p>
-
         <p>
-          The copy checked into the workshop project is a placeholder for
-          somebody else&apos;s robot. <code>DriveMechanism.java</code> says so
-          in a comment right where it builds the drivetrain:{" "}
-          <em>
-            &quot;The checked-in file is an EXAMPLE with fake device IDs and
-            gains - regenerate it from Tuner X for your own robot.&quot;
-          </em>{" "}
-          If you deploy it unchanged, the code will look for motors that are not
-          on your bus.
+          It carries thirteen device IDs, <code>kDriveGearRatio</code>,{" "}
+          <code>kSteerGearRatio</code> and <code>kWheelRadius</code>. Per module
+          it holds an X and Y offset from the robot&apos;s center, which is what
+          kinematics runs on. There is a CANcoder offset per module as well,
+          measured with that wheel straight. <code>steerGains</code>,{" "}
+          <code>driveGains</code>, <code>kSlipCurrent</code> and{" "}
+          <code>kSpeedAt12Volts</code> are estimates you replace on{" "}
+          <Link href="/swerve-calibration" className={linkStyle}>
+            Swerve Calibration
+          </Link>
+          .
         </p>
-
-        <Box variant="concept" title="What lands in TunerConstants.java">
-          <ul className="ml-4 list-disc space-y-1">
-            <li>
-              The CAN bus name, and one drive ID, steer ID and CANcoder ID per
-              module: twelve device IDs in total, plus the Pigeon 2.
-            </li>
-            <li>
-              <code>kDriveGearRatio</code> and <code>kSteerGearRatio</code>, and{" "}
-              <code>kWheelRadius</code>.
-            </li>
-            <li>
-              Each module&apos;s X and Y position from the center of the robot,
-              which is what kinematics runs on.
-            </li>
-            <li>
-              A CANcoder offset per module, measured with your wheels pointed
-              straight.
-            </li>
-            <li>
-              Starting <code>steerGains</code> and <code>driveGains</code>,{" "}
-              <code>kSlipCurrent</code> and <code>kSpeedAt12Volts</code>. These
-              are estimates. You measure the real ones on{" "}
-              <Link href="/swerve-calibration" className={linkStyle}>
-                Swerve Calibration
-              </Link>
-              .
-            </li>
-          </ul>
-        </Box>
-
+        <p>
+          The copy checked into the workshop project belongs to somebody
+          else&apos;s robot: fake IDs, fake gains, and a comment saying so. It
+          describes a square robot with the modules 10 inches out in each
+          direction, 7.36:1 on the drive, and a 2.167-inch wheel radius. Deploy
+          it unchanged and the code looks for motors that are not on your bus.
+        </p>
         <Box
           variant="alert-warning"
           tag="ABOUT TUNER X"
-          title="No screenshots: look for the state, not the button"
+          title="Look for the state, not the button"
         >
           <p>
-            Tuner X moves its controls around between releases, so a labeled
-            picture of this wizard goes stale within a season. What does not
-            move is the <em>state</em> you are trying to reach. Every step below
-            tells you what the screen should be showing when you have got it
-            right, so you can find the control yourself and still know whether
-            it worked.
+            Tuner X moves its controls between releases, so a labeled screenshot
+            goes stale within a season. The state you are aiming for does not
+            move. Every step below says what the screen should show once you
+            have it right.
           </p>
         </Box>
       </LessonSection>
 
-      {/* ── STEPS ────────────────────────────────────────────────────── */}
-      <LessonSection
-        id="six-steps-in-this-order"
-        title="Six steps, in this order"
-      >
-        <div className="flex flex-col gap-6">
-          {/* 1 */}
-          <div className="flex items-start gap-4">
-            <div className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-              1
-            </div>
-            <div className="flex-1">
-              <h3 className="display m-0 mb-2 text-aside">
-                Get every device on the bus with a unique ID
-              </h3>
-              <p>
-                Power the robot, connect Tuner X, and look at the device list.
-                All thirteen devices have to be on the same CAN bus: eight
-                TalonFX, four CANcoders and one Pigeon 2. Assign IDs now and
-                write them down module by module: you will type them into the
-                generator in step 3, and a swapped pair is the single most
-                common way this page goes wrong.
-              </p>
-              <p className="mt-2">
-                <strong>{"You should see: "}</strong> thirteen devices listed,
-                every ID different, no duplicate-ID warning and no red firmware
-                badges. If a device is missing, it is a wiring or termination
-                problem, and it will not become a software problem later: fix it
-                here.
-              </p>
-            </div>
-          </div>
-
-          {/* 2 */}
-          <div className="flex items-start gap-4">
-            <div className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-              2
-            </div>
-            <div className="flex-1">
-              <h3 className="display m-0 mb-2 text-aside">
-                Open the swerve project generator
-              </h3>
-              <p>
-                It lives under <strong>Mechanisms</strong> in the left sidebar,
-                behind a <strong>New Project</strong> button.
-              </p>
-              <p className="mt-2">
-                <strong>{"You should see: "}</strong> a wizard that starts by
-                asking for the robot&apos;s physical dimensions, not for code.
-              </p>
-            </div>
-          </div>
-
-          {/* 3 */}
-          <div className="flex items-start gap-4">
-            <div className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-              3
-            </div>
-            <div className="flex-1">
-              <h3 className="display m-0 mb-2 text-aside">
-                Measure the robot and enter the numbers
-              </h3>
-              <p>
-                Four measurements do all the work. Take them off the real robot
-                with a tape measure, not off the CAD you meant to build.
-              </p>
-              <div
-                className="mt-3 rounded-lg border p-4"
-                style={{
-                  borderColor: "var(--rule)",
-                  background: "var(--bg2)",
-                }}
-              >
-                <ul
-                  className="space-y-2 text-note"
-                  style={{ color: "var(--tx2)" }}
-                >
-                  <li>
-                    <strong>Wheelbase</strong>: front-to-back distance between
-                    module centers.
-                  </li>
-                  <li>
-                    <strong>Trackwidth</strong>: side-to-side distance between
-                    module centers.
-                  </li>
-                  <li>
-                    <strong>Wheel diameter</strong>: of the tread that touches
-                    the carpet, on a wheel that has been driven on.
-                  </li>
-                  <li>
-                    <strong>Drive gear ratio</strong>: motor rotations per wheel
-                    rotation, from your module&apos;s spec sheet.
-                  </li>
-                </ul>
-              </div>
-              <p className="mt-3">
-                Wheelbase and trackwidth become each module&apos;s X and Y
-                offset from the robot&apos;s center. The checked-in example is a
-                square robot with all four modules 10 inches out in each
-                direction, and a drive ratio of about 7.36:1 on a 2.167-inch
-                wheel radius. Yours will differ.
-              </p>
-              <p className="mt-2">
-                <strong>{"You should see: "}</strong> the wizard accept all four
-                without complaint. Say the numbers back to yourself before you
-                move on: wheelbase and trackwidth are the pair people swap, and
-                on a square robot the swap is invisible until the robot turns
-                and the modules fight each other.
-              </p>
-            </div>
-          </div>
-
-          {/* 4 */}
-          <div className="flex items-start gap-4">
-            <div className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-              4
-            </div>
-            <div className="flex-1">
-              <h3 className="display m-0 mb-2 text-aside">
-                Let the generator drive each module
-              </h3>
-              <p>
-                With the robot on blocks, the wizard works through the modules
-                one at a time, driving each motor and checking what it sees. Two
-                of the things it settles here end up in the file as pairs per
-                corner: an inversion flag for the steer motor and the encoder,
-                and a CANcoder offset measured with that wheel pointed straight.
-                Physically hold the wheels straight when it asks, and take that
-                part seriously: half a degree of error per module walks the
-                robot sideways over a long drive.
-              </p>
-              <p className="mt-2">
-                <strong>{"You should see: "}</strong> one module moving at a
-                time, and it should be the corner the wizard named. If a
-                different corner moves, two CAN IDs are swapped: go back to step
-                1 and fix the IDs rather than working around it here.
-              </p>
-            </div>
-          </div>
-
-          {/* 5 */}
-          <div className="flex items-start gap-4">
-            <div className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-              5
-            </div>
-            <div className="flex-1">
-              <h3 className="display m-0 mb-2 text-aside">
-                Generate the constants and swap the file in
-              </h3>
-              <p>
-                At the end of the wizard, generate the Tuner constants. Take the{" "}
-                <code>TunerConstants.java</code> it writes and use it to replace{" "}
-                <code>
-                  src/main/java/frc/robot/generated/TunerConstants.java
-                </code>{" "}
-                in the workshop project. Replace the whole file: do not
-                hand-merge fields, because the offsets, the inversions and the
-                IDs all have to come from the same run.
-              </p>
-              <p className="mt-2">
-                <strong>{"You should see: "}</strong> your own CAN IDs in the
-                new file, and a <code>kCANBus</code> line naming your CANivore
-                rather than the example&apos;s.
-              </p>
-            </div>
-          </div>
-
-          {/* 6 */}
-          <div className="flex items-start gap-4">
-            <div className="bg-[var(--accent)] text-[var(--accent-ink)] rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-              6
-            </div>
-            <div className="flex-1">
-              <h3 className="display m-0 mb-2 text-aside">
-                Set the team number and deploy
-              </h3>
-              <p>
-                Open <code>.wpilib/wpilib_preferences.json</code> and change{" "}
-                <code>&quot;teamNumber&quot;</code> from <code>5712</code> to
-                yours. Then deploy the way{" "}
-                <Link href="/running-program" className={linkStyle}>
-                  Running Your Code
-                </Link>{" "}
-                showed.
-              </p>
-              <p className="mt-2">
-                <strong>{"You should see: "}</strong> the driver station listing{" "}
-                <strong>Teleop</strong> as a mode you can select. Modules point
-                straight when you enable, and nothing spins on its own.
-              </p>
-            </div>
-          </div>
-        </div>
-
+      <LessonSection id="six-steps-in-this-order" title="Six steps, in order">
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Put every device on one CAN bus with a unique ID, and write the IDs
+            down corner by corner. You want thirteen listed, no duplicate-ID
+            warning, no red firmware badge. A missing device is a wiring fault.
+          </li>
+          <li>
+            Open the swerve project generator, under <strong>Mechanisms</strong>
+            , behind a <strong>New Project</strong> button. It opens by asking
+            for dimensions rather than for code.
+          </li>
+          <li>
+            Measure the robot and enter four numbers.
+            <ul className="mt-2 ml-5 list-disc space-y-1">
+              <li>
+                <strong>Wheelbase</strong>, labeled FL to BL: front-to-back
+                distance between module centers.
+              </li>
+              <li>
+                <strong>Trackwidth</strong>, labeled FL to FR: side-to-side
+                distance between module centers.
+              </li>
+              <li>
+                <strong>Wheel radius</strong>: half the tread width, on a wheel
+                already driven on. The field asks for radius, not diameter.
+              </li>
+              <li>
+                <strong>Drive gear ratio</strong>: motor rotations per wheel
+                rotation, off the module&apos;s spec sheet.
+              </li>
+            </ul>
+            <p className="mt-2">
+              Take them off the real robot, not the CAD you meant to build.
+              Wheelbase and trackwidth are the pair people swap, and on a square
+              robot that stays hidden until it turns.
+            </p>
+          </li>
+          <li>
+            With the robot on blocks, the wizard drives the modules one at a
+            time. Hold each wheel straight when it asks: that measurement
+            becomes the corner&apos;s CANcoder offset. Half a degree of error
+            per module walks the robot sideways over a long drive. If the corner
+            moving is not the one the wizard named, two CAN IDs are swapped.
+          </li>
+          <li>
+            Generate the constants and replace{" "}
+            <code>src/main/java/frc/robot/generated/TunerConstants.java</code>{" "}
+            with the file it writes. Replace the whole file, since offsets,
+            inversions and IDs all come from the same run. You should see your
+            own CAN IDs and a <code>kCANBus</code> line naming your CANivore.
+          </li>
+          <li>
+            Set your team number in <code>.wpilib/wpilib_preferences.json</code>
+            , which ships as <code>5712</code>, and deploy the way{" "}
+            <Link href="/running-program" className={linkStyle}>
+              Running Your Code
+            </Link>{" "}
+            showed. The driver station lists <strong>Teleop</strong> as a
+            selectable mode. Modules point straight when you enable, and nothing
+            spins on its own.
+          </li>
+        </ol>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
           title="CTRE: Tuner X Swerve Project Generator"
-          icon={<Book className="w-5 h-5" />}
+          icon={<Book className="h-5 w-5" />}
         />
       </LessonSection>
 
-      {/* ── THREE FILES ──────────────────────────────────────────────── */}
       <LessonSection
         id="three-files-and-why-there-have"
-        title="Three files, and why there have to be three"
+        title="Three files, one drivetrain"
       >
         <p>
-          Every other mechanism you have written was one class. The drivetrain
-          is three, and the reason is a Java rule you met on{" "}
+          Every other mechanism you wrote was one class. The drivetrain is
+          three, because of a Java rule from{" "}
           <Link href="/java-basics" className={linkStyle}>
             The Java You Need
           </Link>
-          : a class can only <code>extend</code> one other class.
+          : a class extends only one other class.
         </p>
-
         <p>
-          The generated drivetrain already extends CTRE&apos;s swerve class, so
-          it cannot also extend <code>Mechanism</code>. The workshop code
-          therefore keeps them apart: <code>CommandSwerveDrivetrain</code> owns
-          the hardware, and a hand-written <code>DriveMechanism</code> owns it
-          in turn and hands out commands. Its own comment puts it plainly:{" "}
-          <em>
-            &quot;The swerve drivetrain class already extends CTRE&apos;s
-            generated class, and a Java class can only extend one thing. So this
-            class owns the drivetrain and offers its commands to the rest of the
-            robot.&quot;
-          </em>
+          <code>CommandSwerveDrivetrain</code> already extends CTRE&apos;s
+          generated swerve class, so it cannot also extend{" "}
+          <code>Mechanism</code>. <code>DriveMechanism</code> therefore owns a
+          drivetrain instead of being one, and hands out its commands.
         </p>
-
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-note">
             <thead>
-              <tr>
-                <th
-                  className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
-                >
-                  File
-                </th>
-                <th
-                  className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
-                >
-                  Who wrote it
-                </th>
-                <th
-                  className="border-b px-3 py-2 text-left font-semibold"
-                  style={{ borderColor: "var(--rule)", color: "var(--tx)" }}
-                >
-                  What it is for
-                </th>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">File</th>
+                <th className="px-3 py-2 text-left">Who wrote it</th>
+                <th className="px-3 py-2 text-left">What it holds</th>
               </tr>
             </thead>
             <tbody style={{ color: "var(--tx2)" }}>
-              <tr>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-3 align-top">
                   <code>TunerConstants.java</code>
                 </td>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
-                  Tuner X, from your measurements
+                <td className="px-3 py-3 align-top">
+                  Tuner X, from your robot
                 </td>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
-                  Every number about your robot. Never edit by hand except when
-                  calibration tells you to.
+                <td className="px-3 py-3 align-top">
+                  Every number about your robot. Hand-edited only when
+                  calibration says to.
                 </td>
               </tr>
-              <tr>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-3 align-top">
                   <code>CommandSwerveDrivetrain.java</code>
                 </td>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
+                <td className="px-3 py-3 align-top">
                   Tuner X, then lightly edited
                 </td>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
-                  Motors, odometry, the simulation thread, and keeping
-                  &quot;forward&quot; matched to your alliance color.
+                <td className="px-3 py-3 align-top">
+                  Motors, odometry, the simulation thread, and forward matched
+                  to your alliance color.
                 </td>
               </tr>
               <tr>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
+                <td className="px-3 py-3 align-top">
                   <code>DriveMechanism.java</code>
                 </td>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
-                  The workshop, by hand
-                </td>
-                <td
-                  className="border-b px-3 py-3 align-top"
-                  style={{ borderColor: "var(--rule-soft)" }}
-                >
-                  The <code>Mechanism</code>. Commands, pose readings, telemetry
-                  registration. This is what an OpMode talks to.
+                <td className="px-3 py-3 align-top">The workshop, by hand</td>
+                <td className="px-3 py-3 align-top">
+                  The <code>Mechanism</code>: commands, pose readings,
+                  telemetry. What an OpMode talks to.
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-
         <p>
-          <code>DriveMechanism</code> is the one to read closely: it is the only
-          one of the three you would ever add to. Its public surface is small:{" "}
-          <code>applyRequest(...)</code> and <code>seedFieldCentric()</code>{" "}
-          return commands, <code>setControl(...)</code> sends one request
-          straight through, <code>getPose()</code> and{" "}
-          <code>getFieldVelocity()</code> read the drivetrain, and{" "}
-          <code>addVisionMeasurement(...)</code> is the door the camera comes in
-          through two lessons from now.
+          <code>DriveMechanism</code> is the only one of the three you would add
+          to, and its surface is small. Both <code>applyRequest(...)</code> and{" "}
+          <code>seedFieldCentric()</code> return commands, and{" "}
+          <code>setControl(...)</code> sends one request straight through. Two
+          more read the drivetrain back: <code>getPose()</code> and{" "}
+          <code>getFieldVelocity()</code>. The camera comes in later, through{" "}
+          <code>addVisionMeasurement(...)</code>.
         </p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="1-Swerve"
-          filePath="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          title="DriveMechanism.java"
-          description="The Mechanism wrapper. Everything the rest of the robot is allowed to ask the drivetrain to do."
-        />
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="1-Swerve"
-          filePath="src/main/java/frc/robot/subsystems/CommandSwerveDrivetrain.java"
-          title="CommandSwerveDrivetrain.java"
-          description="Generated by Tuner X. Read it once so it is not a black box, then leave it alone."
-        />
       </LessonSection>
 
-      {/* ── DEFAULT COMMAND ──────────────────────────────────────────── */}
       <LessonSection
         id="your-first-real-default-command"
-        title="Your first real default command"
+        title="The drivetrain default command"
       >
         <p>
-          The command framework introduced a loose end: when a command ends and
-          nothing else claims a mechanism, its built-in <code>idle()</code>
-          default sends no new request. The drivetrain replaces that default
-          with the joystick drive, and it is the only place in the workshop code
-          that calls <code>setDefaultCommand</code>.
+          Every <code>Mechanism</code> starts out with <code>idle()</code> as
+          its default. Since <code>idle()</code> parks at the lowest priority
+          and sends nothing at all, canceling an arm command leaves the arm
+          pushing. That is what <code>arm.stop()</code> is for. Teleop gives the
+          drivetrain a better default, and it is the only{" "}
+          <code>setDefaultCommand</code> call in the workshop code. The call
+          sits in <code>TeleopOpMode</code> rather than <code>Robot</code>{" "}
+          because the default needs that mode&apos;s controller.
         </p>
-
-        <p>
-          Here is the whole of <code>TeleopOpMode</code>&apos;s constructor on
-          the swerve branch:
-        </p>
-
         <CodeBlock
           language="java"
           title="TeleopOpMode.java: the joystick drive, set as the default"
@@ -544,393 +311,197 @@ export default function SwerveDriveProject() {
     driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
   }`}
         />
-
         <p>
-          Read the shape rather than the algebra. <code>applyRequest(...)</code>{" "}
-          is an ordinary command factory: it builds a hold with{" "}
-          <code>runRepeatedly</code>, exactly like <code>arm.runFast()</code>{" "}
-          does:
+          <code>applyRequest(...)</code> is an ordinary command factory built on{" "}
+          <code>runRepeatedly</code>. It re-reads the sticks and re-sends a
+          fresh request every loop. Let go of the sticks and the command is
+          still running, asking for zero speed. Full stick asks for the top
+          speed the constants claim your robot has: <code>maxSpeed</code> comes
+          straight out of <code>TunerConstants.kSpeedAt12Volts</code>. The
+          request ignores the bottom 10 percent of each stick.
         </p>
-
-        <CodeBlock
-          language="java"
-          title="DriveMechanism.java: the factory being handed to setDefaultCommand"
-          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          code={`/** Returns a command that keeps sending the given control request to the drivetrain. */
-public Command applyRequest(Supplier<SwerveRequest> request) {
-  return runRepeatedly(() -> drivetrain.setControl(request.get())).named("applyRequest");
-}`}
-        />
-
         <p>
-          So the default command is a hold that re-reads the sticks every loop
-          and re-sends a fresh <code>FieldCentric</code> request. Let go of the
-          sticks and it is still running: it is now asking for zero.
+          The scheduler checks two things when that line runs. A default command
+          has to require its own mechanism, and it must not require a second
+          one. Break either and you get an <code>IllegalArgumentException</code>{" "}
+          at runtime, not a compile error. Commands from{" "}
+          <code>applyRequest(...)</code> pass both; a hand-built group that also
+          requires the arm would not.
         </p>
-
         <p>
-          Every mechanism already has a default command. You saw it on{" "}
-          <Link href="/adding-commands" className={linkStyle}>
-            Commands
-          </Link>
-          : <code>Mechanism</code>&apos;s own constructor calls{" "}
-          <code>setDefaultCommand(idle())</code>, and <code>idle()</code> parks
-          at the lowest priority and sends <em>nothing at all</em>. It does not
-          zero the last request, which is why canceling an arm command leaves
-          the arm pushing. The drivetrain replaces that with a default that
-          actually commands the hardware, and the difference shows up the moment
-          a command is canceled.
-        </p>
-
-        <FigureGrid
-          cols={2}
-          items={[
-            {
-              label: "Arm",
-              term: (
-                <>
-                  Default is <code>idle()</code>
-                </>
-              ),
-              body: (
-                <>
-                  Release the button and the last voltage stays latched.
-                  Something has to actively send zero, which is what{" "}
-                  <code>arm.stop()</code> is for.
-                </>
-              ),
-            },
-            {
-              label: "Drivetrain",
-              term: "Default is the joystick drive",
-              body: (
-                <>
-                  Release the button and the joystick command comes straight
-                  back. Hands off the sticks means a request for zero speed,
-                  every loop. There is no <code>drivetrain.stop()</code> in the
-                  workshop code, and it is not needed.
-                </>
-              ),
-            },
-          ]}
-        />
-
-        <p>
-          That is the property every later page leans on. When Drive to Point
-          takes the drivetrain to run an automatic move, the driver gets control
-          back the instant that command ends: not because anything cleaned up,
-          but because the default underneath was never anything else.
-        </p>
-
-        <Box
-          variant="concept"
-          tag="SCOPE"
-          title="Why the default is set in the OpMode, not in Robot"
-        >
-          <p>
-            <code>setDefaultCommand</code> makes a binding, and bindings are
-            scoped to wherever you make them: the same rule{" "}
-            <Link href="/triggers" className={linkStyle}>
-              Triggers
-            </Link>{" "}
-            taught for buttons. Make it in an OpMode constructor and it belongs
-            to that OpMode; switch modes and it goes away with the rest of that
-            OpMode&apos;s bindings.
-          </p>
-          <p className="mt-3">
-            That is exactly what you want here. The file&apos;s own javadoc says
-            why:{" "}
-            <em>
-              &quot;The joystick-drive default command lives here, not in Robot,
-              because it needs this OpMode&apos;s controller.&quot;
-            </em>{" "}
-            An autonomous OpMode has no controller and no business inheriting a
-            stick-driven default.
-          </p>
-          <p className="mt-3">
-            Defaults stack, and the most recent one wins. The constructor&apos;s{" "}
-            <code>idle()</code> is underneath the whole time; teleop puts the
-            joystick drive on top; end teleop and <code>idle()</code> is what is
-            left.
-          </p>
-        </Box>
-
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT"
-          title="Two rules the scheduler enforces at runtime"
-        >
-          <p>
-            A default command must require the mechanism it is the default for,
-            and it must not require any other mechanism. Break either one and
-            you get an <code>IllegalArgumentException</code> the moment the line
-            runs: not a compile error, so it lands as a crash on the driver
-            station.
-          </p>
-          <p className="mt-3">
-            Commands built by <code>drivetrain.applyRequest(...)</code> satisfy
-            both by construction: a factory on a <code>Mechanism</code> requires
-            that mechanism and nothing else. You hit this rule when you try to
-            make a hand-built group the default.
-          </p>
-        </Box>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="1-Swerve"
-          filePath="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          title="TeleopOpMode.java"
-          description="The full file: the speed limits, the FieldCentric request with its deadbands, and the two bindings above."
-        />
-
-        <p>
-          Two details in that file worth noticing. <code>maxSpeed</code> is read
-          straight out of <code>TunerConstants.kSpeedAt12Volts</code>, so full
-          stick means the top speed the constants claim your robot has, which is
-          one more reason to measure that number rather than guess it. And the
-          request ships as <code>DriveRequestType.OpenLoopVoltage</code>: stick
-          position becomes volts, with no wheel-speed loop. Both of those are
-          calibration work, on the next-but-one page.
+          The other binding is the left bumper, wired to{" "}
+          <code>seedFieldCentric()</code>. Press it and whatever way the robot
+          faces becomes the new forward for the sticks. It changes a heading
+          reference and nothing else, so it never says where the robot is on the
+          field. That job belongs to <code>resetPose(Pose2d)</code>, which
+          nothing in the workshop code calls yet.{" "}
+          <Link
+            href="/swerve-calibration#three-things-that-all-sound-like"
+            className={linkStyle}
+          >
+            Swerve Calibration
+          </Link>{" "}
+          lines both up next to <code>applyOperatorPerspective()</code>.
         </p>
       </LessonSection>
 
-      {/* ── SEEDING ──────────────────────────────────────────────────── */}
-      <LessonSection
-        id="the-left-bumper-and-what-it"
-        title="The left bumper, and what it does not do"
-      >
+      <LessonSection id="did-it-work" title="Check your work">
         <p>
-          The other binding in that constructor is{" "}
-          <code>driver.leftBumper().onTrue(drivetrain.seedFieldCentric())</code>
-          . Press it and whatever way the robot is facing becomes the new
-          &quot;forward&quot; for the sticks. You will use it constantly while
-          testing, because field-centric driving is unusable if the code&apos;s
-          idea of forward and yours disagree.
+          Robot on blocks for the first two checks, then on the floor with room
+          around it. Keep a hand on disable.
         </p>
-
-        <Box
-          variant="alert-warning"
-          tag="COMMON MIX-UP"
-          title="Seeding the heading is not resetting the pose"
-        >
-          <p>
-            <code>seedFieldCentric()</code> changes a heading reference and
-            nothing else. It never supplies an x or a y, so it does not tell the
-            robot where it is on the field. Those are separate operations with
-            separate methods, and confusing them produces a robot that drives
-            beautifully and has no idea where it is.
-          </p>
-          <p className="mt-3">
-            <Link href="/swerve-calibration#seeding" className={linkStyle}>
-              Swerve Calibration lays the three of them out side by side
-            </Link>
-            : <code>seedFieldCentric()</code>,{" "}
-            <code>applyOperatorPerspective()</code> and{" "}
-            <code>resetPose(Pose2d)</code>. Read that section before you start
-            trusting <code>getPose()</code> for anything.
-          </p>
-        </Box>
-      </LessonSection>
-
-      {/* ── DID IT WORK ──────────────────────────────────────────────── */}
-      <LessonSection id="did-it-work" title="Did it work?">
-        <p>
-          Robot on blocks for the first three checks, then on the floor with
-          plenty of room. Keep a hand on the disable.
-        </p>
-
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Select <strong>Teleop</strong> and enable, hands off the controller.{" "}
-            <strong>{"You should see: "}</strong> all four wheels stationary and
-            all four modules holding whatever angle they were already at. Any
-            creeping means a stick is not centered or the deadband is wrong.
+            Select <strong>Teleop</strong> and enable, hands off the controller.
+            All four wheels stay still and each module holds the angle it had.
+            Creeping means an off-center stick or a wrong deadband.
           </li>
           <li>
-            Push the left stick straight forward.{" "}
-            <strong>{"You should see: "}</strong> all four modules point the
-            same way and all four wheels turn in the same direction. One wheel
-            spinning backwards is an inversion answer given during the
-            generator&apos;s module test; one module facing sideways is a
-            CANcoder offset.
+            Push the left stick forward: four modules pointing the same way,
+            four wheels turning the same direction. A wheel turning backwards is
+            an inversion; a module facing sideways is a CANcoder offset. Push
+            the right stick sideways and the modules splay into a rotation
+            pattern.
           </li>
           <li>
-            Push the right stick sideways. <strong>{"You should see: "}</strong>{" "}
-            the four modules splay into a rotation pattern, each one tangent to
-            a circle around the robot&apos;s center.
+            On the floor, point the robot away from you and push forward. It
+            drives away in a straight line. Turn it 90 degrees in place, push
+            forward again, and it goes the same direction across the floor.
+            Press the left bumper and forward becomes whatever way it is facing
+            now.
           </li>
           <li>
-            Put the robot on the floor, point it away from you, and push the
-            left stick forward. <strong>{"You should see: "}</strong> it drives
-            away from you in a straight line.
-          </li>
-          <li>
-            Now turn the robot 90° in place with the right stick, then push the
-            left stick forward again. <strong>{"You should see: "}</strong> the
-            robot still travels in the same direction across the floor as it did
-            the first time, even though it is now pointing sideways. That is
-            field-centric driving working.
-          </li>
-          <li>
-            Press the left bumper, then push the left stick forward.{" "}
-            <strong>{"You should see: "}</strong> &quot;forward&quot; is now
-            whatever way the robot was pointing when you pressed it.
-          </li>
-          <li>
-            Release everything. <strong>{"You should see: "}</strong> the robot
-            stop immediately and stay stopped. That is the default command
-            asking for zero: not the absence of a command.
+            Let go of everything. The robot stops and stays stopped, because its
+            default command is asking for zero.
           </li>
         </ol>
-
         <Box
           variant="alert-info"
           tag="IF IT DIDN'T WORK"
-          title="A missing device, one module fighting the others, or nothing at all"
+          title="Three ways this goes wrong"
         >
           <ul className="ml-4 list-disc space-y-2">
             <li>
-              <strong>
-                The code deploys, then the driver station reports a device that
-                cannot be found.
-              </strong>{" "}
-              You deployed with the example <code>TunerConstants.java</code>{" "}
-              still in place, or you copied your generated file to the wrong
-              path. It has to land at{" "}
-              <code>src/main/java/frc/robot/generated/TunerConstants.java</code>
-              , and the <code>kCANBus</code> name in it has to match your
-              CANivore.
+              <strong>A device the driver station cannot find.</strong> You
+              deployed with the example file, or yours landed outside{" "}
+              <code>src/main/java/frc/robot/generated/</code>. The{" "}
+              <code>kCANBus</code> name has to match your CANivore.
             </li>
             <li>
-              <strong>
-                One module drives the wrong way, or spins in place while the
-                other three go straight.
-              </strong>{" "}
-              An inversion or an offset for that corner is wrong. Do not patch
-              it by hand in the file: re-run the generator&apos;s module test
-              for that module, because inversion and offset are measured
-              together and a hand-edited pair will disagree.
+              <strong>One module fighting the other three.</strong> Its
+              inversion or its offset is wrong. Re-run the module test for that
+              corner rather than editing the file: the two are measured
+              together.
             </li>
             <li>
-              <strong>
-                Nothing moves at all, and the driver station shows no error.
-              </strong>{" "}
-              Check that <strong>Teleop</strong> is actually the selected mode
-              and that the robot is enabled. If both are right, the{" "}
-              <code>setDefaultCommand</code> line is missing or commented out.
-              With only <code>idle()</code> underneath, the drivetrain sits
-              there sending nothing, which looks identical to broken wiring and
-              is not.
+              <strong>Nothing moves and no error appears.</strong> Check that{" "}
+              <strong>Teleop</strong> is selected and the robot enabled. If both
+              are right, the <code>setDefaultCommand</code> line is missing, and{" "}
+              <code>idle()</code> underneath looks like broken wiring.
             </li>
           </ul>
         </Box>
+        <p>
+          <strong>Swerve Calibration</strong> is next. It replaces the
+          generator&apos;s estimates with numbers measured off your robot.
+        </p>
       </LessonSection>
 
-      <AlphaStatusNote />
-
+      {/* The "Check yourself" the rewrite deleted to reach 12 minutes, which is
+          the one saving the budget may never make. Four of the six original
+          questions test material this page still teaches and come back with
+          their wording tightened. The two that leaned on the deleted file
+          embeds are replaced: one on the module test naming the wrong corner,
+          one on the inversion-and-offset pair, both from procedure steps that
+          survived. Every option checked against Workshop-Code `1-Swerve`. */}
       <Quiz
         questions={[
           {
             id: 1,
             question:
-              "Why is the drivetrain split into CommandSwerveDrivetrain and DriveMechanism instead of being one class?",
+              "You finish the Tuner X wizard. Which file do you take back to the workshop project?",
             options: [
-              "To keep generated code and hand-written code in separate folders",
-              "CommandSwerveDrivetrain already extends CTRE's generated swerve class, and a Java class can only extend one thing, so it cannot also extend Mechanism",
-              "Mechanism does not work with swerve drivetrains",
-              "So the drivetrain can be used without the command framework",
+              "TunerConstants.java",
+              "The whole generated project, replacing the one you downloaded",
+              "CommandSwerveDrivetrain.java",
+              "DriveMechanism.java",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "CommandSwerveDrivetrain extends TunerSwerveDrivetrain, and Java allows only one superclass. DriveMechanism extends Mechanism, owns a CommandSwerveDrivetrain as a field, and offers its commands to the rest of the robot. The file's own comment says exactly this.",
+              "TunerConstants.java is the only output you keep. It holds your thirteen device IDs, the gear ratios, the wheel radius, each module's position and CANcoder offset, and the starting gains. The rest of the swerve project is already written.",
           },
           {
             id: 2,
             question:
-              "You finish the Tuner X wizard. Which file do you take back to the workshop project?",
+              "The wizard says it is testing the front-left module, and the back-right wheel turns. What is wrong?",
             options: [
-              "CommandSwerveDrivetrain.java",
-              "DriveMechanism.java",
-              "TunerConstants.java",
-              "All of the generated project, replacing what you had",
+              "The wheelbase and trackwidth were entered in the wrong order",
+              "That corner's steer motor is inverted",
+              "The CANcoder offset for that corner is wrong",
+              "Two CAN IDs are swapped, so fix the IDs before going on",
             ],
-            correctAnswer: 2,
+            correctAnswer: 3,
             explanation:
-              "TunerConstants.java is the only output you keep. It holds your CAN IDs, gear ratios, wheel radius, module positions, CANcoder offsets and starting gains. Everything else in the swerve project is already written.",
+              "An offset or an inversion changes how a module moves, not which module answers. A different corner moving means the IDs you typed do not match the devices on the bus, and every measurement taken after that gets filed under the wrong wheel.",
           },
           {
             id: 3,
             question:
-              "The arm's default command is idle(). The drivetrain's is the joystick drive. What is the practical difference when a command on each one is canceled?",
+              "Why does DriveMechanism own a CommandSwerveDrivetrain instead of extending it?",
             options: [
-              "None: canceling always stops the motors",
-              "idle() zeroes the output; the joystick drive holds the last request",
-              "idle() sends nothing at all, so the arm keeps applying its last voltage; the joystick drive keeps commanding, so hands-off sticks mean a request for zero speed",
-              "The drivetrain refuses the cancellation until the driver presses a button",
+              "Mechanism has no support for swerve kinematics",
+              "CommandSwerveDrivetrain already extends CTRE's generated swerve class, and a Java class extends only one other class",
+              "Generated code has to stay in its own package, so it cannot be a Mechanism",
+              "Two classes let two OpModes hold the drivetrain at the same time",
             ],
-            correctAnswer: 2,
+            correctAnswer: 1,
             explanation:
-              "idle() parks at the lowest priority and issues no output: it does not zero the last request, which is why arm.stop() has to exist. The drivetrain's default is a real command that re-reads the sticks every loop, so centered sticks are an active request for zero.",
+              "Java allows one superclass, and CommandSwerveDrivetrain has already spent it. So DriveMechanism extends Mechanism, holds a drivetrain as a field, and hands out the commands the rest of the robot uses. The file's own comment says exactly that.",
           },
           {
             id: 4,
             question:
-              "Why is setDefaultCommand called in TeleopOpMode's constructor rather than in Robot's?",
+              "An arm command and a drivetrain command are both canceled. How does the hardware behave differently?",
             options: [
-              "Robot runs too early for the scheduler to accept it",
-              "The default command needs this OpMode's controller, and an OpMode's bindings are scoped to it: an autonomous mode should not inherit a stick-driven default",
-              "A default command can only be set on a mechanism that is already running a command",
-              "It is a style preference; either location behaves identically",
+              "The arm keeps applying its last request under idle(), while the drivetrain's joystick default asks for zero every loop",
+              "The drivetrain refuses the cancellation until the driver presses a button",
+              "It does not: canceling a command stops the motors either way",
+              "idle() zeroes the arm's output, while the drivetrain holds its last request",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "setDefaultCommand creates a binding scoped where you make it, the same as a button binding. TeleopOpMode's javadoc states the reason: the joystick-drive default lives there because it needs that OpMode's controller. Switch modes and it goes away, leaving the constructor-supplied idle() underneath.",
+              "idle() owns the mechanism at the lowest priority and sends nothing, so the arm's last request stays in force. That is why arm.stop() exists. The drivetrain's default is a real command that re-reads the sticks every loop, so centered sticks are an active request for zero.",
           },
           {
             id: 5,
             question:
-              "Which command is a legal default command for the drivetrain?",
+              "You press the left bumper, which runs seedFieldCentric(). What changed?",
             options: [
-              "Any command at all: the scheduler does not check",
-              "One that requires the drivetrain and nothing else",
-              "One that requires no mechanisms, so it can never conflict",
-              "One that requires the drivetrain plus every mechanism it might interrupt",
+              "The top speed the drivetrain will command",
+              "The robot's x and y on the field are now zero",
+              "Which direction the sticks call forward, and nothing about where the robot is",
+              "The CANcoder offsets stored in TunerConstants.java",
             ],
-            correctAnswer: 1,
+            correctAnswer: 2,
             explanation:
-              "The scheduler throws IllegalArgumentException if a default command does not require its mechanism, and again if it requires more than one. Commands built by drivetrain.applyRequest(...) satisfy both automatically, because a factory on a Mechanism requires that mechanism alone.",
+              "seedFieldCentric() sets a heading reference. It never supplies an x or a y, so odometry reports what it reported before. resetPose(Pose2d) is the call that places the robot on the field, and Swerve Calibration lines both up next to applyOperatorPerspective().",
           },
           {
             id: 6,
             question:
-              "You press the left bumper, which runs seedFieldCentric(). What changed?",
+              "One module drives the wrong way while the other three go straight. What do you do?",
             options: [
-              "The robot's x and y on the field are now zero",
-              "Which direction the driver's sticks call forward, and nothing about where the robot is",
-              "The CANcoder offsets stored in TunerConstants.java",
-              "The top speed the drivetrain is allowed to command",
+              "Flip that module's inversion in TunerConstants.java and leave its offset alone",
+              "Re-run the generator's module test for that corner",
+              "Regenerate the file from the start with the dimensions re-entered",
+              "Raise driveGains until that module keeps up with the others",
             ],
             correctAnswer: 1,
             explanation:
-              "seedFieldCentric() is a heading reference and nothing else. It never supplies an x or a y. Setting a real field position is resetPose(Pose2d), a different method: the Swerve Calibration page compares all three operations side by side.",
+              "A corner's inversion and its CANcoder offset are measured in the same test, so an inversion flipped by hand disagrees with the offset that was measured beside it. Re-run that module's test and take both numbers from one run.",
           },
         ]}
       />
-
-      {/* ── WHAT'S NEXT ──────────────────────────────────────────────── */}
-      <LessonSection id="what-s-next" title="What's next">
-        <p>
-          You have a robot that drives, built on constants you have not measured
-          yet. Basic Logging was enabled in Workshop #2; confirm a fresh log is
-          being written before calibration because several steps work by
-          driving, stopping, and reading a measured value afterward.
-        </p>
-        <p>
-          <strong>Swerve Calibration</strong> is next. It replaces the example
-          numbers in <code>TunerConstants.java</code> with measurements from
-          your own robot and extends the basic log with drivetrain telemetry.
-        </p>
-      </LessonSection>
     </PageTemplate>
   );
 }

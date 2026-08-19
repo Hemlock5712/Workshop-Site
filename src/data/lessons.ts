@@ -51,7 +51,7 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     title: "Swerve & Autonomous",
     num: "03",
     blurb:
-      "Generate and calibrate a swerve drive, plan paths, and run an autonomous OpMode.",
+      "Generate and calibrate a swerve drive, plan a path, combine commands, and run an autonomous OpMode.",
   },
   {
     id: "workshop4",
@@ -65,20 +65,25 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     title: "Advanced Commands",
     num: "05",
     blurb:
-      "Compose longer behaviors with finish conditions, coroutines, and state machines.",
+      "Write commands that wait, yield, and remember, using coroutines and state machines.",
   },
 ];
 
 /**
  * The flat lesson list. Ordering here drives every linear view of the course.
  * Workshop 1 is intentionally code-free; Java begins at Workshop 2.
+ *
+ * Titles are names, not sentences. This list feeds the breadcrumb, the
+ * drawer, the search results and the prev/next arrows, and in every one of
+ * those places a student is scanning rather than reading. `shortLabel` now
+ * exists only for the two titles that still do not fit a drawer row.
+ * See `context/writing-style.md`.
  */
 export const LESSONS: ReadonlyArray<Lesson> = [
   // Getting Started
   {
     slug: "/introduction",
-    title: "Gray Matter Coding Workshop",
-    shortLabel: "Introduction",
+    title: "Workshop Overview",
     section: "main",
   },
   { slug: "/prerequisites", title: "Prerequisites", section: "main" },
@@ -100,31 +105,28 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   {
     slug: "/pid-control",
     title: "PID Tuning in Tuner X",
+    shortLabel: "PID Tuning",
     section: "workshop1",
   },
   {
     slug: "/motion-magic",
     title: "Motion Magic in Tuner X",
+    shortLabel: "Motion Magic",
     section: "workshop1",
   },
 
   // Workshop 2: Robot Programming
-  {
-    slug: "/java-basics",
-    title: "The Java You Need",
-    shortLabel: "Java Basics",
-    section: "workshop2",
-  },
+  { slug: "/java-basics", title: "Java Basics", section: "workshop2" },
   { slug: "/project-setup", title: "Project Setup", section: "workshop2" },
   {
     slug: "/command-framework",
-    title: "Command-Based Framework",
-    shortLabel: "Command System",
+    title: "The Command Framework",
+    shortLabel: "Command Framework",
     section: "workshop2",
   },
   {
     slug: "/adding-commands",
-    title: "Classic Commands",
+    title: "Writing Commands",
     section: "workshop2",
   },
   { slug: "/opmodes", title: "OpModes", section: "workshop2" },
@@ -136,13 +138,12 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   {
     slug: "/running-program",
-    title: "Running Your Code",
-    shortLabel: "Run Your Code",
+    title: "Hardware Simulation",
     section: "workshop2",
   },
   {
     slug: "/logging-implementation",
-    title: "Basic Logging",
+    title: "Logging",
     section: "workshop2",
   },
 
@@ -150,12 +151,12 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   {
     slug: "/swerve-prerequisites",
     title: "How Swerve Works",
-    shortLabel: "Swerve Concepts",
     section: "workshop3",
   },
   {
     slug: "/swerve-drive-project",
-    title: "Swerve Setup",
+    title: "Swerve Project Generator",
+    shortLabel: "Swerve Setup",
     section: "workshop3",
   },
   {
@@ -164,10 +165,24 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop3",
   },
   { slug: "/pathplanner", title: "PathPlanner", section: "workshop3" },
+  // Composition and finish conditions sit here, not in Workshop 5, because
+  // `/autonomous` is the first page that uses them: it writes
+  // `Command.sequence` three times and `.withTimeout` four. Filed under
+  // "Advanced Commands" they were taught five and six lessons after the
+  // lesson that depends on them.
+  {
+    slug: "/chaining-commands",
+    title: "Command Composition",
+    section: "workshop3",
+  },
+  {
+    slug: "/finish-lines",
+    title: "Finish Conditions",
+    section: "workshop3",
+  },
   {
     slug: "/autonomous",
-    title: "Autonomous OpModes & Commands",
-    shortLabel: "Autonomous",
+    title: "Autonomous",
     section: "workshop3",
   },
 
@@ -192,18 +207,6 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
 
   // Workshop 5: Advanced Commands
-  {
-    slug: "/chaining-commands",
-    title: "More Complex Commands",
-    shortLabel: "Command Composition",
-    section: "workshop5",
-  },
-  {
-    slug: "/finish-lines",
-    title: "Command Finish Conditions",
-    shortLabel: "Finish Conditions",
-    section: "workshop5",
-  },
   { slug: "/coroutines", title: "Coroutines", section: "workshop5" },
   {
     slug: "/state-based",
@@ -212,8 +215,8 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   {
     slug: "/drive-to-tag-inline",
-    title: "Coroutine Navigation Example",
-    shortLabel: "Coroutine Example",
+    title: "Example: Drive to Tag",
+    shortLabel: "Drive to Tag",
     section: "workshop5",
     optional: true,
   },

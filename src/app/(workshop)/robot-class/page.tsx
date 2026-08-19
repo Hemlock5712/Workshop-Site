@@ -1,6 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import { MarginNote, Split } from "@/components/lesson/Prose";
@@ -8,42 +7,45 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 export default function RobotClass() {
   return (
     <PageTemplate
-      title="Robot.java owns what survives every mode"
-      emphasis="survives every mode"
-      lede="The Robot object is created once and remains alive while teleop, autonomous, and utility OpModes come and go. It owns shared mechanisms, starts course-wide services, and advances the command scheduler every loop."
+      title="Robot.java"
+      lede="One Robot object is built at startup and stays alive while modes come and go. It holds the mechanisms, runs the command scheduler once per loop, and starts anything the whole match needs. Mode-specific code stays out of it."
       needs={[
         <>
-          The project from <strong>Project Setup</strong> open in VS Code.
+          The project from <strong>Project Setup</strong>, building clean.
         </>,
         <>
-          The scheduler vocabulary from <strong>Command-Based Framework</strong>
-          .
+          The scheduler vocabulary from <strong>The Command Framework</strong>.
         </>,
         <>
           The mode boundary from <strong>OpModes</strong>.
         </>,
       ]}
-      time="About 20 minutes"
+      time="11 minutes"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "Robot is the composition root: the one place where long-lived pieces are constructed and made available to the rest of the program.",
-            "Robot does not contain teleop bindings or an autonomous chooser. OpModes own mode-specific behavior and the framework discovers them.",
-          ]}
-          concept="Robot owns shared lifetime. OpModes own selected behavior. Mechanisms own hardware."
-        />
-        <MarginNote label="OLDER EXAMPLES">
-          A tutorial that sends you to RobotContainer is teaching Commands v2.
-          This Commands v3 project puts shared objects in Robot and bindings in
-          OpModes.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            Pick teleop and the framework builds a teleop object. Leave teleop
+            and that object is thrown away. Pick autonomous and the same thing
+            happens again, with a different class. The arm those modes drive is
+            one object, built once. It is the same arm in the last second of the
+            match.
+          </p>
+          <p>
+            <code>Robot.java</code> is where that one object is created.
+            Everything in the file outlives every mode, and nothing in the file
+            belongs to one mode. Those two rules decide everything that goes in
+            it.
+          </p>
+        </div>
+        <MarginNote label="Older tutorials">
+          A tutorial that has you edit RobotContainer is teaching Commands v2.
+          This stack has no RobotContainer at all. Shared objects live in Robot,
+          and bindings live in the OpModes.
         </MarginNote>
       </Split>
 
-      <LessonSection
-        id="read-the-file"
-        title="Read Robot.java from top to bottom"
-      >
+      <LessonSection id="read-the-file" title="The whole file">
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/Robot.java"
@@ -71,87 +73,252 @@ public class Robot extends OpModeRobot {
 }`}
         />
         <p>
-          The public fields let an OpMode receive <code>Robot robot</code> and
-          ask for <code>robot.arm</code>. The fields are <code>final</code>
-          because the same mechanism object must survive mode changes.
+          Two fields and one method. The fields are <code>public</code> so an
+          OpMode handed a <code>Robot</code> can reach <code>robot.arm</code>{" "}
+          directly. They are <code>final</code> so that one arm object serves
+          the whole match.
+        </p>
+        <p>
+          A second <code>new Arm()</code> elsewhere in the project does not
+          fail. It compiles and it runs. Now two objects configure the same
+          motor, and the scheduler counts them as unrelated mechanisms, so two
+          commands can drive one gearbox at once. Nothing warns you at build
+          time. You find out when the arm fights itself on the bench.
+        </p>
+        <p>
+          Field initializers run before the constructor body, so both mechanisms
+          already exist by the first line of <code>Robot()</code>.{" "}
+          <code>robotPeriodic()</code> begins after that constructor returns,
+          and it keeps being called in every mode, including while the robot is
+          disabled.
         </p>
       </LessonSection>
 
-      <LessonSection
-        id="scheduler"
-        title="Run the scheduler exactly once per robot loop"
-      >
+      <LessonSection id="scheduler" title="One scheduler call per loop">
         <p>
-          <code>robotPeriodic()</code> is called by the framework on every robot
-          tick. Passing that tick to <code>Scheduler.getDefault().run()</code>
-          checks triggers, schedules queued commands, advances running commands,
-          and starts default commands for idle mechanisms.
+          The framework calls <code>robotPeriodic()</code> every 20
+          milliseconds, 50 times a second, for as long as the robot has power.
+          The single line inside it gives the scheduler one pass. It checks the
+          triggers, queues a default command for any mechanism with nothing to
+          do, and gives every running command one step.
         </p>
-        <Box
-          variant="alert-warning"
-          tag="CRITICAL"
-          title="Do not move or duplicate this line"
-        >
+        <p>
+          Delete that line and the build still passes. The mechanisms are still
+          built. Nothing in the project ever moves again.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">The call</th>
+                <th className="px-3 py-2 text-left">What happens</th>
+                <th className="px-3 py-2 text-left">What you see</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Missing</td>
+                <td className="px-3 py-2">No trigger is ever checked</td>
+                <td className="px-3 py-2">
+                  A clean build, a mode list, and a robot that ignores every
+                  button.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Inside an OpMode</td>
+                <td className="px-3 py-2">
+                  The scheduler stops while that mode is not selected
+                </td>
+                <td className="px-3 py-2">
+                  Buttons work in teleop, and an autonomous routine sits on its
+                  first step.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Called twice</td>
+                <td className="px-3 py-2">
+                  Every command takes two steps a tick
+                </td>
+                <td className="px-3 py-2">
+                  A sequence gets through its steps in half the usual loops, and
+                  nothing reports an error.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The middle row is the common one, and it hides well. A team debugging
+          teleop adds a scheduler call to the teleop class, teleop starts
+          working, and autonomous quietly stops advancing until the next match.
+        </p>
+        <Box variant="alert-warning" tag="CRITICAL" title="One call, one place">
           <p>
-            If the scheduler runs only in teleop, autonomous commands never
-            advance. If it runs twice, every command advances twice per robot
-            loop. Keep one scheduler call in <code>Robot.robotPeriodic()</code>.
+            <code>Scheduler.getDefault().run()</code> belongs in{" "}
+            <code>Robot.robotPeriodic()</code> and nowhere else. Leave it there
+            even when a mode looks like it needs a copy of its own. If commands
+            are not advancing, the cause is somewhere else.
           </p>
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="constructor"
-        title="Reserve the constructor for course-wide setup"
-      >
+      <LessonSection id="constructor" title="Course-wide setup">
         <p>
-          Good occupants of the <code>Robot</code> constructor include:
+          The constructor runs once, at startup, after the mechanism fields
+          exist and before any mode is selected. It is the only place in the
+          project that can set something up for every mode at once. Four kinds
+          of thing earn a spot in it.
         </p>
         <ul className="ml-5 list-disc space-y-2">
-          <li>starting DataLogManager and DriverStation logging;</li>
-          <li>constructing a service used by several mechanisms or modes;</li>
-          <li>a safety or diagnostic binding that must exist in every mode;</li>
           <li>
-            registering a background scheduler task with robot-wide lifetime.
+            Logging. <code>DataLogManager.start()</code> and the DriverStation
+            log are two lines, and <strong>Logging</strong> covers what they
+            record.
+          </li>
+          <li>
+            A service that two mechanisms share. Build it here, then hand the
+            same object to both of them.
+          </li>
+          <li>
+            A safety binding that has to hold in every mode, not only in the one
+            mode where a driver would notice it missing.
+          </li>
+          <li>
+            Per-loop work that is not a command, registered with{" "}
+            <code>Scheduler.getDefault().addPeriodic(...)</code>. Registering it
+            costs one line, and the work itself happens on later loops.
           </li>
         </ul>
-        <p>These belong elsewhere:</p>
-        <ul className="ml-5 list-disc space-y-2">
-          <li>driver buttons: put them in the teleop OpMode;</li>
-          <li>an autonomous routine: put it in an autonomous OpMode;</li>
-          <li>
-            motor IDs and controller configuration: put them in the mechanism;
-          </li>
-          <li>a temporary calibration control: put it in a utility OpMode.</li>
-        </ul>
+        <p>
+          Keep the constructor short. Startup waits on it, and no command runs
+          and no motor moves until it returns. Reading a file or waiting on a
+          camera here delays the whole robot.
+        </p>
+        <p>
+          Other things get put in here by mistake, and each one already has a
+          home. Driver buttons go in the teleop class. An autonomous routine
+          goes in its own <code>@Autonomous</code> class. Motor IDs, inversions,
+          and gains go in the mechanism. A one-off calibration control goes in a{" "}
+          <code>@Utility</code> class.
+        </p>
+        <p>
+          The reason is the same every time. A binding made in this constructor
+          is live in every mode. Put a calibration routine on a driver button
+          and someone can start it mid-match.
+        </p>
       </LessonSection>
 
-      <LessonSection
-        id="ownership-test"
-        title="Use one ownership test for every new field"
-      >
-        <Box variant="concept" title="Ask what lifetime the object needs">
+      <LessonSection id="ownership-test" title="The ownership test">
+        <p>
+          Where a new field goes comes down to lifetime. Ask how long the object
+          has to stay alive, and the answer names the file.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Needs to live for</th>
+                <th className="px-3 py-2 text-left">Home</th>
+                <th className="px-3 py-2 text-left">In the wrong home</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  The whole match, and it owns hardware
+                </td>
+                <td className="px-3 py-2">
+                  A <code>public final</code> field on <code>Robot</code>
+                </td>
+                <td className="px-3 py-2">
+                  Built in an OpMode, the motor is reconfigured on every mode
+                  change.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">One operating mode</td>
+                <td className="px-3 py-2">A field on that OpMode</td>
+                <td className="px-3 py-2">
+                  Left on <code>Robot</code>, its bindings keep firing in
+                  autonomous.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">One run of one command</td>
+                <td className="px-3 py-2">A local inside the command body</td>
+                <td className="px-3 py-2">
+                  Held in a field, the second run starts on the first run&apos;s
+                  leftovers.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">The whole session, no hardware</td>
+                <td className="px-3 py-2">
+                  The <code>Robot</code> constructor
+                </td>
+                <td className="px-3 py-2">
+                  Started in an OpMode, it stops the moment the mode changes.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          The controller is the field people get wrong. Both the controller
+          object and its bindings belong to the teleop class. Bound in the{" "}
+          <code>Robot</code> constructor instead, the same button still fires
+          while an autonomous routine is running.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          There is no button to press for this lesson, so prove the lifetime
+          instead. Two print lines and one mode switch show it.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Run <code>./gradlew build</code> and wait for{" "}
+            <code>BUILD SUCCESSFUL</code>.
+          </li>
+          <li>
+            Search the whole project for <code>getDefault().run</code>. Exactly
+            one hit, inside <code>robotPeriodic()</code>. Search for{" "}
+            <code>new Arm(</code> and get one hit as well.
+          </li>
+          <li>
+            Add <code>System.out.println(&quot;Robot built&quot;);</code> as the
+            first line of the <code>Robot</code> constructor, and{" "}
+            <code>System.out.println(&quot;Teleop built&quot;);</code> as the
+            first line of your teleop constructor.
+          </li>
+          <li>
+            Start the simulator with <code>./gradlew simulateJava</code>. Watch
+            the console while you pick teleop, switch to another mode, and pick
+            teleop again.
+          </li>
+          <li>Delete both print lines once the counts match.</li>
+        </ol>
+        <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              <strong>Physical hardware:</strong> mechanism field, with the
-              mechanism itself owned by Robot.
+              <code>Robot built</code> printed once, at startup, and never
+              again.
             </li>
             <li>
-              <strong>One operating mode:</strong> OpMode field.
+              <code>Teleop built</code> printed every single time teleop is
+              selected.
             </li>
-            <li>
-              <strong>One command run:</strong> local variable or command field.
-            </li>
-            <li>
-              <strong>The entire process:</strong> Robot field or a deliberately
-              global service.
-            </li>
+            <li>One scheduler call in the project, and it is in Robot.</li>
+            <li>One object per mechanism, all of them built in Robot.java.</li>
           </ul>
         </Box>
         <p>
-          This prevents two copies of the same motor object, buttons that remain
-          active in the wrong mode, and services that disappear when an OpMode
-          ends.
+          A second <code>Robot built</code> line means something other than the
+          framework is constructing a <code>Robot</code>. Two hits on{" "}
+          <code>new Arm(</code> mean the arm is being built somewhere it should
+          be borrowed instead. Fix that before Mechanisms, where every command
+          you write reaches the hardware through these fields.
         </p>
       </LessonSection>
     </PageTemplate>

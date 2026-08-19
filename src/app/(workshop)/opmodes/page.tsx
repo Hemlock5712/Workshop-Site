@@ -1,7 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import { MarginNote, Split } from "@/components/lesson/Prose";
@@ -9,65 +8,81 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 export default function OpModes() {
   return (
     <PageTemplate
-      title="Put mode-specific behavior in a mode-specific class"
-      emphasis="mode-specific class"
-      lede="Teleop, autonomous, and utility behavior do not share one giant switch statement. Each mode is a class with an annotation, a constructor for setup, and lifecycle methods for work that must happen when the mode starts or ends."
+      title="OpModes"
+      lede="Every way the robot can run is its own class with an annotation on top. The driver station lists those classes by name, and picking one builds it. There is no RobotContainer in this project."
       needs={[
         <>
-          The project from <strong>Project Setup</strong>.
+          The project from <strong>Project Setup</strong>, building clean.
         </>,
         <>
-          Triggers, mechanisms, commands, and the scheduler from the{" "}
-          <strong>Command-Based Framework</strong> lesson.
+          Commands and button bindings from <strong>Writing Commands</strong>.
         </>,
         <>
-          A classic mechanism command from <strong>Classic Commands</strong>.
+          The scheduler vocabulary from <strong>Command-Based Framework</strong>
+          .
         </>,
       ]}
-      time="About 25 minutes"
+      time="11 minutes"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "An OpMode describes one way the robot can run. The framework discovers annotated OpMode classes and gives the selected one access to the shared Robot object.",
-            "Bindings created in an OpMode constructor belong to that mode. When the driver station changes modes, the scheduler removes that mode's triggers and commands.",
-          ]}
-          concept="Robot owns hardware for the whole process. An OpMode owns behavior for one selected operating mode."
-        />
-        <MarginNote label="2027 STACK">
-          Older tutorials put every controller binding in RobotContainer. This
-          project uses Commands v3 and OpModes; there is no RobotContainer.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            An OpMode is one way the robot can run: driver control, a single
+            autonomous routine, a pit procedure that zeroes an arm before a
+            match.
+          </p>
+          <p>
+            Nothing registers these classes anywhere. The framework finds them
+            by their annotation, and the driver station shows what it found.
+            Selecting a mode constructs it, along with every binding in its
+            constructor. Selecting a different mode takes those bindings away.
+          </p>
+        </div>
+        <MarginNote label="2027 stack">
+          Older tutorials keep controller bindings in RobotContainer and pick an
+          autonomous routine with a SendableChooser. Commands v3 has neither
+          one. The mode list on the driver station is the chooser.
         </MarginNote>
       </Split>
 
-      <LessonSection id="three-kinds" title="Recognize the three OpMode roles">
+      <LessonSection id="three-kinds" title="Three OpMode roles">
+        <p>
+          All three are ordinary Java classes. The annotation decides which name
+          the driver station shows, and it tells the next person opening the
+          file what the mode is for.
+        </p>
         <FigureGrid
           cols={3}
           items={[
             {
               label: "Driver control",
               term: "@Teleop",
-              body: "Controller bindings and driver-facing defaults that exist only while teleop mode is selected.",
+              body: "Controller bindings and the defaults a driver expects. They exist only while teleop is the selected mode.",
             },
             {
               label: "Preplanned",
               term: "@Autonomous",
-              body: "One selected routine scheduled when autonomous starts and canceled when the mode ends.",
+              body: "One routine, named on the driver station, scheduled when the mode starts and canceled when it ends.",
             },
             {
               label: "Pit work",
               term: "@Utility",
-              body: "Calibration, characterization, and diagnostics that should never be mixed into match controls.",
+              body: "Zeroing, characterization, diagnostics. Keeping these out of teleop means a driver cannot trip one in a match.",
             },
           ]}
         />
+        <p>
+          One routine per class, not one class holding four of them. Four
+          autonomous plans mean four <code>@Autonomous</code> classes and four
+          names on the list.
+        </p>
       </LessonSection>
 
-      <LessonSection id="teleop-shape" title="Build the smallest Teleop OpMode">
+      <LessonSection id="teleop-shape" title="The smallest Teleop OpMode">
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          title="TeleopOpMode.java: one binding, one mode"
+          title="TeleopOpMode.java: one button, one mode"
           code={`package frc.robot.opmodes;
 
 import frc.robot.Robot;
@@ -80,29 +95,64 @@ public class TeleopOpMode extends PeriodicOpMode {
   private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
   public TeleopOpMode(Robot robot) {
-    driver.a().whileTrue(robot.arm.runSlow());
+    driver.a().onTrue(robot.arm.runSlow()).onFalse(robot.arm.stop());
   }
 }`}
         />
         <p>
-          The annotation makes the class discoverable. The constructor receives
-          the one <code>Robot</code> object, then connects a trigger to a
-          command. There is no loop here because the scheduler checks the
-          trigger and runs the command.
+          The constructor is handed the one <code>Robot</code>, and that is the
+          only way in to the arm. An OpMode never builds a mechanism of its own:
+          two modes would end up configuring the same motor. The bindings are
+          made once, here, not on every loop.
         </p>
-        <Box variant="concept" title="Constructor means configure the mode">
-          <p>
-            Create bindings and mode-scoped default commands in the constructor.
-            Do not start long-running actions there. The selected OpMode may be
-            constructed before the robot is enabled.
-          </p>
-        </Box>
+        <p>
+          There is no loop in here. The scheduler checks the trigger on every
+          robot tick and schedules the command when it fires.
+        </p>
       </LessonSection>
 
-      <LessonSection
-        id="lifecycle"
-        title="Use start and end for mode boundaries"
-      >
+      <LessonSection id="constructor" title="Inside the constructor">
+        <p>
+          The OpMode is constructed the moment someone picks it on the driver
+          station. That can happen while the robot is still disabled, and
+          constructor code runs anyway. Three things belong in there, and three
+          do not.
+        </p>
+        <ul className="ml-5 list-disc space-y-2">
+          <li>
+            Trigger bindings for this mode, which is most of what a teleop class
+            holds.
+          </li>
+          <li>
+            A command built and kept in a field, ready for <code>start()</code>{" "}
+            to schedule.
+          </li>
+          <li>
+            A default command, set with{" "}
+            <code>robot.arm.setDefaultCommand(...)</code>. It is a binding like
+            any other, so it lasts as long as this mode does.
+          </li>
+          <li>
+            No motor output. The robot may still be disabled when this code
+            runs.
+          </li>
+          <li>
+            No state you need after a mode switch. The OpMode is rebuilt each
+            time; <code>Robot</code> is not.
+          </li>
+          <li>
+            No motor configuration. IDs, inversions, and gains belong to the
+            mechanism.
+          </li>
+        </ul>
+      </LessonSection>
+
+      <LessonSection id="lifecycle" title="Mode boundaries">
+        <p>
+          Most teleop classes need neither method below. Bindings made in the
+          constructor are enough, and the framework removes them when the mode
+          changes. There is no cleanup code to write.
+        </p>
         <CodeBlock
           language="java"
           title="The lifecycle shape"
@@ -117,48 +167,139 @@ public void end() {
 }`}
         />
         <p>
-          Most teleop classes need only constructor bindings. Autonomous uses
-          <code>start()</code> to schedule its routine and <code>end()</code> to
-          cancel it. Utility modes use the same boundary for a calibration or
-          characterization run.
+          Autonomous is where the two earn their place. <code>start()</code>{" "}
+          schedules the routine and <code>end()</code> cancels it. Pair them
+          every time. Hit disable partway through a run and <code>end()</code>{" "}
+          fires, so the routine stops on that loop rather than running on into
+          the next mode.
+        </p>
+        <p>
+          Utility modes use the same boundary. Begin the calibration in{" "}
+          <code>start()</code>, stop it in <code>end()</code>, and the mode is
+          safe to leave at any point.
         </p>
       </LessonSection>
 
-      <LessonSection
-        id="scope"
-        title="Put each behavior at the narrowest useful scope"
-      >
-        <ul className="ml-5 list-disc space-y-2">
-          <li>
-            Driver buttons belong in a <code>@Teleop</code> constructor.
-          </li>
-          <li>
-            An autonomous routine belongs in its <code>@Autonomous</code> class.
-          </li>
-          <li>
-            Calibration controls belong in a <code>@Utility</code> class.
-          </li>
-          <li>
-            A binding that applies in every mode belongs in <code>Robot</code>,
-            and should be rare.
-          </li>
-          <li>
-            Motor configuration belongs in the mechanism that owns the motor,
-            not in an OpMode.
-          </li>
-        </ul>
+      <LessonSection id="scope" title="Where behavior lives">
+        <p>
+          One question settles most of it. What is the smallest scope where this
+          behavior still works? Put it there.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Behavior</th>
+                <th className="px-3 py-2 text-left">Home</th>
+                <th className="px-3 py-2 text-left">Anywhere else</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Driver buttons</td>
+                <td className="px-3 py-2">
+                  The <code>@Teleop</code> class
+                </td>
+                <td className="px-3 py-2">
+                  A binding in <code>Robot</code> stays live in every mode.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">One autonomous routine</td>
+                <td className="px-3 py-2">
+                  Its own <code>@Autonomous</code> class
+                </td>
+                <td className="px-3 py-2">
+                  A routine with no annotation has no name to select.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Zeroing, characterization</td>
+                <td className="px-3 py-2">
+                  A <code>@Utility</code> class
+                </td>
+                <td className="px-3 py-2">
+                  On a driver button, someone starts it during a match.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">A binding every mode needs</td>
+                <td className="px-3 py-2">
+                  The <code>Robot</code> constructor
+                </td>
+                <td className="px-3 py-2">
+                  Copied into each OpMode, the copies drift apart.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Motor IDs and gains</td>
+                <td className="px-3 py-2">The mechanism</td>
+                <td className="px-3 py-2">
+                  In an OpMode, two modes can configure the same motor.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
         <Box
           variant="alert-warning"
           tag="COMMON MIX-UP"
           title="An OpMode is not a mechanism"
         >
           <p>
-            The OpMode decides when an action is available. The mechanism still
-            owns the motor and creates the command. If changing driver controls
-            requires editing motor configuration, those responsibilities have
-            been mixed together.
+            The OpMode decides when an action is available. The mechanism owns
+            the motor and hands out the command. If changing a driver button
+            means editing motor configuration, the two have been mixed together.
           </p>
         </Box>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          Build it, then go look at the list of modes. Deploy and Run covers the
+          simulator properly later; this is the short version.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Run <code>./gradlew build</code>. Nothing else is worth checking
+            until that finishes clean.
+          </li>
+          <li>
+            Read your teleop class once. Public class, annotation with a name,
+            public constructor taking <code>Robot</code>, every binding inside
+            it.
+          </li>
+          <li>
+            Start the simulator with <code>./gradlew simulateJava</code>, then
+            read the mode list on the driver station.
+          </li>
+          <li>
+            Pick your teleop mode, enable, and press the bound button. Then
+            switch modes and press it again.
+          </li>
+        </ol>
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>Every mode class you wrote, listed by its annotation name.</li>
+            <li>The button running its command while teleop is selected.</li>
+            <li>The same button doing nothing after the mode changes.</li>
+          </ul>
+        </Box>
+        <p>A mode missing from that list is one of four things:</p>
+        <ul className="ml-5 list-disc space-y-2">
+          <li>
+            The class is not <code>public</code>, or it is <code>abstract</code>
+            .
+          </li>
+          <li>The annotation carries no name.</li>
+          <li>
+            The class sits outside <code>frc.robot</code> and its subpackages.
+          </li>
+          <li>
+            The constructor does not take a <code>Robot</code>.
+          </li>
+        </ul>
+        <p>Fix the class, rebuild, and the name appears.</p>
       </LessonSection>
     </PageTemplate>
   );

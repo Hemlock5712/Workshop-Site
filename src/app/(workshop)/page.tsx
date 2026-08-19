@@ -92,6 +92,12 @@ export default function Home() {
           </span>
         </div>
 
+        {/* The headline is the name of the thing, not a pitch for it. It read
+            "Programming a robot, taught the way it's actually learned" and
+            said nothing a student could use: not who runs the workshop, not
+            what it covers, not whether they are in the right place. A person
+            who lands here already wants to program a robot. Tell them whose
+            course this is and get out of the way. */}
         <h1
           className="display mt-14 max-w-[1180px]"
           style={{
@@ -101,11 +107,9 @@ export default function Home() {
             textWrap: "balance",
           }}
         >
-          Programming a robot, taught the way it&rsquo;s{" "}
-          <em style={{ fontStyle: "italic", color: "var(--accent)" }}>
-            actually learned
-          </em>
-          .
+          FRC Team 5712
+          <br />
+          Coding Workshops
         </h1>
 
         <p
@@ -117,9 +121,9 @@ export default function Home() {
             color: "var(--tx2)",
           }}
         >
-          {LESSON_COUNT} lessons, written by hand, from identifying a motor in
-          Tuner X to fusing AprilTag poses into odometry. Every idea lands on
-          real hardware or code you can run, inspect, and break.
+          {LESSON_COUNT} lessons on programming an FRC robot, from spinning a
+          motor in Tuner X to a swerve drive that finds itself with a camera.
+          Every lesson runs on real hardware.
         </p>
 
         <div className="mt-[34px] flex flex-wrap items-center gap-[22px] pb-16">

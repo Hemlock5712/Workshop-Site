@@ -1,4 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
+import Quiz from "@/components/Quiz";
 import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import KeyConceptSection from "@/components/KeyConceptSection";
@@ -10,9 +11,8 @@ import { BookOpen } from "lucide-react";
 export default function PathPlannerLesson() {
   return (
     <PageTemplate
-      title="Design the route on the field before writing the routine"
-      emphasis="before writing the routine"
-      lede="PathPlanner gives you a field editor for shaping reusable path segments, checking headings and constraints, and assembling an autonomous plan where the whole route is visible at once."
+      title="PathPlanner Paths and Autos"
+      lede="PathPlanner is a field editor for shaping reusable path segments and assembling them into an autonomous plan. This lesson covers the robot configuration the editor needs, one drawn path, and event markers. The routine itself belongs to the next lesson."
       needs={[
         <>A calibrated swerve drive with trustworthy odometry.</>,
         <>The robot project opened once in the PathPlanner desktop app.</>,
@@ -60,7 +60,7 @@ export default function PathPlannerLesson() {
             {
               label: "Reusable movement",
               term: "Path",
-              body: "One segment from a start to an end. Waypoints shape the curve; rotation targets control where a holonomic robot faces; constraints cap motion.",
+              body: "One segment from a start to an end. Waypoints shape the curve; the goal end rotation and rotation targets control where a holonomic robot faces; constraints cap motion.",
             },
             {
               label: "Complete routine",
@@ -110,10 +110,7 @@ export default function PathPlannerLesson() {
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="draw-one-path"
-        title="Draw one path that is easy to test"
-      >
+      <LessonSection id="draw-one-path" title="Draw one testable path">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Place the first waypoint at the robot&apos;s known starting pose.
@@ -127,8 +124,8 @@ export default function PathPlannerLesson() {
             obstacle.
           </li>
           <li>
-            Add holonomic rotation targets only where the robot needs to change
-            facing.
+            Set the goal end rotation, then add rotation targets only where the
+            robot needs to turn along the way.
           </li>
           <li>
             Apply slower constraints near tight geometry instead of slowing the
@@ -152,10 +149,7 @@ export default function PathPlannerLesson() {
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="events"
-        title="Place events only after the drive is repeatable"
-      >
+      <LessonSection id="events" title="Add events one at a time">
         <p>
           Event markers connect route progress to robot commands. Name the event
           after an action such as <code>Start Intake</code>, not after a button
@@ -179,10 +173,7 @@ export default function PathPlannerLesson() {
         </ul>
       </LessonSection>
 
-      <LessonSection
-        id="handoff"
-        title="Hand the next lesson a readable route plan"
-      >
+      <LessonSection id="handoff" title="Hand off the route plan">
         <p>
           Finish with one tested-looking path segment, a written starting pose,
           the end pose, constraints, and a short list of intended events. The
@@ -196,6 +187,93 @@ export default function PathPlannerLesson() {
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question: "What separates a path from an auto?",
+            options: [
+              "A path is one continuous drive segment; an auto is an ordered routine built from paths and actions",
+              "A path is the blue alliance route; an auto is its red alliance mirror",
+              "A path belongs to one auto, so a second auto needs its own copy of it",
+              "A path is an auto that has already been tested on the field",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "One path is one trip, from a start pose to an end pose. An auto orders paths, waits, and events into a routine. Because the editor saves them as separate files, the same segment can appear in several autos without being redrawn.",
+          },
+          {
+            id: 2,
+            question:
+              "On a holonomic path, what sets the direction the robot faces?",
+            options: [
+              "The waypoints, because the robot always faces along the curve",
+              "The goal end rotation and the rotation targets, both separate from the waypoints",
+              "The order the waypoints were placed in",
+              "The angular velocity constraint",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Waypoints and their control handles shape where the robot goes. Facing is set apart from them. The goal end rotation fixes where the robot looks at the finish, and a rotation target turns it anywhere along the way. Angular constraints cap how fast it turns, never where it ends up.",
+          },
+          {
+            id: 3,
+            question:
+              "Where do the mass, wheel radius, and module positions in the editor come from?",
+            options: [
+              "The editor measures them from the field image once you pick the season",
+              "Defaults are fine, since the numbers only affect the preview drawing",
+              "Measured values from the calibrated drivetrain, typed into the editor settings",
+              "Whichever numbers make the preview match the curve you drew",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Mass, moment of inertia, wheel radius, gearing, current limit, and module positions all describe the real robot. The editor cannot discover any of them. Wheel radius came out of Swerve Calibration, and module positions match the ones the drive code already uses. Those numbers shape the motion the robot is asked to produce, so a default carries onto the field.",
+          },
+          {
+            id: 4,
+            question:
+              "The drawn curve clears an obstacle. What can still hit it?",
+            options: [
+              "Nothing, as long as the curve itself is clear",
+              "The wheels, since module positions are left out of the preview",
+              "Nothing, because the editor refuses to save a path whose preview clips a wall",
+              "The bumpers, because the curve tracks the robot center and not its outline",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "The curve is the path of one point, the center of the robot. Set the bumper footprint and watch the whole outline through the preview. A corner sweeps wide where rotation and translation happen together, so a clear-looking line can still clip a wall. The editor checks nothing for you, and it saves the path either way.",
+          },
+          {
+            id: 5,
+            question:
+              "You have drawn a new path. When do the event markers go on?",
+            options: [
+              "Before the first test, so the path and the mechanisms get tested together",
+              "After the path drives repeatably, one event at a time",
+              "Never on a path; markers belong to the auto instead",
+              "Last, once the whole routine is competition ready",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Test the path with nothing on it first, then add one event at a time. An intake that misbehaves looks exactly like a path-following problem. Debug them together and you will redraw a curve that was never wrong. Markers ride on the path itself, so they follow that segment into every auto that uses it.",
+          },
+          {
+            id: 6,
+            question: "How should an event marker be named?",
+            options: [
+              "After the action it starts, spelled the same as the command it runs",
+              "After the button a driver would press to do it by hand",
+              "After the motor output it applies, such as forty percent",
+              "After the path it sits on, so markers sort by path",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "The name you type in the editor is the string the robot code looks up, so the two have to be spelled identically. Rename one side and the marker fires nothing while the path drives on. Start Intake still describes the action next season. A button or a voltage describes the wiring you happen to have today.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

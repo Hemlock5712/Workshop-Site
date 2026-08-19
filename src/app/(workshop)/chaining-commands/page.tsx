@@ -1,227 +1,137 @@
 import PageTemplate from "@/components/PageTemplate";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
 
+/**
+ * Lesson 21, and no longer "advanced". It moved out of Workshop 5 because
+ * `/autonomous` is two lessons later and builds its whole routine out of
+ * `Command.sequence` and `.withTimeout`: composition is a prerequisite for
+ * that page, not a victory lap after it. So sequencing leads, `race` follows, and the tour of `.andThen`,
+ * `.alongWith`, `Command.parallel` and the coroutine preview is gone. Those
+ * belong to the lessons that use them.
+ *
+ * This is also the first page on the site to show `import static
+ * org.wpilib.units.Units.Seconds`, since `/java-basics` stopped pre-teaching
+ * static imports. One line of prose introduces it where it appears.
+ */
 export default function ChainingCommands() {
   return (
     <PageTemplate
-      title="One button, several commands, in order"
-      emphasis="in order"
-      lede="So far every button runs exactly one command. This page combines them: raise the arm, wait for it, then spin the flywheel, all from one button press."
+      title="Command Composition"
+      lede="You have written commands that do one thing while a button is held. An autonomous routine is a list of those commands, run in order. This lesson builds the list."
       needs={[
         <>
-          The arm and flywheel commands from <strong>Commands</strong>:{" "}
-          <code>runSlow()</code>, <code>runFast()</code>, <code>stop()</code> on
-          both mechanisms.
+          Arm and flywheel commands from <strong>Writing Commands</strong>:{" "}
+          <code>runSlow()</code>, <code>runFast()</code>, <code>stop()</code>.
         </>,
         <>
           A <code>TeleopOpMode</code> with working button bindings, from{" "}
-          <strong>Triggers</strong>.
+          <strong>OpModes</strong>.
         </>,
         <>
-          The simulator running, from <strong>Running Your Code</strong>. You
-          need to be able to press a button and watch a motor turn.
+          The simulator running, from <strong>Hardware Simulation</strong>.
         </>,
       ]}
-      time="Roughly 30 minutes"
+      time="About 20 minutes"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "Chaining is the style this team writes almost everything in. There is a second, more powerful style called coroutines, and you will meet it at the very end of the course. You will not need it before then.",
-          ]}
-          concept="Chaining means gluing commands you already have into one bigger command."
-        />
-        <MarginNote label="WHAT YOU'LL BUILD">
-          One button that raises the arm, then spins the flywheel, then stops
-          both when you let go. Most of the time goes on watching the simulator.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            Every mechanism command you have written so far is a{" "}
+            <strong>hold</strong>. <code>runRepeatedly(...)</code> re-sends the
+            same request every loop and never ends.
+          </p>
+          <p>
+            So the work comes in two parts: give a command an ending, then glue
+            the endings together in order.
+          </p>
+        </div>
+        <MarginNote label="Where this goes">
+          Autonomous is two lessons away, and its routine is one of these: drive
+          off the line, then stop. Every step there needs the ending you are
+          about to add.
         </MarginNote>
       </Split>
 
-      {/* ── THE ONE RULE ─────────────────────────────────────────────── */}
-      <LessonSection
-        id="the-problem-a-hold-never-ends"
-        title="The problem: a hold never ends"
-      >
-        <p className="prose-body measure">
-          Every command you wrote on the Commands page is a{" "}
-          <strong>hold</strong>. <code>runRepeatedly(...)</code> re-sends its
-          request every single loop and never stops on its own. That is what the{" "}
-          <code>(hold)</code> in the name is telling you.
+      <LessonSection id="holds-and-steps" title="Holds and steps">
+        <p>
+          A hold never reports that it is finished, so a list containing one
+          stops there for good. Step two never runs. Nothing errors and nothing
+          logs, so the routine looks frozen.
         </p>
-
-        <Box
-          variant="alert-warning"
-          tag="THE ONE RULE"
-          title="Nothing may ever wait on a hold"
-        >
-          <p>
-            Put a hold in a list of steps and the list stops there forever. Step
-            two never runs, because step one never finishes. This is not a bug
-            in the framework: a hold is <em>supposed</em> to run until something
-            takes the mechanism away from it.
-          </p>
-          <p className="mt-3">
-            So before you can chain anything, you need a way to give a hold an
-            ending. That is the first tool below.
-          </p>
-        </Box>
-      </LessonSection>
-
-      {/* ── 1. whileTrue ─────────────────────────────────────────────── */}
-      <LessonSection
-        id="bind-holds-with-whiletrue"
-        title={
-          <>
-            1. Bind holds with <code>whileTrue</code>
-          </>
-        }
-        outlineLabel="Bind holds with whileTrue"
-      >
-        <p className="prose-body measure">
-          On the Commands page you bound holds in pairs: <code>onTrue</code> to
-          start one and <code>onFalse</code> to start another that undoes it.
-          That works, and you will see it in the <code>2-Commands</code> code.
-          But there is one verb that says it directly.
+        <p>
+          <code>.withTimeout(...)</code> wraps a command and ends it after a
+          fixed time, finished or not. That turns a hold into a{" "}
+          <strong>step</strong>, something with a beginning and an end. Steps
+          are what you can put in a list.
         </p>
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java: the same behavior, two ways"
-          code={`// What 2-Commands does: two bindings, one to start and one to undo.
-driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
+          title="A hold, and the same hold as a step"
+          code={`import static org.wpilib.units.Units.Seconds;
 
-// What whileTrue says instead: run this while the button is down.
-// Release the button and the command is canceled.
-driver.a().whileTrue(flywheel.runFast());`}
-        />
+// A hold. Pushes forever, never finishes.
+arm.runFast()
 
-        <p className="prose-body measure">
-          <code>whileTrue</code> is the team default for holds from here on. It
-          reads the way the behavior actually works, and there is no second
-          binding to forget.
-        </p>
-
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT"
-          title="Canceling a motor command does not stop the motor"
-        >
-          <p>
-            When a command is canceled, the mechanism goes back to its{" "}
-            <code>idle()</code> default. On these branches <code>idle()</code>{" "}
-            sends <em>nothing at all</em>: it does not zero the last request.
-            Phoenix keeps applying the last voltage it was given, so the
-            flywheel keeps spinning.
-          </p>
-          <p className="mt-3">
-            That is why <code>stop()</code> exists as its own command, and why
-            you pair the binding with <code>whileFalse</code>:
-          </p>
-          <div className="mt-3">
-            <CodeBlock
-              language="java"
-              hideControls
-              code={`driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
-            />
-          </div>
-        </Box>
-      </LessonSection>
-
-      {/* ── 2. withTimeout ───────────────────────────────────────────── */}
-      <LessonSection
-        id="give-a-hold-an-ending"
-        title={
-          <>
-            2. Give a hold an ending with <code>.withTimeout(...)</code>
-          </>
-        }
-        outlineLabel="Give a hold an ending with .withTimeout(...)"
-      >
-        <p className="prose-body measure">
-          <code>.withTimeout(...)</code> wraps a command and ends it after a set
-          amount of time, whether it was done or not. A hold with a timeout on
-          it is no longer a hold: it is a <strong>step</strong>, something with
-          a beginning and an end. Steps are what you can put in a list.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="A hold becomes a step"
-          code={`// arm.runFast() by itself: pushes forever, never finishes.
-// With a timeout: pushes for one second, then ends.
+// A step. Pushes for one second, then ends.
 arm.runFast().withTimeout(Seconds.of(1.0))`}
         />
 
-        <Box
-          variant="alert-info"
-          tag="NOTE · UNITS"
-          title="Seconds.of(1.0), not 1.0"
-        >
-          <p>
-            <code>.withTimeout(...)</code> will not accept a bare number. WPILib
-            uses <em>unit types</em> so you cannot accidentally pass
-            milliseconds where seconds were expected:{" "}
-            <code>Seconds.of(1.0)</code> produces a value of type{" "}
-            <code>Time</code>, and that is what the method wants. You need this
-            import at the top of the file:
-          </p>
-          <div className="mt-3">
-            <CodeBlock
-              language="java"
-              hideControls
-              code={`import static org.wpilib.units.Units.Seconds;`}
-            />
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              The <code>import static</code> line is what lets you write{" "}
+              <code>Seconds</code> rather than <code>Units.Seconds</code> every
+              time. <code>.withTimeout(...)</code> refuses a bare{" "}
+              <code>1.0</code>. It takes a <code>Time</code>, so nobody can pass
+              milliseconds where seconds were meant.
+            </p>
           </div>
-        </Box>
-
-        <p className="prose-body-sm measure">
-          A timeout is a blunt ending: it stops after a fixed time rather than
-          when the arm actually arrives. Later, on <strong>Finish Lines</strong>
-          , you will replace it with a condition that watches the real position
-          and keep the timeout as a backstop. For now the arm has no way to
-          report where it is, so time is what you have.
-        </p>
+          <MarginNote label="Blunt ending">
+            A timeout ends the step after a fixed time, not when the arm
+            arrives. Finish Conditions is next and replaces it with a condition
+            that watches the real position. The timeout stays on as a backstop.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
-      {/* ── 3. Command.sequence ──────────────────────────────────────── */}
-      <LessonSection
-        id="run-steps-in-order-with"
-        title={
-          <>
-            3. Run steps in order with <code>Command.sequence</code>
-          </>
-        }
-        outlineLabel="Run steps in order with Command.sequence"
-      >
-        <p className="prose-body measure">
+      <LessonSection id="steps-in-order" title="Steps in order">
+        <p>
           <code>Command.sequence(a, b, c)</code> runs <code>a</code> until it
-          finishes, then <code>b</code>, then <code>c</code>. It is a list of
-          steps. Every step needs its own ending, or the list stops there: that
-          is THE ONE RULE again.
+          finishes, then <code>b</code>, then <code>c</code>. Autonomous
+          routines are written in exactly this shape.
         </p>
 
         <CodeBlock
           language="java"
           title="TeleopOpMode.java: raise the arm, then spin up"
-          code={`// Y: push the arm up for a second, THEN start the flywheel.
-driver
-    .y()
-    .whileTrue(
-        Command.sequence(
-                // A step: it ends on its own, so the sequence moves on.
-                arm.runFast().withTimeout(Seconds.of(1.0)),
-                // A hold: the last step, so the whole group is a hold too.
-                flywheel.runFast())
-            .named("Lift Then Spin (hold)"))
-    .whileFalse(flywheel.stop());`}
+          code={`Command liftThenSpin =
+    Command.sequence(
+            // A step: it ends, so the sequence moves on.
+            arm.runFast().withTimeout(Seconds.of(1.0)),
+            // A hold: the last member, so the group is a hold too.
+            flywheel.runFast())
+        .named("Lift Then Spin (hold)");`}
         />
+
+        <p>
+          <code>Command.sequence(...)</code> hands back a builder rather than a{" "}
+          <code>Command</code>. <code>.named(&quot;...&quot;)</code> is what
+          finishes it, and leaving it off will not compile. Name the group after
+          what it does. If the group is a hold, end the name with{" "}
+          <code>(hold)</code>, the way the mechanism commands do.
+        </p>
+        <p>
+          Do not re-name a command that already has one.{" "}
+          <code>arm.runFast()</code> arrives finished, so{" "}
+          <code>.named(...)</code> on it is a compile error.
+        </p>
 
         <Box
           variant="alert-danger"
@@ -229,268 +139,160 @@ driver
           title="A bare hold in the middle"
         >
           <p>
-            Swap the first step for a bare <code>arm.runFast()</code> and the
-            sequence sticks on it forever. The flywheel never starts. Nothing
-            errors, nothing logs: the routine sits there. If a routine seems
-            frozen, a hold with no ending is the first thing to look for.
+            Swap the first member for a plain <code>arm.runFast()</code> and the
+            sequence sticks there for the rest of the match. When a routine
+            looks frozen, a member with no ending is the first thing to check.
           </p>
         </Box>
       </LessonSection>
 
-      {/* ── 4. Command.race ──────────────────────────────────────────── */}
-      <LessonSection
-        id="do-one-thing-while-holding"
-        title={
-          <>
-            4. Do one thing <em>while</em> holding another with{" "}
-            <code>Command.race</code>
-          </>
-        }
-        outlineLabel="Do one thing while holding another with Command.race"
-      >
-        <p className="prose-body measure">
-          A sequence is &quot;this, then that.&quot; Sometimes you want
-          &quot;this <em>while</em> that.&quot; <code>Command.race</code> starts
-          every member at once, and the moment any one of them finishes it
-          cancels all the rest.
+      <LessonSection id="two-at-once" title="Two things at once">
+        <p>
+          A sequence is this, then that. A race is this while that.{" "}
+          <code>Command.race(...)</code> starts every member at the same time
+          and cancels the rest as soon as one finishes.
         </p>
 
         <CodeBlock
           language="java"
           title="Spin the flywheel while the arm holds position"
-          code={`// The flywheel step has an ending; the arm hold does not.
-// So the flywheel always decides when this group ends, and when it
-// does, the arm hold is canceled with it.
-Command.race(
-        flywheel.runFast().withTimeout(Seconds.of(2.0)),
-        arm.runSlow())
-    .named("Spin While Holding Arm")`}
+          code={`Command spinWhileHolding =
+    Command.race(
+            flywheel.runFast().withTimeout(Seconds.of(2.0)),
+            arm.runSlow())
+        .named("Spin While Holding Arm");`}
         />
 
-        <Box variant="concept" title="Why the step always wins">
-          <p>
-            A hold never finishes, so it can never be the one that ends the
-            race. Whichever member <em>can</em> finish is always the decider.
-            That is what makes <code>race</code> the tool for &quot;do this one
-            thing while keeping that other thing held.&quot;
-          </p>
-          <p className="mt-3">
-            You may hear this pattern called a <strong>deadline</strong>: one
-            member sets the time limit and the others get canceled when it is
-            up. In Commands v3 you spell it <code>Command.race(...)</code>.
-            There is no <code>Command.deadline(...)</code> method.
-          </p>
-        </Box>
+        <p>
+          The flywheel member has an ending and the arm hold does not, so the
+          flywheel decides when the group ends. A hold can never win a race.
+          Other teams call this pattern a deadline. Commands v3 spells it{" "}
+          <code>Command.race(...)</code>, and there is no{" "}
+          <code>Command.deadline(...)</code>.
+        </p>
       </LessonSection>
 
-      {/* ── naming ───────────────────────────────────────────────────── */}
-      <LessonSection
-        id="every-group-has-to-be-named"
-        title="Every group has to be named"
-      >
-        <p className="prose-body measure">
-          <code>Command.sequence(...)</code> and <code>Command.race(...)</code>{" "}
-          do not hand you a finished <code>Command</code>. They hand you a
-          builder, and <code>.named(&quot;...&quot;)</code> is what turns it
-          into one. Leave the name off and the project will not compile: WPILib
-          enforces it, because an unnamed command is invisible when you are
-          trying to work out what the robot is doing.
+      <LessonSection id="bind-the-group" title="Bind the group">
+        <p>
+          A group is a command, so it binds like one. On{" "}
+          <strong>Writing Commands</strong> you started a hold with{" "}
+          <code>onTrue</code> and undid it with <code>onFalse</code>, because
+          neither verb cancels anything.
+        </p>
+        <p>
+          <code>whileTrue</code> does cancel. It runs the group while the button
+          is held and drops it on release. From here on it is how this team
+          binds a hold.
         </p>
 
-        <p className="prose-body measure">
-          Two conventions worth copying: name the group after what it{" "}
-          <em>does</em>, and if the group is a hold, end the name with{" "}
-          <code>(hold)</code> the same way the mechanism commands do.
-        </p>
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java: one button, both mechanisms"
+          code={`driver.y().whileTrue(liftThenSpin).whileFalse(flywheel.stop());`}
+        />
 
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT"
-          title="Do not re-name a finished command"
-        >
+        <Box variant="alert-warning" title="Canceling never stops the motor">
           <p>
-            <code>arm.runFast()</code> is already a <code>Command</code>: it
-            already has a name. Writing{" "}
-            <code>
-              arm.runFast().withTimeout(Seconds.of(1.0)).named(&quot;lift&quot;)
-            </code>{" "}
-            will not compile. Naming happens once, where the command is built.
+            A canceled command hands the mechanism back to <code>idle()</code>,
+            and <code>idle()</code> sends nothing at all. It does not zero the
+            last request, so Phoenix keeps applying the last voltage it was
+            given. The flywheel keeps spinning. Every group needs a stop
+            somewhere: a <code>whileFalse</code> binding, or a stop step of its
+            own.
           </p>
         </Box>
+
+        <p>
+          Whether a group ends at all comes down to its last member. End on a
+          hold and the group is a hold. End on a step and the group finishes by
+          itself, with nothing left commanding the mechanism. Then the stop
+          belongs inside the group.
+        </p>
       </LessonSection>
 
-      {/* ── two shapes ───────────────────────────────────────────────── */}
-      <LessonSection id="two-shapes-of-group" title="Two shapes of group">
-        <p className="prose-body measure">
-          Whether your group ends on its own depends entirely on its last step.
-          This catches people out, so it is worth being deliberate about which
-          shape you are building.
-        </p>
-
-        <Box
-          variant="alert-success"
-          tag="SHAPE A · PREFER THIS"
-          title="The group is a hold"
-        >
-          <p>
-            The last step is a hold, so the group never finishes. Bind it with{" "}
-            <code>whileTrue(...)</code> and pair it with{" "}
-            <code>whileFalse(...)</code> to clean up. Hold the button, the
-            routine runs; let go, it is canceled. This is the{" "}
-            <code>Lift Then Spin (hold)</code> example above, and it is what you
-            want at this point in the course.
-          </p>
-        </Box>
-
-        <Box
-          variant="alert-warning"
-          tag="SHAPE B · CAREFUL"
-          title="The group finishes"
-        >
-          <p>
-            Every step has an ending, so the group ends too, and then nothing is
-            commanding the mechanism. It falls back to <code>idle()</code>,
-            which sends no output and does not zero the last request. The motor
-            keeps doing whatever it was last told to do.
-          </p>
-          <p className="mt-3">
-            A finishing group has to end with explicit stop steps, or the
-            mechanism needs a real default command. Neither the arm nor the
-            flywheel has a default command yet: you will see your first one on
-            the swerve drivetrain.
-          </p>
-        </Box>
-      </LessonSection>
-
-      {/* ── did it work ──────────────────────────────────────────────── */}
-      <LessonSection id="did-it-work" title="Did it work?">
+      <LessonSection id="check-your-work" title="Check your work">
         <ol
           className="ml-5 list-decimal space-y-3"
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            Add the <code>Lift Then Spin (hold)</code> binding to your{" "}
-            <code>TeleopOpMode</code> constructor, with the <code>Seconds</code>{" "}
-            import at the top of the file.
+            Add the <code>Seconds</code> import and the{" "}
+            <code>Lift Then Spin (hold)</code> binding to your{" "}
+            <code>TeleopOpMode</code> constructor.
+          </li>
+          <li>Start the simulator and click Enable.</li>
+          <li>Hold Y for three seconds, then release.</li>
+          <li>
+            Now break it on purpose. Drop <code>.withTimeout(...)</code> off the
+            arm member, hold Y again, then put the timeout back.
           </li>
           <li>
-            Start the simulator and click Enable, the same way as last page.
-          </li>
-          <li>
-            Hold Y. <strong>{"You should see: "}</strong> the arm runs for one
-            second and stops, <em>then</em> the flywheel starts. One after the
-            other, not both at once.
-          </li>
-          <li>
-            Keep holding Y. <strong>{"You should see: "}</strong> the flywheel
-            keeps spinning and never stops by itself. Correct: the last step is
-            a hold, so the whole group is a hold.
-          </li>
-          <li>
-            Release Y. <strong>{"You should see: "}</strong> the flywheel stops,
-            because <code>whileFalse(flywheel.stop())</code> takes over.
-          </li>
-          <li>
-            <strong>Now break it on purpose.</strong> Bind Y to just{" "}
-            <code>arm.runFast().withTimeout(Seconds.of(1.0))</code> instead, and
-            hold it for two seconds. <strong>{"You should see: "}</strong> after
-            one second the command ends, and the arm{" "}
-            <em>keeps moving anyway</em>. That is Shape B. Nothing claims the
-            arm, <code>idle()</code> sends nothing, and Phoenix is still
-            applying the 6&nbsp;V you last asked for.
-          </li>
-          <li>
-            <strong>Now fix it.</strong> Put the step back in a sequence with a
-            real ending:
-            <div className="mt-2">
-              <CodeBlock
-                language="java"
-                hideControls
-                code={`Command.sequence(
-        arm.runFast().withTimeout(Seconds.of(1.0)),
-        arm.stop().withTimeout(Seconds.of(0.5)))
-    .named("Lift Then Stop")`}
-              />
-            </div>
-            <strong>{"You should see: "}</strong> the arm runs for a second,
-            stops, and stays stopped after the routine ends.
+            Bind Y to <code>arm.runFast().withTimeout(Seconds.of(1.0))</code> on
+            its own instead and hold it for two seconds. The step ends after one
+            second and the arm keeps pushing 6&nbsp;V, because nothing claimed
+            it afterwards. A closing{" "}
+            <code>arm.stop().withTimeout(Seconds.of(0.5))</code> step is the
+            fix.
           </li>
         </ol>
 
-        <Box
-          variant="alert-info"
-          tag="IF IT DIDN'T WORK"
-          title="Y does nothing, the sequence will not compile, or both move at once"
-        >
-          <ul className="ml-4 list-disc space-y-2">
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
             <li>
-              <strong>
-                Nothing happens when you press Y, and the flywheel never starts.
-              </strong>{" "}
-              A step in the sequence has no ending: most likely a bare{" "}
-              <code>arm.runFast()</code> with the <code>.withTimeout(...)</code>{" "}
-              left off. The routine is stuck on step one.
+              The arm runs for one second and stops, then the flywheel starts.
             </li>
             <li>
-              <strong>It will not compile, pointing at your sequence.</strong>{" "}
-              Either the group has no <code>.named(&quot;...&quot;)</code>, or
-              you put <code>.named(...)</code> on a command that already had a
-              name.
+              The flywheel holds while Y is down and stops when you release it.
             </li>
             <li>
-              <strong>Both mechanisms move at the same time.</strong> You built
-              a <code>Command.race</code> where you meant{" "}
-              <code>Command.sequence</code>. Race starts everything at once;
-              sequence waits.
+              With the timeout gone, the arm pushes and the flywheel never
+              starts.
             </li>
           </ul>
         </Box>
-      </LessonSection>
 
-      {/* ── what's next ──────────────────────────────────────────────── */}
-      <LessonSection id="what-comes-later" title="What comes later">
-        <p className="prose-body measure">
-          Four tools cover almost every routine this team writes:{" "}
-          <code>whileTrue</code>, <code>.withTimeout(...)</code>,{" "}
-          <code>Command.sequence</code> and <code>Command.race</code>. Three
-          more show up further along:
-        </p>
+        <p>These three failures look nothing alike.</p>
 
-        <ul
-          className="ml-5 list-disc space-y-2"
-          style={{ color: "var(--tx2)" }}
-        >
-          <li>
-            <code>.until(...)</code>: end a hold when something is actually{" "}
-            <em>true</em> rather than after a fixed time. It needs the mechanism
-            to expose a named sensor condition, which the current mechanism API
-            does not do yet. <strong>Command Finish Conditions</strong> is next,
-            and you will upgrade this routine there.
-          </li>
-          <li>
-            <code>Command.parallel(...)</code>: run several commands at once and
-            wait for all of them. It comes up when a single state has to pose
-            the whole robot, on <strong>State Machines</strong>.
-          </li>
-          <li>
-            <code>.andThen(...)</code>, <code>.alongWith(...)</code> and{" "}
-            <code>.raceWith(...)</code>: shorthands for gluing two commands
-            together. You will see them in other teams&apos; code. They do the
-            same jobs as the three factories above.
-          </li>
-        </ul>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[520px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">What you see</th>
+                <th className="px-3 py-2 text-left">Cause</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Y does nothing</td>
+                <td className="px-3 py-2">A member with no ending.</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">The group will not compile</td>
+                <td className="px-3 py-2">
+                  No <code>.named(&quot;...&quot;)</code>, or{" "}
+                  <code>.named(...)</code> on a command that already had one.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Both mechanisms move together</td>
+                <td className="px-3 py-2">
+                  A <code>Command.race</code> where you meant{" "}
+                  <code>Command.sequence</code>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <p className="prose-body measure">
-          The robot template has a full multi-mechanism routine written in this
-          style. Its own comments call chaining &quot;as far as most routines
-          ever need to go&quot;: worth reading once you are comfortable with the
-          four tools above.
+        <p>
+          Get this binding working in the simulator. Autonomous is the same move
+          against a drivetrain, with a stop on the end.
         </p>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-          title="DriveStowDriveChainedOpMode.java: the chaining reference"
-          icon={<GitBranch className="w-5 h-5" />}
+          title="The template's chained OpMode"
+          icon={<GitBranch className="h-5 w-5" />}
         />
       </LessonSection>
 
@@ -499,28 +301,28 @@ Command.race(
           {
             id: 1,
             question:
-              "You put arm.runFast(), a hold, with no timeout, as the first step of Command.sequence(...). What happens?",
+              "You put arm.runFast(), a hold with no timeout, as the first member of Command.sequence(...). What happens?",
             options: [
-              "The sequence skips it and runs the next step",
-              "The sequence sticks on that step forever and the later steps never run",
+              "The sequence sticks on it forever and the later members never run",
               "The command fails to compile",
-              "The step runs for one scheduler loop, then the sequence moves on",
+              "It runs for one scheduler loop, then the sequence moves on",
+              "The sequence skips it and runs the next member",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "A hold never finishes, so a sequence containing a bare hold waits on it forever. Nothing errors and nothing logs: the routine just sits there. Give the step an ending with .withTimeout(...) (or, later, .until(...)).",
+              "A hold never finishes, so the sequence waits on it for the rest of the match. Nothing errors and nothing logs, so the routine looks frozen. Give the member an ending with .withTimeout(...), or later with .until(...).",
           },
           {
             id: 2,
             question:
               "Why does .withTimeout(Seconds.of(2.0)) refuse a plain 2.0?",
             options: [
-              "It takes a Time, a WPILib unit type, so you cannot mix up seconds and milliseconds",
-              "Timeouts must be whole numbers of seconds",
               "The scheduler needs the value at compile time",
-              "It accepts a double: Seconds.of(...) is just a style preference",
+              "It accepts a double, and Seconds.of(...) is a style preference",
+              "It takes a Time, a WPILib unit type, so seconds and milliseconds cannot be mixed up",
+              "Timeouts must be whole numbers of seconds",
             ],
-            correctAnswer: 0,
+            correctAnswer: 2,
             explanation:
               "WPILib uses unit types for quantities like this. Seconds.of(2.0) produces a Time, which is what the method signature asks for. It needs `import static org.wpilib.units.Units.Seconds;` at the top of the file.",
           },
@@ -529,42 +331,28 @@ Command.race(
             question:
               "In Command.race(flywheel.runFast().withTimeout(Seconds.of(2.0)), arm.runSlow()), what ends the group?",
             options: [
-              "Whichever finishes first: it is unpredictable",
-              "The flywheel step, because the arm hold can never finish; the arm is then canceled",
+              "Whichever finishes first, and that is unpredictable",
+              "The flywheel member, because the arm hold can never finish; the arm is then canceled",
               "The arm hold, once the arm reaches its position",
-              "Nothing: a race containing a hold runs forever",
+              "Nothing, because a race containing a hold runs forever",
             ],
             correctAnswer: 1,
             explanation:
-              "A race ends as soon as any member finishes, and cancels the rest. A hold can never be that member, so the step with the timeout is always the decider. That is what makes race the tool for “do this while holding that.”",
+              "A race ends as soon as any member finishes, and cancels the rest. A hold can never be that member, so the one with the timeout always decides. That is why race is the tool for doing one thing while holding another.",
           },
           {
             id: 4,
             question:
-              "Your group's last step is a hold. How should you bind it, and why?",
+              "Your group's last member is a hold. You bind it with whileTrue and nothing else, then release the button. What does the flywheel do?",
             options: [
-              "onTrue(group): the hold keeps it running as long as you need",
-              "whileTrue(group), paired with whileFalse(stop): releasing cancels it, and the stop is needed because idle() sends no output",
-              "onTrue(group).onFalse(group): the second call cancels the first",
-              "whileTrue(group) alone: canceling a command stops its motors",
+              "It coasts down over about a second",
+              "It throws an error, because a canceled hold has no stop",
+              "It stops, because canceling a command stops its motors",
+              "It keeps spinning, because idle() sends no output and does not zero the last request",
             ],
-            correctAnswer: 1,
+            correctAnswer: 3,
             explanation:
-              "whileTrue cancels the group on release. But canceling does not stop the motor: the mechanism falls back to idle(), which issues no output and does not zero the last request, so Phoenix keeps applying it. The whileFalse(stop) binding is what actually stops the hardware.",
-          },
-          {
-            id: 5,
-            question:
-              "Which of these is the deadline pattern in Commands v3: run a step while holding something, canceling the hold when the step is done?",
-            options: [
-              "Command.deadline(step, hold)",
-              "Command.race(step, hold).named(“…”)",
-              "Command.sequence(step, hold).named(“…”)",
-              "step.withDeadline(hold)",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "There is no Command.deadline(...) in v3. A race ends when its first member finishes and cancels the others, which is exactly the deadline behavior. Remember the terminal .named(“…”): a group is not a Command until it has one.",
+              "whileTrue does cancel the group on release, but canceling is not stopping. The mechanism falls back to idle(), which issues no request at all, so Phoenix keeps applying the last voltage. A whileFalse(flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
           },
         ]}
       />
