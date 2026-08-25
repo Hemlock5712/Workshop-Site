@@ -1,7 +1,7 @@
 /**
  * The prose linter.
  *
- * Enforces the mechanical subset of `context/writing-style.md`: the reading
+ * Enforces the mechanical subset of `context/lesson-budget.md`: the reading
  * budget, the ban on em dashes, sentence length, title and heading length, the
  * aside budget, and the list of constructions that read as machine-written.
  *
@@ -547,6 +547,110 @@ const BANNED: ReadonlyArray<{ pattern: RegExp; note: string }> = [
   { pattern: /\bdeep dive\b/gi, note: "filler" },
   { pattern: /\bbasically\b/gi, note: "filler adverb" },
   { pattern: /\bat the end of the day\b/gi, note: "filler" },
+
+  /* ── unslop ──────────────────────────────────────────────────────────
+   *
+   * `.claude/skills/unslop/SKILL.md` replaced the voice half of the old
+   * style guide in August 2026. Everything below is the mechanically
+   * checkable subset of it. The judgement calls it also makes (say what a
+   * thing does rather than how it feels, one idea per sentence, name the
+   * actor) are not regex-shaped and stay a human job.
+   *
+   * What is deliberately NOT here, because this is a robotics site and the
+   * plain reading of the word is the real one: `flywheel` is a shooter
+   * wheel and appears 193 times, `surface` is the carpet you compete on,
+   * `vector` and `primitive` are maths and Java, and a `harness` is a
+   * bundle of wires. Banning those would train everyone to ignore the
+   * linter. */
+
+  // unslop 19. Straight quotes only. The codebase writes `&quot;`.
+  { pattern: /[‘’“”]/g, note: "curly quote: use &quot;" },
+
+  // unslop 7. AI vocabulary.
+  {
+    pattern:
+      /\b(additionally|crucial|delve|enduring|garner|interplay|intricate|pivotal|showcase|testament|tapestry)\b/gi,
+    note: "AI vocabulary: use the plain word",
+  },
+  // `underscore` is a character on a keyboard and `landscape` is an image
+  // orientation, so both are banned only in their abstract use.
+  {
+    pattern: /\bunderscor(es|ed|ing) (the|how|why|that|a)\b/gi,
+    note: "AI vocabulary: say what it shows",
+  },
+  {
+    pattern: /\b(evolving|changing|shifting) landscape\b|\blandscape of\b/gi,
+    note: "AI vocabulary: abstract landscape",
+  },
+
+  // unslop 8. Fancy ways to say "is".
+  {
+    pattern: /\b(serves as|stands as|boasts)\b/gi,
+    note: "fancy 'is': say is or has",
+  },
+
+  // unslop 4. Promotional language.
+  {
+    pattern:
+      /\b(nestled|breathtaking|groundbreaking|renowned|stunning|must-visit|vibrant)\b/gi,
+    note: "promotional: describe it neutrally",
+  },
+
+  // unslop 1. Puffery.
+  {
+    pattern:
+      /\b(pivotal moment|testament to|setting the stage for|indelible mark|deeply rooted)\b/gi,
+    note: "puffery: state what happened",
+  },
+
+  // unslop 5. Vague attributions.
+  {
+    pattern:
+      /\b(experts (believe|say|agree)|industry reports suggest|some critics argue|studies show)\b/gi,
+    note: "vague attribution: name the source or cut it",
+  },
+
+  // unslop 23 and 31. Filler and the fancier synonym.
+  {
+    pattern:
+      /\b(in order to|due to the fact that|it is important to note|it'?s worth noting|when it comes to|a wide (range|variety) of|in the event that)\b/gi,
+    note: "filler: cut it or use the short form",
+  },
+  {
+    pattern: /\b(facilitate|numerous|myriad|plethora)\b/gi,
+    note: "say help, many",
+  },
+
+  // unslop 24. Stacked hedges.
+  {
+    pattern: /\b(could potentially|might possibly|may potentially)\b/gi,
+    note: "stacked hedge: pick one",
+  },
+
+  // unslop 26. Abstract metaphor nouns that have a plainer concrete word.
+  {
+    pattern:
+      /\b(substrate|nexus|bedrock|north star|gold-plating|paradigm|modality)\b/gi,
+    note: "metaphor noun: pick the concrete word",
+  },
+
+  // unslop 20. Chatbot artifacts. These have never appeared on the site and
+  // are here so that a page pasted out of a chat window fails the build.
+  {
+    pattern:
+      /\b(i hope this helps|let me know if|great question|you'?re absolutely right)\b/gi,
+    note: "chatbot phrasing",
+  },
+
+  // unslop 29. Active voice. Scoped to the one form that is never ambiguous:
+  // a participle with its actor named right there in a `by` phrase. The
+  // looser "is measured from" shape is left alone on purpose, because most
+  // of those are correct ("the command is canceled" is how the scheduler
+  // docs put it) and a rule that cries wolf fifty times gets switched off.
+  {
+    pattern: /\b(is|are|was|were|been|being) [a-z]+(ed|en|wn) by\b/gi,
+    note: "passive with a named actor: put the actor first",
+  },
 ];
 
 /**
@@ -585,6 +689,70 @@ function quizAnswerFindings(source: string): Finding[] {
     out.push({
       rule: "quiz",
       detail: `answers only ever use ${distinct} of the four options (${answers.join(", ")}). The unused options read as filler.`,
+    });
+  }
+  return out;
+}
+
+/**
+ * Banned constructions inside a `<Quiz>`.
+ *
+ * `Quiz` is in `SKIP_ELEMENTS`, so until this existed every question, option
+ * and explanation on the site was unlinted prose a student reads. That is
+ * roughly 6,000 words, and it is where the tells went to hide: the August
+ * 2026 unslop pass found "simply" in a Motion Magic explanation and a
+ * significance close in a Command Framework one, both of which had survived
+ * every previous clean run of this linter.
+ *
+ * The words are deliberately not added to the reading budget: a quiz already
+ * costs a flat `MINUTES_PER_QUIZ`, and counting its prose too would charge
+ * for it twice.
+ */
+function quizProseFindings(source: ts.SourceFile): Finding[] {
+  // Every string literal inside a `<Quiz>`, which is its questions, its
+  // options and its explanations: all of it prose a student reads.
+  //
+  // This walks the AST rather than pairing quotes with a regex, for the
+  // reason at the top of this file. Two regex attempts got it wrong first.
+  // One used `[^"]`, which matches a line break, so it ran from a quote on
+  // one line to a quote thirty lines below and swallowed the JSDoc comments
+  // in between, reporting tells in files whose quizzes contain none. The
+  // second fixed that and still mispaired, because a short option like
+  // `"a"` or `"Raise kD"` fell under the length filter and flipped the
+  // quote parity for every string after it, so explanations were read as
+  // the gaps between strings instead of as strings.
+  const parts: string[] = [];
+
+  const collect = (node: ts.Node): void => {
+    if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+      // Short strings are ids, keys and one-word options, not prose.
+      if (node.text.length >= 24) parts.push(node.text);
+    }
+    ts.forEachChild(node, collect);
+  };
+
+  const findQuiz = (node: ts.Node): void => {
+    if (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node)) {
+      if (jsxTagName(node) === "Quiz") {
+        ts.forEachChild(node, collect);
+        return;
+      }
+    }
+    ts.forEachChild(node, findQuiz);
+  };
+
+  findQuiz(source);
+  const text = parts.join("\n");
+  if (!text) return [];
+
+  const out: Finding[] = [];
+  for (const { pattern, note } of BANNED) {
+    const hits = [...text.matchAll(pattern)];
+    if (hits.length === 0) continue;
+    const sample = [...new Set(hits.map((h) => h[0]))].slice(0, 3).join(", ");
+    out.push({
+      rule: "quiz-prose",
+      detail: `${hits.length}× ${note} (${sample})`,
     });
   }
   return out;
@@ -674,7 +842,10 @@ function checkPage(route: string, file: string): PageReport {
         10
     ) / 10;
 
-  const findings: Finding[] = [...quizAnswerFindings(raw)];
+  const findings: Finding[] = [
+    ...quizAnswerFindings(raw),
+    ...quizProseFindings(source),
+  ];
 
   if (minutes > MAX_MINUTES) {
     findings.push({

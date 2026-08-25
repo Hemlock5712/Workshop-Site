@@ -54,16 +54,18 @@ export default function Prerequisites() {
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             <a
-              href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html"
+              href="https://github.com/wpilibsuite/allwpilib/releases"
               className={linkStyle}
               target="_blank"
               rel="noopener noreferrer"
             >
               <strong>
-                <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> 2027 alpha
+                <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> 2027 alpha 6
               </strong>
             </a>
-            . Take the newest 2027 alpha from the install guide. It lays down a
+            . Take <code>v2027.0.0-alpha-6</code> from the releases page, not
+            the install guide. The guide still points at last season, because
+            nothing about 2027 is official yet. The installer lays down a
             separate copy of VS Code and a Java 25 runtime of its own.
           </li>
           <li>
@@ -115,8 +117,9 @@ export default function Prerequisites() {
             >
               <strong>Git</strong>
             </a>
-            . Any current version. You clone the robot template with it on
-            Project Setup, and every change you make after that is a commit.
+            . Any current version. Workshop 2 generates its own project rather
+            than cloning one. The lesson repositories after it are clones, and
+            every change you make is a commit.
           </li>
           <li>
             <a
@@ -156,22 +159,14 @@ export default function Prerequisites() {
               All of that arrived with the installer in step 1.
             </p>
             <p>
-              The robot project itself comes from the team&apos;s{" "}
-              <a
-                href="https://github.com/Hemlock5712/2027-Template"
-                className={linkStyle}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                2027-Template
-              </a>
-              . You clone it on{" "}
+              You build the robot project yourself on{" "}
               <Link href="/project-setup" className={linkStyle}>
                 Project Setup
               </Link>
-              , so there is nothing to download yet. When you get there, take
-              the <code>2027-dev</code> branch. <code>main</code> is still last
-              season&apos;s code.
+              , out of the New Project Creator that comes with the installer
+              above. So there is nothing else to download yet. Workshops 3 and 4
+              hand you a prepared swerve project instead, because generated CTRE
+              constants are not something anyone types.
             </p>
           </ProseBlock>
           <MarginNote label="What alpha means">
@@ -298,7 +293,8 @@ export default function Prerequisites() {
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">WPILib VS Code</td>
                 <td className="px-3 py-2">
-                  It opens, and the folder it installed into is named 2027.
+                  It opens, and the folder it installed into is named for the
+                  2027 alpha.
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>

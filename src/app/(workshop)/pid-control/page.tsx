@@ -9,7 +9,7 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 
 /**
- * Reference implementation for `context/writing-style.md`.
+ * Reference implementation for `context/lesson-budget.md`.
  *
  * Six sections. A numbered procedure in each section that is a procedure, a
  * table where the content is a table, a three-column figure for the three
@@ -52,7 +52,7 @@ export default function PIDControl() {
         <MarginNote label="No code yet">
           Keep VS Code closed for this lesson. Every setpoint, gain, and plot
           lives in Tuner X. Workshop 2 copies the numbers you save here into
-          robot code, so the tuning has to be done before the Java starts.
+          robot code, so you tune before you write any Java.
         </MarginNote>
       </Split>
 
@@ -75,11 +75,11 @@ export default function PIDControl() {
           on a real gearbox.
         </p>
         <p>
-          Switch between the three. The arm holds an <strong>angle</strong>, and
-          gravity pulls on it everywhere, so it never rests at zero output. The
-          flywheel holds a <strong>speed</strong>: nothing drags it off target,
-          but holding it costs output, and a game piece steals that at once. The
-          elevator is the other gravity case, a constant pull.
+          Switch between the three. The arm holds an angle, and gravity pulls on
+          it everywhere, so it never rests at zero output. The flywheel holds a
+          speed. Nothing drags it off target, but holding that speed costs
+          output, and a game piece steals it at once. The elevator is the other
+          gravity case, a constant pull.
         </p>
         <MechanismPlayground />
       </LessonSection>
@@ -173,8 +173,7 @@ export default function PIDControl() {
                 </td>
                 <td className="px-3 py-2">Friction in the gearbox</td>
                 <td className="px-3 py-2">
-                  Raise it until the mechanism just barely creeps, then back off
-                  one step.
+                  Raise it until the mechanism creeps, then back off one step.
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
@@ -211,8 +210,9 @@ export default function PIDControl() {
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Raise <code>kP</code> until the mechanism arrives promptly. Double
-            it each time until something changes, then move in smaller steps.
+            Raise <code>kP</code> until the mechanism reaches its target without
+            crawling the last stretch. Double it each time until something
+            changes, then move in smaller steps.
           </li>
           <li>
             Stop at the first overshoot or oscillation and drop back to the last
@@ -332,7 +332,7 @@ export default function PIDControl() {
             options: [
               "Tuner X needs the control request enabled twice",
               "The CANcoder is not wired into the feedback loop",
-              "Nothing. Every term is multiplied by zero, so the output is zero volts",
+              "Nothing. A zero gain scales its term to nothing, so the output is zero volts",
               "kP must never start at zero, or the loop cannot begin",
             ],
             correctAnswer: 2,

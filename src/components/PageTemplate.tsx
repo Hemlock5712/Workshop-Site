@@ -48,7 +48,7 @@ interface PageTemplateProps {
    * student arriving from search, from the drawer, or from a breadcrumb needs
    * to know what page they are on, and a sentence makes them read the whole
    * line to find out. The sentence that teaches is the `lede`, one line down,
-   * where it costs nothing. See `context/writing-style.md`.
+   * where it costs nothing. See `context/lesson-budget.md`.
    */
   title: string;
   /**
@@ -57,9 +57,14 @@ interface PageTemplateProps {
    */
   lede?: ReactNode;
   /**
-   * The "You'll need" panel beside the title: what has to be true before a
+   * The "You'll need" block under the lede: what has to be true before a
    * student starts. Anything physical goes last and in full text — a student
    * who reads this on the bus needs to know the arm has to be on a bench.
+   *
+   * It stood beside the title until the margin rail went away, which is
+   * exactly the wrong side of the page for it: a student read the title, met a
+   * checklist to the right of it, and had to come back left to find the first
+   * sentence of the lesson. It reads in order now.
    */
   needs?: ReactNode[];
   /**
@@ -82,13 +87,14 @@ interface PageTemplateProps {
 }
 
 /**
- * The frame every lesson renders into: outline rail on the left, article in
- * the middle, prev/next at the bottom.
+ * The frame every lesson renders into: outline rail on the left, article
+ * beside it, prev/next at the bottom.
  *
- * The article is `--measure` wide plus a `--gutter` margin rail. Body copy
- * never crosses into the rail; code blocks, tables and figures may. That
- * asymmetry is the whole layout — prose stays at a readable line length while
- * the things that genuinely need width get it.
+ * One column of content, `--measure` wide, with `--gutter` more available to a
+ * code block, a table or a figure. Body copy stays at a line length that can
+ * be scanned; the things that genuinely need width get it. Nothing sits to the
+ * right of the prose any more — the notes that used to be there now stack with
+ * the paragraphs they annotate, so a lesson reads top to bottom in one place.
  */
 export default function PageTemplate({
   title,
@@ -136,7 +142,7 @@ export default function PageTemplate({
         tabIndex={-1}
         className="lesson-body measure-wide pb-[120px] focus:outline-none"
       >
-        <header className="split mb-[52px] items-end">
+        <header className="split mb-[52px]">
           <div>
             <LessonKicker />
             {/* The ceiling came down from 74px when the titles became names
@@ -210,8 +216,15 @@ export default function PageTemplate({
             )}
           </div>
 
+          {/* Two columns from `sm` up, and that is about the width it
+              inherited rather than a taste for grids. In a 250px rail these
+              items were a single narrow list; across the full measure a
+              stacked list of four four-word entries is a ladder of white
+              space above the lesson. Two columns keeps the block about as
+              tall as it was, which is the point of putting it here — it has
+              to be read past, not read around. */}
           {needs && needs.length > 0 && (
-            <div className="pb-1.5">
+            <div>
               <div
                 className="micro pb-2"
                 style={{ borderBottom: "1px solid var(--rule)" }}
@@ -219,7 +232,7 @@ export default function PageTemplate({
                 You&rsquo;ll need
               </div>
               <ul
-                className="m-0 mt-3 flex list-none flex-col gap-tight p-0 text-note"
+                className="m-0 mt-3 grid list-none grid-cols-1 gap-x-panel gap-y-tight p-0 text-note sm:grid-cols-2"
                 style={{
                   fontFamily: "var(--font-serif)",
                   color: "var(--tx3)",

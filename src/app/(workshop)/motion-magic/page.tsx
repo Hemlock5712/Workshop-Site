@@ -430,7 +430,7 @@ export default function MotionMagic() {
             ],
             correctAnswer: 3,
             explanation:
-              "kV pays for holding a speed, and cruise is the phase that asks for nothing else. kA pays for changing speed, which the clean ramp already shows is covered, and kD acts only on how fast the error is changing. Lowering cruise velocity hides the gap here instead of closing it, and it is the right move only in the other case, where voltage is pinned at the supply and the motor simply cannot hold the speed you asked for.",
+              "kV pays for holding a speed, and cruise is the phase that asks for nothing else. kA pays for changing speed, which the clean ramp already shows is covered, and kD acts only on how fast the error is changing. Lowering cruise velocity hides the gap here instead of closing it, and it is the right move only in the other case, where voltage is pinned at the supply and the motor cannot hold the speed you asked for.",
           },
           {
             id: 6,

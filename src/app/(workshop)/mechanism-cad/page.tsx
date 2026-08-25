@@ -85,8 +85,8 @@ export default function MechanismCAD() {
           `-mx-4 ... xl:-mx-16` with every panel inside paying it back as
           `mx-4 ... xl:mx-16`, which is a full-bleed effect hand-rolled against
           the page padding scale. The `lesson-stack` column is already capped
-          at `.measure-wide` (660 + 250 + 44 = 954px), the sanctioned width for
-          a figure crossing into the gutter, so the panels get the whole of it
+          at `.measure-wide` (820 + 180 = 1000px), the sanctioned width for a
+          figure wider than the text column, so the panels get the whole of it
           by not opting out. The bordered wrapper each viewer used to sit
           inside is gone with it: `ModelViewer` draws its own frame and control
           bar, so the wrapper was a panel around a panel. */}

@@ -261,6 +261,27 @@ export default function Home() {
         </p>
       </section>
 
+      {/* The syllabus ends on a wall of 29 lesson names, which is the point at
+          which a reader has decided to start and has to scroll back up to do
+          it. Repeat the hero's call to action here so the decision and the
+          link are in the same place. */}
+      {firstLesson && (
+        <section className="px-6 pt-12 md:px-12 lg:px-[76px]">
+          <Link
+            href={firstLesson.slug}
+            className="inline-flex items-center gap-2.5 whitespace-nowrap px-[26px] py-[15px] text-note font-semibold transition-opacity hover:opacity-90"
+            style={{
+              borderRadius: 2,
+              background: "var(--accent)",
+              color: "var(--accent-ink)",
+            }}
+          >
+            Get started
+            <span aria-hidden="true">→</span>
+          </Link>
+        </section>
+      )}
+
       {/* ── Sponsors ──────────────────────────────────────────────── */}
       <section className="px-6 pt-14 md:px-12 lg:px-[76px]">
         <div

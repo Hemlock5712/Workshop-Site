@@ -91,3 +91,10 @@ review_*.png
 # comment on the code they justify instead — see videos/remotion.config.ts.
 /*.tmp.ts
 /*.tmp.mjs
+
+# Local checkouts of the teaching repos, one worktree per branch, built by
+# `pnpm reference:sync`. Every lesson state of Workshop-Code readable at once
+# beats one clone that drifts to whichever branch was needed last — the copy
+# this replaced had been parked on `2-Logging` since before the July 2026
+# rewrite. Disposable: delete the directory and re-run the script.
+/reference/

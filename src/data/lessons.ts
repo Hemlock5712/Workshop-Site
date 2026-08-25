@@ -77,7 +77,7 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
  * drawer, the search results and the prev/next arrows, and in every one of
  * those places a student is scanning rather than reading. `shortLabel` now
  * exists only for the two titles that still do not fit a drawer row.
- * See `context/writing-style.md`.
+ * See `context/lesson-budget.md`.
  */
 export const LESSONS: ReadonlyArray<Lesson> = [
   // Getting Started

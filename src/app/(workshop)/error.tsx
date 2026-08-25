@@ -28,7 +28,7 @@ export default function WorkshopError({
 
   return (
     <div className="px-6 pb-24 pt-14 md:px-12 lg:px-[76px]">
-      <div className="max-w-[660px]">
+      <div className="measure">
         <span className="micro">error</span>
 
         <h1

@@ -5,13 +5,15 @@ import type { ReactNode } from "react";
  * a page is made of.
  *
  *   <Prose>      a paragraph of body copy, held to `--measure`
- *   <Split>      a prose block with something in the margin rail beside it
- *   <MarginNote> what goes in that rail
+ *   <Split>      a prose block with a note attached to it
+ *   <MarginNote> that note
  *   <WatchOut>   the aside that says "this is where people get burned"
  *
- * The measure is 660px and non-negotiable: it is roughly 70 characters of
- * Newsreader at 19px, and the whole reason a student can work through a long
- * page without losing their line.
+ * The measure is 820px — roughly 83 characters of Newsreader at 20px. It was
+ * 660px with a 250px margin rail to the right of it, and the rail is gone:
+ * everything on a lesson now runs in one column, and the column is as wide as
+ * a line can be and still be scanned. See the note on `--measure` in
+ * `globals.css`.
  */
 
 export function Prose({
@@ -53,18 +55,29 @@ export function ProseBlock({
 }
 
 /**
- * Prose at `--measure` with the margin rail beside it. Below 1240px the rail
- * has nowhere to go, so `.split` collapses and the note falls in underneath
- * the paragraph it annotates — which is the right reading order anyway.
+ * A prose block with a `<MarginNote>` attached under it. This used to put the
+ * note in a rail to the right at 1240px and up; it stacks at every width now,
+ * which was already the reading order the markup implied and the only order
+ * two thirds of viewports ever saw. All `<Split>` still does is own the gap
+ * between the paragraph and its note.
  */
 export function Split({ children }: { children: ReactNode }) {
   return <div className="split">{children}</div>;
 }
 
 /**
- * A margin note. Never load-bearing — if a student reads only the main
- * column they still finish the lesson with working code. This is where the
- * "why", the war story, and the thing a mentor would say out loud go.
+ * A margin note, which is no longer in a margin. Never load-bearing — if a
+ * student reads only the main column they still finish the lesson with working
+ * code. This is where the "why", the war story, and the thing a mentor would
+ * say out loud go.
+ *
+ * The treatment changed with the rail. In a 250px column, 13px italic at
+ * `--tx3` read as a marginalium; in the reading column at 820px the same two
+ * sentences read as something the page had given up on, faint small type
+ * across a wide line. So it borrows `WatchOut`'s idiom instead — a hairline on
+ * the left, the mono label in the accent above it — which is how this site
+ * already says "aside" inline. One step under body copy at `--text-aside`, and
+ * still italic, so the eye can tell in one glance that skipping it is allowed.
  */
 export function MarginNote({
   label,
@@ -74,7 +87,7 @@ export function MarginNote({
   children: ReactNode;
 }) {
   return (
-    <aside className="pt-2.5" style={{ borderTop: "1px solid var(--rule)" }}>
+    <aside className="pl-6" style={{ borderLeft: "1px solid var(--rule)" }}>
       <div
         className="mono mb-[7px]"
         style={{
@@ -90,9 +103,9 @@ export function MarginNote({
         style={{
           fontFamily: "var(--font-serif)",
           fontStyle: "italic",
-          fontSize: "var(--text-note)",
-          lineHeight: 1.55,
-          color: "var(--tx3)",
+          fontSize: "var(--text-aside)",
+          lineHeight: 1.6,
+          color: "var(--tx2)",
         }}
       >
         {children}

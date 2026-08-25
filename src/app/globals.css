@@ -84,9 +84,14 @@
   --text-ui--line-height: 1.6;
   --text-aside: 17px; /* 16 · 16.5 · 17 · 17.5 — Box and list body · 24 */
   --text-aside--line-height: 1.6;
-  --text-body: clamp(16px, 12.9px + 0.79vw, 19px); /* reading size · 19 */
+  --text-body: clamp(16px, 12.9px + 0.79vw, 20px); /* reading size · 20 */
   --text-body--line-height: 1.72;
-  --text-lede: clamp(17px, 12.9px + 1.05vw, 21px); /* 20 · 21 · 22 · 6 */
+  /* One clear step above body copy, and that gap is the whole job of the
+     rung. Body copy went from 19px to 20px with the measure; at the old 21px
+     ceiling the lede was a pixel taller than the paragraph under it, which is
+     not a step, it is a rounding error. 23px reads as the sentence that
+     teaches, which is what the lede is for. */
+  --text-lede: clamp(17px, 12.9px + 1.05vw, 23px); /* 20 · 21 · 22 · 6 */
   --text-lede--line-height: 1.6;
   --text-title: 25px; /* 23 · 25 · 26 · 27 — section title · 21 */
   --text-title--line-height: 1.15;
@@ -203,10 +208,21 @@
   --code-tx2: oklch(0.7 0.018 260);
 
   /* ── Measure ── the two numbers the lesson grid is built from.
-     `--measure` is the text column; `--gutter` is the margin-note rail
-     beside it. Changing these re-flows every lesson page. */
-  --measure: 660px;
-  --gutter: 250px;
+     `--measure` is the text column. `--gutter` is what a code block, a table
+     or a figure may add to it — it is no longer a rail, because nothing sits
+     beside the prose any more. Changing these re-flows every lesson page.
+
+     660px was the measure while a 250px margin rail stood to its right, and
+     the pair only added up on a wide desktop: below 1240px the rail collapsed
+     inline and the column stayed at 660 with 300px of nothing beside it. At
+     19px Newsreader that is ~70 characters, a fine line for a novel and a bad
+     one for a procedure read with a robot on the bench — every two-clause
+     sentence wrapped to three lines, so a nine-screen lesson scrolled like
+     fifteen and read as a wall. 820px at 20px is ~83 characters: still short
+     enough to scan without losing the line, wide enough that a sentence looks
+     like a sentence. */
+  --measure: 820px;
+  --gutter: 180px;
 
   /* ── Semantic signals ── two, and only two. `--ok` is the "you should now
      see this" check; `--err` is the one case where a second hue earns its
@@ -766,15 +782,25 @@ html.js .reveal[data-revealed="false"] .reveal-wash {
 }
 
 .measure-wide {
-  max-width: calc(var(--measure) + var(--gutter) + 44px);
+  max-width: calc(var(--measure) + var(--gutter));
 }
 
-/* Two-track lesson row: prose at `--measure`, margin note in `--gutter`.
-   Collapses to one column below 1240px — see the responsive block. */
+/* `.split` was the two-track lesson row: prose at `--measure`, margin note in
+   a `--gutter` rail to its right, one column below 1240px. It is one column at
+   every width now, and the class is kept because fifty of them are written
+   into the lesson pages and the only thing it still has to do is space a note
+   against the paragraph it annotates.
+
+   The rail is gone for the reason the whole rail always half-worked: it only
+   existed above 1240px, so the same page put the "why" beside the prose on a
+   laptop and underneath it on a tablet, and the reading order was the stacked
+   one either way. It also cost the prose 294px of the widest viewport in order
+   to show two sentences of italic 13px, while the sentences that teach wrapped
+   at 70 characters next to it. One column, and the column gets the width. */
 .split {
   display: grid;
-  grid-template-columns: minmax(0, var(--measure)) var(--gutter);
-  column-gap: 44px;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--spacing-step);
   align-items: start;
 }
 
@@ -923,20 +949,13 @@ html.js .reveal[data-revealed="false"] .reveal-wash {
 /* ─────────────────────────────────────────────────────────────────
    Responsive collapse
 
-   One breakpoint does the real work: below 1240px the margin rail has
-   nowhere to go, so every two-track grid becomes one column and the
-   margin notes fall inline beneath the prose they annotate.
+   There is nothing left to collapse. `.split` is one column at every width
+   and `.measure-wide` is a max-width, so on a narrow viewport the grid track
+   caps it before this ever could — the two rules that used to live here at
+   `max-width: 1240px` were undoing a two-track layout that no longer exists.
+   The one thing still keyed to 1240px is the outline rail in `PageTemplate`,
+   which is navigation rather than reading.
    ───────────────────────────────────────────────────────────────── */
-
-@media (max-width: 1240px) {
-  .split {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 22px;
-  }
-  .measure-wide {
-    max-width: var(--measure);
-  }
-}
 
 /* Corner tick marks — used on hero modules to read as "blueprint". */
 .ticked {

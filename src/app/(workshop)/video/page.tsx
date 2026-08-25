@@ -195,7 +195,7 @@ const GROUPS: TrailerGroup[] = [
 export default function VideoPreviewPage() {
   return (
     <div className="px-6 pb-24 pt-14 md:px-12 lg:px-[76px]">
-      <header className="max-w-[660px]">
+      <header className="measure">
         <span className="micro">Internal preview · not indexed</span>
         <h1 className="display-section m-0 mt-control">Workshop Trailers</h1>
         <p className="lesson-lede m-0 mt-flow">

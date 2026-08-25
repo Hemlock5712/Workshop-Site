@@ -49,14 +49,15 @@ export default function ImageBlock({
             lesson that loads on a hotspot and one that does not.
 
             The two numbers are the layout: a figure is `measure-wide`, which
-            is 954px, and below the 1240px collapse it is the full column. */}
+            is 1000px (`--measure` 820 + `--gutter` 180), and below the width
+            where the outline rail appears it is the full column. */}
         <Image
           src={src}
           alt={alt}
           width={width}
           height={height}
           priority={priority}
-          sizes="(max-width: 1240px) 100vw, 954px"
+          sizes="(max-width: 1240px) 100vw, 1000px"
           loading={priority ? undefined : "lazy"}
           className="h-auto w-full object-contain"
           style={{ maxHeight: "70vh" }}

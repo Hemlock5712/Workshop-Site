@@ -327,13 +327,13 @@ export default function MechanismSetup() {
             question: "What does setting the arm's zero do?",
             options: [
               "Limits how far the arm may travel either side of the reference mark",
-              "Names one physical spot as 0 rotations, and every position after that is measured from it",
+              "Names one physical spot as 0 rotations, and the motor measures every position after that from it",
               "Calibrates the motor's top speed",
               "Returns the CANcoder to factory defaults, sensor direction included",
             ],
             correctAnswer: 1,
             explanation:
-              "Zero picks the spot on the metal that reads 0 rotations. Every position target after that is measured from it. A zero set half a turn off shifts all of them by half a turn, which is why the reference belongs on the metal and gets agreed with whoever built the arm.",
+              "Zero picks the spot on the metal that reads 0 rotations. The motor measures every position target after that from it. A zero set half a turn off shifts all of them by half a turn, so put the reference on the metal and agree it with whoever built the arm.",
           },
           {
             id: 5,

@@ -107,8 +107,8 @@ export default function DynamicPathPlanning() {
 
       <LessonSection id="replan-policy" title="Write the replan policy">
         <p>
-          Choose measurable triggers rather than “replan whenever it looks
-          wrong.”
+          Choose measurable triggers rather than &quot;replan whenever it looks
+          wrong.&quot;
         </p>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[620px] text-left text-note">
