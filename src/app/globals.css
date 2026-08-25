@@ -235,6 +235,19 @@
   --ok: oklch(0.78 0.13 155);
   --err: oklch(0.71 0.17 27);
 
+  /* ── Tuner X card colours ── not a third palette, and not signals. These
+     reproduce the five card states Phoenix Tuner X paints on its own device
+     list, so the legend on /hardware matches what a student is looking at on
+     the other screen. Green and red are not restated: `--ok` and `--err` are
+     already those hues, and a legend that drifted from the site's own check
+     and danger colours would be worse than one that shares them.
+
+     Do not reach for these anywhere else. If something on this site needs to
+     stand out and is not the primary action, it gets a mono micro-label. */
+  --tuner-yellow: oklch(0.84 0.15 92);
+  --tuner-purple: oklch(0.74 0.16 305);
+  --tuner-blue: oklch(0.74 0.13 240);
+
   /* Radii. This design is nearly square — 2-3px, not pills. */
   --r-sm: 2px;
   --r: 3px;
@@ -334,6 +347,13 @@ html:not(.dark) {
 
   --ok: oklch(0.52 0.13 155);
   --err: oklch(0.53 0.19 27);
+
+  /* Paper needs these darker to clear text contrast; yellow also has to shift
+     toward orange, because a true yellow at readable lightness is invisible
+     on white. The hue still reads as the yellow card next to the others. */
+  --tuner-yellow: oklch(0.58 0.13 76);
+  --tuner-purple: oklch(0.5 0.2 305);
+  --tuner-blue: oklch(0.5 0.16 240);
 
   /* Plot — the three role names resolve through `--tx3` / `--lift` /
      `--accent` and follow the theme on their own. Only the two literal

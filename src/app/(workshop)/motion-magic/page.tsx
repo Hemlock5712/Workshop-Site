@@ -6,6 +6,7 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
+import VideoEmbed from "@/components/VideoEmbed";
 
 export default function MotionMagic() {
   return (
@@ -276,6 +277,8 @@ export default function MotionMagic() {
             need one.
           </MarginNote>
         </Split>
+
+        <VideoEmbed id="7I7r9p1RBZI" title="Motion Magic tuning" />
       </LessonSection>
 
       <LessonSection id="failure-shapes" title="Three failure shapes">

@@ -8,12 +8,13 @@ import Quiz from "@/components/Quiz";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import DocumentationButton from "@/components/DocumentationButton";
 import { BookOpen } from "lucide-react";
+import VideoEmbed from "@/components/VideoEmbed";
 
 export default function Hardware() {
   return (
     <PageTemplate
       title="Hardware Setup"
-      lede="Workshop 1 runs on three CTRE devices: a Kraken X44, a CANcoder, and a CANivore. This lesson powers them up, puts them on current firmware, and spins a motor from Phoenix Tuner X. No robot controller, and no code."
+      lede="Workshop 1 runs on CTRE hardware: a Kraken X44, a CANivore, and a CANcoder if your mechanism is the arm. This lesson powers them up, puts them on current firmware, and gets Phoenix Tuner X talking to every one of them. Nothing turns yet. No robot controller, and no code."
       needs={[
         <>
           The mechanism assembled and wired, with a charged battery. See{" "}
@@ -28,14 +29,14 @@ export default function Hardware() {
           this lesson.
         </>,
       ]}
-      time="About 25 minutes, longer if the firmware is old"
+      time="About 15 minutes, longer if the firmware is old"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
             Every mechanism here is three parts: a motor, a sensor that knows
-            where the mechanism is, and a bus to your laptop. Tuner X is how you
-            talk to all three.
+            what the mechanism is doing, and a bus to your laptop. Tuner X is
+            how you talk to all three.
           </p>
           <p>
             Get this wrong and nothing breaks today. It breaks four lessons
@@ -54,10 +55,17 @@ export default function Hardware() {
         </MarginNote>
       </Split>
 
-      <LessonSection id="hardware-components" title="The three devices">
+      <LessonSection id="hardware-components" title="The devices">
         <p>
-          Find all three on the bench before you plug anything in. Two of them
+          Find each one on the bench before you plug anything in. Two of them
           look like plain mechanical parts and are not.
+        </p>
+
+        <p>
+          The arm uses all three. A flywheel has no CANcoder, because it is
+          tuned for speed rather than angle, and the encoder inside the motor
+          already measures speed. On a flywheel bench, read past the CANcoder
+          wherever it comes up.
         </p>
 
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
@@ -101,6 +109,7 @@ export default function Hardware() {
               height={200}
               className="mb-4"
             />
+            <span className="micro mb-1 block">Arm only</span>
             <h3 className="display m-0 mb-3 text-lede">
               <a
                 href="https://store.ctr-electronics.com/products/wcp-throughbore-encoder"
@@ -167,13 +176,10 @@ export default function Hardware() {
             </p>
           </div>
           <MarginNote label="One toggle, two positions">
-            CANivore USB stays checked for all of Workshop 1, because the laptop
-            owns the bus. It has to come back off once robot code drives the
-            hardware. The full rule is on{" "}
-            <a href="/mechanism-setup#canivore-usb" className="underline">
-              Motor Setup &amp; CAN IDs
-            </a>
-            .
+            Only one program owns the bus at a time. CANivore USB stays checked
+            for the whole of Workshop 1, because the laptop owns it here. It
+            comes back off in <strong>Hardware Simulation</strong>, the first
+            lesson where your own code drives the devices.
           </MarginNote>
         </Split>
 
@@ -194,8 +200,8 @@ export default function Hardware() {
             code sample uses that name.
           </li>
           <li>
-            Open it and confirm the motor and the CANcoder are both listed under
-            it.
+            Open it and confirm the motor is listed under it, along with the
+            CANcoder if you built the arm.
           </li>
         </ol>
 
@@ -204,13 +210,7 @@ export default function Hardware() {
           the Tuner X you installed. Updating it is the next section.
         </p>
 
-        <iframe
-          src="https://www.youtube.com/embed/TkScJADvD-Y"
-          title="CANivore setup"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="aspect-video w-full rounded-lg"
-        />
+        <VideoEmbed id="TkScJADvD-Y" title="CANivore setup" />
       </LessonSection>
 
       <LessonSection
@@ -258,13 +258,17 @@ export default function Hardware() {
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">
-                  <strong>Yellow</strong>
+                  <strong style={{ color: "var(--tuner-yellow)" }}>
+                    Yellow
+                  </strong>
                 </td>
                 <td className="px-3 py-2">A newer version is available.</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">
-                  <strong>Purple</strong>
+                  <strong style={{ color: "var(--tuner-purple)" }}>
+                    Purple
+                  </strong>
                 </td>
                 <td className="px-3 py-2">
                   Unexpected or beta firmware version.
@@ -284,7 +288,7 @@ export default function Hardware() {
               </tr>
               <tr>
                 <td className="px-3 py-2">
-                  <strong>Blue</strong>
+                  <strong style={{ color: "var(--tuner-blue)" }}>Blue</strong>
                 </td>
                 <td className="px-3 py-2">
                   Tuner X could not download the list of firmware versions.
@@ -294,70 +298,14 @@ export default function Hardware() {
           </table>
         </div>
 
-        <iframe
-          src="https://www.youtube.com/embed/aktcCtcrEyY"
-          title="Motor update process"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="aspect-video w-full rounded-lg"
-        />
-      </LessonSection>
-
-      <LessonSection id="let-s-run-some-motors" title="Run a motor">
-        <p>
-          This is the first time the mechanism moves. Voltage Out sends a fixed
-          voltage and nothing else: no target, no soft limits, no stopping at
-          the end of travel.
-        </p>
-
-        <Box variant="alert-danger" title="Before you enable anything">
-          <p>
-            The mechanism is bolted to the bench and nothing is in its path. One
-            person stands at the battery disconnect, and it is not the person on
-            the laptop. Start at 1 volt, not 12. A Voltage Out request runs
-            until you stop it, into the hard stop if that is where the mechanism
-            is pointed.
-          </p>
-        </Box>
-
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Open the motor in Tuner X and click <strong>Config</strong>.
-          </li>
-          <li>
-            Click the three dots, then <strong>Factory Default</strong>.
-            Whatever last season left on this motor is now gone.
-          </li>
-          <li>
-            Set the control drop-down to <strong>Voltage Out</strong>.
-          </li>
-          <li>
-            Click <strong>DISABLED</strong> to enable the device.
-          </li>
-          <li>Apply 1 volt. Watch the mechanism, not the screen.</li>
-          <li>Disable before you touch anything or change any number.</li>
-        </ol>
-
-        <p>
-          One volt may not break a geared arm loose from a standstill. Climb in
-          single volts until it creeps, then stop. You are checking that it
-          moves and which way it goes, not how fast.
-        </p>
-
-        <iframe
-          src="https://www.youtube.com/embed/cDWF3bj1Juk"
-          title="Motor test"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="aspect-video w-full rounded-lg"
-        />
+        <VideoEmbed id="aktcCtcrEyY" title="Motor update process" />
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Power cycle the bench: battery off, USB out, then both back on.
-          Everything you did here is stored on the devices themselves, so none
-          of it should need doing twice.
+          Power cycle the bench: battery off, USB out, then both back on. The
+          firmware and the CANivore name are stored on the devices themselves,
+          so none of it should need doing twice.
         </p>
 
         <Box variant="alert-success" title="You should see">
@@ -366,15 +314,26 @@ export default function Hardware() {
               The CANivore reconnects as <code>canivore</code>, with Tuner X
               still pointed at <code>localhost</code>.
             </li>
-            <li>The motor and the CANcoder are both listed under it.</li>
-            <li>Every device card is green.</li>
-            <li>A volt or two moves the mechanism, and disabling stops it.</li>
             <li>
-              Turning the mechanism by hand changes the CANcoder position in
-              Tuner X.
+              The motor is listed under it, and the CANcoder too on the arm.
+            </li>
+            <li>Every device card is green.</li>
+            <li>
+              On the arm, turning the mechanism by hand changes the CANcoder
+              position in Tuner X.
             </li>
           </ul>
         </Box>
+
+        <p>
+          A red card here is expected on the flywheel bench. Both motors ship on
+          the same factory ID, so both answer to it, and neither can be
+          addressed on its own until you split them. That is the first thing{" "}
+          <a href="/mechanism-setup" className="underline">
+            Motor Setup &amp; CAN IDs
+          </a>{" "}
+          does, and it is why nothing has been asked to turn yet.
+        </p>
 
         <p>
           Write down which device is which while you can still tell them apart
@@ -393,7 +352,7 @@ export default function Hardware() {
         questions={[
           {
             id: 1,
-            question: "What are the three devices used in this workshop?",
+            question: "Which devices does the arm build use in this workshop?",
             options: [
               "Power distribution hub, motor, and joystick",
               "roboRIO, battery, and radio",

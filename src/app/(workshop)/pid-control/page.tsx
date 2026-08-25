@@ -7,6 +7,7 @@ import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
+import VideoEmbed from "@/components/VideoEmbed";
 
 /**
  * Reference implementation for `context/lesson-budget.md`.
@@ -234,6 +235,11 @@ export default function PIDControl() {
           still working after the mechanism stopped, <code>kP</code> is too
           high.
         </p>
+
+        <VideoEmbed
+          id="Pt7SBFfl3oM"
+          title="Tuning feedback (PID) and feedforward"
+        />
       </LessonSection>
 
       <LessonSection id="failure-shapes" title="Three failure shapes">

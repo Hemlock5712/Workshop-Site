@@ -191,59 +191,6 @@ export default function Introduction() {
         </p>
       </LessonSection>
 
-      {/* ── how to read a lesson ─────────────────────────────────────── */}
-      <LessonSection id="how-a-lesson-works" title="Parts of a lesson">
-        <p>
-          Every page on this site is built the same way. Learn the parts once
-          here, instead of puzzling over them on every page that follows.
-        </p>
-
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "Top",
-              term: "You'll need",
-              body: (
-                <>
-                  Two sentences under the title say what the page does. Beside
-                  them sits a list of what must already be true. A line you
-                  cannot tick is a reason to go back.
-                </>
-              ),
-            },
-            {
-              label: "Margin",
-              term: "Branch and time",
-              body: (
-                <>
-                  Many lessons name a Workshop-Code branch holding the finished
-                  code for that page. The time beside it is a read-through, not
-                  a bench session.
-                </>
-              ),
-            },
-            {
-              label: "Bottom",
-              term: "Check your work",
-              body: (
-                <>
-                  The last section of every lesson is a result you can see,
-                  hear, or measure. It names what should happen at the bench
-                  once the page is done.
-                </>
-              ),
-            },
-          ]}
-        />
-
-        <p>
-          Stop at a failed check. The next lesson assumes the last one worked. A
-          wrong CAN ID at lesson five turns into an hour of confusion at lesson
-          twelve, and by then nobody suspects the wiring.
-        </p>
-      </LessonSection>
-
       {/* ── the road ─────────────────────────────────────────────────── */}
       <LessonSection id="the-road-ahead" title="The road ahead">
         <p>

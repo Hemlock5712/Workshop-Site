@@ -4,6 +4,7 @@ import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import VideoEmbed from "@/components/VideoEmbed";
 
 export default function RunningProgram() {
   return (
@@ -126,13 +127,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       </LessonSection>
 
       <LessonSection id="first-run" title="Run it">
-        <iframe
-          src="https://www.youtube.com/embed/xsR7m6ToUFE"
-          title="Hardware Simulation"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="aspect-video w-full rounded-lg"
-        />
+        <VideoEmbed id="xsR7m6ToUFE" title="Hardware Simulation" />
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             In Tuner X, turn <strong>CANivore USB off</strong> and close the

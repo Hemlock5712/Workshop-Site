@@ -98,6 +98,13 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
+      // YouTube video stills. `VideoEmbed` renders maxresdefault.jpg as the
+      // poster so the frame is 1280x720 rather than the 480x360 YouTube
+      // picks for its own player.
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+      },
     ],
   },
   async rewrites() {
