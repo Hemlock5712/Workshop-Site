@@ -239,7 +239,7 @@ export default function VisionImplementation() {
 
         <Box variant="concept" title="The heading MegaTag2 returns">
           <p>
-            A MegaTag2 pose was solved from the heading you gave the camera two
+            MegaTag2 solved that pose from the heading you gave the camera two
             lines earlier. Feeding it back as a measurement would be the robot
             agreeing with itself, growing more confident every loop. So MegaTag2
             estimates go in with <code>IGNORE_VISION_HEADING</code>, set to{" "}
@@ -346,7 +346,7 @@ export default function VisionImplementation() {
             ],
             correctAnswer: 3,
             explanation:
-              "validPoseEstimate has to pass, and avgTagDist has to be inside 4.0 m. Everything else is handled by weighting rather than rejection: a poor sighting gets a large error bar instead of being discarded.",
+              "validPoseEstimate has to pass, and avgTagDist has to be inside 4.0 m. Weighting handles everything else rather than rejection: a poor sighting gets a large error bar instead of being discarded.",
           },
           {
             id: 3,

@@ -52,7 +52,60 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Key v3 APIs**: subsystems `extend Mechanism`; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`.
 - **PathPlanner boundary**: Workshop 3 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
 - **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
-- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches and PRs. All numbered teaching branches are v3 with linear, lesson-sized histories (rewritten July 2026); the swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
+- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches and PRs. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
+- **Branches are prefixed by chain, not numbered across the course.** There are two chains and they used to collide on every number. `mech-*` is the arm-and-flywheel bench project. The drivetrain chain keeps its old bare numbers (`1-Swerve`, `2-Logging`, `3-Limelight`, `4-DynamicFlywheel`, `5-DriveToPoint`, `6-ProfiledToPoint`, `7-InlineCommands`) and is due the matching `swerve-*` rename when it is rebuilt. The prefix carries the chain and the suffix carries the topic, so inserting a lesson renames nothing. The mechanism chain was rebuilt off the new bare `main` in August 2026 and is linear, one commit per lesson:
+  `main → mech-1-Mechanisms → mech-2-Commands → mech-3-MotionMagic → mech-4-ReadingState → mech-5-Coroutines → mech-6-StateBased`
+- **The mechanism chain is `first.robot.mechanisms` and `first.robot.opmode`.** The swerve chain has not been rebuilt and is still `frc.robot.subsystems` and `frc.robot.opmodes`. A lesson page must match the chain it embeds; do not "fix" a swerve page to the new package until its branch moves.
+- **`TalonFXUtil` and `SimStartup` are gone from the mechanism chain.** Config applies once, directly, with `motor.getConfigurator().apply(config)`. `Robot` has no `simulationInit()` override. Both helpers still exist on the swerve branches, which is why `/vision-shooting` still shows `TalonFXUtil`.
+- **Motor config on the mechanism chain uses the fluent builders**, not `config.Slot0.kP = kP`. That is the shape Phoenix Tuner X emits from its config panel's three-dot **Generate Code** action, because a student pastes the config rather than typing it: `new TalonFXConfiguration().withMotorOutput(...).withSlot0(...).withMotionMagic(...)`, with WPILib unit types such as `RotationsPerSecond.of(...)`. Verified against Phoenix 6 `26.50.0-alpha-1`. The swerve chain still uses the imperative style, so `/vision-shooting` keeps it.
+- **The CANcoder is chained on in code, not pasted.** `withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))` is appended to the generated config. Tuner X owns the encoder's own configuration, so swapping an encoder on the bench never edits Java. Do not put a `CANcoderConfiguration` in a lesson.
+- **There is no separate PositionVoltage step.** `mech-3-MotionMagic` goes from open-loop `VoltageOut` straight to `MotionMagicVoltage`. Workshop 1 already tunes closed-loop position in Tuner X, so a second code-side PID lesson taught the same layer twice. `mech-1` and `mech-2` stay open loop on purpose, mirroring the bench order.
+
+### Local copies of the teaching code (`reference/`)
+
+`pnpm reference:sync` puts **every branch of Workshop-Code on disk at once**,
+one worktree per branch, plus 2027-Template on `2027-dev`. Check a lesson
+against the code it embeds without leaving the project:
+
+```
+reference/
+  .git-store/            bare mirrors, one shared object store per repo
+  Workshop-Code/         15 detached worktrees: mech-1 … mech-7, the 7 swerve, main
+  2027-Template/2027-dev ground truth for API questions
+```
+
+Sixteen checkouts cost 4.2 MB, because the worktrees share the mirror's
+history. Cross-state diffs work, and they are the teaching artifact:
+
+```bash
+git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-4-MotionMagic
+```
+
+- **`reference/` is gitignored**, so `scripts/sync-reference.mjs` is the only
+  record of how it is built. It is excluded from `tsconfig.json` (whose
+  `include` is `**/*.ts`) and `.prettierignore`.
+- **The worktrees are detached on purpose.** A worktree holding `refs/heads/X`
+  makes git refuse to move that ref, and the teaching chain gets rebased and
+  force-pushed whenever the WPILib alpha breaks an API. Don't commit here.
+- **`pnpm reference:refresh`** fetches upstream, fast-forwards each worktree,
+  and prunes ones whose branch is gone. It skips any worktree with local
+  changes rather than clobbering it.
+- **This is not a submodule and must not become one.** A submodule tracks one
+  ref at one pinned commit; the teaching states are fifteen refs, and the pin
+  would need a commit here every time Workshop-Code moved.
+- **Nothing at build time reads it.** The embeds still fetch from GitHub
+  through `src/app/api/github/route.ts`, whose `ALLOWED_REPOS` is a one-entry
+  allowlist. `reference/` is for authoring, not for rendering.
+- **`mech-3-MotionMagic` is embedded by zero pages, and that is the biggest hole
+  in the course.** It is the branch where the arm and flywheel go closed loop,
+  and its whole point is that a student pastes a config generated in Phoenix
+  Tuner X over the block in the constructor. Every gain on it ships at `0.0`, so
+  a fresh clone holds the arm still. No lesson opens it, which means no lesson
+  teaches the paste. Closing it needs one lesson between `/building-subsystems`
+  and `/running-program`, not new code.
+- `2-Logging`, on the swerve chain, is also embedded by no page. `/logging-implementation`
+  hand-writes its blocks and teaches the arm, so that branch is the wrong
+  parent for it.
 
 ## Development Commands
 
@@ -138,9 +191,18 @@ are what keeps 29 pages looking like one site.
 - **`src/components/lesson/LessonOutline.tsx`**: The "on this page" rail. Scans the DOM for `data-sec` — never takes a hand-maintained list.
 - **`src/components/lesson/LessonKicker.tsx`**: "LESSON 15", derived from `lessons.ts`.
 
-Layout rule: **body copy never leaves `--measure` (660px)**. Code blocks,
-tables and figures may cross into the `--gutter` rail (`.measure-wide`);
+Layout rule: **body copy never leaves `--measure` (820px)**. Code blocks,
+tables and figures may take `--gutter` more (`.measure-wide`, 1000px);
 paragraphs may not.
+
+**There is no margin rail.** A lesson is one column at every width. `--measure`
+was 660px with a 250px note rail to its right until August 2026, and the pair
+only ever added up above 1240px — below that the rail collapsed inline and the
+column stayed at 660 with 300px of nothing beside it. `<MarginNote>` now stacks
+under the paragraph it annotates, styled like `<WatchOut>`, and `"You'll need"`
+sits under the lede instead of beside the title. `.split` is kept because fifty
+of them are written into the pages, but it is a one-column grid that owns the
+gap between a paragraph and its note. Don't reintroduce the rail.
 
 #### Content Components
 
@@ -277,7 +339,7 @@ on old slides: `/logging-options` → `/logging-implementation`,
 
 **`src/app/globals.css` is the design authority.** Read it before making any
 visual change — it is a design document as much as a stylesheet, and it
-explains _why_ at every decision: why the measure is 660px, why light-mode
+explains _why_ at every decision: why the measure is 820px, why light-mode
 `--tx3` sits at 0.525 and not 0.565, why code blocks stay dark in both themes,
 why the radius scale is 2-3px, why `min-width: 0` is load-bearing.
 
@@ -294,14 +356,15 @@ The rules that matter, all enforced there:
   `text-[Npx]`: 536 of those were swept out, and each one is how the site
   drifted into twenty-seven sizes against four named steps.
 - **Spacing is named too**: `--spacing-chip` / `tight` / `control` / `flow` /
-  `pad` / `block` / `panel` / `stack`.
-- **Body copy never leaves `--measure`.** Code, tables and figures may cross
-  into the gutter via `.measure-wide`; paragraphs may not.
+  `pad` / `step` / `panel` / `stack`. There is no `--spacing-block`.
+- **Body copy never leaves `--measure`.** Code, tables and figures may take
+  `--gutter` more via `.measure-wide`; paragraphs may not. `--gutter` is that
+  allowance, not a rail — nothing sits beside the prose.
 - **One accent hue.** If something must stand out and is not the primary
   action, use a mono micro-label (`.micro`), not a second colour.
 - **Asides are budgeted.** Roughly two per `LessonSection`, one
   `alert-danger` per lesson. There were 297 of them and a warning stopped
-  meaning anything; the "why" belongs in a `<MarginNote>` in the gutter.
+  meaning anything; the "why" belongs in a `<MarginNote>` under the paragraph.
 
 There is no `context/design-principles.md` or `context/style-guide.md` — both
 were deleted in August 2026. The first was generic "S-Tier SaaS Dashboard"
@@ -311,29 +374,45 @@ no longer exists. Do not reinstate either.
 
 ### Writing
 
-**`context/writing-style.md` is the authority on every word a student reads**,
-and `pnpm prose` enforces the mechanical half of it. Read it before writing or
-editing any lesson prose. The short version:
+Two authorities, and they do not overlap. **How a sentence sounds is the
+`unslop` skill** (`.claude/skills/unslop/SKILL.md`). **How big a lesson is and
+what shape it has is `context/lesson-budget.md`.** `pnpm prose` enforces the
+mechanical subset of both. Read both before writing or editing lesson prose.
 
+`context/writing-style.md` was the single authority until August 2026 and is
+gone. Its voice rules were replaced wholesale by unslop, which is stricter and
+covers more; its curriculum rules moved to `context/lesson-budget.md`
+unchanged. Do not reinstate it.
+
+- **Apply unslop's pattern-removal rules 1 to 31. Skip its "Adding soul"
+  section.** That section asks for opinions, first person, and deliberate mess.
+  The audience is an 11-to-18-year-old following a procedure next to a powered
+  mechanism, and personality in a bench procedure costs words without adding
+  instruction. The house voice stays flat, in the shape of the CTRE Phoenix 6
+  docs.
 - **A title is a name, not a pitch.** Noun phrase, five words at most: "PID
   Tuning in Tuner X", not "Tune the motor before a robot program ever touches
   it". `PageTemplate` no longer takes an `emphasis` prop; the accent-italic
   phrase inside a sentence-title went with the sentence-titles.
 - **The lesson is the unit of attention, and it is 8 to 12 minutes.** 15 is the
-  hard cap, 6 is the floor. A middle schooler holds focus for 10 to 14 minutes
-  and a high schooler for 15 to 20; a 40-minute lesson is one nobody finishes.
-  Over the cap, split the lesson. Under the floor, the lesson is missing its
-  check and its failure modes.
-- **No em dashes.** An em dash is nearly always a sentence that did not decide
-  where it ended. Use a period or a colon.
-- **The banned list is in the spec and in the linter**: the reversal ("it's not
-  X, it's Y"), the rhetorical triple, the significance close ("which is the
-  whole reason…"), the knowing aside ("think of it as", "under the hood"), and
-  the filler adjectives.
+  hard cap, 6 is the floor. Over the cap, split the lesson. Under the floor,
+  the lesson is missing its check and its failure modes.
+- **No em dashes, and no parentheses standing in for them.** unslop rule 13:
+  reaching for a bracket instead of a dash trades one tell for another. End the
+  sentence or use a comma.
 - **Vary sentence length.** Uniformly short sentences are the loudest tell that
   a machine wrote the page, and it is the mistake this site made once already.
+- **Bold is functional here, not decorative.** The 280 `<strong>` runs on the
+  site name a lesson to go to, a Tuner X control to click, or a term at first
+  use. unslop rule 15 bans decorative bolding and this is not that, so an audit
+  flagging them all is a false positive. The same goes for rule 16 and the 21
+  `You should see:` procedure markers.
 - `src/app/(workshop)/pid-control/page.tsx` is the reference implementation.
   Copy its shape.
+- **Quiz prose is prose.** `<Quiz>` is in the linter's `SKIP_ELEMENTS`, so for
+  a long time its ~6,000 student-facing words were never checked and that is
+  where the tells hid. `quizProseFindings` now runs the banned list over every
+  question, option, and explanation.
 
 `context/narration-voice.md` does still exist and is worth reading before
 writing prose. It measures cadence rather than asserting rules, and its

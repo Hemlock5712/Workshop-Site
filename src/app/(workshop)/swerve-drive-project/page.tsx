@@ -12,7 +12,7 @@ const linkStyle =
   "text-[var(--accent)] underline hover:no-underline font-medium";
 
 /**
- * Rewritten against `context/writing-style.md`, then verified.
+ * Rewritten against `context/lesson-budget.md`, then verified.
  *
  * Five sections. The six generator steps stay a numbered procedure, the four
  * measurements stay a list, and the three files stay a table. Three asides: the

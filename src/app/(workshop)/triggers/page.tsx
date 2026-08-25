@@ -11,7 +11,7 @@ import { GitBranch } from "lucide-react";
 
 /**
  * The Trigger reference page, rewritten August 2026 against the shape of
- * `/pid-control` and the rules in `context/writing-style.md`.
+ * `/pid-control` and the rules in `context/lesson-budget.md`.
  *
  * It was 23 minutes, eight sections and seven code blocks, and most of it was
  * a second copy of `/adding-commands` (the pair form, holds, the whole
@@ -35,7 +35,7 @@ import { GitBranch } from "lucide-react";
  * binding on its first poll, because `m_previousSignal` starts null and only
  * the `cached == previous` early return guards the edge. A margin note here
  * said so and named the consequence on this branch. It came out: on
- * `2-Commands` the A binding's `onFalse(flywheel.stop())` is registered after
+ * `mech-2-Commands` the A binding's `onFalse(flywheel.stop())` is registered after
  * the right trigger's `onFalse(flywheel.runSlow())`, so it takes the flywheel
  * in the same tick and nothing turns, which is what `/running-program` tells
  * the student to expect on Enable. The note read as a contradiction of that
@@ -54,8 +54,8 @@ export default function Triggers() {
       lede="A Trigger is a yes-or-no question the scheduler asks once a tick, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to TeleopOpMode."
       needs={[
         <>
-          Branch <code>2-Commands</code> checked out, with{" "}
-          <code>opmodes/TeleopOpMode.java</code> and its three bindings.
+          Branch <code>mech-2-Commands</code> checked out, with{" "}
+          <code>opmode/TeleopOpMode.java</code> and its three bindings.
         </>,
         <>
           Holds, and why an <code>onTrue</code> comes with an{" "}
@@ -69,14 +69,14 @@ export default function Triggers() {
           <code>./gradlew build</code> passing before you change anything.
         </>,
       ]}
-      branch="2-Commands"
+      branch="mech-2-Commands"
       time="13 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            The three bindings on <code>2-Commands</code> all read the same way:
-            a button, a command on the press, a command on the release.
+            The three bindings on <code>mech-2-Commands</code> all read the same
+            way: a button, a command on the press, a command on the release.
           </p>
           <p>
             That is one shape out of several. The condition behind a Trigger
@@ -176,7 +176,7 @@ export default function Triggers() {
         <CodeBlock
           language="java"
           title="The same button, two ways to write it"
-          code={`// What 2-Commands writes: the press schedules one command, the release
+          code={`// What mech-2-Commands writes: the press schedules one command, the release
 // schedules another, and the second one interrupts the first.
 driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
 
@@ -284,7 +284,7 @@ public static Trigger disabled() {
         <CodeBlock
           language="java"
           title="Robot.java: the one global binding, from the 2027-Template"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           code={`public Robot() {
   // ...
 
@@ -354,8 +354,8 @@ public static Trigger disabled() {
 
         <GitHubContent
           repository="Hemlock5712/Workshop-Code"
-          branch="2-Commands"
-          filePath="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          branch="mech-2-Commands"
+          filePath="src/main/java/first/robot/opmode/TeleopOpMode.java"
         />
       </LessonSection>
 

@@ -8,13 +8,13 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 import { Book, GitBranch } from "lucide-react";
 
 /**
- * Lesson 28, rewritten against `context/writing-style.md`. It measured 33.8
+ * Lesson 28, rewritten against `context/lesson-budget.md`. It measured 33.8
  * minutes across nine sections and fourteen code blocks, which is two lessons
  * sharing one page.
  *
  * What went, and why it was safe to go:
  *
- * - The `6-Coroutines` "before" embed. The student wrote that constructor on
+ * - The `mech-5-Coroutines` "before" embed. The student wrote that constructor on
  *   the previous page; two sentences recall it.
  * - The imports embed, and the one-line embeds for `new StateMachine(...)` and
  *   `setInitialState(...)`. All three read better as inline code inside the
@@ -57,8 +57,8 @@ export default function StateMachines() {
           including <code>flywheel.isAtTarget()</code>.
         </>,
         <>
-          The <code>7-StateBased</code> branch, one commit past{" "}
-          <code>6-Coroutines</code>. It touches one file.
+          The <code>mech-6-StateBased</code> branch, one commit past{" "}
+          <code>mech-5-Coroutines</code>. It touches one file.
         </>,
         <>
           Your gains from <strong>PID Tuning in Tuner X</strong> and{" "}
@@ -66,7 +66,7 @@ export default function StateMachines() {
         </>,
         <>The simulator running, and a controller on port 0.</>,
       ]}
-      branch="7-StateBased"
+      branch="mech-6-StateBased"
       time="About 25 minutes"
     >
       <Split>
@@ -200,8 +200,8 @@ sm.switchFromAny().to(stowed).when(driver.b());`}
         </p>
 
         <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/blob/7-StateBased/src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          title="The whole file on 7-StateBased"
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-6-StateBased/src/main/java/first/robot/opmode/TeleopOpMode.java"
+          title="The whole file on mech-6-StateBased"
           icon={<GitBranch className="h-5 w-5" />}
         />
       </LessonSection>
@@ -253,8 +253,9 @@ public void end() {
         <p>
           A rising edge is the first loop a condition goes from false to true.
           It has to go false again before it fires twice, so holding B does not
-          spin the machine. Conditions are checked in declaration order and the
-          first edge wins, so a second one true at the same moment never fires.
+          spin the machine. The machine checks conditions in declaration order
+          and the first edge wins, so a second one true at the same moment never
+          fires.
         </p>
         <p>
           <code>.negate()</code> hands back a <code>Trigger</code> that is true
@@ -272,7 +273,7 @@ public void end() {
           title="The branch ships the arm untuned"
         >
           <p>
-            <code>7-StateBased</code> ships <code>Arm.java</code> with{" "}
+            <code>mech-6-StateBased</code> ships <code>Arm.java</code> with{" "}
             <code>kG</code>, <code>kS</code>, <code>kP</code> and{" "}
             <code>kD</code> at <code>0.0</code>, and{" "}
             <code>MotionMagicCruiseVelocity</code> and{" "}

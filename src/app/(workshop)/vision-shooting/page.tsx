@@ -10,7 +10,7 @@ import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
 
 /**
- * Rewritten against `context/writing-style.md`.
+ * Rewritten against `context/lesson-budget.md`.
  *
  * The old page ran 32.9 minutes across ten sections with ten asides. Six
  * sections now, two asides, four code embeds. Three things were named

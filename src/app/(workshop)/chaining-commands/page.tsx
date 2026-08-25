@@ -104,8 +104,8 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
       <LessonSection id="steps-in-order" title="Steps in order">
         <p>
           <code>Command.sequence(a, b, c)</code> runs <code>a</code> until it
-          finishes, then <code>b</code>, then <code>c</code>. Autonomous
-          routines are written in exactly this shape.
+          finishes, then <code>b</code>, then <code>c</code>. You write
+          autonomous routines in exactly this shape.
         </p>
 
         <CodeBlock

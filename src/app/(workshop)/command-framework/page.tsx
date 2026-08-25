@@ -16,8 +16,8 @@ import { GitBranch } from "lucide-react";
  * figure grid plus a five-step narration of the same arm hold shown in code,
  * and "what this page left out" was a second copy of the curriculum drawer.
  *
- * The no-RobotContainer point survives in the gutter, where it costs a student
- * who has never seen FRC code nothing at all.
+ * The no-RobotContainer point survives as a margin note, where it costs a
+ * student who has never seen FRC code nothing at all.
  */
 export default function CommandFramework() {
   return (
@@ -30,8 +30,8 @@ export default function CommandFramework() {
           method, constructor, lambda, method reference.
         </>,
         <>
-          The template you cloned in <strong>Project Setup</strong>, open in
-          your editor.
+          <strong>2027-Template</strong> open in a tab. It is the finished robot
+          this course builds toward, and the check at the end reads it.
         </>,
       ]}
       time="14 minutes"
@@ -40,8 +40,8 @@ export default function CommandFramework() {
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
             Four words carry the rest of the workshop: trigger, mechanism,
-            command, scheduler. Every later lesson is written in them, and so is
-            the folder layout of the project you cloned.
+            command, scheduler. Every later lesson uses them, and so does the
+            folder layout of every project in this course.
           </p>
           <p>
             The next four lessons build each piece for real. This one is the
@@ -110,7 +110,7 @@ export default function CommandFramework() {
         <CodeBlock
           language="java"
           title="Robot.java: the mechanisms and the scheduler"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           code={`public class Robot extends OpModeRobot {
   // The robot's mechanisms. Public so OpModes can use them.
   public final Arm arm = new Arm();
@@ -241,7 +241,7 @@ export default function CommandFramework() {
         <CodeBlock
           language="java"
           title="TeleopOpMode.java: the shape of a mode class"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           code={`@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
@@ -285,7 +285,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         <CodeBlock
           language="java"
           title="Arm.java: a hold, its voltage, and the setter"
-          filename="Workshop-Code, branch 2-Commands · subsystems/Arm.java"
+          filename="Workshop-Code, branch mech-2-Commands · mechanisms/Arm.java"
           code={`private static final double FAST_VOLTAGE = 6.0;
 
 /** Push the arm with a stronger voltage and keep pushing. Never finishes. */
@@ -345,9 +345,9 @@ private void setVoltage(double voltage) {
       {/* ── the check ────────────────────────────────────────────────── */}
       <LessonSection id="did-it-work" title="Check your work">
         <p>
-          There is no code to run, so check the words against the real project.
-          Open the template you cloned in <strong>Project Setup</strong> and
-          find three things.
+          There is no code to run, so check the words against real code. Open{" "}
+          <strong>2027-Template</strong>, the finished robot this course builds
+          toward, and find three things.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -360,13 +360,12 @@ private void setVoltage(double voltage) {
           </li>
           <li>
             No <code>RobotContainer.java</code> in the file list, and an{" "}
-            <code>opmodes</code> folder with a class per mode, each tagged{" "}
+            <code>opmode</code> folder with a class per mode, each tagged{" "}
             <code>@Teleop</code>, <code>@Autonomous</code> or{" "}
             <code>@Utility</code>. A full-text search does turn up the name, in
-            comments saying the class does not exist here. If you have the class
-            and no <code>opmodes</code> folder, you generated a blank project
-            from the VS Code wizard instead of cloning the template. Go back to{" "}
-            <strong>Project Setup</strong>.
+            comments saying the class does not exist here. A real{" "}
+            <code>RobotContainer.java</code> with no <code>opmode</code> folder
+            beside it means you are reading a Commands v2 project, not this one.
           </li>
           <li>
             <code>subsystems/arm/Arm.java</code>, searched for{" "}
@@ -391,8 +390,8 @@ private void setVoltage(double voltage) {
             icon={<GitBranch className="w-5 h-5" />}
           />
           <DocumentationButton
-            href="https://github.com/Hemlock5712/Workshop-Code/blob/2-Commands/src/main/java/frc/robot/Robot.java"
-            title="Workshop-Code 2-Commands: Robot.java"
+            href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-2-Commands/src/main/java/first/robot/Robot.java"
+            title="Workshop-Code mech-2-Commands: Robot.java"
             icon={<GitBranch className="w-5 h-5" />}
           />
         </div>
@@ -454,7 +453,7 @@ private void setVoltage(double voltage) {
             ],
             correctAnswer: 3,
             explanation:
-              "Every mechanism defaults to idle(). Idle owns the mechanism so anything can take it away, but it commands nothing: it does not zero the previous request. Canceling a command is not the same as stopping a motor, which is why a separate stop() command exists.",
+              "Every mechanism defaults to idle(). Idle owns the mechanism so anything can take it away, but it commands nothing: it does not zero the previous request. Canceling a command is not the same as stopping a motor, so a separate stop() command exists.",
           },
         ]}
       />

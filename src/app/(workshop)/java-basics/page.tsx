@@ -92,7 +92,7 @@ export default function JavaBasics() {
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 1-Subsystem: the four fields"
+          title="Arm.java, branch mech-1-Mechanisms: the four fields"
           code={`private final CANBus canivore = new CANBus("canivore");
 private final TalonFX motor = new TalonFX(31, canivore);
 private final CANcoder encoder = new CANcoder(32, canivore);
@@ -173,7 +173,7 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
 
         <Box variant="concept" title="One word carries the Commands lesson">
           <p>
-            On branch <code>1-Subsystem</code> the arm&apos;s{" "}
+            On branch <code>mech-1-Mechanisms</code> the arm&apos;s{" "}
             <code>setVoltage</code> is <code>public</code>. One branch later it
             becomes <code>private</code>, and every request has to arrive as a
             command instead.
@@ -193,16 +193,18 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 1-Subsystem: the constructor"
+          title="Arm.java, branch mech-1-Mechanisms: the constructor"
           code={`public Arm() {
-  TalonFXConfiguration config = new TalonFXConfiguration();
-  config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to move by hand
-  config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+  TalonFXConfiguration config =
+      new TalonFXConfiguration()
+          .withMotorOutput(
+              new MotorOutputConfigs()
+                  .withNeutralMode(NeutralModeValue.Coast) // easy to move by hand
+                  .withInverted(InvertedValue.CounterClockwise_Positive))
+          // Use the CANcoder for position, so the motor knows the arm's real angle.
+          .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder));
 
-  // Use the CANcoder for position, so the motor knows the arm's real angle.
-  config.Feedback.withRemoteCANcoder(encoder);
-
-  TalonFXUtil.applyConfigWithRetries(motor, config);
+  motor.getConfigurator().apply(config);
 }`}
         />
 
@@ -232,13 +234,13 @@ private final VoltageOut voltageOut = new VoltageOut(0);`}
         <p>
           Constructors can take parameters.{" "}
           <code>TeleopOpMode(Robot robot)</code> takes one <code>Robot</code>,
-          and the driver&apos;s button bindings are written inside it. They get
+          and you write the driver&apos;s button bindings inside it. They get
           wired once, when the mode starts, not every loop.
         </p>
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 1-Subsystem: the first method on the site"
+          title="Arm.java, branch mech-1-Mechanisms: the first method on the site"
           code={`/**
  * Push the arm with a fixed voltage. Positive voltage moves the arm counter-clockwise.
  *
@@ -272,7 +274,7 @@ public void setVoltage(double voltage) {
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 2-Commands: a method that returns a Command"
+          title="Arm.java, branch mech-2-Commands: a method that returns a Command"
           code={`// Voltages for the two example commands.
 private static final double SLOW_VOLTAGE = 3.0;
 
@@ -315,7 +317,7 @@ public Command runSlow() {
 
         <CodeBlock
           language="java"
-          title="Arm.java, branch 2-Commands: the stop command"
+          title="Arm.java, branch mech-2-Commands: the stop command"
           code={`/** Stop the arm motor and keep it stopped. Never finishes. */
 public Command stop() {
   return runRepeatedly(motor::stopMotor).named("stop (hold)");
@@ -509,14 +511,14 @@ public Command stop() {
               ],
               correctAnswer: 3,
               explanation:
-                "What you can type after a dot is decided by the type in front of it. named(String) lives on the half-finished command that runRepeatedly(...) hands back. A finished Command has no named(String) at all, so runFast(), which already called it, gives you something with nothing left to name.",
+                "The type in front of a dot decides what you can type after it. named(String) lives on the half-finished command that runRepeatedly(...) hands back. A finished Command has no named(String) at all, so runFast(), which already called it, gives you something with nothing left to name.",
             },
           ]}
         />
 
         <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/blob/1-Subsystem/src/main/java/frc/robot/subsystems/Arm.java"
-          title="Arm.java on 1-Subsystem: the file these excerpts come from"
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-1-Mechanisms/src/main/java/first/robot/mechanisms/Arm.java"
+          title="Arm.java on mech-1-Mechanisms: the file these excerpts come from"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>

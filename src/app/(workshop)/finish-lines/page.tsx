@@ -96,7 +96,7 @@ export default function FinishLines() {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Arm.java"
+          filename="src/main/java/first/robot/mechanisms/Arm.java"
           title="Arm.java: the arrival check"
           code={`private static final double POSITION_TOLERANCE_ROT = 0.01;
 

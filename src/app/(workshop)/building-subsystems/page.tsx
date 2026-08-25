@@ -20,7 +20,7 @@ export default function BuildingSubsystems() {
   return (
     <PageTemplate
       title="Mechanisms"
-      lede="A mechanism is one physical part of the robot, written as one Java class. On branch 1-Subsystem you write Arm.java and Flywheel.java: hardware fields, one constructor, two methods. No commands yet, and the check at the end is a clean build."
+      lede="A mechanism is one physical part of the robot, written as one Java class. On branch mech-1-Mechanisms you write Arm.java and Flywheel.java: hardware fields, one constructor, two methods. No commands yet, and the check at the end is a clean build."
       needs={[
         <>
           A clean <code>./gradlew build</code>, from{" "}
@@ -31,16 +31,15 @@ export default function BuildingSubsystems() {
         </>,
         <>Arm and flywheel answering in Tuner X at IDs 31, 32, 21 and 22.</>,
       ]}
-      branch="1-Subsystem"
+      branch="mech-1-Mechanisms"
       time="14 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            Work in the lesson repository, not the template clone from{" "}
-            <strong>Project Setup</strong>. The template is the finished robot,
-            and its arm sits one folder deeper at{" "}
-            <code>subsystems/arm/Arm.java</code>.
+            Work in the lesson repository, not <strong>2027-Template</strong>.
+            That repo is the finished robot, and its arm sits one folder deeper
+            at <code>subsystems/arm/Arm.java</code>.
           </p>
           <p>Clone the branch alongside it:</p>
         </div>
@@ -54,26 +53,26 @@ export default function BuildingSubsystems() {
       <CodeBlock
         language="bash"
         hideControls
-        code={`git clone -b 1-Subsystem https://github.com/Hemlock5712/Workshop-Code.git`}
+        code={`git clone -b mech-1-Mechanisms https://github.com/Hemlock5712/Workshop-Code.git`}
       />
 
       <p>
         Six Java files land in that clone and this page writes two of them. To
-        type them yourself, delete <code>subsystems/Arm.java</code> and{" "}
-        <code>subsystems/Flywheel.java</code> and start from the class line
+        type them yourself, delete <code>mechanisms/Arm.java</code> and{" "}
+        <code>mechanisms/Flywheel.java</code> and start from the class line
         below. To read instead, leave them alone.
       </p>
 
       <LessonSection id="hardware-fields" title="The hardware fields">
         <p>
-          Open <code>src/main/java/frc/robot/subsystems/Arm.java</code>. The
+          Open <code>src/main/java/first/robot/mechanisms/Arm.java</code>. The
           class line and four fields go in first.
         </p>
 
         <CodeBlock
           language="java"
           title="Arm.java: the class line and the fields"
-          filename="src/main/java/frc/robot/subsystems/Arm.java"
+          filename="src/main/java/first/robot/mechanisms/Arm.java"
           code={`public class Arm extends Mechanism {
   private final CANBus canivore = new CANBus("canivore");
   private final TalonFX motor = new TalonFX(31, canivore);
@@ -126,14 +125,16 @@ export default function BuildingSubsystems() {
           language="java"
           title="Arm.java: the constructor"
           code={`  public Arm() {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to move by hand
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    TalonFXConfiguration config =
+        new TalonFXConfiguration()
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withNeutralMode(NeutralModeValue.Coast) // easy to move by hand
+                    .withInverted(InvertedValue.CounterClockwise_Positive))
+            // Use the CANcoder for position, so the motor knows the arm's real angle.
+            .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder));
 
-    // Use the CANcoder for position, so the motor knows the arm's real angle.
-    config.Feedback.withRemoteCANcoder(encoder);
-
-    TalonFXUtil.applyConfigWithRetries(motor, config);
+    motor.getConfigurator().apply(config);
   }`}
         />
 
@@ -165,25 +166,24 @@ export default function BuildingSubsystems() {
           <p className="mt-3">
             That one line makes the CANcoder the motor&apos;s position source
             instead of the rotor. Nothing reads a position on this branch. Leave
-            the line out and every angle you ask for later is measured from
-            wherever the arm sat at power-on.
+            the line out and the motor measures every angle you ask for later
+            from wherever the arm sat at power-on.
           </p>
         </Box>
 
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
-              <code>TalonFXUtil.applyConfigWithRetries(motor, config)</code>{" "}
-              tries five times, then reports an error to the driver station. It
-              is a small helper on the branch, called on the class name with no{" "}
-              <code>new</code> involved.
+              <code>motor.getConfigurator().apply(config)</code> sends every
+              setting above to the motor controller in one message. It runs
+              once, in the constructor, because the controller keeps those
+              settings until something changes them.
             </p>
           </div>
-          <MarginNote label="Why not apply()">
-            Phoenix&apos;s own <code>apply(...)</code> sends the configuration
-            once and hands back a status code. A CAN bus can hiccup while the
-            robot powers up. A config that quietly failed to apply is miserable
-            to debug.
+          <MarginNote label="Once is enough">
+            The settings live on the controller rather than in your program, so
+            there is nothing to re-send every loop. Phoenix hands back a status
+            code if you want to check that the message landed.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -235,7 +235,7 @@ export default function BuildingSubsystems() {
         <CodeBlock
           language="java"
           title="Flywheel.java: fields and constructor"
-          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
+          filename="src/main/java/first/robot/mechanisms/Flywheel.java"
           code={`public class Flywheel extends Mechanism {
   private final CANBus canivore = new CANBus("canivore");
   private final TalonFX leader = new TalonFX(21, canivore);
@@ -248,11 +248,14 @@ export default function BuildingSubsystems() {
     // The follower copies the leader, spinning the opposite direction.
     follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));
 
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to spin by hand
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    TalonFXConfiguration config =
+        new TalonFXConfiguration()
+            .withMotorOutput(
+                new MotorOutputConfigs()
+                    .withNeutralMode(NeutralModeValue.Coast) // easy to spin by hand
+                    .withInverted(InvertedValue.CounterClockwise_Positive));
 
-    TalonFXUtil.applyConfigWithRetries(leader, config);
+    leader.getConfigurator().apply(config);
   }`}
         />
 
@@ -297,9 +300,9 @@ export default function BuildingSubsystems() {
             exists.
           </li>
           <li>
-            List <code>src/main/java/frc/robot/subsystems/</code>. Two files,{" "}
+            List <code>src/main/java/first/robot/mechanisms/</code>. Two files,{" "}
             <code>Arm.java</code> and <code>Flywheel.java</code>, and no{" "}
-            <code>opmodes</code> folder yet. That folder arrives with the
+            <code>opmode</code> folder yet. That folder arrives with the
             commands.
           </li>
           <li>
@@ -318,7 +321,7 @@ export default function BuildingSubsystems() {
           <ul className="ml-5 list-disc space-y-2">
             <li>
               Four private final fields on <code>Arm</code>, and a constructor
-              ending in <code>applyConfigWithRetries</code>.
+              ending in <code>getConfigurator().apply(config)</code>.
             </li>
             <li>
               <code>setVoltage</code> and <code>stop</code> on each mechanism,
@@ -327,7 +330,7 @@ export default function BuildingSubsystems() {
           </ul>
         </Box>
 
-        <p>Three errors cover nearly everything that goes wrong here.</p>
+        <p>Two errors cover nearly everything that goes wrong here.</p>
 
         <div className="measure-wide overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-note">
@@ -349,18 +352,6 @@ export default function BuildingSubsystems() {
                   the CTRE types in <code>com.ctre.phoenix6</code>.
                 </td>
               </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>cannot find symbol: TalonFXUtil</code>
-                </td>
-                <td className="px-3 py-2">
-                  The helper file is not in your project.
-                </td>
-                <td className="px-3 py-2">
-                  It ships on the branch under <code>frc/robot/utils</code>.
-                  Clone it again.
-                </td>
-              </tr>
               <tr>
                 <td className="px-3 py-2">
                   Your <code>Arm.java</code> has <code>vertical()</code> and{" "}
@@ -371,7 +362,7 @@ export default function BuildingSubsystems() {
                 </td>
                 <td className="px-3 py-2">
                   The template keeps its arm one folder deeper. Work from{" "}
-                  <code>1-Subsystem</code>.
+                  <code>mech-1-Mechanisms</code>.
                 </td>
               </tr>
             </tbody>
@@ -379,8 +370,8 @@ export default function BuildingSubsystems() {
         </div>
 
         <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/blob/1-Subsystem/src/main/java/frc/robot/subsystems/Arm.java"
-          title="Arm.java on branch 1-Subsystem"
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-1-Mechanisms/src/main/java/first/robot/mechanisms/Arm.java"
+          title="Arm.java on branch mech-1-Mechanisms"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
@@ -404,7 +395,7 @@ export default function BuildingSubsystems() {
           {
             id: 2,
             question:
-              "The constructor sets config.MotorOutput.NeutralMode = NeutralModeValue.Coast. What does that mean, and why this arm?",
+              "The constructor sets withNeutralMode(NeutralModeValue.Coast). What does that mean, and why this arm?",
             options: [
               "Coast caps the arm's maximum speed while you are learning",
               "Coast cuts power when nothing is commanding the motor, so you can move the arm by hand on the bench",
@@ -418,7 +409,7 @@ export default function BuildingSubsystems() {
           {
             id: 3,
             question:
-              "Why does Arm configure config.Feedback.withRemoteCANcoder(encoder) when nothing on this branch reads a position?",
+              "Why does Arm chain withRemoteCANcoder(encoder) onto its config when nothing on this branch reads a position?",
             options: [
               "It resets the CANcoder to zero every time the robot boots",
               "It tells the CANcoder to follow the motor's rotor count",

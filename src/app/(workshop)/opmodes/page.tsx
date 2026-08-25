@@ -79,13 +79,21 @@ export default function OpModes() {
       </LessonSection>
 
       <LessonSection id="teleop-shape" title="The smallest Teleop OpMode">
+        <p>
+          <strong>Project Setup</strong> left two generated files in{" "}
+          <code>opmode/</code>. <code>MyTeleop</code> is the one this section
+          rewrites. Rename it to <code>TeleopOpMode</code> before you start.
+          Press <code>F2</code> on the class name and VS Code renames the file
+          with it. <code>MyAuto</code> becomes <code>LeaveStartAuto</code> in{" "}
+          <strong>Autonomous</strong>, so leave it alone for now.
+        </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           title="TeleopOpMode.java: one button, one mode"
-          code={`package frc.robot.opmodes;
+          code={`package first.robot.opmode;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
@@ -113,10 +121,10 @@ public class TeleopOpMode extends PeriodicOpMode {
 
       <LessonSection id="constructor" title="Inside the constructor">
         <p>
-          The OpMode is constructed the moment someone picks it on the driver
-          station. That can happen while the robot is still disabled, and
-          constructor code runs anyway. Three things belong in there, and three
-          do not.
+          The robot program constructs the OpMode the moment someone picks it on
+          the driver station. That can happen while the robot is still disabled,
+          and constructor code runs anyway. Three things belong in there, and
+          three do not.
         </p>
         <ul className="ml-5 list-disc space-y-2">
           <li>
@@ -293,7 +301,7 @@ public void end() {
           </li>
           <li>The annotation carries no name.</li>
           <li>
-            The class sits outside <code>frc.robot</code> and its subpackages.
+            The class sits outside <code>first.robot</code> and its subpackages.
           </li>
           <li>
             The constructor does not take a <code>Robot</code>.

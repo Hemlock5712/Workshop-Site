@@ -8,7 +8,7 @@ import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { Book } from "lucide-react";
 
 /**
- * Rewritten against `context/writing-style.md`, down from 36.8 minutes.
+ * Rewritten against `context/lesson-budget.md`, down from 36.8 minutes.
  *
  * What went: the "why this page sits between Logging and PathPlanner" roadmap
  * section, the "what's next" section, the alpha stamp, and all five code

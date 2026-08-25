@@ -59,7 +59,7 @@ export default function LoggingImplementation() {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           title="Robot.java: logging starts once"
           code={`import org.wpilib.driverstation.DriverStation;
 import org.wpilib.system.DataLogManager;
@@ -95,7 +95,7 @@ public Robot() {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Arm.java"
+          filename="src/main/java/first/robot/mechanisms/Arm.java"
           title="Arm.java: three numbers worth keeping"
           code={`import org.wpilib.networktables.DoublePublisher;
 import org.wpilib.networktables.NetworkTableInstance;

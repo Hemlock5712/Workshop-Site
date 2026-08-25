@@ -10,10 +10,10 @@ export default function AddingCommands() {
   return (
     <PageTemplate
       title="Writing Commands"
-      lede="On branch 2-Commands the arm's voltage setter goes private, and three commands take its place. You write the same three on the flywheel, then bind all six to a controller. Nothing moves yet: the check on this page is a clean build."
+      lede="On branch mech-2-Commands the arm's voltage setter goes private, and three commands take its place. You write the same three on the flywheel, then bind all six to a controller. Nothing moves yet: the check on this page is a clean build."
       needs={[
         <>
-          Branch <code>1-Subsystem</code> building clean, with{" "}
+          Branch <code>mech-1-Mechanisms</code> building clean, with{" "}
           <code>public void setVoltage(double)</code> on <code>Arm</code> and{" "}
           <code>Flywheel</code>.
         </>,
@@ -23,7 +23,7 @@ export default function AddingCommands() {
         </>,
         <>No hardware. This lesson ends at a build, not a moving motor.</>,
       ]}
-      branch="2-Commands"
+      branch="mech-2-Commands"
       time="14 minutes"
     >
       <Split>
@@ -47,7 +47,7 @@ export default function AddingCommands() {
 
       <LessonSection id="make-the-setter-private" title="Close the setter">
         <p>
-          Open <code>src/main/java/frc/robot/subsystems/Arm.java</code>. Three
+          Open <code>src/main/java/first/robot/mechanisms/Arm.java</code>. Three
           edits, none of them longer than a line.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
@@ -68,7 +68,7 @@ export default function AddingCommands() {
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Arm.java"
+          filename="src/main/java/first/robot/mechanisms/Arm.java"
           code={`private void setVoltage(double voltage) {
   motor.setControl(voltageOut.withOutput(voltage));
 }`}
@@ -139,7 +139,7 @@ public Command stop() {
 
       <LessonSection id="the-same-three-on" title="Repeat on the flywheel">
         <p>
-          Open <code>subsystems/Flywheel.java</code> and repeat all of it: the
+          Open <code>mechanisms/Flywheel.java</code> and repeat all of it: the
           private setter, the deleted <code>stop()</code>, the{" "}
           <code>Command</code> import, then the three commands at the same two
           voltages. The flywheel runs two motors: a leader on CAN 21 and a
@@ -182,18 +182,18 @@ private void setVoltage(double voltage) {
       <LessonSection id="bind-them-to-the" title="Bind them to the controller">
         <p>
           Six commands that nothing calls do nothing. Create{" "}
-          <code>src/main/java/frc/robot/opmodes/TeleopOpMode.java</code>. What
+          <code>src/main/java/first/robot/opmode/TeleopOpMode.java</code>. What
           follows is the whole file on the branch, minus the copyright header.
         </p>
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          code={`package frc.robot.opmodes;
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
+          code={`package first.robot.opmode;
 
-import frc.robot.Robot;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Flywheel;
+import first.robot.Robot;
+import first.robot.mechanisms.Arm;
+import first.robot.mechanisms.Flywheel;
 import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
@@ -373,15 +373,15 @@ public class TeleopOpMode extends PeriodicOpMode {
         <p>
           Then read the branch against what you typed. The{" "}
           <strong>GitHub Changes</strong> tab shows the whole{" "}
-          <code>1-Subsystem</code> to <code>2-Commands</code> diff, all four
-          files at once.
+          <code>mech-1-Mechanisms</code> to <code>mech-2-Commands</code> diff,
+          all four files at once.
         </p>
 
         <GitHubContent
           repository="Hemlock5712/Workshop-Code"
-          branch="2-Commands"
-          filePath="src/main/java/frc/robot/subsystems/Arm.java"
-          pr={{ number: 2, focusFile: "Arm.java" }}
+          branch="mech-2-Commands"
+          filePath="src/main/java/first/robot/mechanisms/Arm.java"
+          pr={{ number: 14, focusFile: "Arm.java" }}
         />
       </LessonSection>
 
@@ -390,7 +390,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 1,
             question:
-              "Why does 2-Commands change setVoltage from public to private?",
+              "Why does mech-2-Commands change setVoltage from public to private?",
             options: [
               "So the only way to move the arm is through a command, which lets the scheduler track who owns the motor",
               "Because Mechanism requires all setters to be private",

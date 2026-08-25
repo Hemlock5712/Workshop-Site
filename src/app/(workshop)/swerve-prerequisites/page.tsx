@@ -439,7 +439,7 @@ export default function SwervePrerequisites() {
             ],
             correctAnswer: 0,
             explanation:
-              "Odometry is addition. A slipping wheel still reports distance. A wheel radius off by 1 percent makes every distance off by 1 percent. A shoved robot moves without turning a wheel. Nothing in the calculation ever looks at the field, so the error only grows. Calibration slows it down; vision is what actually corrects it.",
+              "Odometry is addition. A slipping wheel still reports distance. A wheel radius off by 1 percent makes every distance off by 1 percent. A shoved robot moves without turning a wheel. Nothing in the calculation ever looks at the field, so the error only grows. Calibration slows it down; vision is what corrects it.",
           },
         ]}
       />

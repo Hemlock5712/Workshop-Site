@@ -54,7 +54,7 @@ export default function Coroutines() {
           The simulator running, from <strong>Hardware Simulation</strong>.
         </>,
       ]}
-      branch="6-Coroutines"
+      branch="mech-5-Coroutines"
       time="About 25 minutes"
     >
       <Split>
@@ -65,7 +65,7 @@ export default function Coroutines() {
           </p>
           <p>
             Pick the arm and flywheel project back up, then check out{" "}
-            <code>6-Coroutines</code>.
+            <code>mech-5-Coroutines</code>.
           </p>
         </div>
         <MarginNote label="What you'll build">
@@ -186,8 +186,8 @@ export default function Coroutines() {
       <LessonSection id="build-the-routine" title="Build the routine">
         <p>
           The diff adds one file and changes nothing else:{" "}
-          <code>src/main/java/frc/robot/opmodes/RaiseAndShootOpMode.java</code>.
-          Six steps.
+          <code>src/main/java/first/robot/opmode/RaiseAndShootOpMode.java</code>
+          . Six steps.
         </p>
 
         <h3 className="display m-0 text-aside">Step 1: The empty shell</h3>
@@ -195,11 +195,11 @@ export default function Coroutines() {
         <CodeBlock
           language="java"
           title="RaiseAndShootOpMode.java: the shell"
-          code={`package frc.robot.opmodes;
+          code={`package first.robot.opmode;
 
-import frc.robot.Robot;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Flywheel;
+import first.robot.Robot;
+import first.robot.mechanisms.Arm;
+import first.robot.mechanisms.Flywheel;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -337,8 +337,8 @@ coroutine.await(
 
         <GitHubContent
           repository="Hemlock5712/Workshop-Code"
-          branch="6-Coroutines"
-          filePath="src/main/java/frc/robot/opmodes/RaiseAndShootOpMode.java"
+          branch="mech-5-Coroutines"
+          filePath="src/main/java/first/robot/opmode/RaiseAndShootOpMode.java"
         />
       </LessonSection>
 

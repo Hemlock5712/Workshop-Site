@@ -12,7 +12,7 @@ export default function RunningProgram() {
       lede="Your laptop stands in for the robot controller and drives the real motors on the bench. You start the program, pick Teleop, enable it, and press the buttons bound in your TeleopOpMode. Powered motors and a CANivore are required."
       needs={[
         <>
-          The <code>2-Commands</code> branch checked out and building.
+          The <code>mech-2-Commands</code> branch checked out and building.
         </>,
         <>
           A bench checked in Tuner X, CANivore on this laptop:{" "}
@@ -28,7 +28,7 @@ export default function RunningProgram() {
         <>An Xbox-style controller plugged into the same laptop.</>,
         <>Clear space around the mechanism, and a hand free for Disable.</>,
       ]}
-      branch="2-Commands"
+      branch="mech-2-Commands"
       time="14 minutes"
     >
       <Split>
@@ -92,23 +92,23 @@ export default function RunningProgram() {
         </p>
         <p>
           <code>Scheduler.getDefault().run()</code> ticks every loop whichever
-          mode is selected. Modes are found by scanning classes at run time, so
-          a class with the wrong shape goes missing instead of failing the
-          build.
+          mode is selected. The robot program finds modes by scanning classes at
+          run time, so a class with the wrong shape goes missing instead of
+          failing the build.
         </p>
       </LessonSection>
 
       <LessonSection id="your-four-bindings" title="Your four bindings">
         <p>
           Your bindings live in the <code>TeleopOpMode</code> constructor on{" "}
-          <code>2-Commands</code>. Three come with the branch. The fourth, on B,
-          is yours to add.
+          <code>mech-2-Commands</code>. Three come with the branch. The fourth,
+          on B, is yours to add.
         </p>
 
         <CodeBlock
           language="java"
           title="What your constructor should contain"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           code={`// From the branch:
 driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
 driver.rightTrigger().onTrue(flywheel.runFast()).onFalse(flywheel.runSlow());

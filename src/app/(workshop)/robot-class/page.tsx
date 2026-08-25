@@ -48,12 +48,12 @@ export default function RobotClass() {
       <LessonSection id="read-the-file" title="The whole file">
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           title="Robot.java: the complete shape"
-          code={`package frc.robot;
+          code={`package first.robot;
 
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Flywheel;
+import first.robot.mechanisms.Arm;
+import first.robot.mechanisms.Flywheel;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.framework.OpModeRobot;
 

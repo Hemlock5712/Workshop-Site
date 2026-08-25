@@ -148,9 +148,9 @@ private final LinearPath path =
         </p>
 
         <p>
-          The plan is built once, from where the robot was and how fast it was
-          moving when the button went down. That snapshot and a clock reading
-          are the other two fields.
+          The command builds the plan once, from where the robot was and how
+          fast it was moving when the button went down. That snapshot and a
+          clock reading are the other two fields.
         </p>
 
         <CodeBlock
@@ -406,7 +406,7 @@ protected void execute() {
             ],
             correctAnswer: 3,
             explanation:
-              "It is a clock check, not a distance check, so no position tolerance is needed. The trade: if the robot fell behind the plan, the command still ends on schedule, wherever the robot actually is.",
+              "It is a clock check, not a distance check, so no position tolerance is needed. The trade: if the robot fell behind the plan, the command still ends on schedule, wherever the robot has got to.",
           },
           {
             id: 5,

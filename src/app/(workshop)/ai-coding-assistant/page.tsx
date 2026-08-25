@@ -12,7 +12,7 @@ import { BookOpen, FolderTree } from "lucide-react";
  * Optional lesson. Not in `LESSONS`, and the target of a 308 redirect from
  * `/ai-assistant` in `next.config.ts`, so the route has to keep answering.
  *
- * Rewritten August 2026 against `context/writing-style.md`. It was 26.4
+ * Rewritten August 2026 against `context/lesson-budget.md`. It was 26.4
  * minutes across seven sections with seven asides, most of it spent on a
  * prompt-by-prompt walkthrough that quoted `Arm.java` and `TeleopOpMode.java`
  * back in full. Both files are taught on `/adding-commands` already, so the
@@ -49,7 +49,7 @@ export default function AICodingAssistant() {
           <code>.claude/</code> folder intact.
         </>,
         <>
-          The <code>2-Commands</code> code: <code>Arm.java</code> with{" "}
+          The <code>mech-2-Commands</code> code: <code>Arm.java</code> with{" "}
           <code>runSlow()</code>, <code>runFast()</code> and <code>stop()</code>
           .
         </>,
@@ -59,7 +59,7 @@ export default function AICodingAssistant() {
           <strong>Running Your Code</strong> already done.
         </>,
       ]}
-      branch="2-Commands"
+      branch="mech-2-Commands"
       time="25 minutes at a keyboard"
     >
       <LessonSection id="commands-v2-by-default" title="Commands v2 by default">
@@ -125,7 +125,7 @@ public class Arm extends Mechanism {
                   <code>RobotContainer</code>, <code>SendableChooser</code>
                 </td>
                 <td className="px-3 py-2">
-                  One class per mode under <code>opmodes/</code>
+                  One class per mode under <code>opmode/</code>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
@@ -239,11 +239,11 @@ public class Arm extends Mechanism {
         </p>
 
         <p>
-          Check the path before you paste. On <code>2-Commands</code> the arm is
-          at <code>src/main/java/frc/robot/subsystems/Arm.java</code>. A
-          template clone keeps it one folder deeper, at{" "}
-          <code>src/main/java/frc/robot/subsystems/arm/Arm.java</code>. Edit the
-          prompt to match the project you have open.
+          Check the path before you paste. On <code>mech-2-Commands</code> the
+          arm is at <code>src/main/java/first/robot/mechanisms/Arm.java</code>.
+          A template clone keeps it one folder deeper, at{" "}
+          <code>src/main/java/first/robot/mechanisms/arm/Arm.java</code>. Edit
+          the prompt to match the project you have open.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -258,7 +258,7 @@ public class Arm extends Mechanism {
               <CodeBlock
                 language="text"
                 title="Prompt: read only"
-                code={`Read src/main/java/frc/robot/subsystems/Arm.java and explain this line
+                code={`Read src/main/java/first/robot/mechanisms/Arm.java and explain this line
 one piece at a time:
 
     runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)")
@@ -294,16 +294,16 @@ I have finished the Commands lesson. Do not change any files.`}
         <p>
           Now let it write something. Ask for the smallest change you can check
           line by line: a <code>runReverse()</code> on the arm, bound to B. On{" "}
-          <code>2-Commands</code> only <code>driver.a()</code> is taken, so{" "}
+          <code>mech-2-Commands</code> only <code>driver.a()</code> is taken, so{" "}
           <code>b()</code> is free.
         </p>
 
         <CodeBlock
           language="text"
           title="Prompt: one small change"
-          code={`Add a runReverse() command to src/main/java/frc/robot/subsystems/Arm.java
+          code={`Add a runReverse() command to src/main/java/first/robot/mechanisms/Arm.java
 that pushes -SLOW_VOLTAGE, matching the style of runSlow(). Then bind it in
-src/main/java/frc/robot/opmodes/TeleopOpMode.java as:
+src/main/java/first/robot/opmode/TeleopOpMode.java as:
 
     driver.b().onTrue(arm.runReverse()).onFalse(arm.stop());
 
