@@ -9,13 +9,13 @@ Read `CLAUDE.md` first. This document assumes it.
 
 ## Status, 2026-08-25 (updated the same day it was written)
 
-The fork exists and spike 1 is implemented. Work happens in
+All five spikes are done. Work happens in
 **<https://github.com/Hemlock5712/CodeRunner>**, branch `wpilib-2027-java25`,
 cloned at `C:/Users/joeoj/Downloads/CodeRunner`. Upstream is wired as the
 `upstream` remote. The reasoning is written up there in
 `docs/decisions/035-wpilib-2027-java-25.md`; this section is only the summary.
 
-**Two unknowns in this document turned out to be answered, and both are good
+**Two unknowns in this document were answered early, and both were good
 news.**
 
 The sim pipeline survives the package move. CodeRunner runs
@@ -40,24 +40,50 @@ every generated file as a syntax error before Gradle ran; and
 `catalog/modules/robot-starter` replaced by the generated 2027 project from
 Workshop-Code `main`.
 
-**What is not proven.** The Dockerfile primes its Gradle cache by running
-`./gradlew build` on the bundled starter, and that step is the spike. It runs
-in a new `Workspace image` CI workflow, which also asserts the JDK and the
-primed cache from inside the image, because this machine has no Docker
-installed. Watch that job before believing any of the above end to end.
+**All five spikes are done.** Spike 1 and the runnable half of spike 2 are
+verified by a `Workspace image` CI job in the fork, which builds the image and
+exercises it; this machine has no Docker, so CI is where the proof lives.
 
-**Two things to decide.** Phoenix 6 binaries now sit inside the published
-image, and CTRE's licence is the only non-open one in the bundle; that is
-flagged in the fork's `docs/legal/licenses.md` and should be settled before
-publishing publicly. And `gradle.properties` memory was raised from 384m to
-768m by reasoning rather than measurement.
+| Spike                               | Outcome                                                                                |
+| ----------------------------------- | -------------------------------------------------------------------------------------- |
+| 1. Container builds our stack       | Passes. `BUILD SUCCESSFUL` inside the image on JDK 25.                                 |
+| 2. Simulation does something useful | **It runs and shows nothing.** See below.                                              |
+| 3. Catalog generator                | Built: `pnpm catalog`. Eight modules from six branches plus `main` and one plain-java. |
+| 4. A `plain-java` module            | Built: `context/lesson-modules/java-basics`, compiles and runs.                        |
+| 5. Hosting                          | Recommendation written, nothing provisioned.                                           |
+
+**Spike 2 is the answer that matters, and it is not the one this plan
+expected.** The blocker was never the JDK. The robot program starts, the HALSim
+WebSocket serves the Driver Station, and NetworkTables comes up. Then CI lists
+every NT topic `mech-2-Commands` publishes and finds eleven, all of them
+WPILib's own `/FMSInfo` boilerplate. No arm angle, no flywheel speed, no
+voltage. AdvantageScope would connect and plot an empty dashboard.
+
+Grepping the chain explains it twice. Nothing publishes telemetry, and nothing
+feeds a Phoenix `SimState` from a physics model, so even with telemetry added
+every position would read zero. Both gaps have to close before a student sees
+anything move, and both are curriculum work rather than infrastructure work.
+The three ways forward are in `docs/decisions/035-wpilib-2027-java-25.md`;
+adding telemetry and physics to `mech-1` and `mech-2` alone would prove the
+idea at a bounded cost. **Nothing further should be built on the CodeRunner
+side until that call is made.**
+
+**One defect was found and fixed along the way.** `run-sim.sh` bypasses
+GradleRIO's `simulateJava` task, so it also bypassed the JVM arguments that
+task attaches. On JDK 25 that dropped the native-access grant and both
+`--add-opens`, which would have failed at run time rather than build time.
+
+**Two things still to decide.** Phoenix 6 binaries land in the published image
+and CTRE's licence is the only non-open one in the bundle. And
+`gradle.properties` memory was raised to 768m by reasoning; the container build
+survives at that number but nobody has measured the peak.
 
 **One correction to the original text below.** The mechanism chain was
 collapsed to six branches after this was written: `mech-3-PID` and
 `mech-4-MotionMagic` became a single `mech-3-MotionMagic`, and the rest shifted
 down to `mech-4-ReadingState`, `mech-5-Coroutines`, `mech-6-StateBased`. The
-mapping table in "Why it fits us" still lists the old seven. The catalog
-generator must read the branch list from git, not from that table.
+mapping table in "Why it fits us" still lists the old seven, which is exactly
+why the generator reads the branch list from git instead.
 
 Spike 2 is next, and it is the one that decides whether this is worth
 finishing: a student presses a button and either the arm moves in

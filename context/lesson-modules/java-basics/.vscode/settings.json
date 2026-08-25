@@ -1,0 +1,8 @@
+{
+  "java.project.sourcePaths": ["src"],
+  "java.import.gradle.enabled": false,
+  "java.import.maven.enabled": false,
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xms64m -Xmx512m -XX:ReservedCodeCacheSize=96m -Xlog:disable",
+  "gradle.autoDetect": "off"
+}

@@ -107,6 +107,49 @@ git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-4-Motion
   hand-writes its blocks and teaches the arm, so that branch is the wrong
   parent for it.
 
+### The CodeRunner lesson catalog (`pnpm catalog`)
+
+`scripts/generate-lesson-catalog.mjs` turns the Workshop-Code branch chain into
+a [CodeRunner](https://github.com/Hemlock5712/CodeRunner) lesson catalog:
+`modules.json` plus one complete starting project per module. Output goes to
+`../Workshop-Lessons` by default, or `--out <dir>`. Run `pnpm reference:sync`
+first; it reads the bare mirror, not the worktrees, so an export is always a
+branch tip and never a dirty worktree.
+
+**Never point `--out` inside this repo.** A `build.gradle` under an open editor
+workspace gets auto-imported by the Java language server, which locks files in
+the output and leaves the next run unable to clear it. That is why the default
+is a sibling directory, and it is also where the catalog lives for real, as its
+own repository.
+
+- **The branches stay the single source of truth.** Same rule as the submodule
+  one above, same reason. The output is a build artifact; delete and re-run.
+  Never hand-edit a generated module.
+- **Three things are derived, not typed.** Which lesson owns a branch comes
+  from scanning pages for `branch="mech-2-Commands"`, so it cannot drift from
+  the site. `order` comes from chain position in tens, with `main` at 10 and
+  1 to 9 left for the plain-java prelude. The "what changed" list in each
+  README comes from `git diff` against the previous branch.
+- **Prose is not derived.** Each module's README is a bench card, not a second
+  copy of the lesson: goal, steps, check, and a link to the page. Cards live in
+  `context/lesson-cards/<branch>.md`. A branch with no card gets a stub and a
+  warning.
+- **Hand-written modules live in `context/lesson-modules/<id>/`** with a
+  `module.json` beside the sources. That is how `plain-java` lessons exist at
+  all, since they have no branch to export.
+- **`pnpm catalog:check` fails on any warning.** The warnings are curriculum
+  findings rather than script bugs: today it reports the Workshop 2 order
+  inversion and that `mech-3-MotionMagic` and `mech-4-ReadingState` are
+  embedded by no page.
+- **The swerve chain is excluded on purpose.** It is still `frc.robot`, and it
+  carries generated CTRE constants and a calibrated module layout that no
+  student types.
+
+Two findings from the CodeRunner spikes constrain what a module can teach: the
+mech chain publishes nothing to NetworkTables and models no simulation physics,
+so a `robot` module compiles and runs but displays nothing. See
+`docs/decisions/035-wpilib-2027-java-25.md` in the fork.
+
 ## Development Commands
 
 Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/yarn/bun work interchangeably.
