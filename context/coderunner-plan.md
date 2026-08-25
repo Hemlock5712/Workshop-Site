@@ -63,10 +63,20 @@ Grepping the chain explains it twice. Nothing publishes telemetry, and nothing
 feeds a Phoenix `SimState` from a physics model, so even with telemetry added
 every position would read zero. Both gaps have to close before a student sees
 anything move, and both are curriculum work rather than infrastructure work.
-The three ways forward are in `docs/decisions/035-wpilib-2027-java-25.md`;
-adding telemetry and physics to `mech-1` and `mech-2` alone would prove the
-idea at a bounded cost. **Nothing further should be built on the CodeRunner
-side until that call is made.**
+**That call was made and the fix is proven.** `sim-mech-1-Mechanisms` and
+`sim-mech-2-Commands` on Workshop-Code add `log()` and
+`simulationPeriodic(double)` to each mechanism. They are off the teaching
+chain on purpose, because the site embeds `mech-*` live and editing one would
+change a published lesson. CI probes both branches side by side:
+`mech-2-Commands` shows 11 topics and no mechanism data, `sim-mech-2-Commands`
+shows 16 and five. The decisive number is `Arm/Position (deg)`, which settles
+at **-90**, the arm resting on its bottom hard stop under simulated gravity,
+where without a physics model it would read 0.
+
+So the browser lessons can be made genuinely interactive. What remains is a
+curriculum decision rather than a technical one: whether to graduate the
+`sim-*` branches onto the chain, and what to do about the physical numbers,
+which are plausible rather than measured.
 
 **One defect was found and fixed along the way.** `run-sim.sh` bypasses
 GradleRIO's `simulateJava` task, so it also bypassed the JVM arguments that
