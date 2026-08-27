@@ -38,10 +38,13 @@ import {
   Navigation,
   Beaker,
   Lightbulb,
+  Bot,
+  Cpu,
+  Route,
   type LucideIcon,
 } from "lucide-react";
 import { ReactNode } from "react";
-import type { LessonSection } from "@/data/lessons";
+import type { LessonSectionId } from "@/data/lessons";
 
 const ICON_CLASS = "w-5 h-5";
 
@@ -60,6 +63,8 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/command-framework": makeIcon(Layers),
   "/building-subsystems": makeIcon(Layers),
   "/adding-commands": makeIcon(Terminal),
+  "/opmodes": makeIcon(Gamepad2),
+  "/robot-class": makeIcon(Cpu),
   "/triggers": makeIcon(Gamepad2),
   "/running-program": makeIcon(Play),
   "/mechanism-setup": makeIcon(Settings2),
@@ -69,21 +74,27 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/swerve-prerequisites": makeIcon(BookOpen),
   "/swerve-drive-project": makeIcon(Truck),
   "/pathplanner": makeIcon(MapIcon),
+  "/autonomous": makeIcon(Bot),
   "/swerve-calibration": makeIcon(Crosshair),
-  "/logging-options": makeIcon(FileText),
   "/logging-implementation": makeIcon(FileCode),
   "/drive-to-point": makeIcon(MapPin),
-  "/vision-options": makeIcon(Eye),
   "/vision-implementation": makeIcon(Camera),
 
   "/vision-shooting": makeIcon(Target),
   "/state-based": makeIcon(GitBranch),
   "/advanced-drive-to-point": makeIcon(Navigation),
+  "/dynamic-path-planning": makeIcon(Route),
+  "/chaining-commands": makeIcon(GitBranch),
+  "/finish-lines": makeIcon(CheckCircle2),
+  "/coroutines": makeIcon(Sparkles),
+  "/drive-to-tag-inline": makeIcon(Target),
 };
 
-export const SECTION_ICONS: Record<LessonSection, ReactNode> = {
+export const SECTION_ICONS: Record<LessonSectionId, ReactNode> = {
   main: makeIcon(Home),
   workshop1: makeIcon(Beaker),
   workshop2: makeIcon(Zap),
-  advanced: makeIcon(Lightbulb),
+  workshop3: makeIcon(Truck),
+  workshop4: makeIcon(Eye),
+  workshop5: makeIcon(Lightbulb),
 };

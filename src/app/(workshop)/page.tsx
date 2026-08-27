@@ -1,460 +1,379 @@
+import { BUILD_YEAR } from "@/lib/buildInfo";
 import Link from "next/link";
 import Image from "next/image";
+import MechanismStrip from "@/components/home/MechanismStrip";
+import { getLessonGroups, getSidebarLabel, LESSON_COUNT } from "@/data/lessons";
 
 /**
- * Workshop landing. Rebuilt on the "engineering instrument panel"
- * aesthetic — serif hero, mono micro-labels, workshop banners with the
- * primary/accent corner chips, mechanism cards with color-stripe
- * mapping (per design: arm=red, flywheel=green, swerve=blue,
- * vision=magenta), sponsors grid with the team list panel below.
+ * Workshop landing.
  *
- * Real imagery, links, and team data are preserved from the previous
- * landing — only the visual structure changes.
+ * Three claims, in order: what this is, what order to read it in, and what you
+ * end up having built. The syllabus is the centre of the page rather than a
+ * link at the bottom — the hardest thing about a long course is believing
+ * it has a shape, and the fastest way to show that is to show the shape.
+ *
+ * No hero image, no feature cards. The only photography is the four real
+ * mechanisms, and it is full-bleed because those photos are the pitch.
  */
 
-interface MechanismCardProps {
-  tag: string;
-  title: string;
-  description: string;
-  /** OKLCH color string for the bottom image-stripe + bullet markers. */
-  color: string;
-  image: { src: string; alt: string };
-  items: string[];
-}
-
-function MechanismCard({
-  tag,
-  title,
-  description,
-  color,
-  image,
-  items,
-}: MechanismCardProps) {
-  return (
-    <article
-      className="flex flex-col overflow-hidden rounded-md"
-      style={{
-        background: "var(--bg-elev)",
-        border: "1px solid var(--line)",
-      }}
-    >
-      {/* Image slot — real photo with mechanism-coloured bottom stripe */}
-      <div
-        className="relative"
-        style={{
-          aspectRatio: "16/9",
-          borderBottom: "1px solid var(--line)",
-        }}
-      >
-        <Image
-          src={image.src}
-          alt={image.alt}
-          fill
-          className="object-cover"
-          sizes="(min-width: 900px) 50vw, 100vw"
-        />
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 3,
-            background: color,
-          }}
-        />
-      </div>
-
-      <div className="flex flex-col gap-2.5 px-5 pb-5 pt-4">
-        <div
-          className="font-mono"
-          style={{
-            fontSize: 10.5,
-            color,
-            letterSpacing: "0.08em",
-            fontWeight: 500,
-          }}
-        >
-          {tag}
-        </div>
-        <h3
-          className="text-lg font-semibold leading-tight"
-          style={{ letterSpacing: "-0.01em" }}
-        >
-          {title}
-        </h3>
-        <p
-          className="text-[13.5px] leading-relaxed"
-          style={{ color: "var(--fg-mute)", margin: 0 }}
-        >
-          {description}
-        </p>
-        <ul
-          className="m-0 flex list-none flex-col gap-1 p-0"
-          style={{ marginTop: 4 }}
-        >
-          {items.map((item) => (
-            <li
-              key={item}
-              className="flex items-baseline gap-2 text-xs"
-              style={{ color: "var(--fg-mute)" }}
-            >
-              <span style={{ color }}>→</span>
-              {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </article>
-  );
-}
-
-interface WorkshopBannerProps {
-  number: string;
-  description: string;
-  tone: "primary" | "accent";
-}
-
-function WorkshopBanner({ number, description, tone }: WorkshopBannerProps) {
-  const stripe = tone === "primary" ? "var(--primary-lifted)" : "var(--accent)";
-  const bg = tone === "primary" ? "var(--primary-soft)" : "var(--accent-soft)";
-  return (
-    <div className="mb-3.5 flex items-center gap-3.5">
-      <span
-        className="font-mono"
-        style={{
-          fontSize: 11,
-          padding: "4px 10px",
-          background: bg,
-          border: `1px solid ${stripe}`,
-          color: stripe,
-          borderRadius: 3,
-          letterSpacing: "0.08em",
-          fontWeight: 600,
-        }}
-      >
-        WORKSHOP {number}
-      </span>
-      <span className="text-[13.5px]" style={{ color: "var(--fg-mute)" }}>
-        {description}
-      </span>
-      <span
-        aria-hidden
-        className="flex-1"
-        style={{ height: 1, background: "var(--line-soft)" }}
-      />
-    </div>
-  );
-}
+const SPONSORS = [
+  {
+    name: "CTR Electronics",
+    href: "https://store.ctr-electronics.com/",
+    logo: "/images/sponsors/ctre-logo.jpg",
+  },
+  {
+    name: "MichAuto",
+    href: "https://michauto.org/",
+    logo: "/images/sponsors/MichAuto Logo 600x600.png",
+  },
+  {
+    name: "Office of Future Mobility and Electrification",
+    href: "https://www.michiganbusiness.org/ofme/",
+    logo: "/images/sponsors/OFME-Logo.png",
+  },
+  {
+    name: "Lockwood STEM Center",
+    href: "https://lockwoodstemcenter.hemlockps.com/home",
+    logo: "/images/sponsors/lockwood-stem-center-logo.png",
+  },
+] as const;
 
 export default function Home() {
+  const groups = getLessonGroups();
+  const firstLesson = groups[0]?.lessons[0];
+
   return (
-    <div className="mx-auto max-w-[1200px] px-6 pb-24 pt-8 md:px-12 md:pb-32">
-      {/* ── HERO ───────────────────────────────────────────────────── */}
+    <div>
+      {/* ── Masthead + statement ──────────────────────────────────── */}
       <section
-        className="grid-bg relative px-0 py-14 md:py-16"
-        style={{
-          borderTop: "1px solid var(--line)",
-          borderBottom: "1px solid var(--line)",
-        }}
+        className="px-6 pt-11 md:px-12 lg:px-[76px]"
+        style={{ borderBottom: "1px solid var(--rule)" }}
       >
-        <div className="max-w-[820px]">
-          {/* Brand logo + name */}
-          <div className="mb-7 flex items-center gap-5">
-            <Image
-              src="/images/gray-matter-logo.jpg"
-              alt="Gray Matter Coding logo"
-              width={112}
-              height={112}
-              quality={95}
-              className="shrink-0 rounded-lg"
-              priority
-              style={{
-                border: "1px solid var(--line)",
-                background: "var(--bg-elev)",
-              }}
-            />
-            <div style={{ lineHeight: 1.2 }}>
-              <div className="text-xl font-semibold tracking-tight">
-                Gray Matter Coding Workshop
-              </div>
-              <div
-                className="font-mono"
-                style={{
-                  fontSize: 11,
-                  color: "var(--fg-dim)",
-                  letterSpacing: "0.08em",
-                  marginTop: 2,
-                }}
-              >
-                BY HEMLOCK 5712 · FRC PROGRAMMING CURRICULUM
-              </div>
+        <div
+          className="flex items-center gap-3.5 pb-[22px]"
+          style={{ borderBottom: "1px solid var(--rule-soft)" }}
+        >
+          <Image
+            src="/images/gray-matter-logo.jpg"
+            alt="Gray Matter Coding"
+            width={42}
+            height={42}
+            quality={95}
+            priority
+            className="h-[42px] w-[42px] shrink-0 rounded-[9px]"
+          />
+          <div style={{ lineHeight: 1.25 }}>
+            <div
+              className="text-ui font-semibold"
+              style={{ letterSpacing: "-0.005em", color: "var(--tx)" }}
+            >
+              Gray Matter Coding Workshop
             </div>
-          </div>
-
-          <h1
-            className="mb-5 font-semibold"
-            style={{
-              fontSize: "clamp(38px, 5vw, 60px)",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              fontFamily: "var(--font-serif)",
-              textWrap: "balance",
-            }}
-          >
-            FRC programming,
-            <br />
-            <span style={{ fontStyle: "italic", color: "var(--accent)" }}>
-              taught hands-on.
-            </span>
-          </h1>
-
-          <p
-            className="mb-7 max-w-[640px] text-lg leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
-            A curriculum covering command-based architecture, PID and motion
-            profiling, swerve drive, vision, and logging. Built around a
-            companion GitHub repository so every concept maps to real, runnable
-            code.
-          </p>
-
-          <div className="flex flex-wrap gap-2.5">
-            <Link
-              href="/introduction"
-              className="inline-flex items-center gap-2 rounded-md px-4 py-2.5 text-[13px] font-semibold no-underline transition"
+            <div
+              className="mono mt-[3px]"
               style={{
-                background: "var(--accent)",
-                color: "var(--accent-fg)",
-                border: "1px solid var(--accent)",
+                fontSize: "var(--text-micro)",
+                letterSpacing: "0.16em",
+                textTransform: "uppercase",
+                color: "var(--accent)",
               }}
             >
-              Start Learning
-              <span aria-hidden style={{ marginLeft: 2 }}>
-                →
-              </span>
+              FRC 5712 · Hemlock, Michigan
+            </div>
+          </div>
+          <span
+            aria-hidden="true"
+            className="h-px min-w-5 flex-1"
+            style={{ background: "var(--rule-soft)" }}
+          />
+          <span className="micro hidden whitespace-nowrap sm:inline">
+            WPILib 2027 · Commands v3
+          </span>
+        </div>
+
+        {/* The headline is the name of the thing, not a pitch for it. It read
+            "Programming a robot, taught the way it's actually learned" and
+            said nothing a student could use: not who runs the workshop, not
+            what it covers, not whether they are in the right place. A person
+            who lands here already wants to program a robot. Tell them whose
+            course this is and get out of the way. */}
+        <h1
+          className="display mt-14 max-w-[1180px]"
+          style={{
+            fontSize: "clamp(44px, 8.2vw, 124px)",
+            lineHeight: 0.9,
+            letterSpacing: "-0.035em",
+            textWrap: "balance",
+          }}
+        >
+          FRC Team 5712
+          <br />
+          Coding Workshops
+        </h1>
+
+        <p
+          className="mt-[52px] max-w-[640px]"
+          style={{
+            fontFamily: "var(--font-serif)",
+            fontSize: "var(--text-lede)",
+            lineHeight: 1.62,
+            color: "var(--tx2)",
+          }}
+        >
+          {LESSON_COUNT} lessons on programming an FRC robot, from spinning a
+          motor in Tuner X to a swerve drive that finds itself with a camera.
+          Every lesson runs on real hardware.
+        </p>
+
+        <div className="mt-[34px] flex flex-wrap items-center gap-[22px] pb-16">
+          {firstLesson && (
+            <Link
+              href={firstLesson.slug}
+              className="inline-flex items-center gap-2.5 whitespace-nowrap px-[26px] py-[15px] text-note font-semibold transition-opacity hover:opacity-90"
+              style={{
+                borderRadius: 2,
+                background: "var(--accent)",
+                color: "var(--accent-ink)",
+              }}
+            >
+              Start with Lesson {firstLesson.num}
+              <span aria-hidden="true">→</span>
+            </Link>
+          )}
+          <a
+            href="#syllabus"
+            className="mono whitespace-nowrap pb-[3px] transition-colors hover:text-[var(--accent)]"
+            style={{
+              fontSize: "var(--text-meta)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              color: "var(--tx2)",
+              borderBottom: "1px solid var(--rule)",
+            }}
+          >
+            See the syllabus
+          </a>
+        </div>
+      </section>
+
+      {/* What you'll program comes before the syllabus on purpose: four
+          photographs answer "what do I get out of this?" faster than a long
+          lesson titles, and they give the syllabus something to be a plan
+          *for*. */}
+      <MechanismStrip />
+
+      {/* ── Syllabus ──────────────────────────────────────────────── */}
+      <section
+        id="syllabus"
+        className="scroll-mt-16 px-6 pb-10 pt-[88px] md:px-12 lg:px-[76px]"
+      >
+        <div
+          className="mb-11 flex flex-col items-start justify-between gap-6 pb-[18px] lg:flex-row lg:items-end lg:gap-10"
+          style={{ borderBottom: "1px solid var(--rule)" }}
+        >
+          <h2
+            className="display m-0"
+            style={{
+              fontSize: "clamp(34px, 4vw, 52px)",
+              lineHeight: 1,
+              letterSpacing: "-0.015em",
+            }}
+          >
+            The syllabus
+          </h2>
+          <p
+            className="m-0 max-w-[400px]"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "var(--text-aside)",
+              lineHeight: 1.6,
+              color: "var(--tx3)",
+            }}
+          >
+            Read it in order. Each lesson leaves the code in a state the next
+            one starts from.
+          </p>
+        </div>
+
+        {groups.map((group) => (
+          <div
+            key={group.id}
+            className="grid gap-x-9 gap-y-[18px] py-[26px] lg:grid-cols-[110px_minmax(0,300px)_1fr] lg:items-start"
+            style={{ borderBottom: "1px solid var(--rule-soft)" }}
+          >
+            <div
+              className="mono pt-1.5"
+              style={{
+                fontSize: "var(--text-meta)",
+                letterSpacing: "0.12em",
+                color: "var(--accent)",
+              }}
+            >
+              {group.num}
+            </div>
+            <div>
+              <div
+                className="display mb-1.5"
+                style={{ fontSize: 29, lineHeight: 1.1 }}
+              >
+                {group.title}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "var(--text-ui)",
+                  lineHeight: 1.55,
+                  color: "var(--tx3)",
+                }}
+              >
+                {group.blurb}
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-x-[7px] gap-y-[7px] pt-[5px]">
+              {group.lessons.map((lesson) => (
+                <Link
+                  key={lesson.slug}
+                  href={lesson.slug}
+                  className="whitespace-nowrap rounded-full px-3 py-[5px] text-meta transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                  style={{
+                    border: "1px solid var(--rule)",
+                    color: "var(--tx3)",
+                  }}
+                >
+                  {getSidebarLabel(lesson)}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <p
+          className="mono pt-5"
+          style={{
+            fontSize: "var(--text-micro)",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            color: "var(--tx3)",
+          }}
+        >
+          {LESSON_COUNT} lessons · five workshops · one code repository
+        </p>
+      </section>
+
+      {/* The syllabus ends on a wall of 29 lesson names, which is the point at
+          which a reader has decided to start and has to scroll back up to do
+          it. Repeat the hero's call to action here so the decision and the
+          link are in the same place. */}
+      {firstLesson && (
+        <section className="px-6 pt-12 md:px-12 lg:px-[76px]">
+          <Link
+            href={firstLesson.slug}
+            className="inline-flex items-center gap-2.5 whitespace-nowrap px-[26px] py-[15px] text-note font-semibold transition-opacity hover:opacity-90"
+            style={{
+              borderRadius: 2,
+              background: "var(--accent)",
+              color: "var(--accent-ink)",
+            }}
+          >
+            Get started
+            <span aria-hidden="true">→</span>
+          </Link>
+        </section>
+      )}
+
+      {/* ── Sponsors ──────────────────────────────────────────────── */}
+      <section className="px-6 pt-14 md:px-12 lg:px-[76px]">
+        <div
+          className="pb-10"
+          style={{ borderBottom: "1px solid var(--rule-soft)" }}
+        >
+          <div className="micro mb-[26px]">Powered by</div>
+          <div className="grid grid-cols-2 items-center gap-5 lg:grid-cols-4">
+            {SPONSORS.map((sponsor) => (
+              <a
+                key={sponsor.name}
+                href={sponsor.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={sponsor.name}
+                className="group flex h-28 items-center justify-center px-6 py-[18px] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg3)]"
+                style={{
+                  border: "1px solid var(--rule-soft)",
+                  borderRadius: 3,
+                  background: "var(--bg2)",
+                }}
+              >
+                {/* `style` height/width auto alongside the CSS max-height:
+                    next/image warns when one dimension is constrained by CSS
+                    and the other isn't, because the aspect ratio silently
+                    distorts. The logos are all different shapes. */}
+                <Image
+                  src={sponsor.logo}
+                  alt={sponsor.name}
+                  width={180}
+                  height={72}
+                  style={{ width: "auto", height: "auto" }}
+                  className="max-h-[72px] max-w-full object-contain opacity-70 grayscale transition duration-300 group-hover:opacity-100 group-hover:grayscale-0"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Colophon ──────────────────────────────────────────────── */}
+      <footer className="grid grid-cols-1 items-start gap-10 px-6 pb-16 pt-11 sm:grid-cols-3 md:px-12 lg:px-[76px]">
+        <div>
+          <div className="micro mb-2.5">Written by</div>
+          <div
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "var(--text-aside)",
+              lineHeight: 1.7,
+              color: "var(--tx2)",
+            }}
+          >
+            Joe Lockwood · Josh Bacon
+            <br />
+            Chris Bale · Alex Haltom
+            <br />
+            <span style={{ color: "var(--tx3)" }}>Team 5712, Hemlock</span>
+          </div>
+        </div>
+        <div>
+          <div className="micro mb-2.5">With</div>
+          <div
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "var(--text-aside)",
+              lineHeight: 1.7,
+              color: "var(--tx2)",
+            }}
+          >
+            Ethan Shannon
+            <br />
+            <span style={{ color: "var(--tx3)" }}>Team 5216</span>
+          </div>
+        </div>
+        <div className="sm:text-right">
+          <div className="micro mb-2.5">frc5712.com</div>
+          <div
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "var(--text-aside)",
+              lineHeight: 1.7,
+              color: "var(--tx3)",
+            }}
+          >
+            © {BUILD_YEAR} Hemlock&rsquo;s Gray Matter
+            <br />
+            <Link href="/privacy" style={{ color: "var(--accent)" }}>
+              Privacy
             </Link>
           </div>
         </div>
-      </section>
-
-      {/* ── MECHANISMS ─────────────────────────────────────────────── */}
-      <section id="mechanisms" className="mb-16 mt-14">
-        <div className="mb-7">
-          <div className="micro">WHAT YOU&rsquo;LL PROGRAM</div>
-          <h2
-            className="font-semibold"
-            style={{
-              fontSize: 30,
-              letterSpacing: "-0.01em",
-              marginTop: 8,
-              fontFamily: "var(--font-serif)",
-            }}
-          >
-            Four mechanisms. Two workshops.
-          </h2>
-        </div>
-
-        <WorkshopBanner
-          number="01"
-          description="Control fundamentals: single-motor mechanisms"
-          tone="primary"
-        />
-        <div className="mb-8 grid gap-4 md:grid-cols-2">
-          <MechanismCard
-            tag="ARM · POSITION CONTROL"
-            title="Robot Arm"
-            color="oklch(0.78 0.16 25)"
-            description="Move a single-jointed arm to exact angles: the motor checks a sensor and corrects itself (closed-loop control), with extra push to fight gravity."
-            image={{ src: "/images/mechanisms/arm.png", alt: "Robot Arm" }}
-            items={[
-              "TalonFX + integrated encoder",
-              "PID with gravity feedforward (kG)",
-              "Motion Magic for smooth profiling",
-            ]}
-          />
-          <MechanismCard
-            tag="FLYWHEEL · VELOCITY CONTROL"
-            title="Shooter Flywheel"
-            color="oklch(0.78 0.16 145)"
-            description="Spin a wheel at an exact speed and keep it there for consistent shooting: velocity PID plus a feedforward that predicts the voltage needed."
-            image={{
-              src: "/images/mechanisms/flywheel.png",
-              alt: "Flywheel Shooter",
-            }}
-            items={[
-              "Dual TalonFX, no encoder slip",
-              "Velocity PID with kV feedforward",
-              "Spin-up & at-speed detection",
-            ]}
-          />
-        </div>
-
-        <WorkshopBanner
-          number="02"
-          description="Drive & perception: full-robot autonomy"
-          tone="accent"
-        />
-        <div className="grid gap-4 md:grid-cols-2">
-          <MechanismCard
-            tag="SWERVE · HOLONOMIC DRIVE"
-            title="CTR Swerve Drive"
-            color="oklch(0.78 0.14 235)"
-            description="Drive any direction while rotating (holonomic), steer relative to the field instead of the robot, and track position in real time."
-            image={{
-              src: "/images/mechanisms/swerve.png",
-              alt: "CTR Swerve Drive",
-            }}
-            items={[
-              "8 TalonFX motors + 4 CANcoders",
-              "DriveToPose / LinearPath path following",
-              "Pigeon 2 IMU for heading fusion",
-            ]}
-          />
-          <MechanismCard
-            tag="LIMELIGHT · VISION"
-            title="AprilTag Vision"
-            color="oklch(0.72 0.2 320)"
-            description="Detect AprilTags, fuse vision pose with odometry, and drive autonomously to scoring positions."
-            image={{
-              src: "/images/mechanisms/limelight.png",
-              alt: "Limelight Vision System",
-            }}
-            items={[
-              "Limelight 4 with MegaTag2",
-              "Pose estimator with vision standard deviations",
-              "Drive-to-point autonomous routine",
-            ]}
-          />
-        </div>
-      </section>
-
-      {/* ── SPONSORS ───────────────────────────────────────────────── */}
-      <section className="mb-8 mt-16">
-        <div
-          className="micro mb-6 text-center"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          POWERED BY
-        </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[
-            {
-              full: "CTR Electronics",
-              short: "Phoenix 6 motor controllers, CANivore",
-              href: "https://store.ctr-electronics.com/",
-              logo: "/images/sponsors/ctre-logo.jpg",
-            },
-            {
-              full: "MichAuto",
-              short: "Michigan automotive industry",
-              href: "https://michauto.org/",
-              logo: "/images/sponsors/MichAuto Logo 600x600.png",
-            },
-            {
-              full: "Office of Future Mobility & Electrification",
-              short: "State of Michigan",
-              href: "https://www.michiganbusiness.org/ofme/",
-              logo: "/images/sponsors/OFME-Logo.png",
-            },
-            {
-              full: "Lockwood STEM Center",
-              short: "Hemlock Public Schools",
-              href: "https://lockwoodstemcenter.hemlockps.com/home",
-              logo: "/images/sponsors/lockwood-stem-center-logo.png",
-            },
-          ].map((s) => (
-            <a
-              key={s.full}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col gap-3 rounded-sm p-4 no-underline transition-colors"
-              style={{
-                border: "1px solid var(--line)",
-                background: "var(--bg-elev)",
-                color: "var(--fg)",
-              }}
-            >
-              <div
-                className="relative flex items-center justify-center"
-                style={{
-                  height: 96,
-                  background: "var(--bg)",
-                  border: "1px solid var(--line-soft)",
-                  borderRadius: 3,
-                }}
-              >
-                <Image
-                  src={s.logo}
-                  alt={s.full}
-                  width={180}
-                  height={80}
-                  className="max-h-[80px] w-auto object-contain grayscale opacity-80 transition duration-200 group-hover:grayscale-0 group-hover:opacity-100"
-                />
-              </div>
-              <div>
-                <div
-                  className="text-[13.5px] font-semibold"
-                  style={{
-                    lineHeight: 1.25,
-                    textWrap: "balance",
-                  }}
-                >
-                  {s.full}
-                </div>
-                <div
-                  className="text-[11.5px]"
-                  style={{
-                    color: "var(--fg-mute)",
-                    marginTop: 4,
-                    lineHeight: 1.4,
-                  }}
-                >
-                  {s.short}
-                </div>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
-
-      {/* ── WORKSHOP TEAM ──────────────────────────────────────────── */}
-      <section className="mb-4">
-        <div
-          className="grid gap-6 rounded-sm p-6 md:grid-cols-2"
-          style={{
-            background: "var(--bg-elev)",
-            border: "1px solid var(--line)",
-          }}
-        >
-          <div>
-            <div className="micro mb-2.5">TEAM 5712 · HEMLOCK</div>
-            <div
-              className="text-sm"
-              style={{ color: "var(--fg)", lineHeight: 1.65 }}
-            >
-              Joe Lockwood
-              <br />
-              Josh Bacon
-              <br />
-              Chris Bale
-              <br />
-              Alex Haltom
-            </div>
-          </div>
-          <div>
-            <div className="micro mb-2.5">TEAM 5216</div>
-            <div
-              className="text-sm"
-              style={{ color: "var(--fg)", lineHeight: 1.65 }}
-            >
-              Ethan Shannon
-            </div>
-          </div>
-        </div>
-      </section>
+      </footer>
     </div>
   );
 }

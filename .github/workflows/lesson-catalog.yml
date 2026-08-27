@@ -1,0 +1,113 @@
+# Regenerates the CodeRunner lesson catalog and pushes it to Workshop-Lessons.
+#
+# The catalog is a build artifact of two inputs that live in different repos:
+# the Workshop-Code branch chain, and this repo's lesson order plus the cards.
+# Either can move without the other, so this runs on a change here and nightly
+# to pick up a change there. Workshop-Code cannot trigger it directly without a
+# token in that repo, and a nightly regeneration is cheap enough that adding
+# one is not worth the extra secret.
+#
+# REQUIRED SECRET: CATALOG_PUSH_TOKEN, a fine-grained PAT with Contents: write
+# on Hemlock5712/Workshop-Lessons and nothing else. Without it the job reports
+# what it would have pushed and stops, rather than failing the run: a missing
+# secret is a setup step, not a broken build.
+name: Lesson catalog
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "src/data/lessons.ts"
+      - "src/app/(workshop)/**/page.tsx"
+      - "context/lesson-cards/**"
+      - "context/lesson-modules/**"
+      - "scripts/generate-lesson-catalog.mjs"
+      - ".github/workflows/lesson-catalog.yml"
+  schedule:
+    # 06:30 UTC, half an hour after the CI embeds job, so a Workshop-Code change
+    # that breaks an embed is reported before the catalog is rebuilt from it.
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: lesson-catalog
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # The generator reads the bare mirror rather than a worktree, so an
+      # export is always a branch tip. sync-reference.mjs builds exactly that
+      # layout, and it is the only record of how `reference/` is put together.
+      - name: Mirror Workshop-Code
+        run: node scripts/sync-reference.mjs
+
+      - name: Generate the catalog
+        run: node scripts/generate-lesson-catalog.mjs --out "$RUNNER_TEMP/catalog"
+
+      # Warnings are curriculum findings rather than script failures: a branch
+      # no page embeds, or a chain that disagrees with lessons.ts. Surface them
+      # in the summary so they are read, and do not block the push.
+      - name: Report catalog warnings
+        run: |
+          set -uo pipefail
+          node scripts/generate-lesson-catalog.mjs --out "$RUNNER_TEMP/catalog-check" --check \
+            2>"$RUNNER_TEMP/warnings.txt" || true
+          {
+            echo "### Catalog warnings"
+            echo
+            if grep -q "warning:" "$RUNNER_TEMP/warnings.txt"; then
+              echo '```'
+              grep "warning:" "$RUNNER_TEMP/warnings.txt"
+              echo '```'
+            else
+              echo "None."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Push to Workshop-Lessons
+        env:
+          TOKEN: ${{ secrets.CATALOG_PUSH_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN:-}" ]; then
+            echo "CATALOG_PUSH_TOKEN is not set, so nothing was pushed."
+            echo "Generated $(find "$RUNNER_TEMP/catalog/modules" -maxdepth 1 -mindepth 1 | wc -l) modules."
+            echo "> **Not pushed.** \`CATALOG_PUSH_TOKEN\` is not configured." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Clone the catalog rather than force-pushing a fresh history: the
+          # repo's log is the only place the shape of past catalogs survives,
+          # and a rewritten history would make a bad generation unreviewable.
+          git clone --depth 1 \
+            "https://x-access-token:${TOKEN}@github.com/Hemlock5712/Workshop-Lessons.git" \
+            "$RUNNER_TEMP/repo"
+
+          # Replace the tracked content wholesale. Deletions matter: a module
+          # whose branch was removed upstream has to disappear here too, and a
+          # plain copy would leave it behind forever.
+          cd "$RUNNER_TEMP/repo"
+          git rm -rq --ignore-unmatch modules modules.json
+          cp -a "$RUNNER_TEMP/catalog/." .
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Catalog unchanged."
+            echo "Catalog unchanged." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git commit -m "Regenerate the catalog from Workshop-Site@${GITHUB_SHA:0:8}"
+          git push
+          echo "Pushed. $(git show --stat --oneline HEAD | tail -1)" >> "$GITHUB_STEP_SUMMARY"

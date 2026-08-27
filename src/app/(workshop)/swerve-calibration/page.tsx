@@ -1,772 +1,556 @@
 import PageTemplate from "@/components/PageTemplate";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import LessonSection from "@/components/lesson/LessonSection";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import Box from "@/components/Box";
-import ContentCard from "@/components/ContentCard";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { Book, Settings, Lightbulb, AlertTriangle } from "lucide-react";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import { Book } from "lucide-react";
 
-export default function OdometryCalibration() {
+/**
+ * Rewritten against `context/lesson-budget.md`, down from 36.8 minutes.
+ *
+ * What went: the "why this page sits between Logging and PathPlanner" roadmap
+ * section, the "what's next" section, the alpha stamp, and all five code
+ * embeds. The two-line `seedFieldCentric()` binding said nothing the prose
+ * beside it did not; the open-loop "before" block and the closed-loop "after"
+ * block differed by one word, which is a thing prose says in six. The
+ * `TunerConstants.java` listing went last, once every number it carried was
+ * named in the prose of the step that measures it.
+ *
+ * What stayed: all seven calibration steps in order, every measured number
+ * (2.167 in, 4.54 m/s, 120 A stator, 70 A supply, kP 100 / kD 0.5 / kS 0.1 /
+ * kV 1.91, driveGains kP 0.2 / kV 0.124, the 10% deadband and the 0.45 m/s it
+ * costs), the stall-heat safety on the wall push, the CTRE wheel-slip
+ * reference, and the three failure shapes at the end.
+ *
+ * The "Check yourself" was deleted in that pass and is back. It is charged 2
+ * minutes, so it was paid for the way the style guide says to pay: prose,
+ * duplication, and two containers that were charging for something they do
+ * not hold. The zeroing table's three rows are a term and a sentence each, so
+ * they are three sentences now (a table is charged 0.5 min for being scanned
+ * row by row against hardware; nobody scans this one). The radius correction
+ * was a `language="text"` CodeBlock holding arithmetic rather than a file, and
+ * the code charge exists for the round trip of matching a snippet against your
+ * editor, so it is a concept panel now with the formula in the mono slot. Two
+ * numbers moved into prose and none were lost.
+ *
+ * Also fixed here: the note claiming `/swerve-drive-project` links to
+ * `#seeding` was stale. That page links to `/swerve-calibration` with no
+ * fragment, and no page anywhere links to a fragment on this one. And "a
+ * slipping wheel travels distance the encoder never sees" had the physics
+ * backwards in both this draft and the original: a wheel that spins counts
+ * distance the *robot* never travels, which is why the log over-reports.
+ *
+ * Still over the 12 min target. This is two lessons; nothing load-bearing was
+ * cut to get the number down. See the split proposal in the handoff.
+ *
+ * August 2026, after the sentence-run bug in `lint-prose.ts` was fixed: two
+ * welded sentences came back over 25 words and the page measured 15.1. The
+ * `seedFieldCentric()` pair now opens its second sentence on "Every loop" so
+ * the splitter sees the two sentences a reader already saw, and the
+ * `kSlipCurrent` colon is a period. The 15 min cap was paid out of prose and
+ * duplication: the "If you want one" margin note (a `resetPose` wrapper recipe
+ * on a page whose lede says almost no Java), the new-driver scaling aside on
+ * `maxSpeed`, the second mention of the PID page's tuning order inside the
+ * steer section, and four words off the intro. No step, number, gain, safety
+ * aside or quiz question was touched.
+ *
+ * Not covered by `pnpm check-embeds`: the file paths quoted in prose here
+ * (`TunerConstants.java`, `TeleopOpMode.java` on `1-Swerve`) are strings in
+ * headings, not `GitHubContent` embeds, and there is no `branch` prop. If
+ * those files move on the branch, nothing fails.
+ */
+export default function SwerveCalibration() {
   return (
-    <PageTemplate title="Swerve Calibration">
-      <KeyConceptSection
-        title="Swerve Calibration"
-        description="Accurate autonomous starts with calibration: tuning swerve motor gains, configuring drive request types, preventing wheel slip, finding effective wheel radius, configuring camera positions, and tuning PID controllers for path following."
-        concept="Calibration transforms theoretical parameters into real-world accuracy."
-      />
-
-      <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
-        Calibration is how your robot knows where it is on the field, which is
-        what autonomous movement and vision integration depend on. Here is the
-        order we follow when setting up a robot.
-      </p>
-
-      {/* Pre-Season vs In-Season Timeline Visualization */}
-      <div className="w-full my-8 space-y-6">
-        {/* Pre-Season Section */}
-        <div className="rounded-2xl border-2 border-emerald-300 dark:border-emerald-700 bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-emerald-950/50 dark:via-slate-900 dark:to-teal-950/50 p-6 shadow-lg shadow-emerald-500/10">
-          {/* Section Header */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="bg-emerald-500 text-white p-2.5 rounded-xl shadow-md">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-emerald-800 dark:text-emerald-300">
-                Before the Season
-              </h3>
-              <p className="text-sm text-emerald-600 dark:text-emerald-400">
-                Can be done now with any robot
-              </p>
-            </div>
-          </div>
-
-          {/* Pre-Season Tasks Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {[
-              {
-                num: 1,
-                label: "Drive/Steer Motor Tuning",
-                icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-              },
-              {
-                num: 2,
-                label: "Wheel Radius Calibration",
-                icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-              },
-              {
-                num: 3,
-                label: "Drivetrain Odometry",
-                icon: "M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7",
-              },
-              {
-                num: 4,
-                label: "Camera Calibration",
-                icon: "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z",
-              },
-              {
-                num: 5,
-                label: "AprilTag Tuning",
-                icon: "M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z",
-              },
-              {
-                num: 6,
-                label: "Robot Localization Fusion",
-                icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z",
-              },
-              {
-                num: 7,
-                label: "Drive to Point",
-                icon: "M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z",
-              },
-            ].map((item) => (
-              <div
-                key={item.num}
-                className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-emerald-200 dark:border-emerald-800 hover:border-emerald-400 dark:hover:border-emerald-600 transition-colors"
-              >
-                <div className="bg-emerald-500 text-white rounded-lg w-7 h-7 flex items-center justify-center font-bold text-sm flex-shrink-0">
-                  {item.num}
-                </div>
-                <span className="font-medium text-slate-700 dark:text-slate-200 text-sm">
-                  {item.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Season Kickoff Divider */}
-        <div className="flex items-center gap-4 py-2">
-          <div className="flex-1 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-amber-500 rounded-full" />
-          <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-5 py-2.5 rounded-full font-bold text-sm shadow-lg shadow-amber-500/30 flex items-center gap-2 flex-shrink-0">
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            Season Kickoff
-          </div>
-          <div className="flex-1 h-0.5 bg-gradient-to-l from-transparent via-amber-400 to-amber-500 rounded-full" />
-        </div>
-
-        {/* In-Season Section */}
-        <div className="rounded-2xl border-2 border-rose-300 dark:border-rose-700 bg-gradient-to-br from-rose-50 via-white to-pink-50 dark:from-rose-950/50 dark:via-slate-900 dark:to-pink-950/50 p-6 shadow-lg shadow-rose-500/10">
-          {/* Section Header */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="bg-gradient-to-br from-rose-500 to-pink-500 text-white p-2.5 rounded-xl shadow-md">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-rose-800 dark:text-rose-300">
-                After the Season Begins
-              </h3>
-              <p className="text-sm text-rose-600 dark:text-rose-400">
-                Requires game-specific knowledge
-              </p>
-            </div>
-          </div>
-
-          {/* In-Season Tasks Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
-            <div className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-rose-200 dark:border-rose-800 hover:border-rose-400 dark:hover:border-rose-600 transition-colors">
-              <div className="bg-gradient-to-br from-rose-500 to-pink-500 text-white rounded-lg p-1.5 flex-shrink-0">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <span className="font-medium text-slate-700 dark:text-slate-200 text-sm">
-                  Autonomous Programming
-                </span>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Field layout dependent
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 bg-white dark:bg-slate-800 rounded-xl p-3 border border-rose-200 dark:border-rose-800 hover:border-rose-400 dark:hover:border-rose-600 transition-colors">
-              <div className="bg-gradient-to-br from-rose-500 to-pink-500 text-white rounded-lg p-1.5 flex-shrink-0">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <span className="font-medium text-slate-700 dark:text-slate-200 text-sm">
-                  Mechanism Programming
-                </span>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Game piece dependent
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+    <PageTemplate
+      title="Swerve Calibration"
+      lede="The project you generated came with somebody else's numbers in TunerConstants.java. This lesson replaces the ones that matter with measurements off your own robot, then closes the drive loop. Almost no Java."
+      needs={[
+        <>
+          A swerve robot you can drive, from{" "}
+          <strong>Swerve Project Generator</strong>.
+        </>,
+        <>
+          Logging on. Two of the measurements come out of a <code>.wpilog</code>
+          .
+        </>,
+        <>Phoenix Tuner X, and six meters of clear carpet.</>,
+        <>
+          A tape measure, a long straight edge, and a wall you may push against.
+        </>,
+      ]}
+      time="Budget an afternoon"
+    >
+      <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+        <p>
+          Work in order: each step measures something the steps after it depend
+          on.
+        </p>
       </div>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Motor Calibration & Tuning
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Work through these steps in order; each builds on the one before it.
+      {/* The id is a link target for the three-way "zeroing" distinction, so
+          other pages can point here instead of restating it. Do not rename. */}
+      <LessonSection
+        id="three-things-that-all-sound-like"
+        title="Three kinds of zeroing"
+      >
+        <p>
+          Three operations in the swerve code all get called resetting or
+          seeding. Mix them up and you get a robot that drives beautifully and
+          has no idea where it is.
+        </p>
+        <p>
+          <code>seedFieldCentric()</code>, on the left bumper, changes which way
+          the sticks call forward: whatever the robot faces now becomes forward.
+          Every loop, <code>applyOperatorPerspective()</code> sets that same
+          forward from alliance color: 0&deg; on blue and 180&deg; on red.
+          Neither supplies an x or a y.
         </p>
 
-        {/* Step 1: Tune steerGains */}
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-primary-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              1
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Tune steerGains (TunerConstants.java)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                First, make sure the hardware itself is ready. Follow the{" "}
-                <a
-                  href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
-                  className="text-primary-600 underline hover:no-underline dark:text-primary-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Official CTRE Swerve Setup Guide
-                </a>{" "}
-                for the initial configuration using Phoenix Tuner X.
-              </p>
-              <p className="text-slate-600 dark:text-slate-300">
-                Then tune the steering motors&apos; PID gains so each module
-                tracks its commanded angle.
-              </p>
-            </div>
-          </div>
+        <p>
+          <code>resetPose(Pose2d)</code> moves the pose itself: x, y and heading
+          in meters from the blue corner. It exists on the Phoenix 6 drivetrain,
+          but <code>DriveMechanism</code> does not expose it and nothing calls
+          it. Until Workshop 4, read <code>Drivetrain/Pose</code> as distance
+          traveled since boot.
+        </p>
+      </LessonSection>
 
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Tuning Procedure:
-              </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-                A steering motor is a rotational mechanism, like a turret, so it
-                needs position-based PID tuning. Use the{" "}
-                <strong>Turret tuning instructions</strong> from the{" "}
-                <a
-                  href="/pid-control"
-                  className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
-                >
-                  PID Control page
-                </a>{" "}
-                to tune your steer gains.
-              </p>
-            </div>
+      <LessonSection id="zero-the-modules" title="Zero the modules">
+        <p>
+          Each module has a CANcoder reading which way its wheel points, and an
+          offset saying which reading counts as straight ahead. The four{" "}
+          <code>k*EncoderOffset</code> constants in your file came off somebody
+          else&apos;s robot.
+        </p>
+        <ol className="ml-5 list-decimal space-y-2">
+          <li>
+            Disable the robot. Nothing should be commanding a module while you
+            set it.
+          </li>
+          <li>
+            Press a straight edge flat along one side so both wheels on that
+            side sit against it, then do the other side. By eye is not close
+            enough: half a degree of steering error walks the robot 5 cm
+            sideways over six meters.
+          </li>
+          <li>
+            Check which way each module faces. CTRE marks this one important:
+            every module&apos;s bevel gear has to face the vertical center of
+            the robot. A module that is straight but flipped zeroes 180&deg;
+            off, and the drive verification tests fail later without saying why.
+          </li>
+          <li>
+            Holding the wheels straight, run the calibration step in the Tuner X
+            swerve generator. It reads all four CANcoders where they sit and
+            writes the offset constants for you.
+          </li>
+        </ol>
+        <Split>
+          <ProseBlock>
+            <p>
+              Re-enable, push the left stick forward, and sight along a carpet
+              seam. A consistent curve to one side means a module is zeroed
+              wrong. A wander that comes and goes is the steer gains.
+            </p>
+          </ProseBlock>
+          <MarginNote label="Glue them down">
+            These zeros are stored against a physical sensor position. A
+            CANcoder that shifts two degrees in a collision makes all four
+            wrong, and it looks like bad odometry.
+          </MarginNote>
+        </Split>
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
+          title="CTRE: Tuner X Swerve Project Generator"
+          icon={<Book className="w-5 h-5" />}
+        />
+      </LessonSection>
 
-            <Box
-              variant="alert-info"
-              title="Reference: Turret PID Tuning"
-              icon={<Book className="w-5 h-5" />}
-            >
-              <p>
-                The Turret section on the{" "}
-                <a
-                  href="/pid-control"
-                  className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
-                >
-                  PID Control page
-                </a>{" "}
-                has worked examples if you get stuck.
-              </p>
-            </Box>
-          </div>
-        </ContentCard>
+      <LessonSection id="steer-gains" title="Tune the steer gains">
+        <p>
+          A steering motor holds an angle: a position loop, and there is no
+          gravity to fight here. Skip kG and start at kS.
+        </p>
+        <p>
+          The generator gave you real numbers: kP 100, kD 0.5, kS 0.1, kV 1.91.
+          They are often close, so adjust rather than starting from zero.
+        </p>
+        <p>
+          <a
+            href="/pid-control#feedforward-first"
+            className="font-semibold underline decoration-1 underline-offset-2"
+            style={{ color: "var(--accent)" }}
+          >
+            The order, from the PID page
+          </a>
+          . kS is the smallest output that breaks the module loose. Raise kP
+          until it oscillates, then back off. Add kD, as much as you can get
+          without jitter. One number per test.
+        </p>
+        <p>
+          <code>Telemetry.java</code> publishes{" "}
+          <code>Drivetrain/ModuleStates</code> and{" "}
+          <code>Drivetrain/ModuleTargets</code>. Put the angle from both on one
+          AdvantageScope plot and flick the right stick. Tuned looks like two
+          traces on top of each other. Untuned lags, overshoots, or buzzes.
+        </p>
+      </LessonSection>
 
-        {/* Step 2: Tune driveGains */}
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-primary-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              2
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Tune driveGains (TunerConstants.java)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Tune velocity PID gains for your drive motors so they hold
-                commanded speeds.
-              </p>
-            </div>
-          </div>
+      <LessonSection
+        id="measure-the-drivetrain"
+        title="Three measurements on carpet"
+      >
+        <p>
+          Measure the radius and the top speed while the drive request is still
+          open-loop voltage: <code>kSpeedAt12Volts</code> means the speed at 12
+          volts applied.
+        </p>
 
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Two-Phase Tuning Approach:
-              </h4>
-
-              <div className="space-y-4">
-                <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                    Phase 1: Initial Tuning (Wheels Off Ground)
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-                    Use the <strong>Flywheel tuning instructions</strong> from
-                    the{" "}
-                    <a
-                      href="/pid-control"
-                      className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
-                    >
-                      PID Control page
-                    </a>
-                    . Start with the robot&apos;s wheels off the ground to tune
-                    velocity control without friction interference.
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-slate-600 dark:text-slate-300">
-                    <li>
-                      Set up velocity control using VelocityVoltage control
-                      request
-                    </li>
-                    <li>
-                      Tune kP, kI, and kD values to achieve smooth velocity
-                      tracking
-                    </li>
-                    <li>
-                      Configure feedforward gains (kV for velocity, kS for
-                      static friction)
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h5 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-2">
-                    Phase 2: Fine-Tuning kP (On the Ground)
-                  </h5>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-                    Once basic velocity control works, place the robot on the
-                    ground and fine-tune kP to account for real-world friction
-                    and load:
-                  </p>
-                  <ul className="list-disc list-inside space-y-1 text-sm text-slate-600 dark:text-slate-300">
-                    <li>
-                      Test velocity tracking while driving on carpet/competition
-                      surface
-                    </li>
-                    <li>
-                      Adjust kP if you observe steady-state velocity errors
-                    </li>
-                    <li>
-                      Verify smooth acceleration and deceleration without
-                      oscillation
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <Box
-              variant="alert-info"
-              title="Reference: Flywheel PID Tuning"
-              icon={<Book className="w-5 h-5" />}
-            >
-              <p>
-                The Flywheel section on the{" "}
-                <a
-                  href="/pid-control"
-                  className="text-primary-600 dark:text-primary-400 hover:underline font-semibold"
-                >
-                  PID Control page
-                </a>{" "}
-                has worked examples of velocity-based PID tuning with
-                VelocityVoltage control requests.
-              </p>
-            </Box>
-          </div>
-        </ContentCard>
-
-        {/* Step 3: Update DriveRequestType */}
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-primary-700 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              3
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Update DriveRequestType (Teleop OpMode)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Configure the drive system to use velocity-based control for
-                more precise speed tracking.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Configuration Changes (already done if you used our example code
-                on the last page):
-              </h4>
-              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>1. Change drive request type:</strong> Modify{" "}
-                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                    .withDriveRequestType()
-                  </code>{" "}
-                  to use{" "}
-                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                    DriveRequestType.Velocity
-                  </code>
-                </li>
-                <li>
-                  <strong>2. Remove deadband:</strong> Drop the CTRE deadband.
-                  It zeroes out small input values, which gets in the way of
-                  precise low-speed control.
-                </li>
-              </ol>
-            </div>
-
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-                <strong>Example code change:</strong>
-              </p>
-              <pre className="bg-slate-900 text-slate-100 p-3 rounded text-xs overflow-x-auto">
-                {`// Before
-.withDriveRequestType(DriveRequestType.OpenLoopVoltage)
-.withDeadband(MaxSpeed * 0.1)
-
-// After
-.withDriveRequestType(DriveRequestType.Velocity)
-// Deadband removed for precise control`}
-              </pre>
-            </div>
-          </div>
-        </ContentCard>
-
-        {/* Step 4: Find kSlipCurrent */}
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              4
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Find kSlipCurrent (TunerConstants.java)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Determine the stator current limit that prevents wheel slip
-                while maximizing traction and power transfer.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                How Stator Current Limits Prevent Wheel Slip:
-              </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">
-                Stator current is the output current of the motor and is
-                directly proportional to torque. By restricting stator current,
-                you cap the torque output, which prevents wheels from spinning
-                faster than the friction between tire and floor can support.
-                This maximizes traction and power transfer to the ground.
-              </p>
-            </div>
-
-            <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-200 dark:border-orange-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Step-by-Step Procedure:
-              </h4>
-              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li className="flex gap-3">
-                  <span className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
-                    1
-                  </span>
-                  <div>
-                    <strong>Position the robot:</strong> Place your robot up
-                    against a wall on carpet (to simulate match conditions)
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
-                    2
-                  </span>
-                  <div>
-                    <strong>Open Phoenix Tuner X:</strong> Begin plotting both
-                    velocity and stator current in real-time
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="bg-orange-700 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
-                    3
-                  </span>
-                  <div>
-                    <strong>Gradually increase voltage:</strong> Slowly increase
-                    voltage output until velocity becomes non-zero (wheels start
-                    slipping) and stator current drops noticeably
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="bg-orange-800 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
-                    4
-                  </span>
-                  <div>
-                    <strong>Record the slip threshold:</strong> The stator
-                    current value where wheels begin slipping (velocity spikes)
-                    represents your threshold
-                  </div>
-                </li>
-                <li className="flex gap-3">
-                  <span className="bg-orange-900 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold flex-shrink-0 text-xs">
-                    5
-                  </span>
-                  <div>
-                    <strong>Set the limit:</strong> Configure your stator
-                    current limit to a value slightly below this observed value
-                    for a safety margin
-                  </div>
-                </li>
-              </ol>
-            </div>
-
-            <Box
-              variant="alert-warning"
-              title="Important Considerations"
-              icon={<AlertTriangle className="w-5 h-5" />}
-            >
-              <p className="text-sm">
-                Stator limits also cap acceleration, so setting them too low
-                makes the robot sluggish. Stay slightly below the observed slip
-                point for a safety margin, but no lower than you need.
-              </p>
-            </Box>
-
-            <DocumentationButton
-              href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
-              title="CTRE: Preventing Wheel Slip Documentation"
-              icon={<Book className="w-5 h-5" />}
-            />
-          </div>
-        </ContentCard>
-
-        {/* Step 5: Tune kWheelRadius */}
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              5
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Tune kWheelRadius (TunerConstants.java)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Find the effective wheel radius by comparing actual distance
-                traveled vs. what the robot reports.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Quick Calibration Procedure:
-              </h4>
-              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>1. Drive slowly forward:</strong> Command the robot to
-                  drive straight at low speed (to minimize slip)
-                </li>
-                <li>
-                  <strong>2. Measure actual distance:</strong> Use a tape
-                  measure to record how far the robot actually moved
-                </li>
-                <li>
-                  <strong>3. Read reported distance:</strong> Check the distance
-                  the robot thinks it traveled from odometry
-                </li>
-                <li>
-                  <strong>4. Calculate new radius:</strong> Use the formula:{" "}
-                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                    kWheelRadius = (actualDistance / reportedDistance) *
-                    currentRadius
-                  </code>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </ContentCard>
-
-        {/* Step 6: Find kSpeedAt12Volts */}
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              6
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Find kSpeedAt12Volts (TunerConstants.java)
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Measure your robot&apos;s maximum velocity to configure accurate
-                feedforward gains.
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-              <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Measurement Procedure:
-              </h4>
-              <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                <li>
-                  <strong>1. Drive at maximum speed:</strong> Command the robot
-                  to drive straight at full throttle
-                </li>
-                <li>
-                  <strong>2. Record peak velocity:</strong> Log the maximum
-                  velocity achieved from odometry (in meters/second)
-                </li>
-                <li>
-                  <strong>3. Update TunerConstants:</strong> Set{" "}
-                  <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                    kSpeedAt12Volts
-                  </code>{" "}
-                  to this measured value
-                </li>
-              </ol>
-            </div>
-
-            <Box
-              variant="alert-info"
-              title="Testing Conditions"
-              icon={<Settings className="w-5 h-5" />}
-            >
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                <li>
-                  <strong>Preferred:</strong> Test on the ground (carpet or
-                  competition surface) for the most accurate results
-                </li>
-                <li>
-                  <strong>Alternative:</strong> Testing in the air (wheels off
-                  ground) works for a first pass, but may yield slightly
-                  different results
-                </li>
-                <li>
-                  Use the on-ground measurement as your final competition value
-                </li>
-              </ul>
-            </Box>
-
-            <Box variant="alert-warning" title="Zeroing Procedure">
-              <p>
-                If your modules aren&apos;t zeroed well, the robot won&apos;t
-                drive straight. Press a <strong>straight edge</strong> (a long
-                piece of metal or a 2x4) against the wheel modules to physically
-                align them before saving the zero positions in Tuner X.
-              </p>
-            </Box>
-          </div>
-        </ContentCard>
-
+        <h3 className="display measure m-0 text-title">Wheel radius</h3>
+        <p>
+          Odometry counts wheel rotations and multiplies by a radius. You want
+          the effective one: the wheel squashed under the robot&apos;s weight
+          and sunk into carpet. It shrinks as the tread wears, so repeat this
+          late in the season.
+        </p>
+        <ol className="ml-5 list-decimal space-y-2">
+          <li>
+            Tape the floor at the robot&apos;s front edge. Restart the code so{" "}
+            <code>Drivetrain/Pose</code> reads (0, 0).
+          </li>
+          <li>
+            Drive straight forward, slowly, about five meters. A wheel that
+            spins under hard acceleration counts distance the robot never
+            travels.
+          </li>
+          <li>
+            Tape the front edge again. The gap between marks is the actual
+            distance, and <code>Drivetrain/Pose</code> at the end of the run is
+            the reported one.
+          </li>
+        </ol>
         <Box
-          variant="alert-tip"
-          title="Encoder Security"
-          icon={<Lightbulb className="w-5 h-5" />}
+          variant="concept"
+          tag="THE CORRECTION"
+          code={
+            <>
+              <div>
+                newRadius = (actualDistance / reportedDistance) &times;
+                currentRadius
+              </div>
+              <div className="mt-2">
+                tape 5.00 m, log 4.80 m, file 2.167 in: (5.00 / 4.80) &times;
+                2.167 = 2.257 in
+              </div>
+            </>
+          }
         >
-          <p>
-            Glue your drive encoders in place so they can&apos;t shift during
-            impacts or aggressive movements. Even a small encoder shift causes
-            significant odometry drift.
+          <p className="m-0">
+            Run it three times in each direction and average. Put the result in{" "}
+            <code>kWheelRadius</code>, redeploy, and repeat until tape and log
+            agree.
           </p>
         </Box>
-      </section>
+        <p>
+          If it got worse, you inverted the ratio: a robot that under-reports
+          needs a bigger radius.
+        </p>
 
-      {/* Quiz Section */}
-      <section className="flex flex-col gap-8">
-        <Quiz
-          title="Knowledge Check"
-          questions={[
+        <h3 className="display measure m-0 text-title">Top speed</h3>
+        <p>
+          Do the radius first: this speed is wheel rotations times that radius.
+          Find six meters of clear floor on the surface you compete on: carpet
+          and a shop floor give different answers.
+        </p>
+        <ol className="ml-5 list-decimal space-y-2">
+          <li>
+            Full stick forward. Hold until the speed stops climbing, then let go
+            well before the wall.
+          </li>
+          <li>
+            Plot <code>Drivetrain/TranslationSpeedMps</code> and read the
+            plateau, not the spike.
+          </li>
+        </ol>
+        <p>
+          That number goes in <code>kSpeedAt12Volts</code>. It measures the
+          robot; the driver cap is <code>maxSpeed</code> in{" "}
+          <code>TeleopOpMode</code>, which reads it straight back. Expect a
+          plateau near the 4.54 the file shipped with. Wildly off means the
+          file: check the radius, then check <code>kDriveGearRatio</code>{" "}
+          against your modules.
+        </p>
+
+        <h3 className="display measure m-0 text-title">Slip current</h3>
+        <p>
+          Stator current is proportional to torque, so a stator limit caps how
+          hard a wheel twists. Set it where the tire loses grip. Torque above
+          that point polishes carpet.
+        </p>
+        <ol className="ml-5 list-decimal space-y-2">
+          <li>
+            Drive the robot against a wall on carpet and square it up so all
+            four wheels point into the wall.
+          </li>
+          <li>
+            In Tuner X, open one drive motor on <strong>Voltage Out</strong> and
+            plot its velocity and its stator current.
+          </li>
+          <li>Ramp the voltage up slowly from zero, watching both traces.</li>
+        </ol>
+        <p>
+          Current climbs while velocity sits at zero. Then velocity jumps and
+          current drops in the same instant. That is the tire letting go. Read
+          the current at the top of the climb, just before the drop.
+        </p>
+        <Box variant="alert-danger" title="Stalled motors get hot fast">
+          <p>
+            A drive motor pushing a wall it cannot move is a stalled motor. Keep
+            each ramp to a couple of seconds, back off to zero between attempts,
+            and give the motor a minute. One person on the disable, somebody
+            else on the laptop.
+          </p>
+        </Box>
+        <Split>
+          <ProseBlock>
+            <p>
+              That number goes in <code>kSlipCurrent</code>. You may be
+              measuring the limit, not the tire. The shipped 120 A is itself a
+              stator limit, and <code>driveInitialConfigs</code> sets 70 A on
+              the supply. If the trace flattens at 120 A and the wheel never
+              breaks loose, raise the constant temporarily and ramp again. Then
+              redeploy and floor it from a dead stop. The robot should launch
+              without the squeal and sideways hop of wheel spin.
+            </p>
+          </ProseBlock>
+          <MarginNote label="Too low costs acceleration">
+            This limit caps torque, and torque is acceleration. Set it well
+            under the slip point and the robot is predictable and slow off the
+            line.
+          </MarginNote>
+        </Split>
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
+          title="CTRE: Preventing Wheel Slip with Current Limits"
+          icon={<Book className="w-5 h-5" />}
+        />
+      </LessonSection>
+
+      <LessonSection id="close-the-drive-loop" title="Close the drive loop">
+        <p>
+          A drive motor holds a speed. On a velocity loop the feedforward does
+          nearly all of the work.{" "}
+          <a
+            href="/pid-control#feedforward-first"
+            className="font-semibold underline decoration-1 underline-offset-2"
+            style={{ color: "var(--accent)" }}
+          >
+            The order
+          </a>{" "}
+          is kV, then kS, then kP. The file starts you at kP 0.2 and kV 0.124.
+        </p>
+        <p>
+          Tune it on the ground, not on blocks. A wheel in the air carries no
+          load, and gains found there will not hold a speed under a robot.
+        </p>
+        <p>
+          Plot the same two signals as the steer gains, speed this time. A
+          constant gap is kV. A gap only at low speed is kS. A slow recovery
+          after a change of direction is kP.
+        </p>
+
+        <h4 className="display m-0 text-ui">Switch the drive request</h4>
+        <p>
+          Up to here the stick position went straight to volts. In{" "}
+          <code>TeleopOpMode.java</code>, change{" "}
+          <code>DriveRequestType.OpenLoopVoltage</code> to{" "}
+          <code>DriveRequestType.Velocity</code>. It comes from the same class,
+          so the import already covers it.
+        </p>
+        <p>
+          No branch makes this edit for you: <code>1-Swerve</code>,{" "}
+          <code>2-Logging</code> and the robot template all ship open-loop. Make
+          it last. If the robot drives worse than it did on volts, go back to
+          the gains.
+        </p>
+
+        <h4 className="display m-0 text-ui">The deadband</h4>
+        <p>
+          The same request line sets <code>withDeadband(maxSpeed * 0.1)</code>{" "}
+          and <code>withRotationalDeadband(maxAngularRate * 0.1)</code>,
+          throwing away the bottom 10% of both sticks. At 4.54 m/s that is
+          everything under about 0.45 m/s, which open-loop driving could not
+          hold anyway. A tuned velocity loop can, so the deadband now discards
+          control you paid for.
+        </p>
+        <p>
+          Shrink it rather than deleting it. The deadband is what keeps a worn
+          stick&apos;s drift from creeping the robot across the field.
+        </p>
+        <ol className="ml-5 list-decimal space-y-2">
+          <li>
+            Put the robot on blocks. Enable, and take your hands off the
+            controller.
+          </li>
+          <li>
+            Watch the speed component of <code>Drivetrain/ModuleTargets</code>.
+            It should be flat zero.
+          </li>
+          <li>
+            Halve the deadband, redeploy, repeat. When the targets start
+            twitching, go back one value.
+          </li>
+        </ol>
+        <p>Set it per controller, for the worst one you will compete with.</p>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          One run tells you whether the page landed, on the surface you compete
+          on. Tape a start mark, restart the code so{" "}
+          <code>Drivetrain/Pose</code> reads (0, 0), and drive a square: three
+          meters forward, three left, three back, three right.
+        </p>
+        <Box variant="alert-success" title="You should see">
+          <p>
+            The robot back on the tape, and <code>Drivetrain/Pose</code> near
+            (0, 0) after twelve meters. In the log, measured module traces
+            sitting on the commanded ones through all four corners. Hands off
+            the sticks, the speed component of{" "}
+            <code>Drivetrain/ModuleTargets</code> flat at zero. Turn 90&deg; in
+            place and press the left bumper: forward moves, x and y do not.
+          </p>
+        </Box>
+        <FigureGrid
+          cols={3}
+          items={[
             {
-              id: 1,
-              question:
-                "What is the first step in the odometry calibration process?",
-              options: [
-                "Measure wheel diameter with calipers",
-                "Tune drive and turning motors",
-                "Calibrate the camera",
-                "Write the autonomous routine",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The calibration flowchart shows that tuning drive and turning motors is the first step. This ensures motors respond correctly to commands and maintain accurate position tracking before proceeding with other calibrations.",
+              label: "Square comes out rotated",
+              term: "Module zeros",
+              body: (
+                <>
+                  A module a degree off steers the robot sideways the whole way,
+                  and no radius correction fixes a heading error. Straight edge
+                  back on, re-save the zeros.
+                </>
+              ),
             },
             {
-              id: 2,
-              question:
-                "Why is effective wheel radius different from the nominal wheel diameter?",
-              options: [
-                "Manufacturing tolerances in the wheels",
-                "Wheel compression, tread wear, and carpet interaction",
-                "Temperature changes during operation",
-                "Motor gear ratios affect the measurement",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The effective wheel radius accounts for real-world factors like wheel compression under robot weight, tread wear over time, and how the wheel interacts with carpet surfaces. These factors cause the actual distance traveled to differ from theoretical calculations.",
+              label: "Worse right after the switch",
+              term: "Drive gains",
+              body: (
+                <>
+                  <code>Velocity</code> with untuned gains chases a speed the
+                  motor cannot hold. Sluggish or surging is kV. A hum at
+                  constant speed is kP too high.
+                </>
+              ),
             },
             {
-              id: 3,
-              question:
-                "How do you calculate the effective wheel radius from a drive test?",
-              options: [
-                "Divide sensor distance by actual distance",
-                "Multiply (actual distance / sensor distance) by current radius",
-                "Add the difference to the nominal radius",
-                "Average multiple wheel diameter measurements",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The formula is: effectiveRadius = (actualDistance / sensorDistance) * currentRadius. This ratio corrects your theoretical radius based on how far the robot actually moved compared to what the sensors reported.",
-            },
-            {
-              id: 4,
-              question:
-                "Why is it recommended to glue drive encoders in place?",
-              options: [
-                "To protect them from water damage",
-                "To prevent them from shifting during impacts, which causes odometry drift",
-                "To improve their accuracy",
-                "To reduce electrical noise",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Even small encoder shifts caused by impacts or aggressive movements can cause significant odometry drift. Gluing encoders in place ensures they maintain their position and continue to provide accurate measurements throughout competition.",
+              label: "Pose numbers look odd",
+              term: "Nothing is broken",
+              body: (
+                <>
+                  Odometry measures from where the code started, not from a
+                  point on the field. Nothing here sets one. Vision fixes it in
+                  Workshop 4.
+                </>
+              ),
             },
           ]}
         />
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What&apos;s Next?
-        </h2>
-
-        <Box variant="alert-success" title="Up Next: Logging Options">
-          Next up is data logging: why it matters, what to record, and how the
-          workshop&apos;s one-framework setup (DataLogManager) turns match
-          debugging into reviewing a file instead of guessing.
-        </Box>
-      </section>
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "TeleopOpMode.java on 1-Swerve: what does the drive request read before you edit it?",
+            options: [
+              "DriveRequestType.Velocity, because the branch closed the loop for you",
+              "DriveRequestType.OpenLoopVoltage, and switching it is the last edit on this page",
+              "Nothing. Phoenix picks the closed-loop version once the gains are non-zero.",
+              "It depends whether you generated the project in Tuner X or copied the template",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "1-Swerve, 2-Logging and the robot template all ship DriveRequestType.OpenLoopVoltage. You make the change yourself, and you make it after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
+          },
+          {
+            id: 2,
+            question:
+              "You press the left bumper, which runs seedFieldCentric(). What changed?",
+            options: [
+              "The four CANcoder offsets in TunerConstants.java",
+              "Where the robot thinks it is: x and y are back to zero",
+              "Which direction the sticks call forward, and nothing about position",
+              "The top speed the drivetrain will command",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "seedFieldCentric() is a heading reference: whatever the robot faces now becomes forward for the driver. It never supplies an x or a y. resetPose(Pose2d) is the one that moves the pose, and nothing in the workshop code calls it. Until vision arrives in Workshop 4, Drivetrain/Pose reads distance traveled since boot.",
+          },
+          {
+            id: 3,
+            question:
+              "Tape says 5.00 m, the log says 4.80 m, and kWheelRadius is 2.167 in. What goes in the file?",
+            options: [
+              "2.167 in, and lower kSlipCurrent, because the wheels must be slipping",
+              "2.080 in, from (4.80 / 5.00) × 2.167",
+              "2.167 in, and raise kP on driveGains until the log matches the tape",
+              "2.257 in, from (5.00 / 4.80) × 2.167",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went further than it reported, so the real wheel is bigger than the number in the file and the radius goes up. Option b is the same ratio inverted: it widens the gap instead of closing it, and that is how you spot the error. Slipping wheels fail the other way: a spinning wheel counts distance the robot never travels, so the log would read high.",
+          },
+          {
+            id: 4,
+            question:
+              "Why does the wheel radius get measured before top speed?",
+            options: [
+              "The speed in the log is wheel rotations times that radius, so a wrong radius gives a wrong speed",
+              "The log can only record one drivetrain signal per run",
+              "Top speed has to be measured with the wheels off the ground",
+              "Order does not matter, because the radius affects distance and not speed",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "Drivetrain/TranslationSpeedMps comes from the same wheel rotations and the same radius odometry uses for distance. Read the plateau first and you have measured it through a radius you are about to change. Both measurements also have to happen before the drive request becomes Velocity, because kSpeedAt12Volts means the speed at 12 volts applied.",
+          },
+          {
+            id: 5,
+            question:
+              "Current climbs while velocity sits at zero, then velocity jumps and current drops. What goes in kSlipCurrent?",
+            options: [
+              "The stator current at the top of the climb, the instant before the drop",
+              "The stator current after the drop, with the wheel spinning",
+              "The velocity at the jump",
+              "70 A, the supply limit driveInitialConfigs already sets",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "While the tire grips, the wheel cannot turn: velocity stays at zero and current keeps climbing with torque. The jump is the tire letting go, and the peak just before it is the slip point. If the trace flattens at 120 A and the wheel never breaks loose, you are reading the shipped stator limit rather than your carpet. Raise the constant and ramp again.",
+          },
+          {
+            id: 6,
+            question:
+              "With the drive loop closed, why shrink the 10% deadband instead of deleting it?",
+            options: [
+              "Below 10% the velocity loop cannot hold a speed anyway",
+              "The rotational deadband has to stay larger than the translational one",
+              "A worn controller's stick drift would creep the robot across the field with nobody touching it",
+              "kSpeedAt12Volts would have to be measured again",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "At 4.54 m/s, 10% throws away everything under about 0.45 m/s, and a tuned velocity loop holds speeds that low. Zero deadband hands the robot every bit of a worn stick's drift instead. Halve it with the robot on blocks and your hands off the controller until the speed component of Drivetrain/ModuleTargets starts twitching, then go back one value.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

@@ -138,13 +138,13 @@ export const AdvancedDriveToPointTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Basic drive to point aims PID at the final target. Big error means a big lunge, then a wobble at the end. Your mechanisms already fixed this with Motion Magic. Plan the motion first, then follow the plan. Time the drivetrain learned the same trick.",
+      text: "Basic drive to point aims PID at the final target. Three meters of error means a three-meter shove, then a wobble while the controller argues with itself about overshooting. Your mechanisms quit doing that when you gave them Motion Magic. Nobody told the drivetrain.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "profile",
-      text: "CTRE's LinearPath plans the whole move up front. Speed up smoothly. Cruise at top speed. Then slow down to land at exactly zero. Draw that speed over time. You get a trapezoid — a plan your drivetrain can actually follow.",
+      text: "CTRE's LinearPath does the planning before the robot moves an inch. Speed limit, acceleration limit, and out comes a timeline of where you ought to be at every instant, built from what your wheels can actually deliver on carpet.",
       camera: PATH_CLOSEUP,
       events: [
         {
@@ -157,7 +157,7 @@ export const AdvancedDriveToPointTrailer: TrailerScript = {
     },
     {
       id: "setpoint",
-      text: "Every loop, you ask the path where you should be right now. That answer is the moving setpoint. PID compares you to that, not to the faraway target. So errors stay tiny. Corrections stay gentle, and the overshoot mostly disappears.",
+      text: "Every loop you ask the plan one question and get back a single setpoint: where you were supposed to be by now. PID chases that. Small error, gentle correction, and the wobble that ate your last second of auto never gets room to build.",
       camera: SETPOINT_CLOSEUP,
       events: [
         {
@@ -170,7 +170,7 @@ export const AdvancedDriveToPointTrailer: TrailerScript = {
     },
     {
       id: "split",
-      text: "Now the split. Feedforward means pushing because the plan says push. It computes the wheel forces from your robot's mass and MOI — how hard it is to spin. Those forces go out before any error even exists. Feedback gets one small job: cleaning up surprises.",
+      text: "Now the split. Feedforward pushes because the plan says push. How hard comes from mass and moment of inertia, the number that says how stubbornly a hundred-pound robot resists being spun. Those pushes land before any error exists. Feedback cleans up surprises.",
       camera: DIAGRAM,
       events: [
         {
@@ -189,7 +189,7 @@ export const AdvancedDriveToPointTrailer: TrailerScript = {
     },
     {
       id: "code-feedback",
-      text: "In code, the plan is two constraint sets — speed limits for driving and for turning. Then every execute, calculate hands you the setpoint for right now. PID nudges your real pose back onto it. One velocity request, small corrections.",
+      text: "In code, the plan is two constraint sets: speed and acceleration for driving, the same pair for turning. Then execute gets boring. Sample the path, compare, correct, ship one velocity request. Nothing in there knows how far the target is.",
       camera: CODE,
       events: [
         {
@@ -209,7 +209,7 @@ export const AdvancedDriveToPointTrailer: TrailerScript = {
     },
     {
       id: "code-forces",
-      text: "Phoenix 6 carries the plan all the way to the carpet. Wheel force feedforwards ride along on the same request — an X and Y push for every module. The robot pushes because the plan says push. Not because it fell behind.",
+      text: "Phoenix 6 carries the plan all the way to the carpet. Wheel force feedforwards ride along on the same request: an X and a Y push per module. The motors lean into the turn while a feedback-only drivetrain is waiting to be told it's late.",
       camera: CODE,
       events: [
         {
@@ -223,7 +223,7 @@ export const AdvancedDriveToPointTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "This is the exact shape of the template's own DriveToPose command. Competition autos are built on this predict-then-correct pattern. Constraint tuning, MOI estimation, and the complete profiled command are all waiting at frc5712.com.",
+      text: "The template's own DriveToPose command is shaped exactly like this. Every competition auto worth copying is running the same predict-then-correct loop underneath, whether or not the team could tell you so.",
       camera: END,
       holdAfter: 1.2,
     },

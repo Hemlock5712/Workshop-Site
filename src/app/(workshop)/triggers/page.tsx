@@ -1,404 +1,450 @@
 import PageTemplate from "@/components/PageTemplate";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
+import GitHubContent from "@/components/GitHubContent";
+import DocumentationButton from "@/components/DocumentationButton";
+import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Quiz from "@/components/Quiz";
+import { MarginNote, Split } from "@/components/lesson/Prose";
+import { GitBranch } from "lucide-react";
 
+/**
+ * The Trigger reference page, rewritten August 2026 against the shape of
+ * `/pid-control` and the rules in `context/lesson-budget.md`.
+ *
+ * It was 23 minutes, eight sections and seven code blocks, and most of it was
+ * a second copy of `/adding-commands` (the pair form, holds, the whole
+ * TeleopOpMode file) or of `/command-framework` (the scheduler, where bindings
+ * live, the no-RobotContainer point). Both of those pages were rewritten first
+ * and they carry that material now.
+ *
+ * What is left is the part only this page has: the four binding verbs and what
+ * each one cancels, `and` / `or` / `negate` / `debounce`, and the three
+ * binding scopes. Every API here was checked against
+ * `commandsv3/src/main/java/org/wpilib/command3/Trigger.java`,
+ * `BindingScope.java` and the generated `CommandNiDsXboxController` in
+ * allwpilib: `leftTrigger()` really is an axis thresholded at 0.5, and
+ * `createNarrowestScope` really is command, then opmode, then global.
+ *
+ * Four code blocks kept verbatim, three deleted. The B-button exercise moved
+ * into the closing check as a step, because `/running-program` expects that
+ * line to exist and prints it.
+ *
+ * Verifier pass, same day. `Trigger.poll()` does fire every falling-edge
+ * binding on its first poll, because `m_previousSignal` starts null and only
+ * the `cached == previous` early return guards the edge. A margin note here
+ * said so and named the consequence on this branch. It came out: on
+ * `mech-2-Commands` the A binding's `onFalse(flywheel.stop())` is registered after
+ * the right trigger's `onFalse(flywheel.runSlow())`, so it takes the flywheel
+ * in the same tick and nothing turns, which is what `/running-program` tells
+ * the student to expect on Enable. The note read as a contradiction of that
+ * page while teaching nothing this lesson needs. Bench-check it before it goes
+ * anywhere.
+ *
+ * Also restored: `unbind()` (the reason no cleanup code exists), the
+ * rising/falling edge names the prose and quiz both use, and a sixth quiz
+ * question on the 0.5 threshold. A quiz costs a flat two minutes, so the
+ * sixth question is free.
+ */
 export default function Triggers() {
   return (
-    <PageTemplate title="Triggers">
-      <KeyConceptSection
-        title="Triggers in Commands V3"
-        description={[
-          "A Trigger is a yes/no signal (a button, a sensor reading, any true-or-false question) with bind helpers attached: button.whileTrue(cmd), sensor.onTrue(cmd), and friends. A Trigger fires a Command.",
-          "Every binding belongs to a scope (global, opmode, or command). Exiting that scope removes the binding automatically, so a binding's lifetime always matches the thing it belongs to: the whole program, a single match phase, or one running command.",
-        ]}
-        concept="A Trigger fires a Command. What matters is who owns the binding's lifetime, and therefore when it goes away."
-      />
+    <PageTemplate
+      title="Triggers"
+      lede="A Trigger is a yes-or-no question the scheduler asks once a tick, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to TeleopOpMode."
+      needs={[
+        <>
+          Branch <code>mech-2-Commands</code> checked out, with{" "}
+          <code>opmode/TeleopOpMode.java</code> and its three bindings.
+        </>,
+        <>
+          Holds, and why an <code>onTrue</code> comes with an{" "}
+          <code>onFalse</code>, from{" "}
+          <a href="/adding-commands" className="underline">
+            Writing Commands
+          </a>
+          .
+        </>,
+        <>
+          <code>./gradlew build</code> passing before you change anything.
+        </>,
+      ]}
+      branch="mech-2-Commands"
+      time="13 minutes"
+    >
+      <Split>
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            The three bindings on <code>mech-2-Commands</code> all read the same
+            way: a button, a command on the press, a command on the release.
+          </p>
+          <p>
+            That is one shape out of several. The condition behind a Trigger
+            needs no button at all, and two of the four verbs cancel.
+          </p>
+        </div>
+        <MarginNote label="What you add">
+          One binding on the B button, inside the <code>TeleopOpMode</code>{" "}
+          constructor.{" "}
+          <a href="/running-program" className="underline">
+            Hardware Simulation
+          </a>{" "}
+          expects it there. Nothing moves on this page, so the check at the end
+          is a build.
+        </MarginNote>
+      </Split>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          The basic shape
-        </h2>
+      <LessonSection id="the-four-verbs" title="The four verbs">
+        <p>
+          A Trigger holds one condition and a list of bindings. Once a tick the
+          scheduler reads the condition, compares the answer with last
+          tick&apos;s, and acts on the change. A change to true is the rising
+          edge, a change to false the falling edge.
+        </p>
+        <p>
+          The condition can be more than a switch.{" "}
+          <code>driver.leftTrigger()</code> reads an analog axis and answers
+          true past 0.5. A third of a pull fires nothing.
+        </p>
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          A <code>Trigger</code> exposes <code>onTrue</code> /{" "}
-          <code>onFalse</code> / <code>whileTrue</code> /{" "}
-          <code>whileFalse</code> for binding a command to an edge or a hold.
-          Predicate-based triggers wrap any <code>BooleanSupplier</code> in{" "}
-          <code>new Trigger(...)</code>, so a sensor reading binds the same way
-          a button does.
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Verb</th>
+                <th className="px-3 py-2 text-left">Schedules</th>
+                <th className="px-3 py-2 text-left">Cancels</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>onTrue</code>
+                </td>
+                <td className="px-3 py-2">The tick the answer turns true</td>
+                <td className="px-3 py-2">Nothing, ever</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>onFalse</code>
+                </td>
+                <td className="px-3 py-2">The tick the answer turns false</td>
+                <td className="px-3 py-2">Nothing, ever</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>whileTrue</code>
+                </td>
+                <td className="px-3 py-2">The tick the answer turns true</td>
+                <td className="px-3 py-2">
+                  Its own command, when the answer turns false
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">
+                  <code>whileFalse</code>
+                </td>
+                <td className="px-3 py-2">The tick the answer turns false</td>
+                <td className="px-3 py-2">
+                  Its own command, when the answer turns true
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Each verb hands the Trigger back, so they chain onto one line. A{" "}
+          <code>whileTrue</code> command that ends by itself while the button is
+          still down does not restart.
+        </p>
+        <p>
+          Four other verbs exist. Two of them, <code>retryWhileTrue</code> and{" "}
+          <code>retryWhileFalse</code>, do restart a command that ended early.
+          Bind with <code>toggleOnTrue</code> or <code>toggleOnFalse</code>{" "}
+          instead, and repeated presses flip one command on and off. The course
+          uses none of the four.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="pairs-and-whiletrue" title="Pairs versus whileTrue">
+        <p>
+          Both lines below leave the flywheel stopped when the button comes up.
+          The route there is different.
         </p>
 
         <CodeBlock
           language="java"
-          title="Binding a trigger"
-          code={`CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+          title="The same button, two ways to write it"
+          code={`// What mech-2-Commands writes: the press schedules one command, the release
+// schedules another, and the second one interrupts the first.
+driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
 
-// Button → command. This is the team's default binding: while A is held,
-// the scoring hold keeps the arm at the scoring angle. Release A and the
-// hold is cancelled — the arm's DEFAULT COMMAND takes back over.
-driver.a().whileTrue(arm.scoring());
-
-// onTrue fires once at the rising edge. Use it for self-finishing
-// commands — never for a bare hold (see the tip below).
-driver.start().onTrue(drivetrain.resetHeading());
-
-// Sensor → command. Same shape, just a different boolean source:
-// while we're carrying a game piece, keep the arm stowed.
-Trigger hasPiece = new Trigger(intake::hasPiece);
-hasPiece.whileTrue(arm.stowed());`}
+// What you will write from Command Composition on: the press schedules,
+// the release cancels. The whileFalse is still needed, because canceling
+// leaves the motor at its last request.
+driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         />
 
-        <Box
-          variant="alert-tip"
-          tag="RULE · HOLDS + whileTrue"
-          title="Bind holds with whileTrue, so the default command can come back"
-        >
-          <p>
-            Holds make the choice between these two bind methods matter a lot. A
-            hold never finishes, so if you bind one with <code>onTrue</code>, it
-            runs <em>forever</em>, and the mechanism&apos;s default command
-            never gets the mechanism back. Bind holds with{" "}
-            <code>whileTrue</code> instead: release the button, the hold is
-            cancelled, and the default command takes over. Save{" "}
-            <code>onTrue</code> for commands that finish on their own, like a
-            heading reset.
-          </p>
-        </Box>
-
-        <p
-          className="text-[14px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The <code>Trigger</code> class and the controllers (like{" "}
-          <code>CommandNiDsXboxController</code>) live under{" "}
-          <code>org.wpilib.command3.button</code>. The interesting part
-          isn&apos;t what you write at the binding site; it&apos;s{" "}
-          <em>where</em> you write it, because that decides how long the binding
-          lives.
+        <p>
+          Nothing cancels in the first line. Between two commands at equal
+          priority the mechanism goes to the one that arrived second, so{" "}
+          <code>flywheel.stop()</code> takes it away from <code>runFast()</code>
+          . The second line cancels instead, and <code>whileFalse</code> is what
+          sends zero.
         </p>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Why bindings are scoped
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Different phases of a match want different bindings: the A button
-          might raise the arm in teleop and do nothing in auto. Scoping ties a
-          binding&apos;s lifetime to the thing it belongs to. A binding made for
-          a mode lives exactly as long as that mode is active; a binding made
-          for a running command lives exactly as long as that command runs. When
-          the mode changes or the command ends, its bindings go away with it.
+        <p>
+          The pair form buys a choice. The branch&apos;s right trigger releases
+          into <code>runSlow()</code> rather than <code>stop()</code>, so the
+          wheel keeps turning at 3&nbsp;V. <code>whileTrue</code> has no slot
+          for that.
         </p>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The payoff is that you never track or clear bindings by hand, and a
-          binding can&apos;t linger into a phase it was never meant for. You
-          declare each binding in the scope it belongs to and let the framework
-          add and remove it at the right moments. The next sections cover the
-          three scopes and when to reach for each.
+        <p>
+          <code>whileTrue</code> earns its keep once a button runs a group of
+          commands instead of one. No single command in an <code>onFalse</code>{" "}
+          would unwind a group step by step, and{" "}
+          <a href="/chaining-commands" className="underline">
+            Command Composition
+          </a>{" "}
+          is where the switch happens.
         </p>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          The three trigger scopes
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Every binding belongs to a scope. The scope decides when the binding
-          goes away.
-        </p>
-
-        <div className="grid gap-4 lg:grid-cols-3">
-          <Box
-            variant="concept"
-            tag="GLOBAL · LIFETIME OF PROGRAM"
-            title="Bindings made in the Robot constructor"
-          >
-            <p>
-              Created before any OpMode is selected, so they live as long as the
-              robot program runs. Good fit for bindings that are genuinely
-              always on: the template&apos;s brake-while-disabled (
-              <code>RobotModeTriggers.disabled()</code>), an emergency stop, a
-              low-battery alert. Not much else qualifies.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="OPMODE · LIFETIME OF MODE"
-            title="Bindings made in an OpMode constructor"
-          >
-            <p>
-              Live while the opmode is active; cleaned up when it exits.
-              Teleop&apos;s driver-controller bindings, auto&apos;s
-              sensor-trigger bindings, test mode&apos;s diagnostic toggles: each
-              opmode declares its own, and the framework swaps the active set
-              when the mode changes.
-            </p>
-          </Box>
-
-          <Box
-            variant="concept"
-            tag="COMMAND · LIFETIME OF COMMAND"
-            title="Bindings made inside a Command body"
-          >
-            <p>
-              Live only while the command is scheduled. Useful for &quot;while
-              this routine is running, also fire X on sensor Y&quot;. The extra
-              binding disappears when the routine finishes or is cancelled.
-            </p>
-          </Box>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          OpMode: a sibling to Mechanism
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          &quot;The mode the robot is in&quot; is a first-class concept: the{" "}
-          <strong>OpMode</strong>. Where a <code>Mechanism</code> owns hardware,
-          an OpMode owns the <em>policy</em> for a phase of the match: which
-          bindings are live, which default commands are in force, what auto
-          routine to run. Teleop, auto, and a utility/calibration mode each
-          become their own class: you <code>extends PeriodicOpMode</code> and
-          tag it <code>@Teleop</code>, <code>@Autonomous</code>, or{" "}
-          <code>@Utility</code> (the framework discovers it by that annotation
-          and lists it on the driver station). The bindings go in the{" "}
-          <strong>constructor</strong>, and because the Triggers are constructed
-          there, they&apos;re scoped to the OpMode and torn down automatically
-          on a mode switch.
+      <LessonSection id="compose-the-condition" title="Compose the condition">
+        <p>
+          <code>new Trigger(...)</code> takes a <code>BooleanSupplier</code>:
+          any lambda or method reference that answers true or false. WPILib
+          builds its own robot-mode triggers that way.
         </p>
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java — bindings scoped to the mode"
-          code={`@Teleop(name = "Teleop")
-public class TeleopOpMode extends PeriodicOpMode {
-  // Controllers on the driver station; the controller-dependent bindings below
-  // are why these live here and not on Robot.
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
-  private final CommandNiDsXboxController operator = new CommandNiDsXboxController(1);
-
-  // The framework constructs this when "Teleop" is selected and discards it on
-  // a mode switch. Every binding here is scoped to this OpMode — no cleanup.
-  public TeleopOpMode(Robot robot) {
-    final Arm arm = robot.arm;
-    final DriveMechanism drivetrain = robot.drivetrain;
-
-    // Presets are holds, so they're bound with whileTrue: hold the button,
-    // the arm holds the preset; release it, the arm's default command takes
-    // back over. (onTrue on a hold would never give the mechanism back.)
-    driver.a().whileTrue(arm.scoring());
-    driver.b().whileTrue(arm.horizontal());
-    driver.leftBumper().whileTrue(arm.stowed());
-
-    operator.rightTrigger().whileTrue(drivetrain.brake());
-  }
+          title="A Trigger with no button behind it"
+          filename="org/wpilib/command3/button/RobotModeTriggers.java"
+          code={`/**
+ * Returns a trigger that is true when the robot is disabled.
+ *
+ * @return A trigger that is true when the robot is disabled.
+ */
+public static Trigger disabled() {
+  return new Trigger(RobotState::isDisabled);
 }`}
         />
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Selecting auto on the driver station <em>constructs</em> the auto
-          OpMode (building its bindings) and tears down the teleop OpMode along
-          with its bindings. When the driver picks Teleop again, a fresh
-          TeleopOpMode is constructed and only its bindings come back. Each
-          mode&apos;s bindings come and go with the mode; nothing to clean up by
-          hand. The team&apos;s working example is{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            TeleopOpMode.java in the 2027-Template
+        <p>
+          <code>and</code>, <code>or</code> and <code>negate</code> each return
+          a new Trigger built from the old one. The Trigger{" "}
+          <code>driver.b().and(driver.leftBumper())</code> is true only while
+          both are held, and letting go of either one is the falling edge.
+        </p>
+        <p>
+          <code>debounce</code> takes a duration and waits for the condition to
+          hold that long before it counts. A switch that rattles fires one
+          command instead of forty.
+        </p>
+        <p>
+          Nothing on the <code>Arm</code> or <code>Flywheel</code> answers a
+          question yet. Both expose three commands and nothing else, so every
+          Trigger in the project is still a button. The first readable condition
+          is <code>arm::isAtTarget</code>, on{" "}
+          <a href="/finish-lines" className="underline">
+            Finish Conditions
           </a>
           .
         </p>
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Command-scoped bindings
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          The third scope is the most situational but worth knowing about.
-          Bindings registered from <em>inside</em> a command body live as long
-          as that command is scheduled. The instant the command finishes or is
-          cancelled, the binding goes away.
+      <LessonSection id="binding-scope" title="Binding scope">
+        <p>
+          The A button spins the flywheel in teleop. In autonomous it should
+          mean nothing. The project holds no <code>if (isTeleop)</code> and no
+          code that removes a binding.
+        </p>
+        <p>
+          When a binding is created the scheduler captures the narrowest scope
+          that is active, and drops the binding when that scope ends. Inside a
+          running command, the binding lasts as long as the command. Inside an
+          OpMode constructor, as long as that mode is selected. In the{" "}
+          <code>Robot</code> constructor, where no mode exists yet, it is
+          global.
+        </p>
+        <p>
+          Almost every binding belongs in an OpMode constructor. Pick autonomous
+          and the framework tears <code>TeleopOpMode</code> down, bindings
+          included. Pick teleop again and a fresh one is built, so the same
+          constructor runs and the same bindings come back. You write no cleanup
+          code: <code>Trigger</code> has a public <code>unbind()</code>, and the
+          scheduler calls it when a scope ends.
+        </p>
+        <p>
+          The template writes exactly one global binding, and it is about being
+          disabled, which no OpMode owns.
         </p>
 
         <CodeBlock
           language="java"
-          title="A binding that only exists while we're climbing"
-          code={`public Command climb() {
-  return climber.run(coroutine -> {
-    // While the climb is in progress, the operator can abort with B. The
-    // Trigger is constructed here, so it's scoped to this command — it
-    // disappears the moment the command ends. lower() is self-finishing
-    // (drive to the bottom, then end), which is why onTrue is right here.
-    // It requires the climber, so scheduling it interrupts this climb.
-    operator.b().onTrue(climber.lower());
+          title="Robot.java: the one global binding, from the 2027-Template"
+          filename="src/main/java/first/robot/Robot.java"
+          code={`public Robot() {
+  // ...
 
-    setHeight(TOP);                       // command the climber up
-    coroutine.waitUntil(climber::atTop);  // hold until we're there
-  }).named("climb");
+  // Brake while disabled, in every mode. Created here (before any OpMode is selected) so the
+  // binding is global; the opmodes' bindings are scoped to their OpMode and removed on a switch.
+  final var idle = new SwerveRequest.Idle();
+  RobotModeTriggers.disabled().whileTrue(drivetrain.applyRequest(() -> idle));
 }`}
         />
 
-        <p
-          className="text-[14px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Outside of <code>climb()</code> the operator&apos;s B button does
-          whatever the opmode-level binding (or nothing) says it should. The
-          abort binding exists only for the duration of the climb: it&apos;s
-          created when the command starts and dropped the moment it ends, with
-          no cleanup code of your own. (The body here uses the coroutine
-          dialect, the optional advanced form from the Commands page, because a
-          command-scoped binding can only be made from inside a running command
-          body.)
+        <p>
+          The drivetrain belongs to Workshop 3. What matters here is where the
+          line sits: a binding that has to survive a mode switch cannot live
+          inside a mode.{" "}
+          <a href="/coroutines" className="underline">
+            Coroutines
+          </a>{" "}
+          is where the third scope turns up, because a binding inside a running
+          command needs a command body written by hand.
         </p>
-      </section>
 
-      <Box
-        variant="alert-info"
-        tag="NOTE · API STATUS"
-        title="All three binding scopes are shipped API"
-      >
-        The three scopes on this page (command, opmode, global) come straight
-        from the WPILib 2027 alpha-6 scheduler: when a binding is created, the
-        scheduler captures the <em>narrowest active scope</em> (the running
-        command if there is one, else the current opmode, else global) and
-        removes the binding when that scope ends. The template demonstrates the
-        opmode and global scopes; command-scoped bindings work the same way but
-        aren&apos;t shown there yet. The stack is the WPILib 2027 <em>alpha</em>
-        , on <strong>Java 25</strong> and <strong>SystemCore</strong>, so the
-        exact APIs are still moving between alpha builds. This page was last
-        verified against alpha-6 in July 2026.
-      </Box>
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/Robot.java"
+          title="2027-Template: Robot.java"
+          icon={<GitBranch className="w-5 h-5" />}
+        />
+      </LessonSection>
+
+      <LessonSection id="did-it-work" title="Check your work">
+        <p>
+          Add the binding the next lesson expects, then break it twice on
+          purpose.
+        </p>
+
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Inside <code>public TeleopOpMode(Robot robot)</code>, below the A
+            binding, add{" "}
+            <code>driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());</code>{" "}
+            Build it: <code>BUILD SUCCESSFUL</code>.
+          </li>
+          <li>
+            Delete <code>.onFalse(arm.stop())</code> and build again. It still
+            succeeds. A missing release binding compiles fine and leaves the arm
+            pushing until the match ends. Put it back.
+          </li>
+          <li>
+            Move the B line above the constructor, next to the{" "}
+            <code>driver</code> field, and build. It fails, because a binding is
+            a statement and <code>arm</code> is a local variable of the
+            constructor.
+          </li>
+          <li>Put the line back inside the constructor and build once more.</li>
+        </ol>
+
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>Four bindings, every one of them inside the constructor.</li>
+            <li>
+              <code>BUILD SUCCESSFUL</code>, and nothing moving. Pressing the
+              buttons comes next.
+            </li>
+          </ul>
+        </Box>
+
+        <p>Then read the branch&apos;s own file against yours.</p>
+
+        <GitHubContent
+          repository="Hemlock5712/Workshop-Code"
+          branch="mech-2-Commands"
+          filePath="src/main/java/first/robot/opmode/TeleopOpMode.java"
+        />
+      </LessonSection>
+
+      <AlphaStatusNote />
 
       <Quiz
-        title="Knowledge Check"
         questions={[
           {
             id: 1,
             question:
-              "You write driver.a().whileTrue(arm.scoring()) inside a TeleopOpMode's constructor. When does this binding go away?",
+              "Which verb cancels the command it scheduled, without you naming a second command?",
             options: [
-              "Never — button bindings are always global",
-              "When the teleop OpMode exits (e.g., auto starts, the robot disables, the mode changes)",
-              "Only when you manually call binding.remove()",
-              "When the bound command is cancelled",
+              "onTrue",
+              "whileTrue",
+              "onFalse",
+              "None of them: a Trigger only ever schedules",
             ],
             correctAnswer: 1,
             explanation:
-              "Bindings registered inside an OpMode are opmode-scoped. They live for the lifetime of the opmode and are torn down automatically when it exits. This is the whole point of scoping: the binding lifetime matches the lifetime of the policy it's part of.",
+              "whileTrue schedules on the rising edge and cancels on the falling edge. onTrue and onFalse only ever schedule, so the branch pairs them: the release command takes the mechanism away from the press command.",
           },
           {
             id: 2,
             question:
-              "Which scope would you use for a binding that should only exist while a specific command is running?",
+              "Why can the right-trigger binding not be rewritten as whileTrue paired with whileFalse(stop)?",
             options: [
-              "Global — register in the Robot constructor",
-              "OpMode — register inside the OpMode's constructor",
-              "Command — register inside the command's body",
-              "There's no way to scope a binding to a single command's lifetime",
+              "Its release starts the slow hold rather than stopping, and only a named command can do that",
+              "whileTrue does not work on an analog axis",
+              "The flywheel has two motors, and whileTrue claims one at a time",
+              "It could: the two forms are interchangeable everywhere",
             ],
-            correctAnswer: 2,
+            correctAnswer: 0,
             explanation:
-              "Bindings registered from inside a command body live as long as that command is scheduled and disappear when it ends or is cancelled. Useful for routines that want to expose an abort button or sensor-triggered shortcut only while the routine is active.",
+              "Releasing the right trigger drops the flywheel to 3 V, not to zero. whileTrue cancels on release and a cancel names nothing, so the pair form is the only one that can say what runs next.",
           },
           {
             id: 3,
-            question:
-              "What is OpMode conceptually a sibling of, in the v3 model?",
+            question: "What does new Trigger(...) take as its argument?",
             options: [
-              "Trigger — both are predicates on robot state",
-              "Mechanism — both are first-class classes you write, with their own scoped lifetime and contents",
-              "Command — both are scheduled by the framework",
-              "Scheduler — both manage the run loop",
+              "A Command to run",
+              "The Mechanism the binding should require",
+              "A BooleanSupplier: any lambda or method reference answering true or false",
+              "A button number on the driver station",
             ],
-            correctAnswer: 1,
+            correctAnswer: 2,
             explanation:
-              "Mechanism owns hardware and the commands that act on it. OpMode owns policy: which bindings are live during a phase, what default commands are in force, what auto routine to run. They're the two structural classes you write in a v3 codebase: a Mechanism you extend (one per physical thing), and an OpMode you annotate @Teleop/@Autonomous/@Utility (one per phase of the match).",
+              "A Trigger wraps a condition the scheduler polls once a tick. RobotModeTriggers.disabled() is new Trigger(RobotState::isDisabled). Buttons are the only source on this branch because nothing on the Arm or Flywheel is readable yet.",
           },
           {
             id: 4,
             question:
-              "An emergency-stop binding should run no matter which OpMode is active. Where should it be registered?",
+              "driver.b().and(driver.leftBumper()) is bound with onTrue. You hold the bumper, then press B. What fires?",
             options: [
-              "At global scope (the Robot constructor), so it lives for the lifetime of the program",
-              "Inside every OpMode's constructor, so every mode has it",
-              "Inside a Command body that's always scheduled",
-              "It can't be registered — global bindings are gone in v3",
+              "Nothing: and only reads the first button",
+              "The command fires twice, once per button",
+              "Nothing until you release and press both together",
+              "The command fires once, on the tick both answers are true",
             ],
-            correctAnswer: 0,
+            correctAnswer: 3,
             explanation:
-              "Global scope is the right home for genuinely always-on bindings: emergency stops, low-battery alerts, anything that has to fire regardless of mode. Most other bindings should be opmode- or command-scoped so they don't pollute modes they shouldn't apply to.",
+              "and builds a new Trigger whose answer is both conditions together. It has one rising edge, on the tick the combined answer turns true, and the order you pressed them in does not matter.",
+          },
+          {
+            id: 5,
+            question:
+              "A binding should brake the drivetrain whenever the robot is disabled, in any mode. Where do you type it?",
+            options: [
+              "In every OpMode constructor, one copy each",
+              "In the Robot constructor, where no mode is selected yet",
+              "Inside a command body that is always scheduled",
+              "Nowhere: Commands v3 removed global bindings",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "The scheduler captures the narrowest active scope. In the Robot constructor there is no running command and no selected OpMode, so the scope is global and the binding is never dropped. Being disabled belongs to no OpMode, so nothing narrower would work.",
+          },
+          {
+            id: 6,
+            question:
+              "The left trigger is bound with onTrue(arm.runFast()). You pull the trigger a third of the way and hold it there. What does the arm do?",
+            options: [
+              "Pushes at a third of the fast voltage, because the axis scales the command",
+              "Pushes at the fast voltage, because any movement of the axis counts as a press",
+              "Nothing at first, then starts once you have held it long enough",
+              "Nothing, because the axis has to pass 0.5 before the answer turns true",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "leftTrigger() turns an analog axis into a yes-or-no answer at 0.5. A third of a pull leaves the answer false, so there is no rising edge and nothing is scheduled. A Trigger hands a command no magnitude either: past 0.5, runFast() sends the voltage it always sends.",
           },
         ]}
       />

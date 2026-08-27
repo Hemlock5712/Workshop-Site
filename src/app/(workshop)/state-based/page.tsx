@@ -1,490 +1,458 @@
 import PageTemplate from "@/components/PageTemplate";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import GitHubContent from "@/components/GitHubContent";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
-import { Book, GitBranch, GitPullRequest } from "lucide-react";
+import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Book, GitBranch } from "lucide-react";
 
+/**
+ * Lesson 28, rewritten against `context/lesson-budget.md`. It measured 33.8
+ * minutes across nine sections and fourteen code blocks, which is two lessons
+ * sharing one page.
+ *
+ * What went, and why it was safe to go:
+ *
+ * - The `mech-5-Coroutines` "before" embed. The student wrote that constructor on
+ *   the previous page; two sentences recall it.
+ * - The imports embed, and the one-line embeds for `new StateMachine(...)` and
+ *   `setInitialState(...)`. All three read better as inline code inside the
+ *   numbered step that tells you to type them.
+ * - The whole-file `GitHubContent`. The four remaining blocks cover the entire
+ *   constructor, and the button at the end of "Build the machine" still opens
+ *   the file on the branch.
+ * - Both `CollapsibleSection`s. The one load-bearing item in them, that a
+ *   no-argument `switchFromAny()` only covers the states that exist when it
+ *   runs, is step 4 of the procedure now.
+ * - `Command.parallel`'s own section, and the `ParallelGroupBuilder.optional`
+ *   paragraph it carried. Nothing in Workshop-Code or the template calls
+ *   `optional(...)`, and a named API with no worked example is trivia.
+ *
+ * What stayed, deliberately: the four numbered steps, the `.negate()`
+ * explanation (this is the first page on the site to use it), the untuned-arm
+ * warning, all three failure shapes, the five bench checks, and the quiz.
+ *
+ * The four surviving code blocks carry long comments, and that is load-bearing
+ * rather than lazy. The linter does not charge for words inside a `code` prop,
+ * but more to the point the student reading this file in VS Code has the
+ * comments and not this page. So the prose here never repeats them.
+ *
+ * Verification pass put four things back, paid for out of prose that narrated
+ * the code blocks: the import packages (`org.wpilib.system.DataLogManager` is
+ * not guessable from `command3`), the two Motion Magic config names, the
+ * `0.5` rotations-per-second tolerance that "read the gap" is measured
+ * against, and the two facts quiz Q2 and Q5 test (`Command.race`, and the
+ * order a transition resolves in). A quiz question is not where content
+ * survives a cut.
+ */
 export default function StateMachines() {
   return (
-    <PageTemplate title="State Machines">
-      <KeyConceptSection
-        title="State Machines with WPILib Commands V3"
-        description={[
-          "A state machine models a system as a set of discrete states, an active behavior per state, and transitions that move between them. WPILib's Commands V3 ships a first-class StateMachine class that gives you all of this, including entry/exit hooks and any-state interrupts, without writing scaffolding by hand.",
-          "This is an optional, advanced dialect. In everyday teleop, each button holds a superstructure preset (whileTrue): hold A, the scoring hold runs; let go, the default command comes back. With a state machine, the robot is instead always in exactly one named state, and buttons/sensors move it between states. The machine cancels the old state's command and starts the new one for you; illegal jumps simply don't exist because no transition was declared for them.",
-        ]}
-        concept="A state is a Command that runs while the machine is in it. Transitions are edge-triggered conditions that cancel the current state's command and move to the next state. onEnter / onExit fire around each transition."
-      />
+    <PageTemplate
+      title="State Machines"
+      lede="Your teleop is four independent button bindings, and none of them names what the robot is doing. This lesson rebuilds it as four named states with the arrows drawn between them. A jump nobody drew cannot happen."
+      needs={[
+        <>
+          The arm and flywheel from <strong>Finish Conditions</strong>,
+          including <code>flywheel.isAtTarget()</code>.
+        </>,
+        <>
+          The <code>mech-6-StateBased</code> branch, one commit past{" "}
+          <code>mech-5-Coroutines</code>. It touches one file.
+        </>,
+        <>
+          Your gains from <strong>PID Tuning in Tuner X</strong> and{" "}
+          <strong>Motion Magic</strong>, ready to paste back.
+        </>,
+        <>The simulator running, and a controller on port 0.</>,
+      ]}
+      branch="mech-6-StateBased"
+      time="About 25 minutes"
+    >
+      <Split>
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            Each binding holds its own preset. Hold A and the flywheel spins,
+            let go and it stops. Nothing names the difference between an arm
+            that is up to shoot and one that is up by accident.
+          </p>
+          <p>
+            Pull the left trigger during the Y routine and the arm changes
+            hands, which cancels the whole Y group. The flywheel keeps spinning,
+            because a canceled command does not zero the last request.
+          </p>
+          <p>
+            A <code>Command.sequence</code> only moves forwards. A machine is a
+            graph, so reach for one when a routine has to repeat or skip a
+            phase.
+          </p>
+        </div>
+        <MarginNote label="Shipped, not invented">
+          <code>StateMachine</code> is{" "}
+          <code>org.wpilib.command3.StateMachine</code>, released in the WPILib
+          2027 alpha-6 build. Alpha APIs can still move.
+        </MarginNote>
+      </Split>
 
-      <Box
-        variant="alert-tip"
-        tag="OPTIONAL · ADVANCED"
-        title="You don't need this lesson to build a working robot"
-      >
-        Everything in the workshop (teleop presets, autos) is covered by holds,
-        button bindings, and chaining. Reach for a <code>StateMachine</code>{" "}
-        only when button-per-preset stops being enough: sequences that must
-        repeat, skip, or recover by jumping back a phase, or a superstructure
-        where illegal combinations need to be impossible by construction. The
-        team&apos;s worked example is{" "}
-        <a
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline"
-        >
-          StateMachineTeleop.java in the 2027-Template
-        </a>{" "}
-        (the same teleop as the ordinary hold-per-button OpMode, rebuilt as a
-        four-state machine).
-      </Box>
+      <LessonSection id="one-command-per-state" title="One command per state">
+        <p>
+          A state is one command that runs the whole time the machine sits in
+          it. A transition cancels that command and starts the next one.
+        </p>
+        <p>
+          A state has to pose the whole robot. If Stowed only said &quot;arm
+          vertical,&quot; the flywheel would sit wherever the last state left
+          it. So each state commands both mechanisms at once.
+        </p>
+        <p>
+          <code>Command.parallel(a, b)</code> starts both at once and finishes
+          only when both have finished. <code>Command.race</code> ends its group
+          on the first member to finish and cancels the rest. Two holds never
+          finish, so neither does a parallel group. In a{" "}
+          <code>Command.sequence</code> that is a bug. Here it is fine: the
+          machine cancels a state&apos;s command the moment a transition fires.
+        </p>
+      </LessonSection>
 
-      <Box
-        variant="alert-info"
-        tag="OFFICIAL · WPILIB 2027 ALPHA-6"
-        title="StateMachine is a shipped WPILib API"
-      >
-        This lesson teaches the official Commands-v3 <code>StateMachine</code>{" "}
-        class (<code>org.wpilib.command3.StateMachine</code>), released in
-        WPILib 2027 alpha-6 in May 2026. Everything on this page is checked
-        against the published source. Alpha APIs can still shift before the 2027
-        kickoff release, but this is the real class, not a preview sketch.
-      </Box>
+      <LessonSection id="build-it-four-steps-in-one" title="Build the machine">
+        <p>
+          The constructor from last lesson gets replaced. Four imports are new:{" "}
+          <code>StateMachine</code>, <code>StateMachine.State</code> and{" "}
+          <code>Scheduler</code> from <code>org.wpilib.command3</code>, plus{" "}
+          <code>org.wpilib.system.DataLogManager</code>.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            <code>
+              StateMachine sm = new StateMachine(&quot;Superstructure&quot;);
+            </code>{" "}
+            The name is required and reaches telemetry.
+          </li>
+          <li>
+            Add one state per pose with <code>sm.addState(...)</code>. Each call
+            returns a <code>State</code> for step 4.
+          </li>
+          <li>
+            <code>sm.setInitialState(stowed);</code> Leave it out and{" "}
+            <code>gradlew build</code> fails.
+          </li>
+          <li>
+            Wire the transitions. Declare the bare <code>switchFromAny()</code>{" "}
+            last: it only covers states that exist when it runs.
+          </li>
+        </ol>
 
-      <div className="flex flex-wrap gap-4">
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
-          title="StateMachineTeleop.java — the team's reference example"
-          icon={<GitBranch className="w-5 h-5" />}
+        <CodeBlock
+          language="java"
+          hideControls
+          code={`// 2. Add states. Each state owns one command. parallel(...) turns two commands into one, so
+//    each state poses the whole robot. The poses are holds that never finish - that is fine,
+//    because the machine cancels the old state's command when it switches. SpinUp is the
+//    exception: .until(...) gives its command an ending, so it can use whenComplete() below.
+State stowed =
+    sm.addState(Command.parallel(arm.vertical(), flywheel.stop()).named("Stowed (hold)"));
+State pickup =
+    sm.addState(Command.parallel(arm.horizontal(), flywheel.stop()).named("Pickup (hold)"));
+State spinUp =
+    sm.addState(
+        Command.parallel(arm.vertical(), flywheel.runFast())
+            .until(flywheel::isAtTarget)
+            .named("SpinUp until at speed"));
+State ready =
+    sm.addState(
+        Command.parallel(arm.vertical(), flywheel.runFast()).named("ReadyToShoot (hold)"));`}
         />
-        <DocumentationButton
-          href="https://github.com/wpilibsuite/allwpilib/blob/main/design-docs/commands-v3-state-machines.md"
-          title="WPILib State Machine Design Doc"
-          icon={<Book className="w-5 h-5" />}
-        />
-        <DocumentationButton
-          href="https://github.com/wpilibsuite/allwpilib/pull/8297"
-          title="StateMachine API Pull Request"
-          icon={<GitPullRequest className="w-5 h-5" />}
-        />
-      </div>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          Anatomy of a StateMachine
-        </h2>
-
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Building a state machine takes four steps. Each state wraps a single{" "}
-          <code>Command</code>. Transitions are declared on the states
-          themselves and are checked every scheduler tick while that state is
-          active.
+        <p>
+          <code>spinUp</code> and <code>ready</code> pose the robot identically.
+          The difference is that <code>spinUp</code> ends, which names the
+          moment the shot becomes legal.
         </p>
 
         <CodeBlock
           language="java"
-          title="Superstructure as a state machine (the StateMachineTeleop pattern)"
-          code={`import org.wpilib.command3.Command;
-import org.wpilib.command3.StateMachine;
-import org.wpilib.command3.StateMachine.State;
+          hideControls
+          code={`// 4. Wire the transitions. Each condition is checked every loop while its state is active,
+//    and fires the moment it flips from false to true.
+stowed.switchTo(pickup).when(driver.leftTrigger()); // driver asks to intake
+pickup.switchTo(stowed).when(driver.leftTrigger().negate()); // trigger released - pack up
 
-// 1. Construct — name is required and shows up in telemetry.
-StateMachine sm = new StateMachine("Superstructure");
+stowed.switchTo(spinUp).when(driver.rightTrigger()); // driver asks to shoot
 
-// 2. Add states. Each state owns a Command — here they're the mechanism's
-//    ordinary "(hold)" commands, the same ones the button bindings use.
-State stowed  = sm.addState(arm.stowed());
-State pickup  = sm.addState(arm.pickup());
-State scoring = sm.addState(arm.scoring());
+// SpinUp's command ends on its own, so this uses whenComplete(): it fires once, when the
+// command finishes. Ready runs the same pose as SpinUp - it exists so drivers, LEDs, and
+// autos can tell "spinning up" apart from "ready to shoot".
+spinUp.switchTo(ready).whenComplete();
 
-// 3. Set the initial state. setInitialState() is enforced at compile time —
-//    leaving it out is a build error, not a runtime surprise.
-sm.setInitialState(stowed);
+// Releasing the right trigger backs out of either shooting state.
+sm.switchFromAny(spinUp, ready).to(stowed).when(driver.rightTrigger().negate());
 
-// 4. Wire transitions. Because every state's command is a hold (it never
-//    finishes), every transition here is a .when(...) — checked each tick
-//    while the state runs. Declaring the graph is what makes illegal jumps
-//    impossible: stowed can't teleport to scoring, because no transition says so.
-stowed.switchTo(pickup).when(operator.a());
-pickup.switchTo(scoring).when(gripper::hasGamePiece);
-scoring.switchTo(stowed).when(() -> !gripper.hasGamePiece());
-
-// Any-state interrupt: "get safe now" wins from anywhere.
-sm.switchFromAny().to(stowed).when(operator.b());`}
+// B is the escape hatch: back to stowed from ANY state.
+// switchFromAny() with no args covers every state added so far, so declare it last.
+sm.switchFromAny().to(stowed).when(driver.b());`}
         />
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          <code>arm.stowed()</code> and friends are the same hold factories you
-          built on the Mechanisms page: <code>runRepeatedly</code> re-sending a
-          setpoint, named <code>&quot;stowed (hold)&quot;</code>. The state
-          machine doesn&apos;t care how a state&apos;s command is built, but
-          holds fit it naturally: the machine cancels the old state&apos;s hold
-          and starts the new one on each transition, so the mechanism is always
-          actively commanded and THE ONE RULE is never violated. Nothing ever{" "}
-          <em>waits</em> on the hold; transitions watch conditions instead.
+        <p>
+          Read the arrows and the robot&apos;s behavior fits on one screen.
+          Notice the absence: no arrow runs from <code>pickup</code> to{" "}
+          <code>spinUp</code>. You cannot start a shot with the arm down,
+          because nobody drew it.
         </p>
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Here are those four steps in the workshop&apos;s real code: the{" "}
-          <code>6-StateBased</code> branch runs the whole Arm + Flywheel teleop
-          as one state machine, with stowed, pickup, spin-up, and ready states,
-          button-driven transitions, a sensor-driven{" "}
-          <code>flywheel::isAtSpeed</code> handoff, and a{" "}
-          <code>switchFromAny</code> panic interrupt.
-        </p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="6-StateBased"
-          filePath="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-6-StateBased/src/main/java/first/robot/opmode/TeleopOpMode.java"
+          title="The whole file on mech-6-StateBased"
+          icon={<GitBranch className="h-5 w-5" />}
         />
-      </section>
+      </LessonSection>
 
-      <CollapsibleSection title="Two kinds of transitions">
-        <div className="flex flex-col gap-4">
-          <p
-            className="text-[14px] leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
-            Transitions come in two flavors. Use the right one for the kind of
-            state you&apos;re leaving.
-          </p>
+      <LessonSection
+        id="hand-the-machine-to-the-scheduler"
+        title="Hand it to the scheduler"
+      >
+        <p>
+          A <code>StateMachine</code> implements <code>Command</code>, so a
+          field holds it directly. Building one still runs nothing until the
+          scheduler is handed it.
+        </p>
 
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Box
-              variant="concept"
-              tag="WHEN · CONDITIONAL"
-              title="switchTo(...).when(cond)"
-            >
-              <p>
-                Checked every scheduler tick{" "}
-                <em>while the state&apos;s command is running</em>. Rising-edge
-                guarded, so <code>state.switchTo(state).when(...)</code> never
-                infinite loops: the condition has to go false and then true
-                again to fire a second time.
-              </p>
-              <p style={{ marginTop: 8 }}>
-                Does <strong>not</strong> fire for one-shot commands that never
-                yield, because the loop checking it never runs.
-              </p>
-            </Box>
+        <CodeBlock
+          language="java"
+          title="Three places in TeleopOpMode.java"
+          hideControls
+          code={`// Field on the OpMode - this one is new:
+private final Command machine;
+// (the driver field is already there from last lesson, unchanged)
 
-            <Box
-              variant="concept"
-              tag="WHEN · COMPLETION"
-              title="switchTo(...).whenComplete()"
-            >
-              <p>
-                Checked once, <em>after</em> the state&apos;s command finishes
-                on its own. Use this for self-finishing state commands (like a
-                one-shot <code>fireOnce()</code>). A hold never finishes, so a{" "}
-                <code>whenComplete()</code> on a hold-backed state will never
-                fire; use <code>.when(...)</code> there instead.
-              </p>
-              <p style={{ marginTop: 8 }}>
-                <code>whenCompleteAnd(cond)</code> is the same idea with an
-                extra check, and takes precedence over a plain{" "}
-                <code>whenComplete()</code> when both apply.
-              </p>
-            </Box>
-          </div>
+// Last line of the constructor:
+machine = sm; // a StateMachine is just a Command - schedule it like any other
 
-          <CodeBlock
-            language="java"
-            title="Mixing conditional and completion transitions"
-            code={`State aiming  = sm.addState(turret.aimAtGoal());   // a hold — never finishes
-State scoring = sm.addState(shooter.fireOnce());   // self-finishing one-shot
+// Two overrides, below the constructor:
+@Override
+public void start() {
+  Scheduler.getDefault().schedule(machine);
+}
 
-// Conditional: the aiming hold runs until the turret reports on-target.
-aiming.switchTo(scoring).when(turret::aimedAtGoal);
+@Override
+public void end() {
+  Scheduler.getDefault().cancel(machine);
+}`}
+        />
+      </LessonSection>
 
-// Completion: fireOnce() finishes on its own; loop it while we have a ball.
-scoring.switchTo(scoring).whenCompleteAnd(hopper::hasBall);`}
-          />
-        </div>
-      </CollapsibleSection>
+      <LessonSection
+        id="two-kinds-of-transition-and-how"
+        title="Two kinds of transition"
+      >
+        <p>
+          The state settles which spelling you use, not the condition.{" "}
+          <code>whenComplete()</code> fires only when a state&apos;s command
+          ends on its own. Only <code>spinUp</code> qualifies:{" "}
+          <code>.until(flywheel::isAtTarget)</code> gives it an ending.
+        </p>
+        <p>
+          A rising edge is the first loop a condition goes from false to true.
+          It has to go false again before it fires twice, so holding B does not
+          spin the machine. The machine checks conditions in declaration order
+          and the first edge wins, so a second one true at the same moment never
+          fires.
+        </p>
+        <p>
+          <code>.negate()</code> hands back a <code>Trigger</code> that is true
+          exactly when the original is false. That is how the branch writes
+          &quot;the driver let go.&quot; Inverting a plain method means a{" "}
+          <code>!</code> in front of your lambda: one character that reverses
+          the whole line.
+        </p>
+      </LessonSection>
 
-      <CollapsibleSection title="Entry and exit hooks">
-        <div className="flex flex-col gap-4">
-          <p
-            className="text-[14px] leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
-            Each state can register any number of <code>onEnter</code> and{" "}
-            <code>onExit</code> callbacks. Useful when entering or leaving a
-            state needs to kick off side effects that aren&apos;t part of the
-            state&apos;s main command: schedule a background animation, stiffen
-            the drivetrain, log a marker, etc.
-          </p>
-
-          <CodeBlock
-            language="java"
-            title="Lock the swerve wheels in X when leaving the drive-up state"
-            code={`State getInPosition = sm.addState(drivetrain.driveToScoringLocation());
-
-// Background command — owns the drivetrain after we let go of it.
-getInPosition.onExit(
-  () -> Scheduler.getDefault().schedule(drivetrain.setX())
-);`}
-          />
-
-          <p
-            className="text-[13.5px] leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
-            Callbacks fire in the order they were added. Entry callbacks run
-            immediately after the state&apos;s command is scheduled, so they can
-            see it running. Exit callbacks run just before the command is
-            canceled (on a transition) or just after it finishes (on a
-            completion).
-          </p>
-        </div>
-      </CollapsibleSection>
-
-      <CollapsibleSection title="Cross-cutting transitions with switchFromAny">
-        <div className="flex flex-col gap-4">
-          <p
-            className="text-[14px] leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
-            Some transitions should fire regardless of which state is active:
-            emergency interrupts, mode overrides, &quot;back to idle on
-            disable&quot;. Declare those on the state machine itself with{" "}
-            <code>switchFromAny(...)</code>.
-          </p>
-
-          <CodeBlock
-            language="java"
-            title="LED priority machine: warning beats info beats idle"
-            code={`StateMachine sm = new StateMachine("LEDs");
-
-State idle    = sm.addState(leds.idleAnimation());     // priority -1
-State info    = sm.addState(leds.infoAnimation());     // priority  0
-State warning = sm.addState(leds.warningAnimation());  // priority  1
-
-sm.setInitialState(idle);
-
-// Normal transitions.
-idle.switchTo(info).when(normalPriorityEvent.and(highPriorityEvent.negate()));
-idle.switchTo(warning).when(highPriorityEvent);
-
-info.switchTo(warning).whenCompleteAnd(highPriorityEvent);
-warning.switchTo(info).whenCompleteAnd(normalPriorityEvent);
-
-// Any-state interrupts. switchFromAny() with no args = every state in the
-// machine at call time.
-sm.switchFromAny().to(warning).when(highPriorityEvent);
-sm.switchFromAny().to(idle).whenComplete();`}
-          />
-
-          <p
-            className="text-[13.5px] leading-relaxed"
-            style={{ color: "var(--fg-mute)" }}
-          >
-            Listing specific states is fine too:{" "}
-            <code>sm.switchFromAny(state1, state2).to(state3).when(...)</code>{" "}
-            is shorthand for adding the same transition to each listed state.
-            There is also an exit variant:{" "}
-            <code>sm.switchFromAny().toExitStateMachine().when(eStop)</code>{" "}
-            ends the whole machine instead of moving to another state, and a
-            single state can do the same with{" "}
-            <code>state.exitStateMachine().when(...)</code>.
-          </p>
-        </div>
-      </CollapsibleSection>
-
-      <CollapsibleSection title="Lifecycle, in one breath">
-        <ol
-          className="ml-5 list-decimal space-y-2 text-[14px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
+      <LessonSection id="did-it-work" title="Check your work">
+        <Box
+          variant="alert-warning"
+          tag="FIRST"
+          title="The branch ships the arm untuned"
         >
+          <p>
+            <code>mech-6-StateBased</code> ships <code>Arm.java</code> with{" "}
+            <code>kG</code>, <code>kS</code>, <code>kP</code> and{" "}
+            <code>kD</code> at <code>0.0</code>, and{" "}
+            <code>MotionMagicCruiseVelocity</code> and{" "}
+            <code>MotionMagicAcceleration</code> at <code>0.0</code>. The arm
+            will not move. Paste your tuned values back first, or you will
+            decide the machine is broken while it does exactly what you asked.
+          </p>
+        </Box>
+
+        <p>
+          Add a pair of log markers first. A working machine and a stuck one
+          look identical from the driver seat.
+        </p>
+
+        <CodeBlock
+          language="java"
+          hideControls
+          code={`// onEnter/onExit run small extras on the way in and out of a state, without touching the
+// state's command. These two write markers into the log, so you can see exactly when the
+// machine entered and left ReadyToShoot.
+ready.onEnter(() -> DataLogManager.log("Superstructure: entered ReadyToShoot"));
+ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
+        />
+
+        <p>
+          <code>DataLogManager.log(...)</code> prints to the console and writes
+          into the <code>.wpilog</code>. On a transition <code>onExit</code>{" "}
+          runs, then the cancel, then the next state&apos;s command, all in one
+          loop.
+        </p>
+
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Set <code>currentState</code> to the initial state.
+            Enable in the simulator. The arm drives to vertical and the flywheel
+            stays stopped. That is <code>Stowed (hold)</code>, running with no
+            button pressed.
           </li>
           <li>
-            The state&apos;s command is forked, then <code>onEnter</code>{" "}
-            callbacks fire, so they can see the command already running.
+            Hold the left trigger and the arm swings to horizontal. Release it
+            and the arm comes back. That is stowed to pickup and back again.
           </li>
           <li>
-            Each scheduler tick, every conditional transition is checked in
-            declaration order. The first rising edge wins: <code>onExit</code>{" "}
-            fires, the command is canceled, and the next state takes over{" "}
-            <em>without an extra yield</em>.
+            Hold the right trigger. The flywheel spins up and{" "}
+            <code>entered ReadyToShoot</code> lands in the console. Release it
+            and the flywheel stops.
           </li>
           <li>
-            If the command finishes on its own, completion transitions are
-            checked once (<code>whenCompleteAnd</code> first, then plain{" "}
-            <code>whenComplete</code>). The first matching target becomes the
-            next state.
+            Hold the left trigger, then press B while still holding it. The arm
+            returns to vertical and stays there. Pickup needs the trigger
+            released and pulled again.
           </li>
           <li>
-            If no transition matches when the command finishes, the machine
-            exits.
+            From pickup, pull the right trigger as well. Nothing happens. There
+            is no arrow from <code>pickup</code> to <code>spinUp</code>, so that
+            jump does not exist.
           </li>
         </ol>
-      </CollapsibleSection>
 
-      <section className="flex flex-col gap-6">
-        <h2
-          className="text-2xl font-semibold leading-tight"
-          style={{
-            fontFamily: "var(--font-serif)",
-            color: "var(--fg)",
-            letterSpacing: "-0.01em",
-          }}
+        <Box
+          variant="alert-info"
+          tag="IF IT DIDN'T WORK"
+          title="Three ways this goes wrong"
         >
-          Where this sits next to the other dialects
-        </h2>
+          <p>
+            <strong>The build fails.</strong> Either{" "}
+            <code>setInitialState(...)</code> is missing, or a{" "}
+            <code>Command.parallel(...)</code> group has no{" "}
+            <code>.named(...)</code>. Both are compiler-plugin errors, and the
+            message names which.
+          </p>
+          <p className="mt-3">
+            <strong>It never leaves SpinUp.</strong>{" "}
+            <code>.until(flywheel::isAtTarget)</code> never comes true. The
+            tolerance is <code>0.5</code> rotations per second. The branch ships
+            the flywheel with <code>kS</code> and <code>kP</code> at{" "}
+            <code>0.0</code>, so nothing corrects the last of the error. Log the
+            measured speed against the target and read the gap.
+          </p>
+          <p className="mt-3">
+            <strong>It reaches ReadyToShoot at once.</strong>{" "}
+            <code>getTargetVelocity()</code> returns <code>0</code> until{" "}
+            <code>setVelocity(...)</code> has run once, so a stopped wheel
+            already counts as at target. Require the measured speed to be above
+            zero too.
+          </p>
+        </Box>
 
-        <p
-          className="text-[15px] leading-relaxed"
-          style={{ color: "var(--fg-mute)" }}
-        >
-          Commands V3 gives you three ways to express a routine, and this team
-          teaches them in this order: <strong>chaining</strong> (
-          <code>Command.sequence</code> + call-site <code>.until</code> +{" "}
-          <code>race</code>) is the everyday tool and as far as most routines
-          ever need to go; <strong>coroutines</strong> (
-          <code>fork / await / waitUntil</code>) handle logic with loops and
-          branches inside one command body; and the{" "}
-          <strong>StateMachine</strong> on this page handles behavior that jumps
-          between named phases. The second two are optional dialects, worth
-          recognizing in the template but not required learning. Compare the
-          three side by side in the template&apos;s opmodes folder:{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            DriveStowDriveChainedOpMode.java
-          </a>{" "}
-          (chaining),{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveOpMode.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            DriveStowDriveOpMode.java
-          </a>{" "}
-          (coroutines), and{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/StateMachineTeleop.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            StateMachineTeleop.java
-          </a>{" "}
-          (this page).
-        </p>
-      </section>
-
-      <Box
-        variant="alert-info"
-        tag="NOTE · API STATUS"
-        title="This is the WPILib 2027 alpha"
-      >
-        Commands V3 and the <code>StateMachine</code> class run on{" "}
-        <strong>Java 25</strong> and deploy to <strong>SystemCore</strong>. The
-        stack is the WPILib 2027 <em>alpha</em> (GradleRIO{" "}
-        <code>2027.0.0-alpha-6</code>), the release where StateMachine first
-        shipped. This page was last verified against alpha-6 in July 2026.
-      </Box>
+        <DocumentationButton
+          href="https://github.com/wpilibsuite/allwpilib/blob/main/design-docs/commands-v3-state-machines.md"
+          title="WPILib state machine design doc"
+          icon={<Book className="h-5 w-5" />}
+        />
+      </LessonSection>
 
       <Quiz
-        title="Knowledge check"
         questions={[
           {
             id: 1,
             question:
-              "A state runs a Command that completes immediately (a one-shot, no yield). Which kind of transition will move you to the next state?",
+              "Why does each state on the branch use Command.parallel(arm.…(), flywheel.…()) instead of a single mechanism command?",
             options: [
-              "switchTo(next).when(cond)",
-              "switchTo(next).whenComplete()",
-              "Either — they're interchangeable",
-              "Neither; one-shot states aren't supported",
+              "parallel runs commands faster than scheduling them separately",
+              "A state has to pose the whole robot, so one command has to command both mechanisms: otherwise the other one is left wherever it was",
+              "StateMachine.addState only accepts parallel groups",
+              "It is required so the state can use whenComplete()",
             ],
             correctAnswer: 1,
             explanation:
-              "Conditional transitions (.when) are checked inside the loop that runs while the state's command is active. A one-shot never enters that loop, so the condition is never checked. Use whenComplete() (or whenCompleteAnd()) for one-shot states. It's checked exactly once after the command finishes.",
+              "addState takes any Command. The reason for parallel is that a state is supposed to describe the whole robot. If Stowed only said 'arm vertical', the flywheel would be doing whatever the previous state left it doing, and the state name would be a lie. The group also inherits both mechanisms' requirements, so nothing else can quietly drive them.",
           },
           {
             id: 2,
             question:
-              "What does sm.switchFromAny().to(safeState).when(eStop) do?",
+              "What is the difference between Command.parallel(a, b) and Command.race(a, b)?",
             options: [
-              "Adds an eStop transition only to the initial state",
-              "Schedules safeState as the new default command for every mechanism",
-              "Adds the same transition to every state that exists in the machine at the time the call is made",
-              "Replaces every existing transition with this one",
+              "parallel finishes when all members finish; race finishes as soon as any one member finishes and cancels the rest",
+              "parallel finishes when any member finishes; race waits for all of them",
+              "They are the same; race is the older spelling",
+              "parallel runs members in order; race runs them at the same time",
             ],
-            correctAnswer: 2,
+            correctAnswer: 0,
             explanation:
-              "switchFromAny() with no arguments is shorthand for adding the transition to every state currently in the machine. States added after this call don't get the transition retroactively, so declare cross-cutting transitions after you've added all the states you want them to apply to.",
+              "Both start every member at once. parallel treats every member as required, so the group ends when the last one is done. race treats every member as optional, so the first one to finish ends the group and cancels the others. Two holds in a parallel group never finish, and that is why the states on this branch are holds.",
           },
           {
             id: 3,
             question:
-              "Why is setInitialState() required, and how does WPILib enforce it?",
+              "SpinUp uses spinUp.switchTo(ready).whenComplete() while every other transition uses .when(...). Why?",
             options: [
-              "It's a convention; nothing enforces it",
-              "Runtime check only — you'll see an IllegalStateException the first time the machine runs",
-              "It's enforced at build time, the same way .named() is on regular command builders",
-              "It auto-defaults to the first state added; you only need it to override",
+              "whenComplete is faster because it skips the per-loop check",
+              "Because SpinUp has two mechanisms and the others have one",
+              "Because SpinUp is the only state whose command ends on its own: .until(flywheel::isAtTarget) gives it an ending, and whenComplete fires once when it does",
+              "Because ready is the last state that was added",
             ],
             correctAnswer: 2,
             explanation:
-              "setInitialState() is marked @PostConstructionInitializer, and the WPILib compiler plugin fails the build if you construct a StateMachine and never call it. That's the same build-time enforcement Commands V3 applies to .named() on command builders. As a backstop, a machine that reaches the scheduler without one throws IllegalStateException when it starts.",
+              "whenComplete() is checked once, after the state's command finishes on its own. Three of the four states run holds that never finish, so whenComplete would never fire on them and they use .when(...) instead. SpinUp's .until(flywheel::isAtTarget) is what gives its parallel group an ending, which is what makes whenComplete available.",
           },
           {
             id: 4,
             question:
-              "A conditional transition fires while a state's command is running. What happens in this order?",
+              "You add a fifth state to the machine, on the line right after sm.switchFromAny().to(stowed).when(driver.b());. Pressing B from that new state does nothing. Why?",
             options: [
-              "The next state's command starts, then the old command is canceled in the background",
-              "The state's onExit callbacks run, the current command is canceled, and the next state takes over in the same scheduler tick",
-              "The scheduler yields, then everything happens on the next tick",
-              "onExit fires after the next state's onEnter, so they can hand off state",
+              "B is already bound elsewhere and the bindings conflict",
+              "switchFromAny() with no arguments applies only to the states that existed when it was called: the new state was added after",
+              "You need to call setInitialState again after adding a state",
+              "switchFromAny only works on states with hold commands",
             ],
             correctAnswer: 1,
             explanation:
-              "Transitions are synchronous within a single scheduler iteration. onExit runs first, then the current command is canceled, then the next state becomes current and its command is forked, all without an extra yield. This is intentional so a chain of fast transitions doesn't waste scheduler cycles.",
+              "switchFromAny() with no arguments is shorthand for adding the transition to every state in the machine at the time of the call. It is not retroactive. Declare cross-cutting transitions after all the states are added: the branch puts that line last and comments it for that reason.",
           },
           {
             id: 5,
             question:
-              "What's the practical difference between a StateMachine and a Command.sequence(...) of the same commands?",
+              "A conditional transition fires while a state's command is running. In what order do things happen?",
             options: [
-              "Nothing — StateMachine is implemented as a Command.sequence internally",
-              "StateMachine supports transitions back to earlier phases and entry/exit hooks; Command.sequence only runs phases in order, top to bottom",
-              "Command.sequence is faster because it doesn't have to check transitions",
-              "StateMachine can only have two states; Command.sequence is unlimited",
+              "The next state's command starts, then the old one is canceled in the background",
+              "The scheduler yields first, and the switch completes on the next loop",
+              "The next state's onEnter runs before the old state's onExit, so the two can hand off",
+              "onExit runs, the current command is canceled, and the next state's command starts in the same loop: no extra cycle",
             ],
-            correctAnswer: 1,
+            correctAnswer: 3,
             explanation:
-              "Command.sequence(...) is a linear pipeline: A then B then C. A StateMachine is a graph: any state can transition to any other state at any time, with onEnter/onExit hooks and switchFromAny interrupts. If your routine can repeat phases, skip phases, or recover by jumping back, you want a state machine, not a sequence.",
+              "Transitions resolve inside a single scheduler loop: onExit callbacks, then cancel, then the next state's command starts and its onEnter callbacks run. Nothing yields in between, so a chain of transitions that are all immediately true resolves without wasting loops.",
+          },
+          {
+            id: 6,
+            question:
+              "When should you reach for a StateMachine instead of Command.sequence?",
+            options: [
+              "Whenever a routine has more than two steps",
+              "Whenever more than one mechanism is involved",
+              "When the routine has to repeat a phase, skip a phase, or go backwards: a sequence only moves forwards, top to bottom",
+              "Whenever you want the routine to appear in telemetry",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Command.sequence is a line: A, then B, then C, then done. A state machine is a graph: any state can move to any state you connected, including back to an earlier one, plus onEnter/onExit hooks and switchFromAny interrupts. If your routine only moves forwards, the sequence is less code and easier to read.",
           },
         ]}
       />

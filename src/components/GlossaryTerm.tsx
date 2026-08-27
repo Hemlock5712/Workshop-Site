@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useId, useState } from "react";
 
 interface GlossaryTermProps {
   term: string;
@@ -9,7 +8,13 @@ interface GlossaryTermProps {
   definition?: string;
 }
 
-// Glossary definitions database
+/**
+ * The definitions. This record is the whole feature now: the standalone
+ * `/glossary` page was retired (a second copy of every definition, kept in
+ * sync by hand), so an annotated term is defined here and nowhere else. A term
+ * with no entry renders as plain text rather than as an affordance that leads
+ * nowhere.
+ */
 const glossaryDefinitions: Record<string, string> = {
   // Hardware & Electronics
   "motor controller":
@@ -114,61 +119,12 @@ export default function GlossaryTerm({
   definition,
 }: GlossaryTermProps) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipId = useId();
 
-  // Use provided definition or look up in glossary
+  // Use provided definition or look up in the definitions above
   const tooltipText = definition || glossaryDefinitions[term.toLowerCase()];
 
-  // Generate glossary link anchor - map common term variations to their glossary IDs
-  const termToId: Record<string, string> = {
-    motor: "motor-controller",
-    "motor controller": "motor-controller",
-    talonfx: "talonfx",
-    kraken: "talonfx",
-    encoder: "encoder",
-    cancoder: "cancoder",
-    canivore: "canivore",
-    "can bus": "can-bus",
-    can: "can-bus",
-    "device id": "device-id",
-    roborio: "roborio",
-    subsystem: "subsystem",
-    command: "command",
-    trigger: "trigger",
-    "command-based programming": "command-based",
-    periodic: "periodic",
-    pid: "pid",
-    "pid control": "pid",
-    kp: "kp",
-    proportional: "kp",
-    ki: "ki",
-    integral: "ki",
-    kd: "kd",
-    derivative: "kd",
-    feedforward: "feedforward",
-    ks: "ks",
-    kg: "kg",
-    kv: "kv",
-    "motion magic": "motion-magic",
-    "closed-loop": "closed-loop",
-    "open-loop": "open-loop",
-    wpilib: "wpilib",
-    "phoenix tuner": "phoenix-tuner-x",
-    "phoenix tuner x": "phoenix-tuner-x",
-    "driver station": "driver-station",
-    git: "git",
-    rotations: "rotations",
-    rps: "rps",
-    voltage: "voltage",
-    "gear ratio": "gear-ratio",
-    tolerance: "tolerance",
-    sensor: "encoder",
-    "swerve drive": "swerve-drive",
-  };
-
-  const glossaryAnchor =
-    termToId[term.toLowerCase()] || term.toLowerCase().replace(/\s+/g, "-");
-
-  // Only render as a glossary term if we have a definition in our database
+  // Only render as an annotated term if we have a definition
   if (!tooltipText) {
     // No definition - just render plain text
     return <>{children || term}</>;
@@ -176,25 +132,59 @@ export default function GlossaryTerm({
 
   return (
     <span className="relative inline-block">
-      <Link
-        href={`/glossary#${glossaryAnchor}`}
-        className="underline decoration-dotted decoration-primary-400 dark:decoration-primary-600 underline-offset-2 text-inherit hover:text-primary-600 dark:hover:text-primary-400 cursor-help transition-colors"
+      {/* A button rather than a span: the definition is reachable on hover, so
+          it has to be reachable on focus too, and only a focusable element
+          fires focus. It navigates nowhere — the tooltip is the whole
+          behaviour, and `aria-describedby` is what hands it to a reader that
+          cannot hover. */}
+      <button
+        type="button"
+        aria-describedby={showTooltip ? tooltipId : undefined}
+        className="cursor-help text-left text-inherit underline decoration-dotted underline-offset-4 transition-colors hover:text-[var(--accent)]"
+        style={{ textDecorationColor: "var(--accent)" }}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
         onFocus={() => setShowTooltip(true)}
         onBlur={() => setShowTooltip(false)}
       >
         {children || term}
-      </Link>
+      </button>
 
       {showTooltip && (
         <span
-          className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs rounded-lg shadow-lg z-50 w-64 pointer-events-none"
-          style={{ whiteSpace: "normal" }}
+          role="tooltip"
+          id={tooltipId}
+          className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 w-64 -translate-x-1/2 px-3.5 py-3"
+          style={{
+            whiteSpace: "normal",
+            background: "var(--bg3)",
+            border: "1px solid var(--rule)",
+            borderRadius: 3,
+            boxShadow: "0 18px 40px -18px oklch(0.05 0.03 265 / 0.7)",
+          }}
         >
-          <span className="block font-semibold mb-1">{term}</span>
-          {tooltipText}
-          <span className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-900 dark:border-t-slate-100"></span>
+          <span
+            className="mono mb-1.5 block"
+            style={{
+              fontSize: "var(--text-micro)",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              color: "var(--accent)",
+            }}
+          >
+            {term}
+          </span>
+          <span
+            className="block"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "var(--text-note)",
+              lineHeight: 1.5,
+              color: "var(--tx2)",
+            }}
+          >
+            {tooltipText}
+          </span>
         </span>
       )}
     </span>

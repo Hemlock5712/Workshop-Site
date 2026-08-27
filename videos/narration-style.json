@@ -1,0 +1,32 @@
+{
+  "_comment": [
+    "Baseline violation counts for scripts/lint-narration.ts, measured against the",
+    "27-script corpus as it stood before the voice pass. The linter fails only when",
+    "a count goes UP, so these numbers are a ratchet: lower them as beats get fixed,",
+    "and never raise one without explaining why in the commit message.",
+    "anchor-integrity is pinned at 0 and must stay there — an events[].at.word that",
+    "is not in the narration does not throw, it silently fires at 30% of the beat.",
+    "Prose rules that a linter cannot judge live in context/narration-voice.md."
+  ],
+  "baseline": {
+    "anchor-integrity": 0,
+    "banned-phrase": 108,
+    "screen-echo": 86,
+    "cta-template": 58,
+    "rhythm": 50,
+    "tic-density": 43,
+    "cross-file-duplicate": 36,
+    "beat-too-long": 32,
+    "spoken-number": 11,
+    "static-beat": 2
+  },
+  "allowDuplicateSentences": [],
+  "budgets": {
+    "trailerWords": 45,
+    "lessonWords": 55
+  },
+  "rhythm": {
+    "minCv": 0.55,
+    "minLongSentenceWords": 18
+  }
+}

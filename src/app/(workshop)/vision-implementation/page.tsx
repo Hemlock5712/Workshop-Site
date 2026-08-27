@@ -1,571 +1,397 @@
 import PageTemplate from "@/components/PageTemplate";
-import AlphaStatusNote from "@/components/AlphaStatusNote";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
-import CollapsibleSection from "@/components/CollapsibleSection";
 import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
-import ContentCard from "@/components/ContentCard";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
-import { Link, Tag, Camera } from "lucide-react";
+import { Link } from "lucide-react";
 
+/**
+ * Cut from 35.5 minutes and nine sections to six.
+ *
+ * What went: the five excerpt code blocks that walked through `Limelight.java`
+ * a paragraph at a time, the `_NoFlush` batching aside, the worked-numbers
+ * table, the `Robot.java` PR embed, the standalone Reference section, and the
+ * "What's next" teaser. The class is shown once, whole, through the embed that
+ * was already here; the constants are named in prose where they are used.
+ *
+ * What stayed, because a student cannot do this lesson without it: camera
+ * mounting, the five-step camera setup with ChArUco, MegaTag1 against
+ * MegaTag2, `validPoseEstimate` and the two-condition filter, the four
+ * constants, the timestamp, and the simulator warning.
+ *
+ * A verification pass then put back four things the cut had taken with it, and
+ * paid for them out of prose: the instruction to create
+ * `subsystems/Limelight.java`, the `registerAll` call itself (it had been left
+ * in the embed's `description`, which the reading budget does not count),
+ * `ROTATION_STD_DEV_COEFFICIENT = 1.5`, and the warning that seeding the gyro
+ * is not `seedFieldCentric()`.
+ */
 export default function VisionImplementation() {
   return (
-    <PageTemplate title="Implementing Vision">
-      <KeyConceptSection
-        title="Integrating Vision into Robot Code"
-        description="Vision integration means reading NetworkTables data, feeding AprilTag measurements into odometry, and using vision feedback for control."
-        concept="Vision-corrected odometry is what makes accurate autonomous and teleop assists possible."
-      />
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Vision Implementation Strategy
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Four steps get Limelight data into your robot&apos;s odometry without
-          letting bad readings wreck the pose estimate.
+    <PageTemplate
+      title="Vision"
+      lede="Wheel odometry adds up wheel turns, and it drifts. An AprilTag sighting is absolute, occasional, and noisy. This lesson feeds sightings into the pose estimator so the camera pulls odometry back toward the truth."
+      needs={[
+        <>
+          The swerve project with logging. Branch <code>3-Limelight</code> is
+          one commit off <code>2-Logging</code>.
+        </>,
+        <>
+          Odometry you trust, from <strong>Swerve Calibration</strong>. Vision
+          corrects drift, not a wrong wheel radius.
+        </>,
+        <>A Limelight bolted to the robot, powered, on the robot network.</>,
+        <>An AprilTag. A printed one on a wall works.</>,
+      ]}
+      branch="3-Limelight"
+      time="About an hour, mostly camera setup"
+    >
+      <Box variant="alert-warning" title="No camera in simulation">
+        <p>
+          <code>Limelight.java</code> does nothing in the simulator: no camera,
+          so nothing publishes to NetworkTables and the update method returns
+          every loop. Check this page on the real robot.
         </p>
+      </Box>
 
-        <div className="grid md:grid-cols-1 gap-6">
-          <ContentCard>
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              Implementation Sequence
-            </h3>
-            <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
-                <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  1
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-700 dark:text-primary-300">
-                    LimelightHelpers Library
-                  </h4>
-                  <p className="text-primary-600 dark:text-primary-400 text-sm">
-                    First, import the Limelight helper library available on
-                    GitHub. It contains pre-built NetworkTables wrappers that
-                    provide clean access to vision data without manual
-                    NetworkTables subscriptions.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  2
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-800 dark:text-primary-200">
-                    Limelight Subsystem
-                  </h4>
-                  <p className="text-primary-700 dark:text-primary-300 text-sm">
-                    Next, create a new subsystem to pull values using the
-                    Limelight helper tool. The pose estimator needs three things
-                    from it: pose, timestamp, and standard deviation (how much
-                    we trust the reading). Pose and timestamp come straight from
-                    LimelightHelpers; the trust formula we have to write
-                    ourselves.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
-                <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  3
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-900 dark:text-primary-100">
-                    CTRE Pose Estimator
-                  </h4>
-                  <p className="text-primary-800 dark:text-primary-200 text-sm">
-                    Once we have those three values, pass them into the CTRE
-                    pose estimator, which has built-in methods for exactly this.
-                    The vision subsystem needs a reference to the pose estimator
-                    so it can add measurements.
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 p-4 bg-primary-300 dark:bg-primary-700/50 rounded-lg">
-                <div className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  4
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-950 dark:text-white">
-                    Wire it up in Robot
-                  </h4>
-                  <p className="text-primary-900 dark:text-primary-100 text-sm">
-                    The drivetrain owns the pose estimator. In the OpMode model
-                    you wire the camera up once in <code>Robot</code>&apos;s
-                    constructor (e.g.,{" "}
-                    <code>
-                      Limelight.registerAll(drivetrain, &quot;limelight&quot;)
-                    </code>
-                    ), passing it the drivetrain so it can add measurements.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </ContentCard>
-        </div>
-
-        <Box variant="alert-info" title="Why This Approach?">
-          <ul className="list-disc list-inside space-y-2 text-sm text-slate-600 dark:text-slate-300">
-            <li>
-              <strong>Library First:</strong> LimelightHelpers abstracts
-              NetworkTables complexity.
-            </li>
-            <li>
-              <strong>Validation Layer:</strong> The Limelight subsystem filters
-              bad measurements before they make it to your pose estimate.
-            </li>
-            <li>
-              <strong>Dynamic Trust:</strong> Standard deviations adjust based
-              on measurement quality, preventing bad data from degrading
-              odometry.
-            </li>
-          </ul>
-        </Box>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Standard Deviation & Filtering
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Trusting vision data correctly is just as important as receiving it.
-          We use dynamic standard deviations plus a few filters so only good
-          measurements reach the odometry.
-        </p>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <ContentCard>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Formula for Workshop
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm">
-              We use a simple formula based on tag count and distance. As the
-              robot gets farther from tags, the standard deviation increases
-              (trust decreases). Seeing more tags decreases the standard
-              deviation (trust increases).
+      <LessonSection id="camera-placement" title="Camera placement">
+        <Split>
+          <ProseBlock>
+            <p>
+              Every AprilTag carries an ID. The field drawing says where that ID
+              sits, so measuring the tag relative to the camera works backwards
+              to the robot&apos;s position.
             </p>
-            <CodeBlock
-              language="java"
-              title="Standard Deviation Formula"
-              code={`double xyStandardDev = 0.5 * Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;
-double rotationStandardDev = 5.0 * Math.pow(poseEstimate.avgTagDist, 2.0) / poseEstimate.tagCount;`}
-            />
-          </ContentCard>
-
-          <ContentCard>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              Suggested Filtering Strategies
-            </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4 text-sm">
-              Beyond the formula, we apply several filters to reject bad data
-              entirely:
+            <p>
+              Mounting decides whether any of this works, and it is the part
+              teams get wrong. Put the camera where it can see the scoring tags
+              while you are scoring. Never mount it{" "}
+              <strong>level with the tags</strong>. You want a tag viewed from
+              an angle: off to one side, and above or below. Dead-on and level
+              gives the worst estimate there is.
             </p>
-            <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-primary-600">•</span>
-                <span>
-                  <strong>Field Boundary Check:</strong> Reject poses that are
-                  outside the field perimeter.
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-primary-600">•</span>
-                <span>
-                  <strong>Ambiguity Filter:</strong> For single-tag detections,
-                  reject if the ambiguity score is too high (indicating the tag
-                  might be flipped).
-                </span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="font-bold text-primary-600">•</span>
-                <span>
-                  <strong>Z-Height Check:</strong> Reject poses where the robot
-                  is calculated to be flying or underground.
-                </span>
-              </li>
-            </ul>
-          </ContentCard>
-        </div>
-      </section>
+          </ProseBlock>
+          <MarginNote label="Two cameras">
+            Many teams run more than one, angled so that something always has a
+            tag in frame.
+          </MarginNote>
+        </Split>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Camera Setup & Calibration
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Calibration matters: if the camera&apos;s mounting offsets or lens
-          distortion are wrong, every pose it reports is wrong too.
+      <LessonSection id="set-the-camera-up" title="Set the camera up">
+        <p>
+          None of the Java below fixes a badly configured camera. Do this on the
+          hardware first, with the robot powered.
         </p>
 
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-orange-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              <Camera className="w-5 h-5" />
+        <ol className="ml-5 list-decimal space-y-4">
+          <li>
+            <strong>Switch the active pipeline to AprilTag.</strong> A
+            color-blob pipeline never publishes a botpose.
+          </li>
+          <li>
+            <strong>Drop the exposure</strong> as low as it can go while still
+            finding tags. A short shutter cuts motion blur. A blurred tag gives
+            a wrong answer, not no answer.
+          </li>
+          <li>
+            <strong>Enter the camera offsets.</strong> Measure where the camera
+            sits relative to the robot&apos;s center, and at what angle. Solving
+            gives the camera&apos;s pose; the offsets make it the robot&apos;s.
+            Get them wrong and every measurement shifts the same way.
+            <div className="mt-3">
+              <DocumentationButton
+                href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
+                title="Limelight: full 3D tracking"
+                icon={<Link className="w-5 h-5" />}
+              />
             </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Limelight Camera Configuration
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Set up your Limelight camera with proper positioning, focus, and
-                calibration.
-              </p>
+          </li>
+          <li>
+            <strong>Calibrate the lens</strong> with a printed ChArUco board. It
+            corrects lens distortion, worst at the edges of the image. Tags sit
+            there when you are lined up on something.
+            <div className="mt-3">
+              <DocumentationButton
+                href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
+                title="Limelight: ChArUco calibration"
+                icon={<Link className="w-5 h-5" />}
+              />
             </div>
-          </div>
+          </li>
+          <li>
+            <strong>Write down the camera&apos;s name.</strong> That string is
+            the NetworkTables table it publishes to, and the Java addresses the
+            camera by it. The branch uses the default, <code>limelight</code>.
+          </li>
+        </ol>
 
-          <div className="space-y-4">
-            <div className="space-y-4">
-              <div className="flex items-center gap-4 p-4 bg-primary-50 dark:bg-primary-950/20 rounded-lg">
-                <div className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  1
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-700 dark:text-primary-300">
-                    Change Pipeline to AprilTag
-                  </h4>
-                  <p className="text-primary-600 dark:text-primary-400 text-sm">
-                    Open the Limelight web interface and switch the active
-                    pipeline to AprilTag mode. This enables 3D pose estimation
-                    for accurate robot localization.
-                  </p>
-                </div>
-              </div>
+        <p>
+          Hold a tag in front of the camera. The web interface should report its
+          ID.
+        </p>
+      </LessonSection>
 
-              <div className="flex items-center gap-4 p-4 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                <div className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  2
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-800 dark:text-primary-200">
-                    Adjust Exposure
-                  </h4>
-                  <p className="text-primary-700 dark:text-primary-300 text-sm">
-                    In the camera settings, set the exposure as low as possible
-                    while still reliably detecting AprilTags. Lower exposure
-                    reduces motion blur and improves tag detection accuracy
-                    during fast robot movement.
-                  </p>
-                </div>
-              </div>
+      <LessonSection
+        id="two-solvers-megatag1-and-megatag2"
+        title="MegaTag1 and MegaTag2"
+      >
+        <Split>
+          <ProseBlock>
+            <p>
+              MegaTag1 solves position and heading from the geometry of the tags
+              in frame. Two or more tags spread across the image constrain that
+              geometry well. One tag does not. A small error in the measured
+              corners swings the solved heading, and the position follows.
+            </p>
+            <p>
+              MegaTag2 takes your heading as given and solves only for position.
+              One tag is enough. The heading goes in uncorrected, so a gyro ten
+              degrees out returns a position that is wrong and looks fine.
+            </p>
+            <p>
+              <code>Limelight.java</code> asks for MegaTag1 first. If that
+              estimate is valid but came from one tag, it asks again for
+              MegaTag2.
+            </p>
+          </ProseBlock>
+          <MarginNote label="Heading first">
+            The class writes the robot&apos;s heading to the camera at the top
+            of every update. MegaTag2 cannot answer without it.
+          </MarginNote>
+        </Split>
+      </LessonSection>
 
-              <div className="flex items-center gap-4 p-4 bg-primary-200 dark:bg-primary-800/40 rounded-lg">
-                <div className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  3
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-900 dark:text-primary-100">
-                    Set Camera Offsets
-                  </h4>
-                  <p className="text-primary-800 dark:text-primary-200 text-sm">
-                    Accurately measure and enter your camera&apos;s position and
-                    angle relative to the robot&apos;s center. This transform is
-                    critical for converting camera detections into accurate
-                    field-relative robot poses. Follow the{" "}
-                    <a
-                      href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline hover:text-primary-700 dark:hover:text-primary-300"
-                    >
-                      Limelight documentation
-                    </a>{" "}
-                    for detailed instructions.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4 p-4 bg-primary-300 dark:bg-primary-700/50 rounded-lg">
-                <div className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                  4
-                </div>
-                <div>
-                  <h4 className="font-bold text-primary-950 dark:text-white">
-                    Camera Calibration
-                  </h4>
-                  <p className="text-primary-900 dark:text-primary-100 text-sm">
-                    Use a Limelight calibration board to calibrate your camera.
-                    This corrects for lens distortion and improves pose
-                    accuracy, especially at the edges of the field of view.
-                    Follow the{" "}
-                    <a
-                      href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline hover:text-primary-700 dark:hover:text-primary-300"
-                    >
-                      Limelight Calibration Guide
-                    </a>{" "}
-                    for detailed instructions.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ContentCard>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Reading Limelight Data
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Limelight publishes vision data to NetworkTables. The LimelightHelpers
-          library (published by Limelight on GitHub) gives you a clean API for
-          reading this data without direct NetworkTables access. Limelight
-          distributes it against the current-season WPILib packages, so the
-          workshop repo carries a copy migrated to the 2027{" "}
-          <code>org.wpilib.*</code> packages. That copy is what the code below
-          uses.
+      <LessonSection id="valid-estimates" title="The validity gate">
+        <p>
+          Copy <code>LimelightHelpers.java</code> from the branch into{" "}
+          <code>src/main/java/frc/robot/</code>. Take the branch&apos;s copy: it
+          is migrated to the <code>org.wpilib.*</code> packages, and a stock
+          download will not import.
         </p>
 
-        <CollapsibleSection title="LimelightHelpers.java">
-          <GitHubContent
-            repository="Hemlock5712/Workshop-Code"
-            branch="3-Limelight"
-            filePath="src/main/java/frc/robot/LimelightHelpers.java"
-            title="LimelightHelpers"
-            description="The workshop's copy of LimelightHelpers, migrated to the WPILib 2027 packages. This is the exact file the Limelight subsystem below uses to retrieve pose estimates and raw vision measurements."
-          />
-        </CollapsibleSection>
-
-        <CollapsibleSection title="Limelight.java">
-          <GitHubContent
-            repository="Hemlock5712/Workshop-Code"
-            branch="3-Limelight"
-            filePath="src/main/java/frc/robot/subsystems/Limelight.java"
-            title="Limelight Code"
-            description="Subsystem that pulls robot pose from LimelightHelpers, validates the estimate, models measurement noise from tag distance/count, and feeds pose+timestamp+std devs to a consumer (e.g., your drivetrain pose estimator). Caches the last valid estimate and exposes getters for logging."
-          />
-        </CollapsibleSection>
-        <CollapsibleSection title="Robot.java (vision wiring)">
-          <p className="text-slate-600 dark:text-slate-300 mb-4">
-            Vision is wired up once in <code>Robot</code>&apos;s constructor:{" "}
-            <code>Limelight.registerAll(drivetrain, ...)</code> creates each
-            camera and registers its per-loop <code>update()</code> on the
-            scheduler. Shared subsystems like the drivetrain live on{" "}
-            <code>Robot</code> as <code>public final</code> fields, and each
-            OpMode reaches them through the <code>Robot</code> reference it is
-            constructed with.
-          </p>
-          <GitHubContent
-            repository="Hemlock5712/Workshop-Code"
-            branch="3-Limelight"
-            filePath="src/main/java/frc/robot/Robot.java"
-            pr={{ number: 9, focusFile: "Robot.java" }}
-          />
-        </CollapsibleSection>
-
-        <Box
-          variant="alert-info"
-          tag="NOTE · VISION ARCHITECTURE"
-          title="The camera isn't a Mechanism"
-        >
-          <p>
-            The Limelight owns no actuators, so it isn&apos;t a{" "}
-            <code>Mechanism</code>. It&apos;s a plain class whose{" "}
-            <code>update()</code> is registered on the scheduler with{" "}
-            <code>Scheduler.getDefault().addPeriodic(camera::update)</code>,
-            wired up once from <code>Robot</code>&apos;s constructor via{" "}
-            <code>Limelight.registerAll(drivetrain, ...)</code>. Its job is to
-            read <code>LimelightHelpers</code> / NetworkTables, validate the
-            pose estimate, model the measurement noise (std devs) from tag
-            distance and count, and feed{" "}
-            <code>
-              drivetrain.addVisionMeasurement(pose, timestamp, stdDevs)
-            </code>
-            .
-          </p>
-          <p style={{ marginTop: 8 }}>
-            <code>Utils.fpgaToCurrentTime(...)</code> was removed (Phoenix 6 now
-            shares the WPILib timebase), so vision timestamps go straight to the
-            pose estimator without any conversion. The team&apos;s reference
-            implementation is{" "}
-            <a
-              href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/subsystems/vision/Limelight.java"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              Limelight.java in the 2027-Template
-            </a>
-            .
-          </p>
-        </Box>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Code Implementation
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Everything above comes straight from the <code>3-Limelight</code>{" "}
-          branch of the Workshop-Code repository, which integrates the Limelight
-          with the swerve drive and odometry. Use the full working project as a
-          reference and adapt it for your own robot.
+        <p>
+          A bad estimate does not fail loudly. It gets folded into odometry and
+          drags the robot&apos;s idea of where it is somewhere wrong.
         </p>
-      </section>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Vision Best Practices
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <Box variant="alert-success" title="Do">
-            <ul className="list-disc list-inside space-y-2">
-              <li>Validate vision data before using it</li>
-              <li>Account for latency (handled automatically)</li>
-              <li>Use appropriate standard deviations</li>
-              <li>Test different exposures (lower is better)</li>
-              <li>Log vision data for debugging</li>
-            </ul>
-          </Box>
-
-          <Box variant="alert-danger" title="Don&rsquo;t">
-            <ul className="list-disc list-inside space-y-2">
-              <li>Trust vision measurements blindly</li>
-              <li>Ignore latency compensation</li>
-              <li>Use vision as your only odometry source</li>
-              <li>Forget to tune camera settings</li>
-              <li>Skip testing in match conditions</li>
-            </ul>
-          </Box>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Additional Resources
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <DocumentationButton
-            href="https://docs.limelightvision.io/docs/docs-limelight/apis/complete-networktables-api"
-            title="Limelight NetworkTables API"
-            icon={<Link className="w-5 h-5" />}
-          />
-          <DocumentationButton
-            href="https://docs.wpilib.org/en/stable/docs/software/vision-processing/apriltag/apriltag-intro.html"
-            title="WPILib AprilTag Guide"
-            icon={<Tag className="w-5 h-5" />}
-          />
-        </div>
-      </section>
-
-      {/* Quiz Section */}
-      <section className="flex flex-col gap-8">
-        <AlphaStatusNote />
-
-        <Quiz
-          title="Knowledge Check"
-          questions={[
-            {
-              id: 1,
-              question:
-                "What is the primary purpose of the LimelightHelpers library?",
-              options: [
-                "To control motor speeds",
-                "To provide clean NetworkTables access for vision data without manual subscriptions",
-                "To generate camera calibration files",
-                "To replace the gyroscope",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "LimelightHelpers abstracts NetworkTables complexity by providing pre-built wrappers that give clean access to vision data without requiring manual NetworkTables subscriptions.",
-            },
-            {
-              id: 2,
-              question:
-                "What three values are needed to add vision measurements to the pose estimator?",
-              options: [
-                "X position, Y position, rotation",
-                "Pose, timestamp, and standard deviation",
-                "Distance, angle, and velocity",
-                "Camera height, tilt angle, and exposure",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "To add vision measurements to the pose estimator, you need: the pose (robot position from vision), the timestamp (when the measurement was taken), and standard deviation (how much to trust the reading).",
-            },
-            {
-              id: 3,
-              question:
-                "Why is standard deviation important when integrating vision data?",
-              options: [
-                "It determines camera resolution",
-                "It controls how much to trust vision measurements, preventing bad data from degrading odometry",
-                "It sets the camera exposure time",
-                "It adjusts motor PID gains",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Standard deviation determines how much the pose estimator should trust a vision measurement. Dynamic standard deviations based on tag count and distance prevent bad measurements from corrupting the robot's position estimate.",
-            },
-            {
-              id: 4,
-              question:
-                "What does the Limelight subsystem do before passing data to the pose estimator?",
-              options: [
-                "It increases camera exposure",
-                "It validates and filters bad measurements",
-                "It resets the gyroscope",
-                "It adjusts motor speeds",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The Limelight subsystem acts as a validation layer that filters bad measurements (poor quality, incorrect data) before they reach the pose estimator, protecting odometry accuracy.",
-            },
-            {
-              id: 5,
-              question:
-                "How should standard deviation typically change with tag distance and count?",
-              options: [
-                "Standard deviation stays constant regardless of conditions",
-                "Standard deviation increases with distance and decreases with more tags visible",
-                "Standard deviation decreases with distance",
-                "Standard deviation only depends on camera exposure",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Standard deviation should increase with distance (farther tags = less accurate) and decrease with more tags visible (more tags = more confident measurement). This models measurement uncertainty appropriately.",
-            },
-            {
-              id: 6,
-              question:
-                "Why do the camera's position offsets (where it sits on the robot) matter for pose estimation?",
-              options: [
-                "They only affect the camera's frame rate",
-                "The Limelight measures where the CAMERA is — without accurate offsets, the robot pose it reports is shifted by the camera's mounting position",
-                "They are only needed for game-piece detection, not AprilTags",
-                "They don't — the pose estimator figures them out automatically",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "AprilTag solving produces the camera's pose. The configured camera-to-robot offsets translate that into the robot's pose, so if the offsets are wrong, every vision measurement you fuse into the estimator is wrong by that same amount.",
-            },
-          ]}
+        <CodeBlock
+          language="java"
+          title="LimelightHelpers.java: the gate"
+          code={`public static Boolean validPoseEstimate(PoseEstimate pose) {
+  return pose != null && pose.rawFiducials != null && pose.rawFiducials.length != 0;
+}`}
         />
-      </section>
 
-      {/* What's Next Section */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What&apos;s Next?
-        </h2>
+        <p>
+          A <em>fiducial</em> is one detected tag. So: did we get an answer, and
+          did at least one tag go into it? With nothing to read,{" "}
+          <code>LimelightHelpers</code> returns a pose at the field origin with
+          an empty fiducial array. A camera that is off or misnamed produces
+          silence, not a robot that thinks it is in a corner.
+        </p>
 
-        <Box variant="alert-success" title="Up Next: Dynamic Flywheel">
-          You&apos;ll implement dynamic flywheel control using vision-based
-          distance measurements to shoot accurately from anywhere on the field.
+        <p>
+          <code>update()</code> returns early on two conditions and no others:
+          the estimate fails that gate, or <code>avgTagDist</code> is past{" "}
+          <code>MAX_TAG_DISTANCE_METERS</code>, set to 4.0 on the branch.
+          Everything else gets through.
+        </p>
+
+        <Box variant="concept" title="Why so few checks">
+          <p>
+            A tag past four meters is a handful of pixels, so that cut is a hard
+            line. Everything nearer is weighted, not rejected: a distant
+            sighting arrives with a large error bar.
+          </p>
         </Box>
-      </section>
+      </LessonSection>
+
+      <LessonSection id="how-much-to-trust-it" title="The trust weighting">
+        <Split>
+          <ProseBlock>
+            <p>
+              Every sighting goes in with a standard deviation: how far off it
+              might be, in meters and radians. Bigger means trust it less, and
+              the estimator blends the sighting against the wheels in that
+              proportion.
+            </p>
+            <p>
+              Distance hurts gently and tag count helps hard. The position
+              deviation is{" "}
+              <code>XY_STD_DEV_COEFFICIENT * avgTagDist^1.2 / tagCount^2</code>,
+              with the coefficient at 0.333. The heading term scales the same
+              way from <code>ROTATION_STD_DEV_COEFFICIENT</code>, at 1.5.
+              Doubling the distance multiplies the error bar by about 2.3. One
+              tag at two meters gives about 0.77 m. Two tags, same distance,
+              0.19 m.
+            </p>
+          </ProseBlock>
+          <MarginNote label="Not a Mechanism">
+            A camera drives nothing, so there is nothing for the scheduler to
+            hand out. <code>registerAll</code> adds <code>update()</code> with{" "}
+            <code>Scheduler.getDefault().addPeriodic(...)</code> instead.
+          </MarginNote>
+        </Split>
+
+        <Box variant="concept" title="The heading MegaTag2 returns">
+          <p>
+            MegaTag2 solved that pose from the heading you gave the camera two
+            lines earlier. Feeding it back as a measurement would be the robot
+            agreeing with itself, growing more confident every loop. So MegaTag2
+            estimates go in with <code>IGNORE_VISION_HEADING</code>, set to{" "}
+            <code>9_999_999</code>, which the estimator reads as infinity.
+            MegaTag1 heading is a real observation, and gets a real weight.
+          </p>
+        </Box>
+
+        <p>
+          The measurement goes in with <code>estimate.timestampSeconds</code>,
+          not the current time. The picture was taken, processed, and sent
+          before your code saw it, so the robot has already moved.
+        </p>
+
+        <p>
+          All of it lives in{" "}
+          <code>src/main/java/frc/robot/subsystems/Limelight.java</code>, about
+          eighty lines. Create that file, then register the camera with one line
+          in <code>Robot</code>&apos;s constructor:{" "}
+          <code>Limelight.registerAll(drivetrain, &quot;limelight&quot;)</code>,
+          plus <code>import frc.robot.subsystems.Limelight;</code>. Not in an
+          OpMode: those bindings are torn down on a mode switch, and vision has
+          to keep correcting in every mode. A second camera is a second string.
+        </p>
+
+        <GitHubContent
+          repository="Hemlock5712/Workshop-Code"
+          branch="3-Limelight"
+          filePath="src/main/java/frc/robot/subsystems/Limelight.java"
+          title="Limelight.java"
+          description="The whole class: a private constructor, registerAll, and one update() that writes the heading, picks MegaTag1 or MegaTag2, rejects on two conditions, weights by distance and tag count, and hands the result to the drivetrain."
+        />
+      </LessonSection>
+
+      <LessonSection id="did-it-work" title="Check your work">
+        <p>
+          Deploy, put the robot on the floor with a tag in view, and watch{" "}
+          <code>Drivetrain/Pose</code> in NetworkTables.
+        </p>
+
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Park about two meters from a tag and note the pose. Cover the camera
+            and push the robot a meter sideways. The pose follows the wheels.
+          </li>
+          <li>
+            Uncover the camera. The pose settles toward where the tag says the
+            robot is, over a second rather than in one frame.
+          </li>
+          <li>
+            Back away past four meters, then close in again. Line up on two
+            tags, then on one.
+          </li>
+        </ol>
+
+        <Box variant="alert-success" title="You should see">
+          <p>
+            The pose walks back to the truth once a tag comes into view, rather
+            than jumping there. Corrections stop past four meters and resume
+            when you close in. With one tag in view, the position moves and the
+            heading does not budge.
+          </p>
+        </Box>
+
+        <p>
+          Three things go wrong here. A pose that never moves is almost always
+          the name: the string in <code>registerAll</code> must match the
+          camera&apos;s NetworkTables table exactly. A pose that jumps somewhere
+          impossible means the offsets are wrong. If it lands on the far side of
+          the field, a red-origin pose is going into a blue-origin estimator.
+          That is why the class asks for <code>_wpiBlue</code>. Position that
+          corrects on two tags and goes strange on one is the MegaTag2 path, so
+          seed the gyro. Not with <code>seedFieldCentric()</code>, which only
+          changes which way the sticks call forward:{" "}
+          <strong>Swerve Calibration</strong> has the three kinds of zeroing.
+        </p>
+      </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "The camera has exactly one AprilTag in frame. Which solver does Limelight.java end up using, and why?",
+            options: [
+              "MegaTag2, because one tag cannot pin down heading reliably, so the code hands the camera the gyro heading instead",
+              "Neither: a single-tag estimate is rejected",
+              "Both, and it averages them",
+              "MegaTag1, because it is always more accurate",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "The code asks for MegaTag1 first. If that estimate is valid and tagCount == 1, it re-fetches as MegaTag2. MegaTag1 solves heading from the tags themselves, which is shaky off a single tag; MegaTag2 takes your heading as given and solves only position.",
+          },
+          {
+            id: 2,
+            question:
+              "How many conditions make update() return without sending anything to the drivetrain, and what are they?",
+            options: [
+              "One: the pose is outside the field perimeter",
+              "None: every estimate is passed on and the standard deviations sort it out",
+              "Five: field boundary, ambiguity, Z-height, distance and tag count",
+              "Two: the estimate is not valid (no tag in frame), or avgTagDist is greater than MAX_TAG_DISTANCE_METERS = 4.0",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "validPoseEstimate has to pass, and avgTagDist has to be inside 4.0 m. Weighting handles everything else rather than rejection: a poor sighting gets a large error bar instead of being discarded.",
+          },
+          {
+            id: 3,
+            question:
+              "A camera is powered off, but the code still runs. What does validPoseEstimate see?",
+            options: [
+              "A null PoseEstimate, which throws when the code reads pose.tagCount",
+              "A default PoseEstimate at the field origin with an empty rawFiducials array, which the gate rejects",
+              "The last pose the camera published before it lost power",
+              "An estimate with tagCount of zero but a valid pose, which gets fused",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "With no data to read, LimelightHelpers hands back a default PoseEstimate sitting at the field origin with no fiducials. The gate exists to throw that reading away, so a missing or misnamed camera produces silence instead of a robot that believes it is parked in the corner.",
+          },
+          {
+            id: 4,
+            question:
+              "The robot sees two tags at 2 m instead of one tag at 2 m. What happens to the position standard deviation?",
+            options: [
+              "It drops to a quarter, because the divisor is tagCount squared",
+              "It stays the same: only distance affects it",
+              "It doubles, because more tags means more disagreement",
+              "It halves, because tagCount doubles",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "The divisor is tagCount squared, so two tags divide by 4 and three tags divide by 9. One tag at 2 m gives about 0.77 m; two tags at the same distance give about 0.19 m. This is why camera aiming matters so much.",
+          },
+          {
+            id: 5,
+            question:
+              "Why does the measurement go in with estimate.timestampSeconds instead of the current time?",
+            options: [
+              "It keeps the camera and the robot controller clocks in sync",
+              "It is only used for logging",
+              "The picture was taken before the code saw it, and the estimator has to fold the measurement in at the moment the robot was there",
+              "The pose estimator rejects measurements without a timestamp field",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Capture, processing and network transport all take time, so by the time your code holds the pose the robot has moved. The Limelight's own timestamp is passed straight through, already corrected for the camera's reported latency.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

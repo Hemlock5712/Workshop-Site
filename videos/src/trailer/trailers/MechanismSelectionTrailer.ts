@@ -49,39 +49,39 @@ export const MechanismSelectionTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Right now you make the one choice that shapes this entire workshop. There are two mechanisms. You will build one of them. And every code example from here to the finish line follows your pick.",
+      text: "Arm, or flywheel. That's the choice, and it's the one you'll live with for the rest of the workshop, because every example from here on is written against whichever one you bolt to the table.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "arm-intro",
-      text: "Option one: the arm. This is position control. That means holding a joint at an exact angle, even against gravity. An absolute encoder sits on the pivot. That sensor always knows the arm's true angle, even at power up.",
+      text: "First option, the arm. Position control: you ask for forty degrees, the joint holds forty degrees, and gravity gets no say in it. An absolute encoder on the pivot is why it still knows where it is after a power cycle.",
       camera: { x: 2520, y: 100, width: 1480, height: 1080 },
     },
     {
       id: "arm-skills",
-      text: "Build the arm and you learn the basics of position control. Which way the encoder counts. How to set its zero point. How to drive to a target angle. Later, PID and Motion Magic build right on top of these skills.",
+      text: "Build it and you'll spend an afternoon on the unglamorous stuff: which direction the encoder counts, where zero lives, how to drive to an angle and stop there. PID and Motion Magic sit right on top of that.",
       camera: { x: 2700, y: 300, width: 1160, height: 700 },
     },
     {
       id: "flywheel-intro",
-      text: "Option two: the flywheel. This one is velocity control. That means spinning a wheel at an exact speed and holding it there. Two motors run as a leader and follower pair. One leads, one copies, doubling the muscle.",
+      text: "Second option, the flywheel. Velocity control: get a wheel to a speed and keep it there. Two motors, one leading and one following, because one alone won't spin a heavy wheel back up fast enough between shots.",
       camera: { x: 5440, y: 200, width: 1480, height: 1080 },
     },
     {
       id: "flywheel-skills",
-      text: "The challenge is holding that speed under load. Feed a game piece through. The wheel slows down. Velocity control fights that dip. It is how a shooter stays consistent, shot after shot.",
+      text: "The whole challenge is load. A game piece goes through, the wheel dips, and whether the next shot goes in depends on how fast the controller claws that speed back.",
       camera: { x: 5620, y: 400, width: 1160, height: 700 },
     },
     {
       id: "same-hardware",
-      text: "Whichever you pick, the wiring is identical. It is a TalonFX motor on a CANivore bus. Same hardware path. Same code structure. The only real difference is the thing you control: an angle or a speed.",
+      text: "Either way the wiring is identical: one TalonFX hanging off a CANivore. Same setup, right down to the file layout. All that changes is the number you're chasing, an angle or a speed.",
       camera: { x: 2440, y: 60, width: 4560, height: 1280 },
       holdAfter: 0.8,
     },
     {
       id: "cta",
-      text: "So, position or velocity? Pick the mechanism your team is most likely to build this season. Then follow it through the whole workshop. Make your choice at frc5712.com.",
+      text: "Pick the one your team is actually going to build this season, not the one that sounds cooler on a whiteboard. Then go bolt it together.",
       camera: END,
       holdAfter: 1.2,
     },

@@ -1,19 +1,20 @@
 "use client";
 
-import { Check, Circle } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useProgress } from "@/lib/useProgress";
 
 /**
- * Per-page "Mark complete" toggle that lives in the prev/next nav row.
- * Reads its slug from the current pathname so PageTemplate doesn't need
- * to thread an extra prop through every workshop page.
+ * Per-page "Mark complete" toggle. Reads its slug from the current pathname so
+ * `PageTemplate` doesn't thread an extra prop through every workshop page.
+ *
+ * A pill rather than a button-with-icon: it is a state you are reporting, not
+ * an action with a consequence, and it needs to sit quietly above the much
+ * louder "next lesson" link without competing with it.
  */
 export default function MarkCompleteToggle() {
   const pathname = usePathname();
   const { isCompleted, toggleComplete } = useProgress();
 
-  // SSR-safe: usePathname returns null in some edge cases; bail out silently.
   if (!pathname) return null;
 
   const done = isCompleted(pathname);
@@ -26,28 +27,17 @@ export default function MarkCompleteToggle() {
       aria-label={
         done ? "Mark this page incomplete" : "Mark this page complete"
       }
-      className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none"
+      className="mono cursor-pointer whitespace-nowrap rounded-full px-3.5 py-1.5 transition-colors"
       style={{
-        background: done ? "var(--accent-soft)" : "var(--bg-elev)",
-        borderColor: done ? "var(--ok)" : "var(--line)",
-        color: done ? "var(--ok)" : "var(--fg-mute)",
+        fontSize: "var(--text-micro)",
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        border: `1px solid ${done ? "var(--accent)" : "var(--rule)"}`,
+        background: done ? "var(--accent-soft)" : "transparent",
+        color: done ? "var(--accent)" : "var(--tx3)",
       }}
     >
-      {done ? (
-        <Check className="h-4 w-4" aria-hidden />
-      ) : (
-        <Circle className="h-4 w-4" aria-hidden />
-      )}
-      <span
-        className="font-mono"
-        style={{
-          fontSize: 11,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-        }}
-      >
-        {done ? "Completed" : "Mark complete"}
-      </span>
+      {done ? "✓ Completed" : "Mark complete"}
     </button>
   );
 }

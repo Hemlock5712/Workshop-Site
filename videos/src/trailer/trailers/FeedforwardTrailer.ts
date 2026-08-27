@@ -67,13 +67,13 @@ export const FeedforwardTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Last time, PID moved our arm by reacting to error. Error is the gap between the arm and its target. But a reaction is always late. Feedforward flips the plan. It figures out the push you will need. Then it applies that push before any error shows up.",
+      text: "Last time, PID moved this arm by reacting to error. Reaction is always late — one loop late, every single loop. Feedforward flips that around: work out how much push the arm will need, then send it before there's any error to react to.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "recap",
-      text: "Here is the same arm, with gentle feedback gains. Gains are the numbers that set the push. Send it to forty-five degrees. It rises, then stalls just under the line. Feedback needs an error to make voltage. So it always keeps a little error.",
+      text: "Same arm, feedback only, gains dialed gentle. Send it to forty-five degrees. Watch where it parks: short of the line, and it stays there. Feedback has to see error to make voltage, so it keeps a little error forever. On purpose.",
       camera: LAB,
       events: [
         { type: "gains", kP: 0.6, kD: 0.15, at: { word: "gentle" } },
@@ -82,12 +82,12 @@ export const FeedforwardTrailer: TrailerScript = {
     },
     {
       id: "gravity",
-      text: "The thief is gravity. It drags on the arm every single moment. It pulls hardest when the arm is level. And feedback only answers after some angle is already lost. So the gap never goes away.",
+      text: "Gravity pulls on that arm every millisecond of the match, hardest when it's straight out sideways, and feedback can only answer after the arm has already dropped. So the sag isn't a tuning mistake. It's arithmetic.",
       camera: ARM_CLOSEUP,
     },
     {
       id: "kg",
-      text: "But we know that force. So cancel it up front. That is feedforward. A number called k G adds just enough volts to hold the arm. No error needed. Watch the gap close on its own.",
+      text: "That pull isn't a mystery. It's mass, gravity, and the cosine of the angle. Compute it, then cancel it up front. kG hands the motor exactly those volts, no error required, and the gap closes on its own.",
       camera: LAB,
       events: [
         { type: "gains", kP: 0.6, kD: 0.15, kG: 3.9, at: { word: "cancel" } },
@@ -95,13 +95,13 @@ export const FeedforwardTrailer: TrailerScript = {
     },
     {
       id: "proof",
-      text: "Now ask for seventy-five degrees. The feedback gains have not changed. But gravity is already paid for. The arm glides up and lands right on the line. Feedback only sweeps up the crumbs now.",
+      text: "Now ask for seventy-five degrees. Nobody touched the feedback gains. But gravity's bill is already paid, so the arm just glides up and settles on the line, no second attempt, no hunting around underneath it. Feedback barely has anything to do.",
       camera: SCOPE_CLOSEUP,
       events: [{ type: "target", deg: 75, at: { word: "seventy-five" } }],
     },
     {
       id: "code",
-      text: "In code, this is one more line in the slot config. k P and k D stay on as the cleanup crew. Then k G holds the arm up against gravity. We set it to arm cosine mode. That way the push shrinks as the arm points higher.",
+      text: "In code it's one line. kP and kD stay exactly where PID left them. Then kG holds the arm against gravity. Set it to arm cosine mode and Phoenix scales that push by the angle for you, so ninety degrees costs almost nothing.",
       camera: CODE,
       events: [
         {
@@ -121,7 +121,7 @@ export const FeedforwardTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Predict what you can. Correct what is left. That is the whole trick. Next up is Motion Magic, where the path itself gets planned. The full lesson is at frc5712.com.",
+      text: "Predict what you can, correct what's left. That one habit is worth more than any night of guessing. Next up: Motion Magic, and the end of the twelve-volt slam.",
       camera: END,
       holdAfter: 1.2,
     },

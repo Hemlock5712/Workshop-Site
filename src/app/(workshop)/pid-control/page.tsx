@@ -1,370 +1,421 @@
-import MechanismTabs from "@/components/MechanismTabs";
 import PageTemplate from "@/components/PageTemplate";
-import AlphaStatusNote from "@/components/AlphaStatusNote";
-import CodeBlock from "@/components/CodeBlock";
-import PageHero from "@/components/PageHero";
+import LessonSection from "@/components/lesson/LessonSection";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import MechanismPlayground from "@/components/MechanismPlayground";
 import Box from "@/components/Box";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { Book } from "lucide-react";
+import DocumentationButton from "@/components/DocumentationButton";
+import { MarginNote, Split } from "@/components/lesson/Prose";
+import { BookOpen } from "lucide-react";
+import VideoEmbed from "@/components/VideoEmbed";
 
+/**
+ * Reference implementation for `context/lesson-budget.md`.
+ *
+ * Six sections. A numbered procedure in each section that is a procedure, a
+ * table where the content is a table, a three-column figure for the three
+ * failure modes, and a closing check a student can actually perform. Two
+ * asides on the whole page, both of them safety.
+ *
+ * The shape to copy: prose says why, and says what "good" looks like. The
+ * numbered list says what to do. Neither repeats the other, and neither one
+ * narrates the table sitting next to it.
+ */
 export default function PIDControl() {
   return (
-    <PageTemplate title="PID Control">
-      {/* Introduction */}
-      <PageHero
-        description="PID (Proportional-Integral-Derivative) control replaces imprecise voltage commands with accurate, feedback-driven control. Toggle between an arm (position), a flywheel (velocity), and an elevator (position) below. The gains in each map directly to the motor's PID settings (a TalonFX Slot0Configs)."
-        concept="PID uses sensor feedback to automatically adjust motor output; feedforward predicts the voltage needed before any error has accumulated."
-      />
-
-      {/* Live playground — arm + flywheel + elevator toggle */}
-      <MechanismPlayground />
-
-      {/* PID Theory */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Understanding PID Components
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="bg-[var(--muted)] dark:bg-slate-700/20 rounded-lg p-6 border-l-4 border-red-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              P - Proportional
-            </h3>
-            <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply
-              per unit of error in the system&quot;
-            </p>
-            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Error = Target - Current</code>
-              <br />
-              <code className="text-xs">P_Output = kP × Error</code>
-            </div>
-            <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Larger error = stronger correction.
-              Provides immediate response but may cause oscillation.
-            </p>
-          </div>
-
-          <div className="bg-[var(--muted)] dark:bg-slate-700/20 rounded-lg p-6 border-l-4 border-yellow-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              I - Integral
-            </h3>
-            <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply
-              per unit of error for every second of that error&quot;
-            </p>
-            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">Accumulated_Error += Error × dt</code>
-              <br />
-              <code className="text-xs">I_Output = kI × Accumulated_Error</code>
-            </div>
-            <p className="text-[var(--foreground)] text-sm mb-3">
-              <strong>Behavior:</strong> Eliminates steady-state error by
-              accumulating past errors over time.
-            </p>
-            <p className="text-[var(--foreground)] text-sm">
-              <strong>Note:</strong> The integral term can lead to
-              &quot;windup,&quot; which may make your mechanism unstable. In
-              most FRC applications, you can leave the integral term at zero.
-            </p>
-          </div>
-
-          <div className="bg-[var(--muted)] dark:bg-slate-700/20 rounded-lg p-6 border-l-4 border-blue-500">
-            <h3 className="text-xl font-bold text-[var(--foreground)] mb-4">
-              D - Derivative
-            </h3>
-            <p className="text-[var(--foreground)] mb-4 text-sm">
-              <strong>Definition:</strong> &quot;The amount of output to apply
-              per change in error over time&quot;
-            </p>
-            <div className="bg-[var(--muted)] text-[var(--muted-foreground)] p-4 rounded mb-3">
-              <code className="text-xs">
-                Error_Rate = (Error - Last_Error) / dt
-              </code>
-              <br />
-              <code className="text-xs">D_Output = kD × Error_Rate</code>
-            </div>
-            <p className="text-[var(--foreground)] text-sm">
-              <strong>Behavior:</strong> Reduces overshoot by predicting future
-              error trends and damping the response.
-            </p>
-          </div>
+    <PageTemplate
+      title="PID Tuning in Tuner X"
+      lede="The TalonFX runs the control loop itself. Tuner X sends the setpoint, plots the response, and saves the gains onto the motor. You will not write any Java in this lesson."
+      needs={[
+        <>
+          Motor, encoder direction, and mechanism zero verified in{" "}
+          <strong>Motor Setup &amp; CAN IDs</strong>.
+        </>,
+        <>
+          Tuner X connected to the CANivore, with <strong>CANivore USB</strong>{" "}
+          on.
+        </>,
+        <>The mechanism bolted to the bench, with a clear path to swing.</>,
+        <>One person on the power switch who is not driving the laptop.</>,
+      ]}
+      time="15 minutes, including the simulation"
+    >
+      <Split>
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            You give the TalonFX a target. It reads its sensor, compares the
+            two, and adjusts its own output about a thousand times a second.
+            Tuner X never sees that loop running. It sets the target, saves the
+            gains, and draws the result.
+          </p>
+          <p>Pick one device and finish it before you touch the other.</p>
         </div>
+        <MarginNote label="No code yet">
+          Keep VS Code closed for this lesson. Every setpoint, gain, and plot
+          lives in Tuner X. Workshop 2 copies the numbers you save here into
+          robot code, so you tune before you write any Java.
+        </MarginNote>
+      </Split>
 
-        {/* Feedforward Components */}
-        <Box variant="alert-info" title="Feedforward Gains">
-          <p className="mb-4">
-            Feedforward gains predict the required output based on the target,
-            rather than reacting to error.
+      {/* Restored. `b092234` ("Reorder workshops") deleted this section along
+          with 1,392 other lines when it converted the page from a 3-PID Java
+          lesson into a Tuner X lab. The simulation was collateral damage, and
+          it belongs here more than it belonged there: it needs no code, so a
+          code-free workshop is exactly its home. Feeling what too much kP does
+          costs nothing on a simulation and costs a gearbox on the bench.
+
+          The arm/flywheel FigureGrid that used to sit above this is gone, not
+          lost. The playground toggles between those two mechanisms and labels
+          the control mode on each, so the figure was captioning a control the
+          student can just use. Its two teaching points moved into the prose
+          below. */}
+      <LessonSection id="play-with-the-gains-first" title="Play with the gains">
+        <p>
+          Drag a gain and watch what happens. Find out what too much{" "}
+          <code>kP</code> looks like here, where it costs nothing, rather than
+          on a real gearbox.
+        </p>
+        <p>
+          Switch between the three. The arm holds an angle, and gravity pulls on
+          it everywhere, so it never rests at zero output. The flywheel holds a
+          speed. Nothing drags it off target, but holding that speed costs
+          output, and a game piece steals it at once. The elevator is the other
+          gravity case, a constant pull.
+        </p>
+        <MechanismPlayground />
+      </LessonSection>
+
+      <LessonSection id="fix-the-units" title="Fix the units first">
+        <p>
+          A gain is a number of volts per unit of error. So if you and the motor
+          disagree about what one unit means, every gain you find is off by the
+          gear ratio. No amount of tuning rescues that.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Open <strong>Configs</strong> and set{" "}
+            <code>SensorToMechanismRatio</code> so that one unit equals one
+            mechanism rotation, not one motor rotation. A 60:1 arm uses 60.
+          </li>
+          <li>
+            Turn the mechanism through a known angle by hand. A quarter turn of
+            the arm should read 0.25, not 15.
+          </li>
+          <li>
+            For the arm, set the gravity type to the arm setting so that{" "}
+            <code>kG</code> scales with the cosine of the angle. An elevator
+            uses the static setting instead.
+          </li>
+        </ol>
+        <Box
+          variant="alert-danger"
+          title="Start small, and stay near the switch"
+        >
+          <p>
+            Pick a target close to where the mechanism already sits, and start
+            every gain at zero. Disable the control request before changing a
+            sensor direction, a ratio, or a feedback source. Any of the three
+            can reverse the loop, and a reversed loop drives to the hard stop at
+            full output.
           </p>
-
-          <div className="grid md:grid-cols-4 gap-4">
-            <Box variant="concept" title="kS - Static" uses="Always">
-              Constant output to overcome friction and get the mechanism moving.
-            </Box>
-            <Box variant="concept" title="kG - Gravity" uses="Arms/Elevators">
-              Compensates for gravitational forces acting on the mechanism.
-            </Box>
-            <Box
-              variant="concept"
-              title="kV - Velocity"
-              uses="Flywheels/Intakes"
-            >
-              Output applied per target velocity to maintain smooth motion.
-            </Box>
-            <Box
-              variant="concept"
-              title="kA - Acceleration"
-              uses="High Inertia Mechanisms"
-            >
-              Output applied per target acceleration for responsive movement.
-            </Box>
-          </div>
         </Box>
+      </LessonSection>
 
-        {/* Documentation Link */}
-        <Box variant="alert-info" title="Complete PID Tuning Guide">
-          <p className="mb-4">
-            For detailed tuning instructions and mechanism-specific guidance:
-          </p>
-          <DocumentationButton
-            href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/closed-loop-requests.html"
-            title="CTRE Closed-Loop Control Reference"
-            icon={<Book className="w-5 h-5" />}
-          />
-        </Box>
+      <LessonSection id="build-the-plot" title="Build the plot">
+        <p>
+          Set the plot up once and leave it alone. Two runs are only worth
+          comparing if they measured the same thing the same way.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Open <strong>Signal &amp; Control</strong> and add the TalonFX you
+            are tuning.
+          </li>
+          <li>
+            Plot four signals: the target, the measured position or velocity,
+            the closed-loop error, and the motor voltage. Put target and
+            measurement on one axis so you can read the gap between them.
+          </li>
+          <li>
+            In <strong>Configs</strong>, work in Slot 0 and set every gain to{" "}
+            <code>0</code>. Apply with the download button.
+          </li>
+          <li>
+            In the control panel, pick a voltage-based position or velocity
+            request, select Slot 0, and enter your small target. Enable it only
+            long enough to catch the response.
+          </li>
+        </ol>
+        <p>
+          Change one number between runs. Move two gains at once and the plot
+          cannot tell you which one did the work.
+        </p>
+      </LessonSection>
 
-        {/* PID Tuning Video */}
-        <section className="flex flex-col gap-6">
-          <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            PID and Feedforward Tuning Tutorial
-          </h3>
-          <div className="bg-[var(--muted)] rounded-lg p-6 border-l-4 border-[var(--border)]">
-            <p className="text-[var(--foreground)] mb-4">
-              This video walks through PID and feedforward tuning, with
-              practical steps for dialing in your gains:
-            </p>
-            <div className="aspect-video rounded-lg overflow-hidden">
-              <iframe
-                src="https://www.youtube.com/embed/Pt7SBFfl3oM"
-                title="PID and Feedforward Tuning Tutorial"
-                className="w-full h-full"
-                allowFullScreen
-              />
-            </div>
-          </div>
-        </section>
-      </section>
+      <LessonSection id="feedforward-first" title="Tune the gains">
+        <p>
+          Feedforward is the output you can predict before any error exists. Get
+          it right and the mechanism nearly holds its target with no feedback at
+          all. Which terms matter depends on the mechanism.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Gain</th>
+                <th className="px-3 py-2 text-left">Pays for</th>
+                <th className="px-3 py-2 text-left">How to find it</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>kS</code>
+                </td>
+                <td className="px-3 py-2">Friction in the gearbox</td>
+                <td className="px-3 py-2">
+                  Raise it until the mechanism creeps, then back off one step.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  <code>kG</code>
+                </td>
+                <td className="px-3 py-2">Gravity on the arm</td>
+                <td className="px-3 py-2">
+                  Raise it until the arm holds its angle without sagging or
+                  climbing. Arm only.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">
+                  <code>kV</code>
+                </td>
+                <td className="px-3 py-2">Output per unit of speed</td>
+                <td className="px-3 py-2">
+                  Raise it until measured speed lands near the target on its
+                  own. Flywheel mostly.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Measure <code>kS</code> and <code>kG</code> with the loop disabled, on
+          a plain voltage request. Leave <code>kA</code> at zero until Motion
+          Magic gives the motor a profile to follow.
+        </p>
+        <p>
+          Then add feedback. It cleans up what feedforward could not predict: a
+          sagging battery, a tightening chain, a game piece.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Raise <code>kP</code> until the mechanism reaches its target without
+            crawling the last stretch. Double it each time until something
+            changes, then move in smaller steps.
+          </li>
+          <li>
+            Stop at the first overshoot or oscillation and drop back to the last
+            value that behaved. If it still overshoots, add a little{" "}
+            <code>kD</code>.
+          </li>
+          <li>
+            Leave <code>kI</code> at zero. A steady offset is a feedforward
+            problem, and <code>kI</code> hides it by winding up until something
+            lurches.
+          </li>
+          <li>
+            Repeat at three or four angles or speeds. Gains that work at one
+            point are not tuned, they are lucky.
+          </li>
+        </ol>
+        <p>
+          A tuned arm sounds like one motion and then silence. If the motor is
+          still working after the mechanism stopped, <code>kP</code> is too
+          high.
+        </p>
 
-      {/* Code Implementation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          PID Implementation in Code
-        </h2>
-
-        <CollapsibleSection title="PID Configuration Example">
-          <CodeBlock
-            language="java"
-            title="PID Setup in Mechanism Constructor"
-            code={`public Arm() {
-    TalonFXConfiguration config = new TalonFXConfiguration();
-
-    // PID gains — the three knobs you'll tune first.
-    Slot0Configs slot0 = config.Slot0;
-    slot0.kP = 24.0;    // Proportional gain
-    slot0.kI = 0.0;     // Integral gain
-    slot0.kD = 0.1;     // Derivative gain
-
-    // Feedforward gains — help the controller predict what voltage is
-    // needed before error even shows up.
-    slot0.kS = 0.25;    // Static friction
-    slot0.kG = 0.12;    // Gravity compensation
-    // kV / kA also live here — useful on high-inertia mechanisms.
-
-    motor.getConfigurator().apply(config);
-}`}
-          />
-        </CollapsibleSection>
-
-        {/* Mechanism Implementation Tabs */}
-        <MechanismTabs
-          sectionTitle="Workshop Implementation: PID Control"
-          armContent={{
-            beforeItems: [
-              "• Commands control Arm with voltage",
-              "• No position feedback control",
-              "• Imprecise, inconsistent movement",
-              "• No automatic target reaching",
-              "• Manual voltage adjustment needed",
-            ],
-            afterItems: [
-              "• PID position control with PositionVoltage",
-              "• Automatic target position reaching",
-              "• Precise, repeatable movements",
-              "• Feedforward compensation for gravity",
-              '• Tolerance checking for "at target"',
-            ],
-            repository: "Hemlock5712/Workshop-Code",
-            filePath: "src/main/java/frc/robot/subsystems/Arm.java",
-            branch: "3-PID",
-            pullRequestNumber: 3,
-            focusFile: "Arm.java",
-            walkthrough: {
-              leftTitle: "PID Implementation",
-              leftItems: [
-                "• <strong>PositionVoltage:</strong> Replaces VoltageOut for closed-loop control",
-                "• <strong>Slot0 Config:</strong> PID and feedforward gains configuration",
-                "• <strong>Target Setting:</strong> setTargetPosition() method for precise control",
-              ],
-              rightTitle: "Gain Values Used",
-              rightItems: [
-                "• <strong>kP = 24.0:</strong> Strong proportional response",
-                "• <strong>kD = 0.1:</strong> Small derivative for damping",
-                "• <strong>kS = 0.25:</strong> Static friction compensation",
-                "• <strong>kG = 0.12:</strong> Gravity feedforward for Arm",
-              ],
-            },
-            nextStepText:
-              "The arm now reaches and holds a target position on its own. Next, we upgrade to Motion Magic for smooth, profiled movements with controlled acceleration.",
-          }}
-          flywheelContent={{
-            beforeItems: [
-              "• Commands control Flywheel with voltage",
-              "• No velocity feedback control",
-              "• Inconsistent speed control",
-              "• No automatic velocity targeting",
-              "• Manual voltage adjustment needed",
-            ],
-            afterItems: [
-              "• PID velocity control with VelocityVoltage",
-              "• Automatic target velocity reaching",
-              "• Consistent, repeatable speeds",
-              "• Feedforward compensation for friction",
-              '• Velocity tolerance checking for "at target"',
-            ],
-            repository: "Hemlock5712/Workshop-Code",
-            filePath: "src/main/java/frc/robot/subsystems/Flywheel.java",
-            branch: "3-PID",
-            pullRequestNumber: 3,
-            focusFile: "Flywheel.java",
-            walkthrough: {
-              leftTitle: "PID Implementation",
-              leftItems: [
-                "• <strong>VelocityVoltage:</strong> Replaces VoltageOut for closed-loop velocity control",
-                "• <strong>Slot0 Config:</strong> PID and feedforward gains configuration for velocity",
-                "• <strong>Target Setting:</strong> setTargetVelocity() method for precise speed control",
-              ],
-              rightTitle: "Gain Values Used",
-              rightItems: [
-                "• <strong>kP:</strong> Proportional response for velocity error",
-                "• <strong>kI:</strong> Integral gain to eliminate steady-state velocity error",
-                "• <strong>kS:</strong> Static friction compensation for startup",
-                "• <strong>kV:</strong> Velocity feedforward for smooth operation",
-              ],
-            },
-            nextStepText:
-              "The flywheel now reaches and holds a target velocity on its own. Next, we upgrade to Motion Magic for smooth, profiled velocity changes with controlled acceleration.",
-          }}
+        <VideoEmbed
+          id="Pt7SBFfl3oM"
+          title="Tuning feedback (PID) and feedforward"
         />
-      </section>
+      </LessonSection>
 
-      {/* Quiz Section */}
-      <section className="flex flex-col gap-8">
-        <AlphaStatusNote />
-
-        <Quiz
-          title="Knowledge Check"
-          questions={[
+      <LessonSection id="failure-shapes" title="Three failure shapes">
+        <p>
+          Nearly everything that goes wrong on a bench looks like one of these.
+          Read the plot, not the mechanism.
+        </p>
+        <FigureGrid
+          cols={3}
+          items={[
             {
-              id: 1,
-              question:
-                "What does the 'P' (Proportional) term in PID control do?",
-              options: [
-                "It accumulates error over time",
-                "It applies output proportional to the current error",
-                "It predicts future error trends",
-                "It eliminates steady-state error",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The Proportional term applies output proportional to the current error (Target - Current). Larger error results in stronger correction, providing immediate response to changes.",
+              label: "Runs away",
+              term: "Wrong direction",
+              body: (
+                <>
+                  Error grows instead of shrinking and output pins. Disable now.
+                  The sensor or the motor is inverted, so go back to Motor
+                  Setup.
+                </>
+              ),
             },
             {
-              id: 2,
-              question:
-                "What is the primary purpose of the 'I' (Integral) term in PID control?",
-              options: [
-                "To provide immediate response to error",
-                "To reduce overshoot and oscillation",
-                "To eliminate steady-state error by accumulating past errors",
-                "To predict future system behavior",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "The Integral term accumulates error over time, helping eliminate steady-state error where the system settles close to but not exactly at the target. However, it can cause 'windup' and is often left at zero in FRC applications.",
+              label: "Buzzes",
+              term: "Too much gain",
+              body: (
+                <>
+                  Voltage chatters and the mechanism hums at rest. Cut{" "}
+                  <code>kP</code> before reaching for <code>kD</code>. Damping
+                  will not fix a loop that is too stiff.
+                </>
+              ),
             },
             {
-              id: 3,
-              question:
-                "What does the 'D' (Derivative) term help prevent in PID control?",
-              options: [
-                "Steady-state error",
-                "Slow response time",
-                "Overshoot and oscillation",
-                "Motor overheating",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "The Derivative term responds to the rate of change of error, helping reduce overshoot by damping the response as the system approaches the target.",
-            },
-            {
-              id: 4,
-              question:
-                "Which feedforward gain is used to overcome static friction?",
-              options: [
-                "kV - Velocity",
-                "kG - Gravity",
-                "kS - Static",
-                "kA - Acceleration",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "kS (Static) is a constant output applied to overcome static friction and get the mechanism moving. It's the minimum voltage needed to break the mechanism free.",
-            },
-            {
-              id: 5,
-              question:
-                "Which feedforward gain is specifically used for arms and elevators to compensate for gravitational forces?",
-              options: [
-                "kS - Static",
-                "kG - Gravity",
-                "kV - Velocity",
-                "kA - Acceleration",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "kG (Gravity) compensates for gravitational forces acting on the mechanism. This is essential for arms and elevators that fight gravity at different positions.",
-            },
-            {
-              id: 6,
-              question:
-                "What does PID control use to automatically adjust motor output?",
-              options: [
-                "Time-based scheduling",
-                "Sensor feedback to measure error",
-                "Random voltage adjustments",
-                "Manual driver input only",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "PID control uses sensor feedback (encoders, velocity measurements) to calculate the error between target and current position/velocity, then automatically adjusts motor output to minimize that error.",
+              label: "Falls short",
+              term: "Not enough output",
+              body: (
+                <>
+                  Error settles at a constant gap. Check the supply current
+                  limit, then the feedforward terms. This is not what{" "}
+                  <code>kI</code> is for.
+                </>
+              ),
             },
           ]}
         />
-      </section>
+        <p>
+          If the plot looks fine but the mechanism does not, suspect the units.
+          A ratio off by a factor of sixty makes a well-tuned loop hold a
+          position nobody asked for.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          Drive the mechanism to its target in both directions, from a
+          standstill, three times. You are done when all three runs look alike.
+        </p>
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>The measured trace meets the target and stays there.</li>
+            <li>
+              Closed-loop error settles near zero and does not drift back out.
+            </li>
+            <li>Voltage is steady at rest, not chattering.</li>
+            <li>The same gains behave across the full range of travel.</li>
+          </ul>
+        </Box>
+        <p>
+          Write down the Slot 0 gains, the feedback source, the sensor ratios,
+          and the inversions. Save the Tuner X configuration to a file. Workshop
+          2 types these numbers into robot code, and copying them is far cheaper
+          than tuning the same mechanism twice.
+        </p>
+        {/* CTRE's own manual tuning walkthrough, and the reference this lesson
+            is written against. Restoring the original href: a rewrite pointed
+            this at closed-loop-requests.html, which documents the request types
+            rather than the tuning procedure the page teaches. */}
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html"
+          title="CTRE: Manual PID tuning"
+          icon={<BookOpen className="h-5 w-5" />}
+        />
+      </LessonSection>
+
+      {/* The "Check yourself" that `b092234` deleted. The original six
+          questions tested Java on branch 3-PID (`config.Slot0.GravityType`,
+          which gain ships non-zero), which no longer belongs on a page that
+          never opens VS Code. These test the same understanding through the
+          bench procedure instead. */}
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "You set every gain to zero, send a position target, and enable. The arm does nothing. What is wrong?",
+            options: [
+              "Tuner X needs the control request enabled twice",
+              "The CANcoder is not wired into the feedback loop",
+              "Nothing. A zero gain scales its term to nothing, so the output is zero volts",
+              "kP must never start at zero, or the loop cannot begin",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Zero gains mean zero output. That is the intended starting state, and it is why the procedure has you add one term at a time: whatever the mechanism does next, you know which number caused it.",
+          },
+          {
+            id: 2,
+            question:
+              "Your arm holds its angle perfectly at 90 degrees and sags badly at 30. Which term is wrong?",
+            options: [
+              "kD, because the arm is moving more slowly there",
+              "kG, or the gravity type, because the hold varies with angle",
+              "kS, because friction is higher at low angles",
+              "kP, because the error at 30 degrees is larger",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Gravity's pull on an arm changes with the cosine of its angle. A hold that works at one angle and fails at another is the gravity term, so check kG and confirm the gravity type is set to the arm setting rather than the static one.",
+          },
+          {
+            id: 3,
+            question: "What order do you tune in?",
+            options: [
+              "All of them together, raised in proportion",
+              "kD first for safety, then kP, then the feedforwards",
+              "kP, then kI, then kD, then the feedforwards",
+              "kS and kG first, then kP, then kD",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "Feedforward before feedback. Each term is measured with the ones after it still at zero, so tuning out of order means measuring one gain while another is already covering for it.",
+          },
+          {
+            id: 4,
+            question:
+              "The arm reaches its target and then buzzes, sitting still. What do you reach for first?",
+            options: [
+              "Raise kD to damp the buzz",
+              "Add kI to settle the remaining error",
+              "Lower kP, because the loop is too stiff",
+              "Raise kS to push through the friction",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "A buzz at rest is a loop correcting harder than the mechanism can answer. Cut kP first. Damping a loop that is already too stiff adds a second aggressive term to a problem caused by the first.",
+          },
+          {
+            id: 5,
+            question:
+              "You turn the arm a quarter turn by hand and Tuner X reads 15.0. What did you skip?",
+            options: [
+              "SensorToMechanismRatio, so you are reading motor rotations",
+              "The mechanism zero was never set",
+              "Nothing. 15.0 is degrees, not rotations",
+              "The CANcoder magnet is too far from the shaft",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "A quarter turn of the mechanism should read 0.25. Reading 15.0 on a 60:1 arm means the ratio is still 1, so every gain you find would be off by sixty. Fix the units before tuning anything.",
+          },
+          {
+            id: 6,
+            question:
+              "Why write the gains down instead of leaving them saved on the motor?",
+            options: [
+              "The gains only persist until the next power cycle",
+              "Phoenix stores them per laptop, not per device",
+              "Tuner X clears Slot 0 when the CANivore is unplugged",
+              "Workshop 2 puts these numbers into Arm.java by hand",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "The gains do persist on the device. You write them down because the robot code sets them itself, and Workshop 2 has you type these six numbers into the mechanism file. Copying them is much cheaper than tuning the same arm twice.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

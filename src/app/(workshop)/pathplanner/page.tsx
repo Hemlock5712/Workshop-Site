@@ -1,315 +1,279 @@
 import PageTemplate from "@/components/PageTemplate";
-import AlphaStatusNote from "@/components/AlphaStatusNote";
+import Quiz from "@/components/Quiz";
+import LessonSection from "@/components/lesson/LessonSection";
+import FigureGrid from "@/components/lesson/FigureGrid";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
-import CodeBlock from "@/components/CodeBlock";
-import CollapsibleSection from "@/components/CollapsibleSection";
-import Quiz from "@/components/Quiz";
-import Link from "next/link";
+import DocumentationButton from "@/components/DocumentationButton";
+import { MarginNote, Split } from "@/components/lesson/Prose";
+import { BookOpen } from "lucide-react";
 
-export default function AutonomousRoutines() {
+export default function PathPlannerLesson() {
   return (
-    <PageTemplate title="Autonomous: Driving to a Pose">
-      {/* Introduction */}
-      <KeyConceptSection
-        title="Autonomous Without PathPlanner"
-        description="The 2027 template drives itself in autonomous with CTRE's on-board path tools, LinearPath and a DriveToPose command, instead of PathPlanner. A routine is just an @Autonomous OpMode that sequences DriveToPose legs (and mechanism commands) in code. No GUI, no vendor dependency, no AutoBuilder."
-        concept="Autonomous = an @Autonomous OpMode that sequences DriveToPose legs. Each leg drives in a straight line to a field pose using CTRE LinearPath (a profiled feedforward) plus PID feedback on odometry."
-      />
-
-      {/* Section 1: The building block */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          The building block: DriveToPose
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          <code>DriveToPose</code> is a command that drives the robot in a
-          straight line to a target field pose, on odometry. The{" "}
-          <em>feedforward</em> comes from CTRE&apos;s <code>LinearPath</code>, a
-          trajectory generator that produces a smooth trapezoid-profiled
-          velocity toward the goal. Three PID controllers (X, Y, heading) trim
-          the measured pose back onto the profile to cancel drift. You give it a
-          goal <code>Pose2d</code> and it finishes when the profile is done.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="Using DriveToPose"
-          code={`// Drive to a field pose: 3 m downfield, 1 m to the left, facing +90°.
-// Poses are blue-alliance origin (x forward from the blue wall, y to the left).
-Pose2d goal = new Pose2d(3.0, 1.0, Rotation2d.fromDegrees(90));
-
-// DriveToPose requires the drivetrain; it idles the drivetrain when it ends.
-Command leg = new DriveToPose(robot.drivetrain, goal);`}
+    <PageTemplate
+      title="PathPlanner Paths and Autos"
+      lede="PathPlanner is a field editor for shaping reusable path segments and assembling them into an autonomous plan. This lesson covers the robot configuration the editor needs, one drawn path, and event markers. The routine itself belongs to the next lesson."
+      needs={[
+        <>A calibrated swerve drive with trustworthy odometry.</>,
+        <>The robot project opened once in the PathPlanner desktop app.</>,
+        <>
+          The current season field image and the robot&apos;s measured
+          dimensions.
+        </>,
+      ]}
+      time="About 30 minutes"
+    >
+      <Split>
+        <KeyConceptSection
+          description={[
+            "A path is one continuous drive segment. An auto is an ordered routine that can combine paths, waits, and mechanism events.",
+            "For a holonomic drivetrain, direction of travel and robot rotation are separate. The robot can follow a curve while facing a game piece or scoring target.",
+          ]}
+          concept="Plan geometry in the field editor. Keep robot behavior in commands. Connect the two only at deliberate event points."
         />
+        <MarginNote label="THIS LESSON">
+          The goal here is route design and file vocabulary. The next lesson
+          owns the Commands v3 Autonomous OpMode that runs a routine.
+        </MarginNote>
+      </Split>
 
-        <Box variant="alert-info" title="Where the controller internals live">
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            This page is about <em>composing</em> autonomous routines. The
-            inside of the drive-to-a-pose command (the PID feedback, the
-            profiled feedforward, and the field-frame math) is built up step by
-            step on the{" "}
-            <Link
-              href="/drive-to-point"
-              className="text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
-            >
-              Drive to Point
-            </Link>{" "}
-            lesson (basic, three PID controllers) and the{" "}
-            <Link
-              href="/advanced-drive-to-point"
-              className="text-primary-600 underline hover:no-underline hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300 font-medium"
-            >
-              Profiled Drive to Point
-            </Link>{" "}
-            lesson (the <code>LinearPath</code> feedforward version that{" "}
-            <code>DriveToPose</code> uses).
-          </p>
-        </Box>
-      </section>
-
-      {/* Section 2: An autonomous routine */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          An autonomous routine is an @Autonomous OpMode
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Each autonomous routine is its own class tagged{" "}
-          <code>@Autonomous</code>; the driver station lists them by name, and
-          selecting one constructs it. You build the routine in the constructor
-          with <code>Command.sequence(...)</code> (legs run one after another)
-          and <code>Command.parallel(...)</code> (things happen together),
-          schedule it in <code>start()</code>, and cancel it in{" "}
-          <code>end()</code>.
+      <Box
+        variant="alert-warning"
+        tag="2027 ALPHA"
+        title="Do not paste the current RobotContainer examples"
+      >
+        <p>
+          PathPlanner&apos;s published Java integration examples target the
+          classic Commands v2 stack and use <code>edu.wpi.first</code>,
+          <code>RobotContainer</code>, and <code>frc2.Command</code>-style
+          assumptions. This workshop uses Commands v3, OpModes, and
+          <code>org.wpilib</code>. Use the editor in this lesson, but do not add
+          v2 integration code to the 2027 project. The autonomous lesson builds
+          its routine from the v3 commands already supplied by the workshop.
         </p>
+      </Box>
 
-        <CodeBlock
-          language="java"
-          title="AutonomousOpMode.java — two legs in sequence"
-          code={`@Autonomous(name = "Drive To Pose")
-public class AutonomousOpMode extends PeriodicOpMode {
-  private final Command routine;
-
-  public AutonomousOpMode(Robot robot) {
-    // Field poses are blue-origin (x forward from the blue wall, y to the left).
-    Pose2d firstLeg = new Pose2d(2.0, 0.0, Rotation2d.kZero);            // 2 m straight ahead
-    Pose2d secondLeg = new Pose2d(2.0, 1.5, Rotation2d.fromDegrees(90)); // then 1.5 m left, facing +y
-
-    // Each DriveToPose requires the drivetrain; the sequence inherits that
-    // requirement and the scheduler hands the drivetrain off between legs.
-    routine =
-        Command.sequence(
-                new DriveToPose(robot.drivetrain, firstLeg),
-                new DriveToPose(robot.drivetrain, secondLeg))
-            .named("DriveToPose Auto");
-  }
-
-  @Override
-  public void start() {
-    Scheduler.getDefault().schedule(routine); // fires once when the robot is enabled
-  }
-
-  @Override
-  public void end() {
-    Scheduler.getDefault().cancel(routine);
-  }
-}`}
-        />
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Want a second routine? Add another <code>@Autonomous</code> class; it
-          shows up as another choice on the driver station. To do something at a
-          point in the path (the old &quot;event marker&quot;), chain a
-          mechanism command into the sequence: a hold with a call-site{" "}
-          <code>.until(...)</code>, or <code>Command.race(leg, hold)</code> to
-          hold a pose <em>while</em> driving. The team&apos;s worked example of
-          exactly that pattern is{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            DriveStowDriveChainedOpMode.java
-          </a>{" "}
-          in the 2027-Template, alongside its{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/AutonomousOpMode.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            AutonomousOpMode.java
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/commands/DriveToPose.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline"
-          >
-            DriveToPose.java
-          </a>
-          .
-        </p>
-
-        <CollapsibleSection title='Mixing in mechanism actions (the old "event markers")'>
-          <div className="space-y-4">
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Because legs are just commands, you can interleave superstructure
-              actions with drive legs. Run the intake <em>while</em> driving,
-              then score. Remember the intake and scoring presets are holds, so
-              each one needs the right chaining tool:
-            </p>
-            <CodeBlock
-              language="java"
-              title="Drive + act, composed in code"
-              code={`routine =
-    Command.sequence(
-            // Drive to the pickup pose WHILE the intake hold runs. A race
-            // ends when its first member finishes — the hold never does, so
-            // DriveToPose decides, and the race cancels the intake for us.
-            Command.race(
-                new DriveToPose(robot.drivetrain, pickupPose),
-                robot.superstructure.intake()),
-            // Drive to the scoring pose...
-            new DriveToPose(robot.drivetrain, scorePose),
-            // ...then score: the hold gets a finish line at the call site,
-            // plus a timeout seatbelt so a jam can't burn the whole period.
-            robot.superstructure.score()
-                .until(robot.superstructure::isDone)
-                .withTimeout(Seconds.of(2)))
-        .named("Pickup + Score Auto");`}
-            />
-          </div>
-        </CollapsibleSection>
-      </section>
-
-      {/* Section 3: Field frame + alliance */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Field frame &amp; alliance
-        </h2>
-
-        <Box variant="alert-warning" title="Poses are blue-alliance origin">
-          <p className="mb-2 text-sm text-slate-600 dark:text-slate-300">
-            Odometry (and therefore <code>DriveToPose</code>) works in the
-            blue-alliance-origin field frame. The origin does not flip with
-            alliance (this is the Phoenix convention), so write your poses for
-            the blue side.
-          </p>
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            When you&apos;re on the red alliance, flip the goal poses to the red
-            side rather than changing the origin. Keep one source of truth for
-            the flip and apply it where you build the routine.
-          </p>
-        </Box>
-
-        <Box variant="alert-info" title="Seed your starting pose">
-          <p className="text-sm text-slate-600 dark:text-slate-300">
-            <code>DriveToPose</code> follows <em>odometry</em>, so the routine
-            assumes the drivetrain&apos;s pose has been seeded to the real
-            starting pose before auto runs (e.g. from a known start position or
-            a vision estimate). If odometry is wrong at the start, every leg is
-            off by the same amount.
-          </p>
-        </Box>
-      </section>
-
-      {/* Quiz Section */}
-      <section className="flex flex-col gap-8">
-        <AlphaStatusNote />
-
-        <Quiz
-          title="Knowledge Check"
-          questions={[
+      <LessonSection id="path-and-auto" title="Separate a path from an auto">
+        <FigureGrid
+          cols={2}
+          items={[
             {
-              id: 1,
-              question:
-                "How does the 2027 template run autonomous routines (instead of PathPlanner)?",
-              options: [
-                "It still uses PathPlanner's AutoBuilder under the hood",
-                "Each routine is an @Autonomous OpMode that sequences DriveToPose legs in code",
-                "You pick a routine from a dropdown in the code editor before deploying",
-                "Autonomous is generated automatically by Phoenix Tuner X",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "There's no PathPlanner here. Each routine is its own @Autonomous class; the driver station lists them by name. You build the routine with Command.sequence(...) of DriveToPose legs (and mechanism commands), schedule it in start(), and cancel it in end().",
+              label: "Reusable movement",
+              term: "Path",
+              body: "One segment from a start to an end. Waypoints shape the curve; the goal end rotation and rotation targets control where a holonomic robot faces; constraints cap motion.",
             },
             {
-              id: 2,
-              question: "What does DriveToPose use to drive to a field pose?",
-              options: [
-                "A PathPlanner .path file loaded from the deploy directory",
-                "CTRE LinearPath as a profiled feedforward, plus PID feedback (X, Y, heading) on odometry",
-                "Open-loop voltage for a fixed amount of time",
-                "Vision targeting only",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "DriveToPose samples CTRE's LinearPath (a trapezoid-profiled trajectory) for the feedforward velocity that actually moves the robot, and three PID controllers trim the measured pose back onto the profile to cancel drift. It runs on odometry.",
-            },
-            {
-              id: 3,
-              question:
-                "In what field frame should you write the goal poses for DriveToPose?",
-              options: [
-                "Robot-relative (origin at the robot)",
-                "Blue-alliance origin — the origin does not flip with alliance",
-                "Always relative to your own driver station",
-                "Whatever alliance you're on; the origin flips automatically",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Odometry uses the blue-alliance-origin field frame (the Phoenix convention) and the origin does not flip with alliance. Write poses for the blue side and flip the goals to the red side when you're on red.",
-            },
-            {
-              id: 4,
-              question:
-                "How do you trigger a mechanism action partway through an autonomous routine (the old PathPlanner 'event marker')?",
-              options: [
-                "Register it with NamedCommands.registerCommand(...)",
-                "Place an event marker in the PathPlanner GUI",
-                "Chain it in: sequence the hold with a call-site .until(...), or Command.race it with a drive leg",
-                "It's not possible without PathPlanner",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "Legs are just commands, so you compose mechanism actions right into the routine. Give a hold a finish line with .until(mech::isAtTarget) and put it in the sequence, or use Command.race(driveLeg, hold) to hold a pose WHILE driving; the drive leg finishes and cancels the hold.",
-            },
-            {
-              id: 5,
-              question: "How do you add a second autonomous routine?",
-              options: [
-                "Rename the existing routine class and redeploy",
-                "Add another @Autonomous class — it appears as another choice on the driver station",
-                "Add a new .path file in deploy/pathplanner",
-                "Pass a flag to AutoBuilder.buildAuto(...)",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "One @Autonomous class per routine. The framework discovers each annotated class and lists it on the driver station; selecting one constructs that OpMode and schedules its routine.",
+              label: "Complete routine",
+              term: "Auto",
+              body: "An ordered plan made from paths and actions. The same path can appear in several autos without being redrawn.",
             },
           ]}
         />
-      </section>
+        <p>
+          Draw separate paths for actions you may reuse: leave the starting
+          area, reach a pickup, return to score. A single path with many
+          unrelated responsibilities is harder to tune and harder to replace.
+        </p>
+      </LessonSection>
 
-      {/* What's Next Section */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What&apos;s Next?
-        </h2>
-
-        <Box variant="alert-success" title="Up Next: Swerve Calibration">
-          Accurate autonomous depends on accurate odometry. Next you&apos;ll
-          calibrate your swerve drive (tune motor gains, configure slip-current
-          limits, and measure wheel radius) so <code>DriveToPose</code> tracks
-          your field poses precisely.
+      <LessonSection
+        id="configure-project"
+        title="Configure the editor from measurements"
+      >
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Open the root of the robot project, not the <code>src</code> folder.
+          </li>
+          <li>Select the current field and enable holonomic mode.</li>
+          <li>
+            Enter robot mass, moment of inertia, wheel radius, drive gearing,
+            current limit, and module positions from the calibrated drivetrain.
+          </li>
+          <li>
+            Enter conservative default velocity, acceleration, angular velocity,
+            and angular acceleration constraints.
+          </li>
+          <li>
+            Set the robot footprint so the preview shows whether bumpers clear
+            field obstacles.
+          </li>
+        </ol>
+        <Box
+          variant="concept"
+          title="The editor cannot correct a bad measurement"
+        >
+          <p>
+            A path preview is only as honest as the robot configuration. Wheel
+            radius and module position came from Swerve Calibration; do not tune
+            the drawn curve to compensate for odometry that is still wrong.
+          </p>
         </Box>
-      </section>
+      </LessonSection>
+
+      <LessonSection id="draw-one-path" title="Draw one testable path">
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Place the first waypoint at the robot&apos;s known starting pose.
+          </li>
+          <li>
+            Place the final waypoint in open field space, not at a scoring
+            target yet.
+          </li>
+          <li>
+            Adjust control handles so the curve is smooth and does not skim an
+            obstacle.
+          </li>
+          <li>
+            Set the goal end rotation, then add rotation targets only where the
+            robot needs to turn along the way.
+          </li>
+          <li>
+            Apply slower constraints near tight geometry instead of slowing the
+            entire route.
+          </li>
+          <li>
+            Name the segment for its job, such as <code>Leave Start Left</code>,
+            and save it.
+          </li>
+        </ol>
+        <Box
+          variant="alert-warning"
+          tag="FOOTPRINT"
+          title="The center point is not the whole robot"
+        >
+          <p>
+            A curve can clear an obstacle while the bumper clips it. Inspect the
+            full robot preview through turns, especially where rotation and
+            translation happen together.
+          </p>
+        </Box>
+      </LessonSection>
+
+      <LessonSection id="events" title="Add events one at a time">
+        <p>
+          Event markers connect route progress to robot commands. Name the event
+          after an action such as <code>Start Intake</code>, not after a button
+          or motor voltage. First test the path with no events. Then add one
+          event at a time so a mechanism problem cannot masquerade as a
+          path-following problem.
+        </p>
+        <ul className="ml-5 list-disc space-y-2">
+          <li>Use position-based events for actions tied to a location.</li>
+          <li>
+            Use waits for intentional time, not to hide a command with no finish
+            condition.
+          </li>
+          <li>
+            Keep final alignment as its own short segment when precision
+            matters.
+          </li>
+          <li>
+            Give every event command a name that matches the editor exactly.
+          </li>
+        </ul>
+      </LessonSection>
+
+      <LessonSection id="handoff" title="Hand off the route plan">
+        <p>
+          Finish with one tested-looking path segment, a written starting pose,
+          the end pose, constraints, and a short list of intended events. The
+          Autonomous lesson will turn that plan into an <code>@Autonomous</code>
+          OpMode and v3 commands without depending on concepts from Workshops 4
+          or 5.
+        </p>
+        <DocumentationButton
+          href="https://pathplanner.dev/gui-editing-paths-and-autos.html"
+          title="PathPlanner: Editing paths and autos"
+          icon={<BookOpen className="h-5 w-5" />}
+        />
+      </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question: "What separates a path from an auto?",
+            options: [
+              "A path is one continuous drive segment; an auto is an ordered routine built from paths and actions",
+              "A path is the blue alliance route; an auto is its red alliance mirror",
+              "A path belongs to one auto, so a second auto needs its own copy of it",
+              "A path is an auto that has already been tested on the field",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "One path is one trip, from a start pose to an end pose. An auto orders paths, waits, and events into a routine. Because the editor saves them as separate files, the same segment can appear in several autos without being redrawn.",
+          },
+          {
+            id: 2,
+            question:
+              "On a holonomic path, what sets the direction the robot faces?",
+            options: [
+              "The waypoints, because the robot always faces along the curve",
+              "The goal end rotation and the rotation targets, both separate from the waypoints",
+              "The order the waypoints were placed in",
+              "The angular velocity constraint",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Waypoints and their control handles shape where the robot goes. Facing is set apart from them. The goal end rotation fixes where the robot looks at the finish, and a rotation target turns it anywhere along the way. Angular constraints cap how fast it turns, never where it ends up.",
+          },
+          {
+            id: 3,
+            question:
+              "Where do the mass, wheel radius, and module positions in the editor come from?",
+            options: [
+              "The editor measures them from the field image once you pick the season",
+              "Defaults are fine, since the numbers only affect the preview drawing",
+              "Measured values from the calibrated drivetrain, typed into the editor settings",
+              "Whichever numbers make the preview match the curve you drew",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Mass, moment of inertia, wheel radius, gearing, current limit, and module positions all describe the real robot. The editor cannot discover any of them. Wheel radius came out of Swerve Calibration, and module positions match the ones the drive code already uses. Those numbers shape the motion the robot is asked to produce, so a default carries onto the field.",
+          },
+          {
+            id: 4,
+            question:
+              "The drawn curve clears an obstacle. What can still hit it?",
+            options: [
+              "Nothing, as long as the curve itself is clear",
+              "The wheels, since module positions are left out of the preview",
+              "Nothing, because the editor refuses to save a path whose preview clips a wall",
+              "The bumpers, because the curve tracks the robot center and not its outline",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "The curve is the path of one point, the center of the robot. Set the bumper footprint and watch the whole outline through the preview. A corner sweeps wide where rotation and translation happen together, so a clear-looking line can still clip a wall. The editor checks nothing for you, and it saves the path either way.",
+          },
+          {
+            id: 5,
+            question:
+              "You have drawn a new path. When do the event markers go on?",
+            options: [
+              "Before the first test, so the path and the mechanisms get tested together",
+              "After the path drives repeatably, one event at a time",
+              "Never on a path; markers belong to the auto instead",
+              "Last, once the whole routine is competition ready",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Test the path with nothing on it first, then add one event at a time. An intake that misbehaves looks exactly like a path-following problem. Debug them together and you will redraw a curve that was never wrong. Markers ride on the path itself, so they follow that segment into every auto that uses it.",
+          },
+          {
+            id: 6,
+            question: "How should an event marker be named?",
+            options: [
+              "After the action it starts, spelled the same as the command it runs",
+              "After the button a driver would press to do it by hand",
+              "After the motor output it applies, such as forty percent",
+              "After the path it sits on, so markers sort by path",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "The name you type in the editor is the string the robot code looks up, so the two have to be spelled identically. Rename one side and the marker fires nothing while the path drives on. Start Intake still describes the action next season. A button or a voltage describes the wiring you happen to have today.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

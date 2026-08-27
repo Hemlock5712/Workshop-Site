@@ -138,13 +138,13 @@ export const CommandFrameworkTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Robot code has one hard problem. Everything wants to happen at once. Commands version three untangles it with three small ideas and one loop. Every step of this workshop builds on that framework.",
+      text: "Robot code has one hard problem: everything wants to happen at the same instant. The driver wants the arm up, the auto routine wants it stowed, and both of them are asking every twenty milliseconds. Version three answers that with three ideas and a loop.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "trigger",
-      text: "First idea: the trigger. A trigger is a yes-or-no signal, like a button. When it turns true, something should start. The trigger is the WHEN.",
+      text: "A trigger just answers true or false, over and over. Button down. Beam broken. It doesn't do anything about it; it only marks the moment.",
       camera: { x: 2580, y: 400, width: 1500, height: 820 },
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "trigger" } },
@@ -152,7 +152,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "scheduler",
-      text: "Watching every trigger is the scheduler. The scheduler is the loop at the heart of the robot. Each tick of the loop, it decides what starts, what keeps running, and what stops.",
+      text: "Something has to be watching. That's the scheduler, and it wakes up every tick to ask which commands should start, which should keep going, and which just lost their claim.",
       camera: { x: 3100, y: 380, width: 1600, height: 860 },
       events: [
         {
@@ -165,7 +165,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "command-mechanism",
-      text: "When a trigger fires, the scheduler starts a command. A command is one action the robot can do — the HOW. Every command names the mechanism it needs — the WHAT, one physical part like the arm. The scheduler tracks who owns what. So two commands can never fight over one motor.",
+      text: "The scheduler answers by starting a command, and every command has to name the Mechanism it drives. That naming is the whole trick. One owner per part, enforced, so your auto and your driver can't both be shoving voltage at the same arm.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "command" } },
@@ -179,7 +179,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here is a real mechanism. Look at the command called scoring. It is built with runRepeatedly. That re-sends the arm's target every tick, forever. A command like this never finishes on its own. We call it a hold. That is why its name ends in hold.",
+      text: "Real code, real template. The scoring factory hands back a command built on runRepeatedly, so it keeps re-issuing the same request and has no ending at all. We call that a hold, and roughly every command you write this season will be one.",
       camera: CODE,
       events: [
         {
@@ -193,7 +193,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "compose",
-      text: "Routines are chains of commands. Command dot sequence runs steps one after another. But here is the one rule. A hold never finishes, so nothing may wait on a hold. Dot until gives a hold a finish line. And a race means: do this step while holding.",
+      text: "Routines are chains. Command.sequence runs steps in order, which is where the one rule bites: a hold in a sequence never lets the next step start. So the caller pins on a finish line, and a race lets a drive run while the arm holds.",
       camera: CODE2,
       events: [
         {
@@ -207,7 +207,7 @@ export const CommandFrameworkTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Mechanisms first, then commands, then triggers. That is the order the whole workshop builds in. See the full framework lesson at frc5712.com.",
+      text: "Build in that order and the code writes itself. Build in the other order and you'll spend a week untangling what owns the arm.",
       camera: END,
       holdAfter: 1.2,
     },

@@ -125,13 +125,13 @@ export const SwerveDriveTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Writing swerve code by hand is a mountain of tricky math. Wheel angles, wheel speeds, position tracking. CTRE's generator writes all of it for you. Four modules on a chassis. Here's the fastest path to a robot you can actually drive.",
+      text: "Swerve math is genuinely nasty. Module angles, wheel speeds, and a position estimate that has to survive every one of them fighting each other. Nobody on your team needs to write it. CTRE's generator already did.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "tuner",
-      text: "Start in Phoenix Tuner X, CTRE's setup app. Connect to the robot. Give every drive motor, steer motor, and encoder its own CAN ID — that's its name on the network. Then open Mechanisms. The swerve wizard takes over.",
+      text: "Open Tuner X, plug into the robot, and give every drive motor, steer motor, and encoder its own CAN ID. Duplicate IDs eat a Friday night. Then hit Mechanisms and let the swerve wizard do the interview.",
       camera: TUNER_CLOSEUP,
       events: [
         {
@@ -144,7 +144,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "generate",
-      text: "Feed it your robot's measurements: wheelbase, trackwidth, wheel diameter, and gear ratio. It generates a complete CommandSwerveDrivetrain class. Drive code, simulation, and odometry — position tracking — are already wired in.",
+      text: "Feed it wheelbase, trackwidth, wheel diameter, gear ratio. It generates a whole CommandSwerveDrivetrain, with simulation and odometry already wired in. That second part is what teams usually burn a week on.",
       camera: GENERATED_CLOSEUP,
       events: [
         {
@@ -157,7 +157,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "wrap-calibrate",
-      text: "In Commands v3, you wrap that class in a DriveMechanism. It owns the drivetrain and hands out the drive commands. Then you calibrate. Calibration means measuring the real robot: motor gains, slip current, wheel radius. That turns generated code into a drivetrain you can trust.",
+      text: "In Commands v3 you wrap the generated class in a DriveMechanism, so the rest of your code asks it for commands instead of poking the drivetrain directly. Then calibration. A wheel radius off by two percent becomes visible drift halfway down the field.",
       camera: DIAGRAM,
       events: [
         {
@@ -176,7 +176,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "drive",
-      text: "Driving it takes one request. FieldCentric means you steer relative to the field, not the robot's nose. Give it your joystick values — velocity X, velocity Y, and turn rate. The drivetrain solves every module angle and wheel speed, every loop.",
+      text: "One request drives the whole thing. FieldCentric means forward is forward from where the driver stands, no matter which way the bumper is pointed. Hand it two velocities and a turn rate. Every module angle gets solved for you, every loop.",
       camera: CODE,
       events: [
         {
@@ -190,7 +190,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "precision",
-      text: "One change makes it precise. Switch the drive request to closed-loop Velocity. Closed-loop means each wheel checks its real speed and fixes it. You can drop the deadband too — that dead zone near the stick's center. Low-speed control gets crisp.",
+      text: "Precision is one word away. Swap the request type to Velocity, and each wheel starts checking its real speed against what you asked for instead of trusting a voltage. Now delete the deadband. Slow, careful moves stop feeling like guesswork.",
       camera: CODE,
       events: [
         {
@@ -204,7 +204,7 @@ export const SwerveDriveTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "Generate it, wrap it, calibrate it, drive it. The full walkthrough is waiting at frc5712.com. There's a complete baseline project you can download too. Your swerve drivetrain is one wizard away.",
+      text: "A wizard, a wrapper class, and an afternoon with a tape measure. That's the difference between a drivetrain your drivers trust and one that mysteriously crab-walks left. Download the baseline project and go drive it.",
       camera: END,
       holdAfter: 1.2,
     },

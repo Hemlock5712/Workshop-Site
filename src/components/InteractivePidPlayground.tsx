@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
+import { readPlotTheme } from "@/lib/plotTheme";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import { useShallow } from "zustand/react/shallow";
@@ -36,7 +37,6 @@ type GainKey = keyof ControllerGains;
 interface SliderProps {
   label: string;
   unit: string;
-  axisColor: string;
   value: number;
   min: number;
   max: number;
@@ -49,7 +49,6 @@ interface SliderProps {
 function Slider({
   label,
   unit,
-  axisColor,
   value,
   min,
   max,
@@ -77,17 +76,15 @@ function Slider({
         <div className="flex items-baseline gap-1.5">
           <label
             htmlFor={id}
-            className="font-mono text-[13px] font-semibold"
-            style={{ color: axisColor }}
+            className="font-mono text-note font-semibold"
+            style={{ color: "var(--tx)" }}
           >
             {label}
           </label>
-          <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
-            {unit}
-          </span>
+          <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
         <span
-          className="font-mono text-[12px] tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
+          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
           aria-hidden
         >
           {value.toFixed(precision)}
@@ -109,7 +106,6 @@ function Slider({
         className="pid-slider w-full"
         style={
           {
-            ["--slider-accent" as string]: axisColor,
             ["--slider-fill" as string]: `${pct}%`,
           } as React.CSSProperties
         }
@@ -143,7 +139,6 @@ const REGIME_STYLE: Record<Regime, { label: string; cssVar: string }> = {
 interface SliderConfig {
   key: GainKey;
   label: string;
-  axisColor: string;
   ariaDescription: string;
 }
 
@@ -151,19 +146,16 @@ const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kP",
     label: "kP",
-    axisColor: "#dc2626",
     ariaDescription: "Proportional gain.",
   },
   {
     key: "kI",
     label: "kI",
-    axisColor: "#ca8a04",
     ariaDescription: "Integral gain.",
   },
   {
     key: "kD",
     label: "kD",
-    axisColor: "#2563eb",
     ariaDescription: "Derivative gain.",
   },
 ];
@@ -172,19 +164,16 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kS",
     label: "kS",
-    axisColor: "#7c3aed",
     ariaDescription: "Static friction feedforward.",
   },
   {
     key: "kV",
     label: "kV",
-    axisColor: "#0891b2",
     ariaDescription: "Velocity feedforward.",
   },
   {
     key: "kG",
     label: "kG",
-    axisColor: "#16a34a",
     ariaDescription: "Gravity feedforward.",
   },
 ];
@@ -204,7 +193,6 @@ interface ArmVizProps {
   initialDeg: number;
   durationSec: number;
   reducedMotion: boolean;
-  isDark: boolean;
 }
 
 const ARM_VB = 220;
@@ -219,7 +207,6 @@ function ArmViz({
   initialDeg,
   durationSec,
   reducedMotion,
-  isDark,
 }: ArmVizProps) {
   const armLineRef = useRef<SVGLineElement>(null);
   const ballRef = useRef<SVGCircleElement>(null);
@@ -277,12 +264,12 @@ function ArmViz({
   const tx = ARM_PIVOT.x + ARM_LENGTH * Math.cos(tRad);
   const ty = ARM_PIVOT.y - ARM_LENGTH * Math.sin(tRad);
 
-  const gradStart = isDark ? "#9fbcd9" : "#264060";
-  const gradEnd = isDark ? "#c1d4e7" : "#4a73a0";
-  const ghost = isDark ? "#64748b" : "#94a3b8";
-  const tickColor = isDark ? "#475569" : "#cbd5e1";
-  const mount = isDark ? "#475569" : "#cbd5e1";
-  const ballStroke = isDark ? "#0d233f" : "#fff";
+  const gradStart = "var(--lift)";
+  const gradEnd = "color-mix(in oklch, var(--lift) 55%, var(--tx))";
+  const ghost = "var(--tx3)";
+  const tickColor = "var(--rule)";
+  const mount = "var(--rule)";
+  const ballStroke = "var(--bg)";
 
   // Half-circle protractor sweep from -90° (bottom) to +90° (top)
   const arcStart = {
@@ -418,18 +405,8 @@ function ArmViz({
         strokeWidth={1.75}
       />
 
-      <circle
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y}
-        r={4.5}
-        fill={isDark ? "#cbd5e1" : "#0d233f"}
-      />
-      <circle
-        cx={ARM_PIVOT.x}
-        cy={ARM_PIVOT.y}
-        r={1.75}
-        fill={isDark ? "#0d233f" : "#cbd5e1"}
-      />
+      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={4.5} fill={"var(--tx2)"} />
+      <circle cx={ARM_PIVOT.x} cy={ARM_PIVOT.y} r={1.75} fill={"var(--bg2)"} />
 
       {/* Live angle readout — bottom-right corner */}
       <text
@@ -439,7 +416,7 @@ function ArmViz({
         fontSize={13}
         fontWeight={600}
         textAnchor="end"
-        fill={isDark ? "#e2e8f0" : "#0d233f"}
+        fill={"var(--tx)"}
         fontFamily="ui-monospace, monospace"
       >
         0°
@@ -455,7 +432,6 @@ export default function InteractivePidPlayground() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const isDark = mounted && resolvedTheme === "dark";
 
   const gains = usePidStore(
     useShallow((s) => ({
@@ -541,22 +517,29 @@ export default function InteractivePidPlayground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const plotRef = useRef<uPlot | null>(null);
 
-  const accent = useMemo(
-    () => ({
-      target: isDark ? "#64748b" : "#94a3b8",
-      setpoint: isDark ? "#f59e0b" : "#b45309",
-      actual: isDark ? "#7da4cb" : "#264060",
-      actualFillTop: isDark
-        ? "rgba(125, 164, 203, 0.28)"
-        : "rgba(38, 64, 96, 0.16)",
-      actualFillBottom: isDark
-        ? "rgba(125, 164, 203, 0)"
-        : "rgba(38, 64, 96, 0)",
-      grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
-      text: isDark ? "#94a3b8" : "#64748b",
-    }),
-    [isDark]
-  );
+  // Resolved from the `--plot-*` tokens, not branched on `isDark`.
+  //
+  // It has to be *resolved*: uPlot paints to a 2D canvas context, and
+  // `strokeStyle = "var(--accent)"` is not a colour a canvas can parse — it
+  // silently draws nothing. The SVG arm beside this chart can and does use
+  // `var()` directly, because SVG is DOM and resolves it normally.
+  //
+  // `resolvedTheme` stays in the dependency list as the *signal* that the
+  // class on <html> changed and the values need re-reading; the values
+  // themselves are no longer a copy kept in this file.
+  const accent = useMemo(() => {
+    const t = readPlotTheme();
+    return {
+      target: t.target,
+      setpoint: t.setpoint,
+      actual: t.actual,
+      actualFillTop: t.actualFill,
+      actualFillBottom: t.actualFade,
+      grid: t.grid,
+      text: t.ink,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedTheme, mounted]);
 
   const buildPlot = useCallback(() => {
     if (!containerRef.current) return;
@@ -686,7 +669,6 @@ export default function InteractivePidPlayground() {
         key={cfg.key}
         label={cfg.label}
         unit={range.unit}
-        axisColor={cfg.axisColor}
         value={gains[cfg.key]}
         min={range.min}
         max={range.max}
@@ -699,15 +681,15 @@ export default function InteractivePidPlayground() {
   };
 
   return (
-    <section className="module relative p-5 sm:p-6" style={{ paddingTop: 40 }}>
+    <section className="module relative" style={{ paddingTop: 40 }}>
       <span className="module-tag">PID · LIVE TUNER</span>
       {/* ── Toolbar ──────────────────────────── */}
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
           <span
-            className="font-mono inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-[11px] font-semibold"
+            className="font-mono inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 text-meta font-semibold"
             style={{
-              background: "var(--bg-elev)",
+              background: "var(--bg2)",
               border: `1px solid ${regimeStyle.cssVar}`,
               color: regimeStyle.cssVar,
               letterSpacing: "0.08em",
@@ -727,29 +709,29 @@ export default function InteractivePidPlayground() {
             {regimeStyle.label}
           </span>
           <div
-            className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
+            className="flex items-center gap-x-3 text-meta text-[var(--tx2)] tabular-nums"
             aria-label="Performance metrics"
           >
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.overshootDeg.toFixed(1)}°
               </span>{" "}
               overshoot
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.steadyStateErrorDeg.toFixed(1)}°
               </span>{" "}
               final err
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {settlingStr}
               </span>{" "}
               settle
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.peakVoltage.toFixed(1)} V
               </span>{" "}
               peak
@@ -759,7 +741,7 @@ export default function InteractivePidPlayground() {
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-[11px] font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+          className="inline-flex items-center gap-1 rounded-md border border-[var(--rule)] bg-[var(--bg2)] px-2 py-1 text-meta font-medium text-[var(--tx)] transition-colors hover:bg-[var(--rule)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1"
           aria-label="Reset all gains and the target to defaults"
         >
           <RotateCcw className="h-3 w-3" />
@@ -768,10 +750,10 @@ export default function InteractivePidPlayground() {
       </header>
 
       {/* ── Target picker ───────────────────── */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--rule)] bg-[var(--bg)] px-3 py-2">
         <label
           htmlFor="pid-target"
-          className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
+          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--tx2)]"
         >
           <TargetIcon className="h-3.5 w-3.5" aria-hidden />
           Target
@@ -791,32 +773,31 @@ export default function InteractivePidPlayground() {
           className="pid-slider min-w-0 flex-1"
           style={
             {
-              ["--slider-accent" as string]: "#475569",
+              ["--slider-accent" as string]: "var(--accent)",
               ["--slider-fill" as string]: `${((targetDeg - TARGET_RANGE_DEG.min) / (TARGET_RANGE_DEG.max - TARGET_RANGE_DEG.min)) * 100}%`,
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-[12px] tabular-nums text-[var(--foreground)]">
+        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
           {targetDeg}°
         </span>
-        <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
+        <span className="font-mono text-micro text-[var(--tx2)]">
           {(targetDeg / 360).toFixed(3)} rot
         </span>
       </div>
 
       {/* ── Visualization ───────────────────── */}
       <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:gap-5">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:aspect-square md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:aspect-square md:p-3">
           <ArmViz
             responseTheta={response.theta}
             targetDeg={physicsTargetDeg}
             initialDeg={initialDeg}
             durationSec={physics.durationSec}
             reducedMotion={reducedMotion}
-            isDark={isDark}
           />
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:p-3">
           <div
             ref={containerRef}
             className="pid-plot w-full"
@@ -824,7 +805,7 @@ export default function InteractivePidPlayground() {
             aria-label={`Response plot for a step to ${targetDeg} degrees. Dashed line is the target, dotted is the profile setpoint (stepping from zero to the target at one second), solid is the actual arm angle over five seconds.`}
             role="img"
           />
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--tx2)]">
             <span className="inline-flex items-center gap-1">
               <span
                 aria-hidden
@@ -858,9 +839,9 @@ export default function InteractivePidPlayground() {
       </div>
 
       {/* ── Tuning hint ─────────────────────── */}
-      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
         <Lightbulb
-          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
         />
         <p>
@@ -884,17 +865,13 @@ export default function InteractivePidPlayground() {
       {/* ── Sliders ─────────────────────────── */}
       <div className="mt-5 grid gap-5 md:grid-cols-2">
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
-            Feedback · PID
-          </h3>
+          <div className="micro mb-2">Feedback · PID</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDBACK_SLIDERS.map(renderSlider)}
           </div>
         </div>
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
-            Feedforward
-          </h3>
+          <div className="micro mb-2">Feedforward</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDFORWARD_SLIDERS.map(renderSlider)}
           </div>
@@ -902,14 +879,13 @@ export default function InteractivePidPlayground() {
       </div>
 
       {/* ── Footer ──────────────────────────── */}
-      <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+      <p className="mt-4 max-w-[70ch] text-meta text-[var(--tx2)]">
         2 kg · 0.4 m arm on a Kraken X44 + 25:1 reduction (4.11 N·m stall, 7758
         RPM free per CTRE dyno data; ≈ 103 N·m / 310 RPM at the arm; back-EMF
         modelled, ±12 V saturation). Gains use Phoenix 6 / WPILib mechanism-side
         units. Drop these values straight into a{" "}
-        <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
-        with{" "}
-        <span className="font-mono text-[var(--foreground)]">
+        <span className="font-mono text-[var(--tx)]">Slot0Configs</span> with{" "}
+        <span className="font-mono text-[var(--tx)]">
           SensorToMechanismRatio&nbsp;=&nbsp;25
         </span>
         .

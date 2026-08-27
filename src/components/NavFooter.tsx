@@ -1,20 +1,29 @@
 "use client";
 
+import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import MarkCompleteToggle from "@/components/MarkCompleteToggle";
+import { useProgress } from "@/lib/useProgress";
 import {
-  LESSONS,
   getPreviousLesson,
   getNextLesson,
+  getLessonNumber,
   type Lesson,
 } from "@/data/lessons";
 
-interface NavOverride {
-  href: string;
+/**
+ * An explicit prev/next link, for the few pages that are not a plain step in
+ * the lesson sequence. Exported because `PageTemplate` accepts the same shape
+ * and passes it straight through — it used to declare its own copy, which
+ * silently drifted the moment `href` became a `Route` here.
+ */
+export interface NavOverride {
+  /** Route, not a bare string — see the note on `Lesson.slug`. */
+  href: Route;
   title: string;
-  /** Optional 1-based index shown as "NN" in the engineering label. */
-  index?: number;
+  /** Course position, zero-padded. Derived when the link comes from LESSONS. */
+  num?: string;
 }
 
 interface NavFooterProps {
@@ -22,27 +31,28 @@ interface NavFooterProps {
   nextPage?: NavOverride | null;
 }
 
-function lessonToOverride(l: Lesson | null): NavOverride | null {
-  if (!l) return null;
-  const idx = LESSONS.findIndex((x) => x.slug === l.slug);
+function lessonToOverride(lesson: Lesson | null): NavOverride | null {
+  if (!lesson) return null;
   return {
-    href: l.slug,
-    title: l.title,
-    index: idx >= 0 ? idx + 1 : undefined,
+    href: lesson.slug,
+    title: lesson.title,
+    num: getLessonNumber(lesson.slug) ?? undefined,
   };
 }
 
-const padIndex = (n: number | undefined) =>
-  n === undefined ? "" : String(n).padStart(2, "0");
-
 /**
- * Bottom prev/next row. Each side renders as a wide, two-line panel
- * with a mono micro-label ("← PREVIOUS · 08") and the lesson title.
- * Next button uses the accent treatment (amber border + accent-soft
- * background) so the forward direction reads as the primary action.
+ * The bottom of a lesson: mark-complete, then where to go next.
+ *
+ * Two halves split by a hairline, no boxes. Forward gets the accent label and
+ * the right-hand side; back is present but quiet. Advancing also marks the
+ * lesson complete — a student who read to the end and clicked "next" has
+ * already told you they're done, and asking them to press a second button is
+ * a checkbox for its own sake. The explicit toggle stays for the other cases:
+ * skipping a lesson, or un-marking one you want to redo.
  */
 export default function NavFooter({ previousPage, nextPage }: NavFooterProps) {
   const pathname = usePathname() ?? "";
+  const { isCompleted, markComplete } = useProgress();
 
   const prev =
     previousPage === undefined
@@ -53,67 +63,78 @@ export default function NavFooter({ previousPage, nextPage }: NavFooterProps) {
       ? lessonToOverride(getNextLesson(pathname))
       : nextPage;
 
+  if (!prev && !next) return null;
+
+  const done = isCompleted(pathname);
+
   return (
-    <div
-      className="mt-10 pt-8"
-      style={{ borderTop: "1px solid var(--line-soft)" }}
-    >
-      <div className="mb-4 flex justify-center">
+    <div className="measure-wide mt-16">
+      <div className="mb-6 flex justify-start">
         <MarkCompleteToggle />
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+
+      <nav
+        aria-label="Lesson navigation"
+        className="grid grid-cols-1 sm:grid-cols-2"
+        style={{ borderTop: "1px solid var(--rule)" }}
+      >
         {prev ? (
           <Link
             href={prev.href}
-            className="group flex flex-col gap-1 rounded-md p-4 transition-colors"
-            style={{
-              background: "var(--bg-elev)",
-              border: "1px solid var(--line)",
-            }}
+            className="flex flex-col gap-2 py-[26px] pr-7 transition-colors hover:text-[var(--accent)]"
+            style={{ color: "var(--tx)" }}
           >
-            <span
-              className="mono"
-              style={{
-                fontSize: 10.5,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                color: "var(--fg-dim)",
-              }}
-            >
-              ← Previous{prev.index ? ` · ${padIndex(prev.index)}` : ""}
+            <span className="micro">
+              ← {prev.num ? `Lesson ${prev.num}` : "Previous"}
             </span>
-            <span style={{ fontSize: 14, fontWeight: 500 }}>{prev.title}</span>
+            <span
+              className="display"
+              style={{ fontSize: "var(--text-title)", lineHeight: 1.1 }}
+            >
+              {prev.title}
+            </span>
           </Link>
         ) : (
-          <div />
+          <span aria-hidden="true" />
         )}
 
         {next ? (
           <Link
             href={next.href}
-            className="group flex flex-col items-end gap-1 rounded-md p-4 text-right transition-colors"
+            onClick={() => markComplete(pathname)}
+            className="flex flex-col items-start gap-2 py-[26px] transition-colors hover:text-[var(--accent)] sm:items-end sm:border-l sm:pl-7 sm:text-right"
             style={{
-              background: "var(--accent-soft)",
-              border: "1px solid var(--accent)",
+              color: "var(--tx)",
+              borderLeftColor: "var(--rule-soft)",
             }}
           >
+            <span className="micro" style={{ color: "var(--accent)" }}>
+              {next.num ? `Lesson ${next.num}` : "Next"} →
+            </span>
             <span
-              className="mono"
+              className="display"
+              style={{ fontSize: "var(--text-title)", lineHeight: 1.1 }}
+            >
+              {next.title}
+            </span>
+            <span
+              className="mono mt-[3px]"
               style={{
-                fontSize: 10.5,
-                letterSpacing: "0.08em",
+                fontSize: "var(--text-micro)",
+                letterSpacing: "0.12em",
                 textTransform: "uppercase",
-                color: "var(--accent)",
+                color: done ? "var(--accent)" : "var(--tx3)",
               }}
             >
-              Next{next.index ? ` · ${padIndex(next.index)}` : ""} →
+              {done
+                ? "This lesson is marked complete"
+                : "Continuing marks this lesson complete"}
             </span>
-            <span style={{ fontSize: 14, fontWeight: 500 }}>{next.title}</span>
           </Link>
         ) : (
-          <div />
+          <span aria-hidden="true" />
         )}
-      </div>
+      </nav>
     </div>
   );
 }

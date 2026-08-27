@@ -156,13 +156,13 @@ export const AddingCommandsTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "What can your robot do? Each answer is a command. A command is a named action from one robot part — a mechanism. On our team, almost every command is a hold. A hold keeps the arm at a target, and it never finishes.",
+      text: "Almost every command on our robot is a hold. It drives the arm to an angle, then keeps on driving it there, forever, until something takes the command away. That word forever does more damage than anything else in the framework.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "shapes",
-      text: "Every mechanism command starts the same way. One method, runRepeatedly, re-sends a target forever. That command is a hold. You can bind a hold to a button. You can chain it with a finish line. Or you can race it against a step. Three uses, one hold.",
+      text: "One factory, three jobs. Write the hold once and you can bind it to a button, chain it into an auto with a finish line bolted on, or race it against another step so the step decides when both quit. Same command every time.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "shapes", step: 1, at: { word: "hold" } },
@@ -183,7 +183,7 @@ export const AddingCommandsTrailer: TrailerScript = {
     },
     {
       id: "set-and-finish",
-      text: "Here is the recipe. runRepeatedly re-sends set position over and over, forever. The name ends with the word hold, so you can spot it on the dashboard. The setter stays private. The only way to move the arm is through a command.",
+      text: "Two lines of real work. runRepeatedly wraps the setter and re-fires it every tick, and the hold suffix on the name is what tells you at eleven at night which step your auto died on. The setter stays private, and rookies always fight that.",
       camera: CODE1,
       events: [
         {
@@ -203,7 +203,7 @@ export const AddingCommandsTrailer: TrailerScript = {
     },
     {
       id: "set-and-park",
-      text: "Now the one rule. A hold never finishes, so nothing may ever wait on a hold. Watch this auto. The sequence reaches spin up, a hold, and sticks there forever. On the dashboard, the stuck step's name says hold. That name is your debugging clue.",
+      text: "In autonomous it costs you the whole period. Watch: the routine spins up the flywheel and then waits for a hold to finish, which it will never do. Fifteen seconds of a robot sitting still with a spinning wheel and a preload it never shot.",
       camera: CODE2,
       events: [
         {
@@ -216,7 +216,7 @@ export const AddingCommandsTrailer: TrailerScript = {
     },
     {
       id: "set-and-wait",
-      text: "The fix happens where you use the hold, not inside it. Dot until gives the hold a finish line: until the flywheel is at speed. A timeout is the seatbelt. And race means: do this step while holding.",
+      text: "The fix goes at the call, not in the factory. Spin up until the wheel says it's at speed, with a timeout for the day the sensor lies. Then the intake feeds while the spin-up keeps running underneath.",
       camera: { x: 7620, y: 480, width: 1500, height: 680 },
       events: [
         {
@@ -230,13 +230,13 @@ export const AddingCommandsTrailer: TrailerScript = {
     },
     {
       id: "habits",
-      text: "Two last habits. A hold only ends when something cancels it. Need cleanup on the way out? Put it in whenCanceled. And bind a hold with whileTrue. Release the button, and the mechanism's default command takes back over.",
+      text: "Two habits and we're done. If a mechanism needs anything done on the way out, whenCanceled is the hook. And bind holds with whileTrue, so letting go of the button hands the arm back to its default.",
       camera: DIAGRAM,
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "Holds, finish lines, and races. That is the whole everyday toolkit. See the full lesson, with real template code, at frc5712.com.",
+      text: "So: never wait on a hold. Put the finish line at the call, and the dashboard will tell you the day you forget.",
       camera: END,
       holdAfter: 1.2,
     },

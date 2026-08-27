@@ -1,172 +1,345 @@
+import Link from "next/link";
 import PageTemplate from "@/components/PageTemplate";
-import ContentCard from "@/components/ContentCard";
+import LessonSection from "@/components/lesson/LessonSection";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import GlossaryTerm from "@/components/GlossaryTerm";
-import { ClipboardCheck } from "lucide-react";
+import Box from "@/components/Box";
+
+const linkStyle = "text-[var(--accent)] underline hover:no-underline";
 
 export default function Prerequisites() {
   return (
-    <PageTemplate title="Prerequisites">
-      <div className="grid gap-6">
-        {/* Software Requirements */}
-        <ContentCard>
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-3">
-            <ClipboardCheck className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-            Software Requirements
-          </h2>
+    <PageTemplate
+      title="Prerequisites"
+      lede="The software half goes on your laptop. The hardware half sits on the bench in front of you. Workshop 1 needs both, and there is no code on this page."
+      needs={[
+        <>A laptop you can install software on.</>,
+        <>About an hour, most of it waiting on downloads.</>,
+        <>
+          The arm or flywheel from <strong>Mechanism CAD</strong>, built and
+          wired.
+        </>,
+      ]}
+      time="About an hour"
+    >
+      <Split>
+        <ProseBlock>
+          <p>
+            Work through both lists before{" "}
+            <Link href="/hardware" className={linkStyle}>
+              Hardware Setup
+            </Link>
+            , the first page that asks you to plug something in. Nothing here is
+            hard. It is a long wait on installers.
+          </p>
+          <p>
+            Workshop 1 has no software-only path. Every page after Hardware
+            Setup assumes a real motor you can power up and watch turn.
+          </p>
+        </ProseBlock>
+        <MarginNote label="Start Game Tools now">
+          Game Tools is the National Instruments download, and it is the slow
+          one. Kick it off before you read the rest of this page and it will be
+          finished by the time you need it.
+        </MarginNote>
+      </Split>
 
-          <div className="space-y-6">
-            <div className="border-l-4 border-purple-200 dark:border-purple-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html"
-                  className="text-purple-600 underline hover:no-underline dark:text-purple-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  WPILib
-                </a>{" "}
-                &{" "}
-                <a
-                  href="https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html#553883"
-                  className="text-purple-600 underline hover:no-underline dark:text-purple-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Game Tools
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Install <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> VS
-                Code and National Instruments Game Tools. On this stack you only
-                need Game Tools for the <strong>Driver Station</strong>, the
-                program that enables and disables the robot.
-              </p>
-            </div>
-
-            <div className="border-l-4 border-blue-200 dark:border-blue-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://apps.microsoft.com/detail/9NVV4PWDW27Z"
-                  className="text-blue-600 underline hover:no-underline dark:text-blue-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Phoenix Tuner X
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                You&apos;ll use this to configure and tune{" "}
-                <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm> and
-                other CTRE hardware.
-              </p>
-            </div>
-
-            <div className="border-l-4 border-indigo-200 dark:border-indigo-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://github.com/Mechanical-Advantage/AdvantageScope/releases"
-                  className="text-indigo-600 underline hover:no-underline dark:text-indigo-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  AdvantageScope
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                A viewer for robot logs and data. You&apos;ll need it for
-                debugging and tuning. A lite version comes preinstalled with
-                WPILib, but we recommend downloading the latest full version
-                from the GitHub releases page.
-              </p>
-            </div>
-
-            <div className="border-l-4 border-green-200 dark:border-green-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://git-scm.com/downloads"
-                  className="text-green-600 underline hover:no-underline dark:text-green-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Git
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Use Git for version control. Summarize changes clearly (e.g.,
-                &apos;Add drivetrain PID tuning logic&apos;).
-              </p>
-            </div>
-
-            <div className="border-l-4 border-orange-200 dark:border-orange-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://github.com/Hemlock5712/2027-Template"
-                  className="text-orange-600 underline hover:no-underline dark:text-orange-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  WPILib 2027 Alpha stack (2027-Template)
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                This workshop runs on the WPILib <strong>2027 alpha</strong>, an
-                early-release version of FRC&apos;s programming toolkit. It uses{" "}
-                <strong>Java 25</strong> and deploys to{" "}
-                <strong>SystemCore</strong>, the robot&apos;s onboard computer.
-                Start from the team&apos;s 2027-Template, a ready-made robot
-                project you copy. One catch: pick the <code>2027-dev</code>{" "}
-                branch (a branch is one version of the code; <code>main</code>{" "}
-                is still last season&apos;s).{" "}
-                <strong>PathPlanner is not required</strong>; driving in auto is
-                covered in Workshop #2.
-              </p>
-            </div>
-
-            <div className="border-l-4 border-red-200 dark:border-red-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://github.com/Gold872/elastic-dashboard"
-                  className="text-red-600 underline hover:no-underline dark:text-red-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Elastic Dashboard
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Drivers use a dashboard to select autonomous routines, check for
-                motor errors, and monitor the robot during a match.
-              </p>
-            </div>
-
-            <div className="border-l-4 border-yellow-200 dark:border-yellow-900 pl-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                <a
-                  href="https://www.codecademy.com/learn/learn-java"
-                  className="text-yellow-600 underline hover:no-underline dark:text-yellow-400"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Java Knowledge
-                </a>
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">
-                Some basic Java knowledge helps, but it isn&apos;t required.
-              </p>
-            </div>
-          </div>
-        </ContentCard>
-      </div>
-
-      <div className="bg-primary-50 dark:bg-primary-950/30 border border-primary-200 dark:border-primary-900 rounded-lg p-6 mb-8">
-        <h3 className="text-lg font-semibold text-primary-700 dark:text-primary-300 mb-2">
-          Ready to Start?
-        </h3>
-        <p className="text-primary-800 dark:text-primary-300">
-          Make sure everything above is installed before you move on to hardware
-          setup.
+      <LessonSection id="what-to-install" title="What to install">
+        <p>
+          Five programs, plus one you can skip until Workshop 2. Nothing here
+          depends on anything else being installed first. One rule: never
+          install Java on its own, because WPILib brings the version this
+          workshop runs on.
         </p>
-      </div>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            <a
+              href="https://github.com/wpilibsuite/allwpilib/releases"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>
+                <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> 2027 alpha 6
+              </strong>
+            </a>
+            . Take <code>v2027.0.0-alpha-6</code> from the releases page, not
+            the install guide. The guide still points at last season, because
+            nothing about 2027 is official yet. The installer lays down a
+            separate copy of VS Code and a Java 25 runtime of its own.
+          </li>
+          <li>
+            <a
+              href="https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html#553883"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>FRC Game Tools</strong>
+            </a>
+            . The longest install of the five. You need one piece of it, the{" "}
+            <strong>Driver Station</strong>, which enables and disables the
+            robot.
+          </li>
+          <li>
+            <a
+              href="https://apps.microsoft.com/detail/9NVV4PWDW27Z"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>Phoenix Tuner X</strong>
+            </a>
+            . From the Microsoft Store, so it keeps itself current. Tuner X
+            configures and tunes{" "}
+            <GlossaryTerm term="motor controller">TalonFX</GlossaryTerm> and the
+            rest of the CTRE hardware, and all of Workshop 1 happens inside it.
+          </li>
+          <li>
+            <a
+              href="https://github.com/Mechanical-Advantage/AdvantageScope/releases"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>AdvantageScope</strong>
+            </a>
+            . A cut-down copy already came with WPILib. Install the full release
+            from GitHub as well. It reads robot logs, and Workshop 2 leans on
+            the plots.
+          </li>
+          <li>
+            <a
+              href="https://git-scm.com/downloads"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>Git</strong>
+            </a>
+            . Any current version. Workshop 2 generates its own project rather
+            than cloning one. The lesson repositories after it are clones, and
+            every change you make is a commit.
+          </li>
+          <li>
+            <a
+              href="https://github.com/Gold872/elastic-dashboard"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>Elastic Dashboard</strong>
+            </a>{" "}
+            <span className="text-note text-[var(--tx3)]">(optional)</span>.
+            Skip it for now. A dashboard reads NetworkTables, WPILib&apos;s
+            shared table of live robot values, and Workshop 1 runs no robot
+            code. Install it when you reach{" "}
+            <Link href="/logging-implementation" className={linkStyle}>
+              Logging
+            </Link>{" "}
+            in Workshop 2.
+          </li>
+        </ol>
+        <p>
+          A dashboard does not choose which mode runs. Each mode is its own
+          class with a name in its annotation, like{" "}
+          <code>@Autonomous(name = &quot;Drive To Pose&quot;)</code>. The driver
+          picks that name on the Driver Station.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="the-2027-alpha-stack" title="The 2027 alpha stack">
+        <Split>
+          <ProseBlock>
+            <p>
+              This workshop runs on the WPILib <strong>2027 alpha</strong>, an
+              early release of FRC&apos;s programming toolkit. It uses{" "}
+              <strong>Java 25</strong> and deploys to{" "}
+              <strong>SystemCore</strong>, the robot&apos;s onboard computer.
+              All of that arrived with the installer in step 1.
+            </p>
+            <p>
+              You build the robot project yourself on{" "}
+              <Link href="/project-setup" className={linkStyle}>
+                Project Setup
+              </Link>
+              , out of the New Project Creator that comes with the installer
+              above. So there is nothing else to download yet. Workshops 3 and 4
+              hand you a prepared swerve project instead, because generated CTRE
+              constants are not something anyone types.
+            </p>
+          </ProseBlock>
+          <MarginNote label="What alpha means">
+            The APIs still move. A method that exists today can be renamed
+            before kickoff, so every Java example on this site is checked
+            against the template before it ships.
+          </MarginNote>
+        </Split>
+      </LessonSection>
+
+      <LessonSection id="java-nothing-to-install" title="Java comes later">
+        <ProseBlock>
+          <p>
+            You do not need to know Java before you start. You do need to read
+            it. Robot code shows up in Workshop 2, and it does not stay at the
+            beginner end for long. Lambdas, method references, and class
+            declarations all turn up there.
+          </p>
+          <p>
+            So the workshop teaches the Java it uses, once.{" "}
+            <Link href="/java-basics" className={linkStyle}>
+              The Java You Need
+            </Link>{" "}
+            opens Workshop 2, ahead of Project Setup, and takes one robot file
+            apart line by line. About twelve pieces of Java hold up this whole
+            site. That lesson covers all twelve and then stops.
+          </p>
+          <p>
+            Do not go take a Java course first. Read that page when you reach
+            it.
+          </p>
+        </ProseBlock>
+      </LessonSection>
+
+      <LessonSection id="the-minimum-to-follow" title="Hardware on the bench">
+        <p>
+          Workshop 1 never creates, builds, or runs a robot project. Tuner X
+          owns the CANivore, sends every control request, and plots the response
+          off the real motor.
+        </p>
+        <p>
+          You find each motor and check which way it turns on{" "}
+          <Link href="/mechanism-setup" className={linkStyle}>
+            Motor Setup
+          </Link>
+          , then tune it against how it behaves on{" "}
+          <Link href="/pid-control" className={linkStyle}>
+            PID Tuning
+          </Link>
+          . Take the hardware away and there is nothing left to tune.
+        </p>
+        <ul className="ml-5 list-disc space-y-3">
+          <li>
+            <strong>The assembled mechanism.</strong> The arm or the flywheel
+            from{" "}
+            <Link href="/mechanism-cad" className={linkStyle}>
+              Mechanism CAD
+            </Link>
+            , built and wired. Its bill of materials is the exact parts list,
+            down to the battery cable and the CAN terminating resistor. A
+            mechanism off an old robot works too, as long as it runs the
+            hardware below.
+          </li>
+          <li>
+            <strong>A Kraken X44.</strong> The motor Tuner X drives. Its TalonFX
+            controller sits inside the case, so there is no separate controller
+            to wire.
+          </li>
+          <li>
+            <strong>A CANcoder.</strong> The WCP ThroughBore encoder is a
+            CANcoder inside, so the code calls it one. It reports the arm&apos;s
+            real angle and keeps that angle through a power cycle. The arm build
+            uses one; the flywheel build does not.
+          </li>
+          <li>
+            <strong>A CANivore.</strong> Plugs into a USB port and runs the CAN
+            bus the motor and encoder sit on. Name yours <code>canivore</code>{" "}
+            so Workshop 2 can reuse the same hardware handoff.
+          </li>
+          <li>
+            <strong>A charged battery and its cable.</strong> A fresh one gives
+            about 12 V. Bench tests on{" "}
+            <Link href="/mechanism-setup" className={linkStyle}>
+              Motor Setup
+            </Link>{" "}
+            run at 6 V, but the motor still needs a real battery behind it.
+          </li>
+        </ul>
+        <p>
+          You do not need a SystemCore, a radio, or a robot. The whole rig is a
+          laptop with a CANivore plugged into it, sitting next to one mechanism
+          on a table. Workshop 2 adds an Xbox-style controller, and Workshop 3
+          moves to a swerve drivetrain.
+        </p>
+        <Box
+          variant="alert-warning"
+          tag="READ THIS FIRST"
+          title="No software-only path"
+        >
+          <p>
+            Without a motor on the bench, nothing moves and every plot stays
+            flat. Java and simulation begin only after the control behavior has
+            been verified in Tuner X. If your team has not built a mechanism
+            yet, borrow one off last year&apos;s robot.
+          </p>
+        </Box>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          Open all five programs once before you leave this page. An installer
+          that failed quietly is far easier to find now than later, with the arm
+          wired up and the meeting half over.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Program</th>
+                <th className="px-3 py-2 text-left">What you should see</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">WPILib VS Code</td>
+                <td className="px-3 py-2">
+                  It opens, and the folder it installed into is named for the
+                  2027 alpha.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Driver Station</td>
+                <td className="px-3 py-2">
+                  It opens with its status lights red. Nothing is connected yet.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Phoenix Tuner X</td>
+                <td className="px-3 py-2">
+                  It opens and lists no devices. The CANivore is still in a
+                  drawer.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">AdvantageScope</td>
+                <td className="px-3 py-2">
+                  It opens to an empty window with no log loaded.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Git</td>
+                <td className="px-3 py-2">
+                  <code>git --version</code> prints a version in a terminal.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <Box variant="alert-success" title="Ready to start">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>All five programs open, none of them with an error.</li>
+            <li>The mechanism is assembled and bolted to the bench.</li>
+            <li>The battery is charged and its cable is on the table.</li>
+          </ul>
+        </Box>
+        <p>
+          Next is{" "}
+          <Link href="/hardware" className={linkStyle}>
+            Hardware Setup
+          </Link>
+          , where you plug the CANivore in and find every device in Tuner X.
+        </p>
+      </LessonSection>
     </PageTemplate>
   );
 }

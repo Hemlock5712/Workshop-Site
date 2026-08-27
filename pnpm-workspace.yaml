@@ -5,6 +5,31 @@ packages:
   - "."
   - "videos"
 
+# eslint-plugin-react 7.37.5 is the latest release and predates ESLint 10,
+# which removed `context.getFilename()` and `context.getSourceCode()`. It
+# reaches us transitively through eslint-config-next, so linting dies on the
+# first file without this. Three call sites; every other use in the plugin
+# already goes through `lib/util/eslint.js`, which prefers the `sourceCode.*`
+# API and needed no change.
+#
+# Drop this the moment eslint-plugin-react ships an ESLint 10 compatible
+# release — the patch is pinned to 7.37.5, so a version bump will fail loudly
+# rather than silently reapplying to code that no longer needs it.
+patchedDependencies:
+  eslint-plugin-react@7.37.5: patches/eslint-plugin-react@7.37.5.patch
+
+# The three plugins Next's config pulls in all cap their peer range at ESLint
+# 9 because none of them has cut a release since ESLint 10 shipped. We run them
+# on 10 deliberately (see the patch above); `react/jsx-key` and friends were
+# verified firing against a probe file. Without this block every install prints
+# three unmet-peer warnings that mean nothing, which is how real ones get
+# missed. Remove each line as its plugin publishes ESLint 10 support.
+peerDependencyRules:
+  allowedVersions:
+    eslint-plugin-react>eslint: '10'
+    eslint-plugin-import>eslint: '10'
+    eslint-plugin-jsx-a11y>eslint: '10'
+
 overrides:
   js-yaml@>=4.0.0 <4.1.1: '>=4.1.1'
   jws@=4.0.0: '>=4.0.1'

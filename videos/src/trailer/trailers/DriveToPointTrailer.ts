@@ -142,13 +142,13 @@ export const DriveToPointTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "Your driver lines up at the same scoring spot forty times a match. What if one button drove there for you? Exact spot, exact angle, every time. That's drive to point. It's about thirty lines of code.",
+      text: "Watch your driver at a match. Forty lineups at the same scoring spot, all by eye, each one burning a second of stick-nudging while the clock runs down. A button never gets nervous in the endgame.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "poses",
-      text: "Every spot on the field is a Pose2d. That's an x, a y, and a facing angle. Odometry — the robot's running guess of its position — already tracks yours. So the robot knows two poses: where it is, and where you want it.",
+      text: "Anywhere on the field, a Pose2d names it. An x, a y, and which way you're facing. Odometry has been tracking yours all match, off wheel positions and the gyro. So the robot holds both poses. Nobody's asked it to compare them.",
       camera: POSES_CLOSEUP,
       events: [
         { type: "diagram", artifact: "flow", step: 1, at: { word: "Pose2d" } },
@@ -162,7 +162,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "pids",
-      text: "The gap between those poses is called error. You already know what shrinks error: PID. Use three controllers — one for x, one for y, one for rotation. A swerve drive can move all three at once, each on its own.",
+      text: "Subtract one pose from the other and you get error, the only thing PID has ever cared about. So run a controller per axis: forward, sideways, and turning. A swerve drive moves all of them at once, so nobody waits.",
       camera: PID_CLOSEUP,
       events: [
         { type: "diagram", artifact: "flow", step: 3, at: { word: "PID" } },
@@ -170,7 +170,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "velocities",
-      text: "Each controller answers one question. How fast should my axis move to close my gap? The three answers become field-relative velocities — speeds measured against the field. The drivetrain gets a fresh set every twenty milliseconds. That repeats until the robot settles on the target.",
+      text: "Each controller only reports a speed for its own axis. Bundle those answers into one set of field-relative velocities, and the drivetrain stops caring which way its bumpers happen to be pointed. New request every loop. Fifty times a second, forever.",
       camera: DIAGRAM,
       events: [
         {
@@ -183,7 +183,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "code",
-      text: "Here's the whole loop. Read the current pose from odometry. Run calculate on each controller against the target. Send the three answers as one velocity request. As the error shrinks, the robot slows. Then it lands.",
+      text: "The whole thing fits on one screen. Pose in, a calculate call per axis, one velocity request out. No trajectory files, and nothing to regenerate when the drive team decides the scoring spot is four inches off.",
       camera: CODE,
       events: [
         {
@@ -197,7 +197,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "bindings",
-      text: "Then give it to your driver. The bindings live in the Teleop OpMode. Hold A to drive to the origin — the field's zero spot. Hold B to drive to a scoring pose. Let go, and the command cancels. The drivetrain just stops.",
+      text: "Hand it to your driver. The bindings go in your Teleop OpMode constructor, and whileTrue does the rest: hold the button, the command runs; let go, it cancels mid-drive. Because the thing a driver never forgives is a robot that won't give the stick back.",
       camera: CODE2,
       events: [
         {
@@ -211,7 +211,7 @@ export const DriveToPointTrailer: TrailerScript = {
     },
     {
       id: "cta",
-      text: "There's more in the full lesson. Preset scoring spots, tuning tips, and tolerance checks. Plus the autonomous routines built from this one command. It's all at frc5712.com. Your button is waiting.",
+      text: "Tolerance is where people get burned. Set it too tight and the command never ends, and your auto stands there vibrating on a pose it reached four seconds ago while the clock runs out.",
       camera: END,
       holdAfter: 1.2,
     },

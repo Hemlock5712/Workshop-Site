@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "next-themes";
+import { readPlotTheme } from "@/lib/plotTheme";
 import uPlot from "uplot";
 import "uplot/dist/uPlot.min.css";
 import { useShallow } from "zustand/react/shallow";
@@ -36,7 +37,6 @@ type GainKey = keyof ElevatorGains;
 interface SliderProps {
   label: string;
   unit: string;
-  axisColor: string;
   value: number;
   min: number;
   max: number;
@@ -49,7 +49,6 @@ interface SliderProps {
 function Slider({
   label,
   unit,
-  axisColor,
   value,
   min,
   max,
@@ -77,17 +76,15 @@ function Slider({
         <div className="flex items-baseline gap-1.5">
           <label
             htmlFor={id}
-            className="font-mono text-[13px] font-semibold"
-            style={{ color: axisColor }}
+            className="font-mono text-note font-semibold"
+            style={{ color: "var(--tx)" }}
           >
             {label}
           </label>
-          <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
-            {unit}
-          </span>
+          <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
         <span
-          className="font-mono text-[12px] tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--muted)] text-[var(--foreground)]"
+          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
           aria-hidden
         >
           {value.toFixed(precision)}
@@ -109,7 +106,6 @@ function Slider({
         className="pid-slider w-full"
         style={
           {
-            ["--slider-accent" as string]: axisColor,
             ["--slider-fill" as string]: `${pct}%`,
           } as React.CSSProperties
         }
@@ -124,28 +120,27 @@ const REGIME_STYLE: Record<
 > = {
   oscillating: {
     label: "Oscillating",
-    dot: "bg-amber-500",
+    dot: "bg-[var(--bg2)]",
     classes:
-      "bg-amber-50 text-amber-900 ring-1 ring-amber-200/70 dark:bg-amber-950/40 dark:text-amber-100 dark:ring-amber-800/50",
+      "bg-[var(--bg2)] text-[var(--accent)] ring-1 ring-[color-mix(in_oklch,var(--accent)_70%,transparent)] text-[var(--accent)]",
   },
   stable: {
     label: "Stable",
-    dot: "bg-emerald-500",
+    dot: "bg-[var(--bg2)]",
     classes:
-      "bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200/70 dark:bg-emerald-950/40 dark:text-emerald-100 dark:ring-emerald-800/50",
+      "bg-[var(--bg2)] text-[var(--ok)] ring-1 ring-[color-mix(in_oklch,var(--ok)_70%,transparent)] text-[var(--ok)]",
   },
   drifting: {
     label: "Drifting",
-    dot: "bg-rose-500",
+    dot: "bg-[var(--bg2)]",
     classes:
-      "bg-rose-50 text-rose-900 ring-1 ring-rose-200/70 dark:bg-rose-950/40 dark:text-rose-100 dark:ring-rose-800/50",
+      "bg-[var(--bg2)] text-[var(--err)] ring-1 ring-[color-mix(in_oklch,var(--err)_70%,transparent)] text-[var(--err)]",
   },
 };
 
 interface SliderConfig {
   key: GainKey;
   label: string;
-  axisColor: string;
   ariaDescription: string;
 }
 
@@ -153,19 +148,16 @@ const FEEDBACK_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kP",
     label: "kP",
-    axisColor: "#dc2626",
     ariaDescription: "Proportional gain.",
   },
   {
     key: "kI",
     label: "kI",
-    axisColor: "#ca8a04",
     ariaDescription: "Integral gain.",
   },
   {
     key: "kD",
     label: "kD",
-    axisColor: "#2563eb",
     ariaDescription: "Derivative gain.",
   },
 ];
@@ -174,19 +166,16 @@ const FEEDFORWARD_SLIDERS: ReadonlyArray<SliderConfig> = [
   {
     key: "kS",
     label: "kS",
-    axisColor: "#7c3aed",
     ariaDescription: "Static friction feedforward.",
   },
   {
     key: "kV",
     label: "kV",
-    axisColor: "#0891b2",
     ariaDescription: "Velocity feedforward.",
   },
   {
     key: "kG",
     label: "kG",
-    axisColor: "#16a34a",
     ariaDescription: "Gravity feedforward: constant lift voltage.",
   },
 ];
@@ -199,7 +188,6 @@ interface ElevatorVizProps {
   maxMeters: number;
   durationSec: number;
   reducedMotion: boolean;
-  isDark: boolean;
 }
 
 const ELEV_VB_W = 220;
@@ -218,7 +206,6 @@ function ElevatorViz({
   maxMeters,
   durationSec,
   reducedMotion,
-  isDark,
 }: ElevatorVizProps) {
   const carriageRef = useRef<SVGGElement>(null);
   const posLabelRef = useRef<SVGTextElement>(null);
@@ -277,13 +264,13 @@ function ElevatorViz({
     return () => cancelAnimationFrame(frameId);
   }, [responsePosition, durationSec, reducedMotion, placeCarriage]);
 
-  const rail = isDark ? "#475569" : "#94a3b8";
-  const tickColor = isDark ? "#64748b" : "#cbd5e1";
-  const ghost = isDark ? "#64748b" : "#94a3b8";
-  const carriage1 = isDark ? "#9fbcd9" : "#264060";
-  const carriage2 = isDark ? "#c1d4e7" : "#4a73a0";
-  const cable = isDark ? "#94a3b8" : "#64748b";
-  const groundFill = isDark ? "#1e293b" : "#f1f5f9";
+  const rail = "var(--tx3)";
+  const tickColor = "var(--rule)";
+  const ghost = "var(--tx3)";
+  const carriage1 = "var(--lift)";
+  const carriage2 = "color-mix(in oklch, var(--lift) 55%, var(--tx))";
+  const cable = "var(--tx3)";
+  const groundFill = "var(--bg3)";
 
   const targetY = mToY(targetM);
 
@@ -345,7 +332,7 @@ function ElevatorViz({
         width={36}
         height={6}
         rx={1}
-        fill={isDark ? "#cbd5e1" : "#475569"}
+        fill={"var(--tx2)"}
       />
 
       {/* Height ticks (every 0.5 m) */}
@@ -417,7 +404,7 @@ function ElevatorViz({
           height={CARRIAGE_HALF_H * 2}
           rx={3}
           fill="url(#elevCarriageGrad)"
-          stroke={isDark ? "#0d233f" : "#0d233f"}
+          stroke={"var(--bg)"}
           strokeWidth={1}
         />
         {/* Roller wheels on rails */}
@@ -425,13 +412,13 @@ function ElevatorViz({
           cx={RAIL_X - 28}
           cy={RAIL_BOTTOM - CARRIAGE_HALF_H}
           r={3}
-          fill={isDark ? "#cbd5e1" : "#0d233f"}
+          fill={"var(--tx2)"}
         />
         <circle
           cx={RAIL_X + 28}
           cy={RAIL_BOTTOM - CARRIAGE_HALF_H}
           r={3}
-          fill={isDark ? "#cbd5e1" : "#0d233f"}
+          fill={"var(--tx2)"}
         />
       </g>
 
@@ -443,7 +430,7 @@ function ElevatorViz({
         fontSize={13}
         fontWeight={600}
         textAnchor="end"
-        fill={isDark ? "#e2e8f0" : "#0d233f"}
+        fill={"var(--tx)"}
         fontFamily="ui-monospace, monospace"
       >
         0.00 m
@@ -459,7 +446,6 @@ export default function InteractiveElevatorPlayground() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  const isDark = mounted && resolvedTheme === "dark";
 
   const gains = useElevatorStore(
     useShallow((s) => ({
@@ -543,21 +529,29 @@ export default function InteractiveElevatorPlayground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const plotRef = useRef<uPlot | null>(null);
 
-  const accent = useMemo(
-    () => ({
-      target: isDark ? "#64748b" : "#94a3b8",
-      actual: isDark ? "#7da4cb" : "#264060",
-      actualFillTop: isDark
-        ? "rgba(125, 164, 203, 0.28)"
-        : "rgba(38, 64, 96, 0.16)",
-      actualFillBottom: isDark
-        ? "rgba(125, 164, 203, 0)"
-        : "rgba(38, 64, 96, 0)",
-      grid: isDark ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.13)",
-      text: isDark ? "#94a3b8" : "#64748b",
-    }),
-    [isDark]
-  );
+  // Resolved from the `--plot-*` tokens, not branched on `isDark`.
+  //
+  // It has to be *resolved*: uPlot paints to a 2D canvas context, and
+  // `strokeStyle = "var(--accent)"` is not a colour a canvas can parse — it
+  // silently draws nothing. The SVG mechanism beside this chart can and does
+  // use `var()` directly, because SVG is DOM and resolves it normally.
+  //
+  // `resolvedTheme` stays in the dependency list as the *signal* that the
+  // class on <html> changed and the values need re-reading; the values
+  // themselves are no longer a copy kept in this file.
+  const accent = useMemo(() => {
+    const t = readPlotTheme();
+    return {
+      target: t.target,
+      setpoint: t.setpoint,
+      actual: t.actual,
+      actualFillTop: t.actualFill,
+      actualFillBottom: t.actualFade,
+      grid: t.grid,
+      text: t.ink,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolvedTheme, mounted]);
 
   const buildPlot = useCallback(() => {
     if (!containerRef.current) return;
@@ -669,7 +663,6 @@ export default function InteractiveElevatorPlayground() {
         key={cfg.key}
         label={cfg.label}
         unit={range.unit}
-        axisColor={cfg.axisColor}
         value={gains[cfg.key]}
         min={range.min}
         max={range.max}
@@ -682,12 +675,12 @@ export default function InteractiveElevatorPlayground() {
   };
 
   return (
-    <section className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-[0_1px_2px_rgb(0_0_0_/_0.04)] sm:p-6">
+    <section className="rounded-2xl border border-[var(--rule)] bg-[var(--bg2)] p-5 shadow-sm sm:p-6">
       {/* ── Toolbar ──────────────────────────── */}
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2.5">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${regimeStyle.classes}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-meta font-semibold ${regimeStyle.classes}`}
             aria-live="polite"
           >
             <span
@@ -697,29 +690,29 @@ export default function InteractiveElevatorPlayground() {
             {regimeStyle.label}
           </span>
           <div
-            className="flex items-center gap-x-3 text-[11px] text-[var(--muted-foreground)] tabular-nums"
+            className="flex items-center gap-x-3 text-meta text-[var(--tx2)] tabular-nums"
             aria-label="Performance metrics"
           >
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {(response.metrics.overshootM * 100).toFixed(1)}
               </span>{" "}
               cm overshoot
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {(response.metrics.steadyStateErrorM * 100).toFixed(1)}
               </span>{" "}
               cm final err
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {settlingStr}
               </span>{" "}
               settle
             </span>
             <span>
-              <span className="text-[var(--foreground)] font-medium">
+              <span className="text-[var(--tx)] font-medium">
                 {response.metrics.peakVoltage.toFixed(1)} V
               </span>{" "}
               peak
@@ -729,7 +722,7 @@ export default function InteractiveElevatorPlayground() {
         <button
           type="button"
           onClick={reset}
-          className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-[var(--muted)] px-2 py-1 text-[11px] font-medium text-[var(--foreground)] transition-colors hover:bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-1"
+          className="inline-flex items-center gap-1 rounded-md border border-[var(--rule)] bg-[var(--bg2)] px-2 py-1 text-meta font-medium text-[var(--tx)] transition-colors hover:bg-[var(--rule)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-1"
           aria-label="Reset all gains and the target to defaults"
         >
           <RotateCcw className="h-3 w-3" />
@@ -738,10 +731,10 @@ export default function InteractiveElevatorPlayground() {
       </header>
 
       {/* ── Target picker ───────────────────── */}
-      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2">
+      <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-[var(--rule)] bg-[var(--bg)] px-3 py-2">
         <label
           htmlFor="elev-target"
-          className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--muted-foreground)]"
+          className="inline-flex items-center gap-1.5 text-meta font-semibold uppercase tracking-[0.06em] text-[var(--tx2)]"
         >
           <ArrowUpDown className="h-3.5 w-3.5" aria-hidden />
           Target
@@ -761,29 +754,28 @@ export default function InteractiveElevatorPlayground() {
           className="pid-slider min-w-0 flex-1"
           style={
             {
-              ["--slider-accent" as string]: "#475569",
+              ["--slider-accent" as string]: "var(--accent)",
               ["--slider-fill" as string]: `${((targetM - ELEV_TARGET_RANGE_M.min) / (ELEV_TARGET_RANGE_M.max - ELEV_TARGET_RANGE_M.min)) * 100}%`,
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--muted)] px-2 py-0.5 font-mono text-[12px] tabular-nums text-[var(--foreground)]">
+        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
           {targetM.toFixed(2)} m
         </span>
       </div>
 
       {/* ── Visualization ───────────────────── */}
       <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:gap-5">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:aspect-square md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:aspect-square md:p-3">
           <ElevatorViz
             responsePosition={response.positionM}
             targetM={targetM}
             maxMeters={ELEV_TARGET_RANGE_M.max}
             durationSec={physics.durationSec}
             reducedMotion={reducedMotion}
-            isDark={isDark}
           />
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-2 md:p-3">
+        <div className="rounded-xl border border-[var(--rule)] bg-[var(--bg)] p-2 md:p-3">
           <div
             ref={containerRef}
             className="pid-plot w-full"
@@ -791,7 +783,7 @@ export default function InteractiveElevatorPlayground() {
             aria-label={`Position-response plot for the elevator target of ${targetM.toFixed(2)} m. Dashed is the commanded target, solid is the carriage position.`}
             role="img"
           />
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-[10px] text-[var(--muted-foreground)]">
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 px-1 text-micro text-[var(--tx2)]">
             <span className="inline-flex items-center gap-1">
               <span
                 aria-hidden
@@ -815,9 +807,9 @@ export default function InteractiveElevatorPlayground() {
       </div>
 
       {/* ── Tuning hint ─────────────────────── */}
-      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)]/50 px-3 py-2 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+      <div className="mt-4 flex items-start gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)]/50 px-3 py-2 max-w-[70ch] text-meta text-[var(--tx2)]">
         <Lightbulb
-          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"
+          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--accent)]"
           aria-hidden
         />
         <p>
@@ -837,17 +829,13 @@ export default function InteractiveElevatorPlayground() {
       {/* ── Sliders ─────────────────────────── */}
       <div className="mt-5 grid gap-5 md:grid-cols-2">
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
-            Feedback · PID
-          </h3>
+          <div className="micro mb-2">Feedback · PID</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDBACK_SLIDERS.map(renderSlider)}
           </div>
         </div>
         <div>
-          <h3 className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
-            Feedforward
-          </h3>
+          <div className="micro mb-2">Feedforward</div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             {FEEDFORWARD_SLIDERS.map(renderSlider)}
           </div>
@@ -855,14 +843,13 @@ export default function InteractiveElevatorPlayground() {
       </div>
 
       {/* ── Footer ──────────────────────────── */}
-      <p className="mt-4 text-[11px] leading-relaxed text-[var(--muted-foreground)]">
+      <p className="mt-4 max-w-[70ch] text-meta text-[var(--tx2)]">
         8&nbsp;kg carriage on a Kraken X60 + 15:1 reduction + 1&quot;-radius
         spool (back-EMF + stick-slip friction modelled, ±12&nbsp;V saturation,
         max travel 1.5&nbsp;m). Gains use Phoenix 6 / WPILib elevator units.
         Drop these into a{" "}
-        <span className="font-mono text-[var(--foreground)]">Slot0Configs</span>{" "}
-        with{" "}
-        <span className="font-mono text-[var(--foreground)]">
+        <span className="font-mono text-[var(--tx)]">Slot0Configs</span> with{" "}
+        <span className="font-mono text-[var(--tx)]">
           SensorToMechanismRatio
         </span>{" "}
         configured to report meters of travel.

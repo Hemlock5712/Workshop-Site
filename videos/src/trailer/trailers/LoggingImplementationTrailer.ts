@@ -143,13 +143,13 @@ export const LoggingImplementationTrailer: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "You turned logging on. Now make the logs worth opening. Three steps take your robot from silent to telling you everything. And in Commands v3, telemetry — the data your robot reports — has one new twist.",
+      text: "The recorder is running. Trouble is, a log full of nothing is still nothing. You want a robot that tells you what it was thinking, and Commands v3 has one wrinkle that catches everybody on the way there.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "recipe",
-      text: "The recipe has three steps. First, enable DataLogManager in the Robot constructor. Second, publish everything to NetworkTables. It all gets recorded for free. Third, open the wpilog file in AdvantageScope. That's the whole pipeline. The rest is doing it well.",
+      text: "First you enable the recorder in the constructor, and everything downstream comes along free. Then the part that actually takes judgement: publish. Poses, setpoints, currents, whatever you'd stare at on a dashboard mid-match. Later you open the file and read what happened.",
       camera: DIAGRAM,
       events: [
         { type: "diagram", artifact: "steps", step: 1, at: { word: "enable" } },
@@ -164,7 +164,7 @@ export const LoggingImplementationTrailer: TrailerScript = {
     },
     {
       id: "publisher",
-      text: "Here's a real v3 mechanism. The publisher is a field on the class. It sends the arm's position to NetworkTables, under Arm slash Position. Name keys like folders, and AdvantageScope sorts every mechanism into its own folder.",
+      text: "A publisher is just a field on the mechanism. This one pushes the arm's position under the key Arm slash Position, and that slash matters: AdvantageScope treats it as a folder, so nothing lands in one flat list.",
       camera: CODE,
       events: [
         {
@@ -177,7 +177,7 @@ export const LoggingImplementationTrailer: TrailerScript = {
     },
     {
       id: "default-command",
-      text: "Here's the twist: v3 mechanisms have no periodic method. So publish with a default command — the one that runs while the arm is idle. runRepeatedly calls publishTelemetry over and over. Any real command takes over. Telemetry for free, never in the way.",
+      text: "And the wrinkle: v3 mechanisms have no periodic method. Nothing runs on its own. So the default command does the publishing — runRepeatedly, forever, while the arm sits there doing nothing. The instant a real command wants the arm, telemetry steps aside.",
       camera: CODE,
       events: [
         {
@@ -191,7 +191,7 @@ export const LoggingImplementationTrailer: TrailerScript = {
     },
     {
       id: "structs",
-      text: "Some data comes in bundles, like a full robot pose. Don't scatter it as loose numbers. A StructPublisher sends the whole Pose2d at once. Add velocities too. Now one telemeterize call streams complete swerve state onto AdvantageScope's field view.",
+      text: "Some values only mean something together. A pose is X, Y, and heading at one instant, so send the whole struct rather than three loose doubles that drift apart in the log. Add velocities, and AdvantageScope draws the whole swerve state.",
       camera: CODE2,
       events: [
         {
@@ -211,13 +211,13 @@ export const LoggingImplementationTrailer: TrailerScript = {
     },
     {
       id: "files",
-      text: "Where do the log files land? In simulation, a logs folder right in your project. On the SystemCore, a USB drive or the controller's own logs folder. Either way, every run writes a wpilog you can replay.",
+      text: "In simulation the logs land in a folder inside your project. On the SystemCore they go to a USB stick if one's plugged in, otherwise the controller's own storage. Practice matches count. Log those too.",
       camera: { x: 2600, y: 320, width: 2120, height: 1060 },
       holdAfter: 0.6,
     },
     {
       id: "cta",
-      text: "Set this up once, and every practice run becomes data you can replay. The full build is waiting at frc5712.com — struct publishers, telemetry default commands, and reading your logs in AdvantageScope.",
+      text: "Do this once and you stop debugging from memory. The next time a mechanism does something insane in a match, you'll already have the recording, and you'll know within a minute which line lied to you.",
       camera: END,
       holdAfter: 1.2,
     },

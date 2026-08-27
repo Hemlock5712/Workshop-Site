@@ -27,8 +27,21 @@ export const AnimatedThemeToggler = ({
   const toggleTheme = useCallback(async () => {
     if (!buttonRef.current || !mounted) return;
 
+    // The circular wipe below is a Web Animations call, not a CSS animation,
+    // and that distinction is the bug it used to have. globals.css kills
+    // motion with `animation: none !important` under
+    // `prefers-reduced-motion` — which removes *CSS* animations. It has no
+    // effect on an `Element.animate()` object animating `clip-path`, so a
+    // reduced-motion reader got a 400ms full-viewport wipe on every toggle,
+    // from the one control on the site that is on every single page. The
+    // stylesheet's own heading says every animation in the design is opt-out;
+    // this is what makes that true.
+    const reduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     // Check if browser supports View Transitions API
-    if (!("startViewTransition" in document)) {
+    if (reduced || !("startViewTransition" in document)) {
       setTheme(resolvedTheme === "dark" ? "light" : "dark");
       return;
     }
@@ -67,43 +80,42 @@ export const AnimatedThemeToggler = ({
     );
   }, [resolvedTheme, setTheme, mounted, duration]);
 
-  // Show placeholder during SSR to prevent hydration mismatch
+  // Renders the bare <button> — no wrapper. Callers place it (the rail wants
+  // it as the last flex child of a column), so an extra centring div here
+  // silently broke their layout.
+  //
+  // Until `mounted` we can't know the resolved theme, so we render the same
+  // box with a neutral glyph rather than guessing and flipping on hydration.
   if (!mounted) {
     return (
-      <div className="flex items-center justify-center gap-2">
-        <button
-          className={cn(
-            "cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-2 rounded",
-            className
-          )}
-          disabled
-          aria-label="Loading theme toggle"
-        >
-          <MoonIcon size={20} />
-          <span className="sr-only">Toggle theme</span>
-        </button>
-      </div>
+      <button
+        className={cn("cursor-pointer transition-colors", className)}
+        disabled
+        aria-label="Loading theme toggle"
+        {...props}
+      >
+        <MoonIcon size={15} aria-hidden="true" />
+        <span className="sr-only">Toggle theme</span>
+      </button>
     );
   }
 
   const isDark = resolvedTheme === "dark";
 
   return (
-    <div className="flex items-center justify-center gap-2">
-      <button
-        ref={buttonRef}
-        onClick={toggleTheme}
-        className={cn(
-          "cursor-pointer text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors p-2 rounded",
-          !isDark && "text-[var(--primary)]",
-          className
-        )}
-        title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-        {...props}
-      >
-        {isDark ? <SunIcon size={20} /> : <MoonIcon size={20} />}
-        <span className="sr-only">Toggle theme</span>
-      </button>
-    </div>
+    <button
+      ref={buttonRef}
+      onClick={toggleTheme}
+      className={cn("cursor-pointer transition-colors", className)}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      {...props}
+    >
+      {isDark ? (
+        <SunIcon size={15} aria-hidden="true" />
+      ) : (
+        <MoonIcon size={15} aria-hidden="true" />
+      )}
+      <span className="sr-only">Toggle theme</span>
+    </button>
   );
 };

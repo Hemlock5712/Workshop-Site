@@ -10,6 +10,8 @@ and what the next agent (with Playwright MCP) should pick up first.
 
 All changes are code-only, type-safe, and validated by `pnpm lint` + `pnpm type-check` (both pass clean).
 
+> **Superseded (2026-08-02):** rows 3, 5 and 8 optimised the Gemini-backed `/ai-assistant` chat, which has since been removed along with `MarkdownCodeBlock.tsx`, `src/app/api/chat/`, the `scripts/*-file-search.ts` trio and `.env.example`. The table below is left as the record of what was done at the time, not as a description of the current tree.
+
 | #   | Change                                                                                                                                                                                                                                                                                                                                                | Files touched                                                                                                | Validation       |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------- |
 | 1   | **Lazy MiniSearch index + module-singleton cache.** `createSearchInstance()` (sync) replaced with `getSearchInstance()` (async, memoized). Both `minisearch` and `@/data/searchData` are now dynamic imports — the ~188 KB index no longer ships with the initial bundle of every workshop page.                                                      | `src/lib/searchConfig.ts`, `src/components/SearchBar.tsx`, `src/app/(workshop)/search/SearchPageContent.tsx` | lint + tsc clean |
@@ -27,7 +29,7 @@ All changes are code-only, type-safe, and validated by `pnpm lint` + `pnpm type-
 
 - **~188 KB** off main bundle (search index now lazy)
 - **~2.5-3.5 MB deferred** (Monaco now dynamic-imported via CodeBlock wrapper)
-- **~100-150 KB** off the `/ai-assistant` route initial chunk
+- ~~**~100-150 KB** off the `/ai-assistant` route initial chunk~~ — moot, route deleted (see note below)
 
 These won't show in Lighthouse until you rebuild for production (`pnpm build && pnpm start`) — dev mode does its own chunking.
 
@@ -49,7 +51,7 @@ pnpm start  # then check the home page and /search smoke test
 4. Click a result — navigates correctly
 5. `/search?q=PID` — page renders results
 6. Any page with code blocks (e.g. `/pid-control`) — Monaco loads after a moment, copy button works
-7. `/ai-assistant` — page loads, send a message, code-fenced responses render with syntax highlighting
+7. `/ai-assistant` — should now 308-redirect to `/ai-coding-assistant`
 
 If the search palette ever stalls on a blank state, the lazy load failed — check console.
 Safe revert for just the search work: `git checkout src/lib/searchConfig.ts src/components/SearchBar.tsx 'src/app/(workshop)/search/SearchPageContent.tsx'`.
@@ -236,3 +238,130 @@ Validated:
 Not done:
 
 - No Playwright run. CLAUDE.md forbids running `pnpm dev`/`pnpm start`, and the visual change here is zero (same DOM, same classes) — but a smoke pass at `/triggers` or `/logging-implementation` in the next session that has a live server would be the standard verification.
+
+---
+
+## Redesign implementation — 2026-08-02
+
+`Redesign.dc.html` from the claude.ai design project (Educational website
+redesign, `a3817431`) is implemented. This closes or supersedes most of the
+queues above — see "Now obsolete" at the end.
+
+### SHIPPED
+
+**Tokens.** `globals.css` rewritten onto the design's OKLCH palette in its own
+vocabulary — `--bg/--bg2/--bg3`, `--tx/--tx2/--tx3`, `--rule/--rule-soft`,
+`--accent/--accent-ink/--accent-soft`, `--mark`, `--code-bg`, plus `--measure`
+(660px) and `--gutter` (250px). Legacy names (`--bg-elev`, `--fg-mute`,
+`--line`, `--card`, `--background`, …) alias onto them so older components
+resolve to the same colour instead of a second, drifting palette.
+
+Note the earlier review's "drop OKLCH, chroma-on-dark is wrong for a Chromebook
+fleet" verdict was **not** followed — the shipped design is OKLCH throughout.
+That call came from the design itself; if the Chromebook concern is real it
+should be re-tested on the actual hardware rather than re-argued.
+
+**Fonts.** IBM Plex Sans/Mono/Serif → Instrument Sans (UI), Newsreader (body +
+display, optical sizing on), JetBrains Mono (code + micro-labels).
+
+**Shell.** The persistent sidebar is gone. `Sidebar.tsx` (563 lines),
+`HamburgerMenu.tsx`, `SidebarContext.tsx` and `SearchBar.tsx` deleted; replaced
+by `src/components/shell/` — `WorkshopShell` (the 100vh frame; `<main>` is the
+only scroller), `AppRail` (70px: logo, MENU, scroll spine, theme),
+`CurriculumDrawer` (all 29 lessons, focus-trapped), `SearchPalette` (⌘K),
+`Topbar` (breadcrumb + N/29 counter). State lives in `src/contexts/ShellContext.tsx`.
+
+This is the "Sidebar rebuild" from the Strategic queue, done — and it closes the
+a11y gaps that item named (hover-only tooltips, no focus trap).
+
+**Lesson vocabulary.** New `src/components/lesson/` — `LessonSection` (CSS-counter
+numbering), `Prose`/`ProseBlock`/`Split`/`MarginNote`/`WatchOut`/`Mark`,
+`LessonOutline` (scans the DOM for `data-sec`; cannot drift from the headings),
+`LessonKicker`. `PageTemplate` gained `emphasis`, `lede`, `needs`, `branch`, `time`.
+
+**All 30 lesson pages converted** by codemod, verified at each step:
+
+- 227 `<section>` + `<h2>` pairs → `<LessonSection>`
+- 24 pages promoted their real sentence to the `<h1>` (`PID Control` →
+  "Tell the arm where to go, not how hard to push"), accent clause italicised.
+  The short filing label stays in `lessons.ts` for breadcrumb and drawer.
+- prerequisite checklists lifted into the header's "You'll need" panel;
+  branch + time into the outline rail
+- **~1,560 hard-coded Tailwind colour utilities swept onto tokens.** The scales
+  are no longer registered in `@theme` — `text-slate-600` now renders as
+  nothing. This supersedes the "Box-variant visual sweep" queue item, which
+  only covered ~48 divs.
+- Tailwind's `--radius-*` and `--shadow-*` redefined globally to the design's
+  near-square corners and near-flat elevation, rather than editing ~280
+  `rounded-lg` call sites.
+
+**Component restyle.** `Box` alert variants are now right-aligned mono label +
+vertical rule (no tinted washes); `KeyConceptSection` is unframed prose ending
+on a highlighted takeaway; `Quiz` is open by default (it was collapsed, so the
+one part of a page that checks understanding was the part nobody saw);
+`CodeBlockClient` gained file/branch/copy chrome and a Monaco theme built from
+the design's code palette; `NavFooter`, `MarkCompleteToggle`, `ComparisonTable`,
+`CollapsibleSection`, `ContentCard`, `ImageBlock`, `DocumentationButton`,
+`GlossaryTerm`, `AlphaBanner` all restyled.
+
+**Home page** rebuilt: masthead, display statement, "What you'll program" (four
+mechanisms split by workshop, scroll-revealed) above the syllabus, sponsors,
+colophon.
+
+### BUGS FIXED ALONG THE WAY
+
+- **`useKeyboardNavigation` had a stale hard-coded `PAGE_SEQUENCE`** describing
+  the pre-audit lesson order. Arrow-key navigation did nothing on any page added
+  or moved since. Now derives from `lessons.ts`; `[` / `]` added as aliases.
+- **`--font-display: var(--font-serif)` in `@theme`** resolved at `:root`, where
+  `--font-serif` is a self-reference — cyclic, so every `.display` heading
+  silently fell back to the sans face. `.display` now reads `--font-serif`
+  directly at point of use.
+- **`generate-search-data.js` wrote unformatted output**, so `pnpm build` left
+  the tree dirty and the _next_ `format:check` failed on a file nobody had
+  touched. It now formats on the way out; the CLAUDE.md workaround is gone.
+- **`LessonSection` name collision** — the section-id union type in `lessons.ts`
+  and the new lesson-body component. The type is now `LessonSectionId`.
+
+### CONTENT MOVES (user decisions, this session)
+
+- `/ai-coding-assistant` moved from Workshop #1 to the **end of Advanced
+  Topics** (lesson 29). The audit put it early on the grounds that an assistant
+  is most useful once you can check its answers; the counter-argument is that a
+  student who meets one at lesson 12 has an easy way to stop writing lesson 12.
+  Its worked prompts still run against `2-Commands` on purpose.
+- Section titles renamed: "Workshop #1" → **Control Fundamentals**, "Workshop
+  #2" → **Drive & Perception**. `SECTIONS` gained `num` and `blurb`.
+- `/` removed from `LESSONS`. Home is the landing page, not lesson 00 — the
+  counter said 30 when the course is 29.
+
+### NOT VERIFIED
+
+No browser was available this session (Playwright MCP not wired in). All 30
+routes return 200 with no render errors and the full `pnpm test` suite passes,
+but that is server-side only. **Still needs a real visual pass:**
+
+1. WCAG AA contrast, both themes. The light theme got the least attention.
+2. Mobile down to 360px.
+3. Keyboard reachability end to end — particularly the drawer focus trap and
+   the ⌘K palette.
+4. Monaco's custom theme against the page in light mode (code blocks stay dark
+   in both themes by design; confirm that reads as deliberate, not broken).
+
+### OPEN JUDGEMENT CALL
+
+The drawer and search scrims use `backdrop-filter: blur()`. Prompt 2's hard bans
+list "no glassmorphism, no decorative `backdrop-blur`". A modal scrim is
+arguably the non-decorative case, but it is a coin-flip — drop it if you disagree.
+
+### NOW OBSOLETE IN THE QUEUES ABOVE
+
+- "Box-variant visual sweep" — done, and wider than specified.
+- "ContentCard shadow softening" — done globally via the shadow scale.
+- "`useProgress` hook + sidebar progress pill" — the hook already existed; the
+  pill is now the rail spine, the topbar counter, and DONE flags in the drawer.
+- "Image format hints in `next.config.ts`" — already present.
+- "Phase 1 token cleanup / drop OKLCH" — superseded; see the note under Tokens.
+- "Sidebar rebuild" — done, as deletion.
+
+Still live: MDX content layer (Velite), Monaco → Expressive Code, Pagefind.

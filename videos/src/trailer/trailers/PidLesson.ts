@@ -138,41 +138,41 @@ export const PidLesson: TrailerScript = {
   beats: [
     {
       id: "hook",
-      text: "This is the full PID lesson. You'll learn why an arm sags. Why it shakes. What each number in the controller really does. And the exact steps to tune a mechanism without breaking it.",
+      text: "Everybody's first PID attempt goes: guess, deploy, wince, guess again. That works, eventually. This lesson gets you to the version where the graph tells you which number to move, so tuning takes twenty minutes instead of a whole build night.",
       camera: TITLE,
       holdAfter: 0.5,
     },
     {
       id: "setup",
-      text: "Here is our test rig. An arm on a motor, resting at negative forty-five degrees. We want it at positive thirty. That target angle is called the setpoint. The gap between the arm and the setpoint is called the error. Every part of PID works off the error.",
+      text: "Our rig: an arm on a motor, heavy enough that gravity matters. It's flat on its hard stop, and we want it at thirty. That gap, in degrees, is the error, and it's the only quantity the controller ever sees. Not the angle it's sitting at. The gap.",
       camera: ARM_CLOSEUP,
       events: [{ type: "target", deg: 30, at: { word: "thirty" } }],
     },
     {
       id: "p-concept",
-      text: "P stands for proportional. The voltage it sends is k P times the error. k P is just a number we pick, called a gain. Big error, big push. Small error, small push. Now watch a small gain. The arm rises, slows, and then stops climbing.",
+      text: "P stands for proportional: voltage equals kP times the error, where kP is a number you pick. Ten degrees off, some push. One degree off, a tenth of that push. Start it small and watch. The arm rises, slows, and quits climbing short of the target.",
       camera: LAB,
       events: [{ type: "gains", kP: 0.2, kD: 0, at: { word: "proportional" } }],
     },
     {
       id: "p-sag",
-      text: "It stalls about nineteen degrees short. Here is why. At that angle, k P times the error makes just enough voltage to balance gravity. The push and gravity cancel out. But the arm is still below the target. P needs an error to make any voltage. So it keeps some error forever.",
+      text: "It stalls nineteen degrees short, and that's not a bug. At that angle kP times the remaining error produces exactly enough voltage to hold the arm's weight. Push balances gravity. Nothing is left over to climb the rest, and P can't push without error, so the error stays. Forever.",
       camera: SCOPE_CLOSEUP,
     },
     {
       id: "p-crank",
-      text: "The obvious fix? Crank k P way up. Now even a small error makes serious voltage. The arm gets much closer. But look how it arrives. It blasts through thirty at full speed. Then it swings back and forth around the setpoint. We call that ringing.",
+      text: "The obvious move is to crank kP up, way up. Now a two-degree error makes real voltage. Watch how it gets there, though. It arrives at full speed, blows through the target, overshoots, comes back, overshoots again. Every team has a word for that: ringing.",
       camera: LAB,
       events: [{ type: "gains", kP: 2.5, kD: 0, at: { word: "crank" } }],
     },
     {
       id: "why-ring",
-      text: "The ringing is not random. It is physics. P only looks at where you are. It never looks at how fast you are moving. So the arm arrives at the target carrying speed. Nothing tells it to slow down. Past the target, the push flips direction. And that repeats, over and over.",
+      text: "Ringing isn't randomness. P knows where the arm is and nothing else. It has no idea the arm is crossing the target at ninety degrees a second, so nothing brakes, and momentum takes it straight through. Then the error flips sign, the push flips with it, and around you go again.",
       camera: SCOPE_CLOSEUP,
     },
     {
       id: "d-term",
-      text: "That's the D term's job. D stands for derivative. It watches how fast you are approaching. Then it brakes against that speed. Faster approach, harder brake. Keep the same k P and add a touch of k D. Send it to sixty degrees. It lands like it's on rails.",
+      text: "D stands for derivative, the rate the error changes. Feed that back with the opposite sign and you get a brake that scales with your closing speed. Approach fast, brake hard. Barely moving, barely any brake. Same kP, a touch of kD. Ask for sixty and it just lands.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, at: { word: "derivative" } },
@@ -181,7 +181,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "d-overdone",
-      text: "But D can fail too. Raise k D way too far. Now the brake overpowers the push. Send the arm back down to ten degrees. It crawls, cautious and slow. Smooth is good. Timid loses matches.",
+      text: "D has a failure mode too. Raise kD far enough and the brake fights the push the whole way. Send the arm back down to ten. It creeps. Smooth, and four seconds slower than the team next to you.",
       camera: SCOPE_CLOSEUP,
       events: [
         { type: "gains", kP: 2.5, kD: 2.8, at: { word: "raise" } },
@@ -190,7 +190,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "d-right",
-      text: "Now back k D off until the landing is crisp. Fast approach. One clean settle. No bounce. That balance, quick but calm, is what a tuned mechanism feels like. Send it up to forty-five again, just to prove it.",
+      text: "Back kD off until the landing turns crisp. Quick approach, one settle, done. That's the feel a tuned mechanism has, and no spec sheet will give you the number. Take it up to forty-five and watch it repeat.",
       camera: LAB,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, at: { word: "off" } },
@@ -199,7 +199,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "i-intro",
-      text: "So what is the I for? I stands for integral. It is the controller's memory. It adds up the error over time. If the arm sits short of the target, that error piles up. The bigger the pile, the harder it pushes. It keeps pushing until the gap closes.",
+      text: "The I term, then. Integral: add up the error over time and push in proportion to the accumulated total. An arm parked short of the target keeps feeding the pile, the pile keeps growing, and the push grows with it until the gap finally closes. Patience, mechanized.",
       camera: ARM_CLOSEUP,
       events: [
         { type: "gains", kP: 0.35, kD: 0.15, at: { word: "Integral" } },
@@ -208,7 +208,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "i-demo",
-      text: "Here is the sag again, with a weak P. The arm is stuck below twenty. Now add k I and watch the memory work. The error piles up. The push grows. The arm grinds its way onto the target. But notice the cost. It stored up so much push that it overshoots first.",
+      text: "Same weak P as before, same sag, arm stuck below twenty. Now add kI and watch the memory do its work. The integral climbs, the voltage climbs with it, and the arm grinds its way onto the target. Then it keeps going. All that stored-up push has to go somewhere.",
       camera: SCOPE_CLOSEUP,
       events: [
         { type: "gains", kP: 0.35, kD: 0.05, kI: 1.2, at: { word: "add" } },
@@ -216,13 +216,13 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "i-verdict",
-      text: "That overshoot has a name: integral windup. It is why this workshop skips the I term. I is a slow guess at a force you could just calculate. Gravity is not a mystery. The next lesson replaces the whole I term with feedforward. Feedforward adds that force right away, no memory needed.",
+      text: "That overshoot has a name: integral windup. It's the reason this workshop leaves kI at zero. Integral is a slow, blind guess at a force you can compute in one line, and nobody on your team is confused about gravity. Next lesson hands that job to feedforward, which pushes the instant you ask.",
       camera: LAB,
       holdAfter: 0.6,
     },
     {
       id: "bump",
-      text: "One more thing a controller must survive: the real world. We are back on our tuned gains. Now bump the arm hard, like a collision. P sees the new error instantly. D catches the speed. The arm is back on target in under a second. Tuning is about staying there, not just arriving.",
+      text: "Arriving is the easy half. Back on the tuned gains, and now bump the arm hard, the way a defense bot does. The error appears, and P answers it on the same cycle. D keeps the recovery from becoming a new oscillation, and the arm is back on target in under a second.",
       camera: ARM_CLOSEUP,
       events: [
         { type: "gains", kP: 2.5, kD: 0.2, kI: 0, at: { word: "tuned" } },
@@ -231,7 +231,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "procedure-1",
-      text: "Now the tuning procedure. You run it the same way every time. Always in simulation first. Step one: start k P so small the mechanism barely moves. Step two: double k P, and double it again, until you see overshoot and ringing.",
+      text: "The procedure. Same order every time, in simulation, before the mechanism can hurt anybody. Step one: kP absurdly low. Then double it, and double it again, until the arm overshoots and rings. You need to find that edge before you can back away from it.",
       camera: { x: 5500, y: 120, width: 2160, height: 560 },
       events: [
         { type: "diagram", artifact: "tuning", step: 1, at: { word: "one" } },
@@ -245,7 +245,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "procedure-2",
-      text: "Step three: back k P off about thirty percent, just under the ringing point. Step four: add k D in small steps until the landing is crisp. Then verify like a skeptic. Try big steps, small steps, and a few bumps.",
+      text: "Step three walks kP back about thirty percent. Now you're under that edge with margin. Step four: add kD a little at a time until the settle stops bouncing. Then verify like you don't trust yourself, because in a month you won't.",
       camera: TUNING,
       events: [
         { type: "diagram", artifact: "tuning", step: 3, at: { word: "three" } },
@@ -260,7 +260,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "tolerance",
-      text: "Last piece: when is the arm officially there? Never exactly. A real arm jitters by fractions of a degree forever. So we pick a tolerance. That is how much error still counts as close enough. The go to target hold never finishes. It just keeps holding. A chain moves on by checking is at target with until. Pick the tolerance your game needs, not the tiniest number that feels precise.",
+      text: "It never lands exactly. A real arm jitters by hundredths of a degree forever, so you declare a tolerance and call anything inside it arrived. The hold command never finishes on its own, and that's on purpose. A chain gets past it with an until check. Let the game pick the number.",
       camera: CODE,
       events: [
         {
@@ -274,7 +274,7 @@ export const PidLesson: TrailerScript = {
     },
     {
       id: "cta",
-      text: "That's real PID. P gives the push. D keeps it calm. Tolerance decides when you're close enough. And the procedure works on any mechanism. Next lesson: feedforward, where gravity stops being P's problem. All of it is at frc5712.com.",
+      text: "One arm, one constant force, and the whole procedure transfers: a flywheel or an elevator tunes exactly the same way. What doesn't transfer is guessing kP big enough to hold the arm up. The next lesson stops asking it to.",
       camera: END,
       holdAfter: 1.2,
     },

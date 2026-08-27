@@ -14,7 +14,7 @@ All content targets the **WPILib 2027 alpha stack**, not the classic Commands v2
 - **Commands v3 + OpModes** (`org.wpilib.command3`) — subsystems extend `Mechanism`; each mode is its own `@Teleop` / `@Autonomous` class with its bindings in the constructor. There is no `RobotContainer`.
 - **Java 25**, deploying to **SystemCore** (not roboRIO), with Phoenix 6 alpha and GradleRIO 2027 alpha.
 - **Command conventions**: mechanism commands are persistent **holds** — `runRepeatedly(...)` re-sending the closed-loop request, named with a `(hold)` suffix — bound with `whileTrue` so releasing the button returns the mechanism to its default command. Routines are built by **chaining**: `Command.sequence`, call-site `.until(mech::isAtTarget)`, `Command.race(step, hold)`, and `.withTimeout(...)` as the seatbelt. A hold never finishes, so nothing may ever wait on a hold.
-- **Autonomous** uses CTRE `DriveToPose` and `LinearPath` — the workshop does not use PathPlanner.
+- **Autonomous** uses Commands v3 OpModes and drivetrain commands. PathPlanner is taught as the route-design and path-finding tool, but its published Java command examples still target Commands v2, so those examples are not pasted into the 2027 project.
 - **Logging** uses WPILib's `DataLogManager` — the workshop does not use AdvantageKit.
 
 Ground truth for all Java examples is the [2027-Template](https://github.com/Hemlock5712/2027-Template) repository. Lesson pages embed live files and PR diffs from the companion [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) repository, whose numbered branches build each mechanism step by step.
@@ -30,37 +30,45 @@ Getting Started:
 ├── /prerequisites           Required software & hardware
 └── /mechanism-cad           CAD files and 3D models
 
-Workshop #1:
-├── /hardware                CTRE hardware setup
-├── /project-setup           WPILib project creation
-├── /command-framework       Command-Based Framework (Commands v3 concepts)
-├── /building-subsystems     Mechanisms
-├── /adding-commands         Commands
-├── /triggers                Triggers
-├── /running-program         Run code with hardware sim
-├── /mechanism-setup         Mechanism selection & setup
-├── /pid-control             PID control + interactive playground
-└── /motion-magic            Motion Magic profiled movement
+Workshop #1 · Hardware & CTRE:
+├── /hardware                 Hardware, firmware, and Tuner X setup
+├── /mechanism-setup          Motor identification, CAN IDs, direction, and zero
+├── /pid-control              PID tuning entirely in Tuner X
+└── /motion-magic             Motion Magic tuning entirely in Tuner X
 
-Workshop #2:
-├── /swerve-prerequisites    Swerve drive prerequisites
-├── /swerve-drive-project    Creating a swerve drive project
-├── /pathplanner             Autonomous: Driving to a Pose (CTRE DriveToPose —
-│                            the slug is historical; the page no longer teaches PathPlanner)
-├── /swerve-calibration      Swerve calibration
-├── /logging-options         Logging strategies (DataLogManager)
-├── /logging-implementation  Logging system setup
-├── /drive-to-point          Drive to point navigation with PID
-├── /vision-options          Computer vision approaches
-└── /vision-implementation   Vision system integration
+Workshop #2 · Robot Programming:
+├── /java-basics              Java basics before project creation
+├── /project-setup            WPILib project creation
+├── /command-framework        Commands v3 concepts
+├── /adding-commands          Classic Commands
+├── /opmodes                  Teleop, Autonomous, and Utility OpModes
+├── /robot-class              Robot.java and shared lifetime
+├── /building-subsystems      Mechanisms
+├── /running-program          Run code with hardware simulation
+└── /logging-implementation   Basic DataLogManager logging
 
-Advanced Topics:
-├── /vision-shooting         Dynamic Flywheel Control
-├── /state-based             State Machines (command3 StateMachine)
-└── /advanced-drive-to-point Advanced: Profiled Drive to Point (LinearPath)
+Workshop #3 · Swerve & Autonomous:
+├── /swerve-prerequisites     Swerve and field-pose concepts
+├── /swerve-drive-project     Generate the swerve project
+├── /swerve-calibration       Calibrate odometry and gains
+├── /pathplanner              Design paths and autos in PathPlanner
+└── /autonomous               Autonomous OpModes and Commands v3 routines
+
+Workshop #4 · Vision & Navigation:
+├── /vision-implementation    Vision pose integration
+├── /drive-to-point           Basic drive to point
+├── /advanced-drive-to-point  Profiled drive to point
+└── /dynamic-path-planning    Dynamic obstacles and replanning
+
+Workshop #5 · Advanced Commands:
+├── /chaining-commands        Command composition
+├── /finish-lines             Finish conditions and timeouts
+├── /coroutines               Coroutines
+├── /state-based              State Machines
+└── /drive-to-tag-inline      Optional coroutine navigation example
 
 Utility pages (outside lesson navigation):
-└── /search, /glossary, /ai-assistant, /planner, /privacy
+└── /search, /privacy, /video
 ```
 
 ## 🚀 Getting Started
@@ -122,30 +130,11 @@ public/                      # Images, 3D models, downloads
 
 Navigation (sidebar groups, lesson order, prev/next links) is derived entirely from `src/data/lessons.ts` — add or reorder lessons there. See [CLAUDE.md](CLAUDE.md) for the full architecture and content-authoring reference.
 
-## 🤖 AI Assistant (Optional)
+## 🤖 AI Assistant
 
-The `/ai-assistant` page answers workshop questions using Gemini with a File Search store for retrieval. Everything else works without it. To enable it locally:
+[Coding with an AI Assistant](https://frc5712.com/ai-coding-assistant) remains available as supplemental material on pointing Claude Code, GitHub Copilot, or OpenAI Codex at a robot project, including how to spot an assistant that answered in Commands v2. It is outside the required five-workshop path.
 
-1. Create `.env.local` with a [Google AI Studio](https://aistudio.google.com/app/apikey) API key:
-
-   ```
-   GOOGLE_GENERATIVE_AI_API_KEY=your_api_key
-   GEMINI_FILE_SEARCH_STORE=your_store_name
-   ```
-
-2. One-time store creation (prints the store name for `.env.local`):
-
-   ```bash
-   npx tsx scripts/setup-file-search.ts
-   ```
-
-3. Upload workshop pages to the store (use `--replace` after content changes):
-
-   ```bash
-   npx tsx scripts/upload-to-file-search.ts
-   ```
-
-`scripts/list-file-search.ts` lists what the store currently contains.
+The site itself no longer hosts a chat bot. The Gemini-backed `/ai-assistant` page and its File Search index were removed in August 2026: a retrieval index of these pages went stale faster than the pages did, and the workshop would rather teach the tools students already have open. There is no API key to configure — the site runs entirely without one.
 
 ## 🌐 Deployment
 

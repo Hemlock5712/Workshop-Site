@@ -1,420 +1,310 @@
 import PageTemplate from "@/components/PageTemplate";
-import AlphaStatusNote from "@/components/AlphaStatusNote";
-import KeyConceptSection from "@/components/KeyConceptSection";
-import Box from "@/components/Box";
-import ContentCard from "@/components/ContentCard";
-import CollapsibleSection from "@/components/CollapsibleSection";
+import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
+import Box from "@/components/Box";
+import DocumentationButton from "@/components/DocumentationButton";
 import GitHubContent from "@/components/GitHubContent";
+import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
-import { Lightbulb, MapPin, Target } from "lucide-react";
-import Image from "next/image";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import { GitBranch } from "lucide-react";
 
+/**
+ * Five sections against the old eight, four excerpts and one embed against
+ * thirteen code blocks.
+ *
+ * The old page built `DriveToPoint.java` field by field across nine numbered
+ * steps, each closing on a "Visible result" that was usually "nothing changes
+ * yet". That is a diff, not a lesson. What survives is what a student cannot
+ * get by reading the finished file: which frame the pose is measured in, why
+ * the heading controller wraps and the other two do not, why the stop request
+ * lives in `end()`, and what 30 m/s of commanded speed does on a 4.54 m/s
+ * drivetrain.
+ *
+ * Deliberately gone: the optional speed clamp (not on the branch, and the next
+ * lesson replaces it properly), the `ClassicCommand.java` embed (123 lines the
+ * page tells you not to read, and the PR diff still reaches them), the
+ * PID-versus-Slot-0 comparison table (three sentences of prose), and the
+ * per-step compile-error commentary.
+ *
+ * The "where the flywheel went" margin note went the same way in August 2026,
+ * when the prose linter started joining sentences across an inline `<code>`
+ * and the page had to come back under the 15-minute cap. It was branch
+ * housekeeping about another lesson's file, and a margin note is the one thing
+ * on a page that is never load-bearing.
+ *
+ * "Check yourself" is not payable. It was cut once to buy back two minutes and
+ * has been put back: the original eight questions are six, every answer is
+ * taught on this page rather than on the branch, and the tolerance numbers
+ * behind `atSetpoint()` came back with them.
+ *
+ * This is the first page in the course to use Java `super` and `this`.
+ * `/java-basics` used to pre-teach both, fifteen lessons early, and no longer
+ * does. Both are defined here, where they first appear.
+ */
 export default function DriveToPoint() {
   return (
-    <PageTemplate title="Drive to Point">
-      <KeyConceptSection
-        title="Autonomous Point Navigation with Odometry"
-        description="Use your swerve drivetrain's odometry to autonomously navigate to specific field coordinates with PID control."
-        concept="Combine odometry tracking with PID controllers to command your robot to drive to any (x, y, rotation) position on the field."
-      />
-
-      <p className="text-slate-600 dark:text-slate-300 text-center -mt-4">
-        Drive to point moves the robot to a precise field position on its own.
-        It&apos;s the building block behind autonomous routines and teleop
-        assists.
+    <PageTemplate
+      title="Drive to Point"
+      lede="Hold a button and the robot drives itself to one spot on the field, position and heading together. Three PID controllers turn the gap between the current pose and the target pose into a chassis velocity. Accuracy comes from odometry."
+      needs={[
+        <>
+          <strong>Swerve Calibration</strong>. The command is only as accurate
+          as the pose it subtracts from.
+        </>,
+        <>
+          <strong>Classic Commands</strong> and <strong>OpModes</strong>, for
+          the lifecycle and <code>whileTrue</code>.
+        </>,
+        <>
+          <strong>Logging</strong>. The last check below is a graph.
+        </>,
+      ]}
+      branch="5-DriveToPoint"
+      time="25 minutes"
+    >
+      <p>
+        Every meter the drivetrain has covered so far, a human drove. Hold{" "}
+        <strong>A</strong> for the field origin. Hold <strong>B</strong> for (3
+        m, 2 m) facing 180°.
       </p>
 
-      {/* Understanding Field Coordinates */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Understanding Field Coordinates
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          The FRC field uses a coordinate system where positions are defined as{" "}
-          <strong>Pose2d</strong> objects containing X position, Y position, and
-          rotation (heading). Your swerve drivetrain&apos;s odometry
-          continuously tracks the robot&apos;s current pose, so you can compare
-          it against a target pose and close the gap with feedback control.
+      <LessonSection id="the-pose-you-are-driving-to" title="The target pose">
+        <p>
+          A <code>Pose2d</code> bundles three numbers: X in meters, Y in meters,
+          and a <code>Rotation2d</code> heading. The robot&apos;s current
+          position and the place you are sending it are both written this way.
+          0° points down the field.
         </p>
 
-        <div className="flex justify-center my-8">
-          <Image
-            src="/images/drive-to-point-field.png"
-            alt="FRC field coordinate system showing X and Y axes with blue and red alliance robots"
-            width={1024}
-            height={463}
-            className="rounded-lg shadow-lg border border-slate-200 dark:border-slate-800"
-          />
-        </div>
-
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              <MapPin className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Pose2d Structure
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                A Pose2d represents a position and orientation on the field.
-              </p>
-            </div>
-          </div>
-
-          <div className="bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-            <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">
-              Pose2d Components:
-            </h4>
-            <div className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-              <div className="flex gap-4 items-start">
-                <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
-                  X (meters)
-                </span>
-                <span>
-                  Distance along the field&apos;s length. X increases as you
-                  move away from the driver station (0 to ~16.5m)
-                </span>
-              </div>
-              <div className="flex gap-4 items-start">
-                <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
-                  Y (meters)
-                </span>
-                <span>
-                  Distance along the field&apos;s width. Y increases as you move
-                  to the left (0 to ~8.2m)
-                </span>
-              </div>
-              <div className="flex gap-4 items-start">
-                <span className="font-mono font-bold text-primary-600 dark:text-primary-400 min-w-[80px]">
-                  Rotation
-                </span>
-                <span>
-                  Robot heading as Rotation2d (0° = facing down the field)
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <CodeBlock
-            language="java"
-            title="Creating Target Poses"
-            code={`// Drive to origin (0, 0) facing 0 degrees
-Pose2d origin = Pose2d.kZero;
-
-// Drive to (3, 2) facing 180 degrees
-Pose2d targetPose = new Pose2d(3, 2, Rotation2d.fromDegrees(180));
-
-// Get current robot position from odometry
-Pose2d currentPose = drivetrain.getPose();`}
-          />
-        </ContentCard>
-      </section>
-
-      {/* PID Control for Position */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          PID Control for Position Tracking
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          To drive to a point, we use{" "}
-          <strong>three separate PID controllers</strong>: one for X position,
-          one for Y position, and one for rotation. Each controller calculates
-          the required velocity by comparing the current value to the target
-          value.
-        </p>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          <Box variant="alert-info" title="X Controller">
-            <p>Controls forward/backward velocity based on X position error</p>
-            <div className="mt-3 p-2 bg-[var(--muted)] rounded font-mono text-xs text-[var(--foreground)]">
-              xVelocity = kP × (target.X - current.X)
-            </div>
-          </Box>
-
-          <Box variant="alert-success" title="Y Controller">
-            <p>Controls left/right velocity based on Y position error</p>
-            <div className="mt-3 p-2 bg-[var(--muted)] rounded font-mono text-xs text-[var(--foreground)]">
-              yVelocity = kP × (target.Y - current.Y)
-            </div>
-          </Box>
-
-          <Box variant="alert-tip" title="Theta Controller">
-            <p>Controls rotation rate based on heading error</p>
-            <div className="mt-3 p-2 bg-[var(--muted)] rounded font-mono text-xs text-[var(--foreground)]">
-              rotation = kP × (target.θ - current.θ)
-            </div>
-          </Box>
-        </div>
-
-        <Box
-          variant="alert-info"
-          title="Why Three Controllers?"
-          icon={<Lightbulb className="w-5 h-5" />}
-        >
-          <p>
-            Swerve drivetrains can control X, Y, and rotation independently. One
-            PID controller per degree of freedom lets the robot drive to the
-            target position and rotate to the target heading at the same time.
-          </p>
-        </Box>
-      </section>
-
-      {/* Implementation */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          DriveToPoint Command Implementation
-        </h2>
-
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              1
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Create PID Controllers
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Initialize three PID controllers with appropriate gains. The
-                theta controller uses continuous input to handle angle wrapping.
-              </p>
-            </div>
-          </div>
-
-          <CodeBlock
-            language="java"
-            title="DriveToPoint Command Setup"
-            code={`// ClassicCommand gives you the explicit
-// initialize / execute / isFinished / end lifecycle (see the Commands lesson).
-public class DriveToPoint extends ClassicCommand {
-  private final DriveMechanism m_drivetrain;
-  private final Pose2d m_targetPose;
-
-  // Three PID controllers for X, Y, and rotation
-  private final PIDController xController = new PIDController(10, 0, 0);
-  private final PIDController yController = new PIDController(10, 0, 0);
-  private final PIDController thetaController = new PIDController(7, 0, 0);
-
-  // Field-relative velocity request in the blue-origin frame — the same frame
-  // odometry uses — so the command isn't re-rotated by alliance perspective.
-  private final SwerveRequest.ApplyFieldVelocity driveRequest =
-      new SwerveRequest.ApplyFieldVelocity()
-          .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance);
-
-  public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
-    super("DriveToPoint", drivetrain); // command name + the mechanism it requires
-    m_drivetrain = drivetrain;
-    m_targetPose = targetPose;
-
-    // Enable continuous input for theta (-π to π)
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-  }
-}`}
-          />
-
-          <Box variant="alert-tip" title="Continuous Input">
-            <p>
-              <code>enableContinuousInput(-Math.PI, Math.PI)</code> tells the
-              controller that angles wrap around, so the robot rotates via the
-              shortest path (e.g., from 350° to 10° goes clockwise through 0°,
-              not counterclockwise 340°).
-            </p>
-          </Box>
-        </ContentCard>
-
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              2
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Calculate Velocities in Execute
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Each execute cycle, get the current pose and calculate the
-                required velocities to reach the target.
-              </p>
-            </div>
-          </div>
-
-          <CodeBlock
-            language="java"
-            title="Command Execute Method"
-            code={`@Override
-protected void execute() {
-  Pose2d currentPose = m_drivetrain.getPose();
-
-  // One PID per axis. Each one asks: "how fast should I move
-  // this axis to close the gap between current and target?"
-  double xVelocity = xController.calculate(currentPose.getX(), m_targetPose.getX());
-  double yVelocity = yController.calculate(currentPose.getY(), m_targetPose.getY());
-  // Theta is the same shape — just read the rotation in radians.
-  double thetaVelocity = thetaController.calculate(
-      currentPose.getRotation().getRadians(),
-      m_targetPose.getRotation().getRadians());
-
-  // Hand the field-relative velocities (blue-origin) to the drivetrain.
-  m_drivetrain.setControl(
-      driveRequest.withVelocity(new ChassisVelocities(xVelocity, yVelocity, thetaVelocity)));
-}`}
-          />
-
-          <div className="bg-primary-50 dark:bg-primary-950/30 p-4 rounded-lg border-l-4 border-primary-400 dark:border-primary-900 mt-4">
-            <h4 className="font-semibold text-primary-900 dark:text-primary-300 mb-2">
-              <Target className="w-5 h-5 inline mr-2" />
-              How It Works
-            </h4>
-            <p className="text-sm text-slate-700 dark:text-slate-300">
-              The command runs continuously, recalculating velocities every 20ms
-              (50Hz). As the robot gets closer to the target, the error
-              decreases, and the PID controllers automatically reduce the
-              velocity until the robot reaches the setpoint.
-            </p>
-          </div>
-        </ContentCard>
-
-        <ContentCard>
-          <div className="flex items-start gap-4 mb-4">
-            <div className="bg-purple-500 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold flex-shrink-0">
-              3
-            </div>
-            <div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-                Stop When Command Ends
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                When the command is interrupted or finished, stop the drivetrain
-                to prevent unwanted movement.
-              </p>
-            </div>
-          </div>
-
-          <CodeBlock
-            language="java"
-            title="Command End Method"
-            code={`@Override
-protected void end(boolean interrupted) {
-  // Stop the drivetrain when the command ends. ClassicCommand runs this on both
-  // a natural finish and an interrupt, so it's the one place cleanup needs to be.
-  m_drivetrain.setControl(new SwerveRequest.Idle());
-}
-
-@Override
-protected boolean isFinished() {
-  // This command runs until interrupted.
-  // Could add tolerance checking to auto-finish (see Tuning Tips below).
-  return false;
-}`}
-          />
-        </ContentCard>
-
-        <Box variant="alert-info" tag="NOTE" title="The ClassicCommand shape">
-          <p>
-            The command above <code>extends ClassicCommand</code>, which gives
-            you the explicit{" "}
-            <code>initialize / execute / isFinished / end</code> lifecycle on
-            top of a coroutine. <code>super(name, drivetrain)</code> declares
-            the command name and the mechanism it requires, and{" "}
-            <code>end(interrupted)</code> runs on both a natural finish and a
-            cancel, so it&apos;s the one place to put cleanup. If you&apos;d
-            rather write it as one inline body, here&apos;s the coroutine-native
-            version:
-          </p>
-          <CodeBlock
-            language="java"
-            title="DriveToPoint: inline coroutine version"
-            code={`// A command factory on DriveMechanism. runRepeatedly loops the drive update
-// every tick and never finishes on its own (set-and-hold), so it runs until
-// something cancels it; whenCanceled idles the drivetrain.
-public Command driveToPoint(Pose2d target) {
-  PIDController xPid = new PIDController(10, 0, 0);
-  PIDController yPid = new PIDController(10, 0, 0);
-  PIDController thetaPid = new PIDController(7, 0, 0);
-  thetaPid.enableContinuousInput(-Math.PI, Math.PI);
-
-  var driveRequest =
-      new SwerveRequest.ApplyFieldVelocity()
-          .withForwardPerspective(SwerveRequest.ForwardPerspectiveValue.BlueAlliance);
-
-  return runRepeatedly(() -> {
-        Pose2d pose = getPose();
-        setControl(driveRequest.withVelocity(new ChassisVelocities(
-            xPid.calculate(pose.getX(), target.getX()),
-            yPid.calculate(pose.getY(), target.getY()),
-            thetaPid.calculate(
-                pose.getRotation().getRadians(),
-                target.getRotation().getRadians()))));
-      })
-      .whenCanceled(() -> setControl(new SwerveRequest.Idle()))
-      .named("DriveToPoint:" + target);
-}`}
-          />
-        </Box>
-      </section>
-
-      {/* Button Bindings */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Binding to Controller Buttons
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          Bind the DriveToPoint command to buttons for easy testing and teleop
-          use. In the OpMode model these bindings live in the{" "}
-          <strong>Teleop OpMode constructor</strong>, so they&apos;re scoped to
-          teleop and removed automatically on a mode switch. Hold the button to
-          drive to the point; release to stop.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="Teleop OpMode Button Bindings"
-          code={`// Inside the @Teleop OpMode constructor — bindings are scoped to this OpMode.
-public TeleopOpMode(Robot robot) {
-  DriveMechanism drivetrain = robot.drivetrain;
-
-  // Hold A: drive to origin (0, 0, 0°)
-  driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
-
-  // Hold B: drive to (3 m, 2 m, 180°)
-  driver.b().whileTrue(
-      new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));
-}`}
+        <ImageBlock
+          src="/images/drive-to-point-field.png"
+          alt="Field coordinates: X down the length of the field, Y across it to the left"
+          width={1024}
+          height={469}
+          caption="The origin is the blue alliance corner for both alliances. It never flips."
         />
 
         <Box
           variant="alert-warning"
-          title="Testing Safety & Field Requirements"
+          tag="WATCH OUT · POSE"
+          title="Nothing has told the robot where it is"
         >
-          <p className="mb-2">
-            Start with conservative PID gains (kP = 1-2) and test in a clear
-            area. The robot will move automatically when you press the button.
-            Make sure you have a way to disable the robot quickly.
-          </p>
           <p>
-            You don&apos;t need a full FRC field to test this. Pick any point;
-            just remember the robot&apos;s starting position is the origin (0,
-            0, 0°).
+            <code>getPose()</code> returns whatever odometry has counted since
+            the code started. Nothing on this branch resets it to a known field
+            position. The left-bumper <code>seedFieldCentric()</code> call
+            re-zeroes the driver&apos;s forward, not odometry.
+          </p>
+          <p className="mt-3">
+            The simulator has no camera, so holding <strong>A</strong> returns
+            the robot to wherever odometry started counting. On a real field an
+            unseeded pose sends it somewhere you did not intend. Seeding belongs
+            to{" "}
+            <a href="/swerve-calibration" className="underline font-medium">
+              Swerve Calibration
+            </a>
+            .
           </p>
         </Box>
-      </section>
+      </LessonSection>
 
-      {/* Code Example from GitHub */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Workshop Implementation: DriveToPoint
-        </h2>
-
-        <p className="text-slate-600 dark:text-slate-300">
-          See the complete implementation in the Workshop-Code repository. The{" "}
-          <code>5-DriveToPoint</code> branch shows the full command structure
-          and button bindings.
+      <LessonSection
+        id="a-second-way-to-write-a"
+        title="Four methods to fill in"
+      >
+        <p>
+          Every command so far came out of a factory:{" "}
+          <code>mechanism.run(...)</code> or <code>Command.sequence(...)</code>,
+          one expression with <code>.named(...)</code> on the end. This one does
+          four things, and only one of them repeats.
         </p>
+
+        <CodeBlock
+          language="java"
+          title="The shape you are about to fill in"
+          code={`public class DriveToPoint extends ClassicCommand {
+
+  public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
+    super("DriveToPoint", drivetrain); // command name + required mechanisms
+  }
+
+  @Override
+  protected void initialize() {}               // once, when the command starts
+
+  @Override
+  protected void execute() {}                  // every loop, while it is active
+
+  @Override
+  protected boolean isFinished() {             // every loop, right after execute
+    return false;                              // true = finish now
+  }
+
+  @Override
+  protected void end(boolean interrupted) {}   // once, when it ends either way
+}`}
+        />
+
+        <p>
+          <code>super(...)</code> calls the constructor of the class you
+          extended, here <code>ClassicCommand</code>. It takes the command name
+          first, then every mechanism this command owns while it runs. That is
+          where the telemetry name comes from. <code>.named(...)</code> belongs
+          to the builder <code>run(...)</code> hands back, so calling it on a
+          finished <code>Command</code> will not compile.
+        </p>
+
+        <p>
+          <code>ClassicCommand</code> is a file, not a framework class: 123
+          lines that turn your four methods into an ordinary{" "}
+          <code>Command</code>. Before anything else, paste the branch&apos;s
+          copy into{" "}
+          <code>src/main/java/frc/robot/utils/ClassicCommand.java</code> and
+          leave it alone. It is in the PR diff below.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="build-it" title="Build the command">
+        <p>
+          One new file, <code>commands/DriveToPoint.java</code>. Six field
+          declarations go in at the top, two of them plain: the drivetrain and
+          the target pose. Three are <code>PIDController</code> fields with kP
+          of 10 on X and Y and 7 on heading. The sixth is one{" "}
+          <code>SwerveRequest.ApplyFieldVelocity</code>, built once and reused
+          every loop. Copy them from the file at the end of this section.
+        </p>
+
+        <p>
+          Three controllers, because a swerve drivetrain moves in three
+          directions at once. Heading gets its own, so the robot turns to face
+          the right way while still driving.
+        </p>
+
+        <p>
+          The request is blue-relative because the pose is. The joystick request
+          uses the operator perspective, which flips on red so forward matches
+          what the driver sees. Your controllers already work in field
+          coordinates, and re-rotating their output would drive the robot the
+          wrong way on one alliance. <code>OpenLoopVoltage</code> means no wheel
+          PID underneath yours.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java: the constructor"
+          code={`  /**
+   * @param drivetrain the swerve drive to command
+   * @param targetPose the field pose (blue-origin) to drive to, including the goal heading
+   */
+  public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
+    super("DriveToPoint", drivetrain); // command name + required mechanism
+    this.drivetrain = drivetrain;
+    this.targetPose = targetPose;
+
+    // Wrap heading error to [-pi, pi] so the robot turns the short way around.
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+  }`}
+        />
+
+        <Split>
+          <ProseBlock>
+            <p>
+              <code>this.drivetrain = drivetrain;</code> looks like it does
+              nothing. It copies the parameter into the field of the same name.
+              The <code>this.</code> prefix means the field on this object; the
+              bare name means the parameter passed in. The parameter disappears
+              when the constructor ends, and the field is what{" "}
+              <code>execute()</code> reads.
+            </p>
+            <p>
+              <code>enableContinuousInput</code> tells the heading controller
+              that its two ends are the same place, so the robot turns the short
+              way. That controller works in radians, not degrees. X and Y get no
+              such call. Meters do not wrap.
+            </p>
+          </ProseBlock>
+          <MarginNote label="What goes wrong without it">
+            A robot at 179° asked to reach −179° has a real error of 2°. But{" "}
+            <code>−179 − 179</code> is −358, so an untreated controller spins
+            the long way around.
+          </MarginNote>
+        </Split>
+
+        <p>
+          Then the loop. <code>initialize()</code> calls <code>reset()</code> on
+          all three controllers, because a <code>PIDController</code> is a field
+          here and remembers its error between runs.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java: execute()"
+          code={`  @Override
+  protected void execute() {
+    Pose2d currentPose = drivetrain.getPose();
+
+    double vx = xController.calculate(currentPose.getX(), targetPose.getX());
+    double vy = yController.calculate(currentPose.getY(), targetPose.getY());
+    double omega =
+        headingController.calculate(
+            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+    drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+  }`}
+        />
+
+        <p>
+          <code>calculate(measurement, setpoint)</code> takes where you are,
+          then where you want to be. With kI and kD at zero, out comes kP times
+          the error. <code>ChassisVelocities</code> holds the three results:{" "}
+          <code>vx</code> and <code>vy</code> in meters per second,{" "}
+          <code>omega</code> in radians per second. It was called{" "}
+          <code>ChassisSpeeds</code> until recently, so an example using that
+          name targets an older WPILib.
+        </p>
+
+        <p>
+          <code>isFinished()</code> returns <code>false</code>, so the command
+          runs until the driver lets go. That keeps it out of{" "}
+          <code>Command.sequence(...)</code>. A sequence handed a command that
+          never ends sticks on that leg forever, so no autonomous routine can
+          use it.
+        </p>
+
+        <p>
+          The branch leaves the other option in a comment on that line:{" "}
+          <code>
+            xController.atSetpoint() &amp;&amp; yController.atSetpoint()
+            &amp;&amp; headingController.atSetpoint()
+          </code>
+          . <code>atSetpoint()</code> asks whether the latest error is inside a
+          tolerance. The default is <strong>0.05</strong>, in whatever unit that
+          controller works in: 5 cm on X and Y, 0.05 radians on heading, about
+          2.9°. <code>setTolerance(...)</code> changes it.
+        </p>
+
+        <p>
+          <code>end(boolean interrupted)</code> sends{" "}
+          <code>new SwerveRequest.Idle()</code>. It runs whether the command
+          finished or something took the drivetrain away, and the flag tells you
+          which. No exit skips it, so that is where the stop belongs.
+        </p>
+
+        <p>
+          Canceling does not stop a motor: it ends the command, and the hardware
+          carries on doing what it was last told. Teleop would forgive the
+          omission, since the joystick default takes the drivetrain back and
+          asks for nothing.
+        </p>
+
+        <p>
+          That default belongs to one OpMode. Schedule the command anywhere
+          without it and nothing claims the drivetrain, so{" "}
+          <code>Mechanism.idle()</code> takes over at the lowest priority. It
+          sends no output at all, and Phoenix keeps applying the last velocity.
+        </p>
+
+        <p>The whole file, 87 lines:</p>
 
         <GitHubContent
           repository="Hemlock5712/Workshop-Code"
@@ -422,305 +312,225 @@ public TeleopOpMode(Robot robot) {
           branch="5-DriveToPoint"
           pr={{ number: 11, focusFile: "DriveToPoint.java" }}
         />
-      </section>
 
-      {/* Practical Applications */}
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          Practical Applications
-        </h2>
+        <p>
+          Two bindings go in the <code>TeleopOpMode</code> constructor, under
+          the left-bumper binding already there. <code>whileTrue</code>, because
+          the command never finishes on its own: release and it is canceled.
+        </p>
 
-        <CollapsibleSection title="Teleop Assists" variant="info">
-          <div className="space-y-4 text-slate-600 dark:text-slate-300">
-            <p>
-              Bind preset positions to buttons to help drivers quickly position
-              the robot:
-            </p>
-            <ul className="space-y-2 ml-6">
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>
-                  <strong>Amp scoring position:</strong> Drive to the precise
-                  position for scoring in the amp
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>
-                  <strong>Speaker shooting position:</strong> Auto-position for
-                  optimal shooting angle
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>
-                  <strong>Source pickup position:</strong> Navigate to game
-                  piece source quickly
-                </span>
-              </li>
-              <li className="flex items-start">
-                <span className="mr-2">•</span>
-                <span>
-                  <strong>Defensive positions:</strong> Move to strategic
-                  blocking locations
-                </span>
-              </li>
-            </ul>
-          </div>
-        </CollapsibleSection>
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java: three imports and two bindings"
+          code={`import frc.robot.commands.DriveToPoint;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Rotation2d;
 
-        <CollapsibleSection title="Autonomous Routines" variant="info">
-          <div className="space-y-4 text-slate-600 dark:text-slate-300">
-            <p>
-              Use DriveToPoint as a building block for autonomous sequences:
-            </p>
-            <CodeBlock
-              language="java"
-              title="Example Auto Sequence"
-              code={`// Sequential autonomous routine — Command.sequence runs these in order.
-// The basic DriveToPoint above never finishes on its own (isFinished
-// returns false), so each leg needs a finish line at the call site —
-// THE ONE RULE applies to any never-finishing command, not just holds.
-Command autoSequence = Command.sequence(
-    new DriveToPoint(drivetrain, startPose)
-        .until(drivetrain::isAtTarget).withTimeout(Seconds.of(3)),
-    intake.intake().until(intake::hasPiece).withTimeout(Seconds.of(2)),
-    new DriveToPoint(drivetrain, scoringPose)
-        .until(drivetrain::isAtTarget).withTimeout(Seconds.of(3)),
-    superstructure.score().until(superstructure::isDone),
-    new DriveToPoint(drivetrain, nextGamePiecePose)
-        .until(drivetrain::isAtTarget).withTimeout(Seconds.of(3)));`}
-            />
-            <p>
-              This forms the foundation for more complex autonomous navigation
-              before adding vision. If you instead give{" "}
-              <code>DriveToPoint</code> the tolerance-based{" "}
-              <code>isFinished</code> from the Tuning Tips below, the legs
-              finish on their own and the <code>.until(...)</code> calls
-              aren&apos;t needed; keep the <code>.withTimeout(...)</code>{" "}
-              seatbelts either way. (You&apos;d typically wrap a routine like
-              this in an <code>@Autonomous</code> OpMode; see the Autonomous
-              lesson.)
-            </p>
-          </div>
-        </CollapsibleSection>
+// ... inside the constructor, after the seedFieldCentric binding:
 
-        <CollapsibleSection title="Tuning Tips" variant="warning">
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <span className="bg-primary-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                1
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Start with low gains
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  The values provided (kP = 10) are just{" "}
-                  <strong>starting points</strong>; every robot is different. If
-                  the robot oscillates, reduce gains. If it&apos;s too slow,
-                  increase gradually.
-                </p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  <strong>Pro Tip:</strong> Graph the{" "}
-                  <code>Target Position</code> vs <code>Actual Position</code>{" "}
-                  in AdvantageScope to visualize how well your PID controller is
-                  tracking.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                2
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Theta controller typically needs different gains
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Rotation usually requires different tuning than translation.
-                  Start with kP around 5-7 for theta.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-700 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                3
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Add velocity limits for safety
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Clamp the output velocities to prevent the robot from moving
-                  too fast:
-                </p>
-                <CodeBlock
-                  language="java"
-                  title="Velocity Limiting"
-                  code={`double maxVelocity = 4.0; // m/s
-xVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, xVelocity));
-yVelocity = Math.max(-maxVelocity, Math.min(maxVelocity, yVelocity));`}
-                />
-              </div>
-            </div>
-
-            <div className="flex gap-4">
-              <span className="bg-primary-800 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold flex-shrink-0">
-                4
-              </span>
-              <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  Consider adding tolerance checking
-                </h4>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                  Make the command finish automatically when close enough to the
-                  target:
-                </p>
-                <CodeBlock
-                  language="java"
-                  title="isFinished with Tolerance"
-                  code={`@Override
-protected boolean isFinished() {
-  Pose2d currentPose = m_drivetrain.getPose();
-  double distanceError = currentPose.getTranslation()
-      .getDistance(m_targetPose.getTranslation());
-  // Rotation2d.minus wraps the angle, so 179° vs -179° reads as a
-  // 2° error — a raw subtraction would read ~358° and never finish.
-  double rotationError = Math.abs(
-      currentPose.getRotation().minus(m_targetPose.getRotation())
-          .getRadians());
-
-  return distanceError < 0.05 && rotationError < Math.toRadians(5);
-}`}
-                />
-              </div>
-            </div>
-          </div>
-        </CollapsibleSection>
-      </section>
-
-      {/* Quiz */}
-      <section className="flex flex-col gap-8">
-        <AlphaStatusNote />
-
-        <Quiz
-          title="Knowledge Check"
-          questions={[
-            {
-              id: 1,
-              question: "What three values does a Pose2d contain?",
-              options: [
-                "X velocity, Y velocity, and angular velocity",
-                "X position, Y position, and rotation",
-                "Left encoder, right encoder, and gyro angle",
-                "Red, green, and blue color values",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "A Pose2d represents a position and orientation on the field, containing X position (meters), Y position (meters), and rotation (Rotation2d).",
-            },
-            {
-              id: 2,
-              question:
-                "Why does the DriveToPoint command use three separate PID controllers?",
-              options: [
-                "To control three different motors on the drivetrain",
-                "Because swerve drivetrains can move in X, Y, and rotate independently",
-                "To make the code more complex and impressive",
-                "One controller isn't powerful enough to control the robot",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "Swerve drivetrains have three independent degrees of freedom (X translation, Y translation, and rotation). Using separate PID controllers for each allows the robot to drive to a position while rotating to the target heading.",
-            },
-            {
-              id: 3,
-              question:
-                "What does thetaController.enableContinuousInput(-Math.PI, Math.PI) do?",
-              options: [
-                "Makes the controller run continuously without stopping",
-                "Tells the controller that angles wrap around, ensuring shortest rotation path",
-                "Limits the maximum rotation speed to π radians per second",
-                "Enables the controller to accept negative rotation values",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "enableContinuousInput tells the controller that the input wraps around (angles are circular), so the robot rotates via the shortest path. For example, from 350° to 10° goes through 0° (20° clockwise) rather than going backwards 340° counterclockwise.",
-            },
-            {
-              id: 4,
-              question:
-                "In the execute() method, what does currentPose represent?",
-              options: [
-                "The target position we want to drive to",
-                "The starting position when the command began",
-                "The robot's current position from odometry",
-                "The position of the nearest game piece",
-              ],
-              correctAnswer: 2,
-              explanation:
-                "currentPose is obtained from m_drivetrain.getPose() and represents the robot's current position as tracked by the swerve drivetrain's odometry system. This is compared against the target pose to calculate the error.",
-            },
-            {
-              id: 5,
-              question:
-                "What happens when you use .whileTrue() to bind the DriveToPoint command?",
-              options: [
-                "The command runs once when the button is pressed",
-                "The command runs continuously while the button is held",
-                "The command runs until the robot reaches the target",
-                "The command toggles on and off each time the button is pressed",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "The .whileTrue() binding runs the command continuously while the button is held down. When you release the button, the command is interrupted and the robot stops (via the end() method).",
-            },
-            {
-              id: 6,
-              question:
-                "If your PID controllers have gains that are too high, what will likely happen?",
-              options: [
-                "The robot will move too slowly",
-                "The robot will oscillate or shake around the target",
-                "The robot won't move at all",
-                "The robot will drive backwards",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "PID gains that are too high cause overshoot and oscillation. The robot will move past the target, then overcorrect back, repeatedly oscillating around the setpoint. Reducing the gains will dampen this oscillation.",
-            },
-            {
-              id: 7,
-              question:
-                "What is a practical teleop application of DriveToPoint?",
-              options: [
-                "Replacing all driver control with autonomous movement",
-                "Creating preset buttons to auto-position for scoring locations",
-                "Automatically avoiding all obstacles on the field",
-                "Controlling the robot's LED colors",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "DriveToPoint is excellent for teleop assists where you bind preset field positions to buttons (e.g., amp scoring position, speaker position). This helps drivers quickly and accurately position the robot without manual driving.",
-            },
-          ]}
+    // Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
+    driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
+    driver
+        .b()
+        .whileTrue(new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));`}
         />
-      </section>
+      </LessonSection>
 
-      <section className="flex flex-col gap-8">
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-          What&apos;s Next?
-        </h2>
+      <LessonSection id="the-gains" title="The gains">
+        <p>
+          These three controllers are not the Slot 0 gains you tuned in Tuner X.
+          Those run on the TalonFX itself, in rotations of one mechanism, and
+          put out volts for one motor. These run in your code once a loop, in
+          meters and radians, and command a velocity for the whole chassis.
+        </p>
 
-        <Box variant="alert-success" title="Up Next: Vision Options">
-          Driving to a pose is only as good as the robot&apos;s guess of where
-          it is, and odometry drifts. Next, cameras: the vision options for
-          correcting the robot&apos;s position with AprilTags.
+        <p>
+          So <code>kP = 10</code> reads as ten meters per second of commanded
+          speed for every meter of error. On heading, <code>kP = 7</code> reads
+          as seven radians per second for every radian. Do the arithmetic. Three
+          meters out, <code>execute()</code> asks for <strong>30 m/s</strong>,
+          against the <strong>4.54 m/s</strong> in{" "}
+          <code>TunerConstants.kSpeedAt12Volts</code>. Nothing in the file trims
+          it.
+        </p>
+
+        <p>
+          The robot lurches away at full power, then crawls in over the last
+          half meter as the error shrinks. It works, and it looks bad.
+        </p>
+
+        <Box
+          variant="alert-danger"
+          tag="DANGER · UNTUNED"
+          title="10 / 10 / 7 are marked TODO"
+        >
+          <p>
+            The comment in the file ends{" "}
+            <code>TODO: tune these for your drivetrain</code>. Nobody measured
+            them for your robot. On real hardware, test in a clear space and
+            keep a hand on the disable. A gain this large turns a wrong pose
+            into a fast wrong move.
+          </p>
         </Box>
-      </section>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <ol
+          className="ml-5 list-decimal space-y-3"
+          style={{ color: "var(--tx2)" }}
+        >
+          <li>
+            Enable Teleop in the simulator, drive a few meters from where the
+            robot started, and turn it. Now hold <strong>A</strong>: it should
+            drive back and rotate to 0° together, not spin first and drive
+            second.
+          </li>
+          <li>
+            Keep holding <strong>A</strong> and push the left stick. Nothing
+            should happen: <code>DriveToPoint</code> requires the drivetrain, so
+            it outranks the joystick default until you release.
+          </li>
+          <li>
+            Release <strong>A</strong> halfway through the trip with the sticks
+            centered. The robot should stop, not coast on at its last speed.
+          </li>
+          <li>
+            Hold <strong>B</strong>. The robot drives to (3, 2), turns to 180°,
+            then sits on the target making small corrections for as long as you
+            hold.
+          </li>
+          <li>
+            Graph <code>Drivetrain/Pose</code> and{" "}
+            <code>Drivetrain/TranslationSpeedMps</code> for that run. X settles
+            near 3, Y near 2, heading near 180°. Speed jumps to whatever the
+            drivetrain can do, holds, then falls off steeply.
+          </li>
+        </ol>
+
+        <p>
+          <strong>It drives off confidently in the wrong direction.</strong>{" "}
+          Suspect the pose, not the gains. The robot is driving correctly toward
+          where it believes the target is, so graph <code>Drivetrain/Pose</code>{" "}
+          before touching a number. If the pose is right and it still slides
+          sideways, check the request has{" "}
+          <code>ForwardPerspectiveValue.BlueAlliance</code>.
+        </p>
+
+        <p>
+          <strong>It gets close, creeps in, and never arrives.</strong> Expected
+          on this branch. One centimeter of error asks for 10 cm/s, and at some
+          point the request cannot overcome friction. There is no I term to
+          grind out the last bit.
+        </p>
+
+        <p>
+          <strong>It will not compile.</strong> Usually one of three. A{" "}
+          <code>ChassisSpeeds</code> where <code>ChassisVelocities</code>{" "}
+          belongs, a <code>.named(...)</code> call on the new command, or a{" "}
+          <code>super(...)</code> that is not the first line of the constructor.
+        </p>
+
+        <p>
+          <strong>Profiled Drive to Point</strong> changes this one file and
+          both faults go away. It plans the whole trip before the robot moves,
+          so PID becomes a small correction and the command gets a finish line.
+        </p>
+
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/Workshop-Code/pull/11"
+          title="PR #11: 5 drive to point"
+          icon={<GitBranch className="w-5 h-5" />}
+        />
+      </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "Which of the three PID controllers gets enableContinuousInput(-Math.PI, Math.PI), and why?",
+            options: [
+              "All three, so each one takes the shortest route to its setpoint",
+              "Only the heading controller, because angles wrap and meters do not",
+              "Only the X and Y controllers, because the field walls bound them",
+              "None of them: the call belongs on the SwerveRequest instead",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Heading is the one axis whose two ends are the same place. Without the call, a robot at 179 degrees asked to reach -179 degrees computes an error of -358 and spins the long way around. X and Y are meters: 3 meters is never the same place as -3 meters, so wrapping them would be wrong. The bounds are -pi and pi because that controller works in radians.",
+          },
+          {
+            id: 2,
+            question:
+              'Where does the name "DriveToPoint" that shows up in telemetry come from?',
+            options: [
+              "The class name, which ClassicCommand reads by reflection",
+              'A .named("DriveToPoint") call on the finished command',
+              'The super("DriveToPoint", drivetrain) call, which also declares the mechanism the command owns',
+              "The @Teleop annotation on the OpMode that binds it",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "super(...) calls the constructor of the class you extended. Its first argument is the command name; everything after it is a mechanism this command owns while it runs. .named(...) belongs to the builder that run(...) hands back, so calling it on a finished Command does not compile, and that is one of the three usual compile errors here.",
+          },
+          {
+            id: 3,
+            question:
+              "Why does the stop request go in end(boolean interrupted) rather than at the bottom of execute() or after isFinished() returns true?",
+            options: [
+              "end() runs on a natural finish and on an interrupt, so no exit from the command skips the stop",
+              "end() is the only method permitted to call setControl",
+              "SwerveRequest.Idle() puts the drive motors in brake mode, which only takes effect once the command is over",
+              "The scheduler will not release a mechanism until the command sends one final request",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "Canceling ends the command, not the motion: the hardware carries on with the last request it was given. end() is the one method that runs on both exits, and the interrupted flag tells you which happened. Teleop happens to forgive a missing stop, because the joystick default takes the drivetrain back and asks for nothing, but that default belongs to one OpMode.",
+          },
+          {
+            id: 4,
+            question:
+              "isFinished() returns false on this branch. What follows from that?",
+            options: [
+              "The command runs until the driver releases the button, and it cannot be a step inside Command.sequence(...)",
+              "The command ends as soon as all three controllers are inside tolerance",
+              "The command will not compile until you give it a real condition",
+              "The command runs for exactly one scheduler loop and then ends",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "A command that never finishes sticks any sequence it is placed in on that leg forever, and autonomous routines are sequences. The commented-out alternative on the branch is xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint(), whose default tolerance is 0.05: 5 cm on X and Y, 0.05 radians on heading. Profiled Drive to Point gives the command a real finish line instead.",
+          },
+          {
+            id: 5,
+            question:
+              "The drive request is built with ForwardPerspectiveValue.BlueAlliance rather than the operator perspective the joystick request uses. Why?",
+            options: [
+              "The operator perspective costs an extra rotation on every loop",
+              "The pose from odometry is always blue-origin, so velocities computed from it have to be sent in that same frame",
+              "Robots on the red alliance need a different set of gains",
+              "The operator perspective only applies while a human is holding a stick",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "getPose() is measured from the blue alliance corner for both alliances and never flips, and the three controller outputs are computed from that pose. The operator perspective exists for a driver, whose idea of forward changes with the alliance. Re-rotating a field-frame velocity through it would send the robot the wrong way on one alliance.",
+          },
+          {
+            id: 6,
+            question:
+              "kP is 10 on the X controller and the target is three meters away. What velocity does execute() ask for on that axis?",
+            options: [
+              "3 m/s, because the controller caps its output at the error",
+              "30 m/s, well past the 4.54 m/s in TunerConstants, and nothing in the file trims it",
+              "4.54 m/s, the drivetrain's top speed, because the request is clamped there",
+              "0.3 m/s, because kP divides the error",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "With kI and kD at zero the output is kP times the error, so 10 times 3 is 30 m/s against a top speed of 4.54 m/s. That is the speed trace in the last check: flat out for most of the trip, then a steep falloff. The gains carry TODO: tune these for your drivetrain, so treat them as somebody else's starting point rather than an answer.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

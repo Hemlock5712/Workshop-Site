@@ -13,6 +13,16 @@ interface CodeWalkthroughProps {
   className?: string;
 }
 
+/**
+ * The explanation half of an implementation section.
+ *
+ * No frame of its own. It used to be a `bg-[var(--bg2)]` panel bordered in
+ * `--ok` sitting inside a `.card` that is also `--bg2`: the background was
+ * invisible, the border spent a signal colour on something that signals
+ * nothing (a walkthrough is not a success), and the `p-6` was a second inset
+ * on top of the parent's — the pixel that put this heading one to the right of
+ * its sibling. The enclosing block owns the inset; this owns the content.
+ */
 export default function CodeWalkthrough({
   leftSection,
   rightSection,
@@ -20,10 +30,8 @@ export default function CodeWalkthrough({
   className = "",
 }: CodeWalkthroughProps) {
   return (
-    <div
-      className={`bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 ${className}`}
-    >
-      <h3 className="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+    <div className={`min-w-0 ${className}`.trim()}>
+      <h3 className="display m-0 mb-4 flex items-center gap-2 text-lede">
         <FileCode className="w-5 h-5" aria-hidden="true" />
         <span>Code Walkthrough</span>
       </h3>
@@ -33,15 +41,24 @@ export default function CodeWalkthrough({
         leftItems={leftSection.items}
         rightTitle={`${rightSection.title}:`}
         rightItems={rightSection.items}
-        leftBlockClassName="text-slate-700 dark:text-slate-300"
-        rightBlockClassName="text-slate-700 dark:text-slate-300"
-        leftTitleClassName="font-semibold text-slate-800 dark:text-slate-200 mb-2"
-        rightTitleClassName="font-semibold text-slate-800 dark:text-slate-200 mb-2"
+        leftBlockClassName="text-[var(--tx2)]"
+        rightBlockClassName="text-[var(--tx2)]"
+        leftTitleClassName="font-semibold text-[var(--tx)] mb-2"
+        rightTitleClassName="font-semibold text-[var(--tx)] mb-2"
       />
 
-      <div className="bg-primary-50 dark:bg-primary-900/20 p-4 rounded mt-4">
-        <p className="flex items-center gap-2 text-slate-800 dark:text-slate-200 text-sm">
-          <ArrowRightCircle className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+      {/* The next step. No size class at all now, so it takes the reading
+          treatment the `.lesson-body` default gives every other paragraph:
+          this is a full sentence of teaching copy, and `text-note` had it at
+          13px Newsreader across the whole measure — the caption rung doing a
+          paragraph's job. The panel it used to sit in was `--bg2` on `--bg2`,
+          invisible, and one more inset. */}
+      <div className="mt-flow">
+        <p className="flex items-start gap-2">
+          <ArrowRightCircle
+            className="mt-1 w-4 h-4 shrink-0 text-[var(--accent)]"
+            aria-hidden="true"
+          />
           <span>{nextStepText}</span>
         </p>
       </div>
