@@ -18,7 +18,7 @@
  */
 
 import dynamic from "next/dynamic";
-import { useEffect, useRef, useState } from "react";
+import { Component, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ViewName } from "@/components/model/ModelCanvas";
 
 const ModelCanvas = dynamic(() => import("@/components/model/ModelCanvas"), {
@@ -40,6 +40,39 @@ const VIEW_LABELS: ReadonlyArray<{ name: ViewName; label: string }> = [
   { name: "side", label: "Side" },
   { name: "top", label: "Top" },
 ];
+
+class ModelLoadBoundary extends Component<
+  { children: ReactNode },
+  { failed: boolean }
+> {
+  override state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  override render() {
+    if (this.state.failed) {
+      return (
+        <div className="flex h-full items-center justify-center px-6 text-center">
+          <span
+            className="mono"
+            role="status"
+            style={{
+              fontSize: "var(--text-micro)",
+              letterSpacing: "0.1em",
+              color: "var(--tx3)",
+            }}
+          >
+            3D model unavailable. The CAD downloads below still work.
+          </span>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 export default function ModelViewer({
   url,
@@ -96,7 +129,9 @@ export default function ModelViewer({
         }}
       >
         {near ? (
-          <ModelCanvas url={url} view={view} readout={readoutRef} />
+          <ModelLoadBoundary key={url}>
+            <ModelCanvas url={url} view={view} readout={readoutRef} />
+          </ModelLoadBoundary>
         ) : (
           <div className="flex h-full items-center justify-center">
             <span

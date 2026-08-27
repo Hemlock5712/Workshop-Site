@@ -25,7 +25,7 @@ export default function PIDControl() {
   return (
     <PageTemplate
       title="PID Tuning in Tuner X"
-      lede="The TalonFX runs the control loop itself. Tuner X sends the setpoint, plots the response, and saves the gains onto the motor. You will not write any Java in this lesson."
+      lede="The TalonFX runs the control loop itself. Tuner X sends the setpoint, plots the response, and saves the gains onto the motor."
       needs={[
         <>
           Motor, encoder direction, and mechanism zero verified in{" "}
@@ -35,40 +35,26 @@ export default function PIDControl() {
           Tuner X connected to the CANivore, with <strong>CANivore USB</strong>{" "}
           on.
         </>,
-        <>The mechanism bolted to the bench, with a clear path to swing.</>,
-        <>One person on the power switch who is not driving the laptop.</>,
+        <>The mechanism, with a clear path to swing, and no obstacles.</>,
       ]}
       time="15 minutes, including the simulation"
     >
-      <Split>
-        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-          <p>
-            You give the TalonFX a target. It reads its sensor, compares the
-            two, and adjusts its own output about a thousand times a second.
-            Tuner X never sees that loop running. It sets the target, saves the
-            gains, and draws the result.
-          </p>
-          <p>Pick one device and finish it before you touch the other.</p>
-        </div>
-        <MarginNote label="No code yet">
-          Keep VS Code closed for this lesson. Every setpoint, gain, and plot
-          lives in Tuner X. Workshop 2 copies the numbers you save here into
-          robot code, so you tune before you write any Java.
-        </MarginNote>
-      </Split>
+      <LessonSection id="how-to-tune" title="How to tune">
+        <p>
+          CTRE has an excellent guide already that explains how to properly tune
+          a PID loop. We strongly suggest following the steps in the guide.
+        </p>
+        <p>
+          After you follow this guide, you can come back here and we'll explain
+          how to actually implement it.
+        </p>
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html"
+          title="CTRE: Manual PID tuning"
+          icon={<BookOpen className="h-5 w-5" />}
+        />
+      </LessonSection>
 
-      {/* Restored. `b092234` ("Reorder workshops") deleted this section along
-          with 1,392 other lines when it converted the page from a 3-PID Java
-          lesson into a Tuner X lab. The simulation was collateral damage, and
-          it belongs here more than it belonged there: it needs no code, so a
-          code-free workshop is exactly its home. Feeling what too much kP does
-          costs nothing on a simulation and costs a gearbox on the bench.
-
-          The arm/flywheel FigureGrid that used to sit above this is gone, not
-          lost. The playground toggles between those two mechanisms and labels
-          the control mode on each, so the figure was captioning a control the
-          student can just use. Its two teaching points moved into the prose
-          below. */}
       <LessonSection id="play-with-the-gains-first" title="Play with the gains">
         <p>
           Drag a gain and watch what happens. Find out what too much{" "}
@@ -85,46 +71,10 @@ export default function PIDControl() {
         <MechanismPlayground />
       </LessonSection>
 
-      <LessonSection id="fix-the-units" title="Fix the units first">
-        <p>
-          A gain is a number of volts per unit of error. So if you and the motor
-          disagree about what one unit means, every gain you find is off by the
-          gear ratio. No amount of tuning rescues that.
-        </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Open <strong>Configs</strong> and set{" "}
-            <code>SensorToMechanismRatio</code> so that one unit equals one
-            mechanism rotation, not one motor rotation. A 60:1 arm uses 60.
-          </li>
-          <li>
-            Turn the mechanism through a known angle by hand. A quarter turn of
-            the arm should read 0.25, not 15.
-          </li>
-          <li>
-            For the arm, set the gravity type to the arm setting so that{" "}
-            <code>kG</code> scales with the cosine of the angle. An elevator
-            uses the static setting instead.
-          </li>
-        </ol>
-        <Box
-          variant="alert-danger"
-          title="Start small, and stay near the switch"
-        >
-          <p>
-            Pick a target close to where the mechanism already sits, and start
-            every gain at zero. Disable the control request before changing a
-            sensor direction, a ratio, or a feedback source. Any of the three
-            can reverse the loop, and a reversed loop drives to the hard stop at
-            full output.
-          </p>
-        </Box>
-      </LessonSection>
-
       <LessonSection id="build-the-plot" title="Build the plot">
         <p>
-          Set the plot up once and leave it alone. Two runs are only worth
-          comparing if they measured the same thing the same way.
+          Before running this, fully power cycle the CANivore and mechanism to
+          prevent any old positions from being read.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -132,104 +82,23 @@ export default function PIDControl() {
             are tuning.
           </li>
           <li>
-            Plot four signals: the target, the measured position or velocity,
-            the closed-loop error, and the motor voltage. Put target and
-            measurement on one axis so you can read the gap between them.
-          </li>
-          <li>
-            In <strong>Configs</strong>, work in Slot 0 and set every gain to{" "}
-            <code>0</code>. Apply with the download button.
-          </li>
-          <li>
-            In the control panel, pick a voltage-based position or velocity
-            request, select Slot 0, and enter your small target. Enable it only
-            long enough to catch the response.
+            Plot two signals: the target and the measured position (or velocity
+            for flywheels). Put target and measurement in one group so you can
+            read the gap between them.
           </li>
         </ol>
-        <p>
-          Change one number between runs. Move two gains at once and the plot
-          cannot tell you which one did the work.
-        </p>
       </LessonSection>
 
       <LessonSection id="feedforward-first" title="Tune the gains">
-        <p>
-          Feedforward is the output you can predict before any error exists. Get
-          it right and the mechanism nearly holds its target with no feedback at
-          all. Which terms matter depends on the mechanism.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Gain</th>
-                <th className="px-3 py-2 text-left">Pays for</th>
-                <th className="px-3 py-2 text-left">How to find it</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>kS</code>
-                </td>
-                <td className="px-3 py-2">Friction in the gearbox</td>
-                <td className="px-3 py-2">
-                  Raise it until the mechanism creeps, then back off one step.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>kG</code>
-                </td>
-                <td className="px-3 py-2">Gravity on the arm</td>
-                <td className="px-3 py-2">
-                  Raise it until the arm holds its angle without sagging or
-                  climbing. Arm only.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">
-                  <code>kV</code>
-                </td>
-                <td className="px-3 py-2">Output per unit of speed</td>
-                <td className="px-3 py-2">
-                  Raise it until measured speed lands near the target on its
-                  own. Flywheel mostly.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>
-          Measure <code>kS</code> and <code>kG</code> with the loop disabled, on
-          a plain voltage request. Leave <code>kA</code> at zero until Motion
-          Magic gives the motor a profile to follow.
-        </p>
-        <p>
-          Then add feedback. It cleans up what feedforward could not predict: a
-          sagging battery, a tightening chain, a game piece.
-        </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Raise <code>kP</code> until the mechanism reaches its target without
-            crawling the last stretch. Double it each time until something
-            changes, then move in smaller steps.
-          </li>
-          <li>
-            Stop at the first overshoot or oscillation and drop back to the last
-            value that behaved. If it still overshoots, add a little{" "}
-            <code>kD</code>.
-          </li>
-          <li>
-            Leave <code>kI</code> at zero. A steady offset is a feedforward
-            problem, and <code>kI</code> hides it by winding up until something
-            lurches.
-          </li>
-          <li>
-            Repeat at three or four angles or speeds. Gains that work at one
-            point are not tuned, they are lucky.
-          </li>
-        </ol>
+        <Box variant="alert-info" title="Before you tune">
+          <p>
+            In the control panel, pick a voltage-based position or velocity
+            request, select Slot 0, and enter your small target (for position,
+            0.1 rotations, for velocity, 10 rps).
+          </p>
+        </Box>
+
+        <p>Follow the CTRE tuning guide on your actual mechanism.</p>
         <p>
           A tuned arm sounds like one motion and then silence. If the motor is
           still working after the mechanism stopped, <code>kP</code> is too
@@ -244,8 +113,8 @@ export default function PIDControl() {
 
       <LessonSection id="failure-shapes" title="Three failure shapes">
         <p>
-          Nearly everything that goes wrong on a bench looks like one of these.
-          Read the plot, not the mechanism.
+          Nearly everything that goes wrong on a mechanism looks like one of
+          these. Read the plot, not the mechanism.
         </p>
         <FigureGrid
           cols={3}
@@ -274,22 +143,17 @@ export default function PIDControl() {
             },
             {
               label: "Falls short",
-              term: "Not enough output",
+              term: "Not enough output (position control)",
               body: (
                 <>
-                  Error settles at a constant gap. Check the supply current
-                  limit, then the feedforward terms. This is not what{" "}
-                  <code>kI</code> is for.
+                  Error settles at a constant gap. Increase your <code>kP</code>{" "}
+                  to correct this, likely followed by a <code>kD</code> to
+                  dampen the overshoot.
                 </>
               ),
             },
           ]}
         />
-        <p>
-          If the plot looks fine but the mechanism does not, suspect the units.
-          A ratio off by a factor of sixty makes a well-tuned loop hold a
-          position nobody asked for.
-        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -307,28 +171,8 @@ export default function PIDControl() {
             <li>The same gains behave across the full range of travel.</li>
           </ul>
         </Box>
-        <p>
-          Write down the Slot 0 gains, the feedback source, the sensor ratios,
-          and the inversions. Save the Tuner X configuration to a file. Workshop
-          2 types these numbers into robot code, and copying them is far cheaper
-          than tuning the same mechanism twice.
-        </p>
-        {/* CTRE's own manual tuning walkthrough, and the reference this lesson
-            is written against. Restoring the original href: a rewrite pointed
-            this at closed-loop-requests.html, which documents the request types
-            rather than the tuning procedure the page teaches. */}
-        <DocumentationButton
-          href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html"
-          title="CTRE: Manual PID tuning"
-          icon={<BookOpen className="h-5 w-5" />}
-        />
       </LessonSection>
 
-      {/* The "Check yourself" that `b092234` deleted. The original six
-          questions tested Java on branch 3-PID (`config.Slot0.GravityType`,
-          which gain ships non-zero), which no longer belongs on a page that
-          never opens VS Code. These test the same understanding through the
-          bench procedure instead. */}
       <Quiz
         questions={[
           {
@@ -361,7 +205,7 @@ export default function PIDControl() {
           },
           {
             id: 3,
-            question: "What order do you tune in?",
+            question: "What order do you tune an arm in?",
             options: [
               "All of them together, raised in proportion",
               "kD first for safety, then kP, then the feedforwards",
@@ -385,34 +229,6 @@ export default function PIDControl() {
             correctAnswer: 2,
             explanation:
               "A buzz at rest is a loop correcting harder than the mechanism can answer. Cut kP first. Damping a loop that is already too stiff adds a second aggressive term to a problem caused by the first.",
-          },
-          {
-            id: 5,
-            question:
-              "You turn the arm a quarter turn by hand and Tuner X reads 15.0. What did you skip?",
-            options: [
-              "SensorToMechanismRatio, so you are reading motor rotations",
-              "The mechanism zero was never set",
-              "Nothing. 15.0 is degrees, not rotations",
-              "The CANcoder magnet is too far from the shaft",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "A quarter turn of the mechanism should read 0.25. Reading 15.0 on a 60:1 arm means the ratio is still 1, so every gain you find would be off by sixty. Fix the units before tuning anything.",
-          },
-          {
-            id: 6,
-            question:
-              "Why write the gains down instead of leaving them saved on the motor?",
-            options: [
-              "The gains only persist until the next power cycle",
-              "Phoenix stores them per laptop, not per device",
-              "Tuner X clears Slot 0 when the CANivore is unplugged",
-              "Workshop 2 puts these numbers into Arm.java by hand",
-            ],
-            correctAnswer: 3,
-            explanation:
-              "The gains do persist on the device. You write them down because the robot code sets them itself, and Workshop 2 has you type these six numbers into the mechanism file. Copying them is much cheaper than tuning the same arm twice.",
           },
         ]}
       />

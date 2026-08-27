@@ -16,6 +16,7 @@ import {
   type ElevRegime,
 } from "@/lib/elevatorPhysics";
 import { Lightbulb, RotateCcw, ArrowUpDown } from "lucide-react";
+import SliderNumberInput from "@/components/SliderNumberInput";
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -83,12 +84,15 @@ function Slider({
           </label>
           <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
-        <span
-          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
-          aria-hidden
-        >
-          {value.toFixed(precision)}
-        </span>
+        <SliderNumberInput
+          value={value}
+          min={min}
+          max={max}
+          step={step}
+          precision={precision}
+          onChange={onChange}
+          ariaLabel={`${ariaDescription} Value in ${unit}.`}
+        />
       </div>
       <input
         id={id}
@@ -759,9 +763,16 @@ export default function InteractiveElevatorPlayground() {
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
-          {targetM.toFixed(2)} m
-        </span>
+        <SliderNumberInput
+          value={targetM}
+          min={ELEV_TARGET_RANGE_M.min}
+          max={ELEV_TARGET_RANGE_M.max}
+          step={ELEV_TARGET_RANGE_M.step}
+          precision={2}
+          onChange={setTargetM}
+          ariaLabel="Target carriage height in meters."
+          suffix="m"
+        />
       </div>
 
       {/* ── Visualization ───────────────────── */}

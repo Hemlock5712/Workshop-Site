@@ -17,6 +17,7 @@ import {
   type FlyRegime,
 } from "@/lib/flywheelPhysics";
 import { Lightbulb, RotateCcw, Gauge } from "lucide-react";
+import SliderNumberInput from "@/components/SliderNumberInput";
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -84,12 +85,15 @@ function Slider({
           </label>
           <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
-        <span
-          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
-          aria-hidden
-        >
-          {value.toFixed(precision)}
-        </span>
+        <SliderNumberInput
+          value={value}
+          min={min}
+          max={max}
+          step={step}
+          precision={precision}
+          onChange={onChange}
+          ariaLabel={`${ariaDescription} Value in ${unit}.`}
+        />
       </div>
       <input
         id={id}
@@ -686,9 +690,16 @@ export default function InteractiveFlywheelPlayground() {
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
-          {targetRpm} rpm
-        </span>
+        <SliderNumberInput
+          value={targetRpm}
+          min={FLY_TARGET_RANGE_RPM.min}
+          max={FLY_TARGET_RANGE_RPM.max}
+          step={FLY_TARGET_RANGE_RPM.step}
+          precision={0}
+          onChange={setTargetRpm}
+          ariaLabel="Target velocity in RPM."
+          suffix="rpm"
+        />
         <span className="font-mono text-micro text-[var(--tx2)]">
           {(targetRpm / 60).toFixed(1)} rps
         </span>

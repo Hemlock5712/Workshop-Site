@@ -11,7 +11,7 @@ export default function Prerequisites() {
   return (
     <PageTemplate
       title="Prerequisites"
-      lede="The software half goes on your laptop. The hardware half sits on the bench in front of you. Workshop 1 needs both, and there is no code on this page."
+      lede="The software half goes on your laptop. The hardware half sits on the bench in front of you."
       needs={[
         <>A laptop you can install software on.</>,
         <>About an hour, most of it waiting on downloads.</>,
@@ -20,7 +20,7 @@ export default function Prerequisites() {
           wired.
         </>,
       ]}
-      time="About an hour"
+      time="About half an hour"
     >
       <Split>
         <ProseBlock>
@@ -32,16 +32,7 @@ export default function Prerequisites() {
             , the first page that asks you to plug something in. Nothing here is
             hard. It is a long wait on installers.
           </p>
-          <p>
-            Workshop 1 has no software-only path. Every page after Hardware
-            Setup assumes a real motor you can power up and watch turn.
-          </p>
         </ProseBlock>
-        <MarginNote label="Start Game Tools now">
-          Game Tools is the National Instruments download, and it is the slow
-          one. Kick it off before you read the rest of this page and it will be
-          finished by the time you need it.
-        </MarginNote>
       </Split>
 
       <LessonSection id="what-to-install" title="What to install">
@@ -70,16 +61,15 @@ export default function Prerequisites() {
           </li>
           <li>
             <a
-              href="https://www.ni.com/en/support/downloads/drivers/download.frc-game-tools.html#553883"
+              href="https://github.com/wpilibsuite/FirstDriverStation-Public/releases"
               className={linkStyle}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <strong>FRC Game Tools</strong>
+              <strong>FRC Driver Station</strong>
             </a>
-            . The longest install of the five. You need one piece of it, the{" "}
-            <strong>Driver Station</strong>, which enables and disables the
-            robot.
+            . This is the new Driver Station tool, which replaces the old Game
+            Tools download.
           </li>
           <li>
             <a
@@ -140,23 +130,18 @@ export default function Prerequisites() {
             in Workshop 2.
           </li>
         </ol>
-        <p>
-          A dashboard does not choose which mode runs. Each mode is its own
-          class with a name in its annotation, like{" "}
-          <code>@Autonomous(name = &quot;Drive To Pose&quot;)</code>. The driver
-          picks that name on the Driver Station.
-        </p>
       </LessonSection>
 
       <LessonSection id="the-2027-alpha-stack" title="The 2027 alpha stack">
         <Split>
           <ProseBlock>
             <p>
-              This workshop runs on the WPILib <strong>2027 alpha</strong>, an
-              early release of FRC&apos;s programming toolkit. It uses{" "}
-              <strong>Java 25</strong> and deploys to{" "}
-              <strong>SystemCore</strong>, the robot&apos;s onboard computer.
-              All of that arrived with the installer in step 1.
+              This workshop runs on the WPILib{" "}
+              <strong>2027 alpha 6 release</strong>, an early release of
+              FRC&apos;s programming toolkit. It uses <strong>Java 25</strong>{" "}
+              and deploys to <strong>SystemCore</strong>, the robot&apos;s
+              onboard computer. All of that arrived with the installer in step
+              1.
             </p>
             <p>
               You build the robot project yourself on{" "}
@@ -170,9 +155,11 @@ export default function Prerequisites() {
             </p>
           </ProseBlock>
           <MarginNote label="What alpha means">
-            The APIs still move. A method that exists today can be renamed
-            before kickoff, so every Java example on this site is checked
-            against the template before it ships.
+            The APIs are still changing. A method that exists today can be
+            renamed before kickoff, so every Java example on this site is
+            subject to change. We'll try to keep the site up to date with the
+            latest APIs, but some things might be slightly different than what
+            you find in this workshop.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -180,32 +167,24 @@ export default function Prerequisites() {
       <LessonSection id="java-nothing-to-install" title="Java comes later">
         <ProseBlock>
           <p>
-            You do not need to know Java before you start. You do need to read
-            it. Robot code shows up in Workshop 2, and it does not stay at the
+            Robot code shows up in Workshop 2, and it does not stay at the
             beginner end for long. Lambdas, method references, and class
-            declarations all turn up there.
+            declarations all turn up there. There will be a few hard concepts,
+            but we'll explain them as we get there.
           </p>
           <p>
-            So the workshop teaches the Java it uses, once.{" "}
-            <Link href="/java-basics" className={linkStyle}>
-              The Java You Need
-            </Link>{" "}
-            opens Workshop 2, ahead of Project Setup, and takes one robot file
-            apart line by line. About twelve pieces of Java hold up this whole
-            site. That lesson covers all twelve and then stops.
+            Only about twelve pieces of Java are used in this whole site. That
+            lesson covers all twelve and then stops.
           </p>
-          <p>
-            Do not go take a Java course first. Read that page when you reach
-            it.
-          </p>
+          <p>You don't need to take a Java course first.</p>
         </ProseBlock>
       </LessonSection>
 
       <LessonSection id="the-minimum-to-follow" title="Hardware on the bench">
         <p>
-          Workshop 1 never creates, builds, or runs a robot project. Tuner X
-          owns the CANivore, sends every control request, and plots the response
-          off the real motor.
+          Workshop 1 will be run fully inside Tuner X. It owns the CANivore,
+          sends every control request, and plots the response off the real
+          motor.
         </p>
         <p>
           You find each motor and check which way it turns on{" "}
@@ -216,7 +195,7 @@ export default function Prerequisites() {
           <Link href="/pid-control" className={linkStyle}>
             PID Tuning
           </Link>
-          . Take the hardware away and there is nothing left to tune.
+          .
         </p>
         <ul className="ml-5 list-disc space-y-3">
           <li>
@@ -261,18 +240,6 @@ export default function Prerequisites() {
           on a table. Workshop 2 adds an Xbox-style controller, and Workshop 3
           moves to a swerve drivetrain.
         </p>
-        <Box
-          variant="alert-warning"
-          tag="READ THIS FIRST"
-          title="No software-only path"
-        >
-          <p>
-            Without a motor on the bench, nothing moves and every plot stays
-            flat. Java and simulation begin only after the control behavior has
-            been verified in Tuner X. If your team has not built a mechanism
-            yet, borrow one off last year&apos;s robot.
-          </p>
-        </Box>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">

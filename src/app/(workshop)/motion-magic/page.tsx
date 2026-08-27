@@ -7,12 +7,13 @@ import Quiz from "@/components/Quiz";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
+import ImageBlock from "@/components/ImageBlock";
 
 export default function MotionMagic() {
   return (
     <PageTemplate
       title="Motion Magic in Tuner X"
-      lede="Plain position control asks for the whole move at once. Motion Magic hands the loop a moving target instead, so the mechanism accelerates, cruises, and stops on purpose. The Slot 0 gains you already saved carry over unchanged."
+      lede="Plain position control asks for the whole move at once. Motion Magic hands the loop a moving target instead, so the mechanism accelerates, cruises, and stops smoothly. The Slot 0 gains you already saved carry over unchanged."
       needs={[
         <>
           Slot 0 gains you trust, saved in{" "}
@@ -22,11 +23,6 @@ export default function MotionMagic() {
           The same <strong>Signal &amp; Control</strong> plot, still showing
           target and measurement.
         </>,
-        <>
-          The mechanism bolted down, its path clear, and its travel limits
-          written down.
-        </>,
-        <>One person on the power switch, hands clear of the mechanism.</>,
       ]}
       time="14 minutes"
     >
@@ -44,11 +40,6 @@ export default function MotionMagic() {
             jerk, rounds the corner between them, and it stays at zero for now.
           </p>
         </div>
-        <MarginNote label="Still no Java">
-          Every number in this lesson lives on the motor and is set from Tuner
-          X. Workshop 2 copies the profile numbers into robot code the same way
-          it copies the gains, so write them down as you go.
-        </MarginNote>
       </Split>
 
       <FigureGrid
@@ -124,117 +115,40 @@ export default function MotionMagic() {
           </div>
           <MarginNote label="Units">
             Cruise velocity is mechanism rotations per second. Acceleration is
-            mechanism rotations per second squared. If{" "}
-            <code>SensorToMechanismRatio</code> is wrong, a 60:1 arm reports
-            sixty times its real speed, and every number you enter here is off
-            by that factor.
+            mechanism rotations per second squared.
           </MarginNote>
         </Split>
+        <ImageBlock
+          src="/images/setup/motion-magic-constants.png"
+          alt="Motion Magic configuration"
+        />
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Open <strong>Configs</strong> and leave Slot 0 exactly as you saved
-            it. You are changing the route, not the loop.
+            Open <strong>Control</strong> and change the request type to{" "}
+            <code>MotionMagicVoltage</code> (arms) or{" "}
+            <code>MotionMagicVelocityVoltage</code> (flywheels).
           </li>
           <li>
-            Under <strong>Motion Magic</strong>, enter a cruise velocity and an
-            acceleration. Both are in mechanism rotations, not motor rotations.
+            Under the <strong>Motion Magic</strong> config section, enter a
+            cruise velocity and an acceleration. Both are in mechanism
+            rotations, not motor rotations.
+            <br />
+            Here's some super conservative examples for an arm and a flywheel.
+            You will want to tune these a lot more aggressively on your actual
+            competition robot.
+            <ol className="ml-5 list-[lower-alpha]">
+              <li>Position: 0.5rps, 1rps/s</li>
+              <li>Velocity: 100rps, 20rps/s</li>
+            </ol>
           </li>
           <li>
             Leave jerk at zero. Zero means no jerk limit, and the profile stays
             a plain trapezoid.
           </li>
           <li>Apply the configuration with the download button.</li>
-          <li>
-            In <strong>Signal &amp; Control</strong>, switch the request from
-            plain position control to a Motion Magic position request, still on
-            Slot 0. Pick a target a few degrees away.
-          </li>
-          <li>
-            Add the closed-loop reference and its slope to the plot, beside
-            measured position, measured velocity, and motor voltage. The
-            reference is what the profile asked for. The measurement is what you
-            got.
-          </li>
+          <li>Run it and see the magic!</li>
         </ol>
-        <Box variant="alert-danger" title="Short move first">
-          <p>
-            Motion Magic drives the whole distance you ask for at the speed you
-            configured. Ask for a few degrees before you ask for the full range,
-            and keep every target inside the travel you wrote down. A profile
-            aimed past a hard stop still runs into it at cruise speed.
-          </p>
-        </Box>
-      </LessonSection>
-
-      <LessonSection id="tune-feedforward" title="Tune kV and kA">
-        <p>
-          The profile hands the loop a target velocity and a target acceleration
-          at every instant. <code>kV</code> and <code>kA</code> turn those two
-          numbers into voltage before any error exists. Tuned well, they do most
-          of the work of the move, and feedback is left with the difference.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Gain</th>
-                <th className="px-3 py-2 text-left">Pays for</th>
-                <th className="px-3 py-2 text-left">How to find it</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>kV</code>
-                </td>
-                <td className="px-3 py-2">Holding speed</td>
-                <td className="px-3 py-2">
-                  Raise it until the measurement sits on the reference through
-                  the cruise phase.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>kA</code>
-                </td>
-                <td className="px-3 py-2">Changing speed</td>
-                <td className="px-3 py-2">
-                  Raise it until the measurement tracks through the ramp, not
-                  only after it flattens out.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>kP</code>
-                </td>
-                <td className="px-3 py-2">Whatever feedforward missed</td>
-                <td className="px-3 py-2">
-                  Adjust it last. If <code>kP</code> is doing most of the work,
-                  feedforward is too low.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">
-                  <code>kD</code>
-                </td>
-                <td className="px-3 py-2">Overshoot at the stop</td>
-                <td className="px-3 py-2">
-                  Keep it only while the plot shows less overshoot than the run
-                  before it.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>
-          Leave <code>kS</code> and <code>kG</code> where they are. You found
-          them with the loop disabled last lesson, and a profile does not change
-          what friction and gravity cost.
-        </p>
-        <p>
-          Change one number per run. The plot cannot separate two edits, and two
-          edits are how a good gain gets thrown out with a bad one.
-        </p>
+        <VideoEmbed id="7I7r9p1RBZI" title="Motion Magic tuning" />
       </LessonSection>
 
       <LessonSection id="tune-the-limits" title="Raise the limits">
@@ -269,68 +183,11 @@ export default function MotionMagic() {
               mechanism is slower than an empty one, and a match gives you both
               at once.
             </p>
+            <p>
+              Around 80% acceleration and velocity are good starting points.
+            </p>
           </div>
-          <MarginNote label="Jerk">
-            If the corner into acceleration is what shakes the mechanism, a
-            small jerk limit rounds it off. It also lengthens every move and
-            adds one more number to tune. Most mechanisms in this workshop never
-            need one.
-          </MarginNote>
         </Split>
-
-        <VideoEmbed id="7I7r9p1RBZI" title="Motion Magic tuning" />
-      </LessonSection>
-
-      <LessonSection id="failure-shapes" title="Three failure shapes">
-        <p>
-          Three shapes cover almost every failed run from here. Read the gap
-          between the reference and the measurement, not the mechanism. Voltage
-          tells you which kind of gap it is: a gain too low, or a limit the
-          motor cannot reach.
-        </p>
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "Trails",
-              term: "Never catches up",
-              body: (
-                <>
-                  The measurement lags from the first moment. Feedforward is too
-                  low, or the limits are past what the motor can deliver. Lower
-                  acceleration before adding gain.
-                </>
-              ),
-            },
-            {
-              label: "Snaps",
-              term: "Acceleration too high",
-              body: (
-                <>
-                  The mechanism jolts at the start and the current spikes with
-                  it. Lower acceleration. A jerk limit softens the corner once
-                  acceleration is sane.
-                </>
-              ),
-            },
-            {
-              label: "Overshoots",
-              term: "A loop problem",
-              body: (
-                <>
-                  The reference lands on the target and the measurement sails
-                  past it. No profile number causes that. Go back to{" "}
-                  <code>kP</code> and <code>kD</code>.
-                </>
-              ),
-            },
-          ]}
-        />
-        <p>
-          If the measurement sits on the reference the whole way and the move is
-          still too slow, nothing is tuned wrong. The limits are lower than the
-          mechanism can take, so go back and raise them.
-        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -350,17 +207,6 @@ export default function MotionMagic() {
             <li>The long move and the short move both stop cleanly.</li>
           </ul>
         </Box>
-        <p>
-          Write down cruise velocity, acceleration, jerk, and the Slot 0 gains,
-          next to the mechanism, the date, and the battery you used. Save the
-          Tuner X configuration to a file and keep one plot of a long move.
-          Workshop 2 starts from these numbers instead of from zero.
-        </p>
-        <DocumentationButton
-          href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html#profiled-tuning"
-          title="CTRE: Profiled tuning"
-          icon={<BookOpen className="h-5 w-5" />}
-        />
       </LessonSection>
 
       <Quiz

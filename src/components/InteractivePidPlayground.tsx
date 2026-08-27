@@ -16,6 +16,7 @@ import {
   type Regime,
 } from "@/lib/pidPhysics";
 import { Lightbulb, RotateCcw, Target as TargetIcon } from "lucide-react";
+import SliderNumberInput from "@/components/SliderNumberInput";
 
 function useReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -83,12 +84,15 @@ function Slider({
           </label>
           <span className="font-mono text-micro text-[var(--tx2)]">{unit}</span>
         </div>
-        <span
-          className="font-mono text-meta tabular-nums rounded-md px-1.5 py-0.5 bg-[var(--bg2)] text-[var(--tx)]"
-          aria-hidden
-        >
-          {value.toFixed(precision)}
-        </span>
+        <SliderNumberInput
+          value={value}
+          min={min}
+          max={max}
+          step={step}
+          precision={precision}
+          onChange={onChange}
+          ariaLabel={`${ariaDescription} Value in ${unit}.`}
+        />
       </div>
       <input
         id={id}
@@ -778,9 +782,16 @@ export default function InteractivePidPlayground() {
             } as React.CSSProperties
           }
         />
-        <span className="rounded-md bg-[var(--bg2)] px-2 py-0.5 font-mono text-meta tabular-nums text-[var(--tx)]">
-          {targetDeg}°
-        </span>
+        <SliderNumberInput
+          value={targetDeg}
+          min={TARGET_RANGE_DEG.min}
+          max={TARGET_RANGE_DEG.max}
+          step={TARGET_RANGE_DEG.step}
+          precision={0}
+          onChange={setTargetDeg}
+          ariaLabel="Target angle in degrees."
+          suffix="°"
+        />
         <span className="font-mono text-micro text-[var(--tx2)]">
           {(targetDeg / 360).toFixed(3)} rot
         </span>
