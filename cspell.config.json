@@ -3,6 +3,7 @@
   "language": "en",
   "useGitignore": true,
   "ignorePaths": ["node_modules", "public", ".next"],
+  "ignoreRegExpList": ["/<VideoEmbed[^>]*?\\bid=\"[A-Za-z0-9_-]{11}\"/g"],
   "words": [
     "ADIS",
     "allwpilib",
@@ -76,6 +77,7 @@
     "holonomic",
     "Holonomic",
     "hotspot",
+    "hqdefault",
     "HTTI",
     "initialises",
     "italicised",
@@ -91,6 +93,7 @@
     "manualstart",
     "marginalium",
     "maxage",
+    "maxresdefault",
     "megatag",
     "minisearch",
     "MiniSearch",
