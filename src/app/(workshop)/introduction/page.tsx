@@ -36,10 +36,6 @@ export default function Introduction() {
       lede="This site is the written version of Team 5712's programming workshop. It starts with one motor on a bench and ends with a swerve drive that finds its own way to a target. Every lesson runs on real CTRE hardware."
       needs={[
         <>
-          A <strong>Kraken X44</strong>, a <strong>ThroughBore encoder</strong>,
-          and a <strong>CANivore</strong>.
-        </>,
-        <>
           Every download on{" "}
           <Link href="/prerequisites" className="underline font-medium">
             Prerequisites
@@ -47,13 +43,12 @@ export default function Introduction() {
           , done before the first hardware lesson.
         </>,
         <>
-          A mechanism to drive.{" "}
+          A mechanism to run.{" "}
           <Link href="/mechanism-cad" className="underline font-medium">
             Mechanism CAD
           </Link>{" "}
           has models for two.
         </>,
-        <>No Java yet. Workshop 1 never leaves Tuner X.</>,
       ]}
       time="8 minutes"
     >
@@ -70,11 +65,6 @@ export default function Introduction() {
             order, so a team can work through it without us.
           </p>
         </ProseBlock>
-        <MarginNote label="How long">
-          {WORKSHOP_LESSONS} lessons in {WORKSHOPS.length} workshops. Reading
-          one takes about ten minutes. Doing it at the bench takes far longer,
-          and nobody finishes a whole workshop in one sitting.
-        </MarginNote>
       </Split>
 
       {/* ── hardware is not optional ─────────────────────────────────── */}
@@ -87,31 +77,14 @@ export default function Introduction() {
           the bench is the arm that moves.
         </p>
 
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT"
-          title="Simulation still swings the arm"
-        >
-          <p>
-            Nothing about the word simulation makes a mechanism safe. Bolt it
-            down before the first lesson and give it room to swing. Keep one
-            person on the power switch who is not driving the laptop.
-          </p>
-        </Box>
-
         <p>
-          Every page names the device it means: Kraken, TalonFX, CANcoder,
-          CANivore, Phoenix 6. There are no branches here for a different motor
-          controller. The workshop supplies the hardware and every team
-          following along builds the same mechanism. If your shop runs something
-          else, the ideas carry over and the code does not.
-        </p>
-
-        <p>
-          The list grows twice. Workshop 3 needs a swerve drivetrain, four
-          modules on a frame that drives. Workshop 4 needs a Limelight bolted to
-          that frame and reachable on the network. You can read both workshops
-          without the parts, but you cannot do them.
+          Each lesson clearly states which hardware it uses: Kraken, TalonFX,
+          CANcoder, CANivore, and Phoenix 6. This workshop is written for those
+          exact devices, and there are no alternative instructions for other
+          motor controllers. Everyone works with the same hardware, building the
+          same mechanism. If you have different hardware in your shop, you can
+          still learn the concepts, but the code examples will not work out of
+          the box.
         </p>
       </LessonSection>
 
@@ -120,9 +93,9 @@ export default function Introduction() {
         <Split>
           <ProseBlock>
             <p>
-              Which version of WPILib you are learning decides whether outside
-              help is any use to you. FRC programming changed shape for 2027,
-              and this site teaches the new shape.
+              For the 2027 season, WPILib introduced Commands v3, a new
+              programming style which changes how you write code. We're going
+              over Commands v3 in this workshop, not the old system.
             </p>
           </ProseBlock>
           <MarginNote label="Alpha">
@@ -181,14 +154,14 @@ export default function Introduction() {
           ]}
         />
 
-        <p>
+        <Box variant="alert-warning" title="Old tutorials won't work">
           Almost every FRC tutorial you find by searching was written for
           Commands v2. Those pages open a file called{" "}
           <code>RobotContainer</code>, import <code>edu.wpi.first</code>{" "}
           packages, and pick autonomous routines from a dashboard dropdown. None
           of that exists here. When an answer from the internet does not match
           your screen, that is usually the reason.
-        </p>
+        </Box>
       </LessonSection>
 
       {/* ── the road ─────────────────────────────────────────────────── */}
@@ -198,98 +171,19 @@ export default function Introduction() {
           code from the one before it. The arrows at the bottom of every page
           walk that list for you.
         </p>
-
-        <p>
-          Workshop 1 never opens VS Code. Workshop 2 starts with{" "}
-          <Link href="/java-basics" className="underline font-medium">
-            Java Basics
-          </Link>
-          , which covers the language this site uses before any lesson asks you
-          to write code. Lessons marked optional are side trips: skip one and
-          the next lesson still works.
-        </p>
-
-        <div className="flex flex-col gap-6">
-          {WORKSHOPS.map((group) => (
-            <div key={group.id} className="module">
-              <h3 className="display m-0 mb-2 text-lede">
-                <span
-                  className="mono mr-3 text-micro"
-                  style={{ color: "var(--accent)", letterSpacing: "0.08em" }}
-                >
-                  {group.num}
-                </span>
-                {group.title}
-              </h3>
-              <p
-                className="mb-4 max-w-[70ch] text-note"
-                style={{ color: "var(--tx2)" }}
-              >
-                {group.blurb}
-              </p>
-              <ol className="grid gap-2 sm:grid-cols-2">
-                {group.lessons.map((lesson) => (
-                  <li key={lesson.slug}>
-                    <Link
-                      href={lesson.slug}
-                      className="flex items-baseline gap-3 rounded-md border border-[var(--rule-soft)] bg-[var(--bg)] p-3 transition-colors hover:border-[var(--accent)]"
-                    >
-                      <span
-                        className="mono shrink-0 text-micro"
-                        style={{
-                          color: "var(--accent)",
-                          letterSpacing: "0.08em",
-                        }}
-                      >
-                        {lesson.num}
-                      </span>
-                      <span
-                        className="text-note font-medium"
-                        style={{ color: "var(--tx)" }}
-                      >
-                        {lesson.title}
-                        {lesson.optional && (
-                          <span
-                            className="mono ml-2 text-micro"
-                            style={{
-                              color: "var(--tx2)",
-                              letterSpacing: "0.08em",
-                              textTransform: "uppercase",
-                            }}
-                          >
-                            optional
-                          </span>
-                        )}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          ))}
-        </div>
       </LessonSection>
 
       {/* ── the check ────────────────────────────────────────────────── */}
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          This page has nothing to run. What it has is a shopping list, and the
-          course goes badly for anyone who discovers a missing item at lesson
-          nine. Work through all four before the next page.
+          You won't be running any code on this page, but you will need to
+          gather a few things before moving forward. Make sure you have
+          everything in the list below—missing even one can cause trouble later
+          in the workshop. Double-check all items before you continue.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            A <strong>Kraken X44</strong> and a <strong>CANivore</strong>, with
-            a USB cable long enough to reach your laptop.
-          </li>
-          <li>
-            A <strong>ThroughBore encoder</strong>. The code calls it a{" "}
-            <code>CANcoder</code>, because that is the chip inside it.
-          </li>
-          <li>
-            A mechanism bolted to a bench, powered, with a clear path to swing.
-          </li>
+          <li>A mechanism on a bench, powered, with a clear path to swing.</li>
           <li>
             A laptop you are allowed to install software on, and a mentor who
             can approve it if you are not.

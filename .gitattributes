@@ -17,4 +17,8 @@
 *.stl filter=lfs diff=lfs merge=lfs -text
 *.stp filter=lfs diff=lfs merge=lfs -text
 *.gltf filter=lfs diff=lfs merge=lfs -text
-*.glb filter=lfs diff=lfs merge=lfs -text
+# Browser-loaded previews must be ordinary Git blobs. Hosting providers that
+# do not hydrate LFS pointers otherwise serve the pointer text at the model
+# URL, which makes GLTFLoader try (and fail) to parse `version https://...` as
+# JSON. These two previews are small enough to keep in the repository.
+*.glb -filter -diff -merge binary

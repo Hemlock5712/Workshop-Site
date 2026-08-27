@@ -14,7 +14,7 @@ export default function Hardware() {
   return (
     <PageTemplate
       title="Hardware Setup"
-      lede="Workshop 1 runs on CTRE hardware: a Kraken X44, a CANivore, and a CANcoder if your mechanism is the arm. This lesson powers them up, puts them on current firmware, and gets Phoenix Tuner X talking to every one of them. Nothing turns yet. No robot controller, and no code."
+      lede="This lesson powers up your mechanism. Nothing turns yet. No robot controller, and no code."
       needs={[
         <>
           The mechanism assembled and wired, with a charged battery. See{" "}
@@ -23,10 +23,6 @@ export default function Hardware() {
         <>
           Phoenix Tuner X installed, from <strong>Prerequisites</strong>, and a
           USB cable to the CANivore.
-        </>,
-        <>
-          <strong>The real hardware.</strong> There is no simulator path through
-          this lesson.
         </>,
       ]}
       time="About 15 minutes, longer if the firmware is old"
@@ -39,33 +35,19 @@ export default function Hardware() {
             how you talk to all three.
           </p>
           <p>
-            Get this wrong and nothing breaks today. It breaks four lessons
-            later: a gain that will not save, a sensor stuck at zero, a motor
-            answering to the wrong name.
+            The most important part of FRC programming is getting the hardware
+            set up properly. If it's not set up properly, you'll be fighting it
+            every step of the way.
           </p>
         </div>
-        <MarginNote label="If this is new">
-          A <GlossaryTerm term="motor">motor</GlossaryTerm> spins. A{" "}
-          <GlossaryTerm term="motor controller">motor controller</GlossaryTerm>{" "}
-          decides how fast and how far. A{" "}
-          <GlossaryTerm term="sensor">sensor</GlossaryTerm> reports what the
-          mechanism did. The <GlossaryTerm term="can bus">CAN bus</GlossaryTerm>{" "}
-          is the wire all of them talk over. Read past a term you do not know
-          yet; each one gets defined where it first matters.
-        </MarginNote>
       </Split>
 
-      <LessonSection id="hardware-components" title="The devices">
-        <p>
-          Find each one on the bench before you plug anything in. Two of them
-          look like plain mechanical parts and are not.
-        </p>
-
+      <LessonSection id="hardware-components" title="The components">
         <p>
           The arm uses all three. A flywheel has no CANcoder, because it is
           tuned for speed rather than angle, and the encoder inside the motor
-          already measures speed. On a flywheel bench, read past the CANcoder
-          wherever it comes up.
+          already measures speed. On a flywheel mechanism, read past the
+          CANcoder wherever it comes up.
         </p>
 
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
@@ -175,12 +157,6 @@ export default function Hardware() {
               CANivore. There is no team number to type and no robot to find.
             </p>
           </div>
-          <MarginNote label="One toggle, two positions">
-            Only one program owns the bus at a time. CANivore USB stays checked
-            for the whole of Workshop 1, because the laptop owns it here. It
-            comes back off in <strong>Hardware Simulation</strong>, the first
-            lesson where your own code drives the devices.
-          </MarginNote>
         </Split>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -210,7 +186,7 @@ export default function Hardware() {
           the Tuner X you installed. Updating it is the next section.
         </p>
 
-        <VideoEmbed id="TkScJADvD-Y" title="CANivore setup" />
+        <VideoEmbed id="aktcCtcrEyY" title="Motor update process" />
       </LessonSection>
 
       <LessonSection
@@ -298,14 +274,14 @@ export default function Hardware() {
           </table>
         </div>
 
-        <VideoEmbed id="aktcCtcrEyY" title="Motor update process" />
+        <VideoEmbed id="TkScJADvD-Y" title="CANivore setup" />
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Power cycle the bench: battery off, USB out, then both back on. The
-          firmware and the CANivore name are stored on the devices themselves,
-          so none of it should need doing twice.
+          Power cycle the mechanism: battery off, USB out, then both back on.
+          The firmware and the CANivore name are stored on the devices
+          themselves.
         </p>
 
         <Box variant="alert-success" title="You should see">
@@ -324,28 +300,6 @@ export default function Hardware() {
             </li>
           </ul>
         </Box>
-
-        <p>
-          A red card here is expected on the flywheel bench. Both motors ship on
-          the same factory ID, so both answer to it, and neither can be
-          addressed on its own until you split them. That is the first thing{" "}
-          <a href="/mechanism-setup" className="underline">
-            Motor Setup &amp; CAN IDs
-          </a>{" "}
-          does, and it is why nothing has been asked to turn yet.
-        </p>
-
-        <p>
-          Write down which device is which while you can still tell them apart
-          by where they are bolted. Motor Setup begins by giving each one a
-          number, and that goes faster when nobody is guessing.
-        </p>
-
-        <DocumentationButton
-          href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/"
-          title="CTRE: Phoenix Tuner X"
-          icon={<BookOpen className="h-5 w-5" />}
-        />
       </LessonSection>
 
       <Quiz
