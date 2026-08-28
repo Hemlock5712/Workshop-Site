@@ -4,13 +4,13 @@ import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Split } from "@/components/lesson/Prose";
 
 export default function AddingCommands() {
   return (
     <PageTemplate
       title="Writing Commands"
-      lede="On branch mech-2-Commands the arm's voltage setter goes private, and three commands take its place. You write the same three on the flywheel, then bind all six to a controller. Nothing moves yet: the check on this page is a clean build."
+      lede="On branch mech-2-Commands the arm's voltage setter goes private, and three commands take its place. You write the same three on the flywheel, then bind all six to a controller."
       needs={[
         <>
           Branch <code>mech-1-Mechanisms</code> building clean, with{" "}
@@ -21,10 +21,9 @@ export default function AddingCommands() {
           Lambdas, method references, and <code>private</code> from{" "}
           <strong>Java Basics</strong>.
         </>,
-        <>No hardware. This lesson ends at a build, not a moving motor.</>,
       ]}
       branch="mech-2-Commands"
-      time="14 minutes"
+      time="12 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -38,11 +37,6 @@ export default function AddingCommands() {
             at a time, and a private setter forces every caller through one.
           </p>
         </div>
-        <MarginNote label="What you build">
-          Three commands on the arm, three on the flywheel, and a teleop OpMode
-          that binds them to buttons. Pressing those buttons comes later, in{" "}
-          <strong>Deploy and Run</strong>.
-        </MarginNote>
       </Split>
 
       <LessonSection id="make-the-setter-private" title="Close the setter">
@@ -65,53 +59,22 @@ export default function AddingCommands() {
             at the top.
           </li>
         </ol>
-
-        <CodeBlock
-          language="java"
-          filename="src/main/java/first/robot/mechanisms/Arm.java"
-          code={`private void setVoltage(double voltage) {
-  motor.setControl(voltageOut.withOutput(voltage));
-}`}
-        />
       </LessonSection>
 
       <LessonSection id="your-first-command" title="Three commands on the arm">
         <p>
-          Two constants go next to the hardware fields, then one method. Write
-          this one first: five more look like it.
+          Two constants go next to the hardware fields, then three methods that
+          all look alike.
         </p>
 
         <CodeBlock
           language="java"
-          title="Arm.java: the two voltages and runSlow()"
+          title="Arm.java: the two voltages and the three commands"
           code={`// Voltages for the two example commands.
 private static final double SLOW_VOLTAGE = 3.0;
 private static final double FAST_VOLTAGE = 6.0;
 
 /** Push the arm with a gentle voltage and keep pushing. Never finishes. */
-public Command runSlow() {
-  return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
-}`}
-        />
-
-        <p>
-          Three things happen on that one line.{" "}
-          <code>() -&gt; setVoltage(SLOW_VOLTAGE)</code> is a lambda: code
-          written down and handed over, not run. The <code>runRepeatedly</code>{" "}
-          call comes from <code>Mechanism</code>, and it wraps that lambda in a
-          loop which fires about fifty times a second. Re-sending every loop
-          also restores the request after a motor controller reboots.{" "}
-          <code>.named(...)</code> closes the builder and produces the{" "}
-          <code>Command</code> the method returns. Leave the name off and the
-          build fails, because a builder is not a <code>Command</code>.
-        </p>
-
-        <p>Two more, same shape.</p>
-
-        <CodeBlock
-          language="java"
-          title="Arm.java: all three commands"
-          code={`/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
 public Command runSlow() {
   return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
 }
@@ -128,6 +91,18 @@ public Command stop() {
         />
 
         <p>
+          Three things happen on the <code>runSlow</code> line.{" "}
+          <code>() -&gt; setVoltage(SLOW_VOLTAGE)</code> is a lambda: code
+          written down and handed over, not run. The <code>runRepeatedly</code>{" "}
+          call comes from <code>Mechanism</code>, and it wraps that lambda in a
+          loop which fires about fifty times a second. Re-sending every loop
+          also restores the request after a motor controller reboots.{" "}
+          <code>.named(...)</code> closes the builder and produces the{" "}
+          <code>Command</code> the method returns. Leave the name off and the
+          build fails, because a builder is not a <code>Command</code>.
+        </p>
+
+        <p>
           <code>motor::stopMotor</code> means the same thing as{" "}
           <code>() -&gt; motor.stopMotor()</code>. Every name ends in{" "}
           <code>(hold)</code> because <code>runRepeatedly</code> has no exit:
@@ -142,9 +117,7 @@ public Command stop() {
           Open <code>mechanisms/Flywheel.java</code> and repeat all of it: the
           private setter, the deleted <code>stop()</code>, the{" "}
           <code>Command</code> import, then the three commands at the same two
-          voltages. The flywheel runs two motors: a leader on CAN 21 and a
-          follower on CAN 22 that spins the other way. The commands talk to{" "}
-          <code>leader</code>.
+          voltages. Every one of them talks to <code>leader</code>, on CAN 21.
         </p>
 
         <CodeBlock
@@ -236,14 +209,11 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <p>
           Every <code>onTrue</code> here has an <code>onFalse</code> behind it.
-          Leave the second half off and the motor never stops. An{" "}
-          <code>onTrue</code> schedules on the press and does nothing on
-          release. The <code>arm.runFast()</code> command is a hold, so it would
-          keep pushing 6 V for the rest of the match. What ends it is{" "}
-          <code>arm.stop()</code>. It needs the arm too, and a command of equal
-          or higher priority takes the mechanism from whatever is on it. Both
-          sit at the default priority of 0, so <code>stop()</code> wins by
-          arriving second.
+          An <code>onTrue</code> schedules on the press and does nothing on
+          release. Leave the second half off and <code>arm.runFast()</code>, a
+          hold, keeps pushing 6 V for the rest of the match. What ends it is{" "}
+          <code>arm.stop()</code>, which needs the arm too and takes it by
+          arriving second at the same priority.
         </p>
 
         <Box

@@ -17,7 +17,7 @@ export default function LoggingImplementation() {
   return (
     <PageTemplate
       title="Logging"
-      lede="DataLogManager copies every NetworkTables value and every console line into one file on disk. You start it in Robot.java, publish three signals from the arm, then open the file and read them back. Drivetrain pose and swerve telemetry wait for Workshop 3."
+      lede="DataLogManager copies every NetworkTables value and every console line into one file on disk. You start it in Robot.java, publish three signals from the arm, then open the file and read them back."
       needs={[
         <>
           The project from <strong>Deploy and Run</strong> running on the bench.
@@ -28,7 +28,7 @@ export default function LoggingImplementation() {
         </>,
         <>AdvantageScope installed from Prerequisites.</>,
       ]}
-      time="13 minutes"
+      time="11 minutes"
     >
       <Split>
         <ProseBlock>
@@ -126,40 +126,6 @@ private void record(double position, double target, double volts) {
           publishes only while it runs. The background task publishes for as
           long as the robot has power, and neither one is a new loop of yours.
         </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Signal</th>
-                <th className="px-3 py-2 text-left">Units</th>
-                <th className="px-3 py-2 text-left">Question it answers</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>Arm/PositionRot</code>
-                </td>
-                <td className="px-3 py-2">Mechanism rotations</td>
-                <td className="px-3 py-2">Where the arm really is.</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>Arm/TargetRot</code>
-                </td>
-                <td className="px-3 py-2">Mechanism rotations</td>
-                <td className="px-3 py-2">Where it was told to go.</td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">
-                  <code>Arm/AppliedVolts</code>
-                </td>
-                <td className="px-3 py-2">Volts</td>
-                <td className="px-3 py-2">How hard it pushed to get there.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </LessonSection>
 
       <LessonSection id="logging-rules" title="Signal names">
@@ -297,10 +263,6 @@ private void record(double position, double target, double volts) {
             <li>The enabled interval covering every part that moves.</li>
           </ul>
         </Box>
-        <p>
-          Keep the file. Swerve calibration in Workshop 3 pulls a wheel radius
-          and four module angles out of logs that look like this one.
-        </p>
         <DocumentationButton
           href="https://docs.wpilib.org/en/latest/docs/software/telemetry/datalog.html"
           title="WPILib: On-robot telemetry recording"
@@ -312,19 +274,6 @@ private void record(double position, double target, double volts) {
         questions={[
           {
             id: 1,
-            question: "Where do the two logging calls belong?",
-            options: [
-              "At the top of the Robot constructor, ahead of the mechanisms",
-              "In each mechanism's constructor, so every mechanism starts its own log",
-              "In a loop that runs every cycle, so the log keeps up with the robot",
-              "Nowhere in code. The Driver Station turns logging on",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "DataLogManager.start() and DriverStation.startDataLog(DataLogManager.getLog()) run once, at the top of the Robot constructor. Put them ahead of the mechanisms and everything that happens during startup lands in the same file as the rest of the run.",
-          },
-          {
-            id: 2,
             question:
               "What does DriverStation.startDataLog(DataLogManager.getLog()) add that DataLogManager.start() does not?",
             options: [
@@ -338,49 +287,35 @@ private void record(double position, double target, double volts) {
               "start() captures NetworkTables values and console output. The second call adds what NetworkTables never sees: the control word (enabled, e-stopped, robot mode, Driver Station and FMS attached), the name of the OpMode that is running, and every joystick axis, button, and POV. It records no alliance and no match time, so anything you want from the match itself you publish yourself.",
           },
           {
-            id: 3,
+            id: 2,
             question:
               "The arm knows its position. How does that number reach the .wpilog?",
             options: [
-              "DataLogManager finds the mechanism's fields and records them on its own",
               "Publish it on a NetworkTables topic, which DataLogManager records",
               "Call DataLogManager.start() again each time the value changes",
               "Write the number to your own text file in the logs folder every loop",
+              "DataLogManager finds the mechanism's fields and records them on its own",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
               "DataLogManager records what changes on NetworkTables, so publishing is how a number of yours gets into the file. The arm holds one DoublePublisher per signal as a field, built once with the arm, and sets it from code that already runs each loop.",
           },
           {
-            id: 4,
-            question:
-              "Why name the entry Arm/PositionRot rather than Arm/Position?",
-            options: [
-              "The unit is in the name, so rotations, degrees, and radians can share a project without two entries colliding",
-              "An entry with no unit in its name never reaches the file",
-              "The suffix tells DataLogManager how often to sample the entry",
-              "AdvantageScope graphs an entry only when its name ends in a unit",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "The name is the whole interface to a log, and the person reading it at an event six weeks from now did not write the code. Rot says what the number means. Renaming the entry later still compiles, and it breaks every saved layout and every script that read the old name, so spend the extra minute now.",
-          },
-          {
-            id: 5,
+            id: 3,
             question:
               "You ran the program with ./gradlew simulateJava. Where is the .wpilog?",
             options: [
+              "Nowhere. A run with no Driver Station attached writes no file",
               "On the SystemCore, so you pull it off the controller first",
               "In AdvantageScope's install folder, once you connect it",
               "In the project's logs folder on your laptop",
-              "Nowhere. A run with no Driver Station attached writes no file",
             ],
-            correctAnswer: 2,
+            correctAnswer: 3,
             explanation:
               "The file is written wherever the program runs, and simulateJava runs on your laptop, so take the newest .wpilog out of the project's logs folder. A run with no Driver Station does write a file. It has no clock to date itself with, so it opens as WPILIB_TBD_*.wpilog and gets renamed once a Driver Station supplies one.",
           },
           {
-            id: 6,
+            id: 4,
             question:
               "Arm/PositionRot climbs, then freezes partway through the run and holds one value. What happened?",
             options: [
@@ -391,7 +326,7 @@ private void record(double position, double target, double volts) {
             ],
             correctAnswer: 1,
             explanation:
-              "A command publishes only while it runs, so the last value it set is the last value in the file, and the trace flattens there. Publishing from the runRepeatedly command that holds the target is fine when you only want the trace while that command runs. For a signal that has to cover the whole run, move the set calls to a background task added with Scheduler.getDefault().addPeriodic(...), which publishes for as long as the robot has power. The other answers leave different marks: missing constructor lines leave no Arm entries at all, a wrong ratio gives the right shape at the wrong scale, and a publisher rebuilt every cycle still sets a value every cycle, so it leaks handles without flattening anything.",
+              "A command publishes only while it runs, so the last value it set is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the set calls to a background task added with Scheduler.getDefault().addPeriodic(...), which publishes for as long as the robot has power. Missing constructor lines would leave no Arm entries at all, and a wrong ratio gives the right shape at the wrong scale.",
           },
         ]}
       />

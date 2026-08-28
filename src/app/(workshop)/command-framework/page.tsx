@@ -1,6 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
@@ -23,18 +23,18 @@ export default function CommandFramework() {
   return (
     <PageTemplate
       title="The Command Framework"
-      lede="Robot code on this team is built out of three kinds of thing: triggers, mechanisms, and commands. Underneath them a scheduler runs fifty times a second and settles which command owns which motor. Nothing here is code you type."
+      lede="Robot code on this team is built out of three kinds of thing: triggers, mechanisms, and commands. Underneath them a scheduler runs fifty times a second and settles which command owns which motor."
       needs={[
         <>
           The vocabulary from <strong>Java Basics</strong>: class, field,
           method, constructor, lambda, method reference.
         </>,
         <>
-          <strong>2027-Template</strong> open in a tab. It is the finished robot
-          this course builds toward, and the check at the end reads it.
+          <strong>2027-Template</strong> open in a tab. The check at the end
+          reads it.
         </>,
       ]}
-      time="14 minutes"
+      time="12 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -48,11 +48,6 @@ export default function CommandFramework() {
             map, plus one rule about commands that never end.
           </p>
         </div>
-        <MarginNote label="Alpha software">
-          Commands v3 and the OpMode framework are the WPILib 2027 alpha: Java
-          25, deployed to SystemCore. Exact APIs still move between builds. The
-          scheduler steps below came out of the alpha-6 source in July 2026.
-        </MarginNote>
       </Split>
 
       {/* ── the triad ────────────────────────────────────────────────── */}
@@ -102,9 +97,9 @@ export default function CommandFramework() {
       >
         <p>
           None of the three does anything on its own. A trigger is a question
-          nobody is asking. A command sitting in a variable is inert. The
-          scheduler moves them, and it only moves them because{" "}
-          <code>Robot.java</code> asks it to, once per loop.
+          nobody is asking, and a command sitting in a variable is inert. The
+          scheduler moves them, and only because <code>Robot.java</code> asks it
+          to, once per loop.
         </p>
 
         <CodeBlock
@@ -141,8 +136,8 @@ export default function CommandFramework() {
           <li>
             Run background tasks added with{" "}
             <code>Scheduler.getDefault().addPeriodic(...)</code>: reading a
-            camera, pushing numbers to a dashboard. Never a motor. Motors go
-            through commands, so the scheduler can settle who owns them.
+            camera, pushing numbers to a dashboard. Never a motor, because
+            motors go through commands.
           </li>
           <li>
             Check every trigger. Newly true ones queue their command, and newly
@@ -157,12 +152,6 @@ export default function CommandFramework() {
             running command one step and hand control to the next one.
           </li>
         </ol>
-
-        <p>
-          Delete that one line from <code>Robot.java</code> and the robot goes
-          quiet. No trigger gets checked, nothing gets scheduled, and no error
-          says why.
-        </p>
       </LessonSection>
 
       {/* ── ownership ────────────────────────────────────────────────── */}
@@ -179,10 +168,9 @@ export default function CommandFramework() {
 
         <p>
           When a second command wants a mechanism that is already owned,
-          priority settles it. Every command you write in this workshop carries
-          the same priority. On a tie the newcomer wins: it takes the mechanism,
-          and the running command is canceled. A command loses only if its
-          priority is strictly lower.
+          priority settles it. A newcomer loses only if its priority is strictly
+          lower. Every command you write here carries the same one, so ties go
+          to the newcomer.
         </p>
 
         <Box variant="concept" title="Default commands">
@@ -199,11 +187,6 @@ export default function CommandFramework() {
             <strong>Writing Commands</strong> deals with that.
           </p>
         </Box>
-
-        <p>
-          You can watch this happen. Put two commands that both need the arm on
-          two different buttons, then press both. The second one takes it.
-        </p>
       </LessonSection>
 
       {/* ── opmodes ──────────────────────────────────────────────────── */}
@@ -223,19 +206,10 @@ export default function CommandFramework() {
               <code>public final</code> fields and runs the scheduler. Each mode
               is its own class, tagged <code>@Teleop</code>,{" "}
               <code>@Autonomous</code> or <code>@Utility</code>. The framework
-              finds those classes by their tag and lists them on the driver
-              station. Each one is handed the <code>Robot</code>, so it can
-              reach the mechanisms.
+              finds them by their tag, lists them on the driver station, and
+              hands each one the <code>Robot</code>.
             </p>
           </div>
-          <MarginNote label="No RobotContainer">
-            Older FRC projects kept every subsystem and every binding in one{" "}
-            <code>RobotContainer</code>, and picked the autonomous routine from
-            a <code>SendableChooser</code> dropdown. Neither exists on this
-            stack. A tutorial with <code>RobotContainer</code> or{" "}
-            <code>edu.wpi.first</code> imports in it is describing a different
-            framework. Ours is <code>org.wpilib</code>.
-          </MarginNote>
         </Split>
 
         <CodeBlock
@@ -257,9 +231,9 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <p>
           The bindings live in the <strong>constructor</strong>. The framework
-          builds this class when someone picks Teleop on the driver station, and
-          throws it away on a mode switch. The bindings go with it, so you write
-          no cleanup code and no binding from auto fires during teleop.
+          builds this class when someone picks Teleop, and throws it away on a
+          mode switch. The bindings go with it, so no binding from auto ever
+          fires during teleop.
         </p>
       </LessonSection>
 
@@ -270,17 +244,13 @@ public class TeleopOpMode extends PeriodicOpMode {
       >
         <p>
           A <strong>hold</strong> is a command whose body runs again on every
-          tick, re-sending the same request, and never reaching an end. Two
-          reasons that is the house style here. The request survives a motor
-          controller rebooting mid-match, because the next tick sends it again.
-          And a command that never ends keeps owning its mechanism, so nothing
-          quietly takes the motor out from under it.
+          tick, re-sending the same request, and never reaching an end. It is
+          the house style here for two reasons. The request survives a motor
+          controller rebooting mid-match, and a command that never ends keeps
+          owning its mechanism.
         </p>
 
-        <p>
-          Here is a real one, from the arm you build two lessons from now. Three
-          lines from three parts of one file.
-        </p>
+        <p>Here is a real one, from the arm you build two lessons from now.</p>
 
         <CodeBlock
           language="java"
@@ -307,8 +277,7 @@ private void setVoltage(double voltage) {
 
         <p>
           Six volts is a push, not a position. The arm ends up wherever gravity
-          and friction let it, and it keeps pushing until something takes the
-          mechanism away.
+          and friction let it.
         </p>
 
         <Box
@@ -323,21 +292,12 @@ private void setVoltage(double voltage) {
             log. The routine sits there looking broken.
           </p>
           <p className="mt-3">
-            That is by design. A hold runs until something takes its mechanism
-            away, and a list of steps takes nothing.
-          </p>
-          <p className="mt-3">
             <strong>How you spot one:</strong> the <code>(hold)</code> suffix.
             Every command name on this site that has no ending carries it. Work
             out which command a stuck routine is sitting on, and the name tells
-            you whether it was ever going to finish.
-          </p>
-          <p className="mt-3">
-            Two ways to give a hold an ending, both in Workshop 5. In{" "}
-            <strong>Chaining Commands</strong>, <code>.withTimeout(...)</code>{" "}
-            ends it after a fixed time. In <strong>Finish Lines</strong>,{" "}
-            <code>.until(arm::isAtTarget)</code> ends it when the mechanism
-            reports it arrived.
+            you whether it was ever going to finish. Workshop 5 gives a hold an
+            ending two ways, <code>.withTimeout(...)</code> and{" "}
+            <code>.until(...)</code>.
           </p>
         </Box>
       </LessonSection>
@@ -352,49 +312,32 @@ private void setVoltage(double voltage) {
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            <code>Robot.java</code>: <code>extends OpModeRobot</code> on the
-            class line, <code>public final</code> fields named{" "}
-            <code>drivetrain</code>, <code>arm</code> and <code>flywheel</code>,
-            and one <code>robotPeriodic()</code> holding one line,{" "}
+            <code>Robot.java</code>: <code>extends OpModeRobot</code>,{" "}
+            <code>public final</code> fields for the mechanisms, and a{" "}
+            <code>robotPeriodic()</code> holding one line,{" "}
             <code>Scheduler.getDefault().run();</code>.
           </li>
           <li>
             No <code>RobotContainer.java</code> in the file list, and an{" "}
             <code>opmode</code> folder with a class per mode, each tagged{" "}
             <code>@Teleop</code>, <code>@Autonomous</code> or{" "}
-            <code>@Utility</code>. A full-text search does turn up the name, in
-            comments saying the class does not exist here. A real{" "}
-            <code>RobotContainer.java</code> with no <code>opmode</code> folder
-            beside it means you are reading a Commands v2 project, not this one.
+            <code>@Utility</code>. Find a real <code>RobotContainer.java</code>{" "}
+            with no <code>opmode</code> folder beside it and you are reading a
+            Commands v2 project, not this one.
           </li>
           <li>
             <code>subsystems/arm/Arm.java</code>, searched for{" "}
-            <code>(hold)</code>: three command names carry it,{" "}
-            <code>vertical (hold)</code>, <code>horizontal (hold)</code> and{" "}
-            <code>scoring (hold)</code>. Those names differ from{" "}
+            <code>(hold)</code>: three command names carry it. They differ from{" "}
             <code>runFast()</code> above because the template is the finished
-            robot. The lesson branches build up to it, one step at a time.
+            robot, and the lesson branches build up to it.
           </li>
         </ol>
 
-        <p>
-          If all three match, the four words on this page describe the project
-          open in front of you: trigger, mechanism, command, scheduler. The next
-          lesson writes commands into it.
-        </p>
-
-        <div className="flex flex-col gap-3">
-          <DocumentationButton
-            href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/ONBOARDING.md"
-            title="2027-Template: holds never finish"
-            icon={<GitBranch className="w-5 h-5" />}
-          />
-          <DocumentationButton
-            href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-2-Commands/src/main/java/first/robot/Robot.java"
-            title="Workshop-Code mech-2-Commands: Robot.java"
-            icon={<GitBranch className="w-5 h-5" />}
-          />
-        </div>
+        <DocumentationButton
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-2-Commands/src/main/java/first/robot/Robot.java"
+          title="Workshop-Code mech-2-Commands: Robot.java"
+          icon={<GitBranch className="w-5 h-5" />}
+        />
       </LessonSection>
 
       <Quiz

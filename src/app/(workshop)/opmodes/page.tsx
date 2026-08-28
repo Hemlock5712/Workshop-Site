@@ -3,7 +3,7 @@ import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Split } from "@/components/lesson/Prose";
 
 export default function OpModes() {
   return (
@@ -22,7 +22,7 @@ export default function OpModes() {
           .
         </>,
       ]}
-      time="11 minutes"
+      time="10 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -38,11 +38,6 @@ export default function OpModes() {
             constructor. Selecting a different mode takes those bindings away.
           </p>
         </div>
-        <MarginNote label="2027 stack">
-          Older tutorials keep controller bindings in RobotContainer and pick an
-          autonomous routine with a SendableChooser. Commands v3 has neither
-          one. The mode list on the driver station is the chooser.
-        </MarginNote>
       </Split>
 
       <LessonSection id="three-kinds" title="Three OpMode roles">
@@ -110,12 +105,9 @@ public class TeleopOpMode extends PeriodicOpMode {
         <p>
           The constructor is handed the one <code>Robot</code>, and that is the
           only way in to the arm. An OpMode never builds a mechanism of its own:
-          two modes would end up configuring the same motor. The bindings are
-          made once, here, not on every loop.
-        </p>
-        <p>
-          There is no loop in here. The scheduler checks the trigger on every
-          robot tick and schedules the command when it fires.
+          two modes would end up configuring the same motor. There is no loop in
+          here either. The bindings are made once, and the scheduler checks the
+          trigger on every robot tick.
         </p>
       </LessonSection>
 

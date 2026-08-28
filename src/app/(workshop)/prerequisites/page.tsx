@@ -14,7 +14,7 @@ export default function Prerequisites() {
       lede="The software half goes on your laptop. The hardware half sits on the bench in front of you."
       needs={[
         <>A laptop you can install software on.</>,
-        <>About an hour, most of it waiting on downloads.</>,
+        <>About half an hour, most of it waiting on downloads.</>,
         <>
           The arm or flywheel from <strong>Mechanism CAD</strong>, built and
           wired.
@@ -157,9 +157,8 @@ export default function Prerequisites() {
           <MarginNote label="What alpha means">
             The APIs are still changing. A method that exists today can be
             renamed before kickoff, so every Java example on this site is
-            subject to change. We'll try to keep the site up to date with the
-            latest APIs, but some things might be slightly different than what
-            you find in this workshop.
+            subject to change. We keep the site current with the latest alpha,
+            and some things will still read differently on your screen.
           </MarginNote>
         </Split>
       </LessonSection>

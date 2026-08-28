@@ -37,7 +37,7 @@ export default function PIDControl() {
         </>,
         <>The mechanism, with a clear path to swing, and no obstacles.</>,
       ]}
-      time="15 minutes, including the simulation"
+      time="8 minutes, plus time on the CTRE guide"
     >
       <LessonSection id="how-to-tune" title="How to tune">
         <p>
@@ -45,8 +45,8 @@ export default function PIDControl() {
           a PID loop. We strongly suggest following the steps in the guide.
         </p>
         <p>
-          After you follow this guide, you can come back here and we'll explain
-          how to actually implement it.
+          After you follow this guide, come back here and we&apos;ll explain how
+          to implement it.
         </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html"
@@ -93,8 +93,8 @@ export default function PIDControl() {
         <Box variant="alert-info" title="Before you tune">
           <p>
             In the control panel, pick a voltage-based position or velocity
-            request, select Slot 0, and enter your small target (for position,
-            0.1 rotations, for velocity, 10 rps).
+            request and select Slot 0. Enter a small target: 0.1 rotations for
+            position, 10 rps for velocity.
           </p>
         </Box>
 

@@ -24,7 +24,7 @@ export default function MotionMagic() {
           target and measurement.
         </>,
       ]}
-      time="14 minutes"
+      time="10 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -133,9 +133,8 @@ export default function MotionMagic() {
             cruise velocity and an acceleration. Both are in mechanism
             rotations, not motor rotations.
             <br />
-            Here's some super conservative examples for an arm and a flywheel.
-            You will want to tune these a lot more aggressively on your actual
-            competition robot.
+            Here are conservative starting numbers for an arm and a flywheel.
+            Tune them far more aggressively on a competition robot.
             <ol className="ml-5 list-[lower-alpha]">
               <li>Position: 0.5rps, 1rps/s</li>
               <li>Velocity: 100rps, 20rps/s</li>

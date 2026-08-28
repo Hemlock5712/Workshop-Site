@@ -50,7 +50,7 @@ export default function Introduction() {
           has models for two.
         </>,
       ]}
-      time="8 minutes"
+      time="5 minutes"
     >
       <Split>
         <ProseBlock>
@@ -176,10 +176,10 @@ export default function Introduction() {
       {/* ── the check ────────────────────────────────────────────────── */}
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          You won't be running any code on this page, but you will need to
+          You won&apos;t be running any code on this page, but you will need to
           gather a few things before moving forward. Make sure you have
-          everything in the list below—missing even one can cause trouble later
-          in the workshop. Double-check all items before you continue.
+          everything in the list below. Missing even one causes trouble later in
+          the workshop.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -192,7 +192,7 @@ export default function Introduction() {
 
         <Box variant="alert-success" title="You are ready when">
           <p>
-            All four lines above are true, and the hardware is in front of you
+            Both lines above are true, and the hardware is in front of you
             rather than on a purchase order. Nothing on that list gets easier to
             find later in the course.
           </p>

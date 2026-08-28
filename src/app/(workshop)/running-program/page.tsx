@@ -3,14 +3,14 @@ import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
-import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import { ProseBlock, Split } from "@/components/lesson/Prose";
 import VideoEmbed from "@/components/VideoEmbed";
 
 export default function RunningProgram() {
   return (
     <PageTemplate
       title="Hardware Simulation"
-      lede="Your laptop stands in for the robot controller and drives the real motors on the bench. You start the program, pick Teleop, enable it, and press the buttons bound in your TeleopOpMode. Powered motors and a CANivore are required."
+      lede="Your laptop stands in for the robot controller and drives the real motors. You start the program, pick Teleop, enable it, and press the buttons bound in your TeleopOpMode."
       needs={[
         <>
           The <code>mech-2-Commands</code> branch checked out and building.
@@ -27,10 +27,9 @@ export default function RunningProgram() {
           .
         </>,
         <>An Xbox-style controller plugged into the same laptop.</>,
-        <>Clear space around the mechanism, and a hand free for Disable.</>,
       ]}
       branch="mech-2-Commands"
-      time="14 minutes"
+      time="12 minutes"
     >
       <Split>
         <ProseBlock>
@@ -44,11 +43,6 @@ export default function RunningProgram() {
             without powered motors.
           </p>
         </ProseBlock>
-        <MarginNote label="No SystemCore yet">
-          The laptop plays the controller for now. <code>./gradlew deploy</code>{" "}
-          sends the same code to a SystemCore, and your mechanism code does not
-          change.
-        </MarginNote>
       </Split>
 
       <LessonSection id="canivore-usb-off" title="Hand over the CAN bus">
@@ -80,25 +74,6 @@ export default function RunningProgram() {
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="opmodes-and-the-simulator"
-        title="OpModes and the simulator"
-      >
-        <p>
-          Start the simulator with <code>./gradlew simulateJava</code>. The
-          driver station lists every mode class by name: each{" "}
-          <code>@Teleop</code>, <code>@Autonomous</code> and{" "}
-          <code>@Utility</code> class in the project. Pick one and that OpMode
-          is constructed right there, bindings and all.
-        </p>
-        <p>
-          <code>Scheduler.getDefault().run()</code> ticks every loop whichever
-          mode is selected. The robot program finds modes by scanning classes at
-          run time, so a class with the wrong shape goes missing instead of
-          failing the build.
-        </p>
-      </LessonSection>
-
       <LessonSection id="your-four-bindings" title="Your four bindings">
         <p>
           Your bindings live in the <code>TeleopOpMode</code> constructor on{" "}
@@ -121,8 +96,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
 
         <p>
           Open the file and check the B line is there. Add it and rebuild if it
-          is missing. Two of these bindings drive the arm, two drive the
-          flywheel, and the arm pair is the experiment below.
+          is missing. The two arm bindings are the experiment below.
         </p>
       </LessonSection>
 
@@ -245,22 +219,10 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         </ol>
         <Box variant="concept" title="Why B won">
           <p>
-            One command holds a mechanism at a time. When a new one needs the
-            arm, the scheduler weighs it against the holder.
-          </p>
-          <ul className="ml-4 mt-3 list-disc space-y-1">
-            <li>
-              <strong>Strictly lower priority:</strong> the newcomer is turned
-              away and nothing changes.
-            </li>
-            <li>
-              <strong>Equal or higher:</strong> the running command is canceled
-              and the newcomer takes the arm.
-            </li>
-          </ul>
-          <p className="mt-3">
-            Every command you have written runs at the default priority of{" "}
-            <code>0</code>. Equal counts, so the newest press wins.
+            One command holds a mechanism at a time. A newcomer is turned away
+            only if its priority is strictly lower than the holder&apos;s. Every
+            command you have written runs at the default priority of{" "}
+            <code>0</code>, so equal counts and the newest press wins.
           </p>
         </Box>
         <Box
@@ -287,8 +249,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
       <LessonSection id="check-your-work" title="Check your work">
         <p>
           Walk the four buttons once more, then the two-button test. You are
-          done when each one repeats itself, and the newest press takes the arm
-          every time.
+          done when each one repeats itself.
         </p>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
@@ -316,7 +277,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             ],
             correctAnswer: 3,
             explanation:
-              "Hardware simulation replaces the robot controller, not the robot. Your program runs on the laptop and sends real requests over USB to the CANivore and onto the real CAN bus. There is no physics model anywhere in this project, and none of this page works without the motors on the bench.",
+              "Hardware simulation replaces the robot controller, not the robot. Your program runs on the laptop and sends real requests over USB to the CANivore and onto the real CAN bus. There is no physics model anywhere in this project.",
           },
           {
             id: 2,
@@ -358,7 +319,7 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             ],
             correctAnswer: 2,
             explanation:
-              "onTrue and onFalse only ever schedule; neither one cancels. Releasing B scheduled arm.stop(), which claimed the arm. The left trigger fired its onTrue back when you first pressed it and will not fire again until you release and press it once more. whileTrue is the verb that fixes this, and it arrives on Command Composition.",
+              "onTrue and onFalse only ever schedule; neither one cancels. Releasing B scheduled arm.stop(), which claimed the arm. The left trigger fired its onTrue when you first pressed it and will not fire again until you release and press it once more.",
           },
         ]}
       />

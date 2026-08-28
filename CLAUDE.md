@@ -438,8 +438,9 @@ unchanged. Do not reinstate it.
   it". `PageTemplate` no longer takes an `emphasis` prop; the accent-italic
   phrase inside a sentence-title went with the sentence-titles.
 - **The lesson is the unit of attention, and it is 8 to 12 minutes.** 15 is the
-  hard cap, 6 is the floor. Over the cap, split the lesson. Under the floor,
-  the lesson is missing its check and its failure modes.
+  hard cap and there is no floor. Over the cap, split the lesson. Short is
+  fine: a lesson that does its job in four minutes has done its job. Judge a
+  short page on whether it has its check and its failure modes, not on length.
 - **No em dashes, and no parentheses standing in for them.** unslop rule 13:
   reaching for a bracket instead of a dash trades one tell for another. End the
   sentence or use a comma.
