@@ -5,12 +5,26 @@ import Box from "@/components/Box";
 import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
 import { Split } from "@/components/lesson/Prose";
+import MechanismSelector from "@/components/lesson/MechanismSelector";
+import { M, Mech } from "@/components/lesson/Mechanism";
 
+/**
+ * Written once, read twice — see `src/data/mechanisms.ts`.
+ *
+ * "Three commands on the arm" and "Repeat on the flywheel" were the same
+ * section twice, and the second one opened by telling the reader to repeat all
+ * of it. They are one section now, and which mechanism it is about comes from
+ * the question at the top.
+ *
+ * The binding section stays shared and stays last: `TeleopOpMode` is one file
+ * that names both mechanisms, so it is not a fork, and it is the reason the
+ * command section ends by sending the reader back to write the other one.
+ */
 export default function AddingCommands() {
   return (
     <PageTemplate
       title="Writing Commands"
-      lede="On branch mech-2-Commands the arm's voltage setter goes private, and three commands take its place. You write the same three on the flywheel, then bind all six to a controller."
+      lede="On branch mech-2-Commands the voltage setter goes private and three commands take its place. You write the same three on both mechanisms, then bind them to a controller."
       needs={[
         <>
           Branch <code>mech-1-Mechanisms</code> building clean, with{" "}
@@ -23,32 +37,45 @@ export default function AddingCommands() {
         </>,
       ]}
       branch="mech-2-Commands"
-      time="12 minutes"
+      time="11 minutes"
     >
+      <MechanismSelector />
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
             Right now anything in the project can call{" "}
-            <code>arm.setVoltage(6.0)</code>. Two callers, two voltages, one
-            loop, and the motor takes whichever ran last.
+            <code>
+              <M k="noun" />
+              .setVoltage(6.0)
+            </code>
+            . Two callers, two voltages, one loop, and the motor takes whichever
+            ran last.
           </p>
           <p>
-            Commands close that door. The scheduler hands the arm to one command
-            at a time, and a private setter forces every caller through one.
+            Commands close that door. The scheduler hands the mechanism to one
+            command at a time, and a private setter forces every caller through
+            one.
           </p>
         </div>
       </Split>
 
       <LessonSection id="make-the-setter-private" title="Close the setter">
         <p>
-          Open <code>src/main/java/first/robot/mechanisms/Arm.java</code>. Three
-          edits, none of them longer than a line.
+          Open{" "}
+          <code>
+            <M k="path" />
+          </code>
+          . Three edits, none of them longer than a line.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Change <code>public void setVoltage</code> to{" "}
             <code>private void setVoltage</code>. Nothing outside{" "}
-            <code>Arm</code> calls it yet, so the build stays clean.
+            <code>
+              <M k="name" />
+            </code>{" "}
+            calls it yet, so the build stays clean.
           </li>
           <li>
             Delete <code>public void stop()</code>. A command of the same name
@@ -61,94 +88,83 @@ export default function AddingCommands() {
         </ol>
       </LessonSection>
 
-      <LessonSection id="your-first-command" title="Three commands on the arm">
-        <p>
-          Two constants go next to the hardware fields, then three methods that
-          all look alike.
-        </p>
+      <LessonSection id="your-first-command" title="Three commands">
+        <p>Three methods, and they all look alike.</p>
 
-        <CodeBlock
-          language="java"
-          title="Arm.java: the two voltages and the three commands"
-          code={`// Voltages for the two example commands.
-private static final double SLOW_VOLTAGE = 3.0;
-private static final double FAST_VOLTAGE = 6.0;
-
-/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            title="Arm.java: the three commands"
+            code={`/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
 public Command runSlow() {
-  return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
+  return runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)");
 }
 
 /** Push the arm with a stronger voltage and keep pushing. Never finishes. */
 public Command runFast() {
-  return runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)");
+  return runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)");
 }
 
 /** Stop the arm motor and keep it stopped. Never finishes. */
 public Command stop() {
   return runRepeatedly(motor::stopMotor).named("stop (hold)");
 }`}
-        />
+          />
+        </Mech>
 
-        <p>
-          Three things happen on the <code>runSlow</code> line.{" "}
-          <code>() -&gt; setVoltage(SLOW_VOLTAGE)</code> is a lambda: code
-          written down and handed over, not run. The <code>runRepeatedly</code>{" "}
-          call comes from <code>Mechanism</code>, and it wraps that lambda in a
-          loop which fires about fifty times a second. Re-sending every loop
-          also restores the request after a motor controller reboots.{" "}
-          <code>.named(...)</code> closes the builder and produces the{" "}
-          <code>Command</code> the method returns. Leave the name off and the
-          build fails, because a builder is not a <code>Command</code>.
-        </p>
-
-        <p>
-          <code>motor::stopMotor</code> means the same thing as{" "}
-          <code>() -&gt; motor.stopMotor()</code>. Every name ends in{" "}
-          <code>(hold)</code> because <code>runRepeatedly</code> has no exit:
-          these commands run until something else claims the mechanism. Even{" "}
-          <code>stop()</code> is a hold, so it sends zero every loop rather than
-          once.
-        </p>
-      </LessonSection>
-
-      <LessonSection id="the-same-three-on" title="Repeat on the flywheel">
-        <p>
-          Open <code>mechanisms/Flywheel.java</code> and repeat all of it: the
-          private setter, the deleted <code>stop()</code>, the{" "}
-          <code>Command</code> import, then the three commands at the same two
-          voltages. Every one of them talks to <code>leader</code>, on CAN 21.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="Flywheel.java: same three commands, leader motor"
-          code={`private static final double SLOW_VOLTAGE = 3.0;
-private static final double FAST_VOLTAGE = 6.0;
-
-/** Spin the flywheel with a gentle voltage and hold it there. Never finishes. */
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            title="Flywheel.java: the three commands"
+            code={`/** Spin the flywheel with a gentle voltage and hold it there. Never finishes. */
 public Command runSlow() {
-  return runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)");
+  return runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)");
 }
 
 /** Spin the flywheel with a stronger voltage and hold it there. Never finishes. */
 public Command runFast() {
-  return runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)");
+  return runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)");
 }
 
 /** Stop the flywheel and keep it stopped. Never finishes. */
 public Command stop() {
-  return runRepeatedly(leader::stopMotor).named("stop (hold)");
-}
-
-private void setVoltage(double voltage) {
-  leader.setControl(voltageOut.withOutput(voltage));
+  return runRepeatedly(motor::stopMotor).named("stop (hold)");
 }`}
-        />
+          />
+        </Mech>
 
         <p>
-          You never command the follower. It was told once, in the constructor,
-          to copy the leader.
+          Three things happen on the <code>runSlow</code> line.{" "}
+          <code>() -&gt; setVoltage(3.0)</code> is a lambda: code written down
+          and handed over, not run. The <code>runRepeatedly</code> call comes
+          from <code>Mechanism</code>, and it wraps that lambda in a loop which
+          fires about fifty times a second. Re-sending every loop also restores
+          the request after a motor controller reboots. <code>.named(...)</code>{" "}
+          closes the builder and produces the <code>Command</code> the method
+          returns. Leave the name off and the build fails, because a builder is
+          not a <code>Command</code>.
+        </p>
+
+        <p>
+          <code>
+            <M k="motor" />
+            ::stopMotor
+          </code>{" "}
+          means the same thing as{" "}
+          <code>
+            () -&gt; <M k="motor" />
+            .stopMotor()
+          </code>
+          . Every name ends in <code>(hold)</code> because{" "}
+          <code>runRepeatedly</code> has no exit: these commands run until
+          something else claims the mechanism. Even <code>stop()</code> is a
+          hold, so it sends zero every loop rather than once.
+        </p>
+
+        <p>
+          Now switch the question at the top of the page and write the same
+          three on the other mechanism. Both need them before the bindings below
+          will compile.
         </p>
       </LessonSection>
 
@@ -188,13 +204,13 @@ public class TeleopOpMode extends PeriodicOpMode {
     final Flywheel flywheel = robot.flywheel;
 
     // Left trigger: push the arm up while held, stop when released.
-    driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
+    driver.leftTrigger().whileTrue(arm.runFast()).whileFalse(arm.stop());
 
     // Right trigger: spin fast while held, drop back to the slow voltage when released.
-    driver.rightTrigger().onTrue(flywheel.runFast()).onFalse(flywheel.runSlow());
+    driver.rightTrigger().whileTrue(flywheel.runFast()).whileFalse(flywheel.runSlow());
 
     // A: spin fast while held, stop when released.
-    driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
+    driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());
   }
 }`}
         />
@@ -208,12 +224,12 @@ public class TeleopOpMode extends PeriodicOpMode {
         </p>
 
         <p>
-          Every <code>onTrue</code> here has an <code>onFalse</code> behind it.
-          An <code>onTrue</code> schedules on the press and does nothing on
-          release. Leave the second half off and <code>arm.runFast()</code>, a
-          hold, keeps pushing 6 V for the rest of the match. What ends it is{" "}
-          <code>arm.stop()</code>, which needs the arm too and takes it by
-          arriving second at the same priority.
+          Every <code>whileTrue</code> here has a <code>whileFalse</code> behind
+          it. <code>whileTrue</code> schedules on the press and cancels on the
+          release, which hands the mechanism back but sends nothing to the
+          motor. <code>whileFalse</code> is what runs in its place, and without
+          it <code>arm.runFast()</code> keeps pushing 6 V for the rest of the
+          match.
         </p>
 
         <Box
@@ -238,7 +254,7 @@ public class TeleopOpMode extends PeriodicOpMode {
         <p>
           The right trigger releases to <code>flywheel.runSlow()</code>, not{" "}
           <code>flywheel.stop()</code>. A wheel still turning at 3 V does not
-          have to spin up from dead. An <code>onFalse</code> names what runs
+          have to spin up from dead. A <code>whileFalse</code> names what runs
           next, and a stop is only one of the choices.
         </p>
       </LessonSection>
@@ -256,19 +272,29 @@ public class TeleopOpMode extends PeriodicOpMode {
             <code>BUILD SUCCESSFUL</code>.
           </li>
           <li>
-            Count the public methods in <code>Arm.java</code>: three returning{" "}
-            <code>Command</code>, plus the constructor. <code>setVoltage</code>{" "}
-            is private and returns <code>void</code>.
+            Count the public methods in{" "}
+            <code>
+              <M k="file" />
+            </code>
+            : three returning <code>Command</code>, plus the constructor.{" "}
+            <code>setVoltage</code> is private and returns <code>void</code>.
           </li>
           <li>
             Delete <code>.named(&quot;runSlow (hold)&quot;)</code> and build
             again. The compiler points at that line. Put the name back.
           </li>
           <li>
-            Add <code>arm.setVoltage(6.0);</code> to the{" "}
-            <code>TeleopOpMode</code> constructor and build. The error says{" "}
-            <code>setVoltage</code> has private access in <code>Arm</code>.
-            Delete the line.
+            Add{" "}
+            <code>
+              <M k="noun" />
+              .setVoltage(6.0);
+            </code>{" "}
+            to the <code>TeleopOpMode</code> constructor and build. The error
+            says <code>setVoltage</code> has private access in{" "}
+            <code>
+              <M k="name" />
+            </code>
+            . Delete the line.
           </li>
         </ol>
 
@@ -283,8 +309,8 @@ public class TeleopOpMode extends PeriodicOpMode {
               <code>void</code>.
             </li>
             <li>
-              Three bindings in <code>TeleopOpMode</code>, each one an{" "}
-              <code>onTrue</code> and an <code>onFalse</code>.
+              Three bindings in <code>TeleopOpMode</code>, each one a{" "}
+              <code>whileTrue</code> and a <code>whileFalse</code>.
             </li>
           </ul>
         </Box>
@@ -347,12 +373,23 @@ public class TeleopOpMode extends PeriodicOpMode {
           all four files at once.
         </p>
 
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="mech-2-Commands"
-          filePath="src/main/java/first/robot/mechanisms/Arm.java"
-          pr={{ number: 14, focusFile: "Arm.java" }}
-        />
+        <Mech for="arm">
+          <GitHubContent
+            repository="Hemlock5712/Workshop-Code"
+            branch="mech-2-Commands"
+            filePath="src/main/java/first/robot/mechanisms/Arm.java"
+            pr={{ number: 14, focusFile: "Arm.java" }}
+          />
+        </Mech>
+
+        <Mech for="flywheel">
+          <GitHubContent
+            repository="Hemlock5712/Workshop-Code"
+            branch="mech-2-Commands"
+            filePath="src/main/java/first/robot/mechanisms/Flywheel.java"
+            pr={{ number: 14, focusFile: "Flywheel.java" }}
+          />
+        </Mech>
       </LessonSection>
 
       <Quiz
@@ -374,7 +411,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 2,
             question:
-              'In runRepeatedly(() -> setVoltage(SLOW_VOLTAGE)).named("runSlow (hold)"), what does runRepeatedly(...) hand back before .named(...) runs?',
+              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)"), what does runRepeatedly(...) hand back before .named(...) runs?',
             options: [
               "A Runnable that the scheduler wraps later",
               "A finished Command, ready to schedule",
@@ -388,16 +425,16 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 3,
             question:
-              "You bind driver.a().onTrue(flywheel.runFast()) and leave the onFalse off. You release A. What happens?",
+              "You bind driver.a().whileTrue(flywheel.runFast()) and leave the whileFalse off. You release A. What happens?",
             options: [
+              "Nothing changes, because whileTrue only ever schedules",
+              "The command is canceled, the flywheel falls back to idle(), and the wheel keeps spinning at 6 V",
+              "The build fails: whileTrue requires a matching whileFalse",
               "The flywheel stops: releasing the button cancels the command, and canceling stops the motor",
-              "runFast() is never canceled, so it keeps re-sending 6 V for the rest of the match",
-              "The command is canceled but the wheel keeps spinning anyway",
-              "The build fails: onTrue requires a matching onFalse",
             ],
             correctAnswer: 1,
             explanation:
-              "onTrue schedules on the press and does nothing on release. runFast() is a hold, so nothing ends it. The onFalse binding is what ends it, by scheduling a command that needs the same mechanism.",
+              "whileTrue does cancel on the release, so the command really does end. Canceling is not stopping. The flywheel falls back to idle(), which sends nothing at all, so Phoenix keeps applying the last 6 V request. whileFalse(flywheel.stop()) is what sends zero.",
           },
         ]}
       />

@@ -33,7 +33,7 @@ export default function ProjectSetup() {
         <>An internet connection. The first build downloads a lot.</>,
         <>A local folder to work in, not one synced to the cloud.</>,
       ]}
-      time="12 minutes, plus the first build"
+      time="10 minutes"
     >
       <Split>
         <ProseBlock>
@@ -51,10 +51,9 @@ export default function ProjectSetup() {
 
       <LessonSection id="make-the-project" title="Make the project">
         <p>
-          Open the WPILib copy of VS Code, not the ordinary one. The 2027
-          installer put a second VS Code on your machine, and only that copy
-          knows about Java 25. Its title bar carries a small red WPILib icon at
-          the top right. Click it.
+          The 2027 installer installs a WPILib-specific VS Code. Make sure to
+          use this version, not the ordinary one. Once open, its title bar
+          carries a small red WPILib icon at the top right. Click it.
         </p>
         <ImageBlock
           src="/images/project-setup/step-1.png"
@@ -65,8 +64,8 @@ export default function ProjectSetup() {
           height={821}
         />
         <p>
-          The icon opens the command palette with a <code>&gt;</code> already in
-          it. Type <code>WPILib create</code> and pick{" "}
+          The icon opens the command palette with <code>&gt;WPILib </code>{" "}
+          already in it. Type <code>create</code> and pick{" "}
           <strong>WPILib: Create a new project</strong>.
         </p>
         <ImageBlock
@@ -93,8 +92,7 @@ export default function ProjectSetup() {
         <p>
           On the second page set <strong>Language</strong> to <code>java</code>{" "}
           and <strong>Project Base</strong> to <strong>OpMode Robot</strong>.
-          OpModes are how the 2027 stack picks which routine runs, and{" "}
-          <strong>OpModes</strong> takes them apart later in this workshop.
+          OpModes are how the 2027 stack picks which routine runs.
         </p>
         <ImageBlock
           src="/images/project-setup/step-4.png"
@@ -104,10 +102,7 @@ export default function ProjectSetup() {
           width={1908}
           height={821}
         />
-        <p>
-          The third page is the one worth slowing down for. Four fields and a
-          checkbox, and three of them cause trouble later if you rush them.
-        </p>
+        <p>The third page is the one worth slowing down for.</p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             <strong>Base Folder.</strong> Click <strong>Select Folder</strong>{" "}
@@ -175,28 +170,22 @@ export default function ProjectSetup() {
 
       <LessonSection id="vendor-libraries" title="Commands v3 and Phoenix 6">
         <p>
-          The installer carries both <strong>Commands v2</strong> and{" "}
-          <strong>Commands v3</strong>, and a project holds one or the other.
-          Yours came with v2. Look in <code>vendordeps/</code> and you will find
-          a lone <code>CommandsV2.json</code> there.
+          The project you just made ships <strong>Commands v2</strong> and no
+          CTRE library. Every Java example in this course is{" "}
+          <strong>Commands v3</strong>, and the hardware is CTRE. The two
+          command libraries cannot sit in the same project, so v2 comes out
+          before v3 goes in. One panel does all of it.
         </p>
         <p>
-          Nothing is broken yet, because the OpMode template never calls a
-          command. But every Java example here is Commands v3, and the extension
-          refuses to install v3 while v2 sits in that folder. Swap it now rather
-          than halfway through a lesson.
-        </p>
-        <p>
-          All three happen in one panel. Click the WPILib icon in the activity
-          bar, the narrow strip of icons down the left edge, to open{" "}
+          Click the WPILib icon in the activity bar, the narrow strip of icons
+          down the left edge, to open{" "}
           <strong>WPILib Vendor Dependencies</strong>. Everything below is a
           button in that panel, and nothing needs a URL typed.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Under <strong>Installed Dependencies</strong>, delete{" "}
-            <strong>Commands V2</strong> with the bin icon beside it. Do this
-            first. Installing v3 while v2 is there fails with a modal error.
+            <strong>Commands V2</strong> with the bin icon beside it.
           </li>
           <li>
             Under <strong>Available Dependencies</strong>, install{" "}
@@ -220,27 +209,23 @@ export default function ProjectSetup() {
           height={821}
         />
         <p>
-          Changing a dependency starts a build on its own, which is the terminal
-          output in the corner of that screenshot. Leave it alone. The first one
-          fetches Gradle, the Java 25 toolchain and the vendor libraries. That
-          runs for several minutes at home, longer on school Wi-Fi. Later builds
-          take seconds, because Gradle caches all of it in your home folder
-          rather than in the project.
+          Changing a dependency starts a build on its own. Leave it alone. The
+          first one fetches Gradle, the Java 25 toolchain and the vendor
+          libraries. That runs for several minutes at home, longer on school
+          Wi-Fi. Later builds take seconds, because Gradle caches all of it in
+          your home folder rather than in the project.
         </p>
         <p>
           One thing goes wrong here, and it is the network. A build that stops
           on <code>Could not resolve</code> could not reach a library it needed.
-          Reconnect and build again. Nothing is corrupted, and the parts that
-          did arrive are already cached.
+          Reconnect first. Click the same WPILib icon you used to create the
+          project, type <code>build</code>, and pick{" "}
+          <strong>WPILib: Build Robot Code</strong>.
         </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
-        <p>
-          Wait for the build to settle, then look at the file tree. If it has
-          already scrolled past, <strong>Build Robot Code</strong> in the WPILib
-          menu runs it again.
-        </p>
+        <p>Wait for the build to settle, then look at the file tree.</p>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>

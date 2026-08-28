@@ -80,7 +80,7 @@ export default function SwerveCalibration() {
           A tape measure, a long straight edge, and a wall you may push against.
         </>,
       ]}
-      time="Budget an afternoon"
+      time="15 minutes"
     >
       <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
         <p>

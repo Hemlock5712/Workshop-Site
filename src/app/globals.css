@@ -1171,3 +1171,165 @@ html.js .reveal[data-revealed="false"] .reveal-wash {
 .animate-fade-in-up {
   animation: fade-in-up 1s ease-out forwards;
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   The mechanism switch — one lesson, read two ways
+
+   A student picks Arm or Flywheel at the top of a mechanism lesson and
+   reads a lesson about that mechanism. Every variant ships in the
+   server HTML and this stylesheet hides the one they did not pick,
+   keyed off `data-mechanism` on `<html>`. The inline script in the
+   root layout sets that attribute from localStorage before first
+   paint, so the correct lesson is what paints — there is no frame of
+   the wrong mechanism to catch in a screenshot, and no flash to sit
+   through on every page of the chain.
+
+   Two shapes carry it, both server-rendered, both in
+   `src/components/lesson/Mechanism.tsx`: `<M k="file" />` is an inline
+   slot inside a sentence written once for both, and `<Mech for="arm">`
+   is a block only one mechanism reads.
+
+   `display: none` and not `visibility` or a clip: the hidden branch
+   has to leave the accessibility tree, Ctrl+F, and the clipboard. A
+   student copying a code block must not get the other mechanism's
+   file welded to the end of theirs.
+   ───────────────────────────────────────────────────────────────── */
+
+/* The span form adds no box, so a fork around a code block leaves the
+   block a direct child of the lesson's flex stack and a fork inside a
+   paragraph stays inline. `<Mech as="li">` and the other element forms
+   keep their own display, which is why this is `span[data-mech]` and
+   not `[data-mech]`. */
+span[data-mech] {
+  display: contents;
+}
+
+/* Arm is the default, and the default is what a visitor with no
+   JavaScript gets. Written as "not flywheel" rather than a pair of
+   positive rules for exactly that reason: with no attribute on
+   `<html>` at all, one mechanism still has to resolve. */
+html:not([data-mechanism="flywheel"]) [data-mech="flywheel"],
+html:not([data-mechanism="flywheel"]) [data-mech-slot="flywheel"],
+html[data-mechanism="flywheel"] [data-mech="arm"],
+html[data-mechanism="flywheel"] [data-mech-slot="arm"] {
+  display: none !important;
+}
+
+@keyframes mech-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Only while `data-mech-anim` is on the root, which the selector sets
+   for 420ms when a student actually switches. A standing rule would
+   animate every block on the page in on first load, and a lesson that
+   assembles itself in front of you is worse than one that is simply
+   there. The reduced-motion block near the top of this file drops it
+   entirely, which leaves the switch instant and correct.
+
+   The children, not the wrapper: a `display: contents` span has no box
+   to animate. */
+html[data-mech-anim] span[data-mech] > *,
+html[data-mech-anim] li[data-mech],
+html[data-mech-anim] div[data-mech],
+html[data-mech-anim] p[data-mech],
+html[data-mech-anim] [data-mech-slot] {
+  animation: mech-in 0.34s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+
+/* ── The question ───────────────────────────────────────────────── */
+
+.mech-choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-flow);
+  padding: var(--spacing-flow) var(--spacing-pad);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  background: var(--bg2);
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.mech-choice:hover {
+  background: var(--bg3);
+}
+
+.mech-choice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* The one circle in a design of 3px corners, and it earns the exception
+   by not being a UI shape: it is a porthole onto a render, the way a
+   parts catalogue puts a photo beside a name. Squared off at 3px it
+   would read as a fifth panel on a page that already has four.
+
+   The renders are 2048px squares of a mechanism standing on a floor,
+   which at circle size is mostly floor. `scale` zooms past that and
+   `transform-origin` puts the zoom on the mechanism rather than the
+   middle of the frame, which is a little above and left of centre in
+   both — 46% 45% frames the arm's raised member and the flywheel's
+   hood, and both fall out of frame by 55%. Cropping the files instead
+   would leave the home page's strip using a different picture of the
+   same bench. */
+.mech-choice-avatar {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg3);
+  border: 1px solid var(--rule);
+}
+
+.mech-choice-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.6);
+  transform-origin: 46% 45%;
+}
+
+.mech-choice-name {
+  font-family: var(--font-serif);
+  font-size: var(--text-lede);
+  line-height: 1.1;
+  color: var(--tx);
+}
+
+.mech-choice-foot {
+  margin: var(--spacing-flow) 0 0;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--text-aside);
+  line-height: 1.6;
+  color: var(--tx3);
+}
+
+/* The chosen box, styled from the same attribute that chooses the
+   content, so the ring and the lesson can never disagree. React state
+   in the selector carries `aria-checked` only. */
+html:not([data-mechanism="flywheel"]) .mech-choice[data-mech-choice="arm"],
+html[data-mechanism="flywheel"] .mech-choice[data-mech-choice="flywheel"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+html:not([data-mechanism="flywheel"])
+  .mech-choice[data-mech-choice="arm"]
+  .mech-choice-name,
+html[data-mechanism="flywheel"]
+  .mech-choice[data-mech-choice="flywheel"]
+  .mech-choice-name {
+  color: var(--tx);
+}

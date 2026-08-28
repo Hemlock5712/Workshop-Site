@@ -1,6 +1,7 @@
 import PageTemplate from "@/components/PageTemplate";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
+import CoroutineTimeline from "@/components/lesson/CoroutineTimeline";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import GitHubContent from "@/components/GitHubContent";
@@ -22,7 +23,10 @@ import { GitBranch } from "lucide-react";
  * This page also owns two things `/java-basics` used to pre-teach fifteen
  * lessons early and no longer does: `coroutine.yield()`, and the fact that a
  * coroutine body can hold a real `while (true)` loop. Both are defined in
- * section two, where they first appear. `/drive-to-tag-inline` names this page
+ * section two, where they first appear. It is also the only lesson that writes
+ * an ordinary Java loop, so it is the one that sends a student to Codecademy's
+ * Loops module. `/java-basics` tells them to skip that module and says this
+ * page will ask for it. `/drive-to-tag-inline` names this page
  * as the prerequisite for exactly that.
  *
  * Four things came back on the verification pass, all of them things the cut
@@ -53,9 +57,13 @@ export default function Coroutines() {
         <>
           The simulator running, from <strong>Hardware Simulation</strong>.
         </>,
+        <>
+          The <strong>Loops</strong> module of Codecademy&apos;s Learn Java, if{" "}
+          <code>while</code> is new.
+        </>,
       ]}
       branch="mech-5-Coroutines"
-      time="About 25 minutes"
+      time="14 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -157,7 +165,18 @@ export default function Coroutines() {
         <p>
           <code>yield</code> is the one you need when the body has a loop of its
           own. A coroutine can hold a real <code>while (true)</code> loop, with
-          a <code>yield</code> at the bottom of it.
+          a <code>yield</code> at the bottom of it. This is the first lesson
+          that writes an ordinary Java loop. Do the <strong>Loops</strong>{" "}
+          module of Codecademy&apos;s{" "}
+          <a
+            href="https://www.codecademy.com/learn/learn-java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[var(--accent)] underline hover:text-[var(--accent)]"
+          >
+            Learn Java
+          </a>{" "}
+          first if <code>while</code> and <code>for</code> are new.
         </p>
         <p>
           That yield keeps one pass through the loop equal to one robot loop.
@@ -165,22 +184,7 @@ export default function Coroutines() {
           the robot gets a turn.
         </p>
 
-        <Box
-          variant="alert-warning"
-          tag="THE ONE RULE"
-          title="Never await a hold"
-        >
-          <p>
-            <code>arm.vertical()</code> re-sends its position request every loop
-            and never finishes, so <code>coroutine.await(arm.vertical())</code>{" "}
-            sits on that line for the rest of the match. Nothing errors and
-            nothing logs.
-          </p>
-          <p className="mt-3">
-            <code>fork</code> is the answer. It starts the hold and returns at
-            once, so the next line runs while the arm keeps holding.
-          </p>
-        </Box>
+        <CoroutineTimeline />
       </LessonSection>
 
       <LessonSection id="build-the-routine" title="Build the routine">
@@ -237,6 +241,18 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
           It is a whole OpMode, shaped like <code>TeleopOpMode</code>.{" "}
           <code>Command.noRequirements</code> claims no mechanism of its own,
           because the forked commands claim theirs.
+        </p>
+        <p>
+          Paste the whole shell rather than typing it. Nothing inside{" "}
+          <code>Command.noRequirements(coroutine -&gt; {})</code> is yours to
+          invent, and the two braces are where every step from here lands.
+        </p>
+        <p>
+          Your copy will move the first time you build. Every compile runs{" "}
+          <code>spotlessApply</code>, and the moment a line goes inside the
+          braces the formatter re-indents the whole block. Nothing is wrong when
+          that happens. It is what makes your file match the branch character
+          for character.
         </p>
         <p>
           Build now and <strong>Raise And Shoot</strong> appears in the

@@ -64,10 +64,21 @@ export default function RootLayout({
             hidden state on this class, so a visitor whose JS never arrives
             gets the resolved state rather than a blank section. Same technique
             and the same placement next-themes uses for its own pre-paint
-            class. */}
+            class.
+
+            It also replays the mechanism a student picked on an earlier
+            lesson, as `data-mechanism` on the same element. Every mechanism
+            lesson ships both readings and `globals.css` hides one, so this
+            attribute is what decides which lesson paints. Setting it here
+            rather than in an effect is the difference between a flywheel
+            student reading a flywheel page and a flywheel student watching an
+            arm page turn into one, on every page of the chain. A `try` because
+            `localStorage` throws outright in some privacy modes, and a lesson
+            that fails to render is a worse outcome than a lesson that forgets
+            the answer. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("js")`,
+            __html: `document.documentElement.classList.add("js");try{var m=localStorage.getItem("workshop:mechanism");if(m==="arm"||m==="flywheel")document.documentElement.dataset.mechanism=m}catch(e){}`,
           }}
         />
         <ThemeProvider

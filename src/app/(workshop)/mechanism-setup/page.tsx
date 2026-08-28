@@ -7,12 +7,34 @@ import DocumentationButton from "@/components/DocumentationButton";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
+import MechanismSelector from "@/components/lesson/MechanismSelector";
+import { M, Mech } from "@/components/lesson/Mechanism";
+
+/**
+ * Written once, read twice — see `src/data/mechanisms.ts`.
+ *
+ * The asymmetry here is real and it is the reason this page needed the fork
+ * more than any other. An arm has a CANcoder, so it gets a hand test, a zero,
+ * and a link to the motor: three sections a flywheel has no hardware for. A
+ * flywheel bench has one check, which is that its motor turns the way the
+ * code will assume.
+ *
+ * Before the fork a flywheel student read two full sections of CANcoder
+ * procedure for a sensor they do not own, and the page half-knew it: the motor
+ * section ended "on a flywheel bench there is no arm to run, so the first
+ * movement is the section below", pointing at a section that did not exist.
+ * That sentence is gone because the section it wanted now does.
+ *
+ * The CAN ID table stays shared. It is the bench's numbering convention, and a
+ * student setting up either mechanism should see where the other one's IDs
+ * sit.
+ */
 
 export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Motor Setup & CAN IDs"
-      lede="Every device gets its own CAN ID, and then the mechanism turns under power for the first time. You will check which way the arm's sensor counts, record its zero, and prove the motor drives the same way. Get any of that wrong and the next lesson tunes against the wrong sign."
+      lede="Every device gets its own CAN ID, and then the mechanism turns under power for the first time. You prove which way it moves under a volt or two, and on the arm which way its encoder counts first. Get any of that wrong and the next lesson tunes against the wrong sign."
       needs={[
         <>The mechanism assembled and powered.</>,
         <>
@@ -20,8 +42,10 @@ export default function MechanismSetup() {
         </>,
         <>No robot program running. Tuner X owns the bus here.</>,
       ]}
-      time="12 minutes"
+      time="11 minutes"
     >
+      <MechanismSelector />
+
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
         <p>
           Factory default each device before you number it. That clears whatever
@@ -57,19 +81,12 @@ export default function MechanismSetup() {
                 </td>
                 <td className="py-2">Arm encoder</td>
               </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+              <tr>
                 <td className="py-2 pr-4">Flywheel TalonFX</td>
                 <td className="py-2 pr-4">
                   <code>21</code>
                 </td>
-                <td className="py-2">Flywheel leader</td>
-              </tr>
-              <tr>
-                <td className="py-2 pr-4">Flywheel TalonFX</td>
-                <td className="py-2 pr-4">
-                  <code>22</code>
-                </td>
-                <td className="py-2">Flywheel follower</td>
+                <td className="py-2">Flywheel motor</td>
               </tr>
             </tbody>
           </table>
@@ -99,120 +116,132 @@ export default function MechanismSetup() {
         </ol>
       </LessonSection>
 
-      <LessonSection
-        id="verify-the-arm-sensor"
-        title="Arm encoder direction and zero"
-      >
-        <p>
-          The encoder is what everything downstream trusts. Test it by hand
-          before any request is sent.
-        </p>
-        <VideoEmbed id="mjGn3y19eUc" title="Calibrate and zero the encoder" />
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>Open the CANcoder device in Tuner X and plot the position.</li>
-          <li>
-            Facing the motor side of the arm, turn it counterclockwise by hand.
-          </li>
-          <li>
-            The CANcoder position must increase. If it decreases, flip the
-            sensor direction, apply, and repeat the hand test.
-          </li>
-          <li>
-            Put the arm to 0, based on the Unit Circle, then zero the CANcoder
-            position.
-            <svg
-              width="1em"
-              height="1em"
-              viewBox="0 0 120 120"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-label="Circle with lines cut out at top, right, and bottom"
-              className="inline-block ml-2"
-            >
-              {/* Rotate so the path starts on the left. Equal gaps of 5
-                    sit fully on the top, right, and bottom; none wrap the seam. */}
-              <circle
-                cx="60"
-                cy="60"
-                r="56"
-                fill="none"
-                stroke="#1e293b"
-                strokeWidth="20"
-                pathLength="100"
-                strokeDasharray="22.5 5 20 5 20 5 22.5"
-                transform="rotate(180 60 60)"
-              />
-            </svg>
-          </li>
-          <li>
-            Turn it 90 degrees counterclockwise. Expect about <code>0.25</code>{" "}
-            rotations. A full turn reads <code>1.0</code>.
-          </li>
-        </ol>
-        <p>
-          Positions are measured in <strong>rotations</strong>, not degrees. One
-          full turn is <code>1.0</code>. Counterclockwise with the device facing
-          you is positive, and every position target from here to Motion Magic
-          is written that way.
-        </p>
+      <Mech for="arm">
+        <LessonSection
+          id="verify-the-arm-sensor"
+          title="Arm encoder direction and zero"
+        >
+          <p>
+            The encoder is what everything downstream trusts. Test it by hand
+            before any request is sent.
+          </p>
+          <VideoEmbed id="mjGn3y19eUc" title="Calibrate and zero the encoder" />
+          <ol className="ml-5 list-decimal space-y-3">
+            <li>Open the CANcoder device in Tuner X and plot the position.</li>
+            <li>
+              Facing the motor side of the arm, turn it counterclockwise by
+              hand.
+            </li>
+            <li>
+              The CANcoder position must increase. If it decreases, flip the
+              sensor direction, apply, and repeat the hand test.
+            </li>
+            <li>
+              Put the arm to 0, based on the Unit Circle, then zero the CANcoder
+              position.
+              <svg
+                width="1em"
+                height="1em"
+                viewBox="0 0 120 120"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-label="Circle with lines cut out at top, right, and bottom"
+                className="inline-block ml-2"
+              >
+                {/* Rotate so the path starts on the left. Equal gaps of 5
+                      sit fully on the top, right, and bottom; none wrap the seam. */}
+                <circle
+                  cx="60"
+                  cy="60"
+                  r="56"
+                  fill="none"
+                  stroke="#1e293b"
+                  strokeWidth="20"
+                  pathLength="100"
+                  strokeDasharray="22.5 5 20 5 20 5 22.5"
+                  transform="rotate(180 60 60)"
+                />
+              </svg>
+            </li>
+            <li>
+              Turn it 90 degrees counterclockwise. Expect about{" "}
+              <code>0.25</code> rotations. A full turn reads <code>1.0</code>.
+            </li>
+          </ol>
+          <p>
+            Positions are measured in <strong>rotations</strong>, not degrees.
+            One full turn is <code>1.0</code>. Counterclockwise with the device
+            facing you is positive, and every position target from here to
+            Motion Magic is written that way.
+          </p>
 
-        <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
+          <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
+            <ImageBlock
+              src="/images/setup/unit_circle_degrees_rotations_decimal.png"
+              alt="Unit circle showing the same angles written as degrees and as decimal rotations, with counterclockwise as the positive direction"
+              width={340}
+              height={340}
+            />
+            <ImageBlock
+              src="/images/setup/counter-clockwise.png"
+              alt="Arrow showing the counterclockwise rotation direction with the device facing you"
+              width={340}
+              height={255}
+            />
+          </div>
+
+          <p>
+            Choose the reference with whoever built the arm, then mark it on the
+            metal. A replaced CANcoder comes back with no direction and no
+            offset, so somebody will run this procedure again in March.
+          </p>
+        </LessonSection>
+
+        <LessonSection id="link-the-encoder" title="Link the Encoder">
+          <p>
+            Now that you have verified the encoder direction and zero, you can
+            link it to the motor.
+          </p>
+          <ol className="ml-5 list-decimal space-y-3">
+            <li>
+              Select the arm TalonFX and scroll down in the config section to
+              the <strong>Feedback</strong> section.
+            </li>
+            <li>
+              Set the <code>Feedback Remote Sensor ID</code> to match your
+              CANcoder ID.
+            </li>
+            <li>
+              Set the <code>Feedback Sensor Source</code> to{" "}
+              <code>RemoteCANcoder</code>
+            </li>
+          </ol>
           <ImageBlock
-            src="/images/setup/unit_circle_degrees_rotations_decimal.png"
-            alt="Unit circle showing the same angles written as degrees and as decimal rotations, with counterclockwise as the positive direction"
-            width={340}
-            height={340}
+            src="/images/setup/link-the-encoder.png"
+            alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
+            caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
           />
-          <ImageBlock
-            src="/images/setup/counter-clockwise.png"
-            alt="Arrow showing the counterclockwise rotation direction with the device facing you"
-            width={340}
-            height={255}
-          />
-        </div>
-
-        <p>
-          Choose the reference with whoever built the arm, then mark it on the
-          metal. A replaced CANcoder comes back with no direction and no offset,
-          so somebody will run this procedure again in March.
-        </p>
-      </LessonSection>
-
-      <LessonSection id="link-the-encoder" title="Link the Encoder">
-        <p>
-          Now that you have verified the encoder direction and zero, you can
-          link it to the motor.
-        </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Select the arm TalonFX and scroll down in the config section to the{" "}
-            <strong>Feedback</strong> section.
-          </li>
-          <li>
-            Set the <code>Feedback Remote Sensor ID</code> to match your
-            CANcoder ID.
-          </li>
-          <li>
-            Set the <code>Feedback Sensor Source</code> to{" "}
-            <code>RemoteCANcoder</code>
-          </li>
-        </ol>
-        <ImageBlock
-          src="/images/setup/link-the-encoder.png"
-          alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
-          caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
-        />
-      </LessonSection>
+        </LessonSection>
+      </Mech>
 
       <LessonSection
         id="verify-motor-direction"
-        title="Run the motor, match the sensor"
+        title="Run the motor, check the direction"
       >
         <p>
           This is the first time anything moves under power. Voltage Out sends a
           fixed voltage and nothing else: no target, no soft limits, no stopping
-          at the end of travel. The hand test settled which way is positive, and
-          the motor is the only thing allowed to change from here.
+          at the end of travel.
         </p>
+        <Mech for="arm" as="p">
+          The hand test settled which way is positive, and the motor is the only
+          thing allowed to change from here.
+        </Mech>
+        <Mech for="flywheel" as="p">
+          A flywheel has no sensor to agree with, so this one check is the whole
+          bench procedure for it. Positive voltage has to spin the wheel the way
+          the code will assume, and the only thing you may change to get there
+          is the motor.
+        </Mech>
 
         <Box variant="alert-warning" title="Before you enable anything">
           <p>
@@ -226,18 +255,27 @@ export default function MechanismSetup() {
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Select the arm TalonFX and set the control drop-down to{" "}
-            <strong>Voltage Out</strong>.
+            Select the{" "}
+            <Mech for="arm">
+              arm TalonFX on <code>31</code>
+            </Mech>
+            <Mech for="flywheel">
+              flywheel TalonFX on <code>21</code>
+            </Mech>{" "}
+            and set the control drop-down to <strong>Voltage Out</strong>.
           </li>
           <li>
             Enter <code>1 V</code>, click <strong>DISABLED</strong> to enable
             the device, then disable after about a second. Watch the mechanism,
             not the screen.
           </li>
-          <li>
+          <Mech for="arm" as="li">
             The arm should move counterclockwise and CANcoder <code>32</code>{" "}
             should count up.
-          </li>
+          </Mech>
+          <Mech for="flywheel" as="li">
+            The wheel should spin counterclockwise, seen from the motor side.
+          </Mech>
           <li>
             If it moves the other way, invert the motor output, apply, and run
             the same test again.
@@ -246,11 +284,19 @@ export default function MechanismSetup() {
 
         <p>
           Once <code>1 V</code> is right, repeat at <code>3 V</code>. Only the
-          speed should change. An arm that will not budge at <code>1 V</code> is
-          usually fighting friction or gravity rather than bad wiring. Climb in
-          single volts until it creeps, then stop. You are checking which way it
-          goes, not how fast. On a flywheel bench there is no arm to run, so the
-          first movement is the section below.
+          speed should change.
+          <Mech for="arm">
+            {" "}
+            An arm that will not budge at <code>1 V</code> is usually fighting
+            friction or gravity rather than bad wiring. Climb in single volts
+            until it creeps, then stop.
+          </Mech>
+          <Mech for="flywheel">
+            {" "}
+            A wheel takes a moment to come up and coasts for a while after you
+            disable, so give it time before you call the direction.
+          </Mech>{" "}
+          You are checking which way it goes, not how fast.
         </p>
 
         <VideoEmbed id="cDWF3bj1Juk" title="Motor test" />
@@ -269,15 +315,20 @@ export default function MechanismSetup() {
               Tuner X lists all devices on your mechanism, each with its own ID
               and a name.
             </li>
-            <li>
+            <Mech for="arm" as="li">
               The arm reference reads about zero, and a quarter turn reads{" "}
               <code>0.25</code>.
-            </li>
-            <li>
+            </Mech>
+            <Mech for="arm" as="li">
               Turning the arm counterclockwise by hand raises the CANcoder
               reading, and positive voltage on TalonFX 31 drives it the same
               way.
-            </li>
+            </Mech>
+            <Mech for="flywheel" as="li">
+              Positive voltage on TalonFX 21 spins the wheel counterclockwise
+              from the motor side, and it spins down on its own once you
+              disable.
+            </Mech>
           </ul>
         </Box>
         <p>PID tuning starts on the next page!</p>

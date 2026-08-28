@@ -3,6 +3,8 @@ import NavFooter, { type NavOverride } from "@/components/NavFooter";
 import LessonOutline from "@/components/lesson/LessonOutline";
 import LessonSection from "@/components/lesson/LessonSection";
 import LessonKicker from "@/components/lesson/LessonKicker";
+import { Mech } from "@/components/lesson/Mechanism";
+import { DEFAULT_MECHANISM } from "@/data/mechanisms";
 
 /**
  * Read the sections off the children so the outline rail can be server-
@@ -14,6 +16,13 @@ import LessonKicker from "@/components/lesson/LessonKicker";
  * for the same reason the DOM scan is: nothing is hand-maintained, and a
  * section that isn't really there cannot appear in the rail. Fragments and
  * arrays are traversed because pages nest sections inside both.
+ *
+ * A `<Mech>` fork for the mechanism nobody is reading is skipped, because a
+ * section inside it is not really there either. The server cannot know which
+ * mechanism a visitor picked, so it assumes the default and the client rescan
+ * corrects it on mount; this only has to be right for the first paint and for
+ * a visitor whose JavaScript never arrives, and for both of those the default
+ * is what the CSS shows.
  */
 function collectSections(
   nodes: ReactNode,
@@ -21,6 +30,12 @@ function collectSections(
 ): { id: string; label: string }[] {
   Children.forEach(nodes, (child) => {
     if (!isValidElement(child)) return;
+    if (child.type === Mech) {
+      const p = child.props as { for?: string; children?: ReactNode };
+      if (p.for && p.for !== DEFAULT_MECHANISM) return;
+      if (p.children) collectSections(p.children, out);
+      return;
+    }
     if (child.type === LessonSection) {
       const p = child.props as {
         id?: string;

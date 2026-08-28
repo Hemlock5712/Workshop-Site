@@ -37,7 +37,7 @@ export default function ChainingCommands() {
           The simulator running, from <strong>Hardware Simulation</strong>.
         </>,
       ]}
-      time="About 20 minutes"
+      time="12 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -174,15 +174,14 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
 
       <LessonSection id="bind-the-group" title="Bind the group">
         <p>
-          A group is a command, so it binds like one. On{" "}
-          <strong>Writing Commands</strong> you started a hold with{" "}
-          <code>onTrue</code> and undid it with <code>onFalse</code>, because
-          neither verb cancels anything.
+          A group is a command, so it binds like one, and it binds the same way
+          a single command does. <code>whileTrue</code> runs the group while the
+          button is held and cancels it on release.
         </p>
         <p>
-          <code>whileTrue</code> does cancel. It runs the group while the button
-          is held and drops it on release. From here on it is how this team
-          binds a hold.
+          Canceling a group is not the same as stopping the hardware. The last
+          member here is a hold, so <code>whileFalse</code> still has to send
+          zero.
         </p>
 
         <CodeBlock

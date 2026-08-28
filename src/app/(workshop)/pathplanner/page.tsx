@@ -21,7 +21,7 @@ export default function PathPlannerLesson() {
           dimensions.
         </>,
       ]}
-      time="About 30 minutes"
+      time="9 minutes"
     >
       <Split>
         <KeyConceptSection

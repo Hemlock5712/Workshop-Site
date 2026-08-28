@@ -22,6 +22,13 @@ export interface SectionMeta {
   title: string;
   num: string;
   blurb: string;
+  /**
+   * Set on a workshop whose lessons are still being written. The pages stay
+   * linked and readable; the flag is the honest label on the menu row so a
+   * student knows what they are walking into. The string is the reason, shown
+   * under the group heading. Clear it when the workshop is finished.
+   */
+  unfinished?: string;
 }
 
 export const SECTIONS: ReadonlyArray<SectionMeta> = [
@@ -52,6 +59,8 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "03",
     blurb:
       "Generate and calibrate a swerve drive, plan a path, combine commands, and run an autonomous OpMode.",
+    unfinished:
+      "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
   {
     id: "workshop4",
@@ -59,6 +68,8 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "04",
     blurb:
       "Add vision, drive to field poses, profile the motion, and plan around obstacles.",
+    unfinished:
+      "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
   {
     id: "workshop5",
@@ -66,6 +77,8 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "05",
     blurb:
       "Write commands that wait, yield, and remember, using coroutines and state machines.",
+    unfinished:
+      "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
 ];
 
@@ -125,17 +138,17 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop2",
   },
   {
+    slug: "/building-subsystems",
+    title: "Mechanisms",
+    section: "workshop2",
+  },
+  {
     slug: "/adding-commands",
     title: "Writing Commands",
     section: "workshop2",
   },
   { slug: "/opmodes", title: "OpModes", section: "workshop2" },
   { slug: "/robot-class", title: "Robot.java", section: "workshop2" },
-  {
-    slug: "/building-subsystems",
-    title: "Mechanisms",
-    section: "workshop2",
-  },
   {
     slug: "/running-program",
     title: "Hardware Simulation",

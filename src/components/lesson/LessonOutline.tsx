@@ -47,9 +47,14 @@ export default function LessonOutline({
 
   // Collect sections. Re-runs per route so client navigation rebuilds it.
   useEffect(() => {
+    // A mechanism lesson ships both readings and hides one, so the DOM holds
+    // sections the reader cannot see. `offsetParent` is null for anything
+    // under a `display: none` ancestor, which is exactly the test: a section
+    // with no box is a section that is not on this page, and listing it in the
+    // rail would offer a link that scrolls nowhere.
     const nodes = Array.from(
       document.querySelectorAll<HTMLElement>("[data-sec]")
-    );
+    ).filter((n) => n.offsetParent !== null);
     const found = nodes.map((n) => ({
       id: n.dataset.sec ?? "",
       label: n.dataset.secLabel ?? "",

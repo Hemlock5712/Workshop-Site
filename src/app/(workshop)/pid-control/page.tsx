@@ -37,7 +37,7 @@ export default function PIDControl() {
         </>,
         <>The mechanism, with a clear path to swing, and no obstacles.</>,
       ]}
-      time="8 minutes, plus time on the CTRE guide"
+      time="8 minutes"
     >
       <LessonSection id="how-to-tune" title="How to tune">
         <p>

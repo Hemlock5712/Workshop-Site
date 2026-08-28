@@ -24,7 +24,7 @@ export default function Autonomous() {
         </>,
         <>Three meters of clear floor and one person on the disable switch.</>,
       ]}
-      time="About 30 minutes"
+      time="10 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">

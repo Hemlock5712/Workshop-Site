@@ -8,6 +8,29 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import ImageBlock from "@/components/ImageBlock";
+import MechanismSelector from "@/components/lesson/MechanismSelector";
+import { Mech } from "@/components/lesson/Mechanism";
+
+/**
+ * Written once, read twice — see `src/data/mechanisms.ts`.
+ *
+ * This page forked because it was wrong for a flywheel, not to match the
+ * others. Motion Magic Velocity ignores the cruise velocity config, and the
+ * page told a flywheel student to set one in "Set the first limits" and then
+ * to raise it in "Raise the limits" — two steps that do nothing, one of them
+ * contradicting this page's own figure ("Only acceleration applies").
+ *
+ * Verified against the Phoenix 6 `26.50.0-alpha-1` sources jar, which says it
+ * in two places. `MotionMagicVelocityVoltage`: "This control mode does not use
+ * the CruiseVelocity, Expo_kV, or Expo_kA configs."
+ * `MotionMagicConfigs.MotionMagicCruiseVelocity`: "Motion Magic Velocity
+ * control modes do not use this config." So a flywheel configures one number,
+ * acceleration, and its speed comes from the target on the request.
+ *
+ * The opening Arm/Flywheel FigureGrid stays shared on purpose. It is the
+ * two-profile-types contrast that the rest of the page depends on, and it
+ * teaches by putting them side by side.
+ */
 
 export default function MotionMagic() {
   return (
@@ -24,8 +47,10 @@ export default function MotionMagic() {
           target and measurement.
         </>,
       ]}
-      time="10 minutes"
+      time="7 minutes"
     >
+      <MechanismSelector />
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
@@ -70,40 +95,6 @@ export default function MotionMagic() {
         ]}
       />
 
-      <LessonSection id="read-the-profile" title="Read the profile shape">
-        <p>
-          Know what the plot should look like before you change any numbers. A
-          position profile has three phases, and every problem in this lesson
-          shows up as one of them going wrong.
-        </p>
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "1",
-              term: "Accelerate",
-              body: "Speed rises at the configured acceleration. Too much here reads as a snap in the structure, a spike in current, or a wheel that slips.",
-            },
-            {
-              label: "2",
-              term: "Cruise",
-              body: "Speed holds at the ceiling you set. A long move spends most of its time here. A short move skips this phase entirely.",
-            },
-            {
-              label: "3",
-              term: "Decelerate",
-              body: "The profile turns around early enough to reach the target with zero planned speed. If the mechanism keeps going, the loop is at fault, not the profile.",
-            },
-          ]}
-        />
-        <p>
-          A short move never reaches cruise. The profile ramps up, turns around,
-          and comes back down in a triangle. That is the correct shape. Raising
-          cruise velocity will not flatten the top of it, because the distance
-          is what limits the peak.
-        </p>
-      </LessonSection>
-
       <LessonSection id="configure-motion-magic" title="Set the first limits">
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -114,8 +105,14 @@ export default function MotionMagic() {
             </p>
           </div>
           <MarginNote label="Units">
-            Cruise velocity is mechanism rotations per second. Acceleration is
-            mechanism rotations per second squared.
+            <Mech for="arm">
+              Cruise velocity is mechanism rotations per second. Acceleration is
+              mechanism rotations per second squared.
+            </Mech>
+            <Mech for="flywheel">
+              Acceleration is mechanism rotations per second squared, and the
+              target speed you request is mechanism rotations per second.
+            </Mech>
           </MarginNote>
         </Split>
         <ImageBlock
@@ -125,21 +122,33 @@ export default function MotionMagic() {
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Open <strong>Control</strong> and change the request type to{" "}
-            <code>MotionMagicVoltage</code> (arms) or{" "}
-            <code>MotionMagicVelocityVoltage</code> (flywheels).
+            <Mech for="arm">
+              <code>MotionMagicVoltage</code>
+            </Mech>
+            <Mech for="flywheel">
+              <code>MotionMagicVelocityVoltage</code>
+            </Mech>
+            .
           </li>
-          <li>
+          <Mech for="arm" as="li">
             Under the <strong>Motion Magic</strong> config section, enter a
-            cruise velocity and an acceleration. Both are in mechanism
-            rotations, not motor rotations.
-            <br />
-            Here are conservative starting numbers for an arm and a flywheel.
-            Tune them far more aggressively on a competition robot.
-            <ol className="ml-5 list-[lower-alpha]">
-              <li>Position: 0.5rps, 1rps/s</li>
-              <li>Velocity: 100rps, 20rps/s</li>
-            </ol>
-          </li>
+            cruise velocity of <code>0.5</code> rotations per second and an
+            acceleration of <code>1</code> rotation per second squared. Both are
+            in mechanism rotations, not motor rotations. Tune them far more
+            aggressively on a competition robot.
+          </Mech>
+          <Mech for="flywheel" as="li">
+            Under the <strong>Motion Magic</strong> config section, enter an
+            acceleration of <code>20</code> rotations per second squared. That
+            is the only profile number this mode reads, and it is in mechanism
+            rotations, not motor rotations. Tune it far more aggressively on a
+            competition robot.
+          </Mech>
+          <Mech for="flywheel" as="li">
+            Ask for a speed of <code>100</code> rotations per second on the
+            request itself. A flywheel&apos;s speed is the target you send, not
+            a config you save.
+          </Mech>
           <li>
             Leave jerk at zero. Zero means no jerk limit, and the profile stays
             a plain trapezoid.
@@ -147,6 +156,28 @@ export default function MotionMagic() {
           <li>Apply the configuration with the download button.</li>
           <li>Run it and see the magic!</li>
         </ol>
+
+        <Mech for="flywheel">
+          <Box
+            variant="alert-warning"
+            tag="IGNORED CONFIG"
+            title="Cruise velocity does nothing here"
+          >
+            <p>
+              Tuner X shows a cruise velocity box for every mechanism and lets
+              you set it. Motion Magic Velocity never reads it. Phoenix says so
+              in its own source, in two places. The control mode does not use
+              the <code>CruiseVelocity</code> config, and that config is
+              documented as unused by Motion Magic Velocity modes.
+            </p>
+            <p className="mt-3">
+              Cruise velocity is a speed ceiling for a mechanism travelling to a
+              position. The arm sets one. A flywheel is not going anywhere, so
+              the speed you request is the speed, and acceleration is the only
+              thing shaping how it gets there.
+            </p>
+          </Box>
+        </Mech>
         <VideoEmbed id="7I7r9p1RBZI" title="Motion Magic tuning" />
       </LessonSection>
 
@@ -161,18 +192,27 @@ export default function MotionMagic() {
             the measurement falls behind, the current spikes, or the structure
             shakes.
           </li>
-          <li>
+          <Mech for="arm" as="li">
             Raise cruise velocity the same way, watching the flat section
             instead of the ramp.
-          </li>
-          <li>
+          </Mech>
+          <Mech for="arm" as="li">
             Run the longest move you will ever ask for, in both directions. The
             long move is what exposes cruise tracking.
-          </li>
-          <li>
+          </Mech>
+          <Mech for="arm" as="li">
             Run the shortest useful move too. It never cruises, so it tests the
             stop instead.
-          </li>
+          </Mech>
+          <Mech for="flywheel" as="li">
+            Spin up from a standstill to your full speed. That is the longest
+            ramp the wheel will ever do, and it is where the loop falls behind
+            first.
+          </Mech>
+          <Mech for="flywheel" as="li">
+            Then step between two speeds without stopping. A small change should
+            arrive almost at once, and the wheel should settle without hunting.
+          </Mech>
         </ol>
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -182,28 +222,47 @@ export default function MotionMagic() {
               mechanism is slower than an empty one, and a match gives you both
               at once.
             </p>
-            <p>
-              Around 80% acceleration and velocity are good starting points.
-            </p>
+            <p>Around 80% of the ceiling you found is a good starting point.</p>
           </div>
         </Split>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
-        <p>
+        <Mech for="arm" as="p">
           Run the same move five times from a standstill, alternating direction.
           You are done when the five traces sit on top of each other.
-        </p>
+        </Mech>
+        <Mech for="flywheel" as="p">
+          Spin up from rest to the same speed five times, letting the wheel stop
+          in between. You are done when the five traces sit on top of each
+          other.
+        </Mech>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
+            <Mech for="arm" as="li">
+              The measurement follows the reference as it speeds up, holds, and
+              slows to a stop.
+            </Mech>
+            <Mech for="flywheel" as="li">
+              The measurement follows the reference up the ramp and holds with
+              it.
+            </Mech>
+            <Mech for="arm" as="li">
+              The mechanism arrives once and stays there, with no bounce.
+            </Mech>
+            <Mech for="flywheel" as="li">
+              The wheel reaches the speed once and holds it, with no hunting.
+            </Mech>
             <li>
-              The measurement follows the reference through all three phases.
+              Current peaks during acceleration and settles once the profile
+              stops asking for more.
             </li>
-            <li>The mechanism arrives once and stays there, with no bounce.</li>
-            <li>
-              Current peaks during acceleration and settles during cruise.
-            </li>
-            <li>The long move and the short move both stop cleanly.</li>
+            <Mech for="arm" as="li">
+              The long move and the short move both stop cleanly.
+            </Mech>
+            <Mech for="flywheel" as="li">
+              A spin-up from rest and a small step between speeds both settle.
+            </Mech>
           </ul>
         </Box>
       </LessonSection>

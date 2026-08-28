@@ -12,8 +12,6 @@
     "test": "pnpm run format:check && pnpm run lint && pnpm run type-check && pnpm run build",
     "reference:sync": "node scripts/sync-reference.mjs",
     "reference:refresh": "node scripts/sync-reference.mjs --refresh --prune",
-    "catalog": "node scripts/generate-lesson-catalog.mjs",
-    "catalog:check": "node scripts/generate-lesson-catalog.mjs --check",
     "spell": "cspell \"src/**/*.{ts,tsx}\" *.md",
     "generate-search": "tsx scripts/generate-search-data.ts",
     "check-embeds": "tsx scripts/check-embeds.ts",

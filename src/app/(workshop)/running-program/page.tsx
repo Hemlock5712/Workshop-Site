@@ -86,12 +86,12 @@ export default function RunningProgram() {
           title="What your constructor should contain"
           filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           code={`// From the branch:
-driver.leftTrigger().onTrue(arm.runFast()).onFalse(arm.stop());
-driver.rightTrigger().onTrue(flywheel.runFast()).onFalse(flywheel.runSlow());
-driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
+driver.leftTrigger().whileTrue(arm.runFast()).whileFalse(arm.stop());
+driver.rightTrigger().whileTrue(flywheel.runFast()).whileFalse(flywheel.runSlow());
+driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());
 
 // Yours, on B:
-driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
+driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());`}
         />
 
         <p>
@@ -232,16 +232,13 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
         >
           <p>
             Releasing B scheduled <code>arm.stop()</code>, which needs the arm
-            too. It took the arm by the same rule and sent zero. The left
-            trigger never got the arm back, because <code>onTrue</code> fires on
-            the press. A button already down has nothing left to fire.
+            too. It took the arm and sent zero. The left trigger never got the
+            arm back, because its <code>whileTrue</code> already fired on the
+            press. A button still held has no rising edge left.
           </p>
           <p className="mt-3">
-            <code>whileTrue</code> has no such gap.{" "}
-            <a href="/chaining-commands" className="underline">
-              Command Composition
-            </a>{" "}
-            makes it the way this team binds a hold.
+            Release the left trigger and pull it again. That is a fresh rising
+            edge, and the arm comes back.
           </p>
         </Box>
       </LessonSection>
@@ -312,14 +309,14 @@ driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());`}
             question:
               "In that same experiment you release B while still holding the left trigger. Why does the arm stop instead of going back to 6 V?",
             options: [
-              "runFast automatically resumes on the next scheduler tick",
+              "runFast automatically resumes on the next scheduler loop",
               "Releasing B cancels runSlow, and canceling a command stops the motor",
-              "onFalse scheduled arm.stop(), and onTrue only fires on the press: a button already held has nothing left to fire",
+              "whileFalse scheduled arm.stop(), and the left trigger's whileTrue already fired on the press: a button still held has no new rising edge",
               "The left trigger binding expired after a few seconds",
             ],
             correctAnswer: 2,
             explanation:
-              "onTrue and onFalse only ever schedule; neither one cancels. Releasing B scheduled arm.stop(), which claimed the arm. The left trigger fired its onTrue when you first pressed it and will not fire again until you release and press it once more.",
+              "Releasing B cancels runSlow and, through whileFalse, schedules arm.stop(), which claims the arm and sends zero. The left trigger fired its whileTrue when you first pulled it, and it will not fire again until you release and pull once more.",
           },
         ]}
       />

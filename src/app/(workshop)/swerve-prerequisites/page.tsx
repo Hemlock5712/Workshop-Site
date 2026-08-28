@@ -30,7 +30,7 @@ export default function SwervePrerequisites() {
           without re-explaining them. That page owns the hardware.
         </>,
       ]}
-      time="About 15 minutes of reading"
+      time="11 minutes"
     >
       <Split>
         <KeyConceptSection

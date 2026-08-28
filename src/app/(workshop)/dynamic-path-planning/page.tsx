@@ -17,7 +17,7 @@ export default function DynamicPathPlanning() {
         <>A basic and profiled drive-to-point command that finish reliably.</>,
         <>The PathPlanner field model and navigation grid from Workshop 3.</>,
       ]}
-      time="About 35 minutes"
+      time="7 minutes"
     >
       <Split>
         <KeyConceptSection

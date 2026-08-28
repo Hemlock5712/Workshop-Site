@@ -49,7 +49,7 @@ export default function ProfiledDriveToPoint() {
         </>,
       ]}
       branch="6-ProfiledToPoint"
-      time="20 minutes"
+      time="12 minutes"
     >
       <Split>
         <ProseBlock>

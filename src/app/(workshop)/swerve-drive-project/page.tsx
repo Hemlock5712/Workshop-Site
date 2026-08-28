@@ -54,7 +54,7 @@ export default function SwerveDriveProject() {
         <>A tape measure, and the robot up on blocks.</>,
       ]}
       branch="1-Swerve"
-      time="about an hour"
+      time="14 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">

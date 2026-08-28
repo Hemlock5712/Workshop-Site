@@ -20,7 +20,7 @@ export default function Prerequisites() {
           wired.
         </>,
       ]}
-      time="About half an hour"
+      time="8 minutes"
     >
       <Split>
         <ProseBlock>
