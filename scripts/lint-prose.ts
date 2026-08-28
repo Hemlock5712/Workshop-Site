@@ -97,13 +97,14 @@ const TARGET_MINUTES = 12;
 /** Hard cap. Over this and the lesson gets split, not tightened. */
 const MAX_MINUTES = 15;
 
-/**
- * Floor. A lesson under this is not concise, it is missing something: usually
- * what a good result looks like, and what to do when you don't get one.
- * Workshop 1 is where this bites, because it carries the whole course now and
- * several of its lessons were written as four-minute stubs.
+/*
+ * There is no floor, deliberately. One was enforced at 6 minutes until August
+ * 2026, on the theory that a short lesson is one missing its check and its
+ * failure modes. That is sometimes true and it is not a rule: a page whose
+ * whole job is orientation is finished when it has oriented you, and padding
+ * it to clear a threshold costs a reader time to buy a linter a green tick.
+ * Judge a thin page by whether it has its check, not by its length.
  */
-const MIN_MINUTES = 6;
 
 const MAX_TITLE_WORDS = 5;
 const MAX_HEADING_WORDS = 6;
@@ -857,11 +858,6 @@ function checkPage(route: string, file: string): PageReport {
       rule: "budget",
       detail: `${minutes} min, over the ${TARGET_MINUTES} min target.`,
       soft: true,
-    });
-  } else if (minutes < MIN_MINUTES) {
-    findings.push({
-      rule: "thin",
-      detail: `${minutes} min, under the ${MIN_MINUTES} min floor. Add the check, the failure modes, and what a good result looks like.`,
     });
   }
 

@@ -20,19 +20,19 @@ about 10 to 14 minutes. A high schooler manages 15 to 20. A lesson that runs
 
 ## The budget
 
-**Aim for 8 to 12 minutes. 15 is the hard cap, 6 is the enforced floor.**
+**Aim for 8 to 12 minutes. 15 is the hard cap. There is no floor.**
 
-The band is the target and the floor is the gate. A page whose whole job is
-orientation, like the overview, can sit at 7 and be finished; a lesson with a
-bench procedure in it should not.
+Only the ceiling is enforced. A lesson that does its job in four minutes has
+done its job, and a page whose whole job is orientation is finished when it has
+oriented you. There was a 6 minute floor until August 2026, on the theory that
+a short lesson is one missing its check and its failure modes. That is
+sometimes true, and it is not a rule worth failing a build over: it turned into
+pressure to pad a page back up to a threshold, which spends a reader's time to
+buy a green tick.
 
-The floor matters as much as the ceiling. Workshop 1 is the foundation of the
-course now that the hardware has to work in Tuner X before anyone opens VS
-Code, and several of its lessons run under 5 minutes. That is not concision.
-That is a lesson that hands a student a procedure without telling them what a
-good result looks like or what to do when they do not get one. A short lesson
-gets the missing procedure, the failure modes, and the check added. A long one
-gets cut.
+Judge a short lesson on what it is missing, not on its length. If it hands a
+student a procedure without saying what a good result looks like or what to do
+when they do not get one, add those. If it has them and it is short, ship it.
 
 `pnpm prose` computes it, and it charges for structure as well as words,
 because a lesson is not a wall of prose:

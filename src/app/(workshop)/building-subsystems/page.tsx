@@ -4,7 +4,7 @@ import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
 
 /**
@@ -20,7 +20,7 @@ export default function BuildingSubsystems() {
   return (
     <PageTemplate
       title="Mechanisms"
-      lede="A mechanism is one physical part of the robot, written as one Java class. On branch mech-1-Mechanisms you write Arm.java and Flywheel.java: hardware fields, one constructor, two methods. No commands yet, and the check at the end is a clean build."
+      lede="A mechanism is one physical part of the robot, written as one Java class. On branch mech-1-Mechanisms you write Arm.java and Flywheel.java: hardware fields, one constructor, two methods."
       needs={[
         <>
           A clean <code>./gradlew build</code>, from{" "}
@@ -32,7 +32,7 @@ export default function BuildingSubsystems() {
         <>Arm and flywheel answering in Tuner X at IDs 31, 32, 21 and 22.</>,
       ]}
       branch="mech-1-Mechanisms"
-      time="14 minutes"
+      time="12 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -43,11 +43,6 @@ export default function BuildingSubsystems() {
           </p>
           <p>Clone the branch alongside it:</p>
         </div>
-        <MarginNote label="Already wired">
-          <code>Robot.java</code> holds{" "}
-          <code>public final Arm arm = new Arm();</code> from the lesson before
-          this one. Nothing else in the project mentions either class yet.
-        </MarginNote>
       </Split>
 
       <CodeBlock
@@ -57,10 +52,9 @@ export default function BuildingSubsystems() {
       />
 
       <p>
-        Six Java files land in that clone and this page writes two of them. To
-        type them yourself, delete <code>mechanisms/Arm.java</code> and{" "}
-        <code>mechanisms/Flywheel.java</code> and start from the class line
-        below. To read instead, leave them alone.
+        To type the two files yourself, delete <code>mechanisms/Arm.java</code>{" "}
+        and <code>mechanisms/Flywheel.java</code> from the clone and start from
+        the class line below. To read instead, leave them alone.
       </p>
 
       <LessonSection id="hardware-fields" title="The hardware fields">
@@ -102,8 +96,8 @@ export default function BuildingSubsystems() {
           </li>
           <li>
             <code>VoltageOut</code> is a Phoenix 6 control request: an object
-            that says &quot;apply this many volts&quot;. It is built once as a
-            field, not allocated fresh every loop.
+            that says &quot;apply this many volts&quot;. Build it once as a
+            field, not fresh every loop.
           </li>
         </ul>
 
@@ -171,21 +165,12 @@ export default function BuildingSubsystems() {
           </p>
         </Box>
 
-        <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              <code>motor.getConfigurator().apply(config)</code> sends every
-              setting above to the motor controller in one message. It runs
-              once, in the constructor, because the controller keeps those
-              settings until something changes them.
-            </p>
-          </div>
-          <MarginNote label="Once is enough">
-            The settings live on the controller rather than in your program, so
-            there is nothing to re-send every loop. Phoenix hands back a status
-            code if you want to check that the message landed.
-          </MarginNote>
-        </Split>
+        <p>
+          <code>motor.getConfigurator().apply(config)</code> sends every setting
+          above to the motor controller in one message. It runs once, in the
+          constructor, because the controller keeps those settings until
+          something changes them.
+        </p>
       </LessonSection>
 
       <LessonSection id="two-methods" title="Two methods">
@@ -215,13 +200,12 @@ export default function BuildingSubsystems() {
           request until something replaces it.
         </p>
         <p>
-          Nothing here reads a sensor and nothing corrects itself. Ask for 6 V
-          and you get 6 V, whatever the arm does with it.
+          Nothing here reads a sensor. Ask for 6 V and you get 6 V, whatever the
+          arm does with it.
         </p>
         <p>
           Both are public for now, so any file can call{" "}
-          <code>arm.setVoltage(6.0)</code>. <strong>Writing Commands</strong>{" "}
-          takes that away and hands out commands instead.
+          <code>arm.setVoltage(6.0)</code>.
         </p>
       </LessonSection>
 
@@ -272,18 +256,15 @@ export default function BuildingSubsystems() {
           </p>
           <p className="mt-3">
             The second argument is a <code>MotorAlignmentValue</code>, not a
-            true/false flag. A snippet that passes a boolean there belongs to a
-            different API. Flip <code>Opposed</code> to match a guide that says
-            both motors spin the same way, and you will fight a correctly wired
-            flywheel all afternoon. <strong>Motor Setup</strong> has the bench
-            check that settles which way is right.
+            true/false flag, so a snippet that passes a boolean there belongs to
+            a different API. <strong>Motor Setup</strong> has the check that
+            settles which way is right.
           </p>
         </Box>
 
         <p>
           The two methods are the arm&apos;s two methods pointed at{" "}
-          <code>leader</code>. Write them, then build. The follower needs no
-          methods of its own.
+          <code>leader</code>. Write them, then build.
         </p>
       </LessonSection>
 
@@ -330,44 +311,14 @@ export default function BuildingSubsystems() {
           </ul>
         </Box>
 
-        <p>Two errors cover nearly everything that goes wrong here.</p>
-
-        <div className="measure-wide overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Error</th>
-                <th className="px-3 py-2 text-left">Cause</th>
-                <th className="px-3 py-2 text-left">Fix</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>cannot find symbol: Mechanism</code>
-                </td>
-                <td className="px-3 py-2">A missing import.</td>
-                <td className="px-3 py-2">
-                  <code>Mechanism</code> is in <code>org.wpilib.command3</code>,
-                  the CTRE types in <code>com.ctre.phoenix6</code>.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">
-                  Your <code>Arm.java</code> has <code>vertical()</code> and{" "}
-                  <code>scoring()</code>.
-                </td>
-                <td className="px-3 py-2">
-                  You are in the robot template, not the lesson branch.
-                </td>
-                <td className="px-3 py-2">
-                  The template keeps its arm one folder deeper. Work from{" "}
-                  <code>mech-1-Mechanisms</code>.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <p>
+          Two errors cover nearly everything that goes wrong here.{" "}
+          <code>cannot find symbol: Mechanism</code> is a missing import.{" "}
+          <code>Mechanism</code> is in <code>org.wpilib.command3</code>, the
+          CTRE types in <code>com.ctre.phoenix6</code>. And an{" "}
+          <code>Arm.java</code> that already has <code>vertical()</code> and{" "}
+          <code>scoring()</code> is the robot template, not the lesson branch.
+        </p>
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-1-Mechanisms/src/main/java/first/robot/mechanisms/Arm.java"
@@ -390,7 +341,7 @@ export default function BuildingSubsystems() {
             ],
             correctAnswer: 2,
             explanation:
-              "In the alpha this workshop pins, v2027.0.0-alpha-6, Mechanism.java declares `public class Mechanism`, and both the lesson branches and the robot template write `extends Mechanism`. It is not an empty marker either: constructing one registers it with the default scheduler, which is how the scheduler knows your arm exists. This is alpha software, so if you are on a newer build, check the class line before you trust a tutorial.",
+              "Mechanism.java declares `public class Mechanism`, and both the lesson branches and the robot template write `extends Mechanism`. It is not an empty marker either: constructing one registers it with the default scheduler, which is how the scheduler knows your arm exists.",
           },
           {
             id: 2,

@@ -2,7 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Split } from "@/components/lesson/Prose";
 
 export default function RobotClass() {
   return (
@@ -20,7 +20,7 @@ export default function RobotClass() {
           The mode boundary from <strong>OpModes</strong>.
         </>,
       ]}
-      time="11 minutes"
+      time="8 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -38,11 +38,6 @@ export default function RobotClass() {
             it.
           </p>
         </div>
-        <MarginNote label="Older tutorials">
-          A tutorial that has you edit RobotContainer is teaching Commands v2.
-          This stack has no RobotContainer at all. Shared objects live in Robot,
-          and bindings live in the OpModes.
-        </MarginNote>
       </Split>
 
       <LessonSection id="read-the-file" title="The whole file">
@@ -106,50 +101,10 @@ public class Robot extends OpModeRobot {
           Delete that line and the build still passes. The mechanisms are still
           built. Nothing in the project ever moves again.
         </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">The call</th>
-                <th className="px-3 py-2 text-left">What happens</th>
-                <th className="px-3 py-2 text-left">What you see</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Missing</td>
-                <td className="px-3 py-2">No trigger is ever checked</td>
-                <td className="px-3 py-2">
-                  A clean build, a mode list, and a robot that ignores every
-                  button.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Inside an OpMode</td>
-                <td className="px-3 py-2">
-                  The scheduler stops while that mode is not selected
-                </td>
-                <td className="px-3 py-2">
-                  Buttons work in teleop, and an autonomous routine sits on its
-                  first step.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">Called twice</td>
-                <td className="px-3 py-2">
-                  Every command takes two steps a tick
-                </td>
-                <td className="px-3 py-2">
-                  A sequence gets through its steps in half the usual loops, and
-                  nothing reports an error.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
         <p>
-          The middle row is the common one, and it hides well. A team debugging
-          teleop adds a scheduler call to the teleop class, teleop starts
+          Moving that line into an OpMode is the mistake that hides well. The
+          scheduler then stops whenever that mode is not selected. A team
+          debugging teleop adds a call to the teleop class, teleop starts
           working, and autonomous quietly stops advancing until the next match.
         </p>
         <Box variant="alert-warning" tag="CRITICAL" title="One call, one place">
@@ -203,71 +158,9 @@ public class Robot extends OpModeRobot {
         </p>
         <p>
           The reason is the same every time. A binding made in this constructor
-          is live in every mode. Put a calibration routine on a driver button
-          and someone can start it mid-match.
-        </p>
-      </LessonSection>
-
-      <LessonSection id="ownership-test" title="The ownership test">
-        <p>
-          Where a new field goes comes down to lifetime. Ask how long the object
-          has to stay alive, and the answer names the file.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[600px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Needs to live for</th>
-                <th className="px-3 py-2 text-left">Home</th>
-                <th className="px-3 py-2 text-left">In the wrong home</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  The whole match, and it owns hardware
-                </td>
-                <td className="px-3 py-2">
-                  A <code>public final</code> field on <code>Robot</code>
-                </td>
-                <td className="px-3 py-2">
-                  Built in an OpMode, the motor is reconfigured on every mode
-                  change.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">One operating mode</td>
-                <td className="px-3 py-2">A field on that OpMode</td>
-                <td className="px-3 py-2">
-                  Left on <code>Robot</code>, its bindings keep firing in
-                  autonomous.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">One run of one command</td>
-                <td className="px-3 py-2">A local inside the command body</td>
-                <td className="px-3 py-2">
-                  Held in a field, the second run starts on the first run&apos;s
-                  leftovers.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">The whole session, no hardware</td>
-                <td className="px-3 py-2">
-                  The <code>Robot</code> constructor
-                </td>
-                <td className="px-3 py-2">
-                  Started in an OpMode, it stops the moment the mode changes.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>
-          The controller is the field people get wrong. Both the controller
-          object and its bindings belong to the teleop class. Bound in the{" "}
-          <code>Robot</code> constructor instead, the same button still fires
-          while an autonomous routine is running.
+          is live in every mode. The controller is the one people get wrong:
+          bind a button here and it still fires while an autonomous routine is
+          running.
         </p>
       </LessonSection>
 

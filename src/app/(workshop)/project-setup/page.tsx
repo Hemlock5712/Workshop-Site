@@ -24,7 +24,7 @@ export default function ProjectSetup() {
   return (
     <PageTemplate
       title="Project Setup"
-      lede="You generate a robot project with the WPILib New Project Creator, then swap it onto Commands v3 and add Phoenix 6. The build that follows is what matters: it proves Java, Gradle and the vendor libraries work before a lesson depends on them. No hardware yet."
+      lede="You generate a robot project with the WPILib New Project Creator, then swap it onto Commands v3 and add Phoenix 6. The build at the end proves Java, Gradle and the vendor libraries all work."
       needs={[
         <>
           The WPILib <strong>2027 alpha 6</strong> installed, from{" "}
@@ -33,7 +33,7 @@ export default function ProjectSetup() {
         <>An internet connection. The first build downloads a lot.</>,
         <>A local folder to work in, not one synced to the cloud.</>,
       ]}
-      time="13 minutes, plus the first build"
+      time="12 minutes, plus the first build"
     >
       <Split>
         <ProseBlock>
@@ -47,12 +47,6 @@ export default function ProjectSetup() {
             half of this page is the one step that fixes it.
           </p>
         </ProseBlock>
-        <MarginNote label="Why not a download">
-          Workshops 3 and 4 hand you a prepared project instead. A swerve
-          drivetrain carries generated CTRE constants and a calibrated module
-          layout, and none of that is something you type. Here the point is that
-          you built the thing yourself.
-        </MarginNote>
       </Split>
 
       <LessonSection id="make-the-project" title="Make the project">
@@ -193,12 +187,6 @@ export default function ProjectSetup() {
           than halfway through a lesson.
         </p>
         <p>
-          There is no Commands v3 template to pick instead, and you did not miss
-          it. OpModes are the robot framework, Commands v3 is a separate
-          library, and no template in the alpha pairs them. You make that
-          pairing here.
-        </p>
-        <p>
           All three happen in one panel. Click the WPILib icon in the activity
           bar, the narrow strip of icons down the left edge, to open{" "}
           <strong>WPILib Vendor Dependencies</strong>. Everything below is a
@@ -245,60 +233,6 @@ export default function ProjectSetup() {
           Reconnect and build again. Nothing is corrupted, and the parts that
           did arrive are already cached.
         </p>
-        <p>
-          Leaving Commands v2 in place produces a clean build, then a wall of
-          unresolved imports the moment you paste a lesson example. The versions
-          you should end up with are below.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Piece</th>
-                <th className="px-3 py-2 text-left">Version</th>
-                <th className="px-3 py-2 text-left">Where it comes from</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">GradleRIO</td>
-                <td className="px-3 py-2">
-                  <code>2027.0.0-alpha-6</code>
-                </td>
-                <td className="px-3 py-2">
-                  The alpha 6 install, through the generated build file.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Commands</td>
-                <td className="px-3 py-2">
-                  <code>v3</code>
-                </td>
-                <td className="px-3 py-2">
-                  You installed it. The template shipped v2.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Phoenix 6</td>
-                <td className="px-3 py-2">
-                  <code>26.50.0-alpha-1</code>
-                </td>
-                <td className="px-3 py-2">
-                  CTRE&apos;s maven, downloaded on the first build.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">Java</td>
-                <td className="px-3 py-2">
-                  <code>25</code>
-                </td>
-                <td className="px-3 py-2">
-                  Came with WPILib. Do not install a second one yourself.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -329,12 +263,6 @@ export default function ProjectSetup() {
             </li>
           </ul>
         </Box>
-        <p>
-          Those two opmode files are the ones <strong>OpModes</strong> rewrites,
-          and <code>Robot.java</code> is where{" "}
-          <strong>Building Mechanisms</strong> hangs its first subsystem. Leave
-          them where they are.
-        </p>
       </LessonSection>
 
       <Quiz
@@ -391,33 +319,6 @@ export default function ProjectSetup() {
             correctAnswer: 1,
             explanation:
               "Workshop 2 runs the arm in simulation before it runs on a motor. Leave the box unticked and simulation is not available, and the fix is making the project again.",
-          },
-          {
-            id: 5,
-            question: "How do you know the first build worked?",
-            options: [
-              "The editor shows no red squiggles",
-              "A deploy to the robot succeeds",
-              "You cannot tell without hardware",
-              "The last line reads BUILD SUCCESSFUL, with a time",
-            ],
-            correctAnswer: 3,
-            explanation:
-              "One clean build proves Java 25, the vendordeps and the alpha toolchain are all in place. A failure prints BUILD FAILED, with a What went wrong block a few lines above the end.",
-          },
-          {
-            id: 6,
-            question:
-              "The list offers CTRE-Phoenix (v6) and CTRE-Phoenix Replay (v6). Which do you install?",
-            options: [
-              "CTRE-Phoenix (v6)",
-              "CTRE-Phoenix Replay (v6), since replay is the newer one",
-              "Both, so logs can be replayed later",
-              "Neither, because Phoenix comes with the template",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "Replay is a separate library for re-running saved logs, and the two conflict. No template ships Phoenix at all, so this install is needed whichever base you pick.",
           },
         ]}
       />

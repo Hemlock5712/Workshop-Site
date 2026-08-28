@@ -20,7 +20,7 @@ export default function MechanismSetup() {
         </>,
         <>No robot program running. Tuner X owns the bus here.</>,
       ]}
-      time="15 minutes"
+      time="12 minutes"
     >
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
         <p>
