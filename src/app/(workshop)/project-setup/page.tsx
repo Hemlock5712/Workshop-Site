@@ -6,12 +6,14 @@ import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 
 /**
- * The gate to every code lesson in Workshop 2.
+ * The lesson that opens Workshop 3, and the gate to every code lesson
+ * after it. It used to close Workshop 2, which put the last idea of the
+ * concepts group between a student and the project they build with it.
  *
  * This page used to clone the team's 2027-Template. It no longer does. Nothing
  * about the 2027 season is official yet, so the offseason course builds its own
  * project from the WPILib New Project Creator and adds the two vendordeps by
- * hand. Workshops 3 and 4 go back to a prepared download, because a swerve
+ * hand. Workshops 4 and 5 go back to a prepared download, because a swerve
  * drivetrain with CTRE generated constants is not something a student types.
  *
  * Two facts drive the vendordep section, and both are read out of the alpha-6
@@ -79,7 +81,7 @@ export default function ProjectSetup() {
         <p>
           The creator runs as four numbered pages. On the first, choose{" "}
           <strong>Template</strong>. An example is somebody else&apos;s finished
-          robot, and you would spend the rest of Workshop 2 deleting it.
+          robot, and you would spend the rest of Workshop 3 deleting it.
         </p>
         <ImageBlock
           src="/images/project-setup/step-3.png"
@@ -119,7 +121,7 @@ export default function ProjectSetup() {
           </li>
           <li>
             <strong>Enable Desktop Support.</strong> Tick it. This is the box
-            that turns on simulation, and Workshop 2 runs the arm in simulation
+            that turns on simulation, and Workshop 3 runs the arm in simulation
             before it runs on a motor.
           </li>
         </ol>
@@ -303,7 +305,7 @@ export default function ProjectSetup() {
             ],
             correctAnswer: 1,
             explanation:
-              "Workshop 2 runs the arm in simulation before it runs on a motor. Leave the box unticked and simulation is not available, and the fix is making the project again.",
+              "Workshop 3 runs the arm in simulation before it runs on a motor. Leave the box unticked and simulation is not available, and the fix is making the project again.",
           },
         ]}
       />

@@ -66,7 +66,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Workshops 1, 2 & 5: hardware and commands",
+    heading: "Workshops 1-3 & 6: hardware and commands",
     trailers: [
       {
         file: "introduction-trailer.mp4",
@@ -146,7 +146,7 @@ const GROUPS: TrailerGroup[] = [
     ],
   },
   {
-    heading: "Workshops 3 & 4: swerve, sensing, autonomy",
+    heading: "Workshops 4 & 5: swerve, sensing, autonomy",
     trailers: [
       {
         file: "swerve-drive-trailer.mp4",

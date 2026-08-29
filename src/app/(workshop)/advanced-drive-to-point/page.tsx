@@ -4,7 +4,6 @@ import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
-import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
@@ -233,18 +232,6 @@ protected void execute() {
             the trade for a finish line that cannot hang.
           </p>
         </Box>
-
-        <p>
-          The finished file, 120 lines. The <strong>GitHub Changes</strong> tab
-          is PR #12: 59 lines added, 26 removed.
-        </p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
-          branch="6-ProfiledToPoint"
-          pr={{ number: 12, focusFile: "DriveToPoint.java" }}
-        />
       </LessonSection>
 
       <LessonSection id="the-gains" title="Lower the gains">

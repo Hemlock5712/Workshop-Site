@@ -61,7 +61,7 @@ export default function CommandFramework() {
             term: "Commands",
             body: (
               <>
-                Named actions on a mechanism. Almost every command in Workshop 2
+                Named actions on a mechanism. Almost every command in Workshop 3
                 is a <em>hold</em>: it re-sends the same request and never ends
                 by itself.
               </>
@@ -187,13 +187,13 @@ export default function CommandFramework() {
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java: the shape of a mode class"
-          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
+          title="MyTeleop.java: the shape of a mode class"
+          filename="src/main/java/first/robot/opmode/MyTeleop.java"
           code={`@Teleop(name = "Teleop")
-public class TeleopOpMode extends PeriodicOpMode {
+public class MyTeleop extends PeriodicOpMode {
   private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
-  public TeleopOpMode(Robot robot) {
+  public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
     driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
   }
@@ -227,11 +227,9 @@ public class TeleopOpMode extends PeriodicOpMode {
           place.
         </p>
         <p>
-          There are two main reasons to write commands this way. The main one is
-          visibility. A command that keeps running stays the command on its
-          mechanism, so a log always names what has the arm right now. The
-          second is that re-sending every loop keeps the request alive through a
-          motor controller rebooting mid-match.
+          The reason to write commands this way is visibility. A command that
+          keeps running stays the command on its mechanism, so a log always
+          names what has the arm right now.
         </p>
 
         <p>Here is a real one, from the arm you build two lessons from now.</p>

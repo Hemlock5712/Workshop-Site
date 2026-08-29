@@ -3,7 +3,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
-import GitHubContent from "@/components/GitHubContent";
 import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
@@ -303,15 +302,6 @@ export default function DriveToPoint() {
           <code>Mechanism.idle()</code> takes over at the lowest priority. It
           sends no output at all, and Phoenix keeps applying the last velocity.
         </p>
-
-        <p>The whole file, 87 lines:</p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          filePath="src/main/java/frc/robot/commands/DriveToPoint.java"
-          branch="5-DriveToPoint"
-          pr={{ number: 11, focusFile: "DriveToPoint.java" }}
-        />
 
         <p>
           Two bindings go in the <code>TeleopOpMode</code> constructor, under

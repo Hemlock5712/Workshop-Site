@@ -20,7 +20,7 @@ export default function MechanismCAD() {
   return (
     <PageTemplate
       title="Mechanism CAD"
-      lede="This page is optional for teams attending the workshop in person. Workshops 1 and 2 run on a real arm or a real flywheel on a bench. This page has the 3D models, the full parts lists, and the build notes for both. If your team already has a mechanism with a TalonFX on it, use that and skip the rest."
+      lede="This page is optional for teams attending the workshop in person. Workshops 1 and 3 run on a real arm or a real flywheel on a bench. This page has the 3D models, the full parts lists, and the build notes for both. If your team already has a mechanism with a TalonFX on it, use that and skip the rest."
       needs={[
         <>Nothing installed. The models spin in the browser.</>,
         <>To build one: a 3D printer, a saw, and hex keys.</>,

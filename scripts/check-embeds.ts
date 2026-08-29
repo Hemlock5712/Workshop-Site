@@ -201,11 +201,24 @@ const main = async () => {
   }
 
   if (unique.size === 0) {
-    console.error(
-      "No embeds found at all. That means this checker stopped matching, " +
-        "not that the site has no embeds — fix the extractor."
+    // Zero is a legitimate state now: the whole-file `GitHubContent` embeds
+    // were pulled from every lesson in August 2026, because a page that ends
+    // in someone else's 120-line file is mostly scroll. So the old blanket
+    // "zero means I am broken" is wrong. It is still right whenever a page
+    // *does* use the component and nothing parses, which is what the source
+    // scan below separates out.
+    const used = collectFiles(SRC).some((file) =>
+      /<(GitHubContent|MechanismTabs)/.test(fs.readFileSync(file, "utf8"))
     );
-    process.exit(1);
+    if (used) {
+      console.error(
+        "Pages use GitHubContent or MechanismTabs, but nothing parsed. " +
+          "That means this checker stopped matching — fix the extractor."
+      );
+      process.exit(1);
+    }
+    console.log("No embeds on the site. Nothing to check.");
+    return;
   }
 
   console.log(

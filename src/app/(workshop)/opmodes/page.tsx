@@ -3,7 +3,10 @@ import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
+import Quiz from "@/components/Quiz";
 import { Split } from "@/components/lesson/Prose";
+import MechanismSelector from "@/components/lesson/MechanismSelector";
+import { M } from "@/components/lesson/Mechanism";
 
 export default function OpModes() {
   return (
@@ -18,12 +21,13 @@ export default function OpModes() {
           Commands and button bindings from <strong>Writing Commands</strong>.
         </>,
         <>
-          The scheduler vocabulary from <strong>Command-Based Framework</strong>
-          .
+          The scheduler vocabulary from <strong>The Command Framework</strong>.
         </>,
       ]}
-      time="10 minutes"
+      time="8 minutes"
     >
+      <MechanismSelector />
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
@@ -34,8 +38,6 @@ export default function OpModes() {
           <p>
             Nothing registers these classes anywhere. The framework finds them
             by their annotation, and the driver station shows what it found.
-            Selecting a mode constructs it, along with every binding in its
-            constructor. Selecting a different mode takes those bindings away.
           </p>
         </div>
       </Split>
@@ -43,8 +45,7 @@ export default function OpModes() {
       <LessonSection id="three-kinds" title="Three OpMode roles">
         <p>
           All three are ordinary Java classes. The annotation decides which name
-          the driver station shows, and it tells the next person opening the
-          file what the mode is for.
+          the driver station shows, and it says what the mode is for.
         </p>
         <FigureGrid
           cols={3}
@@ -73,19 +74,19 @@ export default function OpModes() {
         </p>
       </LessonSection>
 
-      <LessonSection id="teleop-shape" title="The smallest Teleop OpMode">
+      <LessonSection id="teleop-shape" title="The Teleop OpMode">
         <p>
-          <strong>Project Setup</strong> left two generated files in{" "}
-          <code>opmode/</code>. <code>MyTeleop</code> is the one this section
-          rewrites. Rename it to <code>TeleopOpMode</code> before you start.
-          Press <code>F2</code> on the class name and VS Code renames the file
-          with it. <code>MyAuto</code> becomes <code>LeaveStartAuto</code> in{" "}
-          <strong>Autonomous</strong>, so leave it alone for now.
+          The commands you wrote on <strong>Writing Commands</strong> call
+          nothing yet. This is the class that calls them.{" "}
+          <strong>Project Setup</strong> left a generated{" "}
+          <code>MyTeleop.java</code> in <code>opmode/</code>, already carrying{" "}
+          <code>@Teleop</code>. That is the file you edit. Replace its body with
+          the whole file from the branch, minus the copyright header.
         </p>
+
         <CodeBlock
           language="java"
-          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
-          title="TeleopOpMode.java: one button, one mode"
+          filename="src/main/java/first/robot/opmode/MyTeleop.java"
           code={`package first.robot.opmode;
 
 import first.robot.Robot;
@@ -93,65 +94,73 @@ import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
-@Teleop(name = "Driver Control")
-public class TeleopOpMode extends PeriodicOpMode {
+/**
+ * The driver's controls. The framework builds this class when "Teleop" is picked on the driver
+ * station. The button bindings made in the constructor belong to this OpMode, and the framework
+ * removes them on a mode switch. No cleanup code needed.
+ *
+ * <p>The buttons here run the arm and flywheel commands.
+ */
+@Teleop(name = "Teleop")
+public class MyTeleop extends PeriodicOpMode {
   private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
-  public TeleopOpMode(Robot robot) {
-    driver.a().whileTrue(robot.arm.runSlow()).whileFalse(robot.arm.stop());
+  public MyTeleop(Robot robot) {
+    // Left trigger: push the arm up while held, stop when released.
+    driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
+
+    // Right trigger: spin fast while held, drop back to the slow voltage when released.
+    driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow());
+
+    // A: spin fast while held, stop when released.
+    driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
   }
 }`}
         />
-        <p>
-          The constructor is handed the one <code>Robot</code>, and that is the
-          only way in to the arm. An OpMode never builds a mechanism of its own:
-          two modes would end up configuring the same motor. There is no loop in
-          here either. The bindings are made once, and the scheduler checks the
-          trigger on every robot loop.
-        </p>
-      </LessonSection>
 
-      <LessonSection id="constructor" title="Inside the constructor">
         <p>
-          The robot program constructs the OpMode the moment someone picks it on
-          the driver station. That can happen while the robot is still disabled,
-          and constructor code runs anyway. Three things belong in there, and
-          three do not.
+          Building only the <M k="noun" />? Delete the{" "}
+          <code>
+            robot.
+            <M k="otherNoun" />
+          </code>{" "}
+          bindings along with them. Same reason as the field: they call commands
+          on a class that does not exist in your project.
         </p>
-        <ul className="ml-5 list-disc space-y-2">
-          <li>
-            Trigger bindings for this mode, which is most of what a teleop class
-            holds.
-          </li>
-          <li>
-            A command built and kept in a field, ready for <code>start()</code>{" "}
-            to schedule.
-          </li>
-          <li>
-            A default command, set with{" "}
-            <code>robot.arm.setDefaultCommand(...)</code>. It is a binding like
-            any other, so it lasts as long as this mode does.
-          </li>
-          <li>
-            No motor output. The robot may still be disabled when this code
-            runs.
-          </li>
-          <li>
-            No state you need after a mode switch. The OpMode is rebuilt each
-            time; <code>Robot</code> is not.
-          </li>
-          <li>
-            No motor configuration. IDs, inversions, and gains belong to the
-            mechanism.
-          </li>
-        </ul>
+
+        <p>
+          Every <code>whileTrue</code> has a <code>whileFalse</code> behind it.{" "}
+          <code>whileTrue</code> schedules the command on the press and cancels
+          it on the release.
+        </p>
+
+        <Box
+          variant="alert-danger"
+          tag="THE TRAP"
+          title="Canceling a command does not stop the motor"
+        >
+          <p>
+            The motor is not running in your code. It is running on the motor
+            controller, which keeps applying the last request it was sent until
+            something sends a different one. So canceling a command does not
+            affect the controller.
+          </p>
+          <p className="mt-3">
+            So something else has to take over. That is either a{" "}
+            <code>whileFalse</code>, as here, or a default command on the
+            mechanism. With neither, releasing the trigger leaves the{" "}
+            <M k="noun" /> running on the last thing it was told.
+          </p>
+        </Box>
       </LessonSection>
 
       <LessonSection id="lifecycle" title="Mode boundaries">
         <p>
           Most teleop classes need neither method below. Bindings made in the
           constructor are enough, and the framework removes them when the mode
-          changes. There is no cleanup code to write.
+          changes. There is no cleanup code to write. Bind in the constructor,
+          but never drive a motor from it: the robot can still be disabled when
+          that code runs.
         </p>
         <CodeBlock
           language="java"
@@ -241,66 +250,77 @@ public void end() {
             </tbody>
           </table>
         </div>
-        <Box
-          variant="alert-warning"
-          tag="COMMON MIX-UP"
-          title="An OpMode is not a mechanism"
-        >
-          <p>
-            The OpMode decides when an action is available. The mechanism owns
-            the motor and hands out the command. If changing a driver button
-            means editing motor configuration, the two have been mixed together.
-          </p>
-        </Box>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Build it, then go look at the list of modes. Deploy and Run covers the
-          simulator properly later; this is the short version.
+          Run <em>WPILib: Build Robot Code</em>. You should see{" "}
+          <code>BUILD SUCCESSFUL</code>. Nothing runs until{" "}
+          <strong>Hardware Simulation</strong>, so the rest of this is a read
+          through your own class.
         </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Run <code>./gradlew build</code>. Nothing else is worth checking
-            until that finishes clean.
-          </li>
-          <li>
-            Read your teleop class once. Public class, annotation with a name,
-            public constructor taking <code>Robot</code>, every binding inside
-            it.
-          </li>
-          <li>
-            Start the simulator with <code>./gradlew simulateJava</code>, then
-            read the mode list on the driver station.
-          </li>
-          <li>
-            Pick your teleop mode, enable, and press the bound button. Then
-            switch modes and press it again.
-          </li>
-        </ol>
-        <Box variant="alert-success" title="You should see">
-          <ul className="ml-5 list-disc space-y-2">
-            <li>Every mode class you wrote, listed by its annotation name.</li>
-            <li>The button running its command while teleop is selected.</li>
-            <li>The same button doing nothing after the mode changes.</li>
-          </ul>
-        </Box>
-        <p>A mode missing from that list is one of four things:</p>
-        <ul className="ml-5 list-disc space-y-2">
-          <li>
-            The class is not <code>public</code>, or it is <code>abstract</code>
-            .
-          </li>
-          <li>The annotation carries no name.</li>
-          <li>
-            The class sits outside <code>first.robot</code> and its subpackages.
-          </li>
-          <li>
-            The constructor does not take a <code>Robot</code>.
-          </li>
-        </ul>
-        <p>Fix the class, rebuild, and the name appears.</p>
       </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "You bind whileTrue(robot.arm.runFast()) and leave the whileFalse off. You release the trigger. What does the arm do?",
+            options: [
+              "Stops, because canceling a command releases the mechanism",
+              "Keeps pushing, because the motor controller is still holding the last request it was sent",
+              "Stops, because the scheduler zeroes a mechanism nothing is commanding",
+              "Nothing compiles: a whileTrue needs a whileFalse",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Canceling ends the command, and that is all it does. The request lives on the motor controller, which keeps applying it until something sends a different one. Either a whileFalse or a default command has to take over.",
+          },
+          {
+            id: 2,
+            question:
+              "You switch from Teleop to Autonomous. What happens to the bindings made in the teleop constructor?",
+            options: [
+              "They keep firing, so the Autonomous class has to cancel them",
+              "They keep firing until the next reboot",
+              "The framework removes them, and there is no cleanup code to write",
+              "They survive only if the OpMode implements end()",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Bindings belong to the OpMode that made them. The framework builds the class on selection and takes its bindings away on a mode switch. That is why most teleop classes need neither start() nor end().",
+          },
+          {
+            id: 3,
+            question:
+              "A binding has to brake the drivetrain whenever the robot is disabled, in every mode. Where does it go?",
+            options: [
+              "The Robot constructor",
+              "The @Teleop class, since that is where the drivers are",
+              "One copy in every OpMode",
+              "A @Utility class somebody selects before the match",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "Smallest scope where the behavior still works. An OpMode's bindings die on a mode switch, so a rule that has to hold in every mode belongs to the one object that outlives them all. Copied into each OpMode, the copies drift apart.",
+          },
+          {
+            id: 4,
+            question:
+              "Your team has four autonomous routines. How many classes, and what picks between them?",
+            options: [
+              "One class holding four routines, with a chooser on the dashboard",
+              "One class, and the driver station hands the routine name to its constructor",
+              "Four @Autonomous classes, each listed on the driver station by its own name",
+              "Four @Utility classes, selected before the match starts",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "One routine per class. The annotation puts each name on the driver station, so picking a routine is picking a mode. There is no SendableChooser in this project.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

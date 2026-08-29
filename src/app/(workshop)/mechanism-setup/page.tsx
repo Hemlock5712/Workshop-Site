@@ -4,7 +4,7 @@ import Box from "@/components/Box";
 import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
@@ -233,14 +233,30 @@ export default function MechanismSetup() {
           at the end of travel.
         </p>
         <Mech for="arm" as="p">
-          The hand test settled which way is positive, and the motor is the only
-          thing allowed to change from here.
-        </Mech>
-        <Mech for="flywheel" as="p">
-          A flywheel has no sensor to agree with, so this one check is the whole
-          bench procedure for it. Positive voltage has to spin the wheel the way
-          the code will assume. The motor is the only thing allowed to change
+          The hand test settled which way is positive. The motor has to agree
+          with the CANcoder, and the motor is the only thing allowed to change
           from here.
+        </Mech>
+        <Mech for="flywheel" as="div">
+          <Split>
+            <ProseBlock>
+              <p>
+                A flywheel has no sensor to agree with, so nothing on the bench
+                decides which way positive goes. You decide, and then the motor
+                has to match. The rule on this robot is that positive runs a
+                game piece the way it is meant to travel, so on the shooter
+                positive shoots. Seen from the motor side, that is clockwise.
+                The motor is the only thing allowed to change from here.
+              </p>
+            </ProseBlock>
+            <MarginNote label="Either way works">
+              The wheel does not care which way you call positive, and the code
+              would be just as correct with the sign flipped. What costs you is
+              having no rule, because then every mechanism that touches a game
+              piece carries its own sign to remember. An arm gets no such
+              choice, since its encoder already fixed the sign.
+            </MarginNote>
+          </Split>
         </Mech>
 
         <Box variant="alert-warning" title="Before you enable anything">
@@ -274,7 +290,8 @@ export default function MechanismSetup() {
             should count up.
           </Mech>
           <Mech for="flywheel" as="li">
-            The wheel should spin counterclockwise, seen from the motor side.
+            The wheel should spin the way it shoots, which is clockwise seen
+            from the motor side.
           </Mech>
           <li>
             If it moves the other way, invert the motor output, apply, and run
@@ -325,9 +342,9 @@ export default function MechanismSetup() {
               way.
             </Mech>
             <Mech for="flywheel" as="li">
-              Positive voltage on TalonFX 21 spins the wheel counterclockwise
-              from the motor side, and it spins down on its own once you
-              disable.
+              Positive voltage on TalonFX 21 spins the wheel the way it shoots,
+              clockwise from the motor side, and it spins down on its own once
+              you disable.
             </Mech>
           </ul>
         </Box>
@@ -398,7 +415,7 @@ export default function MechanismSetup() {
             id: 5,
             only: "flywheel",
             question:
-              "At 1 volt the wheel spins clockwise, seen from the motor side. What do you change?",
+              "At 1 volt the wheel spins counterclockwise, seen from the motor side. What do you change?",
             options: [
               "Swap the two motor leads at the controller",
               "Invert the motor output, apply, and run the same test again",
@@ -407,7 +424,7 @@ export default function MechanismSetup() {
             ],
             correctAnswer: 1,
             explanation:
-              "Positive voltage has to spin the wheel the way the code will assume, and the motor output is the only thing you may change to get there. A flywheel has no separate sensor, so there is no sensor direction to set. Entering a negative voltage instead would hide the problem inside every request you write later.",
+              "Positive has to spin the wheel the way it shoots, and on this shooter that is clockwise from the motor side. The motor output is the only thing you may change to get there. A flywheel has no separate sensor, so there is no sensor direction to set. Entering a negative voltage instead would hide the problem inside every request you write later.",
           },
           {
             id: 6,

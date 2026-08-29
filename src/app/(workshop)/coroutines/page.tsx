@@ -4,7 +4,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import CoroutineTimeline from "@/components/lesson/CoroutineTimeline";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
@@ -202,8 +201,6 @@ export default function Coroutines() {
           code={`package first.robot.opmode;
 
 import first.robot.Robot;
-import first.robot.mechanisms.Arm;
-import first.robot.mechanisms.Flywheel;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -214,9 +211,6 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
   private final Command routine;
 
   public RaiseAndShootOpMode(Robot robot) {
-    final Arm arm = robot.arm;
-    final Flywheel flywheel = robot.flywheel;
-
     routine =
         Command.noRequirements(
                 coroutine -> {
@@ -238,7 +232,7 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
         />
 
         <p>
-          It is a whole OpMode, shaped like <code>TeleopOpMode</code>.{" "}
+          It is a whole OpMode, shaped like <code>MyTeleop</code>.{" "}
           <code>Command.noRequirements</code> claims no mechanism of its own,
           because the forked commands claim theirs.
         </p>
@@ -265,7 +259,7 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
           language="java"
           title="First line of the body"
           code={`// fork, not await: vertical() is a hold and never finishes.
-coroutine.fork(arm.vertical());`}
+coroutine.fork(robot.arm.vertical());`}
         />
 
         <p>
@@ -287,16 +281,16 @@ coroutine.fork(arm.vertical());`}
           title="Add below the fork"
           code={`// Always time out a wait in an auto, or a stuck arm freezes the whole match.
 coroutine.await(
-    Command.waitUntil(arm::isAtTarget)
+    Command.waitUntil(robot.arm::isAtTarget)
         .named("wait for the arm")
         .withTimeout(Seconds.of(3.0))); // TODO: time your own arm`}
         />
 
         <p>
-          <code>Command.waitUntil(arm::isAtTarget)</code> does nothing except
-          finish once the arm arrives, so <code>await</code> is safe on it. The
-          timeout stops a jammed arm from eating the whole autonomous period.
-          Three seconds is a placeholder.
+          <code>Command.waitUntil(robot.arm::isAtTarget)</code> does nothing
+          except finish once the arm arrives, so <code>await</code> is safe on
+          it. The timeout stops a jammed arm from eating the whole autonomous
+          period. Three seconds is a placeholder.
         </p>
 
         <h3 className="display m-0 text-aside">
@@ -307,9 +301,9 @@ coroutine.await(
           language="java"
           title="Add below the arm wait"
           code={`// The arm hold is still running here - that is the point of fork.
-coroutine.fork(flywheel.runFast());
+coroutine.fork(robot.flywheel.runFast());
 coroutine.await(
-    Command.waitUntil(flywheel::isAtTarget)
+    Command.waitUntil(robot.flywheel::isAtTarget)
         .named("wait for the flywheel")
         .withTimeout(Seconds.of(3.0)));`}
         />
@@ -348,16 +342,6 @@ coroutine.await(
         </p>
       </LessonSection>
 
-      <LessonSection id="the-finished-file" title="The finished file">
-        <p>Compare it against what you typed, indentation included.</p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="mech-5-Coroutines"
-          filePath="src/main/java/first/robot/opmode/RaiseAndShootOpMode.java"
-        />
-      </LessonSection>
-
       <LessonSection id="check-your-work" title="Check your work">
         <p>Build it, run it, then break it on purpose.</p>
 
@@ -367,14 +351,10 @@ coroutine.await(
             <code>.withTimeout(...)</code> are in the right order.
           </li>
           <li>
-            Start the simulator and pick <strong>Raise And Shoot</strong>, or
-            run{" "}
-            <code>
-              ./gradlew simulateJavaAgent -Pmode=auto:&quot;Raise And
-              Shoot&quot;
-            </code>
-            . That name is the <code>@Autonomous</code> string, not the class
-            name.
+            Start the program with{" "}
+            <strong>WPILib: Hardware Sim Robot Code</strong> and pick{" "}
+            <strong>Raise And Shoot</strong> in the Driver Station. That name is
+            the <code>@Autonomous</code> string, not the class name.
           </li>
           <li>
             Time the run. A healthy one is the arm, plus the flywheel, plus one
@@ -382,8 +362,9 @@ coroutine.await(
           </li>
           <li>
             Now break it. Change the first line to{" "}
-            <code>coroutine.await(arm.vertical())</code> and run again. The arm
-            moves and nothing else ever happens. Put the <code>fork</code> back.
+            <code>coroutine.await(robot.arm.vertical())</code> and run again.
+            The arm moves and nothing else ever happens. Put the{" "}
+            <code>fork</code> back.
           </li>
         </ol>
 
@@ -461,7 +442,7 @@ coroutine.await(
           {
             id: 1,
             question:
-              "Why does the routine call coroutine.fork(arm.vertical()) instead of coroutine.await(arm.vertical())?",
+              "Why does the routine call coroutine.fork(arm.vertical()) instead of coroutine.await(robot.arm.vertical())?",
             options: [
               "fork is faster than await",
               "fork automatically applies a three-second timeout",

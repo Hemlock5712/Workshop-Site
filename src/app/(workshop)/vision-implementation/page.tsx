@@ -2,7 +2,6 @@ import PageTemplate from "@/components/PageTemplate";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
-import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
@@ -264,14 +263,6 @@ export default function VisionImplementation() {
           OpMode: those bindings are torn down on a mode switch, and vision has
           to keep correcting in every mode. A second camera is a second string.
         </p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="3-Limelight"
-          filePath="src/main/java/frc/robot/subsystems/Limelight.java"
-          title="Limelight.java"
-          description="The whole class: a private constructor, registerAll, and one update() that writes the heading, picks MegaTag1 or MegaTag2, rejects on two conditions, weights by distance and tag count, and hands the result to the drivetrain."
-        />
       </LessonSection>
 
       <LessonSection id="did-it-work" title="Check your work">

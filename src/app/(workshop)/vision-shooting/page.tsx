@@ -4,7 +4,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
-import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
@@ -344,18 +343,6 @@ export default function DynamicFlywheel() {
             <code>.whileFalse(robot.flywheel.stop())</code>.
           </p>
         </Box>
-
-        <p>
-          The whole file is below. The GitHub Changes tab holds the four-file
-          diff, both edited lines included.
-        </p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          filePath="src/main/java/frc/robot/subsystems/Flywheel.java"
-          branch="4-DynamicFlywheel"
-          pr={{ number: 10, focusFile: "Flywheel.java" }}
-        />
 
         <DocumentationButton
           href="https://github.com/Hemlock5712/Workshop-Code/tree/4-DynamicFlywheel"

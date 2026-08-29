@@ -27,7 +27,7 @@
  * would turn this file into a second content store that nobody reviews as
  * prose, which is the failure mode it exists to prevent.
  *
- * Keep the slot list short. Eight keys covering nine lessons is a sign the
+ * Keep the slot list short. Eleven keys covering nine lessons is a sign the
  * split is in the right place; forty would mean the pages are being written
  * here instead of in the pages.
  */
@@ -56,6 +56,23 @@ export interface MechanismSlots {
   verb: string;
   /** What you do to it on the bench. `move the arm by hand` */
   byHand: string;
+  /**
+   * The *other* mechanism's class name: `Flywheel` when you are reading the
+   * arm. `Robot` builds both and the teleop OpMode binds both, so a team
+   * building one has to delete the other's field and bindings. That sentence
+   * is the same for both readers apart from this word, so it is a slot rather
+   * than two near-identical `<Mech>` blocks.
+   */
+  other: string;
+  /** The other mechanism's lowercase field name. `flywheel` */
+  otherNoun: string;
+  /**
+   * The private setter once the mechanism goes closed loop: `setPosition` on
+   * the arm, `setVelocity` on the flywheel. Both replace `setVoltage`, and
+   * `/motion-magic-code` has to name the right one or a student renames a
+   * method the commands never call.
+   */
+  setter: string;
 }
 
 export type MechanismSlot = keyof MechanismSlots;
@@ -83,6 +100,9 @@ export const MECHANISMS: Record<MechanismId, MechanismProfile> = {
     ids: "31 and 32",
     verb: "move",
     byHand: "move the arm by hand",
+    other: "Flywheel",
+    otherNoun: "flywheel",
+    setter: "setPosition",
     image: "/images/mechanisms/arm.png",
     imageAlt: "The single-jointed arm on its bench mount",
   },
@@ -96,6 +116,9 @@ export const MECHANISMS: Record<MechanismId, MechanismProfile> = {
     ids: "21",
     verb: "spin",
     byHand: "spin the wheel by hand",
+    other: "Arm",
+    otherNoun: "arm",
+    setter: "setVelocity",
     image: "/images/mechanisms/flywheel.png",
     imageAlt: "The shooter flywheel on its bench mount",
   },

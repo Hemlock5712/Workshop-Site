@@ -9,7 +9,7 @@ import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
 
 /**
- * Lesson 22. It moved out of Workshop 5 alongside Command Composition, because
+ * Lesson 22. It moved out of Workshop 6 alongside Command Composition, because
  * `/autonomous` is the very next page and every step in its routine ends on a
  * `.withTimeout(...)`. Taught five lessons later, this page explained a rule
  * the student had already been made to follow without it.
@@ -188,17 +188,13 @@ public boolean isAtTarget() {
               methods, with <code>AngularVelocity</code> in place of{" "}
               <code>Angle</code>: <code>getVelocity()</code>,{" "}
               <code>getTargetVelocity()</code>, and a tolerance of{" "}
-              <code>RotationsPerSecond.of(0.5)</code>. Switch the question at
-              the top of the page and write both now, because Workshop 5 uses
-              both.
+              <code>RotationsPerSecond.of(0.5)</code>.
             </Mech>
             <Mech for="flywheel" as="p">
               The arm answers the same question about angle. Same three methods,
               with <code>Angle</code> in place of <code>AngularVelocity</code>:{" "}
               <code>getPosition()</code>, <code>getTargetPosition()</code>, and
-              a tolerance of <code>Degrees.of(1.0)</code>. Switch the question
-              at the top of the page and write both now, because Workshop 5 uses
-              both.
+              a tolerance of <code>Degrees.of(1.0)</code>.
             </Mech>
           </div>
           <MarginNote label="Too tight, too loose">
@@ -354,8 +350,8 @@ Command raiseArm =
           <li>
             Add <code>isAtTarget()</code> to <code>Arm</code> and{" "}
             <code>Flywheel</code>, then bind <code>raiseArm</code> to a button
-            with <code>onTrue</code> in your <code>TeleopOpMode</code>. It is a
-            step now, so it ends itself.
+            with <code>onTrue</code> in your <code>MyTeleop</code>. It is a step
+            now, so it ends itself.
           </li>
           <li>Press it once and time how long the step takes to end.</li>
           <li>

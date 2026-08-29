@@ -178,8 +178,8 @@ export default function PathPlannerLesson() {
           Finish with one tested-looking path segment, a written starting pose,
           the end pose, constraints, and a short list of intended events. The
           Autonomous lesson will turn that plan into an <code>@Autonomous</code>
-          OpMode and v3 commands without depending on concepts from Workshops 4
-          or 5.
+          OpMode and v3 commands without depending on concepts from Workshops 5
+          or 6.
         </p>
         <DocumentationButton
           href="https://pathplanner.dev/gui-editing-paths-and-autos.html"

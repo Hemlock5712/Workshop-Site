@@ -148,7 +148,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
           A timeout is the only finish line available here.{" "}
           <code>DriveMechanism</code> reports its pose, but nothing on it
           answers <em>am I there yet</em> the way <code>arm.isAtTarget()</code>{" "}
-          did on Finish Conditions. Workshop 4 adds a command that measures
+          did on Finish Conditions. Workshop 5 adds a command that measures
           against a field pose and finishes when it arrives.
         </p>
         <p>
@@ -322,7 +322,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
         </Box>
         <p>
           Write down the distance the tape measured, the end pose out of the
-          log, and the timeout that produced them. Workshop 4 replaces that
+          log, and the timeout that produced them. Workshop 5 replaces that
           timeout with a field pose the command can steer to. These three
           numbers are what you will hold the new routine against.
         </p>

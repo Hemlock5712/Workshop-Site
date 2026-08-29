@@ -37,7 +37,7 @@ export default function Prerequisites() {
 
       <LessonSection id="what-to-install" title="What to install">
         <p>
-          Five programs, plus one you can skip until Workshop 2. Nothing here
+          Five programs, plus one you can skip until Workshop 3. Nothing here
           depends on anything else being installed first. One rule: never
           install Java on its own, because WPILib brings the version this
           workshop runs on.
@@ -95,7 +95,7 @@ export default function Prerequisites() {
               <strong>AdvantageScope</strong>
             </a>
             . A cut-down copy already came with WPILib. Install the full release
-            from GitHub as well. It reads robot logs, and Workshop 2 leans on
+            from GitHub as well. It reads robot logs, and Workshop 3 leans on
             the plots.
           </li>
           <li>
@@ -107,7 +107,7 @@ export default function Prerequisites() {
             >
               <strong>Git</strong>
             </a>
-            . Any current version. Workshop 2 generates its own project rather
+            . Any current version. Workshop 3 generates its own project rather
             than cloning one. The lesson repositories after it are clones, and
             every change you make is a commit.
           </li>
@@ -127,7 +127,7 @@ export default function Prerequisites() {
             <Link href="/logging-implementation" className={linkStyle}>
               Logging
             </Link>{" "}
-            in Workshop 2.
+            in Workshop 3.
           </li>
         </ol>
       </LessonSection>
@@ -149,7 +149,7 @@ export default function Prerequisites() {
                 Project Setup
               </Link>
               , out of the New Project Creator that comes with the installer
-              above. So there is nothing else to download yet. Workshops 3 and 4
+              above. So there is nothing else to download yet. Workshops 4 and 5
               hand you a prepared swerve project instead, because generated CTRE
               constants are not something anyone types.
             </p>
@@ -222,7 +222,7 @@ export default function Prerequisites() {
           <li>
             <strong>A CANivore.</strong> Plugs into a USB port and runs the CAN
             bus the motor and encoder sit on. Name yours <code>canivore</code>{" "}
-            so Workshop 2 can reuse the same hardware handoff.
+            so Workshop 3 can reuse the same hardware handoff.
           </li>
           <li>
             <strong>A charged battery and its cable.</strong> A fresh one gives
@@ -236,7 +236,7 @@ export default function Prerequisites() {
         <p>
           You do not need a SystemCore, a radio, or a robot. The whole rig is a
           laptop with a CANivore plugged into it, sitting next to one mechanism
-          on a table. Workshop 2 adds an Xbox-style controller, and Workshop 3
+          on a table. Workshop 3 adds an Xbox-style controller, and Workshop 4
           moves to a swerve drivetrain.
         </p>
       </LessonSection>

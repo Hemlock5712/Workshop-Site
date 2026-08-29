@@ -2,7 +2,6 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import GitHubContent from "@/components/GitHubContent";
 import DocumentationButton from "@/components/DocumentationButton";
 import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Quiz from "@/components/Quiz";
@@ -15,7 +14,7 @@ import { GitBranch } from "lucide-react";
  *
  * It was 23 minutes, eight sections and seven code blocks, and most of it was
  * a second copy of `/adding-commands` (the pair form, holds, the whole
- * TeleopOpMode file) or of `/command-framework` (the scheduler, where bindings
+ * MyTeleop file) or of `/command-framework` (the scheduler, where bindings
  * live, the no-RobotContainer point). Both of those pages were rewritten first
  * and they carry that material now.
  *
@@ -51,11 +50,11 @@ export default function Triggers() {
   return (
     <PageTemplate
       title="Triggers"
-      lede="A Trigger is a yes-or-no question the scheduler asks once a loop, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to TeleopOpMode."
+      lede="A Trigger is a yes-or-no question the scheduler asks once a loop, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to MyTeleop."
       needs={[
         <>
           Branch <code>mech-2-Commands</code> checked out, with{" "}
-          <code>opmode/TeleopOpMode.java</code> and its three bindings.
+          <code>opmode/MyTeleop.java</code> and its three bindings.
         </>,
         <>
           Holds, and why a <code>whileTrue</code> comes with a{" "}
@@ -65,9 +64,7 @@ export default function Triggers() {
           </a>
           .
         </>,
-        <>
-          <code>./gradlew build</code> passing before you change anything.
-        </>,
+        <>A clean build before you change anything.</>,
       ]}
       branch="mech-2-Commands"
       time="12 minutes"
@@ -84,7 +81,7 @@ export default function Triggers() {
           </p>
         </div>
         <MarginNote label="What you add">
-          One binding on the B button, inside the <code>TeleopOpMode</code>{" "}
+          One binding on the B button, inside the <code>MyTeleop</code>{" "}
           constructor.{" "}
           <a href="/running-program" className="underline">
             Hardware Simulation
@@ -268,10 +265,10 @@ public static Trigger disabled() {
         </p>
         <p>
           Almost every binding belongs in an OpMode constructor. Pick autonomous
-          and the framework tears <code>TeleopOpMode</code> down, bindings
-          included. Pick teleop again and a fresh one is built, so the same
-          constructor runs and the same bindings come back. You write no cleanup
-          code: <code>Trigger</code> has a public <code>unbind()</code>, and the
+          and the framework tears <code>MyTeleop</code> down, bindings included.
+          Pick teleop again and a fresh one is built, so the same constructor
+          runs and the same bindings come back. You write no cleanup code:{" "}
+          <code>Trigger</code> has a public <code>unbind()</code>, and the
           scheduler calls it when a scope ends.
         </p>
         <p>
@@ -294,7 +291,7 @@ public static Trigger disabled() {
         />
 
         <p>
-          The drivetrain belongs to Workshop 3. What matters here is where the
+          The drivetrain belongs to Workshop 4. What matters here is where the
           line sits: a binding that has to survive a mode switch cannot live
           inside a mode.{" "}
           <a href="/coroutines" className="underline">
@@ -319,7 +316,7 @@ public static Trigger disabled() {
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Inside <code>public TeleopOpMode(Robot robot)</code>, below the A
+            Inside <code>public MyTeleop(Robot robot)</code>, below the A
             binding, add{" "}
             <code>
               driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());
@@ -349,14 +346,6 @@ public static Trigger disabled() {
             </li>
           </ul>
         </Box>
-
-        <p>Then read the branch&apos;s own file against yours.</p>
-
-        <GitHubContent
-          repository="Hemlock5712/Workshop-Code"
-          branch="mech-2-Commands"
-          filePath="src/main/java/first/robot/opmode/TeleopOpMode.java"
-        />
       </LessonSection>
 
       <AlphaStatusNote />

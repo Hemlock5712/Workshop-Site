@@ -133,8 +133,8 @@ export default function StateMachines() {
             returns a <code>State</code> for step 4.
           </li>
           <li>
-            <code>sm.setInitialState(stowed);</code> Leave it out and{" "}
-            <code>gradlew build</code> fails.
+            <code>sm.setInitialState(stowed);</code> Leave it out and the build
+            fails.
           </li>
           <li>
             Wire the transitions. Declare the bare <code>switchFromAny()</code>{" "}
@@ -200,7 +200,7 @@ sm.switchFromAny().to(stowed).when(driver.b());`}
         </p>
 
         <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-6-StateBased/src/main/java/first/robot/opmode/TeleopOpMode.java"
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-6-StateBased/src/main/java/first/robot/opmode/MyTeleop.java"
           title="The whole file on mech-6-StateBased"
           icon={<GitBranch className="h-5 w-5" />}
         />
@@ -218,7 +218,7 @@ sm.switchFromAny().to(stowed).when(driver.b());`}
 
         <CodeBlock
           language="java"
-          title="Three places in TeleopOpMode.java"
+          title="Three places in MyTeleop.java"
           hideControls
           code={`// Field on the OpMode - this one is new:
 private final Command machine;

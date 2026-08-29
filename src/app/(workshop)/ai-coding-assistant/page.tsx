@@ -14,7 +14,7 @@ import { BookOpen, FolderTree } from "lucide-react";
  *
  * Rewritten August 2026 against `context/lesson-budget.md`. It was 26.4
  * minutes across seven sections with seven asides, most of it spent on a
- * prompt-by-prompt walkthrough that quoted `Arm.java` and `TeleopOpMode.java`
+ * prompt-by-prompt walkthrough that quoted `Arm.java` and `MyTeleop.java`
  * back in full. Both files are taught on `/adding-commands` already, so the
  * two Java CodeBlocks that restated them are gone, along with the three
  * assistant cards and the five skill cards that the directory tree below
@@ -160,7 +160,7 @@ public class Arm extends Mechanism {
 
         <p>
           The compiler settles this faster than reading does. Run{" "}
-          <code>gradlew build</code> and a v2 import fails at once with{" "}
+          <em>WPILib: Build Robot Code</em> and a v2 import fails at once with{" "}
           <code>package edu.wpi.first.wpilibj2.command does not exist</code>.
           Build after every change, before you run anything.
         </p>
@@ -303,7 +303,7 @@ I have finished the Commands lesson. Do not change any files.`}
           title="Prompt: one small change"
           code={`Add a runReverse() command to src/main/java/first/robot/mechanisms/Arm.java
 that pushes -3.0, matching the style of runSlow(). Then bind it in
-src/main/java/first/robot/opmode/TeleopOpMode.java as:
+src/main/java/first/robot/opmode/MyTeleop.java as:
 
     driver.b().whileTrue(arm.runReverse()).whileFalse(arm.stop());
 
@@ -321,7 +321,7 @@ Show me the diff before you write anything.`}
             for the literal instead.
           </li>
           <li>
-            Accept, then run <code>gradlew build</code>.{" "}
+            Accept, then run <em>WPILib: Build Robot Code</em>.{" "}
             <strong>You should see:</strong> <code>BUILD SUCCESSFUL</code>. Do
             this before you run the robot, every time.
           </li>
@@ -398,7 +398,7 @@ Show me the diff before you write anything.`}
               body: (
                 <>
                   It changed <code>Arm.java</code> and forgot{" "}
-                  <code>TeleopOpMode.java</code>. Count the bindings in the
+                  <code>MyTeleop.java</code>. Count the bindings in the
                   constructor. There should be four.
                 </>
               ),
@@ -446,7 +446,7 @@ Show me the diff before you write anything.`}
             question:
               "What is the fastest way to find out whether an assistant's change is v2 code?",
             options: [
-              "Run `gradlew build`: wrong-framework imports fail instantly",
+              "Build the project: wrong-framework imports fail instantly",
               "Deploy it and see whether the robot moves",
               "Ask the assistant whether it used Commands v3",
               "Read the diff carefully line by line",
@@ -485,9 +485,9 @@ Show me the diff before you write anything.`}
           {
             id: 5,
             question:
-              "The diff for runReverse() touches Arm.java, TeleopOpMode.java and Robot.java. What do you do?",
+              "The diff for runReverse() touches Arm.java, MyTeleop.java and Robot.java. What do you do?",
             options: [
-              "Accept it: `gradlew build` will fail if the third file is wrong",
+              "Accept it: the build will fail if the third file is wrong",
               "Edit Robot.java by hand to match",
               "Say no and ask again with a narrower scope",
               "Accept only the Arm.java half, since the binding can wait",

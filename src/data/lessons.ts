@@ -6,7 +6,13 @@
 import type { Route } from "next";
 
 export type LessonSectionId =
-  "main" | "workshop1" | "workshop2" | "workshop3" | "workshop4" | "workshop5";
+  | "main"
+  | "workshop1"
+  | "workshop2"
+  | "workshop3"
+  | "workshop4"
+  | "workshop5"
+  | "workshop6";
 
 export interface Lesson {
   slug: Route;
@@ -48,35 +54,42 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
   },
   {
     id: "workshop2",
-    title: "Robot Programming",
+    title: "Code Foundations",
     num: "02",
     blurb:
-      "Learn the Java and Commands v3 structure behind a complete robot project.",
+      "The Java and the Commands v3 vocabulary a robot program is built out of, before you write any of it.",
   },
   {
     id: "workshop3",
-    title: "Swerve & Autonomous",
+    title: "Robot Programming",
     num: "03",
+    blurb:
+      "Make the project, write the mechanism and its commands, bind them to a controller, and drive it closed loop on real hardware.",
+  },
+  {
+    id: "workshop4",
+    title: "Swerve & Autonomous",
+    num: "04",
     blurb:
       "Generate and calibrate a swerve drive, plan a path, combine commands, and run an autonomous OpMode.",
     unfinished:
       "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
   {
-    id: "workshop4",
+    id: "workshop5",
     title: "Vision & Navigation",
-    num: "04",
+    num: "05",
     blurb:
       "Add vision, drive to field poses, profile the motion, and plan around obstacles.",
     unfinished:
       "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
   {
-    id: "workshop5",
+    id: "workshop6",
     title: "Advanced Commands",
-    num: "05",
+    num: "06",
     blurb:
-      "Write commands that wait, yield, and remember, using coroutines and state machines.",
+      "Record what the robot did, then write commands that wait, yield, and remember, using coroutines and state machines.",
     unfinished:
       "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
@@ -84,7 +97,8 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
 
 /**
  * The flat lesson list. Ordering here drives every linear view of the course.
- * Workshop 1 is intentionally code-free; Java begins at Workshop 2.
+ * Workshop 1 is intentionally code-free; Java begins at Workshop 2, and the
+ * first file a student writes by hand is in Workshop 3.
  *
  * Titles are names, not sentences. This list feeds the breadcrumb, the
  * drawer, the search results and the prev/next arrows, and in every one of
@@ -128,57 +142,65 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop1",
   },
 
-  // Workshop 2: Robot Programming
+  // Workshop 2: Code Foundations
   { slug: "/java-basics", title: "Java Basics", section: "workshop2" },
-  { slug: "/project-setup", title: "Project Setup", section: "workshop2" },
   {
     slug: "/command-framework",
     title: "The Command Framework",
     shortLabel: "Command Framework",
     section: "workshop2",
   },
+
+  // Workshop 3: Robot Programming. Project Setup opens it rather than closing
+  // Workshop 2: making the project is the first thing you do to write code,
+  // not the last idea you learn before writing it.
+  { slug: "/project-setup", title: "Project Setup", section: "workshop3" },
   {
     slug: "/building-subsystems",
     title: "Mechanisms",
-    section: "workshop2",
+    section: "workshop3",
   },
   {
     slug: "/adding-commands",
     title: "Writing Commands",
-    section: "workshop2",
+    section: "workshop3",
   },
-  { slug: "/opmodes", title: "OpModes", section: "workshop2" },
-  { slug: "/robot-class", title: "Robot.java", section: "workshop2" },
+  { slug: "/opmodes", title: "OpModes", section: "workshop3" },
   {
     slug: "/running-program",
     title: "Hardware Simulation",
-    section: "workshop2",
+    section: "workshop3",
   },
+  // The lesson the chain always had a branch for and never had a page.
+  // `mech-3-MotionMagic` is where the gains measured in Workshop 1 finally
+  // reach the robot program, so Workshop 3 ends with the mechanism running
+  // closed loop rather than with a logging aside.
   {
-    slug: "/logging-implementation",
-    title: "Logging",
-    section: "workshop2",
+    slug: "/motion-magic-code",
+    title: "Motion Magic in Code",
+    shortLabel: "Motion Magic Code",
+    section: "workshop3",
   },
 
-  // Workshop 3: Swerve & Autonomous
+  // Workshop 4: Swerve & Autonomous
   {
     slug: "/swerve-prerequisites",
     title: "How Swerve Works",
-    section: "workshop3",
+    section: "workshop4",
   },
   {
     slug: "/swerve-drive-project",
     title: "Swerve Project Generator",
     shortLabel: "Swerve Setup",
-    section: "workshop3",
+    section: "workshop4",
   },
   {
     slug: "/swerve-calibration",
     title: "Swerve Calibration",
-    section: "workshop3",
+    section: "workshop4",
   },
-  { slug: "/pathplanner", title: "PathPlanner", section: "workshop3" },
-  // Composition and finish conditions sit here, not in Workshop 5, because
+  { slug: "/pathplanner", title: "PathPlanner", section: "workshop4" },
+  // Composition and finish conditions sit here, not in Workshop 6, because
   // `/autonomous` is the first page that uses them: it writes
   // `Command.sequence` three times and `.withTimeout` four. Filed under
   // "Advanced Commands" they were taught five and six lessons after the
@@ -186,51 +208,56 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   {
     slug: "/chaining-commands",
     title: "Command Composition",
-    section: "workshop3",
+    section: "workshop4",
   },
   {
     slug: "/finish-lines",
     title: "Finish Conditions",
-    section: "workshop3",
+    section: "workshop4",
   },
   {
     slug: "/autonomous",
     title: "Autonomous",
-    section: "workshop3",
+    section: "workshop4",
   },
 
-  // Workshop 4: Vision & Navigation
+  // Workshop 5: Vision & Navigation
   {
     slug: "/vision-implementation",
     title: "Vision",
-    section: "workshop4",
+    section: "workshop5",
   },
-  { slug: "/drive-to-point", title: "Drive to Point", section: "workshop4" },
+  { slug: "/drive-to-point", title: "Drive to Point", section: "workshop5" },
   {
     slug: "/advanced-drive-to-point",
     title: "Profiled Drive to Point",
     shortLabel: "Profiled Drive",
-    section: "workshop4",
+    section: "workshop5",
   },
   {
     slug: "/dynamic-path-planning",
     title: "Dynamic Path Planning",
     shortLabel: "Dynamic Paths",
-    section: "workshop4",
+    section: "workshop5",
   },
 
-  // Workshop 5: Advanced Commands
-  { slug: "/coroutines", title: "Coroutines", section: "workshop5" },
+  // Workshop 6: Advanced Commands
+  {
+    slug: "/logging-implementation",
+    title: "Logging",
+    section: "workshop6",
+  },
+  { slug: "/coroutines", title: "Coroutines", section: "workshop6" },
   {
     slug: "/state-based",
     title: "State Machines",
-    section: "workshop5",
+    section: "workshop6",
   },
   {
     slug: "/drive-to-tag-inline",
     title: "Example: Drive to Tag",
     shortLabel: "Drive to Tag",
-    section: "workshop5",
+    section: "workshop6",
     optional: true,
   },
 ];
