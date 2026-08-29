@@ -966,6 +966,20 @@ html.js .reveal[data-revealed="false"] .reveal-wash {
   content: counter(sec, decimal-leading-zero);
 }
 
+/* Quiz question numbering, and the same reasoning one level down. A mechanism
+   lesson ships both readings of its quiz and CSS hides one, so numbering from
+   the array index would count questions the reader cannot see and hand them
+   01, 02, 05. A hidden element generates no box and so takes no counter, which
+   makes the visible questions number themselves 01, 02, 03 either way. */
+.quiz-questions {
+  counter-reset: quiz-q;
+}
+
+.quiz-num::before {
+  counter-increment: quiz-q;
+  content: counter(quiz-q, decimal-leading-zero);
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Responsive collapse
 

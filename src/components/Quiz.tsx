@@ -59,16 +59,26 @@ export default function Quiz({
   const uid = useId();
 
   /**
-   * Which reading the student picked. Every other fork on the site is CSS
-   * hiding one branch of the server HTML, and this one cannot be: scoring has
-   * to know how many questions are really being asked. A `display: none`
-   * question is still in `questions.length`, so the grade button would never
-   * unlock and "4 of 6 right" would count two the reader never saw.
+   * Which reading the student picked, for scoring only.
    *
-   * Starts at the default so the first client render matches the server's, and
-   * corrects in the effect. The observer is what makes the selector at the top
-   * of the page work: picking the other mechanism rewrites the attribute on
-   * `<html>` without a navigation, and the question set has to follow.
+   * What the reader *sees* is decided the way every other fork on this site is
+   * decided: each forked question carries `data-mech`, and CSS hides the other
+   * mechanism's from first paint. That part cannot be React state. The server
+   * cannot know the choice, so a state-driven list would send arm questions in
+   * the HTML and swap them after hydration, and a flywheel student would read
+   * the arm's quiz until then. On the pages this fork covers that is not one
+   * frame; hydration is seconds on a cold load.
+   *
+   * Scoring cannot be CSS, though, which is why both mechanisms are here. A
+   * `display: none` question is still in `questions.length`, so a grade button
+   * gated on that never unlocks and "4 of 6 right" counts two the reader never
+   * saw. This state exists to answer "how many questions are really being
+   * asked", and nothing is graded before the effect has run: the reader has to
+   * pick an answer first.
+   *
+   * The observer is what makes the selector at the top of the page work.
+   * Choosing the other mechanism rewrites the attribute on `<html>` with no
+   * navigation, and the score has to follow the questions.
    */
   const [reading, setReading] = useState<MechanismId>(DEFAULT_MECHANISM);
 
@@ -136,30 +146,34 @@ export default function Quiz({
       </div>
 
       <div
-        className="px-5 py-7 sm:px-[34px] sm:py-8"
+        className="quiz-questions px-5 py-7 sm:px-[34px] sm:py-8"
         style={{
           background: "var(--bg2)",
           border: "1px solid var(--rule)",
           borderRadius: 3,
         }}
       >
-        {asked.map((q, qi) => (
+        {questions.map((q) => (
           <div
             key={q.id}
+            data-mech={q.only}
             className="mb-[26px] pb-[26px]"
             style={{ borderBottom: "1px solid var(--rule-soft)" }}
           >
             <div className="mb-4 flex min-w-0 gap-3.5">
+              {/* Numbered by CSS counter, not by index. A hidden question has
+                  no box, so it takes no number, and the reader sees 01, 02, 03
+                  whichever mechanism they picked. An index would number the
+                  array and skip whatever the other reading owns. */}
               <span
-                className="mono tabular shrink-0 pt-2"
+                className="mono quiz-num tabular shrink-0 pt-2"
                 style={{
                   fontSize: "var(--text-micro)",
                   letterSpacing: "0.12em",
                   color: "var(--accent)",
                 }}
-              >
-                {String(qi + 1).padStart(2, "0")}
-              </span>
+                aria-hidden="true"
+              />
               <p
                 className="display m-0 min-w-0"
                 style={{
