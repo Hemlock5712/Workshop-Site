@@ -41,6 +41,7 @@ import {
   Bot,
   Cpu,
   Route,
+  Braces,
   type LucideIcon,
 } from "lucide-react";
 import { ReactNode } from "react";
@@ -64,9 +65,9 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/building-subsystems": makeIcon(Layers),
   "/adding-commands": makeIcon(Terminal),
   "/opmodes": makeIcon(Gamepad2),
-  "/robot-class": makeIcon(Cpu),
   "/triggers": makeIcon(Gamepad2),
   "/running-program": makeIcon(Play),
+  "/motion-magic-code": makeIcon(Sparkles),
   "/mechanism-setup": makeIcon(Settings2),
   "/pid-control": makeIcon(Zap),
   "/motion-magic": makeIcon(Sparkles),
@@ -93,8 +94,9 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
 export const SECTION_ICONS: Record<LessonSectionId, ReactNode> = {
   main: makeIcon(Home),
   workshop1: makeIcon(Beaker),
-  workshop2: makeIcon(Zap),
-  workshop3: makeIcon(Truck),
-  workshop4: makeIcon(Eye),
-  workshop5: makeIcon(Lightbulb),
+  workshop2: makeIcon(Braces),
+  workshop3: makeIcon(Zap),
+  workshop4: makeIcon(Truck),
+  workshop5: makeIcon(Eye),
+  workshop6: makeIcon(Lightbulb),
 };

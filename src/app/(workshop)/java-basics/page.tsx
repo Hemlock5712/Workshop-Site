@@ -109,7 +109,7 @@ export default function JavaBasics() {
         <p>
           Stop after <strong>Conditionals and Control Flow</strong> and come
           back. Arrays and string methods barely turn up here. Loops do, but not
-          until Workshop 5, where a coroutine body is written as a real{" "}
+          until Workshop 6, where a coroutine body is written as a real{" "}
           <code>while</code> loop. That lesson asks for the module by name.
         </p>
 

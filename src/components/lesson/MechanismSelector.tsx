@@ -123,8 +123,8 @@ export default function MechanismSelector() {
       </div>
 
       <p className="mech-choice-foot">
-        The lesson below is written for the one you pick. Both files exist on
-        the branch, so build one, then come back and switch.
+        The lesson below is written for the one you pick. Switch back any time
+        to read it for the other.
       </p>
     </section>
   );

@@ -15,7 +15,7 @@ export default function DynamicPathPlanning() {
       needs={[
         <>Vision measurements accepted into drivetrain odometry.</>,
         <>A basic and profiled drive-to-point command that finish reliably.</>,
-        <>The PathPlanner field model and navigation grid from Workshop 3.</>,
+        <>The PathPlanner field model and navigation grid from Workshop 4.</>,
       ]}
       time="7 minutes"
     >

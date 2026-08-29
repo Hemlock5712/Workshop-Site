@@ -222,14 +222,16 @@ private void record(double velocity, double target, double volts) {
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <Mech for="arm" as="li">
-            Start the program with <code>./gradlew simulateJava</code> and
-            enable the OpMode that moves the arm. Send it to a target, let it
-            settle, then send it back.
+            Start the program with{" "}
+            <strong>WPILib: Hardware Sim Robot Code</strong> and enable the
+            OpMode that moves the arm. Send it to a target, let it settle, then
+            send it back.
           </Mech>
           <Mech for="flywheel" as="li">
-            Start the program with <code>./gradlew simulateJava</code> and
-            enable the OpMode that spins the flywheel. Take it to full, hold it
-            there long enough to settle, then let it coast down.
+            Start the program with{" "}
+            <strong>WPILib: Hardware Sim Robot Code</strong> and enable the
+            OpMode that spins the flywheel. Take it to full, hold it there long
+            enough to settle, then let it coast down.
           </Mech>
           <li>
             Disable, then stop the program, so the end of the file gets written
@@ -439,7 +441,7 @@ private void record(double velocity, double target, double volts) {
           {
             id: 3,
             question:
-              "You ran the program with ./gradlew simulateJava. Where is the .wpilog?",
+              "You ran the program with WPILib: Hardware Sim Robot Code. Where is the .wpilog?",
             options: [
               "Nowhere. A run with no Driver Station attached writes no file",
               "On the SystemCore, so you pull it off the controller first",
@@ -448,7 +450,7 @@ private void record(double velocity, double target, double volts) {
             ],
             correctAnswer: 3,
             explanation:
-              "The file is written wherever the program runs, and simulateJava runs on your laptop, so take the newest .wpilog out of the project's logs folder. A run with no Driver Station does write a file. It has no clock to date itself with, so it opens as WPILIB_TBD_*.wpilog and gets renamed once a Driver Station supplies one.",
+              "The program writes the file wherever it runs, and a hardware sim runs on your laptop, so take the newest .wpilog out of the project's logs folder. A run with no Driver Station does write a file. It has no clock to date itself with, so it opens as WPILIB_TBD_*.wpilog and gets renamed once a Driver Station supplies one.",
           },
           {
             id: 4,

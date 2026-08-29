@@ -8,7 +8,7 @@ import Quiz from "@/components/Quiz";
 import { GitBranch } from "lucide-react";
 
 /**
- * Lesson 21, and no longer "advanced". It moved out of Workshop 5 because
+ * Lesson 21, and no longer "advanced". It moved out of Workshop 6 because
  * `/autonomous` is two lessons later and builds its whole routine out of
  * `Command.sequence` and `.withTimeout`: composition is a prerequisite for
  * that page, not a victory lap after it. So sequencing leads, `race` follows, and the tour of `.andThen`,

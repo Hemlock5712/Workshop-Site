@@ -151,6 +151,15 @@ const nextConfig: NextConfig = {
       // as the hover/focus tooltips in `GlossaryTerm.tsx`, so there is no
       // reference page to land on — old links go to the course opening, which
       // is the closest thing to "start here".
+      // Robot.java was a lesson of its own until August 2026. The scheduler
+      // call and the constructor were already taught on `/command-framework`,
+      // so what actually remained was two `public final` fields, and those now
+      // sit in the last section of Mechanisms alongside the classes they own.
+      {
+        source: "/robot-class",
+        destination: "/building-subsystems",
+        permanent: true,
+      },
       {
         source: "/glossary",
         destination: "/introduction",

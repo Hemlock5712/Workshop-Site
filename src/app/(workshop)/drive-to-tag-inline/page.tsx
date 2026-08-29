@@ -2,7 +2,6 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import GitHubContent from "@/components/GitHubContent";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 
@@ -76,12 +75,6 @@ export default function DriveToTagInline() {
           <code>break</code>, cleanup below.
         </MarginNote>
       </Split>
-
-      <GitHubContent
-        repository="Hemlock5712/Workshop-Code"
-        filePath="src/main/java/frc/robot/commands/DriveToTagInline.java"
-        branch="7-InlineCommands"
-      />
 
       <LessonSection id="read-where-the-robot-is" title="The tag's frame">
         <p>
@@ -295,8 +288,8 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            Run <code>gradlew simulateJava</code> and Enable. Drive with the
-            left stick, then hold X and keep pushing.{" "}
+            Run <strong>WPILib: Hardware Sim Robot Code</strong> and Enable.
+            Drive with the left stick, then hold X and keep pushing.{" "}
             <strong>{"You should see: "}</strong> the robot stops dead and the
             sticks do nothing. Release X and they work again.
           </li>

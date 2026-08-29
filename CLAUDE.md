@@ -50,15 +50,22 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Stack**: `org.wpilib.*` packages (not `edu.wpi.first.*`), Java 25, deploys to **SystemCore** (not roboRIO), Commands v3 (`org.wpilib.command3`), Phoenix 6 alpha, GradleRIO 2027 alpha.
 - **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
 - **Key v3 APIs**: subsystems `extend Mechanism`; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`.
-- **PathPlanner boundary**: Workshop 3 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
+- **PathPlanner boundary**: Workshop 4 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
 - **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
-- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches and PRs. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
+- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
+- **No GitHub embeds on the site at all, for now.** August 2026: every `<GitHubContent>` was removed from every lesson. A page that ends in someone else's 100-plus-line file is mostly scroll, and each of those pages already teaches the same code in `CodeBlock`s. The components survive (`GitHubContent`, `MechanismTabs`) and so does the `pr` prop that renders a "GitHub Changes" tab, but nothing calls them. A local `FileDiff` (unified diff, two gutters, parsed straight from `git diff` output) is built and also unused. The intended end state is a compare view in place of the whole-file dump, but not until the teaching chain's comments and prose settle: a diff of it today is a third Javadoc rewording, and that red and green buries the lines a student types. `pnpm check-embeds` now treats zero embeds as valid and only fails when a page uses the component and nothing parses.
 - **Branches are prefixed by chain, not numbered across the course.** There are two chains and they used to collide on every number. `mech-*` is the arm-and-flywheel bench project. The drivetrain chain keeps its old bare numbers (`1-Swerve`, `2-Logging`, `3-Limelight`, `4-DynamicFlywheel`, `5-DriveToPoint`, `6-ProfiledToPoint`, `7-InlineCommands`) and is due the matching `swerve-*` rename when it is rebuilt. The prefix carries the chain and the suffix carries the topic, so inserting a lesson renames nothing. The mechanism chain was rebuilt off the new bare `main` in August 2026 and is linear, one commit per lesson:
   `main → mech-1-Mechanisms → mech-2-Commands → mech-3-MotionMagic → mech-4-ReadingState → mech-5-Coroutines → mech-6-StateBased`
 - **The mechanism chain is `first.robot.mechanisms` and `first.robot.opmode`.** The swerve chain has not been rebuilt and is still `frc.robot.subsystems` and `frc.robot.opmodes`. A lesson page must match the chain it embeds; do not "fix" a swerve page to the new package until its branch moves.
 - **`TalonFXUtil` and `SimStartup` are gone from the mechanism chain.** Config applies once, directly, with `motor.getConfigurator().apply(config)`. `Robot` has no `simulationInit()` override. Both helpers still exist on the swerve branches, which is why `/vision-shooting` still shows `TalonFXUtil`.
 - **Motor config on the mechanism chain uses the fluent builders**, not `config.Slot0.kP = kP`. That is the shape Phoenix Tuner X emits from its config panel's three-dot **Generate Code** action, because a student pastes the config rather than typing it: `new TalonFXConfiguration().withMotorOutput(...).withSlot0(...).withMotionMagic(...)`, with WPILib unit types such as `RotationsPerSecond.of(...)`. Verified against Phoenix 6 `26.50.0-alpha-1`. The swerve chain still uses the imperative style, so `/vision-shooting` keeps it.
-- **The CANcoder is chained on in code, not pasted.** `withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder))` is appended to the generated config. Tuner X owns the encoder's own configuration, so swapping an encoder on the bench never edits Java. Do not put a `CANcoderConfiguration` in a lesson.
+- **Paste the generated config whole, then make one edit.** Generate Code emits `final TalonFXConfiguration talonFXCfg = new TalonFXConfiguration()`, so the chain uses that name and that `final`, and it needs `import static org.wpilib.units.Units.*` members (`Volts`, `RotationsPerSecond`, `RotationsPerSecondPerSecond`) for the unit forms. The emitted feedback block hardcodes the encoder: `withFeedback(new FeedbackConfigs().withFeedbackRemoteSensorID(32).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder))`. **Leave it exactly as generated.** `withRemoteCANcoder(encoder)` is equivalent (a remote sensor must sit on the Talon's own CAN bus, so the bare ID is unambiguous) but it was rejected: every edit a student has to make after a paste is a step they can get wrong, and this one breaks nothing when forgotten. The cost is that `Arm`'s `encoder` field has no reader until `mech-4-ReadingState` calls `getPosition()`. Tuner X still owns the encoder's own configuration, so never put a `CANcoderConfiguration` in a lesson.
+- **The generated OpMode keeps its generated name.** The New Project Creator writes `opmode/MyTeleop.java` with `@Teleop` already on it, and every mech branch edits that file rather than renaming it. It was `TeleopOpMode` until August 2026, which cost a lesson an F2-rename step and left a real trap: create a second file instead of renaming and two `@Teleop` classes both appear on the driver station. `MyAuto.java` is the same idea, though `/autonomous` still renames it to `LeaveStartAuto` on the swerve chain.
+- **OpModes reach mechanisms through `robot` directly.** No `final Arm arm = robot.arm;` aliases in a constructor: write `robot.arm.runFast()`. Two locals that only shorten a field access are two more names to carry, and `robot.arm` already says where the mechanism lives. `Robot`'s own `public final Arm arm = new Arm();` field is a different thing and stays.
+- **The raw setter is `private` from lesson one, and the stop helper is `stopMotor`.** Nothing outside a mechanism ever called `setVoltage`, and `stop` is the name a Command wants in `mech-2-Commands`, so both are settled on `mech-1-Mechanisms`. That leaves the mech-1 to mech-2 diff purely additive: three Commands and one import, with no visibility change and no deleted method. The stop Command routes through `this::stopMotor` rather than `motor::stopMotor` so the helper stays used.
+- **`Inverted` is not presented as a choice.** The direction is settled on the bench in `/mechanism-setup`, so lesson prose names only `NeutralMode` as a setting the student picks.
+- **Generate Code always emits the Expo pair, tuned or not.** A factory-defaulted device still produces `withMotionMagicExpo_kV(Volts.per(RotationsPerSecond).ofNative(0.119999997317791))` and `withMotionMagicExpo_kA(...ofNative(0.10000000149011612))`. Those are defaults riding along in the paste and nothing reads them: the course teaches the trapezoid, `MotionMagicCruiseVelocity` and `MotionMagicAcceleration`, and `/motion-magic` stays as written. Do not rewrite Workshop 1 around Expo, and do not strip the Expo lines out of a pasted block either.
+- **Students must not be able to copy our gains.** A tuned config belongs on the page as a screenshot of the Tuner X panel, never as a `CodeBlock` with a copy button. Code blocks in the paste lesson show the shape with `0.0` placeholders or show the edit, not somebody else's numbers.
 - **There is no separate PositionVoltage step.** `mech-3-MotionMagic` goes from open-loop `VoltageOut` straight to `MotionMagicVoltage`. Workshop 1 already tunes closed-loop position in Tuner X, so a second code-side PID lesson taught the same layer twice. `mech-1` and `mech-2` stay open loop on purpose, mirroring the bench order.
 
 ### Local copies of the teaching code (`reference/`)
@@ -204,11 +211,21 @@ gap between a paragraph and its note. Don't reintroduce the rail.
 
 Lesson order, drawer grouping, the syllabus, and prev/next all come from
 `src/data/lessons.ts` — the single source of truth. The course is organized as
-five workshops with a strict prerequisite boundary: Workshop 1 is entirely in
+six workshops with a strict prerequisite boundary: Workshop 1 is entirely in
 Tuner X, Java starts at Workshop 2, autonomous does not depend on the
-pose-driving material taught in Workshop 4, and command composition is expanded
-in Workshop 5. Historical side routes can remain reachable without appearing in
+pose-driving material taught in Workshop 5, and command composition is expanded
+in Workshop 6. Historical side routes can remain reachable without appearing in
 `LESSONS`.
+
+**Workshop 2 is concepts, Workshop 3 is code.** Splitting them was the point of
+the August 2026 regroup: Workshop 2 (Code Foundations) is Java Basics and The
+Command Framework, and nothing in it opens an editor. Workshop 3 (Robot
+Programming) opens with Project Setup and runs through Logging, and every
+lesson in it writes a file. Project Setup sits at the top of Workshop 3 rather
+than the bottom of Workshop 2 because making the project is the first thing you
+do to write code, not the last idea you learn before writing it. The section
+ids stay aligned with the displayed numbers (`workshop3` renders `03`); keep
+them that way if a group is ever inserted again.
 
 **`/` is not in `LESSONS`.** Home is the landing page, not lesson 00 — the
 lesson count is derived from `LESSONS`; do not hard-code it in UI copy.
@@ -228,7 +245,14 @@ it with `/pathplanner`, which is lesson 26 and stays.
 **Retired slugs, kept as 308 redirects in `next.config.ts`** — they're printed
 on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-implementation`, `/ai-assistant` →
-`/ai-coding-assistant`, `/glossary` → `/introduction`.
+`/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
+`/building-subsystems`.
+
+**There is no `/robot-class`.** `Robot.java` was its own lesson until August 2026. `/command-framework` already taught `robotPeriodic()` and the
+`Scheduler.getDefault().run()` line, and even quizzes deleting it, so what
+actually remained was two `public final` fields. Those now sit in the last
+section of `/building-subsystems`, next to the classes they own, because
+`mech-1-Mechanisms` is the commit that adds them. Don't reinstate the lesson.
 
 ### Development Patterns
 
@@ -241,7 +265,7 @@ on old slides: `/logging-options` → `/logging-implementation`,
 - **Navigation**: Client-side routing with active state management
 - **Video Integration**: YouTube embeds for educational content
 - **Code Learning**: Tabbed interfaces combining final code with development process
-- **GitHub Integration**: Live embedding of Workshop-Code repository with PR progression
+- **GitHub Integration**: `GitHubContent` and `MechanismTabs` can embed live files from Workshop-Code, but no page calls them (see the embeds note above)
 - **Progressive Learning**: 5-step implementation approach following real development workflow
 - **Theme Management**: next-themes for system theme detection and persistence
 

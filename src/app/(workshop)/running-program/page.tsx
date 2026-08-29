@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
+import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import { ProseBlock, Split } from "@/components/lesson/Prose";
 import VideoEmbed from "@/components/VideoEmbed";
@@ -10,7 +11,7 @@ export default function RunningProgram() {
   return (
     <PageTemplate
       title="Hardware Simulation"
-      lede="Your laptop stands in for the robot controller and drives the real motors. You start the program, pick Teleop, enable it, and press the buttons bound in your TeleopOpMode."
+      lede="Your laptop stands in for the robot controller and drives the real motors. You start the program, pick Teleop, enable it, and press the buttons bound in your MyTeleop."
       needs={[
         <>
           The <code>mech-2-Commands</code> branch checked out and building.
@@ -29,7 +30,7 @@ export default function RunningProgram() {
         <>An Xbox-style controller plugged into the same laptop.</>,
       ]}
       branch="mech-2-Commands"
-      time="12 minutes"
+      time="13 minutes"
     >
       <Split>
         <ProseBlock>
@@ -74,32 +75,6 @@ export default function RunningProgram() {
         </Box>
       </LessonSection>
 
-      <LessonSection id="your-four-bindings" title="Your four bindings">
-        <p>
-          Your bindings live in the <code>TeleopOpMode</code> constructor on{" "}
-          <code>mech-2-Commands</code>. Three come with the branch. The fourth,
-          on B, is yours to add.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="What your constructor should contain"
-          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
-          code={`// From the branch:
-driver.leftTrigger().whileTrue(arm.runFast()).whileFalse(arm.stop());
-driver.rightTrigger().whileTrue(flywheel.runFast()).whileFalse(flywheel.runSlow());
-driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());
-
-// Yours, on B:
-driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());`}
-        />
-
-        <p>
-          Open the file and check the B line is there. Add it and rebuild if it
-          is missing. The two arm bindings are the experiment below.
-        </p>
-      </LessonSection>
-
       <LessonSection id="first-run" title="Run it">
         <VideoEmbed id="xsR7m6ToUFE" title="Hardware Simulation" />
         <ol className="ml-5 list-decimal space-y-3">
@@ -113,151 +88,120 @@ driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());`}
             and its path clear.
           </li>
           <li>
-            Run <code>./gradlew simulateJava</code>, or{" "}
-            <em>WPILib: Simulate Robot Code</em> in VS Code.{" "}
-            <strong>You should see:</strong> a simulation window, a driver
-            station window, and{" "}
+            Open the <strong>&hellip;</strong> menu at the end of the editor
+            toolbar and choose <strong>Hardware Sim Robot Code</strong>. Not{" "}
+            <strong>Simulate Robot Code</strong>, one line above it: that one
+            fakes the hardware, and you want the real motors.
+          </li>
+        </ol>
+
+        <ImageBlock
+          src="/images/running-program/hardware-sim.png"
+          alt="The VS Code editor toolbar overflow menu, with Hardware Sim Robot Code circled in red and Simulate Robot Code directly above it"
+          title="Hardware Sim, not Simulate"
+          caption="The two sit next to each other. Simulate Robot Code runs against simulated hardware and nothing on the bench moves."
+          width={621}
+          height={724}
+        />
+
+        <ol className="ml-5 list-decimal space-y-3" start={4}>
+          <li>
+            A <strong>Pick extensions to run</strong> prompt appears. Leave{" "}
+            <strong>Sim GUI</strong> ticked and press OK.{" "}
+            <strong>You should see:</strong> a simulation window and{" "}
             <code>********** Robot program startup complete **********</code> in
             the console.
           </li>
           <li>
-            Drag your controller from <strong>System Joysticks</strong> onto
-            slot&nbsp;0 of <strong>Joysticks</strong>. Your code reads{" "}
+            Drag your controller out of <strong>System Joysticks</strong>{" "}
+            and&nbsp;drop it on <strong>Joystick[0]</strong>. Your code reads{" "}
             <code>new CommandNiDsXboxController(0)</code>, so port 0 is the one
-            it hears.
+            it hears. Leave <strong>Map gamepad</strong> ticked.
           </li>
+        </ol>
+
+        <ImageBlock
+          src="/images/running-program/add-controller.png"
+          alt="The simulation window, with an arrow from Xbox Controller in System Joysticks to Joystick[0] in the Joysticks panel"
+          title="Drop it on Joystick[0]"
+          caption="Once it lands, the axis rows twitch as you move the sticks. That is the fastest way to tell the GUI is reading the controller and not the keyboard."
+          width={1540}
+          height={1111}
+        />
+
+        <ol className="ml-5 list-decimal space-y-3" start={6}>
           <li>
-            Pick <strong>Teleop</strong> from the mode list.{" "}
-            <strong>You should see:</strong>{" "}
-            <code>********** Starting OpMode Teleop **********</code>. That
-            print is your constructor running.
+            In <strong>Robot State</strong>, pick <strong>Teleoperated</strong>,
+            then choose your OpMode from the dropdown under it.{" "}
+            <strong>You should see:</strong> <code>OpMode GOOD</code> beside the
+            dropdown, and{" "}
+            <code>********** Starting OpMode Teleop **********</code> in the
+            console. That print is your constructor running.
           </li>
+        </ol>
+
+        <ImageBlock
+          src="/images/running-program/sim-gui-opmode.png"
+          alt="The simulation window with Teleoperated highlighted in Robot State and the Teleop OpMode selected in the dropdown below it"
+          title="Teleoperated, then the OpMode"
+          caption="Other Devices on the right lists Talon FX 31, CANcoder 32 and Talon FX 21. Real devices on the bench, reached from a program running on your laptop. That panel is empty under plain Simulate Robot Code."
+          width={1917}
+          height={1108}
+        />
+
+        <ol className="ml-5 list-decimal space-y-3" start={7}>
           <li>
             Click <strong>Enable</strong>. <strong>You should see:</strong>{" "}
             nothing move. Every command here hangs off a button, and none is
             down.
           </li>
           <li>
-            Hold the <strong>left trigger</strong>.{" "}
-            <strong>You should see:</strong> the arm push at 6&nbsp;V for as
-            long as you hold, and stop when you let go.
-          </li>
-          <li>
-            Hold the <strong>right trigger</strong>, then release it.{" "}
-            <strong>You should see:</strong> the flywheel spin up hard, then
-            keep spinning more gently. That binding releases into{" "}
-            <code>flywheel.runSlow()</code>, not <code>stop()</code>.
-          </li>
-          <li>
-            Press and release <strong>A</strong>.{" "}
-            <strong>You should see:</strong> the flywheel go to full, then stop
-            dead. A drives the same flywheel and releases into a different
-            command.
-          </li>
-          <li>
-            Hold <strong>B</strong>, your own binding.{" "}
-            <strong>You should see:</strong> the arm push gently at 3&nbsp;V,
-            and stop on release.
+            Now run it. Hold the buttons you bound, whichever ones those turned
+            out to be on your mechanism. <strong>You should see:</strong>
+            &nbsp;the mechanism move while a button is down, and do whatever
+            that binding&apos;s <code>whileFalse</code> says when you let go.
           </li>
           <li>
             Click <strong>Disable</strong> before you walk away. Leave the
             program running for the next section.
           </li>
         </ol>
-        <p>Three things go wrong here more than anything else.</p>
+        <p>Two things go wrong here more than anything else.</p>
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <strong>
-              The build says <code>invalid source release: 25</code>.
-            </strong>{" "}
-            Gradle is on an older Java. Launch from the WPILib VS Code
-            extension, or point Gradle at the WPILib 2027 Java 25 toolchain.
-          </li>
-          <li>
-            <strong>Teleop never appears in the mode list.</strong> Selecting a
-            mode prints <code>Starting OpMode</code>, so a mode that never
-            prints never started. Check it against the four rules on{" "}
-            <a href="/opmodes" className="underline">
-              OpModes
-            </a>
-            .
-          </li>
-          <li>
-            <strong>Teleop is selected and no motor turns.</strong> CANivore USB
-            is still on, or the controller is not on port&nbsp;0, or the driver
-            station still says Disabled. A burst of{" "}
+            <strong>Teleop is selected and no motor turns.</strong>
+            &nbsp;CANivore USB is still on, or the controller is not on
+            port&nbsp;0, or the driver station still says Disabled. A burst of{" "}
             <code>CAN message is stale</code> at startup is normal; the same
             line a few seconds later means the bus is unreachable.
+          </li>
+          <li>
+            <strong>Nothing on the bench moves, and it all looks fine.</strong>
+            &nbsp;Check <strong>Other Devices</strong> in the simulation window.
+            Empty means you started <strong>Simulate Robot Code</strong> rather
+            than <strong>Hardware Sim Robot Code</strong>, so the program is
+            driving motors that do not exist. Stop it and start the right one.
           </li>
         </ul>
       </LessonSection>
 
-      <LessonSection id="two-buttons-one-arm" title="Two buttons, one arm">
-        <p>
-          The left trigger runs <code>arm.runFast()</code> at 6&nbsp;V. B runs{" "}
-          <code>arm.runSlow()</code> at 3&nbsp;V. Both need the arm, and only
-          one command can hold it.
-        </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Enable, and hold the <strong>left trigger</strong> down.{" "}
-            <strong>You should see:</strong> the arm at 6&nbsp;V.
-          </li>
-          <li>
-            Keeping the left trigger down, press and hold <strong>B</strong>.{" "}
-            <strong>You should see:</strong> the arm drop to 3&nbsp;V at once. B
-            won.
-          </li>
-          <li>
-            Release <strong>B</strong>, still holding the left trigger.{" "}
-            <strong>You should see:</strong> the arm stop, and stay stopped.
-          </li>
-          <li>
-            Release the left trigger too. <strong>You should see:</strong>{" "}
-            nothing change. The arm was already stopped.
-          </li>
-        </ol>
-        <Box variant="concept" title="Why B won">
-          <p>
-            One command holds a mechanism at a time. A newcomer is turned away
-            only if its priority is strictly lower than the holder&apos;s. Every
-            command you have written runs at the default priority of{" "}
-            <code>0</code>, so equal counts and the newest press wins.
-          </p>
-        </Box>
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT"
-          title="A held button fires once"
-        >
-          <p>
-            Releasing B scheduled <code>arm.stop()</code>, which needs the arm
-            too. It took the arm and sent zero. The left trigger never got the
-            arm back, because its <code>whileTrue</code> already fired on the
-            press. A button still held has no rising edge left.
-          </p>
-          <p className="mt-3">
-            Release the left trigger and pull it again. That is a fresh rising
-            edge, and the arm comes back.
-          </p>
-        </Box>
-      </LessonSection>
-
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Walk the four buttons once more, then the two-button test. You are
-          done when each one repeats itself.
+          Walk your bindings once more. You are done when each one repeats
+          itself.
         </p>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
-            <li>The arm moving at two speeds, under the left trigger and B.</li>
             <li>
-              The flywheel left spinning after the right trigger, and stopped
-              after A.
+              The mechanism moving while a button is held, every time you hold
+              it.
+            </li>
+            <li>
+              The same mechanism doing whatever that binding&apos;s{" "}
+              <code>whileFalse</code> names when you let go, every time.
             </li>
           </ul>
         </Box>
-        <p>Turn CANivore USB back on before your next session in Tuner X.</p>
       </LessonSection>
 
       <Quiz
@@ -289,34 +233,6 @@ driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());`}
             correctAnswer: 1,
             explanation:
               "Only one program can own the CAN bus over USB. With CANivore USB on, Tuner X holds the bus and the simulator cannot reach your motors. It is one switch with two positions: on for bench work in Tuner X, off when your code is driving.",
-          },
-          {
-            id: 3,
-            question:
-              "You hold the left trigger (arm.runFast(), 6 V), then press B (arm.runSlow(), 3 V) without letting go. What happens?",
-            options: [
-              "The arm drops to 3 V: runSlow is scheduled at equal priority, so it takes the arm and runFast is canceled",
-              "Both commands run and the voltages add up to 9 V",
-              "The scheduler throws an error about conflicting requirements",
-              "B is ignored, because the arm is already claimed by runFast",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "One command owns a mechanism at a time. A newly scheduled command is turned away only if it is strictly lower priority than the one running. Both of these run at the default priority of 0, so equal counts and the newest press wins.",
-          },
-          {
-            id: 4,
-            question:
-              "In that same experiment you release B while still holding the left trigger. Why does the arm stop instead of going back to 6 V?",
-            options: [
-              "runFast automatically resumes on the next scheduler loop",
-              "Releasing B cancels runSlow, and canceling a command stops the motor",
-              "whileFalse scheduled arm.stop(), and the left trigger's whileTrue already fired on the press: a button still held has no new rising edge",
-              "The left trigger binding expired after a few seconds",
-            ],
-            correctAnswer: 2,
-            explanation:
-              "Releasing B cancels runSlow and, through whileFalse, schedules arm.stop(), which claims the arm and sends zero. The left trigger fired its whileTrue when you first pulled it, and it will not fire again until you release and pull once more.",
           },
         ]}
       />

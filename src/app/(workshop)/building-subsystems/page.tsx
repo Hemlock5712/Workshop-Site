@@ -2,6 +2,7 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
+import ImageBlock from "@/components/ImageBlock";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { Split } from "@/components/lesson/Prose";
@@ -32,7 +33,9 @@ import { GitBranch } from "lucide-react";
  *
  * Deliberately gone, unchanged from before: the Java vocabulary walk, which is
  * `/java-basics`; the private setter and the command thread, which is
- * `/adding-commands`; and the whole of `Robot.java`, which is `/robot-class`.
+ * `/adding-commands`. `Robot.java` used to be its own lesson; the scheduler
+ * and the constructor were already taught on `/command-framework`, so only
+ * the two mechanism fields survived and they live in the last section here.
  */
 export default function BuildingSubsystems() {
   return (
@@ -41,17 +44,25 @@ export default function BuildingSubsystems() {
       lede="A mechanism is one physical part of the robot, written as one Java class. On branch mech-1-Mechanisms you write Arm.java and Flywheel.java: hardware fields, one constructor, two methods."
       needs={[
         <>
-          A clean <code>./gradlew build</code>, from{" "}
-          <strong>Project Setup</strong>.
+          A clean build, from <strong>Project Setup</strong>.
         </>,
         <>
           Fields, constructors and methods, from <strong>Java Basics</strong>.
         </>,
-        <>Arm and flywheel answering in Tuner X at IDs 31, 32 and 21.</>,
+        <>Arm and flywheel working in Tuner X at IDs 31, 32 and 21.</>,
       ]}
       branch="mech-1-Mechanisms"
-      time="10 minutes"
+      time="14 minutes"
     >
+      <Box variant="alert-success" tag="Nice work" title="Setup is behind you">
+        <p>
+          The arm and the flywheel work in Tuner X, the project builds, and you
+          know what a mechanism, a command, and the scheduler each do. That is
+          what every page before this one was for. This is the lesson where you
+          start writing the code.
+        </p>
+      </Box>
+
       <MechanismSelector />
 
       <Split>
@@ -61,21 +72,130 @@ export default function BuildingSubsystems() {
             There is nothing to clone, and the file is new.
           </p>
           <p>
-            Make a <code>mechanisms</code> folder beside <code>Robot.java</code>
-            , at <code>src/main/java/first/robot/mechanisms/</code>. Both
-            classes go in it.
+            Both classes live in a <code>mechanisms</code> folder beside{" "}
+            <code>Robot.java</code>, at{" "}
+            <code>src/main/java/first/robot/mechanisms/</code>. Make the folder,
+            then make the file in it.
           </p>
         </div>
       </Split>
 
+      <div className="measure-wide grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <ImageBlock
+          src="/images/building-subsystems/new-folder.png"
+          alt="The VS Code Explorer right-click menu on the robot folder, with New Folder circled in red"
+          title="Step 1 · New Folder"
+          caption="Right-click robot, not src or java. The folder has to land beside Robot.java, and one made a level up puts your class in the wrong package."
+          width={538}
+          height={574}
+        />
+
+        <ImageBlock
+          src="/images/building-subsystems/new-file.png"
+          alt="The VS Code Explorer right-click menu on the new mechanisms folder, with New File circled in red"
+          title="Step 2 · New File"
+          caption="New File, not New Java File. The Java option writes its own package and class lines, and you are about to paste both."
+          width={538}
+          height={574}
+        />
+      </div>
+
       <LessonSection id="hardware-fields" title="The hardware fields">
         <p>
-          Create{" "}
+          Name the file{" "}
           <code>
-            mechanisms/
             <M k="file" />
-          </code>
-          . The class line and the fields go in first.
+          </code>{" "}
+          and paste this into it. The package line and the imports are the part
+          you cannot work out from a lesson, so they are here in full. The class
+          is empty and it compiles. The three comments mark the three places the
+          rest of this lesson goes.
+        </p>
+
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            title="Arm.java: the empty class"
+            filename="src/main/java/first/robot/mechanisms/Arm.java"
+            code={`package first.robot.mechanisms;
+
+// The static imports are the ones your editor will not offer to add for you.
+// Tuner X writes Volts.per(RotationsPerSecond) into the config you paste two
+// lessons from now, so they are here already and that paste just works.
+import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.RotationsPerSecondPerSecond;
+import static org.wpilib.units.Units.Volts;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import org.wpilib.command3.Mechanism;
+
+public class Arm extends Mechanism {
+  // The fields go here.
+
+  public Arm() {
+    // The motor configuration goes here.
+  }
+
+  // The two methods go here.
+}`}
+          />
+        </Mech>
+
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            title="Flywheel.java: the empty class"
+            filename="src/main/java/first/robot/mechanisms/Flywheel.java"
+            code={`package first.robot.mechanisms;
+
+// The static imports are the ones your editor will not offer to add for you.
+// Tuner X writes Volts.per(RotationsPerSecond) into the config you paste two
+// lessons from now, so they are here already and that paste just works.
+import static org.wpilib.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.RotationsPerSecondPerSecond;
+import static org.wpilib.units.Units.Volts;
+
+import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import org.wpilib.command3.Mechanism;
+
+public class Flywheel extends Mechanism {
+  // The fields go here.
+
+  public Flywheel() {
+    // The motor configuration goes here.
+  }
+
+  // The two methods go here.
+}`}
+          />
+        </Mech>
+
+        <p>
+          Your editor will grey the imports out until you use them. That is
+          expected, and they go quiet one block at a time as you fill the class
+          in. The fields come first.
         </p>
 
         <Mech for="arm">
@@ -138,9 +258,10 @@ export default function BuildingSubsystems() {
         </ul>
 
         <p>
-          Let your editor add the imports. Every type name stops being
-          underlined. The class still has no closing brace, so it will not
-          compile yet.
+          There is nothing to import. They are all at the top of the file
+          already, and the greyed-out ones stop being grey as you use them. The
+          class compiles at every step from here, because what you pasted was a
+          complete class to begin with.
         </p>
       </LessonSection>
 
@@ -151,26 +272,57 @@ export default function BuildingSubsystems() {
             new <M k="name" />
             ()
           </code>{" "}
-          is evaluated. Two of the settings are choices, and{" "}
-          <code>Inverted</code> matches the direction you proved on{" "}
-          <strong>Motor Setup</strong>.
+          is evaluated. <code>NeutralMode</code> is the one setting here you
+          choose. <code>Inverted</code> is not a choice: it is the direction you
+          proved on <strong>Motor Setup</strong>, and the mechanism decided it
+          long before any code ran. Ignore the two <code>Expo</code> values.
+          They are defaults built into every config Tuner X generates, and no
+          workshop uses them.
         </p>
+
+        <ImageBlock
+          src="/images/setup/generate-code.png"
+          alt="Phoenix Tuner X with the config panel's three-dot menu open and Generate Code circled in red, above the Motion Magic fields"
+          title="Where the config comes from"
+          caption="Behind the menu, cruise velocity, acceleration and jerk sit at 0 while Expo_kV and Expo_kA already hold values. That is why those two lines arrive in every generated config, tuned or not."
+          width={2559}
+          height={1525}
+        />
+
+        <Box variant="alert-warning" title="These are our numbers, not yours">
+          <p>
+            The block below is the shape, not a config to copy. Yours comes off
+            your own bench. Open the config panel in Tuner X, press the three
+            dots, and choose <strong>Generate Code</strong>. Paste the result
+            over the whole statement. The mechanism is still open loop here, so
+            a fresh config looks much like this one. From{" "}
+            <strong>Motion Magic</strong> on it carries the gains you measured.
+          </p>
+        </Box>
 
         <Mech for="arm">
           <CodeBlock
             language="java"
             title="Arm.java: the constructor"
             code={`  public Arm() {
-    TalonFXConfiguration config =
+    final TalonFXConfiguration talonFXCfg =
         new TalonFXConfiguration()
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withNeutralMode(NeutralModeValue.Coast) // easy to move by hand
                     .withInverted(InvertedValue.CounterClockwise_Positive))
-            // Use the CANcoder for position, so the motor knows the arm's real angle.
-            .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder));
+            .withMotionMagic(
+                new MotionMagicConfigs()
+                    .withMotionMagicExpo_kV(
+                        Volts.per(RotationsPerSecond).ofNative(0.119999997317791))
+                    .withMotionMagicExpo_kA(
+                        Volts.per(RotationsPerSecondPerSecond).ofNative(0.10000000149011612)))
+            .withFeedback(
+                new FeedbackConfigs()
+                    .withFeedbackRemoteSensorID(32)
+                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder));
 
-    motor.getConfigurator().apply(config);
+    motor.getConfigurator().apply(talonFXCfg);
   }`}
           />
         </Mech>
@@ -180,14 +332,21 @@ export default function BuildingSubsystems() {
             language="java"
             title="Flywheel.java: the constructor"
             code={`  public Flywheel() {
-    TalonFXConfiguration config =
+    final TalonFXConfiguration talonFXCfg =
         new TalonFXConfiguration()
             .withMotorOutput(
                 new MotorOutputConfigs()
                     .withNeutralMode(NeutralModeValue.Coast) // easy to spin by hand
-                    .withInverted(InvertedValue.CounterClockwise_Positive));
+                    // positive shoots: clockwise from the motor side
+                    .withInverted(InvertedValue.Clockwise_Positive))
+            .withMotionMagic(
+                new MotionMagicConfigs()
+                    .withMotionMagicExpo_kV(
+                        Volts.per(RotationsPerSecond).ofNative(0.119999997317791))
+                    .withMotionMagicExpo_kA(
+                        Volts.per(RotationsPerSecondPerSecond).ofNative(0.10000000149011612)));
 
-    motor.getConfigurator().apply(config);
+    motor.getConfigurator().apply(talonFXCfg);
   }`}
           />
         </Mech>
@@ -243,9 +402,9 @@ export default function BuildingSubsystems() {
             title="Nothing to point the motor at"
           >
             <p>
-              The arm chains one more line onto its config, naming the CANcoder
-              as the motor&apos;s position source. The flywheel has no such
-              line, because it has no such device.
+              The arm&apos;s config carries a <code>withFeedback</code> block,
+              naming the CANcoder as the motor&apos;s position source. The
+              flywheel has none, because it has no such device.
             </p>
             <p className="mt-3">
               A TalonFX counts its own rotor turns, and a rotor count is a fine
@@ -259,7 +418,7 @@ export default function BuildingSubsystems() {
         <p>
           <code>
             <M k="motor" />
-            .getConfigurator().apply(config)
+            .getConfigurator().apply(talonFXCfg)
           </code>{" "}
           sends every setting above to the motor controller in one message. It
           runs once, in the constructor, because the controller keeps those
@@ -277,12 +436,12 @@ export default function BuildingSubsystems() {
    *
    * @param voltage The voltage to apply.
    */
-  public void setVoltage(double voltage) {
+  private void setVoltage(double voltage) {
     motor.setControl(voltageOut.withOutput(voltage));
   }
 
-  /** Stop the arm motor. */
-  public void stop() {
+  /** Stop the motor. */
+  private void stopMotor() {
     motor.stopMotor();
   }
 }`}
@@ -294,16 +453,16 @@ export default function BuildingSubsystems() {
             language="java"
             title="Flywheel.java: the two methods"
             code={`  /**
-   * Spin the flywheel with a fixed voltage. Positive voltage spins the wheel counter-clockwise.
+   * Spin the flywheel with a fixed voltage.
    *
    * @param voltage The voltage to apply.
    */
-  public void setVoltage(double voltage) {
+  private void setVoltage(double voltage) {
     motor.setControl(voltageOut.withOutput(voltage));
   }
 
-  /** Stop the flywheel motor. */
-  public void stop() {
+  /** Stop the motor. */
+  private void stopMotor() {
     motor.stopMotor();
   }
 }`}
@@ -325,12 +484,63 @@ export default function BuildingSubsystems() {
         </p>
 
         <p>
-          Both are public for now, so any file can call{" "}
+          Both are <code>private</code>, and nothing calls them yet. The next
+          lesson wraps them in commands, and those are what the rest of the
+          robot gets to use. The stop helper is named <code>stopMotor</code>{" "}
+          rather than <code>stop</code> because a command takes that name next
+          lesson.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="register-on-robot" title="Hand it to Robot">
+        <p>
+          You have written the class, but nothing has built one yet. Right now{" "}
           <code>
-            <M k="noun" />
-            .setVoltage(6.0)
-          </code>
-          .
+            <M k="file" />
+          </code>{" "}
+          is a file and nothing more. <code>Robot</code> is where it becomes a
+          real object: built once at startup, outliving every mode, and handed
+          to every OpMode that needs a mechanism. Add the two lines.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="Robot.java: the mechanisms it owns"
+          filename="src/main/java/first/robot/Robot.java"
+          code={`package first.robot;
+
+import first.robot.mechanisms.Arm;
+import first.robot.mechanisms.Flywheel;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.framework.OpModeRobot;
+
+public class Robot extends OpModeRobot {
+  // The robot's mechanisms. Public so OpModes can use them.
+  public final Arm arm = new Arm();
+  public final Flywheel flywheel = new Flywheel();
+
+  public Robot() {}
+
+  @Override
+  public void robotPeriodic() {
+    Scheduler.getDefault().run();
+  }
+}`}
+        />
+
+        <p>
+          <code>public final</code> because every OpMode reaches the mechanisms
+          through the one <code>Robot</code> it is handed, and nothing should
+          ever swap them out.
+        </p>
+
+        <p>
+          Building only the <M k="noun" />? Delete the{" "}
+          <code>
+            <M k="other" />
+          </code>{" "}
+          field and its import. A field that builds a class you never wrote does
+          not compile.
         </p>
       </LessonSection>
 
@@ -342,17 +552,16 @@ export default function BuildingSubsystems() {
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Run <code>./gradlew build</code>. <code>BUILD SUCCESSFUL</code> is
-            the real check here: every import resolved, and every name you typed
-            exists.
+            Run <em>WPILib: Build Robot Code</em>. You should see{" "}
+            <code>BUILD SUCCESSFUL</code>. That is the real check here: every
+            import resolved, and every name you typed exists.
           </li>
           <li>
             List <code>src/main/java/first/robot/mechanisms/</code>.{" "}
             <code>
               <M k="file" />
             </code>{" "}
-            is in it, and there is no <code>opmode</code> folder yet. That
-            folder arrives with the commands.
+            is in it, beside <code>Robot.java</code>.
           </li>
           <li>
             Search{" "}
@@ -377,33 +586,14 @@ export default function BuildingSubsystems() {
                 <M k="name" />
               </code>
               , and a constructor ending in{" "}
-              <code>getConfigurator().apply(config)</code>.
+              <code>getConfigurator().apply(talonFXCfg)</code>.
             </li>
             <li>
-              <code>setVoltage</code> and <code>stop</code>, and no other public
-              method.
+              <code>setVoltage</code> and <code>stopMotor</code>, both{" "}
+              <code>private</code>, and no public method but the constructor.
             </li>
           </ul>
         </Box>
-
-        <p>
-          Two errors cover nearly everything that goes wrong here.{" "}
-          <code>cannot find symbol: Mechanism</code> is a missing import.{" "}
-          <code>Mechanism</code> is in <code>org.wpilib.command3</code>, the
-          CTRE types in <code>com.ctre.phoenix6</code>.
-          <Mech for="arm">
-            {" "}
-            And an <code>Arm.java</code> that already has{" "}
-            <code>vertical()</code> and <code>scoring()</code> is the robot
-            template, not the lesson branch.
-          </Mech>
-          <Mech for="flywheel">
-            {" "}
-            And <code>cannot find symbol: encoder</code> means the{" "}
-            <code>withFeedback</code> line came across from the arm. The
-            flywheel has no CANcoder to name there.
-          </Mech>
-        </p>
 
         <Mech for="arm">
           <DocumentationButton
@@ -420,12 +610,6 @@ export default function BuildingSubsystems() {
             icon={<GitBranch className="w-5 h-5" />}
           />
         </Mech>
-
-        <p>
-          The branch carries both mechanisms, and the next lesson binds commands
-          on both. When this one builds, switch the question at the top of the
-          page and write the other file.
-        </p>
       </LessonSection>
 
       <Quiz
@@ -461,7 +645,7 @@ export default function BuildingSubsystems() {
           {
             id: 3,
             question:
-              "Why does Arm chain withRemoteCANcoder(encoder) onto its config when nothing on this branch reads a position?",
+              "Why does Arm's config name a feedback sensor when nothing on this branch reads a position?",
             options: [
               "It resets the CANcoder to zero every time the robot boots",
               "It tells the CANcoder to follow the motor's rotor count",
@@ -470,12 +654,12 @@ export default function BuildingSubsystems() {
             ],
             correctAnswer: 3,
             explanation:
-              "A TalonFX counts rotor turns from zero at every power-on, so it has no idea where the arm physically is. The CANcoder is absolute and knows its angle the moment it boots. withRemoteCANcoder points the motor's position feedback at that sensor, which is what lets closed-loop position work later.",
+              "A TalonFX counts rotor turns from zero at every power-on, so it has no idea where the arm physically is. The CANcoder is absolute and knows its angle the moment it boots. The withFeedback block points the motor's position feedback at that sensor, which is what lets closed-loop position work later. You set the same pair in Tuner X on Motor Setup. Generate Code writes back what the device already holds.",
           },
           {
             id: 4,
             question:
-              "Arm's config ends with .withFeedback(new FeedbackConfigs().withRemoteCANcoder(encoder)) and Flywheel's does not. Why not?",
+              "Arm's config ends with a withFeedback block naming CANcoder 32, and Flywheel's has no withFeedback at all. Why not?",
             options: [
               "withFeedback is set once per project, and Arm.java gets there first",
               "The flywheel is tuned for speed, not angle, and the TalonFX's own rotor count already measures speed. There is no CANcoder on the mechanism to point at.",

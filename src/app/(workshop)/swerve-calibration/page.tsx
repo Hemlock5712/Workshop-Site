@@ -113,7 +113,7 @@ export default function SwerveCalibration() {
           <code>resetPose(Pose2d)</code> moves the pose itself: x, y and heading
           in meters from the blue corner. It exists on the Phoenix 6 drivetrain,
           but <code>DriveMechanism</code> does not expose it and nothing calls
-          it. Until Workshop 4, read <code>Drivetrain/Pose</code> as distance
+          it. Until Workshop 5, read <code>Drivetrain/Pose</code> as distance
           traveled since boot.
         </p>
       </LessonSection>
@@ -456,7 +456,7 @@ export default function SwerveCalibration() {
                 <>
                   Odometry measures from where the code started, not from a
                   point on the field. Nothing here sets one. Vision fixes it in
-                  Workshop 4.
+                  Workshop 5.
                 </>
               ),
             },
@@ -492,7 +492,7 @@ export default function SwerveCalibration() {
             ],
             correctAnswer: 2,
             explanation:
-              "seedFieldCentric() is a heading reference: whatever the robot faces now becomes forward for the driver. It never supplies an x or a y. resetPose(Pose2d) is the one that moves the pose, and nothing in the workshop code calls it. Until vision arrives in Workshop 4, Drivetrain/Pose reads distance traveled since boot.",
+              "seedFieldCentric() is a heading reference: whatever the robot faces now becomes forward for the driver. It never supplies an x or a y. resetPose(Pose2d) is the one that moves the pose, and nothing in the workshop code calls it. Until vision arrives in Workshop 5, Drivetrain/Pose reads distance traveled since boot.",
           },
           {
             id: 3,
