@@ -362,8 +362,9 @@ Show me the diff before you write anything.`}
         <p>
           <code>whileTrue</code> schedules a hold and cancels it on release, but
           canceling is not stopping. Releasing B works because{" "}
-          <code>whileFalse</code> schedules <code>arm.stop()</code>. If the arm
-          keeps pushing after you let go, that half of the binding is missing.
+          <code>whileFalse</code> schedules <code>robot.arm.stop()</code>. If
+          the arm keeps pushing after you let go, that half of the binding is
+          missing.
         </p>
 
         <FigureGrid

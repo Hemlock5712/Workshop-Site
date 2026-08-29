@@ -30,7 +30,7 @@ export default function ChainingCommands() {
           <code>runSlow()</code>, <code>runFast()</code>, <code>stop()</code>.
         </>,
         <>
-          A <code>TeleopOpMode</code> with working button bindings, from{" "}
+          A <code>MyTeleop</code> with working button bindings, from{" "}
           <strong>OpModes</strong>.
         </>,
         <>
@@ -77,10 +77,10 @@ export default function ChainingCommands() {
           code={`import static org.wpilib.units.Units.Seconds;
 
 // A hold. Pushes forever, never finishes.
-arm.runFast()
+robot.arm.runFast()
 
 // A step. Pushes for one second, then ends.
-arm.runFast().withTimeout(Seconds.of(1.0))`}
+robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         />
 
         <Split>
@@ -110,13 +110,13 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java: raise the arm, then spin up"
+          title="MyTeleop.java: raise the arm, then spin up"
           code={`Command liftThenSpin =
     Command.sequence(
             // A step: it ends, so the sequence moves on.
-            arm.runFast().withTimeout(Seconds.of(1.0)),
+            robot.arm.runFast().withTimeout(Seconds.of(1.0)),
             // A hold: the last member, so the group is a hold too.
-            flywheel.runFast())
+            robot.flywheel.runFast())
         .named("Lift Then Spin (hold)");`}
         />
 
@@ -129,7 +129,7 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
         </p>
         <p>
           Do not re-name a command that already has one.{" "}
-          <code>arm.runFast()</code> arrives finished, so{" "}
+          <code>robot.arm.runFast()</code> arrives finished, so{" "}
           <code>.named(...)</code> on it is a compile error.
         </p>
 
@@ -139,9 +139,10 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
           title="A bare hold in the middle"
         >
           <p>
-            Swap the first member for a plain <code>arm.runFast()</code> and the
-            sequence sticks there for the rest of the match. When a routine
-            looks frozen, a member with no ending is the first thing to check.
+            Swap the first member for a plain <code>robot.arm.runFast()</code>{" "}
+            and the sequence sticks there for the rest of the match. When a
+            routine looks frozen, a member with no ending is the first thing to
+            check.
           </p>
         </Box>
       </LessonSection>
@@ -158,8 +159,8 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
           title="Spin the flywheel while the arm holds position"
           code={`Command spinWhileHolding =
     Command.race(
-            flywheel.runFast().withTimeout(Seconds.of(2.0)),
-            arm.runSlow())
+            robot.flywheel.runFast().withTimeout(Seconds.of(2.0)),
+            robot.arm.runSlow())
         .named("Spin While Holding Arm");`}
         />
 
@@ -186,8 +187,8 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java: one button, both mechanisms"
-          code={`driver.y().whileTrue(liftThenSpin).whileFalse(flywheel.stop());`}
+          title="MyTeleop.java: one button, both mechanisms"
+          code={`driver.y().whileTrue(liftThenSpin).whileFalse(robot.flywheel.stop());`}
         />
 
         <Box variant="alert-warning" title="Canceling never stops the motor">
@@ -217,7 +218,7 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
           <li>
             Add the <code>Seconds</code> import and the{" "}
             <code>Lift Then Spin (hold)</code> binding to your{" "}
-            <code>TeleopOpMode</code> constructor.
+            <code>MyTeleop</code> constructor.
           </li>
           <li>Start the simulator and click Enable.</li>
           <li>Hold Y for three seconds, then release.</li>
@@ -226,12 +227,13 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
             arm member, hold Y again, then put the timeout back.
           </li>
           <li>
-            Bind Y to <code>arm.runFast().withTimeout(Seconds.of(1.0))</code> on
-            its own instead and hold it for two seconds. The step ends after one
+            Bind Y to{" "}
+            <code>robot.arm.runFast().withTimeout(Seconds.of(1.0))</code> on its
+            own instead and hold it for two seconds. The step ends after one
             second and the arm keeps pushing 6&nbsp;V, because nothing claimed
             it afterwards. A closing{" "}
-            <code>arm.stop().withTimeout(Seconds.of(0.5))</code> step is the
-            fix.
+            <code>robot.arm.stop().withTimeout(Seconds.of(0.5))</code> step is
+            the fix.
           </li>
         </ol>
 
@@ -300,7 +302,7 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
           {
             id: 1,
             question:
-              "You put arm.runFast(), a hold with no timeout, as the first member of Command.sequence(...). What happens?",
+              "You put robot.arm.runFast(), a hold with no timeout, as the first member of Command.sequence(...). What happens?",
             options: [
               "The sequence sticks on it forever and the later members never run",
               "The command fails to compile",
@@ -328,7 +330,7 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
           {
             id: 3,
             question:
-              "In Command.race(flywheel.runFast().withTimeout(Seconds.of(2.0)), arm.runSlow()), what ends the group?",
+              "In Command.race(robot.flywheel.runFast().withTimeout(Seconds.of(2.0)), robot.arm.runSlow()), what ends the group?",
             options: [
               "Whichever finishes first, and that is unpredictable",
               "The flywheel member, because the arm hold can never finish; the arm is then canceled",
@@ -351,7 +353,7 @@ arm.runFast().withTimeout(Seconds.of(1.0))`}
             ],
             correctAnswer: 3,
             explanation:
-              "whileTrue does cancel the group on release, but canceling is not stopping. The mechanism falls back to idle(), which issues no request at all, so Phoenix keeps applying the last voltage. A whileFalse(flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
+              "whileTrue does cancel the group on release, but canceling is not stopping. The mechanism falls back to idle(), which issues no request at all, so Phoenix keeps applying the last voltage. A whileFalse(robot.flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
           },
         ]}
       />
