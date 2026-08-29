@@ -103,13 +103,12 @@ git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-4-Motion
 - **Nothing at build time reads it.** The embeds still fetch from GitHub
   through `src/app/api/github/route.ts`, whose `ALLOWED_REPOS` is a one-entry
   allowlist. `reference/` is for authoring, not for rendering.
-- **`mech-3-MotionMagic` is embedded by zero pages, and that is the biggest hole
-  in the course.** It is the branch where the arm and flywheel go closed loop,
-  and its whole point is that a student pastes a config generated in Phoenix
-  Tuner X over the block in the constructor. Every gain on it ships at `0.0`, so
-  a fresh clone holds the arm still. No lesson opens it, which means no lesson
-  teaches the paste. Closing it needs one lesson between `/building-subsystems`
-  and `/running-program`, not new code.
+- **`mech-3-MotionMagic` is `/motion-magic-code`**, added August 2026 and the
+  last lesson of Workshop 3. It sits _after_ `/running-program`, not before it:
+  a student drives the mechanism with voltage commands first, sees it push until
+  the button is released, and only then swaps the request for one that names a
+  target. Every gain on the branch ships at `0.0`, so a fresh clone holds still
+  and the student's own generated config is what makes it move.
 - `2-Logging`, on the swerve chain, is also embedded by no page. `/logging-implementation`
   hand-writes its blocks and teaches the arm, so that branch is the wrong
   parent for it.

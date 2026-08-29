@@ -166,7 +166,7 @@ export default function Prerequisites() {
       <LessonSection id="java-nothing-to-install" title="Java comes later">
         <ProseBlock>
           <p>
-            Robot code shows up in Workshop 2, and it does not stay at the
+            Robot code shows up in Workshop 3, and it does not stay at the
             beginner end for long. Lambdas, method references, and class
             declarations all turn up there. There will be a few hard concepts,
             but we'll explain them as we get there.

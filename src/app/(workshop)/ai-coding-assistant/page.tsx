@@ -305,7 +305,7 @@ I have finished the Commands lesson. Do not change any files.`}
 that pushes -3.0, matching the style of runSlow(). Then bind it in
 src/main/java/first/robot/opmode/MyTeleop.java as:
 
-    driver.b().whileTrue(arm.runReverse()).whileFalse(arm.stop());
+    driver.b().whileTrue(robot.arm.runReverse()).whileFalse(robot.arm.stop());
 
 Show me the diff before you write anything.`}
         />

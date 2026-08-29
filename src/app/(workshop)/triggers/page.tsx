@@ -319,20 +319,20 @@ public static Trigger disabled() {
             Inside <code>public MyTeleop(Robot robot)</code>, below the A
             binding, add{" "}
             <code>
-              driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());
+              driver.b().whileTrue(robot.arm.runSlow()).whileFalse(robot.arm.stop());
             </code>{" "}
             Build it: <code>BUILD SUCCESSFUL</code>.
           </li>
           <li>
-            Delete <code>.whileFalse(arm.stop())</code> and build again. It
-            still succeeds. A missing release binding compiles fine and leaves
-            the arm pushing until the match ends. Put it back.
+            Delete <code>.whileFalse(robot.arm.stop())</code> and build again.
+            It still succeeds. A missing release binding compiles fine and
+            leaves the arm pushing until the match ends. Put it back.
           </li>
           <li>
             Move the B line above the constructor, next to the{" "}
             <code>driver</code> field, and build. It fails, because a binding is
-            a statement and <code>arm</code> is a local variable of the
-            constructor.
+            a statement and <code>robot</code> is a parameter of the
+            constructor. Neither one exists out there.
           </li>
           <li>Put the line back inside the constructor and build once more.</li>
         </ol>
