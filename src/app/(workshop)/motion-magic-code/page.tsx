@@ -53,7 +53,9 @@ export default function MotionMagicCode() {
         </p>
         <p>
           What changes is the request. <code>VoltageOut</code> goes, and one
-          that names a target takes its place. One field, one import.
+          that names a target takes its place. Nothing to import. The class you
+          need has been at the top of the file since <strong>Mechanisms</strong>
+          . The only import that moves is <code>VoltageOut</code>, leaving.
         </p>
 
         <Mech for="arm">

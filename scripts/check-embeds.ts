@@ -207,9 +207,14 @@ const main = async () => {
     // "zero means I am broken" is wrong. It is still right whenever a page
     // *does* use the component and nothing parses, which is what the source
     // scan below separates out.
-    const used = collectFiles(SRC).some((file) =>
-      /<(GitHubContent|MechanismTabs)/.test(fs.readFileSync(file, "utf8"))
-    );
+    // Only a page counts. `ComparisonWithCodeWalkthrough` still renders a
+    // `<GitHubContent>`, but nothing routes to it, so finding one there says
+    // nothing about whether the extractor works.
+    const used = collectFiles(SRC)
+      .filter((file) => file.includes(`${path.sep}app${path.sep}`))
+      .some((file) =>
+        /<(GitHubContent|MechanismTabs)\b/.test(fs.readFileSync(file, "utf8"))
+      );
     if (used) {
       console.error(
         "Pages use GitHubContent or MechanismTabs, but nothing parsed. " +

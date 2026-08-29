@@ -265,7 +265,7 @@ section of `/building-subsystems`, next to the classes they own, because
 - **Navigation**: Client-side routing with active state management
 - **Video Integration**: YouTube embeds for educational content
 - **Code Learning**: Tabbed interfaces combining final code with development process
-- **GitHub Integration**: Live file embedding from the Workshop-Code repository
+- **GitHub Integration**: `GitHubContent` and `MechanismTabs` can embed live files from Workshop-Code, but no page calls them (see the embeds note above)
 - **Progressive Learning**: 5-step implementation approach following real development workflow
 - **Theme Management**: next-themes for system theme detection and persistence
 

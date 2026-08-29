@@ -442,7 +442,7 @@ coroutine.await(
           {
             id: 1,
             question:
-              "Why does the routine call coroutine.fork(arm.vertical()) instead of coroutine.await(robot.arm.vertical())?",
+              "Why does the routine call coroutine.fork(robot.arm.vertical()) instead of coroutine.await(robot.arm.vertical())?",
             options: [
               "fork is faster than await",
               "fork automatically applies a three-second timeout",
@@ -451,7 +451,7 @@ coroutine.await(
             ],
             correctAnswer: 3,
             explanation:
-              "arm.vertical() is built with runRepeatedly and is named 'vertical (hold)'. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The branch comment on that line says so: 'fork, not await: vertical() is a hold and never finishes.'",
+              "robot.arm.vertical() is built with runRepeatedly and is named 'vertical (hold)'. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The branch comment on that line says so: 'fork, not await: vertical() is a hold and never finishes.'",
           },
           {
             id: 2,

@@ -37,7 +37,7 @@ export default function Prerequisites() {
 
       <LessonSection id="what-to-install" title="What to install">
         <p>
-          Five programs, plus one you can skip until Workshop 3. Nothing here
+          Five programs, plus one you can skip until Workshop 6. Nothing here
           depends on anything else being installed first. One rule: never
           install Java on its own, because WPILib brings the version this
           workshop runs on.
@@ -95,7 +95,7 @@ export default function Prerequisites() {
               <strong>AdvantageScope</strong>
             </a>
             . A cut-down copy already came with WPILib. Install the full release
-            from GitHub as well. It reads robot logs, and Workshop 3 leans on
+            from GitHub as well. It reads robot logs, and Workshop 6 leans on
             the plots.
           </li>
           <li>
@@ -127,7 +127,7 @@ export default function Prerequisites() {
             <Link href="/logging-implementation" className={linkStyle}>
               Logging
             </Link>{" "}
-            in Workshop 3.
+            in Workshop 6.
           </li>
         </ol>
       </LessonSection>
