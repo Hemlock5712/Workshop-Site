@@ -289,7 +289,7 @@ export default function MotionMagic() {
               "You leave jerk at zero in the Motion Magic configs. What does that do to the profile?",
             options: [
               "It runs with no acceleration limit either, because jerk overrides acceleration",
-              "It ignores cruise velocity and uses acceleration alone",
+              "It rounds the corners of the profile automatically",
               "It refuses to run until jerk has a value",
               "It stays a plain trapezoid, with no limit on how fast acceleration may change",
             ],
@@ -299,6 +299,7 @@ export default function MotionMagic() {
           },
           {
             id: 3,
+            only: "arm",
             question:
               "Which units does Tuner X expect for cruise velocity and acceleration?",
             options: [
@@ -312,7 +313,23 @@ export default function MotionMagic() {
               "Both numbers are in mechanism rotations, and SensorToMechanismRatio is what makes one rotation mean one turn of the mechanism rather than one turn of the rotor. Get that ratio wrong on a 60:1 arm and the reported speed is off by a factor of sixty, which puts every profile number you enter off by the same factor.",
           },
           {
+            id: 7,
+            only: "flywheel",
+            question:
+              "Which units does Tuner X expect for the flywheel's Motion Magic acceleration?",
+            options: [
+              "Percent of the motor's free speed",
+              "Motor rotations per second squared",
+              "Mechanism rotations per second squared",
+              "Rotations per minute, the way a shooter is usually quoted",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Acceleration is in mechanism rotations, and so is the speed you put on the request. SensorToMechanismRatio is what makes one rotation mean one turn of the wheel rather than one turn of the rotor. Get it wrong and every profile number you enter is off by the same factor.",
+          },
+          {
             id: 4,
+            only: "arm",
             question:
               "A short move ramps up, turns around, and comes back down without ever holding a flat speed. What should you change?",
             options: [
@@ -326,7 +343,23 @@ export default function MotionMagic() {
               "The profile has to start braking early enough to arrive with no speed left, and on a short move that point comes before cruise velocity is ever reached. Raising cruise velocity changes nothing you can see on the plot. On a move this short, acceleration is the only number that changes how it feels.",
           },
           {
+            id: 8,
+            only: "flywheel",
+            question:
+              "You ask for a speed just above the one the wheel already holds, and it arrives with no visible ramp. What should you change?",
+            options: [
+              "Nothing. A small change needs little time at the acceleration you set",
+              "Lower acceleration until a ramp appears on the plot",
+              "Raise acceleration so the wheel reaches the new speed sooner",
+              "Set a cruise velocity so the profile has a speed to hold",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "The profile ramps the speed target at the acceleration you configured, so a small change is over quickly. That is the shape working, not a setting to fix. Cruise velocity is the one answer that changes nothing at all, because Motion Magic Velocity never reads it.",
+          },
+          {
             id: 5,
+            only: "arm",
             question:
               "The measurement tracks the reference through the ramp, then sags below it for the whole cruise section, while motor voltage still has headroom. What do you do?",
             options: [
@@ -338,6 +371,21 @@ export default function MotionMagic() {
             correctAnswer: 3,
             explanation:
               "kV pays for holding a speed, and cruise is the phase that asks for nothing else. kA pays for changing speed, which the clean ramp already shows is covered, and kD acts only on how fast the error is changing. Lowering cruise velocity hides the gap here instead of closing it, and it is the right move only in the other case, where voltage is pinned at the supply and the motor cannot hold the speed you asked for.",
+          },
+          {
+            id: 9,
+            only: "flywheel",
+            question:
+              "The measurement follows the reference up the ramp, then settles below the speed you asked for and stays there. Motor voltage still has headroom. What do you do?",
+            options: [
+              "Raise kA",
+              "Raise kD",
+              "Lower acceleration until the gap disappears",
+              "Raise kV",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "kV pays for holding a speed, and the hold is the phase that asks for nothing else. kA pays for changing speed, which the clean ramp already shows is covered. kD acts only on how fast the error is changing. Lowering acceleration hides the gap instead of closing it.",
           },
           {
             id: 6,

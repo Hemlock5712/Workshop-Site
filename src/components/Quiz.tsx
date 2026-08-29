@@ -1,7 +1,8 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { quizWinConfetti } from "@/lib/utils";
+import { DEFAULT_MECHANISM, type MechanismId } from "@/data/mechanisms";
 
 interface QuizQuestion {
   id: number;
@@ -9,6 +10,13 @@ interface QuizQuestion {
   options: string[];
   correctAnswer: number;
   explanation: string;
+  /**
+   * Ask this only of the student reading that mechanism. Omitted means both,
+   * which is the common case — fork a question only where the answer actually
+   * depends on which mechanism is on the bench, such as cruise velocity, which
+   * a flywheel's control mode ignores entirely.
+   */
+  only?: MechanismId;
 }
 
 interface QuizProps {
@@ -50,10 +58,46 @@ export default function Quiz({
   // not just to the question.
   const uid = useId();
 
-  const answered = Object.keys(answers).length === questions.length;
-  const score = questions.filter(
-    (q) => answers[q.id] === q.correctAnswer
-  ).length;
+  /**
+   * Which reading the student picked. Every other fork on the site is CSS
+   * hiding one branch of the server HTML, and this one cannot be: scoring has
+   * to know how many questions are really being asked. A `display: none`
+   * question is still in `questions.length`, so the grade button would never
+   * unlock and "4 of 6 right" would count two the reader never saw.
+   *
+   * Starts at the default so the first client render matches the server's, and
+   * corrects in the effect. The observer is what makes the selector at the top
+   * of the page work: picking the other mechanism rewrites the attribute on
+   * `<html>` without a navigation, and the question set has to follow.
+   */
+  const [reading, setReading] = useState<MechanismId>(DEFAULT_MECHANISM);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const read = () => {
+      const m = root.dataset.mechanism;
+      setReading(m === "arm" || m === "flywheel" ? m : DEFAULT_MECHANISM);
+    };
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-mechanism"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const asked = questions.filter((q) => !q.only || q.only === reading);
+
+  // Switching mechanism mid-quiz swaps some of the questions out. Keeping the
+  // old answers would leave the reader graded on a set they cannot see.
+  useEffect(() => {
+    setAnswers({});
+    setGraded(false);
+  }, [reading]);
+
+  const answered = asked.every((q) => answers[q.id] !== undefined);
+  const score = asked.filter((q) => answers[q.id] === q.correctAnswer).length;
 
   const submit = () => {
     if (graded) {
@@ -63,7 +107,7 @@ export default function Quiz({
     }
     if (!answered) return;
     setGraded(true);
-    if (score === questions.length) quizWinConfetti();
+    if (score === asked.length) quizWinConfetti();
   };
 
   return (
@@ -99,7 +143,7 @@ export default function Quiz({
           borderRadius: 3,
         }}
       >
-        {questions.map((q, qi) => (
+        {asked.map((q, qi) => (
           <div
             key={q.id}
             className="mb-[26px] pb-[26px]"
@@ -293,7 +337,7 @@ export default function Quiz({
             }}
           >
             {graded
-              ? `${score} of ${questions.length} right.`
+              ? `${score} of ${asked.length} right.`
               : answered
                 ? ""
                 : "Pick an answer for each."}

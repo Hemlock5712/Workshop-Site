@@ -202,7 +202,7 @@ export default function CurriculumDrawer() {
         {groups.map((group) => (
           <div key={group.id} className="mb-[30px]">
             <div
-              className="mb-2.5 flex items-baseline gap-3 pb-2"
+              className="mb-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1 pb-2"
               style={{ borderBottom: "1px solid var(--rule-soft)" }}
             >
               <span

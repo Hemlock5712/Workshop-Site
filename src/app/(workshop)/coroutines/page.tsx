@@ -244,8 +244,8 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
         </p>
         <p>
           Paste the whole shell rather than typing it. Nothing inside{" "}
-          <code>Command.noRequirements(coroutine -&gt; {})</code> is yours to
-          invent, and the two braces are where every step from here lands.
+          <code>Command.noRequirements(coroutine -&gt; {"{}"})</code> is yours
+          to invent, and the two braces are where every step from here lands.
         </p>
         <p>
           Your copy will move the first time you build. Every compile runs{" "}

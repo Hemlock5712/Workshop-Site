@@ -239,8 +239,8 @@ export default function MechanismSetup() {
         <Mech for="flywheel" as="p">
           A flywheel has no sensor to agree with, so this one check is the whole
           bench procedure for it. Positive voltage has to spin the wheel the way
-          the code will assume, and the only thing you may change to get there
-          is the motor.
+          the code will assume. The motor is the only thing allowed to change
+          from here.
         </Mech>
 
         <Box variant="alert-warning" title="Before you enable anything">
@@ -352,6 +352,7 @@ export default function MechanismSetup() {
           },
           {
             id: 2,
+            only: "arm",
             question:
               "Facing the device side of the arm, you turn it counterclockwise by hand. What should CANcoder do?",
             options: [
@@ -366,6 +367,7 @@ export default function MechanismSetup() {
           },
           {
             id: 3,
+            only: "arm",
             question: "What does setting the arm's zero do?",
             options: [
               "Limits how far the arm may travel either side of the reference mark",
@@ -379,6 +381,7 @@ export default function MechanismSetup() {
           },
           {
             id: 4,
+            only: "arm",
             question:
               "A CANcoder fails in March and somebody fits a new one. What has to happen?",
             options: [
@@ -390,6 +393,50 @@ export default function MechanismSetup() {
             correctAnswer: 2,
             explanation:
               "Sensor direction and the magnet offset are configs on the CANcoder itself, so a replacement arrives at a factory ID with both back at their defaults. Set the ID, run the hand test, and set the zero on the same reference mark. Put the arm back on that mark afterwards: it should read about 0 rotations again.",
+          },
+          {
+            id: 5,
+            only: "flywheel",
+            question:
+              "At 1 volt the wheel spins clockwise, seen from the motor side. What do you change?",
+            options: [
+              "Swap the two motor leads at the controller",
+              "Invert the motor output, apply, and run the same test again",
+              "Enter a negative voltage from here on",
+              "Set the sensor direction so the reading agrees with the motor",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "Positive voltage has to spin the wheel the way the code will assume, and the motor output is the only thing you may change to get there. A flywheel has no separate sensor, so there is no sensor direction to set. Entering a negative voltage instead would hide the problem inside every request you write later.",
+          },
+          {
+            id: 6,
+            only: "flywheel",
+            question:
+              "You enable at 1 volt for a second, and the wheel is still turning after you disable. What does that tell you?",
+            options: [
+              "The neutral mode is wrong and has to be set to brake",
+              "The Voltage Out request kept running past the disable",
+              "Nothing is wrong. A wheel coasts, so give it time before you call the direction",
+              "The motor output is inverted",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "A wheel takes a moment to come up and coasts for a while after you disable. Watch it long enough to be sure which way it went. Calling the direction from the first half second is the common mistake here, and it ends with the motor inverted twice.",
+          },
+          {
+            id: 7,
+            only: "flywheel",
+            question: "Why blink the device before sending it any voltage?",
+            options: [
+              "Blinking wakes the controller so it will accept a request",
+              "Blinking applies the configuration you saved",
+              "It returns the motor to its factory defaults first",
+              "Voltage goes to a CAN ID, so blinking proves which device is about to move",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "A Voltage Out request goes to a CAN ID, not to the mechanism you had in mind. Blinking first is what tells you the ID on screen is the device on the bench. The request also runs until you stop it. A second of checking costs less than a mechanism moving when you did not expect it.",
           },
         ]}
       />

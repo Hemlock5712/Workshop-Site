@@ -1069,9 +1069,16 @@ const asJson = args.includes("--json");
  * `/pid-control` argument into `C:/Program Files/Git/pid-control` before the
  * process ever sees it, so requiring the slash made the filter silently match
  * nothing and lint the whole site instead.
+ *
+ * Every other `--flag` is dropped here rather than named one at a time. The
+ * list used to be an allowlist of `--json` and `--sentences`, which meant
+ * `pnpm prose --mechanism=flywheel` filtered for a route called
+ * `/--mechanism=flywheel`, matched no lesson, and reported "0 pages" with an
+ * exit code of 0. The flywheel reading went unchecked for as long as that
+ * allowlist stood, and it looked exactly like a clean run.
  */
 const only = args
-  .filter((a) => a !== "--json" && a !== "--sentences")
+  .filter((a) => !a.startsWith("--") || a.startsWith("--only="))
   .map((a) => a.replace(/^--only=/, ""))
   .map((a) => a.replace(/^.*[/\\]/, ""))
   .filter(Boolean)

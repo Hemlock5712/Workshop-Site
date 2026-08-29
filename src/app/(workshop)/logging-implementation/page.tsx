@@ -408,6 +408,7 @@ private void record(double velocity, double target, double volts) {
           },
           {
             id: 2,
+            only: "arm",
             question:
               "The arm knows its position. How does that number reach the .wpilog?",
             options: [
@@ -419,6 +420,21 @@ private void record(double velocity, double target, double volts) {
             correctAnswer: 0,
             explanation:
               "DataLogManager records what changes on NetworkTables, so publishing is how a number of yours gets into the file. The arm holds one DoublePublisher per signal as a field, built once with the arm, and sets it from code that already runs each loop.",
+          },
+          {
+            id: 5,
+            only: "flywheel",
+            question:
+              "The flywheel knows its speed. How does that number reach the .wpilog?",
+            options: [
+              "Publish it on a NetworkTables topic, which DataLogManager records",
+              "Call DataLogManager.start() again each time the value changes",
+              "Write the number to your own text file in the logs folder every loop",
+              "DataLogManager finds the mechanism's fields and records them on its own",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "DataLogManager records what changes on NetworkTables, so publishing is how a number of yours gets into the file. The flywheel holds one DoublePublisher per signal as a field, built once with the flywheel, and sets it from code that already runs each loop.",
           },
           {
             id: 3,
@@ -436,6 +452,7 @@ private void record(double velocity, double target, double volts) {
           },
           {
             id: 4,
+            only: "arm",
             question:
               "Arm/PositionRot climbs, then freezes partway through the run and holds one value. What happened?",
             options: [
@@ -447,6 +464,21 @@ private void record(double velocity, double target, double volts) {
             correctAnswer: 1,
             explanation:
               "A command publishes only while it runs, so the last value it set is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the set calls to a background task added with Scheduler.getDefault().addPeriodic(...), which publishes for as long as the robot has power. Missing constructor lines would leave no Arm entries at all, and a wrong ratio gives the right shape at the wrong scale.",
+          },
+          {
+            id: 6,
+            only: "flywheel",
+            question:
+              "Flywheel/VelocityRPS climbs, then freezes partway through the run and holds one value. What happened?",
+            options: [
+              "The two constructor lines never ran, so nothing was recorded",
+              "The set calls sit in a command that finished, and nothing has published since",
+              "SensorToMechanismRatio is wrong, so the numbers no longer match the wheel",
+              "The publisher is rebuilt every cycle, so the code leaks a handle fifty times a second",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "A command publishes only while it runs, so the last value it set is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the set calls to a background task added with Scheduler.getDefault().addPeriodic(...), which publishes for as long as the robot has power. Missing constructor lines would leave no Flywheel entries at all, and a wrong ratio gives the right shape at the wrong scale.",
           },
         ]}
       />

@@ -374,8 +374,8 @@ Command raiseArm =
               seconds.
             </li>
             <li>
-              At <code>0.0001</code>, the step running the full two seconds
-              every time.
+              At <code>0.001</code>, the step running the full two seconds every
+              time.
             </li>
             <li>
               With the timeout gone as well, the arm pushing until you disable.
