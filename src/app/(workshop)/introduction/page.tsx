@@ -50,7 +50,7 @@ export default function Introduction() {
           has models for two.
         </>,
       ]}
-      time="5 minutes"
+      time="4 minutes"
     >
       <Split>
         <ProseBlock>

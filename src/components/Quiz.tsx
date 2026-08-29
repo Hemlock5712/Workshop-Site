@@ -1,7 +1,8 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { quizWinConfetti } from "@/lib/utils";
+import { DEFAULT_MECHANISM, type MechanismId } from "@/data/mechanisms";
 
 interface QuizQuestion {
   id: number;
@@ -9,6 +10,13 @@ interface QuizQuestion {
   options: string[];
   correctAnswer: number;
   explanation: string;
+  /**
+   * Ask this only of the student reading that mechanism. Omitted means both,
+   * which is the common case — fork a question only where the answer actually
+   * depends on which mechanism is on the bench, such as cruise velocity, which
+   * a flywheel's control mode ignores entirely.
+   */
+  only?: MechanismId;
 }
 
 interface QuizProps {
@@ -50,10 +58,56 @@ export default function Quiz({
   // not just to the question.
   const uid = useId();
 
-  const answered = Object.keys(answers).length === questions.length;
-  const score = questions.filter(
-    (q) => answers[q.id] === q.correctAnswer
-  ).length;
+  /**
+   * Which reading the student picked, for scoring only.
+   *
+   * What the reader *sees* is decided the way every other fork on this site is
+   * decided: each forked question carries `data-mech`, and CSS hides the other
+   * mechanism's from first paint. That part cannot be React state. The server
+   * cannot know the choice, so a state-driven list would send arm questions in
+   * the HTML and swap them after hydration, and a flywheel student would read
+   * the arm's quiz until then. On the pages this fork covers that is not one
+   * frame; hydration is seconds on a cold load.
+   *
+   * Scoring cannot be CSS, though, which is why both mechanisms are here. A
+   * `display: none` question is still in `questions.length`, so a grade button
+   * gated on that never unlocks and "4 of 6 right" counts two the reader never
+   * saw. This state exists to answer "how many questions are really being
+   * asked", and nothing is graded before the effect has run: the reader has to
+   * pick an answer first.
+   *
+   * The observer is what makes the selector at the top of the page work.
+   * Choosing the other mechanism rewrites the attribute on `<html>` with no
+   * navigation, and the score has to follow the questions.
+   */
+  const [reading, setReading] = useState<MechanismId>(DEFAULT_MECHANISM);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const read = () => {
+      const m = root.dataset.mechanism;
+      setReading(m === "arm" || m === "flywheel" ? m : DEFAULT_MECHANISM);
+    };
+    read();
+    const observer = new MutationObserver(read);
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-mechanism"],
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const asked = questions.filter((q) => !q.only || q.only === reading);
+
+  // Switching mechanism mid-quiz swaps some of the questions out. Keeping the
+  // old answers would leave the reader graded on a set they cannot see.
+  useEffect(() => {
+    setAnswers({});
+    setGraded(false);
+  }, [reading]);
+
+  const answered = asked.every((q) => answers[q.id] !== undefined);
+  const score = asked.filter((q) => answers[q.id] === q.correctAnswer).length;
 
   const submit = () => {
     if (graded) {
@@ -63,7 +117,7 @@ export default function Quiz({
     }
     if (!answered) return;
     setGraded(true);
-    if (score === questions.length) quizWinConfetti();
+    if (score === asked.length) quizWinConfetti();
   };
 
   return (
@@ -92,30 +146,34 @@ export default function Quiz({
       </div>
 
       <div
-        className="px-5 py-7 sm:px-[34px] sm:py-8"
+        className="quiz-questions px-5 py-7 sm:px-[34px] sm:py-8"
         style={{
           background: "var(--bg2)",
           border: "1px solid var(--rule)",
           borderRadius: 3,
         }}
       >
-        {questions.map((q, qi) => (
+        {questions.map((q) => (
           <div
             key={q.id}
+            data-mech={q.only}
             className="mb-[26px] pb-[26px]"
             style={{ borderBottom: "1px solid var(--rule-soft)" }}
           >
             <div className="mb-4 flex min-w-0 gap-3.5">
+              {/* Numbered by CSS counter, not by index. A hidden question has
+                  no box, so it takes no number, and the reader sees 01, 02, 03
+                  whichever mechanism they picked. An index would number the
+                  array and skip whatever the other reading owns. */}
               <span
-                className="mono tabular shrink-0 pt-2"
+                className="mono quiz-num tabular shrink-0 pt-2"
                 style={{
                   fontSize: "var(--text-micro)",
                   letterSpacing: "0.12em",
                   color: "var(--accent)",
                 }}
-              >
-                {String(qi + 1).padStart(2, "0")}
-              </span>
+                aria-hidden="true"
+              />
               <p
                 className="display m-0 min-w-0"
                 style={{
@@ -293,7 +351,7 @@ export default function Quiz({
             }}
           >
             {graded
-              ? `${score} of ${questions.length} right.`
+              ? `${score} of ${asked.length} right.`
               : answered
                 ? ""
                 : "Pick an answer for each."}

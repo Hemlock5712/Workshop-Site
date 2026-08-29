@@ -67,7 +67,7 @@ export default function StateMachines() {
         <>The simulator running, and a controller on port 0.</>,
       ]}
       branch="mech-6-StateBased"
-      time="About 25 minutes"
+      time="12 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">

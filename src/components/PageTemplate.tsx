@@ -3,6 +3,9 @@ import NavFooter, { type NavOverride } from "@/components/NavFooter";
 import LessonOutline from "@/components/lesson/LessonOutline";
 import LessonSection from "@/components/lesson/LessonSection";
 import LessonKicker from "@/components/lesson/LessonKicker";
+import { Mech } from "@/components/lesson/Mechanism";
+import type { MechanismId } from "@/data/mechanisms";
+import type { OutlineEntry } from "@/components/lesson/LessonOutline";
 
 /**
  * Read the sections off the children so the outline rail can be server-
@@ -14,13 +17,37 @@ import LessonKicker from "@/components/lesson/LessonKicker";
  * for the same reason the DOM scan is: nothing is hand-maintained, and a
  * section that isn't really there cannot appear in the rail. Fragments and
  * arrays are traversed because pages nest sections inside both.
+ *
+ * A section inside a `<Mech>` fork is tagged with that mechanism rather than
+ * dropped, and the rail hides the wrong ones in CSS. The server cannot know
+ * which mechanism a visitor picked, so anything decided here in JavaScript is
+ * decided wrong for half of them.
+ *
+ * This used to assume the default and lean on the client rescan, and the
+ * assumption does not survive contact with the inline script in the root
+ * layout: that script sets `data-mechanism` from `localStorage` BEFORE first
+ * paint. A returning flywheel student therefore painted a flywheel lesson
+ * beside a rail listing the arm's sections, with two entries whose targets are
+ * `display: none` on their page and scroll nowhere. It corrected on mount, and
+ * `LessonOutline` carries its own note about hydration taking seconds on the
+ * heavy pages.
+ *
+ * A visitor with no JavaScript never gets the attribute, so they see the
+ * default reading and the default reading's entries, which is the same pairing
+ * as before.
  */
 function collectSections(
   nodes: ReactNode,
-  out: { id: string; label: string }[] = []
-): { id: string; label: string }[] {
+  out: OutlineEntry[] = [],
+  mech?: MechanismId
+): OutlineEntry[] {
   Children.forEach(nodes, (child) => {
     if (!isValidElement(child)) return;
+    if (child.type === Mech) {
+      const p = child.props as { for?: MechanismId; children?: ReactNode };
+      if (p.children) collectSections(p.children, out, p.for ?? mech);
+      return;
+    }
     if (child.type === LessonSection) {
       const p = child.props as {
         id?: string;
@@ -29,11 +56,11 @@ function collectSections(
       };
       const label =
         p.outlineLabel ?? (typeof p.title === "string" ? p.title : undefined);
-      if (p.id && label) out.push({ id: p.id, label });
+      if (p.id && label) out.push({ id: p.id, label, mech });
       return;
     }
     const p = child.props as { children?: ReactNode };
-    if (p?.children) collectSections(p.children, out);
+    if (p?.children) collectSections(p.children, out, mech);
   });
   return out;
 }

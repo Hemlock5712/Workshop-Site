@@ -13,6 +13,7 @@
  * Run with `pnpm prose`. Flags:
  *
  *   --only=pid-control   check one page (a bare `pid-control` works too)
+ *   --mechanism=flywheel price the flywheel reading of a forked lesson
  *   --sentences          print every over-length sentence in full, for fixing
  *   --json               machine-readable output
  *
@@ -33,6 +34,31 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import * as ts from "typescript-6";
+
+import {
+  DEFAULT_MECHANISM,
+  MECHANISMS,
+  type MechanismId,
+} from "../src/data/mechanisms";
+
+/**
+ * Which reading of a mechanism lesson to price, from `--mechanism=flywheel`.
+ *
+ * A forked lesson ships two readings and a student reads one, so the budget
+ * follows one. The default reading is the one the site shows a visitor who has
+ * chosen nothing, and it is what a bare `pnpm prose` measures.
+ *
+ * The other reading still has to be checked, or it drifts: it is real prose
+ * that no run looks at, which is exactly how the quiz text went unchecked for
+ * months. `pnpm prose --mechanism=flywheel` prices it, and it earned itself
+ * immediately by catching a banned construction and a 31-word sentence on
+ * /motion-magic that the arm reading could not see.
+ */
+const READING: MechanismId = process.argv.some(
+  (a) => a === "--mechanism=flywheel"
+)
+  ? "flywheel"
+  : DEFAULT_MECHANISM;
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
@@ -404,6 +430,51 @@ function extract(source: ts.SourceFile): Extracted {
         const heading =
           stringAttr(node, "outlineLabel") ?? stringAttr(node, "title");
         if (heading) out.headings.push(heading);
+      }
+
+      /**
+       * The mechanism fork — see `src/components/lesson/Mechanism.tsx`.
+       *
+       * A mechanism lesson ships both readings and shows one, so counting the
+       * source would charge a student for a lesson nobody reads: the arm's
+       * code blocks plus the flywheel's, against a budget meant to describe
+       * one sitting at one bench. The budget follows the reader, so it prices
+       * the default reading and drops the other branch entirely — words, code
+       * blocks, steps, asides and all, which is what dropping the subtree
+       * before any of the counters run gets us.
+       *
+       * That does mean a flywheel branch could quietly grow past the cap while
+       * the arm reading stays green. The two are the same lesson about
+       * different hardware, and the shared prose is shared rather than copied,
+       * so they cannot drift far by construction. If they ever do, the fix is
+       * to price both readings and report the longer, not to price their sum.
+       */
+      if (tag === "Mech") {
+        const only = stringAttr(node, "for");
+        if (only && only !== READING) {
+          flush();
+          return;
+        }
+        // The kept branch adds no box and no words of its own. Fall through so
+        // its children are counted exactly as if they had been written inline.
+      }
+
+      /**
+       * An `<M k="file" />` slot is one word in the middle of a sentence, and
+       * the sentence rules only work if it is counted as one. Resolving it to
+       * the default mechanism's word rather than skipping it also keeps the
+       * 25-word rule honest across a slot, the same problem inline `<code>`
+       * had.
+       */
+      if (tag === "M") {
+        const key = stringAttr(node, "k");
+        const profile = MECHANISMS[READING] as unknown as Record<
+          string,
+          unknown
+        >;
+        const slot = key ? profile[key] : undefined;
+        if (typeof slot === "string") append(slot);
+        return;
       }
 
       const inline = INLINE.has(tag);
@@ -998,9 +1069,16 @@ const asJson = args.includes("--json");
  * `/pid-control` argument into `C:/Program Files/Git/pid-control` before the
  * process ever sees it, so requiring the slash made the filter silently match
  * nothing and lint the whole site instead.
+ *
+ * Every other `--flag` is dropped here rather than named one at a time. The
+ * list used to be an allowlist of `--json` and `--sentences`, which meant
+ * `pnpm prose --mechanism=flywheel` filtered for a route called
+ * `/--mechanism=flywheel`, matched no lesson, and reported "0 pages" with an
+ * exit code of 0. The flywheel reading went unchecked for as long as that
+ * allowlist stood, and it looked exactly like a clean run.
  */
 const only = args
-  .filter((a) => a !== "--json" && a !== "--sentences")
+  .filter((a) => !a.startsWith("--") || a.startsWith("--only="))
   .map((a) => a.replace(/^--only=/, ""))
   .map((a) => a.replace(/^.*[/\\]/, ""))
   .filter(Boolean)

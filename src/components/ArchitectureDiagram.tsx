@@ -169,7 +169,7 @@ export default function ArchitectureDiagram({
             </p>
             <p>
               3. <strong>Mechanism:</strong> the Arm re-sends its 6-volt request
-              every tick, fifty times a second
+              every loop, fifty times a second
             </p>
             <p>
               4. <strong>Hardware:</strong> the motor keeps pushing for as long

@@ -98,7 +98,7 @@ public class TeleopOpMode extends PeriodicOpMode {
   private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
   public TeleopOpMode(Robot robot) {
-    driver.a().onTrue(robot.arm.runSlow()).onFalse(robot.arm.stop());
+    driver.a().whileTrue(robot.arm.runSlow()).whileFalse(robot.arm.stop());
   }
 }`}
         />
@@ -107,7 +107,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           only way in to the arm. An OpMode never builds a mechanism of its own:
           two modes would end up configuring the same motor. There is no loop in
           here either. The bindings are made once, and the scheduler checks the
-          trigger on every robot tick.
+          trigger on every robot loop.
         </p>
       </LessonSection>
 

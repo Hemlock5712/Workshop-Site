@@ -5,6 +5,8 @@ import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import { MarginNote, Split } from "@/components/lesson/Prose";
+import MechanismSelector from "@/components/lesson/MechanismSelector";
+import { M, Mech } from "@/components/lesson/Mechanism";
 
 /**
  * Lesson 22. It moved out of Workshop 5 alongside Command Composition, because
@@ -15,6 +17,13 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
  * It is also the first page on the site to use `.until(...)` and the word
  * `BooleanSupplier`. `/java-basics` pre-taught both fourteen lessons early and
  * no longer does, so section one defines them where they first appear.
+ *
+ * Written once, read twice from "The arrival question" down — see
+ * `src/data/mechanisms.ts`. The arm compares an angle and the flywheel
+ * compares a speed, which is two different `isAtTarget()` and not one with a
+ * noun swapped, so that section forks. Everything from "Both endings on one
+ * step" stays shared: it is a `Command.sequence` naming both mechanisms, and
+ * the point of it is the composition rather than either one.
  *
  * The old `debounce` and `audit-a-sequence` sections are gone. The one
  * load-bearing idea in the first, a condition that goes true too early, is the
@@ -42,8 +51,10 @@ export default function FinishLines() {
           The simulator running, from <strong>Hardware Simulation</strong>.
         </>,
       ]}
-      time="About 20 minutes"
+      time="12 minutes"
     >
+      <MechanismSelector />
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
@@ -51,11 +62,16 @@ export default function FinishLines() {
             whether anything happened. Two seconds is plenty for the arm on a
             fresh battery and short on a tired one.
           </p>
-          <p>
+          <Mech for="arm" as="p">
             The arm already carries a sensor that says where it is. Compare that
             reading against the angle the step asked for, and the step can end
             on arrival rather than on the clock.
-          </p>
+          </Mech>
+          <Mech for="flywheel" as="p">
+            The flywheel already reports how fast it is turning. Compare that
+            reading against the speed the step asked for, and the step can end
+            once the wheel is up rather than on the clock.
+          </Mech>
         </div>
         <MarginNote label="Where this goes">
           Autonomous is next, and both of its steps end on timeouts. A
@@ -94,34 +110,102 @@ export default function FinishLines() {
           tolerance are already in that one file. Put the arithmetic there too,
           and every call site gets one readable question instead.
         </p>
-        <CodeBlock
-          language="java"
-          filename="src/main/java/first/robot/mechanisms/Arm.java"
-          title="Arm.java: the arrival check"
-          code={`private static final double POSITION_TOLERANCE_ROT = 0.01;
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            filename="src/main/java/first/robot/mechanisms/Arm.java"
+            title="Arm.java: the arrival check"
+            code={`private final Angle tolerance = Degrees.of(1.0);
 
+/** Where the arm is now, straight off the CANcoder. */
+public Angle getPosition() {
+  return encoder.getPosition().getValue();
+}
+
+/** Where the last position request asked it to go. */
+public Angle getTargetPosition() {
+  return positionOut.getPositionMeasure();
+}
+
+/** True when the arm has reached its target angle. */
 public boolean isAtTarget() {
-  double error = targetPositionRot - getPositionRot();
-  return Math.abs(error) <= POSITION_TOLERANCE_ROT;
+  return getPosition().isNear(getTargetPosition(), tolerance);
 }`}
-        />
+          />
+        </Mech>
+
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            filename="src/main/java/first/robot/mechanisms/Flywheel.java"
+            title="Flywheel.java: the arrival check"
+            code={`private final AngularVelocity tolerance = RotationsPerSecond.of(0.5);
+
+/** How fast the wheel is turning now, straight off the motor. */
+public AngularVelocity getVelocity() {
+  return motor.getVelocity().getValue();
+}
+
+/** The speed the last velocity request asked for. */
+public AngularVelocity getTargetVelocity() {
+  return velocityOut.getVelocityMeasure();
+}
+
+/** True when the flywheel has reached its target speed. */
+public boolean isAtTarget() {
+  return getVelocity().isNear(getTargetVelocity(), tolerance);
+}`}
+          />
+        </Mech>
+
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <Mech for="arm" as="p">
+              <code>getPosition()</code> reads the CANcoder, and{" "}
+              <code>getTargetPosition()</code> asks the request object where it
+              was last told to go. Both hand back an <code>Angle</code> rather
+              than a bare number, so nothing on this line can mix up rotations
+              and degrees.
+            </Mech>
+            <Mech for="flywheel" as="p">
+              <code>getVelocity()</code> reads the motor, and{" "}
+              <code>getTargetVelocity()</code> asks the request object what
+              speed it was last told to hold. Both hand back an{" "}
+              <code>AngularVelocity</code> rather than a bare number, so nothing
+              on this line can mix up rotations a second and RPM.
+            </Mech>
             <p>
-              <code>targetPositionRot</code> is the angle the last position
-              request asked for. The other half of the subtraction,{" "}
-              <code>getPositionRot()</code>, reads the CANcoder through the
-              motor. The units are mechanism rotations, because{" "}
-              <strong>Mechanisms</strong> made that encoder the feedback source.
-              The tolerance is the number you pick, and a hundredth of a
-              rotation is about three and a half degrees.
+              <code>isNear</code> does the comparison for you. It is true when
+              the two are within <code>tolerance</code> of each other, and the
+              tolerance is the number you pick.{" "}
+              <Mech for="arm">One degree is the arm&apos;s.</Mech>
+              <Mech for="flywheel">
+                Half a rotation a second is the flywheel&apos;s.
+              </Mech>
             </p>
+            <Mech for="arm" as="p">
+              The flywheel answers the same question about speed. Same three
+              methods, with <code>AngularVelocity</code> in place of{" "}
+              <code>Angle</code>: <code>getVelocity()</code>,{" "}
+              <code>getTargetVelocity()</code>, and a tolerance of{" "}
+              <code>RotationsPerSecond.of(0.5)</code>. Switch the question at
+              the top of the page and write both now, because Workshop 5 uses
+              both.
+            </Mech>
+            <Mech for="flywheel" as="p">
+              The arm answers the same question about angle. Same three methods,
+              with <code>Angle</code> in place of <code>AngularVelocity</code>:{" "}
+              <code>getPosition()</code>, <code>getTargetPosition()</code>, and
+              a tolerance of <code>Degrees.of(1.0)</code>. Switch the question
+              at the top of the page and write both now, because Workshop 5 uses
+              both.
+            </Mech>
           </div>
           <MarginNote label="Too tight, too loose">
-            A tolerance smaller than the encoder&apos;s own jitter never comes
-            true. One wider than the job passes before the arm is anywhere
-            useful. Start from where the Tuner X plot settled, then widen it
-            until the step ends on every run.
+            A tolerance smaller than the sensor&apos;s own jitter never comes
+            true. One wider than the job passes before the <M k="noun" /> is
+            anywhere useful. Start from where the Tuner X plot settled, then
+            widen it until the step ends on every run.
           </MarginNote>
         </Split>
         <Box
@@ -130,10 +214,20 @@ public boolean isAtTarget() {
           title="Sensors jitter"
         >
           <p>
-            Never wait for <code>position == target</code>. Ask for 0.25
-            rotations and you read 0.2497, then 0.2503. An exact comparison is
-            false forever, so a step waiting on one never ends. Give the
-            tolerance the same units as the target.
+            Never wait for{" "}
+            <code>
+              <Mech for="arm">position</Mech>
+              <Mech for="flywheel">velocity</Mech> == target
+            </code>
+            .{" "}
+            <Mech for="arm">
+              Ask for 0.25 rotations and you read 0.2497, then 0.2503.
+            </Mech>
+            <Mech for="flywheel">
+              Ask for 75 rotations a second and you read 74.98, then 75.03.
+            </Mech>{" "}
+            An exact comparison is false forever, so a step waiting on one never
+            ends. <code>isNear</code> exists so you never write that comparison.
           </p>
         </Box>
       </LessonSection>
@@ -258,14 +352,15 @@ Command raiseArm =
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Add <code>isAtTarget()</code> to <code>Arm</code>, then bind{" "}
-            <code>raiseArm</code> to a button with <code>onTrue</code> in your{" "}
-            <code>TeleopOpMode</code>. It is a step now, so it ends itself.
+            Add <code>isAtTarget()</code> to <code>Arm</code> and{" "}
+            <code>Flywheel</code>, then bind <code>raiseArm</code> to a button
+            with <code>onTrue</code> in your <code>TeleopOpMode</code>. It is a
+            step now, so it ends itself.
           </li>
           <li>Press it once and time how long the step takes to end.</li>
           <li>
-            Set <code>POSITION_TOLERANCE_ROT</code> to <code>0.0001</code> and
-            press it again.
+            Change the arm&apos;s <code>tolerance</code> to{" "}
+            <code>Degrees.of(0.001)</code> and press it again.
           </li>
           <li>
             Leave the tolerance broken, drop <code>.withTimeout(...)</code>, and
@@ -279,8 +374,8 @@ Command raiseArm =
               seconds.
             </li>
             <li>
-              At <code>0.0001</code>, the step running the full two seconds
-              every time.
+              At <code>0.001</code>, the step running the full two seconds every
+              time.
             </li>
             <li>
               With the timeout gone as well, the arm pushing until you disable.

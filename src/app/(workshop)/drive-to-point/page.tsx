@@ -61,7 +61,7 @@ export default function DriveToPoint() {
         </>,
       ]}
       branch="5-DriveToPoint"
-      time="25 minutes"
+      time="15 minutes"
     >
       <p>
         Every meter the drivetrain has covered so far, a human drove. Hold{" "}

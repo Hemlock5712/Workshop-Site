@@ -14,10 +14,19 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import type { MechanismId } from "@/data/mechanisms";
 
-interface Entry {
+export interface OutlineEntry {
   id: string;
   label: string;
+  /**
+   * Set when the section lives inside a `<Mech>` fork. Server-rendered entries
+   * carry it so CSS can hide the reading the visitor did not pick, the same
+   * way it hides the section itself. The DOM rescan below produces entries
+   * with no mechanism, because by then only the visible sections are in the
+   * list at all.
+   */
+  mech?: MechanismId;
 }
 
 export default function LessonOutline({
@@ -39,17 +48,22 @@ export default function LessonOutline({
    * the first thing the site's owner reported. It also meant the outline
    * vanished completely wherever JS failed.
    */
-  initialEntries?: Entry[];
+  initialEntries?: OutlineEntry[];
 }) {
   const pathname = usePathname();
-  const [entries, setEntries] = useState<Entry[]>(initialEntries);
+  const [entries, setEntries] = useState<OutlineEntry[]>(initialEntries);
   const [active, setActive] = useState<string>(initialEntries[0]?.id ?? "");
 
   // Collect sections. Re-runs per route so client navigation rebuilds it.
   useEffect(() => {
+    // A mechanism lesson ships both readings and hides one, so the DOM holds
+    // sections the reader cannot see. `offsetParent` is null for anything
+    // under a `display: none` ancestor, which is exactly the test: a section
+    // with no box is a section that is not on this page, and listing it in the
+    // rail would offer a link that scrolls nowhere.
     const nodes = Array.from(
       document.querySelectorAll<HTMLElement>("[data-sec]")
-    );
+    ).filter((n) => n.offsetParent !== null);
     const found = nodes.map((n) => ({
       id: n.dataset.sec ?? "",
       label: n.dataset.secLabel ?? "",
@@ -106,6 +120,7 @@ export default function LessonOutline({
               return (
                 <a
                   key={entry.id}
+                  data-mech={entry.mech}
                   href={`#${entry.id}`}
                   aria-current={on ? "true" : undefined}
                   className="flex items-center gap-2.5 py-[5px] text-note leading-[1.35]"

@@ -107,62 +107,19 @@ git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-4-Motion
   hand-writes its blocks and teaches the arm, so that branch is the wrong
   parent for it.
 
-### The CodeRunner lesson catalog (`pnpm catalog`)
-
-`scripts/generate-lesson-catalog.mjs` turns the Workshop-Code branch chain into
-a [CodeRunner](https://github.com/Hemlock5712/CodeRunner) lesson catalog:
-`modules.json` plus one complete starting project per module. Output goes to
-`../Workshop-Lessons` by default, or `--out <dir>`. Run `pnpm reference:sync`
-first; it reads the bare mirror, not the worktrees, so an export is always a
-branch tip and never a dirty worktree.
-
-**Never point `--out` inside this repo.** A `build.gradle` under an open editor
-workspace gets auto-imported by the Java language server, which locks files in
-the output and leaves the next run unable to clear it. That is why the default
-is a sibling directory, and it is also where the catalog lives for real, as its
-own repository.
-
-- **The branches stay the single source of truth.** Same rule as the submodule
-  one above, same reason. The output is a build artifact; delete and re-run.
-  Never hand-edit a generated module.
-- **Three things are derived, not typed.** Which lesson owns a branch comes
-  from scanning pages for `branch="mech-2-Commands"`, so it cannot drift from
-  the site. `order` comes from chain position in tens, with `main` at 10 and
-  1 to 9 left for the plain-java prelude. The "what changed" list in each
-  README comes from `git diff` against the previous branch.
-- **Prose is not derived.** Each module's README is a bench card, not a second
-  copy of the lesson: goal, steps, check, and a link to the page. Cards live in
-  `context/lesson-cards/<branch>.md`. A branch with no card gets a stub and a
-  warning.
-- **Hand-written modules live in `context/lesson-modules/<id>/`** with a
-  `module.json` beside the sources. That is how `plain-java` lessons exist at
-  all, since they have no branch to export.
-- **`pnpm catalog:check` fails on any warning.** The warnings are curriculum
-  findings rather than script bugs: today it reports the Workshop 2 order
-  inversion and that `mech-3-MotionMagic` and `mech-4-ReadingState` are
-  embedded by no page.
-- **The swerve chain is excluded on purpose.** It is still `frc.robot`, and it
-  carries generated CTRE constants and a calibrated module layout that no
-  student types.
-
-Two findings from the CodeRunner spikes constrain what a module can teach: the
-mech chain publishes nothing to NetworkTables and models no simulation physics,
-so a `robot` module compiles and runs but displays nothing. See
-`docs/decisions/035-wpilib-2027-java-25.md` in the fork.
-
 ## Development Commands
 
 Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/yarn/bun work interchangeably.
 
 ### Essential Commands
 
-- **Development server**: `pnpm dev` (with Turbopack for faster builds) - **USER RUNS MANUALLY**
+- **Development server**: `pnpm dev` (with Turbopack for faster builds). One at a time, and see **Development Server Rules** above
 - **Production build**: `pnpm build` (runs `generate-search`, then `next build`)
-- **Production server**: `pnpm start` - **USER RUNS MANUALLY**
+- **Production server**: `pnpm start`
 - **Linting**: `pnpm lint` (ESLint with Next.js config)
 - **Type checking**: `pnpm type-check` (TypeScript compiler check)
 - **Code formatting**: `pnpm format` (Prettier with write), `pnpm format:check` (check only)
-- **Search data generation**: `pnpm generate-search` (updates search index; regenerates `src/data/searchData.ts` unformatted — run `pnpm format` afterward or `format:check` will fail)
+- **Search data generation**: `pnpm generate-search` (rewrites `public/search-index.json`, and fails the build when the lesson list and the filesystem disagree)
 - **Spell checking**: `pnpm spell` (cspell on TypeScript and markdown files)
 - **Prose linting**: `pnpm prose` (reading budget, title and heading length, sentence length, em dashes, banned constructions, quiz answer patterning). `--only=pid-control` checks one page, `--sentences` prints every over-length sentence in full, `--json` is machine-readable. A finding marked `(advisory)` does not fail the run
 - **Quiz answer keys**: `npx tsx scripts/quiz-shuffle.ts --all` rotates a patterned answer key without changing any option's text
@@ -170,25 +127,7 @@ Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/
 
 Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
-### Development Workflow
-
-1. **User runs** `pnpm dev` for development with hot reload
-2. Before committing, run `pnpm test` to ensure code quality
-3. Use `pnpm type-check` for TypeScript validation
-4. Use `pnpm lint` for code style consistency
-
 ## Code Architecture
-
-### Application Structure
-
-- **Framework**: Next.js 16.2.12 with App Router (`src/app/` directory)
-- **UI Library**: React 19.1.0
-- **Styling**: Tailwind CSS 4 with dark mode support
-- **Theme Management**: next-themes for theme state and system preference detection
-- **Type Safety**: TypeScript with strict configuration
-- **Icons**: Lucide React icons
-- **Syntax Highlighting**: React Syntax Highlighter
-- **Search**: MiniSearch for fast fuzzy search functionality
 
 ### Key Components Architecture
 
@@ -210,7 +149,7 @@ reintroduce them.
 
 #### Search System
 
-- **`src/data/searchData.ts`**: Search index, generated by `pnpm generate-search`
+- **`public/search-index.json`**: Search index, generated by `pnpm generate-search`
 - **`src/lib/searchConfig.ts`**: MiniSearch configuration and result mapping
 - **Search Features**: Fuzzy search, keyboard navigation, match highlighting, prefix matching
 - **Integration**: ⌘K palette from the topbar; `/search` for the full page. Result rows show lesson number and group, both derived from `lessons.ts`.
@@ -233,6 +172,20 @@ are what keeps 29 pages looking like one site.
 - **`src/components/lesson/Prose.tsx`**: `<Prose>`, `<ProseBlock>`, `<Split>`, `<MarginNote>`, `<WatchOut>`, `<Mark>`.
 - **`src/components/lesson/LessonOutline.tsx`**: The "on this page" rail. Scans the DOM for `data-sec` — never takes a hand-maintained list.
 - **`src/components/lesson/LessonKicker.tsx`**: "LESSON 15", derived from `lessons.ts`.
+- **`src/components/lesson/Mechanism.tsx`**: the arm/flywheel fork. `<M k="file" />` is an inline slot inside a sentence written once for both; `<Mech for="arm">` is a block only one mechanism reads. Both are server components — every variant ships in the HTML and CSS hides one, keyed off `data-mechanism` on `<html>`, which the root layout's inline script sets from `localStorage` before first paint.
+- **`src/components/lesson/MechanismSelector.tsx`**: "What mechanism are you working on?", the first child of a mechanism lesson's `PageTemplate`.
+
+**A mechanism lesson is written once and read twice.** From `/building-subsystems`
+onward a student picks Arm or Flywheel at the top and reads a whole lesson
+about that mechanism. The prose is not duplicated to do it: a sentence true of
+both is written once with a slot in it, and the words that differ live in
+`src/data/mechanisms.ts`. That file holds **vocabulary, not sentences** — a
+name, a filename, a field, a pair of CAN IDs. If a paragraph is genuinely
+different for the two, it is different content and belongs in `<Mech>` on the
+page. Adding a `sentence` key to the profile turns it into a second content
+store nobody reviews as prose, which is the failure it exists to prevent.
+`pnpm prose` prices the default (arm) reading and drops the other branch, so
+the budget still describes one student at one bench.
 
 Layout rule: **body copy never leaves `--measure` (820px)**. Code blocks,
 tables and figures may take `--gutter` more (`.measure-wide`, 1000px);
@@ -247,25 +200,6 @@ sits under the lede instead of beside the title. `.split` is kept because fifty
 of them are written into the pages, but it is a one-column grid that owns the
 gap between a paragraph and its note. Don't reintroduce the rail.
 
-#### Content Components
-
-- **`src/components/CodeBlock.tsx`**: Syntax-highlighted code display. Pass `branch` to tag the snippet with its Workshop-Code branch.
-- **`src/components/CodeWalkthrough.tsx`**: Step-by-step code explanation component
-- **`src/components/GitHubContent.tsx`**: Live GitHub file viewer with optional tabbed PR diff (Monaco). Pass `pr={{ number, focusFile? }}` to enable the tabbed Final Implementation / GitHub Changes UI.
-- **`src/components/ImageBlock.tsx`**: Optimized image display with Next.js Image
-- **`src/components/Box.tsx`**: Unified styled box component with alert (warning, info, tip), concept, and info variants
-- **`src/components/BillOfMaterials.tsx`**: Hardware BOM table component
-- **`src/components/CollapsibleSection.tsx`**: Expandable content sections
-- **`src/components/ComparisonTable.tsx`**: Side-by-side comparison tables
-- **`src/components/ContentCard.tsx`**: Card-based content layout
-- **`src/components/KeyConceptSection.tsx`**: Key learning point sections
-- **`src/components/MechanismTabs.tsx`**: Tabbed mechanism selection interface
-- **`src/components/ModelViewer.tsx`**: 3D model display with Three.js
-- **`src/components/AutoFocusMain.tsx`**: Automatic focus management for main content
-- **`src/components/DocumentationButton.tsx`**: Quick access to external documentation
-- **`src/components/KeyboardNavigationProvider.tsx`**: Context provider for keyboard shortcuts
-- **`src/components/KeyboardShortcutsHelp.tsx`**: Modal displaying available keyboard shortcuts
-
 ### Route Organization
 
 Lesson order, drawer grouping, the syllabus, and prev/next all come from
@@ -278,53 +212,6 @@ in Workshop 5. Historical side routes can remain reachable without appearing in
 
 **`/` is not in `LESSONS`.** Home is the landing page, not lesson 00 — the
 lesson count is derived from `LESSONS`; do not hard-code it in UI copy.
-
-```
-00 Getting Started:
-├── /introduction (What the workshop is, and the roadmap)
-├── /prerequisites (Required software & hardware)
-└── /mechanism-cad (optional — CAD files and 3D models)
-
-01 Hardware & CTRE:
-├── /hardware
-├── /mechanism-setup
-├── /pid-control (Tuner X only)
-└── /motion-magic (Tuner X only)
-
-02 Robot Programming:
-├── /java-basics
-├── /project-setup
-├── /command-framework
-├── /adding-commands (Classic Commands)
-├── /opmodes
-├── /robot-class (Robot.java)
-├── /building-subsystems
-├── /running-program
-└── /logging-implementation
-
-03 Swerve & Autonomous:
-├── /swerve-prerequisites
-├── /swerve-drive-project
-├── /swerve-calibration
-├── /pathplanner
-├── /chaining-commands (Command Composition)
-├── /finish-lines (Finish Conditions)
-└── /autonomous
-
-04 Vision & Navigation:
-├── /vision-implementation
-├── /drive-to-point
-├── /advanced-drive-to-point
-└── /dynamic-path-planning
-
-05 Advanced Commands:
-├── /coroutines
-├── /state-based
-└── /drive-to-tag-inline (optional example)
-
-Utility (outside lesson navigation):
-├── /search, /privacy, /video
-```
 
 **There is no `/glossary`.** The standalone glossary page was retired in August
 2026 — it was a second copy of every definition, kept in sync by hand. Inline
@@ -342,12 +229,6 @@ it with `/pathplanner`, which is lesson 26 and stays.
 on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-implementation`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`.
-
-### Asset Management
-
-- **Images**: Stored in `public/images/` with organized subdirectories
-- **Optimization**: All images use Next.js Image component
-- **Structure**: `presenters/`, `mechanisms/`, `hardware/` folders
 
 ### Development Patterns
 
@@ -464,17 +345,9 @@ findings apply to the website, not just the video scripts.
 
 ### Quick Visual Check
 
-IMMEDIATELY after implementing any front-end change:
-
-1. **Identify what changed** - Review the modified components/pages
-2. **Navigate to affected pages** - Use `mcp__playwright__browser_navigate` to visit each changed view
-3. **Verify design compliance** - Compare against `src/app/globals.css` and the rules above
-4. **Validate feature implementation** - Ensure the change fulfills the user's specific request
-5. **Check acceptance criteria** - Review any provided context files or requirements
-6. **Capture evidence** - Take full page screenshot at desktop viewport (1440px) of each changed view
-7. **Check for errors** - Run `mcp__playwright__browser_console_messages`
-
-This verification ensures changes meet design standards and user requirements.
+After any front-end change, run the `visual-check` skill. It drives a real
+browser through the `playwright` devDependency, because there is no Playwright
+MCP server configured for this project.
 
 ### Comprehensive Design Review
 

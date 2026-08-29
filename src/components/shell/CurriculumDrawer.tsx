@@ -202,7 +202,7 @@ export default function CurriculumDrawer() {
         {groups.map((group) => (
           <div key={group.id} className="mb-[30px]">
             <div
-              className="mb-2.5 flex items-baseline gap-3 pb-2"
+              className="mb-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1 pb-2"
               style={{ borderBottom: "1px solid var(--rule-soft)" }}
             >
               <span
@@ -225,6 +225,20 @@ export default function CurriculumDrawer() {
               >
                 {group.title}
               </span>
+              {group.unfinished && (
+                <span
+                  className="mono whitespace-nowrap rounded-[3px] px-1.5 py-0.5"
+                  style={{
+                    fontSize: "var(--text-micro)",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    color: "var(--tx3)",
+                    border: "1px solid var(--rule)",
+                  }}
+                >
+                  In progress
+                </span>
+              )}
               <span
                 className="mono ml-auto whitespace-nowrap"
                 style={{ fontSize: "var(--text-micro)", color: "var(--tx3)" }}
@@ -232,6 +246,24 @@ export default function CurriculumDrawer() {
                 {String(group.lessons.length).padStart(2, "0")} lessons
               </span>
             </div>
+
+            {/* The pages stay open. This is the label that stops a student
+                treating a half-written workshop as finished material. It is a
+                mono line and a hairline chip, not a colour: `--warn` does not
+                exist here on purpose. */}
+            {group.unfinished && (
+              <p
+                className="mb-2.5"
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "var(--text-note)",
+                  lineHeight: 1.45,
+                  color: "var(--tx3)",
+                }}
+              >
+                {group.unfinished}
+              </p>
+            )}
 
             <div className="flex flex-col">
               {group.lessons.map((lesson) => {

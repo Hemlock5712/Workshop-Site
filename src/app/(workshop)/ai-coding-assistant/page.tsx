@@ -29,8 +29,8 @@ import { BookOpen, FolderTree } from "lucide-react";
  * `Arm.java` path a template clone has ("one folder deeper" without
  * naming `arm/` is not a path); the two filenames a Copilot or Codex session
  * has to be handed, plus the `AGENTS.md` / `.github/copilot-instructions.md`
- * that stop you retyping them; the instruction to reuse `SLOW_VOLTAGE` rather
- * than only the observation that a new constant is wrong; the missing-`onFalse`
+ * that stop you retyping them; the instruction to reject an extracted constant rather
+ * than only the observation that a new constant is wrong; the missing-`whileFalse`
  * diagnostic for an arm that keeps pushing after you let go; and `Running Your
  * Code` in `needs[]`, which the closing check depends on. Paid for out of the
  * duplication in the `Split`, never out of a step.
@@ -60,7 +60,7 @@ export default function AICodingAssistant() {
         </>,
       ]}
       branch="mech-2-Commands"
-      time="25 minutes at a keyboard"
+      time="13 minutes"
     >
       <LessonSection id="commands-v2-by-default" title="Commands v2 by default">
         <p>
@@ -88,7 +88,7 @@ import org.wpilib.command3.Mechanism;
 
 public class Arm extends Mechanism {
   public Command runReverse() {
-    return runRepeatedly(() -> setVoltage(-SLOW_VOLTAGE)).named("runReverse (hold)");
+    return runRepeatedly(() -> setVoltage(-3.0)).named("runReverse (hold)");
   }
 }`}
         />
@@ -261,7 +261,7 @@ public class Arm extends Mechanism {
                 code={`Read src/main/java/first/robot/mechanisms/Arm.java and explain this line
 one piece at a time:
 
-    runRepeatedly(() -> setVoltage(FAST_VOLTAGE)).named("runFast (hold)")
+    runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)")
 
 I have finished the Commands lesson. Do not change any files.`}
               />
@@ -276,7 +276,7 @@ I have finished the Commands lesson. Do not change any files.`}
                 loop.
               </li>
               <li>
-                <code>FAST_VOLTAGE</code> is 6.0.
+                <code>6.0</code> is a voltage, not a speed and not a percent.
               </li>
               <li>
                 <code>.named(...)</code> is what makes it a <code>Command</code>
@@ -302,10 +302,10 @@ I have finished the Commands lesson. Do not change any files.`}
           language="text"
           title="Prompt: one small change"
           code={`Add a runReverse() command to src/main/java/first/robot/mechanisms/Arm.java
-that pushes -SLOW_VOLTAGE, matching the style of runSlow(). Then bind it in
+that pushes -3.0, matching the style of runSlow(). Then bind it in
 src/main/java/first/robot/opmode/TeleopOpMode.java as:
 
-    driver.b().onTrue(arm.runReverse()).onFalse(arm.stop());
+    driver.b().whileTrue(arm.runReverse()).whileFalse(arm.stop());
 
 Show me the diff before you write anything.`}
         />
@@ -313,12 +313,12 @@ Show me the diff before you write anything.`}
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Paste it in the same session and read the diff.{" "}
-            <strong>You should see:</strong> exactly two files and nothing else.{" "}
-            <code>SLOW_VOLTAGE</code> is already 3.0, so a minus sign is the
-            whole change. An assistant will often write <code>-3.0</code>
-            instead, or add a <code>REVERSE_VOLTAGE</code> constant. Both
-            compile, and both leave two numbers to keep in step, so ask it to
-            reuse the constant.
+            <strong>You should see:</strong> exactly two files and nothing else.
+            The mechanisms write their voltages as plain numbers, so{" "}
+            <code>-3.0</code> is the whole change. An assistant will often add a{" "}
+            <code>REVERSE_VOLTAGE</code> constant anyway. It compiles, and it
+            puts one number somewhere a reader has to go looking for it, so ask
+            for the literal instead.
           </li>
           <li>
             Accept, then run <code>gradlew build</code>.{" "}
@@ -360,10 +360,10 @@ Show me the diff before you write anything.`}
         </ol>
 
         <p>
-          <code>onTrue</code> schedules a hold, and a hold never ends by itself.
-          Releasing B works because <code>arm.stop()</code> takes the arm away
-          from it. If the arm keeps pushing after you let go, the{" "}
-          <code>onFalse</code> half of the binding is missing.
+          <code>whileTrue</code> schedules a hold and cancels it on release, but
+          canceling is not stopping. Releasing B works because{" "}
+          <code>whileFalse</code> schedules <code>arm.stop()</code>. If the arm
+          keeps pushing after you let go, that half of the binding is missing.
         </p>
 
         <FigureGrid

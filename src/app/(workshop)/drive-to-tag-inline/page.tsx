@@ -51,7 +51,7 @@ export default function DriveToTagInline() {
         </>,
       ]}
       branch="7-InlineCommands"
-      time="20 minutes, plus bench time"
+      time="12 minutes"
     >
       <Split>
         <ProseBlock>

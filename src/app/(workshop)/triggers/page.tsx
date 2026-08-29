@@ -35,9 +35,9 @@ import { GitBranch } from "lucide-react";
  * binding on its first poll, because `m_previousSignal` starts null and only
  * the `cached == previous` early return guards the edge. A margin note here
  * said so and named the consequence on this branch. It came out: on
- * `mech-2-Commands` the A binding's `onFalse(flywheel.stop())` is registered after
- * the right trigger's `onFalse(flywheel.runSlow())`, so it takes the flywheel
- * in the same tick and nothing turns, which is what `/running-program` tells
+ * `mech-2-Commands` the A binding's `whileFalse(flywheel.stop())` is registered
+ * after the right trigger's `whileFalse(flywheel.runSlow())`, so it takes the flywheel
+ * in the same loop and nothing turns, which is what `/running-program` tells
  * the student to expect on Enable. The note read as a contradiction of that
  * page while teaching nothing this lesson needs. Bench-check it before it goes
  * anywhere.
@@ -51,15 +51,15 @@ export default function Triggers() {
   return (
     <PageTemplate
       title="Triggers"
-      lede="A Trigger is a yes-or-no question the scheduler asks once a tick, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to TeleopOpMode."
+      lede="A Trigger is a yes-or-no question the scheduler asks once a loop, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to TeleopOpMode."
       needs={[
         <>
           Branch <code>mech-2-Commands</code> checked out, with{" "}
           <code>opmode/TeleopOpMode.java</code> and its three bindings.
         </>,
         <>
-          Holds, and why an <code>onTrue</code> comes with an{" "}
-          <code>onFalse</code>, from{" "}
+          Holds, and why a <code>whileTrue</code> comes with a{" "}
+          <code>whileFalse</code>, from{" "}
           <a href="/adding-commands" className="underline">
             Writing Commands
           </a>
@@ -70,7 +70,7 @@ export default function Triggers() {
         </>,
       ]}
       branch="mech-2-Commands"
-      time="13 minutes"
+      time="12 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -96,9 +96,9 @@ export default function Triggers() {
 
       <LessonSection id="the-four-verbs" title="The four verbs">
         <p>
-          A Trigger holds one condition and a list of bindings. Once a tick the
-          scheduler reads the condition, compares the answer with last
-          tick&apos;s, and acts on the change. A change to true is the rising
+          A Trigger holds one condition and a list of bindings. Once a loop the
+          scheduler reads the condition, compares the answer with the previous
+          loop&apos;s, and acts on the change. A change to true is the rising
           edge, a change to false the falling edge.
         </p>
         <p>
@@ -121,21 +121,21 @@ export default function Triggers() {
                 <td className="px-3 py-2">
                   <code>onTrue</code>
                 </td>
-                <td className="px-3 py-2">The tick the answer turns true</td>
+                <td className="px-3 py-2">The loop the answer turns true</td>
                 <td className="px-3 py-2">Nothing, ever</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">
                   <code>onFalse</code>
                 </td>
-                <td className="px-3 py-2">The tick the answer turns false</td>
+                <td className="px-3 py-2">The loop the answer turns false</td>
                 <td className="px-3 py-2">Nothing, ever</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">
                   <code>whileTrue</code>
                 </td>
-                <td className="px-3 py-2">The tick the answer turns true</td>
+                <td className="px-3 py-2">The loop the answer turns true</td>
                 <td className="px-3 py-2">
                   Its own command, when the answer turns false
                 </td>
@@ -144,7 +144,7 @@ export default function Triggers() {
                 <td className="px-3 py-2">
                   <code>whileFalse</code>
                 </td>
-                <td className="px-3 py-2">The tick the answer turns false</td>
+                <td className="px-3 py-2">The loop the answer turns false</td>
                 <td className="px-3 py-2">
                   Its own command, when the answer turns true
                 </td>
@@ -167,7 +167,7 @@ export default function Triggers() {
         </p>
       </LessonSection>
 
-      <LessonSection id="pairs-and-whiletrue" title="Pairs versus whileTrue">
+      <LessonSection id="pairs-and-whiletrue" title="Why whileTrue, not onTrue">
         <p>
           Both lines below leave the flywheel stopped when the button comes up.
           The route there is different.
@@ -176,13 +176,13 @@ export default function Triggers() {
         <CodeBlock
           language="java"
           title="The same button, two ways to write it"
-          code={`// What mech-2-Commands writes: the press schedules one command, the release
-// schedules another, and the second one interrupts the first.
+          code={`// onTrue/onFalse: the press schedules one command, the release schedules
+// another, and the second displaces the first by arriving later.
 driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
 
-// What you will write from Command Composition on: the press schedules,
-// the release cancels. The whileFalse is still needed, because canceling
-// leaves the motor at its last request.
+// whileTrue/whileFalse: the press schedules, the release cancels. This is what
+// the branch writes. The whileFalse is still needed, because canceling leaves
+// the motor at its last request.
 driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
         />
 
@@ -194,19 +194,17 @@ driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
           sends zero.
         </p>
         <p>
-          The pair form buys a choice. The branch&apos;s right trigger releases
-          into <code>runSlow()</code> rather than <code>stop()</code>, so the
-          wheel keeps turning at 3&nbsp;V. <code>whileTrue</code> has no slot
-          for that.
+          The course writes the second form everywhere. A cancel gives a log a
+          real start and end for the held command, and it hands the mechanism
+          back. With <code>onTrue</code> the mechanism is never released, so a
+          default command never gets a turn.
         </p>
         <p>
-          <code>whileTrue</code> earns its keep once a button runs a group of
-          commands instead of one. No single command in an <code>onFalse</code>{" "}
-          would unwind a group step by step, and{" "}
-          <a href="/chaining-commands" className="underline">
-            Command Composition
-          </a>{" "}
-          is where the switch happens.
+          <code>whileFalse</code> names what runs next, and a stop is only one
+          of the choices. The branch&apos;s right trigger releases into{" "}
+          <code>runSlow()</code>, so the wheel keeps turning at 3&nbsp;V. Leave
+          the second verb off and the motor holds whatever it had. That is how a
+          closed-loop position request keeps an arm where you left it.
         </p>
       </LessonSection>
 
@@ -323,13 +321,15 @@ public static Trigger disabled() {
           <li>
             Inside <code>public TeleopOpMode(Robot robot)</code>, below the A
             binding, add{" "}
-            <code>driver.b().onTrue(arm.runSlow()).onFalse(arm.stop());</code>{" "}
+            <code>
+              driver.b().whileTrue(arm.runSlow()).whileFalse(arm.stop());
+            </code>{" "}
             Build it: <code>BUILD SUCCESSFUL</code>.
           </li>
           <li>
-            Delete <code>.onFalse(arm.stop())</code> and build again. It still
-            succeeds. A missing release binding compiles fine and leaves the arm
-            pushing until the match ends. Put it back.
+            Delete <code>.whileFalse(arm.stop())</code> and build again. It
+            still succeeds. A missing release binding compiles fine and leaves
+            the arm pushing until the match ends. Put it back.
           </li>
           <li>
             Move the B line above the constructor, next to the{" "}
@@ -375,21 +375,21 @@ public static Trigger disabled() {
             ],
             correctAnswer: 1,
             explanation:
-              "whileTrue schedules on the rising edge and cancels on the falling edge. onTrue and onFalse only ever schedule, so the branch pairs them: the release command takes the mechanism away from the press command.",
+              "whileTrue schedules on the rising edge and cancels on the falling edge. onTrue and onFalse only ever schedule; neither one takes a command back. Canceling still is not stopping, so the branch pairs whileTrue with a whileFalse.",
           },
           {
             id: 2,
             question:
-              "Why can the right-trigger binding not be rewritten as whileTrue paired with whileFalse(stop)?",
+              "The right trigger is whileTrue(flywheel.runFast()).whileFalse(flywheel.runSlow()). Why not whileTrue on its own?",
             options: [
-              "Its release starts the slow hold rather than stopping, and only a named command can do that",
+              "Releasing would cancel the command and leave the last 6 V request applied, so the wheel would keep spinning fast",
               "whileTrue does not work on an analog axis",
-              "The flywheel has two motors, and whileTrue claims one at a time",
-              "It could: the two forms are interchangeable everywhere",
+              "whileTrue releases the mechanism, and an unclaimed mechanism coasts to a stop on its own",
+              "It would not compile: whileTrue requires a matching whileFalse",
             ],
             correctAnswer: 0,
             explanation:
-              "Releasing the right trigger drops the flywheel to 3 V, not to zero. whileTrue cancels on release and a cancel names nothing, so the pair form is the only one that can say what runs next.",
+              "Canceling is not stopping. With nothing bound to the release the flywheel falls back to idle(), which sends nothing at all, so Phoenix keeps applying 6 V. whileFalse names what runs next, and here that is runSlow() rather than a stop: a wheel still turning at 3 V does not have to spin up from dead.",
           },
           {
             id: 3,
@@ -402,7 +402,7 @@ public static Trigger disabled() {
             ],
             correctAnswer: 2,
             explanation:
-              "A Trigger wraps a condition the scheduler polls once a tick. RobotModeTriggers.disabled() is new Trigger(RobotState::isDisabled). Buttons are the only source on this branch because nothing on the Arm or Flywheel is readable yet.",
+              "A Trigger wraps a condition the scheduler polls once a loop. RobotModeTriggers.disabled() is new Trigger(RobotState::isDisabled). Buttons are the only source on this branch because nothing on the Arm or Flywheel is readable yet.",
           },
           {
             id: 4,
@@ -412,11 +412,11 @@ public static Trigger disabled() {
               "Nothing: and only reads the first button",
               "The command fires twice, once per button",
               "Nothing until you release and press both together",
-              "The command fires once, on the tick both answers are true",
+              "The command fires once, on the loop both answers are true",
             ],
             correctAnswer: 3,
             explanation:
-              "and builds a new Trigger whose answer is both conditions together. It has one rising edge, on the tick the combined answer turns true, and the order you pressed them in does not matter.",
+              "and builds a new Trigger whose answer is both conditions together. It has one rising edge, on the loop the combined answer turns true, and the order you pressed them in does not matter.",
           },
           {
             id: 5,
@@ -435,7 +435,7 @@ public static Trigger disabled() {
           {
             id: 6,
             question:
-              "The left trigger is bound with onTrue(arm.runFast()). You pull the trigger a third of the way and hold it there. What does the arm do?",
+              "The left trigger is bound with whileTrue(arm.runFast()). You pull the trigger a third of the way and hold it there. What does the arm do?",
             options: [
               "Pushes at a third of the fast voltage, because the axis scales the command",
               "Pushes at the fast voltage, because any movement of the axis counts as a press",

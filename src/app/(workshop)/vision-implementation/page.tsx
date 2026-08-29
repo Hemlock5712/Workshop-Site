@@ -47,7 +47,7 @@ export default function VisionImplementation() {
         <>An AprilTag. A printed one on a wall works.</>,
       ]}
       branch="3-Limelight"
-      time="About an hour, mostly camera setup"
+      time="12 minutes"
     >
       <Box variant="alert-warning" title="No camera in simulation">
         <p>

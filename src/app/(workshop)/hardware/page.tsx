@@ -25,7 +25,7 @@ export default function Hardware() {
           USB cable to the CANivore.
         </>,
       ]}
-      time="About 10 minutes, longer if the firmware is old"
+      time="9 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">

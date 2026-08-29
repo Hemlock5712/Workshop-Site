@@ -1,8 +1,0 @@
-{
-  "id": "java-basics",
-  "title": "Java Basics",
-  "kind": "plain-java",
-  "order": 1,
-  "lesson": "/java-basics",
-  "description": "Fields, constructors, methods, and code as a value, on an Arm with the hardware taken out."
-}

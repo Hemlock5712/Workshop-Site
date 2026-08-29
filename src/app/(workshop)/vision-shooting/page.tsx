@@ -50,7 +50,7 @@ export default function DynamicFlywheel() {
         </>,
       ]}
       branch="4-DynamicFlywheel"
-      time="about 30 minutes to type in"
+      time="12 minutes"
     >
       <p>
         This branch adds <code>subsystems/Flywheel.java</code> and a helper,{" "}
