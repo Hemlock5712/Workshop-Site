@@ -14,10 +14,19 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import type { MechanismId } from "@/data/mechanisms";
 
-interface Entry {
+export interface OutlineEntry {
   id: string;
   label: string;
+  /**
+   * Set when the section lives inside a `<Mech>` fork. Server-rendered entries
+   * carry it so CSS can hide the reading the visitor did not pick, the same
+   * way it hides the section itself. The DOM rescan below produces entries
+   * with no mechanism, because by then only the visible sections are in the
+   * list at all.
+   */
+  mech?: MechanismId;
 }
 
 export default function LessonOutline({
@@ -39,10 +48,10 @@ export default function LessonOutline({
    * the first thing the site's owner reported. It also meant the outline
    * vanished completely wherever JS failed.
    */
-  initialEntries?: Entry[];
+  initialEntries?: OutlineEntry[];
 }) {
   const pathname = usePathname();
-  const [entries, setEntries] = useState<Entry[]>(initialEntries);
+  const [entries, setEntries] = useState<OutlineEntry[]>(initialEntries);
   const [active, setActive] = useState<string>(initialEntries[0]?.id ?? "");
 
   // Collect sections. Re-runs per route so client navigation rebuilds it.
@@ -111,6 +120,7 @@ export default function LessonOutline({
               return (
                 <a
                   key={entry.id}
+                  data-mech={entry.mech}
                   href={`#${entry.id}`}
                   aria-current={on ? "true" : undefined}
                   className="flex items-center gap-2.5 py-[5px] text-note leading-[1.35]"

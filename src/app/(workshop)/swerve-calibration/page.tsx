@@ -46,7 +46,8 @@ import { Book } from "lucide-react";
  * cut to get the number down. See the split proposal in the handoff.
  *
  * August 2026, after the sentence-run bug in `lint-prose.ts` was fixed: two
- * welded sentences came back over 25 words and the page measured 15.1. The
+ * welded sentences came back over 25 words and the page measured 15.1, since
+ * brought down to the 14.9 the linter reports today. The
  * `seedFieldCentric()` pair now opens its second sentence on "Every loop" so
  * the splitter sees the two sentences a reader already saw, and the
  * `kSlipCurrent` colon is a period. The 15 min cap was paid out of prose and
