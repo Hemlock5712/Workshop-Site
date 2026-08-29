@@ -147,9 +147,10 @@ public class LeaveStartAuto extends PeriodicOpMode {
         <p>
           A timeout is the only finish line available here.{" "}
           <code>DriveMechanism</code> reports its pose, but nothing on it
-          answers <em>am I there yet</em> the way <code>arm.isAtTarget()</code>{" "}
-          did on Finish Conditions. Workshop 5 adds a command that measures
-          against a field pose and finishes when it arrives.
+          answers <em>am I there yet</em> the way{" "}
+          <code>robot.arm.isAtTarget()</code> did on Finish Conditions. Workshop
+          5 adds a command that measures against a field pose and finishes when
+          it arrives.
         </p>
         <p>
           Two names go into this file and they do different jobs. The one in the

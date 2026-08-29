@@ -279,7 +279,7 @@ import org.wpilib.command3.Mechanism;`}
             ],
             correctAnswer: 1,
             explanation:
-              "whileTrue does cancel on the release, so the command really does end. Canceling is not stopping. The flywheel falls back to idle(), which sends nothing at all, so Phoenix keeps applying the last 6 V request. whileFalse(flywheel.stop()) is what sends zero.",
+              "whileTrue does cancel on the release, so the command really does end. Canceling is not stopping. The flywheel falls back to idle(), which sends nothing at all, so Phoenix keeps applying the last 6 V request. whileFalse(robot.flywheel.stop()) is what sends zero.",
           },
         ]}
       />

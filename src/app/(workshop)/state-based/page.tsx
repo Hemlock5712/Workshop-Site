@@ -54,7 +54,7 @@ export default function StateMachines() {
       needs={[
         <>
           The arm and flywheel from <strong>Finish Conditions</strong>,
-          including <code>flywheel.isAtTarget()</code>.
+          including <code>robot.flywheel.isAtTarget()</code>.
         </>,
         <>
           The <code>mech-6-StateBased</code> branch, one commit past{" "}
@@ -150,17 +150,22 @@ export default function StateMachines() {
 //    because the machine cancels the old state's command when it switches. SpinUp is the
 //    exception: .until(...) gives its command an ending, so it can use whenComplete() below.
 State stowed =
-    sm.addState(Command.parallel(arm.vertical(), flywheel.stop()).named("Stowed (hold)"));
+    sm.addState(
+        Command.parallel(robot.arm.vertical(), robot.flywheel.stop())
+            .named("Stowed (hold)"));
 State pickup =
-    sm.addState(Command.parallel(arm.horizontal(), flywheel.stop()).named("Pickup (hold)"));
+    sm.addState(
+        Command.parallel(robot.arm.horizontal(), robot.flywheel.stop())
+            .named("Pickup (hold)"));
 State spinUp =
     sm.addState(
-        Command.parallel(arm.vertical(), flywheel.runFast())
-            .until(flywheel::isAtTarget)
+        Command.parallel(robot.arm.vertical(), robot.flywheel.runFast())
+            .until(robot.flywheel::isAtTarget)
             .named("SpinUp until at speed"));
 State ready =
     sm.addState(
-        Command.parallel(arm.vertical(), flywheel.runFast()).named("ReadyToShoot (hold)"));`}
+        Command.parallel(robot.arm.vertical(), robot.flywheel.runFast())
+            .named("ReadyToShoot (hold)"));`}
         />
 
         <p>
@@ -248,7 +253,7 @@ public void end() {
           The state settles which spelling you use, not the condition.{" "}
           <code>whenComplete()</code> fires only when a state&apos;s command
           ends on its own. Only <code>spinUp</code> qualifies:{" "}
-          <code>.until(flywheel::isAtTarget)</code> gives it an ending.
+          <code>.until(robot.flywheel::isAtTarget)</code> gives it an ending.
         </p>
         <p>
           A rising edge is the first loop a condition goes from false to true.
@@ -346,9 +351,9 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
           </p>
           <p className="mt-3">
             <strong>It never leaves SpinUp.</strong>{" "}
-            <code>.until(flywheel::isAtTarget)</code> never comes true. The
-            tolerance is <code>0.5</code> rotations per second. The branch ships
-            the flywheel with <code>kS</code> and <code>kP</code> at{" "}
+            <code>.until(robot.flywheel::isAtTarget)</code> never comes true.
+            The tolerance is <code>0.5</code> rotations per second. The branch
+            ships the flywheel with <code>kS</code> and <code>kP</code> at{" "}
             <code>0.0</code>, so nothing corrects the last of the error. Log the
             measured speed against the target and read the gap.
           </p>
@@ -405,12 +410,12 @@ ready.onExit(() -> DataLogManager.log("Superstructure: left ReadyToShoot"));`}
             options: [
               "whenComplete is faster because it skips the per-loop check",
               "Because SpinUp has two mechanisms and the others have one",
-              "Because SpinUp is the only state whose command ends on its own: .until(flywheel::isAtTarget) gives it an ending, and whenComplete fires once when it does",
+              "Because SpinUp is the only state whose command ends on its own: .until(robot.flywheel::isAtTarget) gives it an ending, and whenComplete fires once when it does",
               "Because ready is the last state that was added",
             ],
             correctAnswer: 2,
             explanation:
-              "whenComplete() is checked once, after the state's command finishes on its own. Three of the four states run holds that never finish, so whenComplete would never fire on them and they use .when(...) instead. SpinUp's .until(flywheel::isAtTarget) is what gives its parallel group an ending, which is what makes whenComplete available.",
+              "whenComplete() is checked once, after the state's command finishes on its own. Three of the four states run holds that never finish, so whenComplete would never fire on them and they use .when(...) instead. SpinUp's .until(robot.flywheel::isAtTarget) is what gives its parallel group an ending, which is what makes whenComplete available.",
           },
           {
             id: 4,

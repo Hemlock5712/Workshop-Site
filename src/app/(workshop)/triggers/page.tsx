@@ -34,8 +34,8 @@ import { GitBranch } from "lucide-react";
  * binding on its first poll, because `m_previousSignal` starts null and only
  * the `cached == previous` early return guards the edge. A margin note here
  * said so and named the consequence on this branch. It came out: on
- * `mech-2-Commands` the A binding's `whileFalse(flywheel.stop())` is registered
- * after the right trigger's `whileFalse(flywheel.runSlow())`, so it takes the flywheel
+ * `mech-2-Commands` the A binding's `whileFalse(robot.flywheel.stop())` is registered
+ * after the right trigger's `whileFalse(robot.flywheel.runSlow())`, so it takes the flywheel
  * in the same loop and nothing turns, which is what `/running-program` tells
  * the student to expect on Enable. The note read as a contradiction of that
  * page while teaching nothing this lesson needs. Bench-check it before it goes
@@ -175,20 +175,20 @@ export default function Triggers() {
           title="The same button, two ways to write it"
           code={`// onTrue/onFalse: the press schedules one command, the release schedules
 // another, and the second displaces the first by arriving later.
-driver.a().onTrue(flywheel.runFast()).onFalse(flywheel.stop());
+driver.a().onTrue(robot.flywheel.runFast()).onFalse(robot.flywheel.stop());
 
 // whileTrue/whileFalse: the press schedules, the release cancels. This is what
 // the branch writes. The whileFalse is still needed, because canceling leaves
 // the motor at its last request.
-driver.a().whileTrue(flywheel.runFast()).whileFalse(flywheel.stop());`}
+driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());`}
         />
 
         <p>
           Nothing cancels in the first line. Between two commands at equal
           priority the mechanism goes to the one that arrived second, so{" "}
-          <code>flywheel.stop()</code> takes it away from <code>runFast()</code>
-          . The second line cancels instead, and <code>whileFalse</code> is what
-          sends zero.
+          <code>robot.flywheel.stop()</code> takes it away from{" "}
+          <code>runFast()</code>. The second line cancels instead, and{" "}
+          <code>whileFalse</code> is what sends zero.
         </p>
         <p>
           The course writes the second form everywhere. A cancel gives a log a
@@ -241,7 +241,7 @@ public static Trigger disabled() {
           Nothing on the <code>Arm</code> or <code>Flywheel</code> answers a
           question yet. Both expose three commands and nothing else, so every
           Trigger in the project is still a button. The first readable condition
-          is <code>arm::isAtTarget</code>, on{" "}
+          is <code>robot.arm::isAtTarget</code>, on{" "}
           <a href="/finish-lines" className="underline">
             Finish Conditions
           </a>
@@ -369,7 +369,7 @@ public static Trigger disabled() {
           {
             id: 2,
             question:
-              "The right trigger is whileTrue(flywheel.runFast()).whileFalse(flywheel.runSlow()). Why not whileTrue on its own?",
+              "The right trigger is whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow()). Why not whileTrue on its own?",
             options: [
               "Releasing would cancel the command and leave the last 6 V request applied, so the wheel would keep spinning fast",
               "whileTrue does not work on an analog axis",
@@ -424,7 +424,7 @@ public static Trigger disabled() {
           {
             id: 6,
             question:
-              "The left trigger is bound with whileTrue(arm.runFast()). You pull the trigger a third of the way and hold it there. What does the arm do?",
+              "The left trigger is bound with whileTrue(robot.arm.runFast()). You pull the trigger a third of the way and hold it there. What does the arm do?",
             options: [
               "Pushes at a third of the fast voltage, because the axis scales the command",
               "Pushes at the fast voltage, because any movement of the axis counts as a press",

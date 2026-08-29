@@ -89,11 +89,12 @@ export default function FinishLines() {
           second.
         </p>
         <p>
-          Hand it a method reference. Written as <code>arm::isAtTarget</code>,
-          the condition passes the method itself, so it can be called again on
-          every loop. Add the parentheses and <code>arm.isAtTarget()</code> runs
-          the method on the spot, passing one frozen answer. That will not
-          compile: <code>boolean cannot be converted to BooleanSupplier</code>.
+          Hand it a method reference. Written as{" "}
+          <code>robot.arm::isAtTarget</code>, the condition passes the method
+          itself, so it can be called again on every loop. Add the parentheses
+          and <code>robot.arm.isAtTarget()</code> runs the method on the spot,
+          passing one frozen answer. That will not compile:{" "}
+          <code>boolean cannot be converted to BooleanSupplier</code>.
         </p>
         <p>
           <code>.until(...)</code> hands back a builder rather than a{" "}
@@ -230,7 +231,7 @@ public boolean isAtTarget() {
 
       <LessonSection id="decorate-the-hold" title="Both endings on one step">
         <p>
-          <code>arm.vertical()</code> is a hold. It re-sends its position
+          <code>robot.arm.vertical()</code> is a hold. It re-sends its position
           request every loop and never finishes, so it suits a held button and
           is useless as a member of a list. One call site turns it into a step.
         </p>
@@ -240,8 +241,8 @@ public boolean isAtTarget() {
           code={`import static org.wpilib.units.Units.Seconds;
 
 Command raiseArm =
-    arm.vertical()
-        .until(arm::isAtTarget)
+    robot.arm.vertical()
+        .until(robot.arm::isAtTarget)
         .named("vertical until at target")
         .withTimeout(Seconds.of(2.0));`}
         />
@@ -255,9 +256,9 @@ Command raiseArm =
         <Box variant="concept" title="What a timeout proves">
           <p>
             That the waiting is over. Nothing else. If the next step assumes the
-            arm arrived, ask <code>arm.isAtTarget()</code> again before running
-            it. Or log the answer, so a post-match file separates a success from
-            a step that hit its timeout.
+            arm arrived, ask <code>robot.arm.isAtTarget()</code> again before
+            running it. Or log the answer, so a post-match file separates a
+            success from a step that hit its timeout.
           </p>
         </Box>
         <p>
@@ -269,20 +270,20 @@ Command raiseArm =
           title="Every member ends, so the group ends"
           code={`Command score =
     Command.sequence(
-            arm.vertical()
-                .until(arm::isAtTarget)
+            robot.arm.vertical()
+                .until(robot.arm::isAtTarget)
                 .named("raise arm")
                 .withTimeout(Seconds.of(2.0)),
-            flywheel.runFast().withTimeout(Seconds.of(1.0)),
-            flywheel.stop().withTimeout(Seconds.of(0.1)))
+            robot.flywheel.runFast().withTimeout(Seconds.of(1.0)),
+            robot.flywheel.stop().withTimeout(Seconds.of(0.1)))
         .named("Score");`}
         />
         <p>
           The two flywheel members have no arrival to wait for, so their
           timeouts are the intended ending rather than a backstop. Spinning for
-          one second is the instruction. <code>flywheel.stop()</code> is a hold
-          too, so without a timeout on it the group never finishes either. A
-          tenth of a second is long enough to send zero and release the
+          one second is the instruction. <code>robot.flywheel.stop()</code> is a
+          hold too, so without a timeout on it the group never finishes either.
+          A tenth of a second is long enough to send zero and release the
           mechanism. Autonomous stops its drivetrain the same way.
         </p>
       </LessonSection>
@@ -404,7 +405,7 @@ Command raiseArm =
           {
             id: 2,
             question:
-              "What does arm::isAtTarget hand to .until(...), and why does arm.isAtTarget() not work in the same place?",
+              "What does robot.arm::isAtTarget hand to .until(...), and why does robot.arm.isAtTarget() not work in the same place?",
             options: [
               "Both work; the double colon is a style preference",
               "The method itself, so the scheduler can call it every loop. The version with parentheses runs it once and passes a frozen boolean, which does not compile",
@@ -413,12 +414,12 @@ Command raiseArm =
             ],
             correctAnswer: 1,
             explanation:
-              "arm::isAtTarget is shorthand for () -> arm.isAtTarget(), a question the scheduler can ask about fifty times a second. Writing arm.isAtTarget() runs the method right there and produces one boolean, and .until takes a BooleanSupplier, so javac rejects it: boolean cannot be converted to BooleanSupplier.",
+              "robot.arm::isAtTarget is shorthand for () -> robot.arm.isAtTarget(), a question the scheduler can ask about fifty times a second. Writing robot.arm.isAtTarget() runs the method right there and produces one boolean, and .until takes a BooleanSupplier, so javac rejects it: boolean cannot be converted to BooleanSupplier.",
           },
           {
             id: 3,
             question:
-              "arm.vertical().until(arm::isAtTarget) on its own will not compile. What is missing?",
+              "robot.arm.vertical().until(robot.arm::isAtTarget) on its own will not compile. What is missing?",
             options: [
               "vertical() is a hold, and holds cannot take a finish condition",
               "The condition has to be a lambda rather than a method reference",
@@ -427,7 +428,7 @@ Command raiseArm =
             ],
             correctAnswer: 3,
             explanation:
-              'Same rule as Command.sequence from Command Composition: these builders are not Commands until they are named. The compiler reports a builder type where a Command was wanted. Write .until(arm::isAtTarget).named("vertical until at target").',
+              'Same rule as Command.sequence from Command Composition: these builders are not Commands until they are named. The compiler reports a builder type where a Command was wanted. Write .until(robot.arm::isAtTarget).named("vertical until at target").',
           },
           {
             id: 4,
@@ -448,7 +449,7 @@ Command raiseArm =
             question:
               "The arm settles a fraction outside tolerance, so the routine sits on that step for the rest of the match. What keeps one bad step from costing the whole autonomous period?",
             options: [
-              "Keep .until(arm::isAtTarget) and add .withTimeout(Seconds.of(2.0)) after the .named(...)",
+              "Keep .until(robot.arm::isAtTarget) and add .withTimeout(Seconds.of(2.0)) after the .named(...)",
               "Widen the tolerance to a quarter rotation so the check always passes",
               "Drop .until(...) and go back to a fixed one-second timeout",
               "Add a verticalAndWait() method to Arm that blocks until the arm arrives",
@@ -460,7 +461,7 @@ Command raiseArm =
           {
             id: 6,
             question:
-              "Why is the last member of the sequence flywheel.stop().withTimeout(Seconds.of(0.1)) rather than flywheel.stop()?",
+              "Why is the last member of the sequence robot.flywheel.stop().withTimeout(Seconds.of(0.1)) rather than robot.flywheel.stop()?",
             options: [
               "The timeout is what makes stop() outrank runFast() for the mechanism",
               "Command.sequence requires a timeout on every member",
