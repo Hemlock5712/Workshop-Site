@@ -42,9 +42,9 @@ export default function VisionHardware() {
           <ProseBlock>
             <p>
               Odometry adds up wheel turns. Every skid, every scrubbed wheel and
-              every millimetre of error in the wheel radius goes into the total
+              every millimeter of error in the wheel radius goes into the total
               and stays there. By the end of a match, the robot&apos;s idea of
-              where it stands can be a metre from the truth. Nothing on the
+              where it stands can be a meter from the truth. Nothing on the
               robot notices.
             </p>
             <p>
@@ -290,7 +290,7 @@ export default function VisionHardware() {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Hold a printed tag about a metre in front of the camera and watch the
+          Hold a printed tag about a meter in front of the camera and watch the
           web interface. Move it left, right, nearer and further.
         </p>
 
@@ -298,7 +298,7 @@ export default function VisionHardware() {
           <p>
             The tag&apos;s ID, drawn on the image and reported in the numbers
             below it. A distance that matches a tape measure within a few
-            centimetres. A botpose that changes smoothly as you move the tag,
+            centimeters. A botpose that changes smoothly as you move the tag,
             rather than flickering between two answers.
           </p>
         </Box>
@@ -327,7 +327,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 2,
             explanation:
-              "Odometry accumulates: every skid and every millimetre of wheel-radius error stays in the total. A tag sighting is measured against a known field position, so its error is whatever that one reading is worth and nothing more. It is often noisier than odometry frame to frame, so the next lesson blends the two instead of choosing.",
+              "Odometry accumulates: every skid and every millimeter of wheel-radius error stays in the total. A tag sighting is measured against a known field position, so its error is whatever that one reading is worth and nothing more. It is often noisier than odometry frame to frame, so the next lesson blends the two instead of choosing.",
           },
           {
             id: 2,

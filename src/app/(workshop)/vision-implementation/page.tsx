@@ -244,7 +244,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           <code>rejectionFlags</code> is the library&apos;s own verdict on the
           frame, and zero means it found nothing wrong. A fresh{" "}
           <code>new Limelight(name)</code> already carries sensible gates. It
-          throws out a single tag past three metres, a single tag whose
+          throws out a single tag past three meters, a single tag whose
           ambiguity is over 0.7, and any solve with no fielded tag. That last
           gate is why <code>tagFactor</code> can never be zero. When a frame
           does get rejected,{" "}
@@ -258,14 +258,14 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           <ProseBlock>
             <p>
               Every sighting goes into the estimator with a standard deviation:
-              how far off it might be, in metres and radians. Bigger means trust
+              how far off it might be, in meters and radians. Bigger means trust
               it less, and the estimator blends the sighting against the wheels
               in that proportion.
             </p>
             <p>
               Distance hurts gently and tag count helps hard. Doubling the
               distance multiplies the error bar by about 2.3, while a second tag
-              divides it by four. One tag at two metres gives about 0.77 m. Two
+              divides it by four. One tag at two meters gives about 0.77 m. Two
               tags at the same distance give about 0.19 m. That ratio is the
               argument for the mounting rule on the last page.
             </p>
@@ -313,15 +313,15 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Park about two metres from a tag and note the pose. Cover the camera
-            and push the robot a metre sideways. The pose follows the wheels.
+            Park about two meters from a tag and note the pose. Cover the camera
+            and push the robot a meter sideways. The pose follows the wheels.
           </li>
           <li>
             Uncover the camera. The pose settles toward where the tag says the
             robot is, over a second rather than in one frame.
           </li>
           <li>
-            Back away past four metres, then close in again. Line up on two
+            Back away past four meters, then close in again. Line up on two
             tags, then on one.
           </li>
         </ol>
@@ -329,7 +329,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
         <Box variant="alert-success" title="You should see">
           <p>
             The pose walks back to the truth once a tag comes into view, rather
-            than jumping there. Corrections stop past four metres and resume
+            than jumping there. Corrections stop past four meters and resume
             when you close in. With one tag in view the position moves and the
             heading does not budge.
           </p>
@@ -391,7 +391,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
             ],
             correctAnswer: 1,
             explanation:
-              "Zero means no gate fired. A fresh Limelight starts with defaults that reject a lone tag past three metres, a lone tag with ambiguity over 0.7, and a solve with no fielded tags. When a flag is set, PoseEstimateConfig.describeRejection turns it into a name you can read.",
+              "Zero means no gate fired. A fresh Limelight starts with defaults that reject a lone tag past three meters, a lone tag with ambiguity over 0.7, and a solve with no fielded tags. When a flag is set, PoseEstimateConfig.describeRejection turns it into a name you can read.",
           },
           {
             id: 4,
