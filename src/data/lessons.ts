@@ -243,7 +243,15 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop5",
   },
 
-  // Workshop 6: Vision & Navigation
+  // Workshop 6: Vision & Navigation. Vision is two lessons again, as it was
+  // until August 2026: the bench work has no Java in it and the code lesson
+  // has no screwdriver in it, and folding them together left one hardware
+  // procedure stranded inside a code page.
+  {
+    slug: "/vision-hardware",
+    title: "Vision Hardware",
+    section: "workshop6",
+  },
   {
     slug: "/vision-implementation",
     title: "Vision",

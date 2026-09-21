@@ -132,9 +132,12 @@ const nextConfig: NextConfig = {
         destination: "/logging-implementation",
         permanent: true,
       },
+      // `/vision-options` was the hardware-and-comparison half of the old
+      // two-page vision material, so it points at its successor rather than
+      // at the code page.
       {
         source: "/vision-options",
-        destination: "/vision-implementation",
+        destination: "/vision-hardware",
         permanent: true,
       },
       // The Gemini-backed workshop chat was retired: a RAG index of these
