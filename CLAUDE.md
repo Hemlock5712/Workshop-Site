@@ -55,6 +55,38 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
 - **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
 - **PathPlanner boundary**: Workshop 5 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
+- **Vision is LimelightLib 2, installed as a vendordep, and the URL is pinned
+  to the alpha.** The vendordep is published per WPILib alpha and the file is
+  **not** called `LimelightLib.json`. A bare `LimelightLib.json` 404s, and so
+  does the Pages root, so a wrong URL is a lesson a student cannot start.
+  Today: `https://limelightvision.github.io/limelightlib-public/LimelightLib-alpha7.json`
+  (`2.0.0-beta9-alpha7`, `wpilibYear: 2027_alpha7`), with
+  `LimelightLib-alpha5-6.json` beside it for the older alphas. Re-check the
+  filename when the alpha moves. There is **no** `LimelightHelpers` class in
+  the jar, so the old "copy `LimelightHelpers.java` into `frc/robot/`" step is
+  gone and so are `getBotPoseEstimate_wpiBlue`, `SetRobotOrientation_NoFlush`,
+  `Flush()` and `validPoseEstimate`.
+- **Alpha-7 flattened the LimelightLib types, so beta2 sample code does not
+  compile.** `Limelight.PoseEstimate` and friends are now top-level
+  `com.limelightvision.PoseEstimate`, `LimelightResults`, `PoseEstimateType`.
+  `LimelightResults.botPoseTagCount` is gone, so pick the solver off the
+  estimate's `fieldedTagCount` instead, and `isMegaTag2()` is now `isMT2()`.
+  The rest, read off the alpha7 jar rather than from memory:
+  `new Limelight(name)` (the constructor already applies `defaultMT1()` and
+  `defaultMT2()`, which gate a lone tag at 3.0 m and 0.7 ambiguity),
+  `camera.setUseSharedOrientation(true)` paired with the static
+  `Limelight.setSharedRobotOrientation(deg)`, `camera.readResultsQueue()`,
+  `camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE)`, and on
+  `PoseEstimate` the fields `pose`, `timestampSeconds`, `fieldedTagCount`,
+  `avgTagDistanceMeters` and `rejectionFlags`.
+  `PoseEstimateConfig.describeRejection` names a rejection. **The lesson class
+  is `Vision`, not `Limelight`**, because the library owns that name now.
+- **`/vision-implementation` is ahead of `3-Limelight`, on purpose.** That
+  branch still carries the copied helper and a subsystem called `Limelight`,
+  so the page sets no `branch` prop rather than claiming a branch it does not
+  match. Set it again when the swerve chain is rebuilt. The reference for the
+  new API is 2026-Template on `limelightlib-2`, which is not in this repo and
+  uses AdvantageKit, so read it for the API and not for the shape.
 - **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
 - **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
 - **No GitHub embeds on the site at all, for now.** August 2026: every `<GitHubContent>` was removed from every lesson. A page that ends in someone else's 100-plus-line file is mostly scroll, and each of those pages already teaches the same code in `CodeBlock`s. The components survive (`GitHubContent`, `MechanismTabs`) and so does the `pr` prop that renders a "GitHub Changes" tab, but nothing calls them. A local `FileDiff` (unified diff, two gutters, parsed straight from `git diff` output) is built and also unused. The intended end state is a compare view in place of the whole-file dump, but not until the teaching chain's comments and prose settle: a diff of it today is a third Javadoc rewording, and that red and green buries the lines a student types. `pnpm check-embeds` now treats zero embeds as valid and only fails when a page uses the component and nothing parses.
@@ -264,7 +296,7 @@ it with `/pathplanner`, which is lesson 26 and stays.
 
 **Retired slugs, kept as 308 redirects in `next.config.ts`** — they're printed
 on old slides: `/logging-options` → `/logging-implementation`,
-`/vision-options` → `/vision-implementation`, `/ai-assistant` →
+`/vision-options` → `/vision-hardware`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
 `/finish-conditions`.
@@ -276,6 +308,19 @@ year after Commands v3 renamed the thing and the lesson title already said
 arm and flywheel photos the home page uses. `/finish-lines` became
 `/finish-conditions`, because "finish lines" was a metaphor and the title was
 never that. Both old slugs redirect.
+
+**Vision is two lessons, and was one for a month.** September 2026:
+`/vision-hardware` opens Workshop 6 and `/vision-implementation` follows it.
+The split restores the January 2026 shape that an August 2026 pass collapsed.
+Collapsing them kept the code and dropped the bench work, which left the only
+hardware procedure on the site sitting inside a code lesson, and putting the
+missing material back into one page runs it past the 15 minute cap. So the
+hardware page has no Java on it and the code page has no screwdriver on it.
+`/vision-options` redirects to `/vision-hardware`, its successor, rather than
+to the code page. Don't merge them again. What the split deliberately did not
+bring back from the old `/vision-options`: the three-card "why vision matters"
+grid, the "what you'll learn" list, and the do/don't best-practices columns,
+each a heading with no procedure under it.
 
 **There is no `/robot-class`.** `Robot.java` was its own lesson until August 2026. `/command-framework` already taught `robotPeriodic()` and the
 `Scheduler.getDefault().run()` line, and even quizzes deleting it, so what

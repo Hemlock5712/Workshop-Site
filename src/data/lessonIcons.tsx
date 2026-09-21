@@ -33,6 +33,7 @@ import {
   MapPin,
   Eye,
   Camera,
+  Scan,
   Target,
   GitBranch,
   Navigation,
@@ -79,7 +80,8 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/swerve-calibration": makeIcon(Crosshair),
   "/logging-implementation": makeIcon(FileCode),
   "/drive-to-point": makeIcon(MapPin),
-  "/vision-implementation": makeIcon(Camera),
+  "/vision-hardware": makeIcon(Camera),
+  "/vision-implementation": makeIcon(Scan),
 
   "/vision-shooting": makeIcon(Target),
   "/advanced-drive-to-point": makeIcon(Navigation),
