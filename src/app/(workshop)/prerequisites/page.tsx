@@ -37,7 +37,7 @@ export default function Prerequisites() {
 
       <LessonSection id="what-to-install" title="What to install">
         <p>
-          Five programs, plus one you can skip until Workshop 6. Nothing here
+          Five programs, plus one you can skip until Workshop 4. Nothing here
           depends on anything else being installed first. One rule: never
           install Java on its own, because WPILib brings the version this
           workshop runs on.
@@ -95,7 +95,7 @@ export default function Prerequisites() {
               <strong>AdvantageScope</strong>
             </a>
             . A cut-down copy already came with WPILib. Install the full release
-            from GitHub as well. It reads robot logs, and Workshop 6 leans on
+            from GitHub as well. It reads robot logs, and Workshop 4 leans on
             the plots.
           </li>
           <li>
@@ -127,7 +127,7 @@ export default function Prerequisites() {
             <Link href="/logging-implementation" className={linkStyle}>
               Logging
             </Link>{" "}
-            in Workshop 6.
+            in Workshop 4.
           </li>
         </ol>
       </LessonSection>
@@ -236,7 +236,7 @@ export default function Prerequisites() {
         <p>
           You do not need a SystemCore, a radio, or a robot. The whole rig is a
           laptop with a CANivore plugged into it, sitting next to one mechanism
-          on a table. Workshop 3 adds an Xbox-style controller, and Workshop 4
+          on a table. Workshop 3 adds an Xbox-style controller, and Workshop 5
           moves to a swerve drivetrain.
         </p>
       </LessonSection>

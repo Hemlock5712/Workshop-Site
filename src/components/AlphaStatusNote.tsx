@@ -3,7 +3,7 @@ import Box from "@/components/Box";
 /**
  * Standard "this is alpha software" stamp for lesson pages whose code
  * targets the WPILib 2027 alpha. Pages with bespoke API-status boxes
- * (command-framework, state-based, …) keep their own; everything else
+ * (command-framework, …) keep their own; everything else
  * uses this so the verified-against date is bumped in one place.
  */
 export default function AlphaStatusNote() {

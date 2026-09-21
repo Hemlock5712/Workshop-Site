@@ -177,6 +177,16 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // State Machines was retired in September 2026. `StateMachine` shipped
+        // in alpha-6 and the lesson was written against it, but there is no
+        // documentation worth pointing a student at and no Workshop-Code
+        // branch behind the page. Coroutines is the nearest thing that answers
+        // what the lesson was for: a routine that remembers where it is.
+        source: "/state-based",
+        destination: "/coroutines",
+        permanent: true,
+      },
+      {
         source: "/glossary",
         destination: "/introduction",
         permanent: true,

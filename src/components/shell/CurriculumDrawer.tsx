@@ -232,11 +232,11 @@ export default function CurriculumDrawer() {
                     fontSize: "var(--text-micro)",
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    color: "var(--tx3)",
-                    border: "1px solid var(--rule)",
+                    color: "var(--err)",
+                    border: "1px solid var(--err)",
                   }}
                 >
-                  In progress
+                  Rough draft
                 </span>
               )}
               <span
@@ -248,9 +248,12 @@ export default function CurriculumDrawer() {
             </div>
 
             {/* The pages stay open. This is the label that stops a student
-                treating a half-written workshop as finished material. It is a
-                mono line and a hairline chip, not a colour: `--warn` does not
-                exist here on purpose. */}
+                treating a half-written workshop as finished material. It was a
+                mono line and a hairline chip in `--tx3`, on the argument that a
+                colour here would be one more colour. That was the wrong call:
+                nobody had read these thirteen lessons and the label read like
+                a scheduling note. It is `--err` now, and the same signal rides
+                the banner on the pages themselves. */}
             {group.unfinished && (
               <p
                 className="mb-2.5"
@@ -258,7 +261,7 @@ export default function CurriculumDrawer() {
                   fontFamily: "var(--font-serif)",
                   fontSize: "var(--text-note)",
                   lineHeight: 1.45,
-                  color: "var(--tx3)",
+                  color: "var(--err)",
                 }}
               >
                 {group.unfinished}
