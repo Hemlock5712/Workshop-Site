@@ -242,7 +242,7 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 1,
             question:
-              "setVoltage is private on both mechanisms. What does keeping it that way buy you?",
+              "setVoltage is private on both mechanisms. What does that achieve?",
             options: [
               "So the only way to move the arm is through a command, which lets the scheduler track who owns the motor",
               "Because Mechanism requires all setters to be private",
@@ -256,7 +256,7 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 2,
             question:
-              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)"), what does runRepeatedly(...) hand back before .named(...) runs?',
+              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)"), what does runRepeatedly(...) return before .named(...) runs?',
             options: [
               "A Runnable that the scheduler wraps later",
               "A finished Command, ready to schedule",

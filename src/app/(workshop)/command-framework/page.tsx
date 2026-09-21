@@ -116,8 +116,8 @@ export default function CommandFramework() {
         <p>
           Priorities are new in Commands v3. A second command takes a mechanism
           only if its priority is the same or higher than the command already
-          holding it. Every command in this workshop carries the same priority,
-          so a new one always gets to run.
+          holding it. Every command in this workshop uses the same priority, so
+          a new one always gets to run.
         </p>
 
         <Box variant="concept" title="Canceling is not stopping">
@@ -246,9 +246,9 @@ public Command runFast() {
 
         <p>
           <code>runRepeatedly</code> re-runs <code>setVoltage</code> every loop,
-          so the six-volt request never goes stale. Every command on this site
-          built that way carries the <code>(hold)</code> suffix, which is a
-          promise from whoever wrote it: <em>this command has no ending</em>.
+          so the six-volt request never goes stale. Every command built that way
+          ends with the <code>(hold)</code> suffix, which is a promise from
+          whoever wrote it: <em>this command has no ending</em>.
         </p>
 
         <p>

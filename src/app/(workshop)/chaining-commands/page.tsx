@@ -121,7 +121,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         />
 
         <p>
-          <code>Command.sequence(...)</code> hands back a builder rather than a{" "}
+          <code>Command.sequence(...)</code> returns a builder rather than a{" "}
           <code>Command</code>. <code>.named(&quot;...&quot;)</code> is what
           finishes it, and leaving it off will not compile. Name the group after
           what it does. If the group is a hold, end the name with{" "}
@@ -129,7 +129,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         </p>
         <p>
           Do not re-name a command that already has one.{" "}
-          <code>robot.arm.runFast()</code> arrives finished, so{" "}
+          <code>robot.arm.runFast()</code> is already finished, so{" "}
           <code>.named(...)</code> on it is a compile error.
         </p>
 

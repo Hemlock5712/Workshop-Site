@@ -96,7 +96,7 @@ export default function SwerveDriveProject() {
           <code>src/main/java/frc/robot/generated/TunerConstants.java</code>.
         </p>
         <p>
-          It carries thirteen device IDs, <code>kDriveGearRatio</code>,{" "}
+          It has thirteen device IDs, <code>kDriveGearRatio</code>,{" "}
           <code>kSteerGearRatio</code> and <code>kWheelRadius</code>. Per module
           it holds an X and Y offset from the robot&apos;s center, which is what
           kinematics runs on. There is a CANcoder offset per module as well,

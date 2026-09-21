@@ -137,7 +137,7 @@ export default function DynamicFlywheel() {
         </div>
 
         <p>
-          Past your last row the map hands back that row&apos;s value and stops
+          Past your last row the map returns that row&apos;s value and stops
           climbing. With this table, 3.5, 4 and 9 meters all return{" "}
           <code>60.0</code>. It is still a miss, with nothing on the dashboard
           to explain it, so measure out as far as you plan to shoot.
@@ -265,8 +265,8 @@ export default function DynamicFlywheel() {
 
         <p>
           The comment says <em>where the robot thinks it is</em> on purpose. The
-          pose is odometry corrected by AprilTag sightings, so this number
-          carries its error too.
+          pose is odometry corrected by AprilTag sightings, so this number has
+          that error in it.
         </p>
 
         <CodeBlock
@@ -430,7 +430,7 @@ export default function DynamicFlywheel() {
           {
             id: 1,
             question:
-              "Your table has table.put(1.0, 10.0) and table.put(2.0, 30.0). The robot is 1.5 meters away. What speed does table.get(1.5) hand back?",
+              "Your table has table.put(1.0, 10.0) and table.put(2.0, 30.0). The robot is 1.5 meters away. What speed does table.get(1.5) return?",
             options: ["40.0", "10.0", "20.0", "30.0"],
             correctAnswer: 2,
             explanation:
@@ -448,7 +448,7 @@ export default function DynamicFlywheel() {
             ],
             correctAnswer: 0,
             explanation:
-              "Past the last row the map hands back the value at that row, every time. Extrapolating would be a guess with no measurement behind it. It does mean a shot from beyond your furthest measured distance is quietly wrong, so measure out as far as you plan to shoot.",
+              "Past the last row the map returns the value at that row, every time. Extrapolating would be a guess with no measurement behind it. It does mean a shot from beyond your furthest measured distance is quietly wrong, so measure out as far as you plan to shoot.",
           },
           {
             id: 3,

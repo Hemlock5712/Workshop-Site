@@ -68,7 +68,7 @@ export default function Coroutines() {
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
             A list of steps runs one at a time, waiting for each to finish. It
-            carries most routines.
+            covers most routines.
           </p>
           <p>
             Pick the arm and flywheel project back up, then check out{" "}
@@ -88,7 +88,7 @@ export default function Coroutines() {
           version &quot;as far as most routines ever need to go.&quot;
         </p>
 
-        <Box variant="concept" title="When a coroutine earns its keep">
+        <Box variant="concept" title="When to use a coroutine">
           <p>
             <strong>A hold has to span several steps.</strong> In a list, a hold
             needs a finish line before the next step can run. A coroutine starts
@@ -111,7 +111,7 @@ export default function Coroutines() {
       <LessonSection id="four-verbs" title="Four verbs">
         <p>
           A coroutine body takes one argument, an object called{" "}
-          <code>coroutine</code>. Four of its methods carry almost every
+          <code>coroutine</code>. Four of its methods cover almost every
           routine.
         </p>
 
@@ -465,7 +465,7 @@ coroutine.await(
             ],
             correctAnswer: 0,
             explanation:
-              "Command.waitUntil(...) hands back a builder stage rather than a finished Command, and that stage has no withTimeout on it. Naming it produces a Command, and .withTimeout(Time) is a method on Command. Reversing the two does not compile.",
+              "Command.waitUntil(...) returns a builder stage rather than a finished Command, and that stage has no withTimeout on it. Naming it produces a Command, and .withTimeout(Time) is a method on Command. Reversing the two does not compile.",
           },
           {
             id: 3,

@@ -63,7 +63,7 @@ export default function OpModes() {
             {
               label: "Pit work",
               term: "@Utility",
-              body: "Zeroing, characterization, diagnostics. Keeping these out of teleop means a driver cannot trip one in a match.",
+              body: "Zeroing, characterization, diagnostics. Keeping them in their own mode leaves teleop and autonomous holding only what happens in a match.",
             },
           ]}
         />
@@ -79,7 +79,7 @@ export default function OpModes() {
           The commands you wrote on <strong>Writing Commands</strong> call
           nothing yet. This is the class that calls them.{" "}
           <strong>Project Setup</strong> left a generated{" "}
-          <code>MyTeleop.java</code> in <code>opmode/</code>, already carrying{" "}
+          <code>MyTeleop.java</code> in <code>opmode/</code>, already marked{" "}
           <code>@Teleop</code>. That is the file you edit. Replace its body with
           the whole file from the branch, minus the copyright header.
         </p>
@@ -176,11 +176,10 @@ public void end() {
 }`}
         />
         <p>
-          Autonomous is where the two earn their place. <code>start()</code>{" "}
-          schedules the routine and <code>end()</code> cancels it. Pair them
-          every time. Hit disable partway through a run and <code>end()</code>{" "}
-          fires, so the routine stops on that loop rather than running on into
-          the next mode.
+          Autonomous is what the two are for. <code>start()</code> schedules the
+          routine and <code>end()</code> cancels it. Pair them every time. Hit
+          disable partway through a run and <code>end()</code> fires, so the
+          routine stops on that loop rather than running on into the next mode.
         </p>
         <p>
           Utility modes use the same boundary. Begin the calibration in{" "}
@@ -275,7 +274,7 @@ public void end() {
             ],
             correctAnswer: 1,
             explanation:
-              "Canceling ends the command, and that is all it does. The request lives on the motor controller, which keeps applying it until something sends a different one. Either a whileFalse or a default command has to take over.",
+              "Canceling ends the command, and that is all it does. The request stays on the motor controller, which keeps applying it until something sends a different one. Either a whileFalse or a default command has to take over.",
           },
           {
             id: 2,

@@ -63,7 +63,7 @@ export default function FinishLines() {
             fresh battery and short on a tired one.
           </p>
           <Mech for="arm" as="p">
-            The arm already carries a sensor that says where it is. Compare that
+            The arm already has a sensor that says where it is. Compare that
             reading against the angle the step asked for, and the step can end
             on arrival rather than on the clock.
           </Mech>
@@ -97,7 +97,7 @@ export default function FinishLines() {
           <code>boolean cannot be converted to BooleanSupplier</code>.
         </p>
         <p>
-          <code>.until(...)</code> hands back a builder rather than a{" "}
+          <code>.until(...)</code> returns a builder rather than a{" "}
           <code>Command</code>, the same way <code>Command.sequence(...)</code>{" "}
           did. <code>.named(&quot;...&quot;)</code> closes it. Leave the name
           off and the build fails, because a builder is not a{" "}
@@ -164,14 +164,14 @@ public boolean isAtTarget() {
             <Mech for="arm" as="p">
               <code>getPosition()</code> reads the CANcoder, and{" "}
               <code>getTargetPosition()</code> asks the request object where it
-              was last told to go. Both hand back an <code>Angle</code> rather
-              than a bare number, so nothing on this line can mix up rotations
-              and degrees.
+              was last told to go. Both return an <code>Angle</code> rather than
+              a bare number, so nothing on this line can mix up rotations and
+              degrees.
             </Mech>
             <Mech for="flywheel" as="p">
               <code>getVelocity()</code> reads the motor, and{" "}
               <code>getTargetVelocity()</code> asks the request object what
-              speed it was last told to hold. Both hand back an{" "}
+              speed it was last told to hold. Both return an{" "}
               <code>AngularVelocity</code> rather than a bare number, so nothing
               on this line can mix up rotations a second and RPM.
             </Mech>
@@ -424,7 +424,7 @@ Command raiseArm =
               "vertical() is a hold, and holds cannot take a finish condition",
               "The condition has to be a lambda rather than a method reference",
               ".until can only be used inside Command.sequence",
-              '.until hands back a builder, and .named("...") is what turns it into a Command',
+              '.until returns a builder, and .named("...") is what turns it into a Command',
             ],
             correctAnswer: 3,
             explanation:

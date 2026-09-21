@@ -201,10 +201,10 @@ public class Arm extends Mechanism {
         />
 
         <p>
-          Point an assistant at <code>robot-description</code> first. It carries
-          the wiring model, and the surprise for anyone coming from v2: there is
-          no <code>RobotContainer</code>. Teacher mode is on by default and
-          keeps explanations short.
+          Point an assistant at <code>robot-description</code> first. It has the
+          wiring model, and the surprise for anyone coming from v2: there is no{" "}
+          <code>RobotContainer</code>. Teacher mode is on by default and keeps
+          explanations short.
         </p>
 
         <DocumentationButton
@@ -481,7 +481,7 @@ Show me the diff before you write anything.`}
             ],
             correctAnswer: 1,
             explanation:
-              "runRepeatedly never finishes on its own, so nothing may ever wait on it. Every hold on the branch carries the (hold) suffix, which makes a routine stuck on a hold obvious the moment you read the name in a log.",
+              "runRepeatedly never finishes on its own, so nothing may ever wait on it. Every hold on the branch ends with the (hold) suffix, which makes a routine stuck on a hold obvious the moment you read the name in a log.",
           },
           {
             id: 5,

@@ -60,7 +60,7 @@ export default function VisionImplementation() {
         <Split>
           <ProseBlock>
             <p>
-              Every AprilTag carries an ID. The field drawing says where that ID
+              Every AprilTag has an ID. The field drawing says where that ID
               sits, so measuring the tag relative to the camera works backwards
               to the robot&apos;s position.
             </p>
@@ -351,7 +351,7 @@ export default function VisionImplementation() {
             ],
             correctAnswer: 1,
             explanation:
-              "With no data to read, LimelightHelpers hands back a default PoseEstimate sitting at the field origin with no fiducials. The gate exists to throw that reading away, so a missing or misnamed camera produces silence instead of a robot that believes it is parked in the corner.",
+              "With no data to read, LimelightHelpers returns a default PoseEstimate sitting at the field origin with no fiducials. The gate exists to throw that reading away, so a missing or misnamed camera produces silence instead of a robot that believes it is parked in the corner.",
           },
           {
             id: 4,

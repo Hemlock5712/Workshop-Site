@@ -357,7 +357,7 @@ protected void execute() {
           {
             id: 2,
             question:
-              "What does path.calculate(t, startState, goal) hand back each loop?",
+              "What does path.calculate(t, startState, goal) return each loop?",
             options: [
               "The forces each swerve module should apply",
               "The distance remaining to the goal",

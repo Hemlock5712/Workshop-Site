@@ -296,7 +296,7 @@ public class Flywheel extends Mechanism {
             dots, and choose <strong>Generate Code</strong>. Paste the result
             over the whole statement. The mechanism is still open loop here, so
             a fresh config looks much like this one. From{" "}
-            <strong>Motion Magic</strong> on it carries the gains you measured.
+            <strong>Motion Magic</strong> on it has the gains you measured.
           </p>
         </Box>
 
@@ -402,7 +402,7 @@ public class Flywheel extends Mechanism {
             title="Nothing to point the motor at"
           >
             <p>
-              The arm&apos;s config carries a <code>withFeedback</code> block,
+              The arm&apos;s config has a <code>withFeedback</code> block,
               naming the CANcoder as the motor&apos;s position source. The
               flywheel has none, because it has no such device.
             </p>
@@ -668,7 +668,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 1,
             explanation:
-              "A rotor count is a fine speed measurement and a poor angle measurement, because it starts at zero every power-on. The arm needs to know its real angle the moment it boots, so it carries an absolute CANcoder and points the motor's feedback at it. The flywheel is only ever asked how fast it is going, so the encoder inside the motor is enough and the mechanism has no second device.",
+              "A rotor count is a fine speed measurement and a poor angle measurement, because it starts at zero every power-on. The arm needs to know its real angle the moment it boots, so it has an absolute CANcoder and points the motor's feedback at it. The flywheel is only ever asked how fast it is going, so the encoder inside the motor is enough and the mechanism has no second device.",
           },
         ]}
       />

@@ -256,7 +256,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
             </p>
           </ProseBlock>
           <MarginNote label="Order matters">
-            <code>drivetrain.run(...)</code> hands back a builder.{" "}
+            <code>drivetrain.run(...)</code> returns a builder.{" "}
             <code>.named(...)</code> turns it into a command, so nothing can
             attach after it.
           </MarginNote>

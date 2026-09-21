@@ -263,7 +263,7 @@ public void end() {
           fires.
         </p>
         <p>
-          <code>.negate()</code> hands back a <code>Trigger</code> that is true
+          <code>.negate()</code> returns a <code>Trigger</code> that is true
           exactly when the original is false. That is how the branch writes
           &quot;the driver let go.&quot; Inverting a plain method means a{" "}
           <code>!</code> in front of your lambda: one character that reverses

@@ -54,8 +54,8 @@ export default function ProjectSetup() {
       <LessonSection id="make-the-project" title="Make the project">
         <p>
           The 2027 installer installs a WPILib-specific VS Code. Make sure to
-          use this version, not the ordinary one. Once open, its title bar
-          carries a small red WPILib icon at the top right. Click it.
+          use this version, not the ordinary one. Once open, its title bar has a
+          small red WPILib icon at the top right. Click it.
         </p>
         <ImageBlock
           src="/images/project-setup/step-1.png"

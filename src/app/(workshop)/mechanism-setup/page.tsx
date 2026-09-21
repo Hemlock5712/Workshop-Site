@@ -253,8 +253,8 @@ export default function MechanismSetup() {
               The wheel does not care which way you call positive, and the code
               would be just as correct with the sign flipped. What costs you is
               having no rule, because then every mechanism that touches a game
-              piece carries its own sign to remember. An arm gets no such
-              choice, since its encoder already fixed the sign.
+              piece has its own sign to remember. An arm gets no such choice,
+              since its encoder already fixed the sign.
             </MarginNote>
           </Split>
         </Mech>
