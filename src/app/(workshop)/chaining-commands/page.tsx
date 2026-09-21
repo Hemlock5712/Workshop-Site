@@ -209,9 +209,8 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           button is held and cancels it on release.
         </p>
         <p>
-          Canceling a group is not the same as stopping the hardware. The last
-          member here is a hold, so <code>whileFalse</code> still has to send
-          zero.
+          Canceling a group is not the same as stopping the hardware, so the
+          release has to send a stop of its own.
         </p>
 
         <CodeBlock
@@ -225,9 +224,14 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
             A canceled command leaves the mechanism with nothing commanding it,
             and nothing sends zero on the way out. The last request is still
             latched in the motor controller, so Phoenix goes on closing the loop
-            on it. The flywheel holds 75 rotations per second with nothing
-            anywhere claiming it. Every group needs a stop somewhere: a{" "}
-            <code>whileFalse</code> binding, or a stop step of its own.
+            on it.
+          </p>
+          <p>
+            What that costs depends on the request. The arm holds the angle it
+            was last given, which is usually what you wanted. The flywheel holds
+            75 rotations per second, which is not. A group that ends with a
+            speed still commanded needs a stop: a <code>whileFalse</code>{" "}
+            binding, or a stop step of its own.
           </p>
         </Box>
 
