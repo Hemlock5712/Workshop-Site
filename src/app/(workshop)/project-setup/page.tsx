@@ -3,12 +3,7 @@ import LessonSection from "@/components/lesson/LessonSection";
 import ImageBlock from "@/components/ImageBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
-import {
-  MarginNote,
-  ProseBlock,
-  Split,
-  WatchOut,
-} from "@/components/lesson/Prose";
+import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 
 /**
  * The lesson that opens Workshop 3, and the gate to every code lesson
@@ -83,15 +78,6 @@ export default function ProjectSetup() {
           width={1908}
           height={821}
         />
-        <WatchOut>
-          Take the create command, not the import one, even if you already have
-          a 2026 project lying around. The importer rewrites{" "}
-          <code>Main.java</code> to call{" "}
-          <code>RobotBase.runRobot(Robot.class)</code>, and{" "}
-          <code>runRobot</code> is private in the 2027 alpha, so the project
-          will not compile. A created project gets{" "}
-          <code>RobotBase.startRobot(Robot::new)</code>, which is correct.
-        </WatchOut>
         <p>
           The creator runs as four numbered pages. On the first, choose{" "}
           <strong>Template</strong>. An example is somebody else&apos;s finished
