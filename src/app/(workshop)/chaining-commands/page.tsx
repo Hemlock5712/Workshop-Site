@@ -26,6 +26,25 @@ import Quiz from "@/components/Quiz";
  * This is also the first page on the site to show `import static
  * org.wpilib.units.Units.Seconds`, since `/java-basics` stopped pre-teaching
  * static imports. One line of prose introduces it where it appears.
+ *
+ * The September move into Workshop 3 put `mech-3-MotionMagic` in front of this
+ * page and nothing re-checked the vocabulary. `mech-3` deletes the Arm's
+ * `runSlow()`, `runFast()` and `stop()` and replaces them with `vertical()`
+ * and `horizontal()`, so every arm line here named a method the student no
+ * longer has. The Flywheel kept its three names, which is why only the arm
+ * changed: `runSlow` and `runFast` still describe a speed, now 25 and 75 RPS
+ * instead of 3 V and 6 V.
+ *
+ * That correction moved the "cancelling is not stopping" material onto the
+ * flywheel. A latched `MotionMagicVoltage` just holds the arm at 90 degrees,
+ * which is not a failure a student can see; a latched 75 RPS keeps the
+ * flywheel spinning, and `Flywheel.stop()` still exists to be the fix. There
+ * is no `Arm.stop()` to point at any more and the page does not invent one.
+ *
+ * The group is called `spinUpWhenReady` because `/finish-conditions` builds
+ * that same routine as a coroutine, under that name, on `mech-4-ReadingState`.
+ * Same two mechanisms, same button, same file. It was `liftThenSpin` here and
+ * the pairing was invisible.
  */
 export default function ChainingCommands() {
   return (
@@ -34,8 +53,10 @@ export default function ChainingCommands() {
       lede="You have written commands that do one thing while a button is held. An autonomous routine is a list of those commands, run in order. This lesson builds the list."
       needs={[
         <>
-          Arm and flywheel commands from <strong>Writing Commands</strong>:{" "}
-          <code>runSlow()</code>, <code>runFast()</code>, <code>stop()</code>.
+          An <code>Arm</code> with <code>vertical()</code> and{" "}
+          <code>horizontal()</code>, and a <code>Flywheel</code> with{" "}
+          <code>runSlow()</code>, <code>runFast()</code> and <code>stop()</code>
+          , from <strong>Motion Magic in Code</strong>.
         </>,
         <>
           A <code>MyTeleop</code> with working button bindings, from{" "}
@@ -84,11 +105,11 @@ export default function ChainingCommands() {
           title="A hold, and the same hold as a step"
           code={`import static org.wpilib.units.Units.Seconds;
 
-// A hold. Pushes forever, never finishes.
-robot.arm.runFast()
+// A hold. Drives to vertical and keeps holding it, never finishes.
+robot.arm.vertical()
 
-// A step. Pushes for one second, then ends.
-robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
+// A step. Holds vertical for one second, then ends.
+robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
         />
 
         <Split>
@@ -119,13 +140,13 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         <CodeBlock
           language="java"
           title="MyTeleop.java: raise the arm, then spin up"
-          code={`Command liftThenSpin =
+          code={`Command spinUpWhenReady =
     Command.sequence(
             // A step: it ends, so the sequence moves on.
-            robot.arm.runFast().withTimeout(Seconds.of(1.0)),
+            robot.arm.vertical().withTimeout(Seconds.of(1.0)),
             // A hold: the last member, so the group is a hold too.
             robot.flywheel.runFast())
-        .named("Lift Then Spin (hold)");`}
+        .named("Spin Up When Ready (hold)");`}
         />
 
         <p>
@@ -137,7 +158,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         </p>
         <p>
           Do not re-name a command that already has one.{" "}
-          <code>robot.arm.runFast()</code> is already finished, so{" "}
+          <code>robot.arm.vertical()</code> is already finished, so{" "}
           <code>.named(...)</code> on it is a compile error.
         </p>
 
@@ -147,7 +168,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
           title="A bare hold in the middle"
         >
           <p>
-            Swap the first member for a plain <code>robot.arm.runFast()</code>{" "}
+            Swap the first member for a plain <code>robot.arm.vertical()</code>{" "}
             and the sequence sticks there for the rest of the match. When a
             routine looks frozen, a member with no ending is the first thing to
             check.
@@ -168,7 +189,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
           code={`Command spinWhileHolding =
     Command.race(
             robot.flywheel.runFast().withTimeout(Seconds.of(2.0)),
-            robot.arm.runSlow())
+            robot.arm.horizontal())
         .named("Spin While Holding Arm");`}
         />
 
@@ -188,25 +209,29 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
           button is held and cancels it on release.
         </p>
         <p>
-          Canceling a group is not the same as stopping the hardware. The last
-          member here is a hold, so <code>whileFalse</code> still has to send
-          zero.
+          Canceling a group is not the same as stopping the hardware, so the
+          release has to send a stop of its own.
         </p>
 
         <CodeBlock
           language="java"
           title="MyTeleop.java: one button, both mechanisms"
-          code={`driver.y().whileTrue(liftThenSpin).whileFalse(robot.flywheel.stop());`}
+          code={`driver.y().whileTrue(spinUpWhenReady).whileFalse(robot.flywheel.stop());`}
         />
 
         <Box variant="alert-warning" title="Canceling never stops the motor">
           <p>
             A canceled command leaves the mechanism with nothing commanding it,
             and nothing sends zero on the way out. The last request is still
-            latched in the motor controller, so Phoenix keeps applying the
-            voltage it was given. The flywheel keeps spinning. Every group needs
-            a stop somewhere: a <code>whileFalse</code> binding, or a stop step
-            of its own.
+            latched in the motor controller, so Phoenix goes on closing the loop
+            on it.
+          </p>
+          <p>
+            What that costs depends on the request. The arm holds the angle it
+            was last given, which is usually what you wanted. The flywheel holds
+            75 rotations per second, which is not. A group that ends with a
+            speed still commanded needs a stop: a <code>whileFalse</code>{" "}
+            binding, or a stop step of its own.
           </p>
         </Box>
 
@@ -225,7 +250,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         >
           <li>
             Add the <code>Seconds</code> import and the{" "}
-            <code>Lift Then Spin (hold)</code> binding to your{" "}
+            <code>Spin Up When Ready (hold)</code> binding to your{" "}
             <code>MyTeleop</code> constructor.
           </li>
           <li>Start the simulator and click Enable.</li>
@@ -236,26 +261,27 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
           </li>
           <li>
             Bind Y to{" "}
-            <code>robot.arm.runFast().withTimeout(Seconds.of(1.0))</code> on its
-            own instead and hold it for two seconds. The step ends after one
-            second and the arm keeps pushing 6&nbsp;V, because nothing claimed
-            it afterwards. A closing{" "}
-            <code>robot.arm.stop().withTimeout(Seconds.of(0.5))</code> step is
-            the fix.
+            <code>robot.flywheel.runFast().withTimeout(Seconds.of(1.0))</code>{" "}
+            on its own instead and hold it for two seconds. The step ends after
+            one second and the flywheel stays at 75 rotations per second,
+            because nothing claimed it afterwards. A closing{" "}
+            <code>robot.flywheel.stop().withTimeout(Seconds.of(0.5))</code> step
+            is the fix.
           </li>
         </ol>
 
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              The arm runs for one second and stops, then the flywheel starts.
+              The arm drives to vertical and holds there for one second, then
+              the flywheel spins up.
             </li>
             <li>
               The flywheel holds while Y is down and stops when you release it.
             </li>
             <li>
-              With the timeout gone, the arm pushes and the flywheel never
-              starts.
+              With the timeout gone, the arm reaches vertical and the flywheel
+              never starts.
             </li>
           </ul>
         </Box>
@@ -305,7 +331,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
           {
             id: 1,
             question:
-              "You put robot.arm.runFast(), a hold with no timeout, as the first member of Command.sequence(...). What happens?",
+              "You put robot.arm.vertical(), a hold with no timeout, as the first member of Command.sequence(...). What happens?",
             options: [
               "The sequence sticks on it forever and the later members never run",
               "The command fails to compile",
@@ -333,7 +359,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
           {
             id: 3,
             question:
-              "In Command.race(robot.flywheel.runFast().withTimeout(Seconds.of(2.0)), robot.arm.runSlow()), what ends the group?",
+              "In Command.race(robot.flywheel.runFast().withTimeout(Seconds.of(2.0)), robot.arm.horizontal()), what ends the group?",
             options: [
               "Whichever finishes first, and that is unpredictable",
               "The flywheel member, because the arm hold can never finish; the arm is then canceled",
