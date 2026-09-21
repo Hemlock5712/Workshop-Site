@@ -14,10 +14,10 @@ export default function AlphaStatusNote() {
       title="This is the WPILib 2027 alpha"
     >
       The code on this page targets the WPILib 2027 <em>alpha</em> stack:
-      Commands v3 + OpModes (GradleRIO <code>2027.0.0-alpha-6</code>, Phoenix 6{" "}
-      <code>26.50.0-alpha-1</code>) on <strong>Java 25</strong> and{" "}
+      Commands v3 + OpModes (GradleRIO <code>2027.0.0-alpha-7</code>, Phoenix 6{" "}
+      <code>26.70.0-alpha-2</code>) on <strong>Java 25</strong> and{" "}
       <strong>SystemCore</strong>: so exact APIs may still shift between alpha
-      builds. This page was last verified against alpha-6 in July 2026.
+      builds. This page was last verified against alpha-7 in September 2026.
     </Box>
   );
 }

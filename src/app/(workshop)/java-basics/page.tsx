@@ -13,8 +13,8 @@ import { BookOpen, GitBranch } from "lucide-react";
  * code the student types.
  *
  * The overlap was checked page by page before this was cut. `/adding-commands`
- * teaches the lambda, `motor::stopMotor` and the builder-versus-`Command`
- * point on the real diff, and quizzes them. `/building-subsystems` teaches the
+ * teaches the lambda and the builder-versus-`Command`
+ * point on the real diff, and quizzes them. `/mechanisms` teaches the
  * same fields block, the constructor and the two methods on the file the
  * student writes by hand. Printing all of it here first bought a preview and
  * charged twelve minutes for it.
@@ -22,7 +22,7 @@ import { BookOpen, GitBranch } from "lucide-react";
  * The page cannot simply be deleted: four lessons name it in `needs`.
  * `/command-framework` asks for "the vocabulary: class, field, method,
  * constructor, lambda, method reference", `/adding-commands` and
- * `/finish-lines` for lambdas and method references, `/building-subsystems`
+ * `/finish-conditions` for lambdas and method references, `/mechanisms`
  * for fields, constructors and methods. So what survives is exactly what those
  * four promises need and nothing downstream defines: the six words, and
  * `private` / `public` / `final` / `extends`.
@@ -49,7 +49,7 @@ export default function JavaBasics() {
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            Six pieces carry nearly all of the Java in this workshop: the class,
+            Six pieces cover nearly all of the Java in this workshop: the class,
             the field, the constructor, the method, the lambda, and the dot. The
             course below teaches five of them.
           </p>
@@ -170,8 +170,9 @@ export default function JavaBasics() {
                 <td className="px-3 py-2">
                   Code written down and handed over rather than run.{" "}
                   <code>() -&gt; setVoltage(3.0)</code> is one, and{" "}
-                  <code>motor::stopMotor</code> is the same idea written as a
-                  method reference.
+                  <code>() -&gt; motor.stopMotor()</code> is another. The{" "}
+                  <code>() -&gt;</code> is what makes it a parcel instead of a
+                  call.
                 </td>
               </tr>
               <tr>
@@ -187,7 +188,7 @@ export default function JavaBasics() {
         </div>
 
         <p>
-          A field carries two more words in front of its type. Marking it{" "}
+          A field has two more words in front of its type. Marking it{" "}
           <code>private</code> means only code inside <code>Arm.java</code> may
           touch it, and <code>public</code> is the opposite. A{" "}
           <code>final</code> field points at one object for good. It locks the
@@ -195,7 +196,7 @@ export default function JavaBasics() {
           works while <code>motor = new TalonFX(...)</code> does not.
         </p>
         <p>
-          Writing <code>public class Arm extends Mechanism</code> gives{" "}
+          Writing <code>public class Arm implements Mechanism</code> gives{" "}
           <code>Arm</code> everything <code>Mechanism</code> can do.{" "}
           <code>Mechanism</code> has a method called{" "}
           <code>runRepeatedly(...)</code>, for instance. Look through{" "}
@@ -256,16 +257,16 @@ public Command runSlow() {
             {
               id: 2,
               question:
-                "Why is it motor::stopMotor and not motor.stopMotor() inside runRepeatedly(...)?",
+                "Why is it () -> motor.stopMotor() and not motor.stopMotor() inside runRepeatedly(...)?",
               options: [
-                ":: hands the method over to be called later; () calls it right now and hands back nothing",
+                ":: hands the method over to be called later; () calls it right now and returns nothing",
                 ":: is required whenever the method takes no arguments",
                 "motor.stopMotor() would stop the motor twice",
                 ":: is a style preference: both compile",
               ],
               correctAnswer: 0,
               explanation:
-                "runRepeatedly needs code it can call every loop. motor::stopMotor is shorthand for () -> motor.stopMotor(). Writing motor.stopMotor() calls the method on the spot and produces nothing to hand over, so it does not compile.",
+                "runRepeatedly needs code it can call every loop, and () -> motor.stopMotor() hands over the call itself rather than its result. Writing motor.stopMotor() runs the method on the spot and produces nothing to hand over, so it does not compile.",
             },
             {
               id: 3,
@@ -288,12 +289,12 @@ public Command runSlow() {
               options: [
                 "The compiler pulls in any method it finds in an imported package",
                 "runRepeatedly is static, so it needs no object in front of it",
-                "Arm extends Mechanism, so everything Mechanism can do, Arm can do",
+                "Arm implements Mechanism, so everything Mechanism can do, Arm can do",
                 "The lambda supplies it",
               ],
               correctAnswer: 2,
               explanation:
-                "extends is the whole answer. Arm inherits every method on Mechanism without repeating one of them, which is also where idle() and the scheduler registration come from. Search the file for those and you will not find them either.",
+                "implements is the whole answer. Mechanism is an interface whose methods already have bodies, so Arm gets every one of them without repeating any. idle() and run(...) arrive the same way. Search the file for those and you will not find them either.",
             },
             {
               id: 5,
@@ -316,11 +317,11 @@ public Command runSlow() {
                 ".named(...) may only be called inside a mechanism class",
                 "runSlow() returns void, so there is nothing to call a method on",
                 "Command names have to be unique across the project",
-                "runRepeatedly hands back a half-finished command that has .named(...); runSlow() already called it, so what comes back is a finished Command, which does not",
+                "runRepeatedly returns a half-finished command that has .named(...); runSlow() already called it, so what comes back is a finished Command, which does not",
               ],
               correctAnswer: 3,
               explanation:
-                "The type in front of a dot decides what you can type after it. named(String) lives on the half-finished command that runRepeatedly(...) hands back. runSlow() already called it, so it gives you a finished Command with nothing left to name.",
+                "The type in front of a dot decides what you can type after it. named(String) is a method on the half-finished command that runRepeatedly(...) returns. runSlow() already called it, so it gives you a finished Command with nothing left to name.",
             },
           ]}
         />

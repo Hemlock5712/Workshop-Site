@@ -1,7 +1,7 @@
 /**
  * The two bench mechanisms, and the handful of words that differ between them.
  *
- * Every lesson from `/building-subsystems` onward is written once and read
+ * Every lesson from `/mechanisms` onward is written once and read
  * twice: a student picks Arm or Flywheel at the top of the page and reads a
  * lesson about that mechanism. The prose is not duplicated to do it. A
  * sentence that is the same for both is written once with a slot in it —

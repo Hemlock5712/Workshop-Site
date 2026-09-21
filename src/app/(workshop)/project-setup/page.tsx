@@ -16,7 +16,7 @@ import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
  * hand. Workshops 4 and 5 go back to a prepared download, because a swerve
  * drivetrain with CTRE generated constants is not something a student types.
  *
- * Two facts drive the vendordep section, and both are read out of the alpha-6
+ * Two facts drive the vendordep section, and both are read out of the alpha-7
  * extension rather than guessed. Its `templates.json` marks "OpMode Robot" as
  * `"commandversion": 2`, so a fresh project ships CommandsV2. And CommandsV2's
  * own `conflictsWith` block names CommandsV3 by UUID. A student who skips that
@@ -29,7 +29,7 @@ export default function ProjectSetup() {
       lede="You generate a robot project with the WPILib New Project Creator, then swap it onto Commands v3 and add Phoenix 6. The build at the end proves Java, Gradle and the vendor libraries all work."
       needs={[
         <>
-          The WPILib <strong>2027 alpha 6</strong> installed, from{" "}
+          The WPILib <strong>2027 alpha 7</strong> installed, from{" "}
           <strong>Prerequisites</strong>.
         </>,
         <>An internet connection. The first build downloads a lot.</>,
@@ -54,8 +54,8 @@ export default function ProjectSetup() {
       <LessonSection id="make-the-project" title="Make the project">
         <p>
           The 2027 installer installs a WPILib-specific VS Code. Make sure to
-          use this version, not the ordinary one. Once open, its title bar
-          carries a small red WPILib icon at the top right. Click it.
+          use this version, not the ordinary one. Once open, its title bar has a
+          small red WPILib icon at the top right. Click it.
         </p>
         <ImageBlock
           src="/images/project-setup/step-1.png"

@@ -51,8 +51,14 @@ const STORE = path.join(REFERENCE, ".git-store");
  * `branches: null` means every branch the remote has. Workshop-Code wants all
  * of them — including the four orphans (2-Logging, 3-PID, 4-MotionMagic,
  * 5-GettersAndSetters) that no page embeds, because deciding whether to
- * promote or delete those needs them readable. 2027-Template is ground truth
- * for API questions, not a progression, so one branch is enough.
+ * promote or delete those needs them readable.
+ *
+ * 2027-Template is still cloned, but it is NOT ground truth any more and no
+ * lesson cites it. As of September 2026 it is behind on alpha-6 (`extends
+ * Mechanism`, `kZero`) while Workshop-Code and shipped WPILib have moved on.
+ * It is kept here to diff against when somebody brings it up to alpha-7, so
+ * one branch is enough. Answer API questions from Workshop-Code and the
+ * WPILib source, never from this checkout.
  */
 const REPOS = [
   {

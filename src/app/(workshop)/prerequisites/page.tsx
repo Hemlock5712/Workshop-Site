@@ -51,10 +51,10 @@ export default function Prerequisites() {
               rel="noopener noreferrer"
             >
               <strong>
-                <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> 2027 alpha 6
+                <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> 2027 alpha 7
               </strong>
             </a>
-            . Take <code>v2027.0.0-alpha-6</code> from the releases page, not
+            . Take <code>v2027.0.0-alpha-7</code> from the releases page, not
             the install guide. The guide still points at last season, because
             nothing about 2027 is official yet. The installer lays down a
             separate copy of VS Code and a Java 25 runtime of its own.
@@ -137,7 +137,7 @@ export default function Prerequisites() {
           <ProseBlock>
             <p>
               This workshop runs on the WPILib{" "}
-              <strong>2027 alpha 6 release</strong>, an early release of
+              <strong>2027 alpha 7 release</strong>, an early release of
               FRC&apos;s programming toolkit. It uses <strong>Java 25</strong>{" "}
               and deploys to <strong>SystemCore</strong>, the robot&apos;s
               onboard computer. All of that arrived with the installer in step

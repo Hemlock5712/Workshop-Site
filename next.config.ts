@@ -157,7 +157,23 @@ const nextConfig: NextConfig = {
       // sit in the last section of Mechanisms alongside the classes they own.
       {
         source: "/robot-class",
-        destination: "/building-subsystems",
+        destination: "/mechanisms",
+        permanent: true,
+      },
+      // Commands v3 calls a subsystem a Mechanism, and the lesson has been
+      // titled "Mechanisms" for a while. The slug was the last thing still
+      // saying "subsystem", and it is printed on old slides.
+      {
+        source: "/building-subsystems",
+        destination: "/mechanisms",
+        permanent: true,
+      },
+      // "Finish lines" was a metaphor and the lesson was titled "Finish
+      // Conditions" anyway. Same reasoning as above: the old slug is on
+      // printed slides.
+      {
+        source: "/finish-lines",
+        destination: "/finish-conditions",
         permanent: true,
       },
       {

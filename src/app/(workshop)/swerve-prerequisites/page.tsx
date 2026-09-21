@@ -215,7 +215,7 @@ export default function SwervePrerequisites() {
             the front of the robot points. 0° faces down the field along
             increasing X. You build one with{" "}
             <code>Rotation2d.fromDegrees(180)</code>, or take a ready-made
-            constant like <code>Rotation2d.kZero</code>.
+            constant like <code>Rotation2d.ZERO</code>.
           </li>
         </ul>
 

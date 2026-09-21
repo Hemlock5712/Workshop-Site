@@ -103,7 +103,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
   }
   Pose3d pose = LimelightHelpers.getBotPose3d_TargetSpace(limelightName);
   // All zeros means no target-space data yet.
-  return pose.equals(Pose3d.kZero) ? null : pose;
+  return pose.equals(Pose3d.ZERO) ? null : pose;
 }`}
         />
 
@@ -256,7 +256,7 @@ private static Pose3d readRobotInTag(String limelightName, int targetTagId) {
             </p>
           </ProseBlock>
           <MarginNote label="Order matters">
-            <code>drivetrain.run(...)</code> hands back a builder.{" "}
+            <code>drivetrain.run(...)</code> returns a builder.{" "}
             <code>.named(...)</code> turns it into a command, so nothing can
             attach after it.
           </MarginNote>

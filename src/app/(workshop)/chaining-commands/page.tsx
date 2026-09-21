@@ -3,17 +3,25 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { GitBranch } from "lucide-react";
 
 /**
- * Lesson 21, and no longer "advanced". It moved out of Workshop 6 because
- * `/autonomous` is two lessons later and builds its whole routine out of
- * `Command.sequence` and `.withTimeout`: composition is a prerequisite for
- * that page, not a victory lap after it. So sequencing leads, `race` follows, and the tour of `.andThen`,
+ * Lesson 16, and no longer "advanced". It left Workshop 6 because
+ * `/autonomous` builds its whole routine out of `Command.sequence` and
+ * `.withTimeout`: composition is a prerequisite for that page, not a victory
+ * lap after it. In September 2026 it moved again, out of Workshop 4 and into
+ * the end of Workshop 3, because nothing on it needs a swerve module. A team
+ * with an arm and no drivetrain could not reach it where it was.
+ *
+ * So sequencing leads, `race` follows, and the tour of `.andThen`,
  * `.alongWith`, `Command.parallel` and the coroutine preview is gone. Those
  * belong to the lessons that use them.
+ *
+ * A "What the group owns" section lived here briefly, explaining that a
+ * sequence holds every mechanism it names for its whole run. It was cut: the
+ * cost it described is one a student cannot act on until Finish Conditions
+ * two lessons later, and that page now states the rule where the coroutine
+ * that answers it is written. This page teaches how to build a group.
  *
  * This is also the first page on the site to show `import static
  * org.wpilib.units.Units.Seconds`, since `/java-basics` stopped pre-teaching
@@ -52,9 +60,9 @@ export default function ChainingCommands() {
           </p>
         </div>
         <MarginNote label="Where this goes">
-          Autonomous is two lessons away, and its routine is one of these: drive
-          off the line, then stop. Every step there needs the ending you are
-          about to add.
+          Every autonomous routine you write is one of these. The one in
+          Workshop 4 is drive off the line, then stop, and both steps need the
+          ending you are about to add.
         </MarginNote>
       </Split>
 
@@ -121,7 +129,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         />
 
         <p>
-          <code>Command.sequence(...)</code> hands back a builder rather than a{" "}
+          <code>Command.sequence(...)</code> returns a builder rather than a{" "}
           <code>Command</code>. <code>.named(&quot;...&quot;)</code> is what
           finishes it, and leaving it off will not compile. Name the group after
           what it does. If the group is a hold, end the name with{" "}
@@ -129,7 +137,7 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         </p>
         <p>
           Do not re-name a command that already has one.{" "}
-          <code>robot.arm.runFast()</code> arrives finished, so{" "}
+          <code>robot.arm.runFast()</code> is already finished, so{" "}
           <code>.named(...)</code> on it is a compile error.
         </p>
 
@@ -193,12 +201,12 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
 
         <Box variant="alert-warning" title="Canceling never stops the motor">
           <p>
-            A canceled command hands the mechanism back to <code>idle()</code>,
-            and <code>idle()</code> sends nothing at all. It does not zero the
-            last request, so Phoenix keeps applying the last voltage it was
-            given. The flywheel keeps spinning. Every group needs a stop
-            somewhere: a <code>whileFalse</code> binding, or a stop step of its
-            own.
+            A canceled command leaves the mechanism with nothing commanding it,
+            and nothing sends zero on the way out. The last request is still
+            latched in the motor controller, so Phoenix keeps applying the
+            voltage it was given. The flywheel keeps spinning. Every group needs
+            a stop somewhere: a <code>whileFalse</code> binding, or a stop step
+            of its own.
           </p>
         </Box>
 
@@ -286,15 +294,10 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         </div>
 
         <p>
-          Get this binding working in the simulator. Autonomous is the same move
-          against a drivetrain, with a stop on the end.
+          Get this binding working in the simulator. Finish Conditions is next
+          and replaces the stopwatch on the arm member with the arm&apos;s own
+          report that it arrived.
         </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-          title="The template's chained OpMode"
-          icon={<GitBranch className="h-5 w-5" />}
-        />
       </LessonSection>
 
       <Quiz
@@ -349,11 +352,11 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
               "It coasts down over about a second",
               "It throws an error, because a canceled hold has no stop",
               "It stops, because canceling a command stops its motors",
-              "It keeps spinning, because idle() sends no output and does not zero the last request",
+              "It keeps spinning, because nothing zeroes the last request and the motor controller still has it",
             ],
             correctAnswer: 3,
             explanation:
-              "whileTrue does cancel the group on release, but canceling is not stopping. The mechanism falls back to idle(), which issues no request at all, so Phoenix keeps applying the last voltage. A whileFalse(robot.flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
+              "whileTrue does cancel the group on release, but canceling is not stopping. Nothing is commanding the flywheel afterwards and nothing sent a zero, so the last request stays latched in the motor controller and Phoenix carries on applying it. A whileFalse(robot.flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
           },
         ]}
       />

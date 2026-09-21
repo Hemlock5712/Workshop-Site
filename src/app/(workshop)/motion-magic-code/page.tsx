@@ -14,7 +14,7 @@ import { M, Mech } from "@/components/lesson/Mechanism";
  * that handoff: paste the generated config again, now that it carries gains,
  * swap the control request, and the commands start naming targets.
  *
- * Generate Code itself is taught on `/building-subsystems`, where a student
+ * Generate Code itself is taught on `/mechanisms`, where a student
  * pastes an open-loop config to get inversion and neutral mode right. Do not
  * repeat the screenshot here. What is new on this page is that the same paste
  * now carries Slot0 and Motion Magic values.
@@ -133,7 +133,7 @@ export default function MotionMagicCode() {
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(this::stopMotor).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop (hold)");
   }
 
   private void setVelocity(double rps) {

@@ -222,7 +222,7 @@ driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop())
  * @return A trigger that is true when the robot is disabled.
  */
 public static Trigger disabled() {
-  return new Trigger(RobotState::isDisabled);
+  return new Trigger(() -> RobotState.isDisabled());
 }`}
         />
 
@@ -241,8 +241,8 @@ public static Trigger disabled() {
           Nothing on the <code>Arm</code> or <code>Flywheel</code> answers a
           question yet. Both expose three commands and nothing else, so every
           Trigger in the project is still a button. The first readable condition
-          is <code>robot.arm::isAtTarget</code>, on{" "}
-          <a href="/finish-lines" className="underline">
+          is <code>() -&gt; robot.arm.isAtTarget()</code>, on{" "}
+          <a href="/finish-conditions" className="underline">
             Finish Conditions
           </a>
           .
@@ -272,19 +272,19 @@ public static Trigger disabled() {
           scheduler calls it when a scope ends.
         </p>
         <p>
-          The template writes exactly one global binding, and it is about being
-          disabled, which no OpMode owns.
+          The swerve project writes exactly one global binding, and it is about
+          being disabled, which no OpMode owns.
         </p>
 
         <CodeBlock
           language="java"
-          title="Robot.java: the one global binding, from the 2027-Template"
-          filename="src/main/java/first/robot/Robot.java"
+          title="Robot.java: the one global binding, from 1-Swerve"
+          filename="src/main/java/frc/robot/Robot.java"
           code={`public Robot() {
   // ...
 
-  // Brake while disabled, in every mode. Created here (before any OpMode is selected) so the
-  // binding is global; the opmodes' bindings are scoped to their OpMode and removed on a switch.
+  // Brake while disabled, in every mode. This binding is made here instead of in an OpMode so
+  // it always exists. OpMode bindings go away on a mode switch; this one never does.
   final var idle = new SwerveRequest.Idle();
   RobotModeTriggers.disabled().whileTrue(drivetrain.applyRequest(() -> idle));
 }`}
@@ -302,8 +302,8 @@ public static Trigger disabled() {
         </p>
 
         <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/Robot.java"
-          title="2027-Template: Robot.java"
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/1-Swerve/src/main/java/frc/robot/Robot.java"
+          title="Workshop-Code 1-Swerve: Robot.java"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
@@ -378,7 +378,7 @@ public static Trigger disabled() {
             ],
             correctAnswer: 0,
             explanation:
-              "Canceling is not stopping. With nothing bound to the release the flywheel falls back to idle(), which sends nothing at all, so Phoenix keeps applying 6 V. whileFalse names what runs next, and here that is runSlow() rather than a stop: a wheel still turning at 3 V does not have to spin up from dead.",
+              "Canceling is not stopping. With nothing bound to the release, nothing commands the flywheel and nothing sends a zero, so Phoenix keeps applying 6 V. whileFalse names what runs next, and here that is runSlow() rather than a stop: a wheel still turning at 3 V does not have to spin up from dead.",
           },
           {
             id: 3,
@@ -391,7 +391,7 @@ public static Trigger disabled() {
             ],
             correctAnswer: 2,
             explanation:
-              "A Trigger wraps a condition the scheduler polls once a loop. RobotModeTriggers.disabled() is new Trigger(RobotState::isDisabled). Buttons are the only source on this branch because nothing on the Arm or Flywheel is readable yet.",
+              "A Trigger wraps a condition the scheduler polls once a loop. RobotModeTriggers.disabled() is new Trigger(() -> RobotState.isDisabled()). Buttons are the only source on this branch because nothing on the Arm or Flywheel is readable yet.",
           },
           {
             id: 4,

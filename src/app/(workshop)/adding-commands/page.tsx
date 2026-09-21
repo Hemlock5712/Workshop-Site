@@ -105,7 +105,7 @@ import org.wpilib.command3.Mechanism;`}
 
   /** Stop the arm motor and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(this::stopMotor).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop (hold)");
   }`}
           />
         </Mech>
@@ -129,7 +129,7 @@ import org.wpilib.command3.Mechanism;`}
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(this::stopMotor).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop (hold)");
   }`}
           />
         </Mech>
@@ -156,7 +156,7 @@ import org.wpilib.command3.Mechanism;`}
         </ul>
 
         <p>
-          <code>this::stopMotor</code> is the same as{" "}
+          <code>() -&gt; stopMotor()</code> is the same as{" "}
           <code>() -&gt; stopMotor()</code>, pointing at the private helper from
           last lesson. Every name ends in <code>(hold)</code> because{" "}
           <code>runRepeatedly</code> has no exit: these run until something else
@@ -242,7 +242,7 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 1,
             question:
-              "setVoltage is private on both mechanisms. What does keeping it that way buy you?",
+              "setVoltage is private on both mechanisms. What does that achieve?",
             options: [
               "So the only way to move the arm is through a command, which lets the scheduler track who owns the motor",
               "Because Mechanism requires all setters to be private",
@@ -256,7 +256,7 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 2,
             question:
-              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)"), what does runRepeatedly(...) hand back before .named(...) runs?',
+              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)"), what does runRepeatedly(...) return before .named(...) runs?',
             options: [
               "A Runnable that the scheduler wraps later",
               "A finished Command, ready to schedule",
@@ -273,13 +273,13 @@ import org.wpilib.command3.Mechanism;`}
               "You bind driver.a().whileTrue(robot.flywheel.runFast()) and leave the whileFalse off. You release A. What happens?",
             options: [
               "Nothing changes, because whileTrue only ever schedules",
-              "The command is canceled, the flywheel falls back to idle(), and the wheel keeps spinning at 6 V",
+              "The command is canceled, nothing commands the flywheel afterwards, and the wheel keeps spinning at 6 V",
               "The build fails: whileTrue requires a matching whileFalse",
               "The flywheel stops: releasing the button cancels the command, and canceling stops the motor",
             ],
             correctAnswer: 1,
             explanation:
-              "whileTrue does cancel on the release, so the command really does end. Canceling is not stopping. The flywheel falls back to idle(), which sends nothing at all, so Phoenix keeps applying the last 6 V request. whileFalse(robot.flywheel.stop()) is what sends zero.",
+              "whileTrue does cancel on the release, so the command really does end. Canceling is not stopping. Nothing is commanding the flywheel afterwards and nothing sent a zero, so Phoenix keeps applying the last 6 V request. whileFalse(robot.flywheel.stop()) is what sends zero.",
           },
         ]}
       />

@@ -3,10 +3,16 @@
 /**
  * The parallel-flow diagram for `/coroutines`, with a step-through simulation.
  *
- * The "Four verbs" table above it defines fork, await, waitUntil and yield.
+ * The verbs table above it defines fork, await, waitUntil, wait and yield.
  * This shows them running at once: the routine reads top to bottom down the
  * left, and every `fork` peels a second flow off to the right that keeps
  * running beside it.
+ *
+ * The two wait nodes carry the whole `if (...timedOut()) return;` rather than
+ * a bare call. This is the autonomous routine, every wait in it is bounded,
+ * and a picture showing the result thrown away would teach the one habit the
+ * lesson exists to prevent. Three code lines is why those nodes are 84 high
+ * and everything below them sits 20 and 40 lower than the fork nodes above.
  *
  * Press play and the routine walks itself. The point a static picture cannot
  * make is the one the simulation makes twice: when the main flow parks on an
@@ -40,7 +46,7 @@ import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 
 // ── geometry ────────────────────────────────────────────────────────────
 const W = 880;
-const H = 684;
+const H = 704;
 
 const MAIN_X = 20;
 const MAIN_W = 330;
@@ -74,36 +80,41 @@ const NODES: NodeSpec[] = [
   },
   {
     y: 122,
-    h: 74,
-    lines: ["coroutine.await(", "    Command.waitUntil(arm::isAtTarget));"],
+    h: 84,
+    lines: [
+      "if (coroutine.waitUntil(",
+      "    () -> arm.isAtTarget(),",
+      "    Seconds.of(3.0)).timedOut()) return;",
+    ],
     tag: "parked · 0.50 s",
     parked: true,
   },
   {
-    y: 238,
+    y: 248,
     h: 58,
     lines: ["coroutine.fork(flywheel.runFast());"],
     tag: "runs · returns on the same loop",
   },
   {
-    y: 340,
-    h: 74,
+    y: 350,
+    h: 84,
     lines: [
-      "coroutine.await(",
-      "    Command.waitUntil(flywheel::isAtTarget));",
+      "if (coroutine.waitUntil(",
+      "    () -> flywheel.isAtTarget(),",
+      "    Seconds.of(3.0)).timedOut()) return;",
     ],
     tag: "parked · 0.60 s",
     parked: true,
   },
   {
-    y: 456,
+    y: 476,
     h: 58,
     lines: ["coroutine.wait(Seconds.of(1.0));"],
     tag: "parked · 1.00 s",
     parked: true,
   },
   {
-    y: 558,
+    y: 578,
     h: 52,
     lines: ["// the body runs out of lines"],
     tag: "routine finishes",
@@ -112,7 +123,7 @@ const NODES: NodeSpec[] = [
 
 const midY = (n: NodeSpec) => n.y + n.h / 2;
 const BOTTOM = NODES[5].y + NODES[5].h;
-const CANCEL_Y = 640;
+const CANCEL_Y = 660;
 
 type Branch = {
   x: number;
@@ -152,7 +163,7 @@ const BRANCHES: Branch[] = [
   branch(ARM_X, 0, 1, {
     name: "arm.vertical()",
     sub: "runRepeatedly · never finishes",
-    wakeLabel: "arm::isAtTarget",
+    wakeLabel: "arm.isAtTarget()",
     bornAt: 0,
     wakeStep: 1,
     kind: "arm",
@@ -166,7 +177,7 @@ const BRANCHES: Branch[] = [
   branch(FLY_X, 2, 3, {
     name: "flywheel.runFast()",
     sub: "runRepeatedly · never finishes",
-    wakeLabel: "flywheel::isAtTarget",
+    wakeLabel: "flywheel.isAtTarget()",
     bornAt: 2,
     wakeStep: 3,
     kind: "flywheel",

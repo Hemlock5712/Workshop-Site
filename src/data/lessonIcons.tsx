@@ -62,7 +62,7 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/hardware": makeIcon(Cog),
   "/project-setup": makeIcon(Folder),
   "/command-framework": makeIcon(Layers),
-  "/building-subsystems": makeIcon(Layers),
+  "/mechanisms": makeIcon(Layers),
   "/adding-commands": makeIcon(Terminal),
   "/opmodes": makeIcon(Gamepad2),
   "/triggers": makeIcon(Gamepad2),
@@ -86,7 +86,7 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/advanced-drive-to-point": makeIcon(Navigation),
   "/dynamic-path-planning": makeIcon(Route),
   "/chaining-commands": makeIcon(GitBranch),
-  "/finish-lines": makeIcon(CheckCircle2),
+  "/finish-conditions": makeIcon(CheckCircle2),
   "/coroutines": makeIcon(Sparkles),
   "/drive-to-tag-inline": makeIcon(Target),
 };

@@ -96,7 +96,7 @@ export default function SwerveDriveProject() {
           <code>src/main/java/frc/robot/generated/TunerConstants.java</code>.
         </p>
         <p>
-          It carries thirteen device IDs, <code>kDriveGearRatio</code>,{" "}
+          It has thirteen device IDs, <code>kDriveGearRatio</code>,{" "}
           <code>kSteerGearRatio</code> and <code>kWheelRadius</code>. Per module
           it holds an X and Y offset from the robot&apos;s center, which is what
           kinematics runs on. There is a CANcoder offset per module as well,
@@ -280,14 +280,14 @@ export default function SwerveDriveProject() {
         title="The drivetrain default command"
       >
         <p>
-          Every <code>Mechanism</code> starts out with <code>idle()</code> as
-          its default. Since <code>idle()</code> parks at the lowest priority
-          and sends nothing at all, canceling an arm command leaves the arm
-          pushing. That is what <code>arm.stop()</code> is for. Teleop gives the
-          drivetrain a better default, and it is the only{" "}
-          <code>setDefaultCommand</code> call in the workshop code. The call
-          sits in <code>TeleopOpMode</code> rather than <code>Robot</code>{" "}
-          because the default needs that mode&apos;s controller.
+          A <code>Mechanism</code> has no default command until you give it one.
+          With none set, canceling an arm command leaves nothing commanding the
+          arm and nothing sending a zero, so the arm keeps pushing. That is what{" "}
+          <code>arm.stop()</code> is for. Teleop gives the drivetrain a real
+          default, and it is the only <code>setDefaultCommand</code> call in the
+          workshop code. The call sits in <code>TeleopOpMode</code> rather than{" "}
+          <code>Robot</code> because the default needs that mode&apos;s
+          controller.
         </p>
         <CodeBlock
           language="java"
@@ -396,8 +396,8 @@ export default function SwerveDriveProject() {
             <li>
               <strong>Nothing moves and no error appears.</strong> Check that{" "}
               <strong>Teleop</strong> is selected and the robot enabled. If both
-              are right, the <code>setDefaultCommand</code> line is missing, and{" "}
-              <code>idle()</code> underneath looks like broken wiring.
+              are right, the <code>setDefaultCommand</code> line is missing, and
+              a drivetrain nobody commands looks exactly like broken wiring.
             </li>
           </ul>
         </Box>
@@ -456,21 +456,21 @@ export default function SwerveDriveProject() {
             ],
             correctAnswer: 1,
             explanation:
-              "Java allows one superclass, and CommandSwerveDrivetrain has already spent it. So DriveMechanism extends Mechanism, holds a drivetrain as a field, and hands out the commands the rest of the robot uses. The file's own comment says exactly that.",
+              "CommandSwerveDrivetrain already extends CTRE's generated class, and Java allows only one superclass. Mechanism is an interface, so DriveMechanism can implement it anyway, hold a drivetrain as a field, and hand out the commands the rest of the robot uses. The file's own comment says exactly that.",
           },
           {
             id: 4,
             question:
               "An arm command and a drivetrain command are both canceled. How does the hardware behave differently?",
             options: [
-              "The arm keeps applying its last request under idle(), while the drivetrain's joystick default asks for zero every loop",
+              "The arm keeps applying its last request, because nothing is commanding it, while the drivetrain's joystick default asks for zero every loop",
               "The drivetrain refuses the cancellation until the driver presses a button",
               "It does not: canceling a command stops the motors either way",
-              "idle() zeroes the arm's output, while the drivetrain holds its last request",
+              "An unclaimed mechanism is zeroed automatically, so the arm stops while the drivetrain holds its last request",
             ],
             correctAnswer: 0,
             explanation:
-              "idle() owns the mechanism at the lowest priority and sends nothing, so the arm's last request stays in force. That is why arm.stop() exists. The drivetrain's default is a real command that re-reads the sticks every loop, so centered sticks are an active request for zero.",
+              "The arm has no default command, so once its command is canceled nothing commands the arm at all and nothing sends a zero. Its last request stays in force. That is why arm.stop() exists. The drivetrain's default is a real command that re-reads the sticks every loop, so centered sticks are an active request for zero.",
           },
           {
             id: 5,
