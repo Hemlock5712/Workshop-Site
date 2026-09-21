@@ -367,6 +367,17 @@ unchanged. Do not reinstate it.
   where the tells hid. `quizProseFindings` now runs the banned list over every
   question, option, and explanation.
 
+`context/lesson-cleanup-prompt.md` is a temporary working doc: the pass that
+trims a lesson to budget, written down so it runs the same way on every page.
+Delete it when the cleanup pass is finished. `context/lesson-budget.md` is the
+authority it defers to and stays.
+
+**The `unslop` skill is not in this repository.** `.claude/` is gitignored, so
+the rules referenced above live only on whoever's machine created them. What is
+enforceable is in `pnpm prose`, whose `BANNED` list its own comments describe as
+"the mechanically checkable subset" of unslop. Treat the rest as judgement until
+the skill is committed somewhere tracked.
+
 `context/narration-voice.md` does still exist and is worth reading before
 writing prose. It measures cadence rather than asserting rules, and its
 findings apply to the website, not just the video scripts.
