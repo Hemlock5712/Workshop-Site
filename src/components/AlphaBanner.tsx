@@ -24,7 +24,7 @@ import { getSectionOf } from "@/data/lessons";
  */
 export default function AlphaBanner() {
   const pathname = usePathname();
-  const unreviewed = Boolean(getSectionOf(pathname)?.unfinished);
+  const roughDraft = Boolean(getSectionOf(pathname)?.unfinished);
 
   return (
     <div
@@ -32,7 +32,7 @@ export default function AlphaBanner() {
       role="status"
       style={{
         background: "var(--bg2)",
-        borderBottom: unreviewed
+        borderBottom: roughDraft
           ? "1px solid var(--err)"
           : "1px solid var(--rule-soft)",
       }}
@@ -40,17 +40,17 @@ export default function AlphaBanner() {
       <AlertTriangle
         className="h-3.5 w-3.5 shrink-0"
         aria-hidden="true"
-        style={{ color: unreviewed ? "var(--err)" : "var(--accent)" }}
+        style={{ color: roughDraft ? "var(--err)" : "var(--accent)" }}
       />
       <span
         className="mono"
         style={{
           fontSize: "var(--text-micro)",
           letterSpacing: "0.08em",
-          color: unreviewed ? "var(--err)" : "var(--tx3)",
+          color: roughDraft ? "var(--err)" : "var(--tx3)",
         }}
       >
-        {unreviewed
+        {roughDraft
           ? "Rough draft: nobody has reviewed this lesson yet, and it may not be how things are done this season."
           : "WPILib 2027 is still in alpha: these pages change as the APIs settle."}
       </span>
