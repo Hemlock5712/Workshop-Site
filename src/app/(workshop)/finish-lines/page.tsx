@@ -9,10 +9,19 @@ import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
 
 /**
- * Lesson 22. It moved out of Workshop 6 alongside Command Composition, because
- * `/autonomous` is the very next page and every step in its routine ends on a
- * `.withTimeout(...)`. Taught five lessons later, this page explained a rule
- * the student had already been made to follow without it.
+ * Lesson 17, and the page for `mech-4-ReadingState`. It left Workshop 6
+ * alongside Command Composition because `/autonomous` ends every step in its
+ * routine on a `.withTimeout(...)`, and in September 2026 both moved again
+ * into the end of Workshop 3: an arm reporting its own angle needs no swerve
+ * module, and behind four drivetrain lessons a team without one could not
+ * reach it.
+ *
+ * "One button, both mechanisms" is new with alpha-7. The branch's MyTeleop now
+ * binds Y to a coroutine rather than a `Command.sequence`, which is the first
+ * coroutine in the course. It is deliberately thin: fork, waitUntil, await,
+ * named once each and no timeline diagram. `/coroutines` is the next lesson
+ * and owns the full treatment. What this page owes it is the reason a
+ * coroutine exists at all, and that reason is the arrival check above it.
  *
  * It is also the first page on the site to use `.until(...)` and the word
  * `BooleanSupplier`. `/java-basics` pre-taught both fourteen lessons early and
@@ -51,7 +60,8 @@ export default function FinishLines() {
           The simulator running, from <strong>Hardware Simulation</strong>.
         </>,
       ]}
-      time="12 minutes"
+      branch="mech-4-ReadingState"
+      time="15 minutes"
     >
       <MechanismSelector />
 
@@ -74,9 +84,10 @@ export default function FinishLines() {
           </Mech>
         </div>
         <MarginNote label="Where this goes">
-          Autonomous is next, and both of its steps end on timeouts. A
-          drivetrain has nothing to ask yet. The arm does, so this is the page
-          that writes the question.
+          Coroutines is next, and every wait in it is built on the question you
+          are about to write. The autonomous routine in Workshop 4 ends its
+          steps on timeouts, because a drivetrain has nothing to ask yet. The
+          arm does.
         </MarginNote>
       </Split>
 
@@ -284,8 +295,89 @@ Command raiseArm =
           one second is the instruction. <code>robot.flywheel.stop()</code> is a
           hold too, so without a timeout on it the group never finishes either.
           A tenth of a second is long enough to send zero and release the
-          mechanism. Autonomous stops its drivetrain the same way.
+          mechanism. The autonomous routine in Workshop 4 stops its drivetrain
+          the same way.
         </p>
+        <p>
+          <code>score</code> is three steps on two mechanisms, one at a time,
+          and a sequence is the right shape for it. Ask for the arm to{" "}
+          <em>keep holding</em> while the flywheel spins and it stops being a
+          list, which is the next section.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="one-button" title="One button, both mechanisms">
+        <p>
+          Raise the arm, wait for it to really arrive, then spin the flywheel up
+          while the arm goes on holding. That is not a list of steps. A sequence
+          owns every mechanism it names, from its first step to its last, and
+          drives them one at a time. So the arm cannot go on holding while the
+          flywheel spins.
+        </p>
+        <p>
+          The shape that does have two timelines is a <strong>coroutine</strong>
+          . Its body is ordinary Java, read top to bottom, and it can pause
+          partway through and carry on from the same line.
+        </p>
+
+        <CodeBlock
+          language="java"
+          filename="src/main/java/first/robot/opmode/MyTeleop.java"
+          title="MyTeleop.java: the binding, and the body it calls"
+          code={`// Y: raise the arm, then spin the flywheel once it is really there.
+driver
+    .y()
+    .whileTrue(
+        Command.noRequirements(coroutine -> spinUpWhenReady(coroutine))
+            .named("Spin Up When Ready (hold)"))
+    .whileFalse(robot.flywheel.stop());
+
+// ... and, further down the class:
+
+private void spinUpWhenReady(Coroutine coroutine) {
+  // fork, not await: vertical() is a hold and never finishes.
+  coroutine.fork(robot.arm.vertical());
+
+  coroutine.waitUntil(() -> robot.arm.isAtTarget());
+
+  // runFast is a hold too, so this never returns: releasing Y cancels the whole routine.
+  coroutine.await(robot.flywheel.runFast());
+}`}
+        />
+
+        <p>
+          Three verbs, and the middle one is this lesson&apos;s.{" "}
+          <code>fork</code> starts a command and keeps reading, so the arm hold
+          runs underneath everything after it. <code>waitUntil</code> stops on
+          its line until the condition comes back true, and the condition is{" "}
+          <code>isAtTarget()</code>. <code>await</code> runs a command and stops
+          until it finishes.
+        </p>
+        <p>
+          Reaching <code>robot</code> from a method means <code>MyTeleop</code>{" "}
+          has to keep it: <code>private final Robot robot;</code> as a field,
+          assigned in the constructor. Import{" "}
+          <code>org.wpilib.command3.Command</code> and{" "}
+          <code>org.wpilib.command3.Coroutine</code>.
+        </p>
+
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              <code>Command.noRequirements</code> claims no mechanism of its
+              own. It does not need to: each forked command claims its own, and
+              only for as long as that command runs. So the rule is short. One
+              mechanism, write a composition. Two or more that have to overlap,
+              write a coroutine.
+            </p>
+          </div>
+          <MarginNote label="No timeout here">
+            Every wait on this page is unbounded, and that is safe only because
+            a driver is holding Y and can let go. Coroutines is next and does
+            the same routine in autonomous, where nobody can, so every wait
+            there is bounded.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       <LessonSection
@@ -363,6 +455,10 @@ Command raiseArm =
             Leave the tolerance broken, drop <code>.withTimeout(...)</code>, and
             press it once more.
           </li>
+          <li>
+            Put the tolerance back, add the Y binding, and hold Y. The arm goes
+            up, and the flywheel starts only once the arm is there.
+          </li>
         </ol>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
@@ -377,17 +473,36 @@ Command raiseArm =
             <li>
               With the timeout gone as well, the arm pushing until you disable.
             </li>
+            <li>
+              On Y, the flywheel waiting out the arm&apos;s travel, then
+              spinning up with the arm still holding.
+            </li>
           </ul>
         </Box>
         <p>
           Write down the tolerance you settled on and how long the step took at
           it. That time is the floor for any timeout on this arm. Double it and
-          you have a backstop that will not fire on a good run.
+          you have a backstop that will not fire on a good run. Coroutines is
+          next, and that number is the one it asks you for.
         </p>
       </LessonSection>
 
       <Quiz
         questions={[
+          {
+            id: 7,
+            question:
+              "Why is the Y button a coroutine instead of Command.sequence(robot.arm.vertical().until(...), robot.flywheel.runFast())?",
+            options: [
+              "Command.sequence cannot take more than two members",
+              "A sequence owns both mechanisms for its whole run and drives one at a time, so the arm cannot keep holding while the flywheel spins",
+              "Coroutines run at a higher scheduler priority",
+              "isAtTarget() can only be read from inside a coroutine",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "The two mechanisms have to overlap: the arm holds vertical while the flywheel spins up. A sequence runs one member at a time, so the arm's step has to end before the flywheel's can start, and the group holds both mechanisms throughout either way. In the coroutine, fork starts the arm hold and leaves it running, and each forked command claims only its own mechanism for only as long as it runs.",
+          },
           {
             id: 1,
             question:

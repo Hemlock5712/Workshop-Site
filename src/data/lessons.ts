@@ -64,14 +64,14 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     title: "Robot Programming",
     num: "03",
     blurb:
-      "Make the project, write the mechanism and its commands, bind them to a controller, and drive it closed loop on real hardware.",
+      "Make the project, write the mechanism and its commands, bind them to a controller, drive it closed loop, and build routines that wait for it to arrive.",
   },
   {
     id: "workshop4",
     title: "Swerve & Autonomous",
     num: "04",
     blurb:
-      "Generate and calibrate a swerve drive, plan a path, combine commands, and run an autonomous OpMode.",
+      "Generate and calibrate a swerve drive, plan a path, and run an autonomous OpMode.",
     unfinished:
       "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
@@ -89,7 +89,7 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     title: "Advanced Commands",
     num: "06",
     blurb:
-      "Record what the robot did, then write commands that wait, yield, and remember, using coroutines and state machines.",
+      "Record what the robot did, then write a command that remembers which step it is on.",
     unfinished:
       "Still being written. Waiting on the next WPILib 2027 alpha releases.",
   },
@@ -181,6 +181,32 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     shortLabel: "Motion Magic Code",
     section: "workshop3",
   },
+  // Composition, arrival checks and coroutines close Workshop 3 rather than
+  // opening Workshop 4. Every one of them is an arm-and-flywheel lesson that
+  // needs nothing but the bench project, and they carry the chain from
+  // `mech-3-MotionMagic` through `mech-4-ReadingState` to `mech-5-Coroutines`.
+  // Filed under Swerve they sat behind four lessons of drivetrain a student
+  // does not need in order to make two commands run in order, so a team
+  // without a swerve module could not reach them at all.
+  {
+    slug: "/chaining-commands",
+    title: "Command Composition",
+    section: "workshop3",
+  },
+  {
+    slug: "/finish-lines",
+    title: "Finish Conditions",
+    section: "workshop3",
+  },
+  // Coroutines follows Finish Conditions because its waits are built out of
+  // `isAtTarget()`, and because `mech-4-ReadingState` now writes the first
+  // coroutine itself on the Y button. `mech-5-Coroutines` is the same routine
+  // in autonomous, where every wait is bounded: nobody can let go of a button.
+  {
+    slug: "/coroutines",
+    title: "Coroutines",
+    section: "workshop3",
+  },
 
   // Workshop 4: Swerve & Autonomous
   {
@@ -200,21 +226,6 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop4",
   },
   { slug: "/pathplanner", title: "PathPlanner", section: "workshop4" },
-  // Composition and finish conditions sit here, not in Workshop 6, because
-  // `/autonomous` is the first page that uses them: it writes
-  // `Command.sequence` three times and `.withTimeout` four. Filed under
-  // "Advanced Commands" they were taught five and six lessons after the
-  // lesson that depends on them.
-  {
-    slug: "/chaining-commands",
-    title: "Command Composition",
-    section: "workshop4",
-  },
-  {
-    slug: "/finish-lines",
-    title: "Finish Conditions",
-    section: "workshop4",
-  },
   {
     slug: "/autonomous",
     title: "Autonomous",
@@ -247,7 +258,6 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     title: "Logging",
     section: "workshop6",
   },
-  { slug: "/coroutines", title: "Coroutines", section: "workshop6" },
   {
     slug: "/state-based",
     title: "State Machines",

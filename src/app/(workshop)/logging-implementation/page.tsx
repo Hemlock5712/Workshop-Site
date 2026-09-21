@@ -16,6 +16,30 @@ import { M, Mech } from "@/components/lesson/Mechanism";
 import { BookOpen } from "lucide-react";
 
 /**
+ * Rewritten for WPILib 2027 alpha-7, which added `org.wpilib.telemetry`. The
+ * page used to hand-roll three `DoublePublisher` fields per mechanism and
+ * wire them to NetworkTables by hand. `Telemetry.getTable(getName())` plus
+ * `table.log(name, value)` is the same three signals in three lines, with no
+ * fields to build once and no handles to leak in a loop.
+ *
+ * Two deliberate omissions. Epilogue is not mentioned: it was rebuilt on top
+ * of Telemetry and is not deprecated, but teaching both is two things to
+ * learn where the course needs one. `DataLogTelemetryBackend` writes straight
+ * to file without NetworkTables and gets a single sentence, because it
+ * appears only in WPILib's own tests and nothing here needs it.
+ *
+ * DataLogManager did not change and neither did section one. It captures
+ * every NetworkTables change, and the NetworkTables backend that `RobotBase`
+ * registers in its own constructor puts telemetry at `/Telemetry`, so the
+ * signals land in the `.wpilog` as `NT:/Telemetry/...` with no extra wiring.
+ * WPILib's own `hatchbotcmdv3` example does exactly this.
+ *
+ * Values are logged as plain doubles through `.in(Unit)` rather than as
+ * `Measure` objects. The backend does accept a `Measure`, but the entry name
+ * it derives from one is not something this page should assert without
+ * checking, and `.in(Rotations)` is the more teachable line anyway: it puts
+ * the unit in the source next to the unit in the name.
+ *
  * Written once, read twice — see `src/data/mechanisms.ts`.
  *
  * The fork here is wider than a substitution, and it is why the three signals
@@ -32,10 +56,11 @@ export default function LoggingImplementation() {
   return (
     <PageTemplate
       title="Logging"
-      lede="DataLogManager copies every NetworkTables value and every console line into one file on disk. You start it in Robot.java, publish three signals from your mechanism, then open the file and read them back."
+      lede="Telemetry publishes a number under a name. DataLogManager copies every published value and every console line into one file on disk. You start the recorder in Robot.java, log three signals from your mechanism, then open the file and read them back."
       needs={[
         <>
-          The project from <strong>Deploy and Run</strong> running on the bench.
+          The project from <strong>Hardware Simulation</strong> running on the
+          bench.
         </>,
         <>
           <strong>Robot.java</strong> and one mechanism class from the previous
@@ -43,7 +68,7 @@ export default function LoggingImplementation() {
         </>,
         <>AdvantageScope installed from Prerequisites.</>,
       ]}
-      time="10 minutes"
+      time="12 minutes"
     >
       <MechanismSelector />
 
@@ -101,6 +126,23 @@ public Robot() {
           build, deployed after the match that went wrong, records the next
           failure instead of the one you are trying to explain.
         </p>
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              That is the whole setup, and it is only for the file. Watching
+              numbers live needs nothing at all: <code>RobotBase</code>{" "}
+              registers a NetworkTables backend at <code>/Telemetry</code> in
+              its own constructor, before your <code>Robot</code> runs. Anything
+              you log is on the dashboard whether or not you ever call{" "}
+              <code>DataLogManager</code>.
+            </p>
+          </div>
+          <MarginNote label="Straight to file">
+            There is a backend that writes to the log without going through
+            NetworkTables, for signals too fast or too many to put on the wire.
+            You do not need it here, and nothing in this course uses it.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       <LessonSection id="publish-one-mechanism" title="Publish three signals">
@@ -123,20 +165,17 @@ public Robot() {
             language="java"
             filename="src/main/java/first/robot/mechanisms/Arm.java"
             title="Arm.java: three numbers worth keeping"
-            code={`import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTableInstance;
+            code={`import static org.wpilib.units.Units.Rotations;
 
-private final DoublePublisher positionLog =
-    NetworkTableInstance.getDefault().getDoubleTopic("Arm/PositionRot").publish();
-private final DoublePublisher targetLog =
-    NetworkTableInstance.getDefault().getDoubleTopic("Arm/TargetRot").publish();
-private final DoublePublisher voltageLog =
-    NetworkTableInstance.getDefault().getDoubleTopic("Arm/AppliedVolts").publish();
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
-private void record(double position, double target, double volts) {
-  positionLog.set(position);
-  targetLog.set(target);
-  voltageLog.set(volts);
+private void record() {
+  TelemetryTable table = Telemetry.getTable(getName());
+
+  table.log("PositionRot", getPosition().in(Rotations));
+  table.log("TargetRot", getTargetPosition().in(Rotations));
+  table.log("AppliedVolts", motor.getMotorVoltage().getValueAsDouble());
 }`}
           />
         </Mech>
@@ -146,37 +185,61 @@ private void record(double position, double target, double volts) {
             language="java"
             filename="src/main/java/first/robot/mechanisms/Flywheel.java"
             title="Flywheel.java: three numbers worth keeping"
-            code={`import org.wpilib.networktables.DoublePublisher;
-import org.wpilib.networktables.NetworkTableInstance;
+            code={`import static org.wpilib.units.Units.RotationsPerSecond;
 
-private final DoublePublisher velocityLog =
-    NetworkTableInstance.getDefault().getDoubleTopic("Flywheel/VelocityRPS").publish();
-private final DoublePublisher targetLog =
-    NetworkTableInstance.getDefault().getDoubleTopic("Flywheel/TargetRPS").publish();
-private final DoublePublisher voltageLog =
-    NetworkTableInstance.getDefault().getDoubleTopic("Flywheel/AppliedVolts").publish();
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
-private void record(double velocity, double target, double volts) {
-  velocityLog.set(velocity);
-  targetLog.set(target);
-  voltageLog.set(volts);
+private void record() {
+  TelemetryTable table = Telemetry.getTable(getName());
+
+  table.log("VelocityRPS", getVelocity().in(RotationsPerSecond));
+  table.log("TargetRPS", getTargetVelocity().in(RotationsPerSecond));
+  table.log("AppliedVolts", motor.getMotorVoltage().getValueAsDouble());
 }`}
           />
         </Mech>
 
-        <p>
-          The three publishers are fields, built once when the <M k="noun" /> is
-          built. Build one inside a loop and the code opens a fresh handle fifty
-          times a second, closing none of them.
-        </p>
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              <code>Telemetry.getTable(...)</code> hands back the table for a
+              name, making it on the first call and returning the same one after
+              that. So there is nothing to build in the constructor and nothing
+              to keep in a field. Calling it every loop is the intended use.
+            </p>
+            <p>
+              <code>getName()</code> is the <M k="noun" />
+              &apos;s own name, which <code>Mechanism</code> takes from the
+              class unless you override it. That is what puts all three signals
+              under{" "}
+              <code>
+                <M k="name" />/
+              </code>{" "}
+              without you spelling the prefix into three strings.
+            </p>
+            <p>
+              <code>.in(Rotations)</code> is where the unit gets decided. Both
+              getters return a WPILib unit type rather than a bare number, and
+              logging one means naming the unit you want it in. Say it here and
+              say it again in the signal name, so the file and the code agree.
+            </p>
+          </div>
+          <MarginNote label="Any type, one method">
+            <code>log</code> is overloaded for every primitive, for arrays and
+            collections, and for anything with a struct. The drivetrain logs its
+            whole <code>Pose2d</code> on one line, which is how AdvantageScope
+            draws a robot on a field.
+          </MarginNote>
+        </Split>
 
         <p>
-          Call <code>record</code> from whatever already refreshes those values:
-          the <code>runRepeatedly(...)</code> command that holds the target, or
-          a background task added with{" "}
-          <code>Scheduler.getDefault().addPeriodic(...)</code>. The command
-          publishes only while it runs. The background task publishes for as
-          long as the robot has power, and neither one is a new loop of yours.
+          Call <code>record</code> from whatever already runs each loop: the{" "}
+          <code>runRepeatedly(...)</code> command that holds the target, or a
+          background task added with{" "}
+          <code>Scheduler.getDefault().addPeriodic(...)</code>. The command logs
+          only while it runs. The background task logs for as long as the robot
+          has power, and neither one is a new loop of yours.
         </p>
       </LessonSection>
 
@@ -193,14 +256,15 @@ private void record(double velocity, double target, double volts) {
             and radians without a collision.
           </li>
           <li>
-            Group with a slash. Everything under <code>Arm/</code> arrives
-            together in the viewer, next to <code>Flywheel/</code> and
-            <code> Drivetrain/</code>.
+            Let the table do the grouping. Everything logged to the{" "}
+            <code>Arm</code> table arrives together in the viewer, next to{" "}
+            <code>Flywheel</code> and <code>Drivetrain</code>. Do not write the
+            prefix into the signal name as well.
           </li>
           <li>
-            One publisher per fact. Two classes publishing{" "}
-            <code>Arm/PositionRot</code> give you a trace that flickers between
-            two sources, with nothing to say which one you are reading.
+            One writer per fact. Two classes logging <code>PositionRot</code> to
+            the same table give you a trace that flickers between them, and no
+            way to tell which is which.
           </li>
           <li>
             Add a signal when you can name the question it answers. A hundred
@@ -243,14 +307,15 @@ private void record(double velocity, double target, double volts) {
             folder.
           </li>
           <Mech for="arm" as="li">
-            Open it in AdvantageScope. Put <code>Arm/PositionRot</code> and{" "}
-            <code>Arm/TargetRot</code> on one graph, and{" "}
-            <code>Arm/AppliedVolts</code> on a second.
+            Open it in AdvantageScope and expand <code>NT:/Telemetry/Arm</code>.
+            Put <code>PositionRot</code> and <code>TargetRot</code> on one
+            graph, and <code>AppliedVolts</code> on a second.
           </Mech>
           <Mech for="flywheel" as="li">
-            Open it in AdvantageScope. Put <code>Flywheel/VelocityRPS</code> and{" "}
-            <code>Flywheel/TargetRPS</code> on one graph, and{" "}
-            <code>Flywheel/AppliedVolts</code> on a second.
+            Open it in AdvantageScope and expand{" "}
+            <code>NT:/Telemetry/Flywheel</code>. Put <code>VelocityRPS</code>{" "}
+            and <code>TargetRPS</code> on one graph, and{" "}
+            <code>AppliedVolts</code> on a second.
           </Mech>
           <Mech for="arm" as="li">
             Line the enabled interval up against the motion. Position should
@@ -263,6 +328,14 @@ private void record(double velocity, double target, double volts) {
             steady number once the wheel is at speed.
           </Mech>
         </ol>
+        <p>
+          A trace that holds one value is not always a bug. Telemetry writes an
+          entry only when the value changes, so an arm that is genuinely still
+          records one sample and then nothing until it moves. The rest of the
+          file tells you which you have. Every signal stopping at the same
+          instant means the logging stopped. One flat signal among live ones
+          means the thing it measures was flat.
+        </p>
         <WatchOut>
           Entries reach disk in batches, not one at a time. Kill the program
           while it is still enabled and the last second or two never gets
@@ -279,8 +352,8 @@ private void record(double velocity, double target, double volts) {
                 term: "Nothing published",
                 body: (
                   <>
-                    The file exists and holds no <code>Arm/</code> entries.
-                    Either the two constructor lines never ran, or{" "}
+                    The file exists and holds no <code>Telemetry/Arm</code>{" "}
+                    table. Either the two constructor lines never ran, or{" "}
                     <code>record</code> is never called from a loop.
                   </>
                 ),
@@ -291,8 +364,8 @@ private void record(double velocity, double target, double volts) {
                 body: (
                   <>
                     The trace freezes partway through and holds one value. The
-                    publishing code sits inside a command that finished, so
-                    nothing has called <code>set</code> since.
+                    <code>record</code> call sits inside a command that
+                    finished, so nothing has logged since.
                   </>
                 ),
               },
@@ -319,8 +392,8 @@ private void record(double velocity, double target, double volts) {
                 term: "Nothing published",
                 body: (
                   <>
-                    The file exists and holds no <code>Flywheel/</code> entries.
-                    Either the two constructor lines never ran, or{" "}
+                    The file exists and holds no <code>Telemetry/Flywheel</code>{" "}
+                    table. Either the two constructor lines never ran, or{" "}
                     <code>record</code> is never called from a loop.
                   </>
                 ),
@@ -331,8 +404,8 @@ private void record(double velocity, double target, double volts) {
                 body: (
                   <>
                     The trace freezes partway through and holds one value. The
-                    publishing code sits inside a command that finished, so
-                    nothing has called <code>set</code> since.
+                    <code>record</code> call sits inside a command that
+                    finished, so nothing has logged since.
                   </>
                 ),
               },
@@ -360,27 +433,28 @@ private void record(double velocity, double target, double volts) {
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              An{" "}
+              A{" "}
               <code>
-                <M k="name" />/
+                Telemetry/
+                <M k="name" />
               </code>{" "}
-              group in the tree, with all three entries under it.
+              table in the tree, with all three entries under it.
             </li>
             <Mech for="arm" as="li">
-              <code>Arm/TargetRot</code> stepping to your target, and{" "}
-              <code>Arm/PositionRot</code> catching up to meet it.
+              <code>TargetRot</code> stepping to your target, and{" "}
+              <code>PositionRot</code> catching up to meet it.
             </Mech>
             <Mech for="flywheel" as="li">
-              <code>Flywheel/TargetRPS</code> stepping to your target, and{" "}
-              <code>Flywheel/VelocityRPS</code> climbing to meet it.
+              <code>TargetRPS</code> stepping to your target, and{" "}
+              <code>VelocityRPS</code> climbing to meet it.
             </Mech>
             <Mech for="arm" as="li">
-              <code>Arm/AppliedVolts</code> large while the arm moves, small
-              while it holds.
+              <code>AppliedVolts</code> large while the arm moves, small while
+              it holds.
             </Mech>
             <Mech for="flywheel" as="li">
-              <code>Flywheel/AppliedVolts</code> large through the spin-up,
-              smaller once the wheel is at speed.
+              <code>AppliedVolts</code> large through the spin-up, smaller once
+              the wheel is at speed.
             </Mech>
             <li>The enabled interval covering every part that moves.</li>
           </ul>
@@ -414,14 +488,14 @@ private void record(double velocity, double target, double volts) {
             question:
               "The arm knows its position. How does that number reach the .wpilog?",
             options: [
-              "Publish it on a NetworkTables topic, which DataLogManager records",
+              "Log it to the mechanism's Telemetry table, which reaches NetworkTables, which DataLogManager records",
               "Call DataLogManager.start() again each time the value changes",
               "Write the number to your own text file in the logs folder every loop",
               "DataLogManager finds the mechanism's fields and records them on its own",
             ],
             correctAnswer: 0,
             explanation:
-              "DataLogManager records what changes on NetworkTables, so publishing is how a number of yours gets into the file. The arm holds one DoublePublisher per signal as a field, built once with the arm, and sets it from code that already runs each loop.",
+              "Telemetry.getTable(getName()).log(...) sends the value to whatever backends are registered, and RobotBase registers a NetworkTables one at /Telemetry before your Robot runs. DataLogManager records every NetworkTables change, so the value lands in the file as NT:/Telemetry/Arm/... with no extra wiring. There is nothing to build in the constructor.",
           },
           {
             id: 5,
@@ -429,14 +503,14 @@ private void record(double velocity, double target, double volts) {
             question:
               "The flywheel knows its speed. How does that number reach the .wpilog?",
             options: [
-              "Publish it on a NetworkTables topic, which DataLogManager records",
+              "Log it to the mechanism's Telemetry table, which reaches NetworkTables, which DataLogManager records",
               "Call DataLogManager.start() again each time the value changes",
               "Write the number to your own text file in the logs folder every loop",
               "DataLogManager finds the mechanism's fields and records them on its own",
             ],
             correctAnswer: 0,
             explanation:
-              "DataLogManager records what changes on NetworkTables, so publishing is how a number of yours gets into the file. The flywheel holds one DoublePublisher per signal as a field, built once with the flywheel, and sets it from code that already runs each loop.",
+              "Telemetry.getTable(getName()).log(...) sends the value to whatever backends are registered, and RobotBase registers a NetworkTables one at /Telemetry before your Robot runs. DataLogManager records every NetworkTables change, so the value lands in the file as NT:/Telemetry/Flywheel/... with no extra wiring. There is nothing to build in the constructor.",
           },
           {
             id: 3,
@@ -459,13 +533,13 @@ private void record(double velocity, double target, double volts) {
               "Arm/PositionRot climbs, then freezes partway through the run and holds one value. What happened?",
             options: [
               "The two constructor lines never ran, so nothing was recorded",
-              "The set calls sit in a command that finished, and nothing has published since",
+              "The record call sits in a command that finished, and nothing has logged since",
               "SensorToMechanismRatio is wrong, so the numbers no longer match the arm",
-              "The publisher is rebuilt every cycle, so the code leaks a handle fifty times a second",
+              "AdvantageScope graphs only the first few seconds of a signal unless you widen the range",
             ],
             correctAnswer: 1,
             explanation:
-              "A command publishes only while it runs, so the last value it set is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the set calls to a background task added with Scheduler.getDefault().addPeriodic(...), which publishes for as long as the robot has power. Missing constructor lines would leave no Arm entries at all, and a wrong ratio gives the right shape at the wrong scale.",
+              "A command logs only while it runs, so the last value it wrote is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the record call to a background task added with Scheduler.getDefault().addPeriodic(...), which logs for as long as the robot has power. Missing constructor lines would leave no Arm table at all, and a wrong ratio gives the right shape at the wrong scale.",
           },
           {
             id: 6,
@@ -474,13 +548,13 @@ private void record(double velocity, double target, double volts) {
               "Flywheel/VelocityRPS climbs, then freezes partway through the run and holds one value. What happened?",
             options: [
               "The two constructor lines never ran, so nothing was recorded",
-              "The set calls sit in a command that finished, and nothing has published since",
+              "The record call sits in a command that finished, and nothing has logged since",
               "SensorToMechanismRatio is wrong, so the numbers no longer match the wheel",
-              "The publisher is rebuilt every cycle, so the code leaks a handle fifty times a second",
+              "AdvantageScope graphs only the first few seconds of a signal unless you widen the range",
             ],
             correctAnswer: 1,
             explanation:
-              "A command publishes only while it runs, so the last value it set is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the set calls to a background task added with Scheduler.getDefault().addPeriodic(...), which publishes for as long as the robot has power. Missing constructor lines would leave no Flywheel entries at all, and a wrong ratio gives the right shape at the wrong scale.",
+              "A command logs only while it runs, so the last value it wrote is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the record call to a background task added with Scheduler.getDefault().addPeriodic(...), which logs for as long as the robot has power. Missing constructor lines would leave no Flywheel table at all, and a wrong ratio gives the right shape at the wrong scale.",
           },
         ]}
       />

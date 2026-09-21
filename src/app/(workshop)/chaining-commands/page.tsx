@@ -3,17 +3,25 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { GitBranch } from "lucide-react";
 
 /**
- * Lesson 21, and no longer "advanced". It moved out of Workshop 6 because
- * `/autonomous` is two lessons later and builds its whole routine out of
- * `Command.sequence` and `.withTimeout`: composition is a prerequisite for
- * that page, not a victory lap after it. So sequencing leads, `race` follows, and the tour of `.andThen`,
+ * Lesson 16, and no longer "advanced". It left Workshop 6 because
+ * `/autonomous` builds its whole routine out of `Command.sequence` and
+ * `.withTimeout`: composition is a prerequisite for that page, not a victory
+ * lap after it. In September 2026 it moved again, out of Workshop 4 and into
+ * the end of Workshop 3, because nothing on it needs a swerve module. A team
+ * with an arm and no drivetrain could not reach it where it was.
+ *
+ * So sequencing leads, `race` follows, and the tour of `.andThen`,
  * `.alongWith`, `Command.parallel` and the coroutine preview is gone. Those
  * belong to the lessons that use them.
+ *
+ * A "What the group owns" section lived here briefly, explaining that a
+ * sequence holds every mechanism it names for its whole run. It was cut: the
+ * cost it described is one a student cannot act on until Finish Conditions
+ * two lessons later, and that page now states the rule where the coroutine
+ * that answers it is written. This page teaches how to build a group.
  *
  * This is also the first page on the site to show `import static
  * org.wpilib.units.Units.Seconds`, since `/java-basics` stopped pre-teaching
@@ -52,9 +60,9 @@ export default function ChainingCommands() {
           </p>
         </div>
         <MarginNote label="Where this goes">
-          Autonomous is two lessons away, and its routine is one of these: drive
-          off the line, then stop. Every step there needs the ending you are
-          about to add.
+          Every autonomous routine you write is one of these. The one in
+          Workshop 4 is drive off the line, then stop, and both steps need the
+          ending you are about to add.
         </MarginNote>
       </Split>
 
@@ -286,15 +294,10 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
         </div>
 
         <p>
-          Get this binding working in the simulator. Autonomous is the same move
-          against a drivetrain, with a stop on the end.
+          Get this binding working in the simulator. Finish Conditions is next
+          and replaces the stopwatch on the arm member with the arm&apos;s own
+          report that it arrived.
         </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/2027-Template/blob/2027-dev/src/main/java/frc/robot/opmodes/DriveStowDriveChainedOpMode.java"
-          title="The template's chained OpMode"
-          icon={<GitBranch className="h-5 w-5" />}
-        />
       </LessonSection>
 
       <Quiz
