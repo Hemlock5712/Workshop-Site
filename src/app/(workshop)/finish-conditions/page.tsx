@@ -31,8 +31,25 @@ import { M, Mech } from "@/components/lesson/Mechanism";
  * `src/data/mechanisms.ts`. The arm compares an angle and the flywheel
  * compares a speed, which is two different `isAtTarget()` and not one with a
  * noun swapped, so that section forks. Everything from "Both endings on one
- * step" stays shared: it is a `Command.sequence` naming both mechanisms, and
- * the point of it is the composition rather than either one.
+ * step" stays shared, because a condition and a timeout read the same on
+ * either mechanism.
+ *
+ * There is no `Command.sequence` on this page. It carried a `score` routine
+ * with two flywheel members until September 2026, which meant the arrival
+ * check, multi-member composition and the coroutine all landed in the same
+ * scroll. Composition is `/chaining-commands`, one lesson back, and the
+ * two-mechanism version is `/coroutines`, one lesson on. What is left here is
+ * the one thing this lesson owns: giving a single hold an ending. The quiz
+ * question about a sequence's last member went with it, because its answer
+ * was no longer taught on the page.
+ *
+ * Trimmed from 14.8 minutes to budget in September 2026. What else went: an
+ * opening paragraph that restated the lede, the "the other mechanism has the
+ * same three methods" aside on a page whose whole point is that you read one
+ * mechanism, and two of the three forward references to `/coroutines`. The
+ * remaining quiz, the procedure, the failure grid and every number a student
+ * types are untouched. `time` stays at 15 because the procedure rebuilds and
+ * redeploys four times, which no amount of cutting makes faster.
  *
  * The old `debounce` and `audit-a-sequence` sections are gone. The one
  * load-bearing idea in the first, a condition that goes true too early, is the
@@ -49,12 +66,9 @@ export default function FinishConditions() {
           <code>Command.sequence</code> and <code>.withTimeout(...)</code>, from{" "}
           <strong>Command Composition</strong>.
         </>,
+        <>An arm position hold, with gains that reach the angle it asks for.</>,
         <>
-          An arm position hold that keeps asking for one angle, and gains that
-          reach it.
-        </>,
-        <>
-          Lambdas and method references, from <strong>Java Basics</strong>.
+          Lambdas, from <strong>Java Basics</strong>.
         </>,
         <>
           The simulator running, from <strong>Hardware Simulation</strong>.
@@ -65,62 +79,34 @@ export default function FinishConditions() {
     >
       <MechanismSelector />
 
-      <Split>
-        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-          <p>
-            A timeout ends a step after a fixed number of seconds and never asks
-            whether anything happened. Two seconds is plenty for the arm on a
-            fresh battery and short on a tired one.
-          </p>
-          <Mech for="arm" as="p">
-            The arm already has a sensor that says where it is. Compare that
-            reading against the angle the step asked for, and the step can end
-            on arrival rather than on the clock.
-          </Mech>
-          <Mech for="flywheel" as="p">
-            The flywheel already reports how fast it is turning. Compare that
-            reading against the speed the step asked for, and the step can end
-            once the wheel is up rather than on the clock.
-          </Mech>
-        </div>
-        <MarginNote label="Where this goes">
-          Coroutines is next, and every wait in it is built on the question you
-          are about to write. The autonomous routine in Workshop 4 ends its
-          steps on timeouts, because a drivetrain has nothing to ask yet. The
-          arm does.
-        </MarginNote>
-      </Split>
-
       <LessonSection id="two-endings" title="Timeouts and conditions">
         <p>
           <code>.until(...)</code> wraps a command and ends it on the first loop
           a condition comes back true. That condition is a{" "}
-          <code>BooleanSupplier</code>: any small piece of code that answers
-          true or false when it is asked. The scheduler asks about fifty times a
+          <code>BooleanSupplier</code>: a small piece of code that answers true
+          or false when it is asked. The scheduler asks about fifty times a
           second.
         </p>
         <p>
-          Hand it a lambda. Written as{" "}
-          <code>() -&gt; robot.arm.isAtTarget()</code>, the condition is a
-          question the scheduler can ask again on every loop. Drop the{" "}
-          <code>() -&gt;</code> and <code>robot.arm.isAtTarget()</code> runs the
-          method on the spot, passing one frozen answer. That will not compile:{" "}
+          Hand it a lambda. <code>() -&gt; robot.arm.isAtTarget()</code> is a
+          question the scheduler can ask on every loop. Drop the{" "}
+          <code>() -&gt;</code> and the method runs on the spot, passing one
+          frozen answer. The build stops on{" "}
           <code>boolean cannot be converted to BooleanSupplier</code>.
         </p>
         <p>
-          <code>.until(...)</code> returns a builder rather than a{" "}
-          <code>Command</code>, the same way <code>Command.sequence(...)</code>{" "}
-          did. <code>.named(&quot;...&quot;)</code> closes it. Leave the name
-          off and the build fails, because a builder is not a{" "}
-          <code>Command</code>.
+          <code>.until(...)</code> returns a builder, not a <code>Command</code>
+          , the same way <code>Command.sequence(...)</code> did.{" "}
+          <code>.named(&quot;...&quot;)</code> closes it, and leaving it off
+          fails the build.
         </p>
       </LessonSection>
 
       <LessonSection id="sensor-condition" title="The arrival question">
         <p>
-          The mechanism owns the comparison. Its units, its target, and its
-          tolerance are already in that one file. Put the arithmetic there too,
-          and every call site gets one readable question instead.
+          The mechanism owns the comparison. Its units, its target and its
+          tolerance already live in that file. Put the arithmetic there too, and
+          every call site gets one readable question.
         </p>
         <Mech for="arm">
           <CodeBlock
@@ -173,47 +159,27 @@ public boolean isAtTarget() {
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <Mech for="arm" as="p">
-              <code>getPosition()</code> reads the CANcoder, and{" "}
+              <code>getPosition()</code> reads the CANcoder.{" "}
               <code>getTargetPosition()</code> asks the request object where it
-              was last told to go. Both return an <code>Angle</code> rather than
-              a bare number, so nothing on this line can mix up rotations and
-              degrees.
+              was last told to go. Both return an <code>Angle</code>, so nothing
+              here can mix up rotations and degrees. <code>isNear</code> is true
+              when the two are within <code>tolerance</code>, and one degree is
+              the arm&apos;s.
             </Mech>
             <Mech for="flywheel" as="p">
-              <code>getVelocity()</code> reads the motor, and{" "}
+              <code>getVelocity()</code> reads the motor.{" "}
               <code>getTargetVelocity()</code> asks the request object what
               speed it was last told to hold. Both return an{" "}
-              <code>AngularVelocity</code> rather than a bare number, so nothing
-              on this line can mix up rotations a second and RPM.
-            </Mech>
-            <p>
-              <code>isNear</code> does the comparison for you. It is true when
-              the two are within <code>tolerance</code> of each other, and the
-              tolerance is the number you pick.{" "}
-              <Mech for="arm">One degree is the arm&apos;s.</Mech>
-              <Mech for="flywheel">
-                Half a rotation a second is the flywheel&apos;s.
-              </Mech>
-            </p>
-            <Mech for="arm" as="p">
-              The flywheel answers the same question about speed. Same three
-              methods, with <code>AngularVelocity</code> in place of{" "}
-              <code>Angle</code>: <code>getVelocity()</code>,{" "}
-              <code>getTargetVelocity()</code>, and a tolerance of{" "}
-              <code>RotationsPerSecond.of(0.5)</code>.
-            </Mech>
-            <Mech for="flywheel" as="p">
-              The arm answers the same question about angle. Same three methods,
-              with <code>Angle</code> in place of <code>AngularVelocity</code>:{" "}
-              <code>getPosition()</code>, <code>getTargetPosition()</code>, and
-              a tolerance of <code>Degrees.of(1.0)</code>.
+              <code>AngularVelocity</code>, so nothing here can mix up rotations
+              a second and RPM. <code>isNear</code> is true when the two are
+              within <code>tolerance</code>, and half a rotation a second is the
+              flywheel&apos;s.
             </Mech>
           </div>
           <MarginNote label="Too tight, too loose">
             A tolerance smaller than the sensor&apos;s own jitter never comes
             true. One wider than the job passes before the <M k="noun" /> is
-            anywhere useful. Start from where the Tuner X plot settled, then
-            widen it until the step ends on every run.
+            anywhere useful. Start from where the Tuner X plot settled.
           </MarginNote>
         </Split>
         <Box
@@ -235,7 +201,7 @@ public boolean isAtTarget() {
               Ask for 75 rotations a second and you read 74.98, then 75.03.
             </Mech>{" "}
             An exact comparison is false forever, so a step waiting on one never
-            ends. <code>isNear</code> exists so you never write that comparison.
+            ends.
           </p>
         </Box>
       </LessonSection>
@@ -243,8 +209,8 @@ public boolean isAtTarget() {
       <LessonSection id="decorate-the-hold" title="Both endings on one step">
         <p>
           <code>robot.arm.vertical()</code> is a hold. It re-sends its position
-          request every loop and never finishes, so it suits a held button and
-          is useless as a member of a list. One call site turns it into a step.
+          request every loop and never finishes, which suits a held button and
+          is useless in a list. One call site turns it into a step.
         </p>
         <CodeBlock
           language="java"
@@ -258,66 +224,37 @@ Command raiseArm =
         .withTimeout(Seconds.of(2.0));`}
         />
         <p>
-          <code>vertical()</code> itself is untouched and still reusable
-          anywhere. The condition is the ending you want. The timeout is the
-          ending you get when a sensor dies or the arm jams. It goes after{" "}
-          <code>.named(...)</code>, since <code>.withTimeout(...)</code> is a
-          method on <code>Command</code> and not on the builder.
+          <code>vertical()</code> itself is untouched. The condition is the
+          ending you want; the timeout is the ending you get when a sensor dies
+          or the arm jams. It goes after <code>.named(...)</code>, because{" "}
+          <code>.withTimeout(...)</code> is a method on <code>Command</code>,
+          not on the builder.
+        </p>
+        <p>
+          <code>raiseArm</code> is a <code>Command</code> like any other now, so
+          it can be bound to a button or dropped into a routine. It ends itself
+          either way.
         </p>
         <Box variant="concept" title="What a timeout proves">
           <p>
-            That the waiting is over. Nothing else. If the next step assumes the
-            arm arrived, ask <code>robot.arm.isAtTarget()</code> again before
-            running it. Or log the answer, so a post-match file separates a
-            success from a step that hit its timeout.
+            That the waiting is over, and nothing else. If the next step assumes
+            the arm arrived, ask <code>robot.arm.isAtTarget()</code> again
+            before running it.
           </p>
         </Box>
-        <p>
-          A routine is those steps in order. Every member needs an ending,
-          including the last one.
-        </p>
-        <CodeBlock
-          language="java"
-          title="Every member ends, so the group ends"
-          code={`Command score =
-    Command.sequence(
-            robot.arm.vertical()
-                .until(() -> robot.arm.isAtTarget())
-                .named("raise arm")
-                .withTimeout(Seconds.of(2.0)),
-            robot.flywheel.runFast().withTimeout(Seconds.of(1.0)),
-            robot.flywheel.stop().withTimeout(Seconds.of(0.1)))
-        .named("Score");`}
-        />
-        <p>
-          The two flywheel members have no arrival to wait for, so their
-          timeouts are the intended ending rather than a backstop. Spinning for
-          one second is the instruction. <code>robot.flywheel.stop()</code> is a
-          hold too, so without a timeout on it the group never finishes either.
-          A tenth of a second is long enough to send zero and release the
-          mechanism. The autonomous routine in Workshop 4 stops its drivetrain
-          the same way.
-        </p>
-        <p>
-          <code>score</code> is three steps on two mechanisms, one at a time,
-          and a sequence is the right shape for it. Ask for the arm to{" "}
-          <em>keep holding</em> while the flywheel spins and it stops being a
-          list, which is the next section.
-        </p>
       </LessonSection>
 
       <LessonSection id="one-button" title="One button, both mechanisms">
         <p>
-          Raise the arm, wait for it to really arrive, then spin the flywheel up
+          Raise the arm, wait for it to really arrive, then spin the flywheel
           while the arm goes on holding. That is not a list of steps. A sequence
-          owns every mechanism it names, from its first step to its last, and
-          drives them one at a time. So the arm cannot go on holding while the
-          flywheel spins.
+          drives the mechanisms it names one at a time, so the arm cannot keep
+          holding while the flywheel spins.
         </p>
         <p>
-          The shape that does have two timelines is a <strong>coroutine</strong>
-          . Its body is ordinary Java, read top to bottom, and it can pause
-          partway through and carry on from the same line.
+          The shape with two timelines is a <strong>coroutine</strong>. Its body
+          is ordinary Java, read top to bottom, and it can pause partway through
+          and carry on from the same line.
         </p>
 
         <CodeBlock
@@ -348,16 +285,14 @@ private void spinUpWhenReady(Coroutine coroutine) {
         <p>
           Three verbs, and the middle one is this lesson&apos;s.{" "}
           <code>fork</code> starts a command and keeps reading, so the arm hold
-          runs underneath everything after it. <code>waitUntil</code> stops on
-          its line until the condition comes back true, and the condition is{" "}
-          <code>isAtTarget()</code>. <code>await</code> runs a command and stops
-          until it finishes.
+          runs underneath everything after it. <code>waitUntil</code> stops
+          until <code>isAtTarget()</code> comes back true. <code>await</code>{" "}
+          runs a command and stops until it finishes.
         </p>
         <p>
-          Reaching <code>robot</code> from a method means <code>MyTeleop</code>{" "}
-          has to keep it: <code>private final Robot robot;</code> as a field,
-          assigned in the constructor. Import{" "}
-          <code>org.wpilib.command3.Command</code> and{" "}
+          <code>MyTeleop</code> needs <code>robot</code> as a field:{" "}
+          <code>private final Robot robot;</code>, assigned in the constructor.
+          Import <code>org.wpilib.command3.Command</code> and{" "}
           <code>org.wpilib.command3.Coroutine</code>.
         </p>
 
@@ -365,17 +300,16 @@ private void spinUpWhenReady(Coroutine coroutine) {
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
               <code>Command.noRequirements</code> claims no mechanism of its
-              own. It does not need to: each forked command claims its own, and
-              only for as long as that command runs. So the rule is short. One
-              mechanism, write a composition. Two or more that have to overlap,
-              write a coroutine.
+              own, and does not need to: each forked command claims its own, for
+              only as long as it runs. One mechanism, write a composition. Two
+              that have to overlap, write a coroutine.
             </p>
           </div>
           <MarginNote label="No timeout here">
             Every wait on this page is unbounded, and that is safe only because
-            a driver is holding Y and can let go. Coroutines is next and does
-            the same routine in autonomous, where nobody can, so every wait
-            there is bounded.
+            a driver is holding Y and can let go. Coroutines does the same
+            routine in autonomous, where nobody can, so every wait there is
+            bounded.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -387,8 +321,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
         <p>
           A condition that cannot go true is as bad as a bare hold. The sequence
           sits on that step, nothing throws, nothing logs, and the arm keeps
-          pushing. A fifteen-second autonomous period spends all fifteen on step
-          one.
+          pushing. Fifteen seconds of autonomous go on step one.
         </p>
         <FigureGrid
           cols={3}
@@ -427,7 +360,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
           ]}
         />
         <p>
-          The timeout covers the first two. It cannot help with the third. For a
+          The timeout covers the first two and cannot help with the third. For a
           mechanism that overshoots, require the reading to stay inside
           tolerance for several loops in a row. Keep that behind the same{" "}
           <code>isAtTarget()</code>, so no call site changes.
@@ -480,10 +413,9 @@ private void spinUpWhenReady(Coroutine coroutine) {
           </ul>
         </Box>
         <p>
-          Write down the tolerance you settled on and how long the step took at
-          it. That time is the floor for any timeout on this arm. Double it and
-          you have a backstop that will not fire on a good run. Coroutines is
-          next, and that number is the one it asks you for.
+          Write down the tolerance you settled on and how long the step took.
+          Double that time for a backstop that will not fire on a good run.
+          Coroutines asks for that number.
         </p>
       </LessonSection>
 
@@ -572,20 +504,6 @@ private void spinUpWhenReady(Coroutine coroutine) {
             correctAnswer: 0,
             explanation:
               "The condition stays as the normal ending and the timeout is the backstop, so an arm that never quite arrives costs you one step instead of the whole period. A quarter-rotation tolerance would pass while the arm was still nowhere near its angle. Do not move the waiting into the mechanism either: vertical() says what the hardware does, and how long a caller waits is the caller's business.",
-          },
-          {
-            id: 6,
-            question:
-              "Why is the last member of the sequence robot.flywheel.stop().withTimeout(Seconds.of(0.1)) rather than robot.flywheel.stop()?",
-            options: [
-              "The timeout is what makes stop() outrank runFast() for the mechanism",
-              "Command.sequence requires a timeout on every member",
-              "stop() needs 0.1 seconds to bring the wheel to a halt",
-              "stop() is a hold, so without an ending it never finishes and neither does the group",
-            ],
-            correctAnswer: 3,
-            explanation:
-              "stop() is built with runRepeatedly and never ends on its own, so a group ending on it is a hold as well. A tenth of a second is long enough to send zero and release the mechanism. The step still has to be there: canceling a command does not stop a motor, because nothing sends a zero on the way out and Phoenix keeps applying the last request.",
           },
         ]}
       />
