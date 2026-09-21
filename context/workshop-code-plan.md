@@ -88,7 +88,7 @@ Six numbers, produced in Workshop 1, with six blanks waiting for them in
 branches no lesson opens. **This is the single largest gap the restructure
 created**, and closing it needs no new code at all.
 
-**Recommendation.** Add one Workshop 2 lesson between `/building-subsystems`
+**Recommendation.** Add one Workshop 2 lesson between `/mechanisms`
 and `/running-program`, embedding `3-PID` and `4-MotionMagic`: the student
 copies the gains off their own Tuner X notes into `Arm.java`, swaps
 `VoltageOut` for `PositionVoltage`, then swaps that for `MotionMagicVoltage`.
@@ -96,9 +96,9 @@ It is the moment the two halves of the course meet, and it is currently absent.
 This is a curriculum decision, so it is a recommendation rather than something
 the prose rewrite did on its own.
 
-## 2. `/finish-lines` teaches a branch it does not embed
+## 2. `/finish-conditions` teaches a branch it does not embed
 
-`/finish-lines` (Workshop 5, "Finish Conditions") has **no `branch` prop**.
+`/finish-conditions` (Workshop 5, "Finish Conditions") has **no `branch` prop**.
 `5-GettersAndSetters` implements precisely that lesson, and says so in its own
 doc comment:
 
@@ -112,12 +112,12 @@ doc comment:
  */
 ```
 
-The site mentions `isAtTarget` on `/finish-lines`, `/coroutines`, and
+The site mentions `isAtTarget` on `/finish-conditions`, `/coroutines`, and
 `/state-based` without ever showing the branch that defines it. Point
-`/finish-lines` at `5-GettersAndSetters`.
+`/finish-conditions` at `5-GettersAndSetters`.
 
 Note the ordering problem this creates: `5-GettersAndSetters` sits on the
-mechanism chain right after `4-MotionMagic`, but `/finish-lines` is lesson 28
+mechanism chain right after `4-MotionMagic`, but `/finish-conditions` is lesson 28
 in Workshop 5. Either the branch moves, or the lesson does, or the naming stops
 implying an order it does not have. See item 4.
 
@@ -162,7 +162,7 @@ carries the topic, and no branch has to be renamed when a lesson moves.
 
 | Branch              | Pages                                                                       |
 | ------------------- | --------------------------------------------------------------------------- |
-| `1-Subsystem`       | `/building-subsystems`                                                      |
+| `1-Subsystem`       | `/mechanisms`                                                               |
 | `2-Commands`        | `/adding-commands`, `/running-program`, `/triggers`, `/ai-coding-assistant` |
 | `1-Swerve`          | `/swerve-drive-project`                                                     |
 | `3-Limelight`       | `/vision-implementation`                                                    |
@@ -215,7 +215,7 @@ the wrong-sign failure mode and the on-blocks check, and the `kP` TODO drives
 the "every gain ships at zero" aside. Pin either one and the lesson needs
 rewriting.
 
-**`/building-subsystems` is the natural parent for the missing gains lesson.**
+**`/mechanisms` is the natural parent for the missing gains lesson.**
 It is where `withRemoteCANcoder` is introduced, which is the line that puts the
 CANcoder in the loop that `3-PID` then tunes.
 
@@ -223,7 +223,7 @@ CANcoder in the loop that `3-PID` then tunes.
 `.alongWith(...)` and `.raceWith(...)` appear nowhere outside a doc comment
 after the rewrite. They were in a "you will see these in other teams' code"
 tour, which was the right thing to cut, but the pointer itself has no owner.
-`/finish-lines` or `/state-based` should adopt it.
+`/finish-conditions` or `/state-based` should adopt it.
 
 ## 7. Two tools that cannot run in this environment
 

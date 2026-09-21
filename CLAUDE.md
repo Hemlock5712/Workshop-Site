@@ -186,7 +186,7 @@ are what keeps 29 pages looking like one site.
 - **`src/components/lesson/Mechanism.tsx`**: the arm/flywheel fork. `<M k="file" />` is an inline slot inside a sentence written once for both; `<Mech for="arm">` is a block only one mechanism reads. Both are server components — every variant ships in the HTML and CSS hides one, keyed off `data-mechanism` on `<html>`, which the root layout's inline script sets from `localStorage` before first paint.
 - **`src/components/lesson/MechanismSelector.tsx`**: "What mechanism are you working on?", the first child of a mechanism lesson's `PageTemplate`.
 
-**A mechanism lesson is written once and read twice.** From `/building-subsystems`
+**A mechanism lesson is written once and read twice.** From `/mechanisms`
 onward a student picks Arm or Flywheel at the top and reads a whole lesson
 about that mechanism. The prose is not duplicated to do it: a sentence true of
 both is written once with a slot in it, and the words that differ live in
@@ -250,12 +250,21 @@ it with `/pathplanner`, which is lesson 26 and stays.
 on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-implementation`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
-`/building-subsystems`.
+`/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
+`/finish-conditions`.
+
+**Two slugs were renamed to their titles in September 2026.**
+`/building-subsystems` became `/mechanisms`, having said "subsystem" for a
+year after Commands v3 renamed the thing and the lesson title already said
+"Mechanisms"; its screenshots moved to `public/images/mechanisms/`, beside the
+arm and flywheel photos the home page uses. `/finish-lines` became
+`/finish-conditions`, because "finish lines" was a metaphor and the title was
+never that. Both old slugs redirect.
 
 **There is no `/robot-class`.** `Robot.java` was its own lesson until August 2026. `/command-framework` already taught `robotPeriodic()` and the
 `Scheduler.getDefault().run()` line, and even quizzes deleting it, so what
 actually remained was two `public final` fields. Those now sit in the last
-section of `/building-subsystems`, next to the classes they own, because
+section of `/mechanisms`, next to the classes they own, because
 `mech-1-Mechanisms` is the commit that adds them. Don't reinstate the lesson.
 
 ### Development Patterns

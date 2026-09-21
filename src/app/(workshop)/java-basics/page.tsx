@@ -14,7 +14,7 @@ import { BookOpen, GitBranch } from "lucide-react";
  *
  * The overlap was checked page by page before this was cut. `/adding-commands`
  * teaches the lambda and the builder-versus-`Command`
- * point on the real diff, and quizzes them. `/building-subsystems` teaches the
+ * point on the real diff, and quizzes them. `/mechanisms` teaches the
  * same fields block, the constructor and the two methods on the file the
  * student writes by hand. Printing all of it here first bought a preview and
  * charged twelve minutes for it.
@@ -22,7 +22,7 @@ import { BookOpen, GitBranch } from "lucide-react";
  * The page cannot simply be deleted: four lessons name it in `needs`.
  * `/command-framework` asks for "the vocabulary: class, field, method,
  * constructor, lambda, method reference", `/adding-commands` and
- * `/finish-lines` for lambdas and method references, `/building-subsystems`
+ * `/finish-conditions` for lambdas and method references, `/mechanisms`
  * for fields, constructors and methods. So what survives is exactly what those
  * four promises need and nothing downstream defines: the six words, and
  * `private` / `public` / `final` / `extends`.

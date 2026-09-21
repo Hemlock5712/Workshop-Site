@@ -156,7 +156,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   // not the last idea you learn before writing it.
   { slug: "/project-setup", title: "Project Setup", section: "workshop3" },
   {
-    slug: "/building-subsystems",
+    slug: "/mechanisms",
     title: "Mechanisms",
     section: "workshop3",
   },
@@ -194,7 +194,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop3",
   },
   {
-    slug: "/finish-lines",
+    slug: "/finish-conditions",
     title: "Finish Conditions",
     section: "workshop3",
   },

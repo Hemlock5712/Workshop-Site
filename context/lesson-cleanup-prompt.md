@@ -15,9 +15,7 @@ starting, since these move:
 
 | page                      | min  |
 | ------------------------- | ---- |
-| `/finish-lines`           | 14.8 |
 | `/coroutines`             | 14.3 |
-| `/building-subsystems`    | 13.9 |
 | `/state-based`            | 12.4 |
 | `/chaining-commands`      | 11.8 |
 | `/logging-implementation` | 11.8 |

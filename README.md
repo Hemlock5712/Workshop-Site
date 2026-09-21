@@ -43,7 +43,7 @@ Workshop #2 · Robot Programming:
 ├── /adding-commands          Classic Commands
 ├── /opmodes                  Teleop, Autonomous, and Utility OpModes
 ├── /robot-class              Robot.java and shared lifetime
-├── /building-subsystems      Mechanisms
+├── /mechanisms               Mechanisms
 ├── /running-program          Run code with hardware simulation
 └── /logging-implementation   Basic DataLogManager logging
 
@@ -62,7 +62,7 @@ Workshop #4 · Vision & Navigation:
 
 Workshop #5 · Advanced Commands:
 ├── /chaining-commands        Command composition
-├── /finish-lines             Finish conditions and timeouts
+├── /finish-conditions        Finish conditions and timeouts
 ├── /coroutines               Coroutines
 ├── /state-based              State Machines
 └── /drive-to-tag-inline      Optional coroutine navigation example

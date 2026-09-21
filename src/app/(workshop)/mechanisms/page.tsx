@@ -37,7 +37,7 @@ import { GitBranch } from "lucide-react";
  * and the constructor were already taught on `/command-framework`, so only
  * the two mechanism fields survived and they live in the last section here.
  */
-export default function BuildingSubsystems() {
+export default function Mechanisms() {
   return (
     <PageTemplate
       title="Mechanisms"
@@ -82,7 +82,7 @@ export default function BuildingSubsystems() {
 
       <div className="measure-wide grid grid-cols-1 gap-6 sm:grid-cols-2">
         <ImageBlock
-          src="/images/building-subsystems/new-folder.png"
+          src="/images/mechanisms/new-folder.png"
           alt="The VS Code Explorer right-click menu on the robot folder, with New Folder circled in red"
           title="Step 1 · New Folder"
           caption="Right-click robot, not src or java. The folder has to land beside Robot.java, and one made a level up puts your class in the wrong package."
@@ -91,7 +91,7 @@ export default function BuildingSubsystems() {
         />
 
         <ImageBlock
-          src="/images/building-subsystems/new-file.png"
+          src="/images/mechanisms/new-file.png"
           alt="The VS Code Explorer right-click menu on the new mechanisms folder, with New File circled in red"
           title="Step 2 · New File"
           caption="New File, not New Java File. The Java option writes its own package and class lines, and you are about to paste both."

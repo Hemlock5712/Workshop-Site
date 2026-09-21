@@ -149,7 +149,7 @@ export const BuildingMechanismsTrailer: TrailerScript = {
       rect: END,
       title: "One class per physical thing",
       subtitle: "Private hardware, hold factories, default commands",
-      url: "frc5712.com/building-subsystems",
+      url: "frc5712.com/mechanisms",
     },
   ],
   beats: [

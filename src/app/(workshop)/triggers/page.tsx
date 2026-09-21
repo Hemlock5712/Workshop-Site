@@ -242,7 +242,7 @@ public static Trigger disabled() {
           question yet. Both expose three commands and nothing else, so every
           Trigger in the project is still a button. The first readable condition
           is <code>() -&gt; robot.arm.isAtTarget()</code>, on{" "}
-          <a href="/finish-lines" className="underline">
+          <a href="/finish-conditions" className="underline">
             Finish Conditions
           </a>
           .

@@ -23,7 +23,7 @@ import Quiz from "@/components/Quiz";
  * the arm arrived.
  *
  * The framing follows the branch's own retitle. This is the autonomous
- * lesson. `/finish-lines` already writes the same routine on the Y button
+ * lesson. `/finish-conditions` already writes the same routine on the Y button
  * with no time limit anywhere in it, and the contrast is the whole point: a
  * driver can let go, and in autonomous nobody can.
  *

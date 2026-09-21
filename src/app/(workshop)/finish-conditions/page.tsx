@@ -39,7 +39,7 @@ import { M, Mech } from "@/components/lesson/Mechanism";
  * third failure shape below. The second was a checklist of things the page had
  * already said once.
  */
-export default function FinishLines() {
+export default function FinishConditions() {
   return (
     <PageTemplate
       title="Finish Conditions"
