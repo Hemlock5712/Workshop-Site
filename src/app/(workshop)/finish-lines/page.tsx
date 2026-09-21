@@ -89,11 +89,11 @@ export default function FinishLines() {
           second.
         </p>
         <p>
-          Hand it a method reference. Written as{" "}
-          <code>robot.arm::isAtTarget</code>, the condition passes the method
-          itself, so it can be called again on every loop. Add the parentheses
-          and <code>robot.arm.isAtTarget()</code> runs the method on the spot,
-          passing one frozen answer. That will not compile:{" "}
+          Hand it a lambda. Written as{" "}
+          <code>() -&gt; robot.arm.isAtTarget()</code>, the condition is a
+          question the scheduler can ask again on every loop. Drop the{" "}
+          <code>() -&gt;</code> and <code>robot.arm.isAtTarget()</code> runs the
+          method on the spot, passing one frozen answer. That will not compile:{" "}
           <code>boolean cannot be converted to BooleanSupplier</code>.
         </p>
         <p>
@@ -242,7 +242,7 @@ public boolean isAtTarget() {
 
 Command raiseArm =
     robot.arm.vertical()
-        .until(robot.arm::isAtTarget)
+        .until(() -> robot.arm.isAtTarget())
         .named("vertical until at target")
         .withTimeout(Seconds.of(2.0));`}
         />
@@ -271,7 +271,7 @@ Command raiseArm =
           code={`Command score =
     Command.sequence(
             robot.arm.vertical()
-                .until(robot.arm::isAtTarget)
+                .until(() -> robot.arm.isAtTarget())
                 .named("raise arm")
                 .withTimeout(Seconds.of(2.0)),
             robot.flywheel.runFast().withTimeout(Seconds.of(1.0)),
@@ -405,7 +405,7 @@ Command raiseArm =
           {
             id: 2,
             question:
-              "What does robot.arm::isAtTarget hand to .until(...), and why does robot.arm.isAtTarget() not work in the same place?",
+              "What does () -> robot.arm.isAtTarget() hand to .until(...), and why does a bare robot.arm.isAtTarget() not work in the same place?",
             options: [
               "Both work; the double colon is a style preference",
               "The method itself, so the scheduler can call it every loop. The version with parentheses runs it once and passes a frozen boolean, which does not compile",
@@ -414,12 +414,12 @@ Command raiseArm =
             ],
             correctAnswer: 1,
             explanation:
-              "robot.arm::isAtTarget is shorthand for () -> robot.arm.isAtTarget(), a question the scheduler can ask about fifty times a second. Writing robot.arm.isAtTarget() runs the method right there and produces one boolean, and .until takes a BooleanSupplier, so javac rejects it: boolean cannot be converted to BooleanSupplier.",
+              "() -> robot.arm.isAtTarget() hands over the question itself, not an answer, so the scheduler can ask it about fifty times a second. A bare robot.arm.isAtTarget() runs the method right there and produces one boolean, frozen at the moment the binding was built. .until takes a BooleanSupplier, so javac rejects it: boolean cannot be converted to BooleanSupplier.",
           },
           {
             id: 3,
             question:
-              "robot.arm.vertical().until(robot.arm::isAtTarget) on its own will not compile. What is missing?",
+              "robot.arm.vertical().until(() -> robot.arm.isAtTarget()) on its own will not compile. What is missing?",
             options: [
               "vertical() is a hold, and holds cannot take a finish condition",
               "The condition has to be a lambda rather than a method reference",
@@ -428,7 +428,7 @@ Command raiseArm =
             ],
             correctAnswer: 3,
             explanation:
-              'Same rule as Command.sequence from Command Composition: these builders are not Commands until they are named. The compiler reports a builder type where a Command was wanted. Write .until(robot.arm::isAtTarget).named("vertical until at target").',
+              'Same rule as Command.sequence from Command Composition: these builders are not Commands until they are named. The compiler reports a builder type where a Command was wanted. Write .until(() -> robot.arm.isAtTarget()).named("vertical until at target").',
           },
           {
             id: 4,
@@ -449,7 +449,7 @@ Command raiseArm =
             question:
               "The arm settles a fraction outside tolerance, so the routine sits on that step for the rest of the match. What keeps one bad step from costing the whole autonomous period?",
             options: [
-              "Keep .until(robot.arm::isAtTarget) and add .withTimeout(Seconds.of(2.0)) after the .named(...)",
+              "Keep .until(() -> robot.arm.isAtTarget()) and add .withTimeout(Seconds.of(2.0)) after the .named(...)",
               "Widen the tolerance to a quarter rotation so the check always passes",
               "Drop .until(...) and go back to a fixed one-second timeout",
               "Add a verticalAndWait() method to Arm that blocks until the arm arrives",
@@ -470,7 +470,7 @@ Command raiseArm =
             ],
             correctAnswer: 3,
             explanation:
-              "stop() is built with runRepeatedly and never ends on its own, so a group ending on it is a hold as well. A tenth of a second is long enough to send zero and release the mechanism. The step still has to be there: canceling a command does not stop a motor, because idle() sends nothing and Phoenix keeps applying the last request.",
+              "stop() is built with runRepeatedly and never ends on its own, so a group ending on it is a hold as well. A tenth of a second is long enough to send zero and release the mechanism. The step still has to be there: canceling a command does not stop a motor, because nothing sends a zero on the way out and Phoenix keeps applying the last request.",
           },
         ]}
       />

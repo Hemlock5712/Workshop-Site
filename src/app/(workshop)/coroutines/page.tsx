@@ -336,9 +336,10 @@ coroutine.await(
           finishes, and both forks are canceled.
         </p>
         <p>
-          Canceled is not stopped. <code>idle()</code> sends no output and never
-          clears the last request, so the flywheel keeps spinning. End a
-          mid-match routine with explicit stop steps.
+          Canceled is not stopped. Nothing commands the mechanism afterwards and
+          nothing sends a zero, so the last request stays latched in the motor
+          controller and the flywheel keeps spinning. End a mid-match routine
+          with explicit stop steps.
         </p>
       </LessonSection>
 
@@ -493,7 +494,7 @@ coroutine.await(
             ],
             correctAnswer: 1,
             explanation:
-              "Ending the routine cancels everything it forked, and that is the bookkeeping a coroutine does for you. Note that canceled is not the same as stopped: the mechanisms fall back to idle(), which sends no output and does not clear the last request, so Phoenix keeps applying it.",
+              "Ending the routine cancels everything it forked, and that is the bookkeeping a coroutine does for you. Note that canceled is not the same as stopped: nothing commands the mechanisms afterwards and nothing sends a zero, so the last request stays latched in the motor controller and Phoenix keeps applying it.",
           },
           {
             id: 5,

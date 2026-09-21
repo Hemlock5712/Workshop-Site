@@ -159,7 +159,7 @@ export default function DynamicFlywheel() {
           language="java"
           title="Flywheel.java: fields and constructor"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
-          code={`public class Flywheel extends Mechanism {
+          code={`public class Flywheel implements Mechanism {
   // Field point we are shooting at, blue-alliance origin (meters). TODO: set the real goal.
   private static final Translation2d TARGET = new Translation2d(3, 5);
 
@@ -289,7 +289,7 @@ export default function DynamicFlywheel() {
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(leader::stopMotor).named("stop (hold)");
+    return runRepeatedly(() -> leader.stopMotor()).named("stop (hold)");
   }`}
         />
 
@@ -336,10 +336,9 @@ export default function DynamicFlywheel() {
         >
           <p>
             <code>whileTrue</code> cancels the command when you let go, and
-            canceling is not stopping. The mechanism falls back to{" "}
-            <code>idle()</code>, which sends nothing and does not zero the last
-            request, so Phoenix keeps applying the speed it was given. Chain{" "}
-            <code>stop()</code> on yourself:{" "}
+            canceling is not stopping. The mechanism falls back to nothing at
+            all, and nothing zeroes the last request, so Phoenix keeps applying
+            the speed it was given. Chain <code>stop()</code> on yourself:{" "}
             <code>.whileFalse(robot.flywheel.stop())</code>.
           </p>
         </Box>
@@ -499,12 +498,12 @@ export default function DynamicFlywheel() {
             options: [
               "The robot code throws an error because no command owns the mechanism",
               "It stops, because canceling a command stops its motors",
-              "It keeps spinning: idle() sends no output and does not zero the last request, so Phoenix keeps applying it",
+              "It keeps spinning: nothing commands the flywheel afterwards and nothing zeroes the last request, so Phoenix keeps applying it",
               "It coasts to a stop within one scheduler loop",
             ],
             correctAnswer: 2,
             explanation:
-              "Canceling hands the mechanism back to idle(), which issues no motor output at all and does not clear the last control request. Phoenix carries on applying the speed it was last given. That is why stop() exists as its own command, and why you pair the binding with whileFalse(robot.flywheel.stop()).",
+              "Canceling leaves the mechanism with nothing commanding it, and nothing clears the last control request on the way out. Phoenix carries on applying the speed it was last given. That is why stop() exists as its own command, and why you pair the binding with whileFalse(robot.flywheel.stop()).",
           },
         ]}
       />

@@ -298,9 +298,9 @@ export default function DriveToPoint() {
 
         <p>
           That default belongs to one OpMode. Schedule the command anywhere
-          without it and nothing claims the drivetrain, so{" "}
-          <code>Mechanism.idle()</code> takes over at the lowest priority. It
-          sends no output at all, and Phoenix keeps applying the last velocity.
+          without it and nothing claims the drivetrain when the command ends. No
+          default command means nothing sends a zero, and Phoenix keeps applying
+          the last velocity.
         </p>
 
         <p>
@@ -319,7 +319,7 @@ import org.wpilib.math.geometry.Rotation2d;
 // ... inside the constructor, after the seedFieldCentric binding:
 
     // Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
-    driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.kZero));
+    driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.ZERO));
     driver
         .b()
         .whileTrue(new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));`}

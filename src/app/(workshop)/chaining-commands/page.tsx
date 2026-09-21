@@ -193,12 +193,12 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
 
         <Box variant="alert-warning" title="Canceling never stops the motor">
           <p>
-            A canceled command hands the mechanism back to <code>idle()</code>,
-            and <code>idle()</code> sends nothing at all. It does not zero the
-            last request, so Phoenix keeps applying the last voltage it was
-            given. The flywheel keeps spinning. Every group needs a stop
-            somewhere: a <code>whileFalse</code> binding, or a stop step of its
-            own.
+            A canceled command leaves the mechanism with nothing commanding it,
+            and nothing sends zero on the way out. The last request is still
+            latched in the motor controller, so Phoenix keeps applying the
+            voltage it was given. The flywheel keeps spinning. Every group needs
+            a stop somewhere: a <code>whileFalse</code> binding, or a stop step
+            of its own.
           </p>
         </Box>
 
@@ -349,11 +349,11 @@ robot.arm.runFast().withTimeout(Seconds.of(1.0))`}
               "It coasts down over about a second",
               "It throws an error, because a canceled hold has no stop",
               "It stops, because canceling a command stops its motors",
-              "It keeps spinning, because idle() sends no output and does not zero the last request",
+              "It keeps spinning, because nothing zeroes the last request and the motor controller still has it",
             ],
             correctAnswer: 3,
             explanation:
-              "whileTrue does cancel the group on release, but canceling is not stopping. The mechanism falls back to idle(), which issues no request at all, so Phoenix keeps applying the last voltage. A whileFalse(robot.flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
+              "whileTrue does cancel the group on release, but canceling is not stopping. Nothing is commanding the flywheel afterwards and nothing sent a zero, so the last request stays latched in the motor controller and Phoenix carries on applying it. A whileFalse(robot.flywheel.stop()) binding, or a stop step inside the group, is what stops the hardware.",
           },
         ]}
       />

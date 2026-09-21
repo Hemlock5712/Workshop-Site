@@ -164,8 +164,8 @@ public class LeaveStartAuto extends PeriodicOpMode {
               The second step is the one people leave out.{" "}
               <code>setControl</code> latches a request: the drivetrain keeps
               applying it until something sends a different one. When a routine
-              ends, nothing does. The mechanism falls back to{" "}
-              <code>idle()</code>, which sends nothing at all, and the wheels
+              ends, nothing does. This OpMode sets no default command, so
+              nothing is commanding the drivetrain afterwards, and the wheels
               carry on at the last speed they were given.
             </p>
             <p>

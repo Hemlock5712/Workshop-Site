@@ -40,16 +40,20 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 **Live Site:** [frc5712.com](https://frc5712.com)  
 **Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)  
 **Workshop Code:** [https://github.com/Hemlock5712/Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)  
-**Robot Template (ground truth for Java examples):** [https://github.com/Hemlock5712/2027-Template](https://github.com/Hemlock5712/2027-Template)
+**Robot Template (NOT a source for this site, see below):** [https://github.com/Hemlock5712/2027-Template](https://github.com/Hemlock5712/2027-Template)
 
 ## Workshop Content Stack (WPILib 2027 / Commands v3)
 
 All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpModes** — NOT the classic Commands v2 framework. When writing or editing any Java example or robot-code prose on the site:
 
-- **Ground truth is the [2027-Template](https://github.com/Hemlock5712/2027-Template) repo** (default branch `2027-dev`; renamed from 2026-Template in July 2026). If an API isn't in the template or shipped WPILib 2027 alpha source, do NOT use it — never invent v3 APIs. On any disagreement, the template wins.
+- **Ground truth is [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)**, checked against shipped WPILib 2027 alpha source. If an API is in neither, do NOT use it — never invent v3 APIs. On a disagreement between the two, the shipped WPILib source wins.
+- **2027-Template is NOT a source for this site.** It was ground truth until September 2026 and is now behind: it still has `extends Mechanism` and `kZero` while WPILib and all 14 Workshop-Code branches moved to `implements Mechanism` and `ZERO`. No lesson cites it, links to it, or copies code from it. The one page that still references it is `/ai-coding-assistant`, which points at its `ONBOARDING.md` and `.claude/skills` as material for grounding an AI assistant, because Workshop-Code has neither. Revisit when the template is brought up to alpha-7.
 - **Stack**: `org.wpilib.*` packages (not `edu.wpi.first.*`), Java 25, deploys to **SystemCore** (not roboRIO), Commands v3 (`org.wpilib.command3`), Phoenix 6 alpha, GradleRIO 2027 alpha.
 - **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
-- **Key v3 APIs**: subsystems `extend Mechanism`; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`.
+- **Key v3 APIs**: `Mechanism` is an **interface**, so subsystems `implement Mechanism` and get a default `getName()` from the class name; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`; geometry constants are `ZERO`, not `kZero`.
+- **There is no implicit default command.** Alpha-7 stopped registering `idle()` as a mechanism's default, and `Scheduler` only ever populates a default from `setDefaultCommand`. The `Mechanism` javadoc still claims otherwise and is stale. So an unclaimed mechanism has nothing running on it, nothing sends a zero on the way out, and the last request stays latched in the motor controller. Never write that a mechanism "falls back to `idle()`".
+- **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
+- **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
 - **PathPlanner boundary**: Workshop 4 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
 - **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
 - **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
@@ -58,7 +62,7 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
   `main → mech-1-Mechanisms → mech-2-Commands → mech-3-MotionMagic → mech-4-ReadingState → mech-5-Coroutines → mech-6-StateBased`
 - **The mechanism chain is `first.robot.mechanisms` and `first.robot.opmode`.** The swerve chain has not been rebuilt and is still `frc.robot.subsystems` and `frc.robot.opmodes`. A lesson page must match the chain it embeds; do not "fix" a swerve page to the new package until its branch moves.
 - **`TalonFXUtil` and `SimStartup` are gone from the mechanism chain.** Config applies once, directly, with `motor.getConfigurator().apply(config)`. `Robot` has no `simulationInit()` override. Both helpers still exist on the swerve branches, which is why `/vision-shooting` still shows `TalonFXUtil`.
-- **Motor config on the mechanism chain uses the fluent builders**, not `config.Slot0.kP = kP`. That is the shape Phoenix Tuner X emits from its config panel's three-dot **Generate Code** action, because a student pastes the config rather than typing it: `new TalonFXConfiguration().withMotorOutput(...).withSlot0(...).withMotionMagic(...)`, with WPILib unit types such as `RotationsPerSecond.of(...)`. Verified against Phoenix 6 `26.50.0-alpha-1`. The swerve chain still uses the imperative style, so `/vision-shooting` keeps it.
+- **Motor config on the mechanism chain uses the fluent builders**, not `config.Slot0.kP = kP`. That is the shape Phoenix Tuner X emits from its config panel's three-dot **Generate Code** action, because a student pastes the config rather than typing it: `new TalonFXConfiguration().withMotorOutput(...).withSlot0(...).withMotionMagic(...)`, with WPILib unit types such as `RotationsPerSecond.of(...)`. Verified against Phoenix 6 `26.70.0-alpha-2`. The swerve chain still uses the imperative style, so `/vision-shooting` keeps it.
 - **Paste the generated config whole, then make one edit.** Generate Code emits `final TalonFXConfiguration talonFXCfg = new TalonFXConfiguration()`, so the chain uses that name and that `final`, and it needs `import static org.wpilib.units.Units.*` members (`Volts`, `RotationsPerSecond`, `RotationsPerSecondPerSecond`) for the unit forms. The emitted feedback block hardcodes the encoder: `withFeedback(new FeedbackConfigs().withFeedbackRemoteSensorID(32).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder))`. **Leave it exactly as generated.** `withRemoteCANcoder(encoder)` is equivalent (a remote sensor must sit on the Talon's own CAN bus, so the bare ID is unambiguous) but it was rejected: every edit a student has to make after a paste is a step they can get wrong, and this one breaks nothing when forgotten. The cost is that `Arm`'s `encoder` field has no reader until `mech-4-ReadingState` calls `getPosition()`. Tuner X still owns the encoder's own configuration, so never put a `CANcoderConfiguration` in a lesson.
 - **The generated OpMode keeps its generated name.** The New Project Creator writes `opmode/MyTeleop.java` with `@Teleop` already on it, and every mech branch edits that file rather than renaming it. It was `TeleopOpMode` until August 2026, which cost a lesson an F2-rename step and left a real trap: create a second file instead of renaming and two `@Teleop` classes both appear on the driver station. `MyAuto.java` is the same idea, though `/autonomous` still renames it to `LeaveStartAuto` on the swerve chain.
 - **OpModes reach mechanisms through `robot` directly.** No `final Arm arm = robot.arm;` aliases in a constructor: write `robot.arm.runFast()`. Two locals that only shorten a field access are two more names to carry, and `robot.arm` already says where the mechanism lives. `Robot`'s own `public final Arm arm = new Arm();` field is a different thing and stays.
@@ -71,14 +75,15 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 ### Local copies of the teaching code (`reference/`)
 
 `pnpm reference:sync` puts **every branch of Workshop-Code on disk at once**,
-one worktree per branch, plus 2027-Template on `2027-dev`. Check a lesson
+one worktree per branch, plus 2027-Template on `2027-dev` for comparison
+only. Check a lesson
 against the code it embeds without leaving the project:
 
 ```
 reference/
   .git-store/            bare mirrors, one shared object store per repo
   Workshop-Code/         15 detached worktrees: mech-1 … mech-7, the 7 swerve, main
-  2027-Template/2027-dev ground truth for API questions
+  2027-Template/2027-dev comparison only, stale on alpha-6
 ```
 
 Sixteen checkouts cost 4.2 MB, because the worktrees share the mirror's

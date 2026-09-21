@@ -297,7 +297,7 @@ protected void execute() {
           </li>
           <li>
             Hold <strong>A</strong> until the robot stops, sending it back to{" "}
-            <code>Pose2d.kZero</code>. The speed graph shows the same trapezoid
+            <code>Pose2d.ZERO</code>. The speed graph shows the same trapezoid
             the other way, and <code>Drivetrain/Pose</code> settles near zero.
             It turns toward 0° while it drives rather than spinning first.
           </li>

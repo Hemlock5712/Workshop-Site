@@ -20,7 +20,7 @@ import { Mech } from "@/components/lesson/Mechanism";
  * to raise it in "Raise the limits" — two steps that do nothing, one of them
  * contradicting this page's own figure ("Only acceleration applies").
  *
- * Verified against the Phoenix 6 `26.50.0-alpha-1` sources jar, which says it
+ * Verified against the Phoenix 6 `26.70.0-alpha-2` sources jar, which says it
  * in two places. `MotionMagicVelocityVoltage`: "This control mode does not use
  * the CruiseVelocity, Expo_kV, or Expo_kA configs."
  * `MotionMagicConfigs.MotionMagicCruiseVelocity`: "Motion Magic Velocity

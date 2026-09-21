@@ -133,7 +133,7 @@ export default function MotionMagicCode() {
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(this::stopMotor).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop (hold)");
   }
 
   private void setVelocity(double rps) {

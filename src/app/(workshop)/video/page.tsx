@@ -91,7 +91,7 @@ const GROUPS: TrailerGroup[] = [
       {
         file: "project-setup-trailer.mp4",
         title: "Project Setup",
-        blurb: "From the 2027-Template to a deployable project.",
+        blurb: "From a new WPILib project to a deployable one.",
       },
       {
         file: "building-mechanisms-trailer.mp4",

@@ -50,8 +50,8 @@ export default function CommandFramework() {
             body: (
               <>
                 The arm. The flywheel. The drivetrain. Each one is a class that{" "}
-                <code>extends Mechanism</code>, with its motors and sensors as
-                private fields and its configuration done once, in the
+                <code>implements Mechanism</code>, with its motors and sensors
+                as private fields and its configuration done once, in the
                 constructor.
               </>
             ),
@@ -122,22 +122,23 @@ export default function CommandFramework() {
 
         <Box variant="concept" title="Canceling is not stopping">
           <p>
-            A mechanism nothing has claimed runs its{" "}
-            <strong>default command</strong>, which is the built-in{" "}
-            <code>idle()</code> unless you set another. Idle has the lowest
-            priority, so anything can take the mechanism from it, and it sends{" "}
+            A mechanism can be given a <strong>default command</strong>, which
+            the scheduler runs whenever nothing else has claimed it. Set one
+            with <code>setDefaultCommand(...)</code> and give it a low priority,
+            so anything can take the mechanism from it. Set none and an
+            unclaimed mechanism has nothing running on it, which sends{" "}
             <em>nothing at all</em> to the motor.
           </p>
           <p className="mt-3">
-            Read that last part twice. Idle does not switch the motor off.
-            Phoenix keeps applying whatever request it was last given, so
-            canceling a command does not stop hardware.{" "}
+            Read that last part twice. Nothing commanding the motor is not the
+            same as the motor being off. Phoenix keeps applying whatever request
+            it was last given, so canceling a command does not stop hardware.{" "}
             <strong>Writing Commands</strong> deals with that.
           </p>
           <p className="mt-3">
-            The arm and flywheel rarely reach idle in this workshop. A command
-            with no finish condition keeps its mechanism, and every binding here
-            replaces one such command with another.
+            The arm and flywheel are rarely unclaimed in this workshop. A
+            command with no finish condition keeps its mechanism, and every
+            binding here replaces one such command with another.
           </p>
         </Box>
       </LessonSection>
@@ -310,11 +311,11 @@ public Command runFast() {
               "The scheduler re-runs the last command that finished",
               "It throws an error until something claims it",
               "Nothing is running, and the motor has been switched off",
-              "Its default command, idle(), owns it at the lowest priority and sends no output at all, so the motor keeps applying whatever request it last received",
+              "Nothing is commanding it, and nothing sent a zero on the way out, so the motor keeps applying whatever request it last received",
             ],
             correctAnswer: 3,
             explanation:
-              "Every mechanism defaults to idle(). Idle owns the mechanism so anything can take it away, but it commands nothing: it does not zero the previous request. Canceling a command is not the same as stopping a motor, so a separate stop() command exists.",
+              "Unless you gave the mechanism a default command, an unclaimed mechanism has nothing running on it at all. Nobody zeroes the previous request on the way out, so Phoenix carries on applying it. Canceling a command is not the same as stopping a motor. A separate stop() command exists for that.",
           },
         ]}
       />

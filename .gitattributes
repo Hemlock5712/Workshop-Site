@@ -1,3 +1,15 @@
+# Line endings are LF everywhere, in the index and in the working tree.
+#
+# Every tracked text file is already LF in the index, and Prettier's
+# `endOfLine` default is "lf". Without this rule `core.autocrlf=true` checks
+# them out as CRLF on Windows, so `pnpm format` rewrote all ~89 otherwise
+# untouched files on every run and `pnpm format:check` failed on a fresh
+# clone. Pinning eol=lf makes git and Prettier agree on both platforms.
+#
+# This changes the working tree only. The index is LF already, so no
+# renormalisation commit is needed and no file content changes.
+* text=auto eol=lf
+
 # Large binary CAD exports go to LFS.
 #
 # Only *.stl was listed here, so the STEP and glTF exports of the same two

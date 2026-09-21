@@ -42,22 +42,22 @@ const glossaryDefinitions: Record<string, string> = {
   command:
     "An action your robot performs, like 'raise arm' or 'shoot ball'. Commands use subsystems to get things done.",
   trigger:
-    "A connection between a button (or sensor reading) and a command. Hold button A and the trigger runs its command; for holds, whileTrue hands the mechanism back to its default command on release.",
+    "A connection between a button (or sensor reading) and a command. Hold button A and the trigger runs its command; for holds, whileTrue cancels it on release, and whileFalse is how you name what runs next.",
   "command-based programming":
     "The main way FRC teams organize robot code. You divide your robot into subsystems (parts), create commands (actions), and use triggers (buttons) to make things happen.",
   periodic:
     "A method that runs automatically every 20 milliseconds (50 times per second). Used for displaying data or monitoring sensors, NOT for controlling motors directly.",
   mechanism:
-    "The Commands v3 name for a subsystem - one physical part of the robot (arm, flywheel, drivetrain). A class you extend that owns the hardware and hands out commands.",
+    "The Commands v3 name for a subsystem - one physical part of the robot (arm, flywheel, drivetrain). An interface you implement on a class that owns the hardware and hands out commands.",
   opmode:
     "A 'mode' the robot can be in - driver teleop, an autonomous routine, or a calibration task. Each one is its own class; the driver station lists them by name.",
-  hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. Bind holds with whileTrue so the default command comes back on release. A hold never finishes, so nothing may ever wait on one - every hold's name ends in '(hold)' so a stuck routine is easy to spot.",
+  hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. Bind holds with whileTrue so releasing the button cancels them. A hold never finishes, so nothing may ever wait on one - every hold's name ends in '(hold)' so a stuck routine is easy to spot.",
   chaining:
     "Building a routine by snapping commands together: Command.sequence for self-finishing steps, .until(...) to give a hold a finish line, Command.race for 'do this while holding', and .withTimeout as the seatbelt.",
   "state machine":
     "An optional, advanced pattern where the robot is always in exactly one named state and buttons/sensors move it between states. Illegal jumps can't happen because no transition was declared for them.",
   coroutine:
-    "The optional advanced dialect that lets one command body pause and resume (await, fork, waitUntil). Everyday robot code uses holds and chaining instead.",
+    "A command whose body is ordinary Java, read top to bottom, that can pause and resume on the same line (fork, await, waitUntil, wait, yield). Reach for one when two mechanisms have to overlap; a single mechanism's steps are a job for chaining.",
 
   // Control Theory
   pid: "A smart way to automatically control motors to reach exact positions or speeds. Like cruise control in a car - you set a target, and PID does the adjusting automatically.",

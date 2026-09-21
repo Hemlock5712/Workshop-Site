@@ -17,7 +17,7 @@ All content targets the **WPILib 2027 alpha stack**, not the classic Commands v2
 - **Autonomous** uses Commands v3 OpModes and drivetrain commands. PathPlanner is taught as the route-design and path-finding tool, but its published Java command examples still target Commands v2, so those examples are not pasted into the 2027 project.
 - **Logging** uses WPILib's `DataLogManager` — the workshop does not use AdvantageKit.
 
-Ground truth for all Java examples is the [2027-Template](https://github.com/Hemlock5712/2027-Template) repository. Lesson pages embed live files and PR diffs from the companion [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) repository, whose numbered branches build each mechanism step by step.
+Ground truth for all Java examples is the [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) repository, whose branches build each mechanism step by step, checked against shipped WPILib 2027 alpha source. The 2027-Template repository is not a source for this site.
 
 ## 📚 Curriculum
 

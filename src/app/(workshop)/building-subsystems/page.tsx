@@ -142,7 +142,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.wpilib.command3.Mechanism;
 
-public class Arm extends Mechanism {
+public class Arm implements Mechanism {
   // The fields go here.
 
   public Arm() {
@@ -180,7 +180,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.wpilib.command3.Mechanism;
 
-public class Flywheel extends Mechanism {
+public class Flywheel implements Mechanism {
   // The fields go here.
 
   public Flywheel() {
@@ -203,7 +203,7 @@ public class Flywheel extends Mechanism {
             language="java"
             title="Arm.java: the class line and the fields"
             filename="src/main/java/first/robot/mechanisms/Arm.java"
-            code={`public class Arm extends Mechanism {
+            code={`public class Arm implements Mechanism {
   private final CANBus canivore = new CANBus("canivore");
   private final TalonFX motor = new TalonFX(31, canivore);
   private final CANcoder encoder = new CANcoder(32, canivore);
@@ -218,7 +218,7 @@ public class Flywheel extends Mechanism {
             language="java"
             title="Flywheel.java: the class line and the fields"
             filename="src/main/java/first/robot/mechanisms/Flywheel.java"
-            code={`public class Flywheel extends Mechanism {
+            code={`public class Flywheel implements Mechanism {
   private final CANBus canivore = new CANBus("canivore");
   private final TalonFX motor = new TalonFX(21, canivore);
 
@@ -229,10 +229,11 @@ public class Flywheel extends Mechanism {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <code>extends Mechanism</code> is what makes this a mechanism rather
-            than a plain object. Building one registers it with the scheduler,
-            and it is where <code>runRepeatedly(...)</code> and the default{" "}
-            <code>idle()</code> command come from.
+            <code>implements Mechanism</code> is what makes this a mechanism
+            rather than a plain object. Every method on that interface already
+            has a body. So the one line is the whole of it: no constructor to
+            call and nothing to override, and <code>runRepeatedly(...)</code> is
+            yours from here on.
           </li>
           <li>
             <code>new CANBus(&quot;canivore&quot;)</code> names the bus these
@@ -619,14 +620,14 @@ public class Robot extends OpModeRobot {
             question:
               "Which statement about the v3 Mechanism base class is correct?",
             options: [
-              "Mechanism is an empty marker: extending it changes nothing about the class",
+              "Mechanism is final, so you wrap one in a helper class instead of subclassing",
+              "Mechanism is an empty marker: implementing it changes nothing about the class",
               "Mechanism is an interface you implement, so Arm writes implements Mechanism",
               "Mechanism is a class you extend, so Arm writes extends Mechanism",
-              "Mechanism is final, so you wrap one in a helper class instead of subclassing",
             ],
             correctAnswer: 2,
             explanation:
-              "Mechanism.java declares `public class Mechanism`, and both the lesson branches and the robot template write `extends Mechanism`. It is not an empty marker either: constructing one registers it with the default scheduler, which is how the scheduler knows your arm exists.",
+              "Mechanism.java declares `public interface Mechanism`, and every lesson branch writes `implements Mechanism`. It was a class you extended in earlier alphas, so older examples say otherwise. It is not an empty marker either: every one of its methods carries a default body, so runRepeatedly(...), run(...), idle() and setDefaultCommand(...) all arrive with that one line.",
           },
           {
             id: 2,
@@ -661,12 +662,12 @@ public class Robot extends OpModeRobot {
             question:
               "Arm's config ends with a withFeedback block naming CANcoder 32, and Flywheel's has no withFeedback at all. Why not?",
             options: [
+              "The flywheel's CANcoder is configured in Tuner X, so the code does not repeat it",
               "withFeedback is set once per project, and Arm.java gets there first",
               "The flywheel is tuned for speed, not angle, and the TalonFX's own rotor count already measures speed. There is no CANcoder on the mechanism to point at.",
               "A TalonFX refuses a remote sensor on any mechanism that spins continuously",
-              "The flywheel's CANcoder is configured in Tuner X, so the code does not repeat it",
             ],
-            correctAnswer: 1,
+            correctAnswer: 2,
             explanation:
               "A rotor count is a fine speed measurement and a poor angle measurement, because it starts at zero every power-on. The arm needs to know its real angle the moment it boots, so it has an absolute CANcoder and points the motor's feedback at it. The flywheel is only ever asked how fast it is going, so the encoder inside the motor is enough and the mechanism has no second device.",
           },

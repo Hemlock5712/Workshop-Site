@@ -86,7 +86,7 @@ public class Arm extends SubsystemBase {
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 
-public class Arm extends Mechanism {
+public class Arm implements Mechanism {
   public Command runReverse() {
     return runRepeatedly(() -> setVoltage(-3.0)).named("runReverse (hold)");
   }
@@ -117,7 +117,7 @@ public class Arm extends Mechanism {
                   <code>extends SubsystemBase</code>
                 </td>
                 <td className="px-3 py-2">
-                  <code>extends Mechanism</code>
+                  <code>implements Mechanism</code>
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
@@ -440,7 +440,7 @@ Show me the diff before you write anything.`}
             ],
             correctAnswer: 2,
             explanation:
-              "Commands v3 and WPILib 2027 are newer than the code these models learned from, and almost every FRC repo online is v2. The v3 spellings are `extends Mechanism` and `org.wpilib.command3`. Ground the session by pointing it at ONBOARDING.md and the robot-description skill.",
+              "Commands v3 and WPILib 2027 are newer than the code these models learned from, and almost every FRC repo online is v2. The v3 spellings are `implements Mechanism` and `org.wpilib.command3`. Ground the session by pointing it at ONBOARDING.md and the robot-description skill.",
           },
           {
             id: 2,
