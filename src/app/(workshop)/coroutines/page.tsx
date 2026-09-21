@@ -481,9 +481,10 @@ coroutine.wait(Seconds.of(1.0)); // shoot
         </div>
 
         <p>
-          That is the mechanism chain finished. Workshop 4 builds a swerve drive
-          and writes an autonomous routine against it. State Machines goes back
-          to chaining, and Drive to Tag returns here with a body that is one{" "}
+          That is the mechanism chain finished. Logging is next, and it is how
+          you read back a routine that ran without anybody watching it. Workshop
+          5 builds a swerve drive and writes an autonomous routine against it.
+          Drive to Tag comes back to coroutines with a body that is one{" "}
           <code>while (true)</code> loop.
         </p>
       </LessonSection>

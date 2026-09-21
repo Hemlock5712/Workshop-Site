@@ -40,12 +40,6 @@ const GROUPS: TrailerGroup[] = [
           "Scheduler, three command shapes, requirement conflicts, cancellation, default commands, compositions, bindings (~5 min).",
       },
       {
-        file: "state-based-lesson.mp4",
-        title: "State-based control: full lesson",
-        blurb:
-          "Why not ifs, the state graph, every transition kind, adding a state, interrupts (~4 min).",
-      },
-      {
         file: "pid-lesson.mp4",
         title: "PID control: full lesson",
         blurb:
@@ -117,11 +111,6 @@ const GROUPS: TrailerGroup[] = [
         file: "running-program-trailer.mp4",
         title: "Running the Program",
         blurb: "Drive the mechanism in simulation before hardware exists.",
-      },
-      {
-        file: "state-based-trailer.mp4",
-        title: "State-Based Control",
-        blurb: "The mechanism knows its states and moves between them.",
       },
     ],
   },

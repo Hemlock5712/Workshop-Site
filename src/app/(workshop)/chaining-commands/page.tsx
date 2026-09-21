@@ -82,7 +82,7 @@ export default function ChainingCommands() {
         </div>
         <MarginNote label="Where this goes">
           Every autonomous routine you write is one of these. The one in
-          Workshop 4 is drive off the line, then stop, and both steps need the
+          Workshop 5 is drive off the line, then stop, and both steps need the
           ending you are about to add.
         </MarginNote>
       </Split>

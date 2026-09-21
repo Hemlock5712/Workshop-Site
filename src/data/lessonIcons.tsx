@@ -37,7 +37,7 @@ import {
   GitBranch,
   Navigation,
   Beaker,
-  Lightbulb,
+  ListOrdered,
   Bot,
   Cpu,
   Route,
@@ -82,7 +82,6 @@ export const LESSON_ICONS: Record<string, ReactNode> = {
   "/vision-implementation": makeIcon(Camera),
 
   "/vision-shooting": makeIcon(Target),
-  "/state-based": makeIcon(GitBranch),
   "/advanced-drive-to-point": makeIcon(Navigation),
   "/dynamic-path-planning": makeIcon(Route),
   "/chaining-commands": makeIcon(GitBranch),
@@ -96,7 +95,7 @@ export const SECTION_ICONS: Record<LessonSectionId, ReactNode> = {
   workshop1: makeIcon(Beaker),
   workshop2: makeIcon(Braces),
   workshop3: makeIcon(Zap),
-  workshop4: makeIcon(Truck),
-  workshop5: makeIcon(Eye),
-  workshop6: makeIcon(Lightbulb),
+  workshop4: makeIcon(ListOrdered),
+  workshop5: makeIcon(Truck),
+  workshop6: makeIcon(Eye),
 };

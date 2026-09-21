@@ -64,34 +64,31 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     title: "Robot Programming",
     num: "03",
     blurb:
-      "Make the project, write the mechanism and its commands, bind them to a controller, drive it closed loop, and build routines that wait for it to arrive.",
+      "Make the project, write the mechanism and its commands, bind them to a controller, and drive it closed loop.",
   },
   {
     id: "workshop4",
-    title: "Swerve & Autonomous",
+    title: "Routines",
     num: "04",
     blurb:
-      "Generate and calibrate a swerve drive, plan a path, and run an autonomous OpMode.",
-    unfinished:
-      "Still being written. Waiting on the next WPILib 2027 alpha releases.",
+      "Put commands in order, end a step when the mechanism arrives, write a routine that holds two things at once, and record what it did.",
+    unfinished: "Still being written. Rough draft based on current code.",
   },
   {
     id: "workshop5",
-    title: "Vision & Navigation",
+    title: "Swerve & Autonomous",
     num: "05",
     blurb:
-      "Add vision, drive to field poses, profile the motion, and plan around obstacles.",
-    unfinished:
-      "Still being written. Waiting on the next WPILib 2027 alpha releases.",
+      "Generate and calibrate a swerve drive, plan a path, and run an autonomous OpMode.",
+    unfinished: "Still being written. Rough draft based on current code.",
   },
   {
     id: "workshop6",
-    title: "Advanced Commands",
+    title: "Vision & Navigation",
     num: "06",
     blurb:
-      "Record what the robot did, then write a command that remembers which step it is on.",
-    unfinished:
-      "Still being written. Waiting on the next WPILib 2027 alpha releases.",
+      "Add vision, drive to field poses, profile the motion, and plan around obstacles.",
+    unfinished: "Still being written. Rough draft based on current code.",
   },
 ];
 
@@ -181,22 +178,27 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     shortLabel: "Motion Magic Code",
     section: "workshop3",
   },
-  // Composition, arrival checks and coroutines close Workshop 3 rather than
-  // opening Workshop 4. Every one of them is an arm-and-flywheel lesson that
-  // needs nothing but the bench project, and they carry the chain from
-  // `mech-3-MotionMagic` through `mech-4-ReadingState` to `mech-5-Coroutines`.
-  // Filed under Swerve they sat behind four lessons of drivetrain a student
-  // does not need in order to make two commands run in order, so a team
-  // without a swerve module could not reach them at all.
+  // Workshop 4: Routines. Composition, arrival checks and coroutines are
+  // arm-and-flywheel lessons that need nothing but the bench project, and they
+  // carry the chain from `mech-3-MotionMagic` through `mech-4-ReadingState` to
+  // `mech-5-Coroutines`. They spent a while filed under Swerve, where they sat
+  // behind four lessons of drivetrain a student does not need in order to make
+  // two commands run in order.
+  //
+  // They are their own workshop rather than the tail of Robot Programming
+  // because Workshop 3 is about making one mechanism work and this is about
+  // making several of them cooperate without a driver. The group was called
+  // Advanced Commands when it held State Machines; two of the four are not
+  // commands at all, so it is named for what a student builds instead.
   {
     slug: "/chaining-commands",
     title: "Command Composition",
-    section: "workshop3",
+    section: "workshop4",
   },
   {
     slug: "/finish-conditions",
     title: "Finish Conditions",
-    section: "workshop3",
+    section: "workshop4",
   },
   // Coroutines follows Finish Conditions because its waits are built out of
   // `isAtTarget()`, and because `mech-4-ReadingState` now writes the first
@@ -205,64 +207,64 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   {
     slug: "/coroutines",
     title: "Coroutines",
-    section: "workshop3",
+    section: "workshop4",
+  },
+  // Logging closes the workshop rather than sitting five lessons past the
+  // autonomous routine it exists to explain. A routine that runs unattended is
+  // the first thing a student cannot debug by watching, so the log is what
+  // replaces the eyes on the mechanism.
+  {
+    slug: "/logging-implementation",
+    title: "Logging",
+    section: "workshop4",
   },
 
-  // Workshop 4: Swerve & Autonomous
+  // Workshop 5: Swerve & Autonomous
   {
     slug: "/swerve-prerequisites",
     title: "How Swerve Works",
-    section: "workshop4",
+    section: "workshop5",
   },
   {
     slug: "/swerve-drive-project",
     title: "Swerve Project Generator",
     shortLabel: "Swerve Setup",
-    section: "workshop4",
+    section: "workshop5",
   },
   {
     slug: "/swerve-calibration",
     title: "Swerve Calibration",
-    section: "workshop4",
+    section: "workshop5",
   },
-  { slug: "/pathplanner", title: "PathPlanner", section: "workshop4" },
+  { slug: "/pathplanner", title: "PathPlanner", section: "workshop5" },
   {
     slug: "/autonomous",
     title: "Autonomous",
-    section: "workshop4",
+    section: "workshop5",
   },
 
-  // Workshop 5: Vision & Navigation
+  // Workshop 6: Vision & Navigation
   {
     slug: "/vision-implementation",
     title: "Vision",
-    section: "workshop5",
+    section: "workshop6",
   },
-  { slug: "/drive-to-point", title: "Drive to Point", section: "workshop5" },
+  { slug: "/drive-to-point", title: "Drive to Point", section: "workshop6" },
   {
     slug: "/advanced-drive-to-point",
     title: "Profiled Drive to Point",
     shortLabel: "Profiled Drive",
-    section: "workshop5",
+    section: "workshop6",
   },
   {
     slug: "/dynamic-path-planning",
     title: "Dynamic Path Planning",
     shortLabel: "Dynamic Paths",
-    section: "workshop5",
-  },
-
-  // Workshop 6: Advanced Commands
-  {
-    slug: "/logging-implementation",
-    title: "Logging",
     section: "workshop6",
   },
-  {
-    slug: "/state-based",
-    title: "State Machines",
-    section: "workshop6",
-  },
+  // Drive to Tag closes Vision & Navigation, which is the material it uses.
+  // It was the last lesson of Advanced Commands, a group away from the vision
+  // and pose-driving lessons its inline command is built out of.
   {
     slug: "/drive-to-tag-inline",
     title: "Example: Drive to Tag",

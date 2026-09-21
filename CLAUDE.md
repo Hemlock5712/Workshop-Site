@@ -54,7 +54,7 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **There is no implicit default command.** Alpha-7 stopped registering `idle()` as a mechanism's default, and `Scheduler` only ever populates a default from `setDefaultCommand`. The `Mechanism` javadoc still claims otherwise and is stale. So an unclaimed mechanism has nothing running on it, nothing sends a zero on the way out, and the last request stays latched in the motor controller. Never write that a mechanism "falls back to `idle()`".
 - **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
 - **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
-- **PathPlanner boundary**: Workshop 4 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
+- **PathPlanner boundary**: Workshop 5 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
 - **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
 - **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
 - **No GitHub embeds on the site at all, for now.** August 2026: every `<GitHubContent>` was removed from every lesson. A page that ends in someone else's 100-plus-line file is mostly scroll, and each of those pages already teaches the same code in `CodeBlock`s. The components survive (`GitHubContent`, `MechanismTabs`) and so does the `pr` prop that renders a "GitHub Changes" tab, but nothing calls them. A local `FileDiff` (unified diff, two gutters, parsed straight from `git diff` output) is built and also unused. The intended end state is a compare view in place of the whole-file dump, but not until the teaching chain's comments and prose settle: a diff of it today is a third Javadoc rewording, and that red and green buries the lines a student types. `pnpm check-embeds` now treats zero embeds as valid and only fails when a page uses the component and nothing parses.
@@ -216,16 +216,32 @@ gap between a paragraph and its note. Don't reintroduce the rail.
 Lesson order, drawer grouping, the syllabus, and prev/next all come from
 `src/data/lessons.ts` — the single source of truth. The course is organized as
 six workshops with a strict prerequisite boundary: Workshop 1 is entirely in
-Tuner X, Java starts at Workshop 2, autonomous does not depend on the
-pose-driving material taught in Workshop 5, and command composition is expanded
-in Workshop 6. Historical side routes can remain reachable without appearing in
-`LESSONS`.
+Tuner X, Java starts at Workshop 2, the first file is written in Workshop 3,
+routines are built in Workshop 4, and autonomous in Workshop 5 does not depend
+on the pose-driving material taught in Workshop 6. Historical side routes can
+remain reachable without appearing in `LESSONS`.
+
+**Workshop 4 is Routines, and it renumbered everything after it.** September
+2026: Command Composition, Finish Conditions and Coroutines left the tail of
+Workshop 3, Logging came up from the old Workshop 6 to join them, and Swerve
+and Vision shifted to 5 and 6. Workshop 3 is about making one mechanism work
+and stops at Motion Magic in Code; Workshop 4 is about making several cooperate
+with no driver holding a button, and Logging closes it because a routine that
+runs unattended is the first thing a student cannot debug by watching. The
+group was called Advanced Commands when it held State Machines. Two of its four
+lessons are not commands, so it is named for what a student builds.
+
+**There is no `/state-based`.** State Machines was retired in September 2026 and
+the page is deleted: `StateMachine` shipped in alpha-6, but there is no
+documentation worth sending a student to and no Workshop-Code branch behind the
+lesson. The slug 308s to `/coroutines`, and the two `state-based-*.mp4` entries
+are gone from `/video`. Don't reinstate it without a branch and real docs.
 
 **Workshop 2 is concepts, Workshop 3 is code.** Splitting them was the point of
 the August 2026 regroup: Workshop 2 (Code Foundations) is Java Basics and The
 Command Framework, and nothing in it opens an editor. Workshop 3 (Robot
-Programming) opens with Project Setup and runs through Logging, and every
-lesson in it writes a file. Project Setup sits at the top of Workshop 3 rather
+Programming) opens with Project Setup and runs through Motion Magic in Code,
+and every lesson in it writes a file. Project Setup sits at the top of Workshop 3 rather
 than the bottom of Workshop 2 because making the project is the first thing you
 do to write code, not the last idea you learn before writing it. The section
 ids stay aligned with the displayed numbers (`workshop3` renders `03`); keep
