@@ -14,24 +14,36 @@ import { BookOpen } from "lucide-react";
  * page. This page is the code.
  *
  * The install step changed shape, and the API changed with it. LimelightLib 2
- * (`2.0.0-beta2`, `wpilibYear: 2027_alpha5`) ships as a real vendordep from
- * https://limelightvision.github.io/limelightlib-public/LimelightLib.json, and
- * there is no `LimelightHelpers` class in the jar at all. Everything is
- * `com.limelightvision.Limelight` plus its nested types. So the old lesson's
- * "copy this file into src/main/java/frc/robot" step is gone, and with it
+ * ships as a real vendordep, and there is no `LimelightHelpers` class in the
+ * jar at all. Everything is `com.limelightvision.*`. So the old lesson's "copy
+ * this file into src/main/java/frc/robot" step is gone, and with it
  * `getBotPoseEstimate_wpiBlue`, `SetRobotOrientation_NoFlush`, `Flush()` and
  * `validPoseEstimate`.
  *
- * API verified by reading the shipped jar, not from memory:
+ * PIN THE ALPHA. The vendordep is published per WPILib alpha, and the file is
+ * NOT called `LimelightLib.json`:
+ *   .../limelightlib-public/LimelightLib-alpha7.json    2.0.0-beta9-alpha7
+ *   .../limelightlib-public/LimelightLib-alpha5-6.json  older
+ * A bare `LimelightLib.json` 404s, as does the whole Pages root, so a wrong
+ * URL here is a lesson a student cannot start. Re-check the filename when the
+ * alpha moves.
+ *
+ * API verified against the alpha7 jar, not from memory. Note that alpha7
+ * FLATTENED the nested types: `Limelight.PoseEstimate` and friends are now
+ * top-level `com.limelightvision.PoseEstimate`, `LimelightResults`,
+ * `PoseEstimateType`. Two more renames came with it, so beta2 sample code does
+ * not compile here.
  *   new Limelight(String)                       ctor applies defaultMT1/MT2
  *   camera.setUseSharedOrientation(boolean)
  *   Limelight.setSharedRobotOrientation(double) static, reaches every camera
  *   camera.readResultsQueue() -> LimelightResults[]
  *   camera.getPoseEstimate(LimelightResults, PoseEstimateType)
- *   LimelightResults.botPoseTagCount
  *   PoseEstimate.pose / .timestampSeconds / .fieldedTagCount
- *                .avgTagDistanceMeters / .rejectionFlags / .isMegaTag2()
+ *                .avgTagDistanceMeters / .rejectionFlags / .isMT2()
  *   PoseEstimateConfig.describeRejection(int)
+ * Gone since beta2: `LimelightResults.botPoseTagCount` (pick the solver off
+ * `fieldedTagCount` instead) and `PoseEstimate.isMegaTag2()` (now `isMT2()`).
+ * `defaultMT1()` still gates a lone tag at 3.0 m and 0.7 ambiguity.
  *
  * WATCH OUT: Workshop-Code `3-Limelight` still carries the copied
  * `LimelightHelpers.java` and a subsystem named `Limelight`. This page is
@@ -93,7 +105,7 @@ export default function VisionImplementation() {
         <CodeBlock
           language="text"
           title="Vendor dependency URL"
-          code={`https://limelightvision.github.io/limelightlib-public/LimelightLib.json`}
+          code={`https://limelightvision.github.io/limelightlib-public/LimelightLib-alpha7.json`}
         />
 
         <ImageBlock
@@ -186,7 +198,9 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
         <Split>
           <ProseBlock>
             <p>
-              One heading write serves every camera on the robot.{" "}
+              A camera drives nothing, so there is nothing for the scheduler to
+              hand out. <code>addPeriodic</code> runs the update every loop
+              instead. One heading write serves every camera on the robot.{" "}
               <code>setUseSharedOrientation(true)</code> tells a camera to read
               the shared topic, and the static{" "}
               <code>setSharedRobotOrientation</code> writes it once per loop.
@@ -199,11 +213,18 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
               the latest value means no frame is skipped. It also means one
               frame never goes into the estimator twice.
             </p>
+            <p>
+              Ask MegaTag1 first, then read <code>fieldedTagCount</code> off the
+              answer. Under two tags, ask the same frame again as MegaTag2. The
+              second solve is cheap because the frame is already in hand.
+            </p>
           </ProseBlock>
-          <MarginNote label="Not a Mechanism">
-            A camera drives nothing, so there is nothing for the scheduler to
-            hand out. <code>addPeriodic</code> runs the update every loop
-            instead.
+          <MarginNote label="Flat package">
+            Alpha-7 moved these out of <code>Limelight</code> and into{" "}
+            <code>com.limelightvision</code> directly, so import{" "}
+            <code>PoseEstimate</code> and <code>LimelightResults</code> on their
+            own. Older sample code imports them as nested classes and will not
+            compile.
           </MarginNote>
         </Split>
 
@@ -212,12 +233,10 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           title="Vision.java: update"
           code={`private void update() {
   for (LimelightResults frame : camera.readResultsQueue()) {
-    PoseEstimate estimate =
-        camera.getPoseEstimate(
-            frame,
-            frame.botPoseTagCount >= MIN_TAGS_FOR_MEGATAG1
-                ? PoseEstimateType.MT1_WPIBLUE
-                : PoseEstimateType.MT2_WPIBLUE);
+    PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
+    if (estimate.fieldedTagCount < MIN_TAGS_FOR_MEGATAG1) {
+      estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
+    }
 
     if (estimate.rejectionFlags != 0
         || estimate.avgTagDistanceMeters > MAX_TAG_DISTANCE_METERS) {
@@ -228,7 +247,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
     double tagFactor = estimate.fieldedTagCount * estimate.fieldedTagCount;
     double xyStdDev = XY_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
     double headingStdDev =
-        estimate.isMegaTag2()
+        estimate.isMT2()
             ? IGNORE_VISION_HEADING
             : ROTATION_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
 
@@ -363,7 +382,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
             ],
             correctAnswer: 0,
             explanation:
-              "The frame carries botPoseTagCount, and the code picks the solver from it before asking for an estimate. Below two tags it asks for MT2_WPIBLUE. MegaTag1 solves heading from the tag corners themselves, which is shaky off a single tag; MegaTag2 takes your heading as given and solves only position.",
+              "The code asks MegaTag1 first and reads fieldedTagCount off the answer. Below two tags it re-asks the same frame as MT2_WPIBLUE. MegaTag1 solves heading from the tag corners themselves, which is shaky off a single tag; MegaTag2 takes your heading as given and solves only position.",
           },
           {
             id: 2,

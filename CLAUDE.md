@@ -55,23 +55,32 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
 - **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
 - **PathPlanner boundary**: Workshop 5 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
-- **Vision is LimelightLib 2, installed as a vendordep.** The URL is
-  `https://limelightvision.github.io/limelightlib-public/LimelightLib.json`
-  (`2.0.0-beta2`, `wpilibYear: 2027_alpha5`). There is **no**
-  `LimelightHelpers` class in the jar: it is one `com.limelightvision.Limelight`
-  plus nested types, so the old "copy `LimelightHelpers.java` into
-  `frc/robot/`" step is gone and so are `getBotPoseEstimate_wpiBlue`,
-  `SetRobotOrientation_NoFlush`, `Flush()` and `validPoseEstimate`. The API,
-  read off the shipped jar rather than from memory: `new Limelight(name)` (the
-  constructor already applies `defaultMT1()` and `defaultMT2()`),
+- **Vision is LimelightLib 2, installed as a vendordep, and the URL is pinned
+  to the alpha.** The vendordep is published per WPILib alpha and the file is
+  **not** called `LimelightLib.json`. A bare `LimelightLib.json` 404s, and so
+  does the Pages root, so a wrong URL is a lesson a student cannot start.
+  Today: `https://limelightvision.github.io/limelightlib-public/LimelightLib-alpha7.json`
+  (`2.0.0-beta9-alpha7`, `wpilibYear: 2027_alpha7`), with
+  `LimelightLib-alpha5-6.json` beside it for the older alphas. Re-check the
+  filename when the alpha moves. There is **no** `LimelightHelpers` class in
+  the jar, so the old "copy `LimelightHelpers.java` into `frc/robot/`" step is
+  gone and so are `getBotPoseEstimate_wpiBlue`, `SetRobotOrientation_NoFlush`,
+  `Flush()` and `validPoseEstimate`.
+- **Alpha-7 flattened the LimelightLib types, so beta2 sample code does not
+  compile.** `Limelight.PoseEstimate` and friends are now top-level
+  `com.limelightvision.PoseEstimate`, `LimelightResults`, `PoseEstimateType`.
+  `LimelightResults.botPoseTagCount` is gone, so pick the solver off the
+  estimate's `fieldedTagCount` instead, and `isMegaTag2()` is now `isMT2()`.
+  The rest, read off the alpha7 jar rather than from memory:
+  `new Limelight(name)` (the constructor already applies `defaultMT1()` and
+  `defaultMT2()`, which gate a lone tag at 3.0 m and 0.7 ambiguity),
   `camera.setUseSharedOrientation(true)` paired with the static
   `Limelight.setSharedRobotOrientation(deg)`, `camera.readResultsQueue()`,
-  `camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE)`,
-  `LimelightResults.botPoseTagCount`, and on `PoseEstimate` the fields `pose`,
-  `timestampSeconds`, `fieldedTagCount`, `avgTagDistanceMeters`,
-  `rejectionFlags` and `isMegaTag2()`. `PoseEstimateConfig.describeRejection`
-  names a rejection. **The lesson class is `Vision`, not `Limelight`**, because
-  the library owns that name now.
+  `camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE)`, and on
+  `PoseEstimate` the fields `pose`, `timestampSeconds`, `fieldedTagCount`,
+  `avgTagDistanceMeters` and `rejectionFlags`.
+  `PoseEstimateConfig.describeRejection` names a rejection. **The lesson class
+  is `Vision`, not `Limelight`**, because the library owns that name now.
 - **`/vision-implementation` is ahead of `3-Limelight`, on purpose.** That
   branch still carries the copied helper and a subsystem called `Limelight`,
   so the page sets no `branch` prop rather than claiming a branch it does not
