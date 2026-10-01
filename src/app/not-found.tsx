@@ -18,7 +18,7 @@ import NotFoundBody from "@/components/NotFoundBody";
  * notice and the other binds prev/next keys for a lesson this page is not.
  */
 export const metadata: Metadata = {
-  title: "Page not found · Gray Matter Coding Workshop",
+  title: "Page not found",
 };
 
 export default function NotFound() {

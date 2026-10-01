@@ -42,26 +42,8 @@ export default function MechanismSelector() {
   }, []);
 
   const pick = (id: MechanismId) => {
-    const root = document.documentElement;
-    root.dataset.mechanism = id;
+    applyMechanism(id);
     setChoice(id);
-    try {
-      window.localStorage.setItem(MECHANISM_STORAGE_KEY, id);
-    } catch {
-      // Private browsing, or storage turned off. The choice still holds for
-      // this page; it just will not follow the student to the next one.
-    }
-
-    // The swap animation is opt-in per switch rather than a standing rule, or
-    // every block on the page would animate itself in on first load and the
-    // lesson would arrive in pieces. Cleared on a timer rather than on
-    // `animationend`, because a dozen elements each fire that event and only
-    // the last one means anything.
-    root.dataset.mechAnim = "";
-    window.clearTimeout(clearAnim);
-    clearAnim = window.setTimeout(() => {
-      delete root.dataset.mechAnim;
-    }, 420);
   };
 
   return (
@@ -132,3 +114,31 @@ export default function MechanismSelector() {
 
 /** Module-scope so a fast double switch cancels the first timer, not a stale one. */
 let clearAnim = 0;
+
+/**
+ * Everything a switch does outside React: the attribute on `<html>`, the
+ * stored answer, and the swap animation. Module scope rather than inside the
+ * component because it writes to the document and to `clearAnim`, and the
+ * React Compiler refuses to compile a component that mutates either.
+ */
+function applyMechanism(id: MechanismId) {
+  const root = document.documentElement;
+  root.dataset.mechanism = id;
+  try {
+    window.localStorage.setItem(MECHANISM_STORAGE_KEY, id);
+  } catch {
+    // Private browsing, or storage turned off. The choice still holds for
+    // this page; it just will not follow the student to the next one.
+  }
+
+  // The swap animation is opt-in per switch rather than a standing rule, or
+  // every block on the page would animate itself in on first load and the
+  // lesson would arrive in pieces. Cleared on a timer rather than on
+  // `animationend`, because a dozen elements each fire that event and only
+  // the last one means anything.
+  root.dataset.mechAnim = "";
+  window.clearTimeout(clearAnim);
+  clearAnim = window.setTimeout(() => {
+    delete root.dataset.mechAnim;
+  }, 420);
+}

@@ -5,19 +5,17 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
-  # 06:00 UTC daily, for the `embeds` job — see the comment on it. Nothing else
-  # in this file needs a timer; a scheduled lint of unchanged code is noise.
-  schedule:
-    - cron: "0 6 * * *"
   workflow_dispatch:
+    inputs:
+      embeds:
+        description: "Also check that GitHub embeds resolve"
+        type: boolean
+        default: false
 
 jobs:
   test:
-    name: Lint, type-check, spell, build
+    name: Format, lint, type-check, test, prose, spell, build
     runs-on: ubuntu-latest
-    # The nightly trigger exists for the `embeds` job only. Re-linting a commit
-    # that has not changed since yesterday tells us nothing and burns minutes.
-    if: github.event_name != 'schedule'
 
     steps:
       - name: Checkout repository
@@ -40,14 +38,17 @@ jobs:
       - name: Format check
         run: pnpm run format:check
 
-      # Prints why ESLint is off and re-tests the blocker on every run — see
-      # scripts/lint-disabled.mjs. Becomes `eslint src/` again the moment
-      # typescript-eslint supports TypeScript 7.
-      - name: Lint (disabled — TypeScript 7)
+      - name: Lint
         run: pnpm run lint
 
       - name: Type check
         run: pnpm run type-check
+
+      - name: Unit tests
+        run: pnpm run test:unit
+
+      - name: Prose lint
+        run: pnpm run prose
 
       - name: Spell check
         run: pnpm run spell
@@ -55,23 +56,15 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Verify build output
-        run: |
-          if [ ! -d ".next" ]; then
-            echo "Build failed - .next directory not found"
-            exit 1
-          fi
-          echo "Build successful"
-
-  # Split out from `test` on purpose. This one talks to the GitHub API, so it
-  # can fail for reasons that have nothing to do with the commit — a rate limit
-  # or an API blip should not read as "your PR is broken". It also runs on a
-  # schedule, which is the only trigger that actually matters here: the embeds
-  # break when a Workshop-Code teaching branch is rewritten, and that happens
-  # in a different repository with no push to this one.
+  # Manual only. No lesson embeds a Workshop-Code file today, so a nightly run
+  # of this checked nothing. It talks to the GitHub API and can fail on a rate
+  # limit, which is why it is a separate job. Put a schedule back when embeds
+  # return: they break when a Workshop-Code branch is rewritten, which happens
+  # in another repository with no push to this one.
   embeds:
     name: Verify GitHub embeds resolve
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && inputs.embeds
 
     steps:
       - name: Checkout repository
@@ -94,18 +87,4 @@ jobs:
       - name: Check embeds
         run: pnpm run check-embeds
         env:
-          # The default token lifts the 60/hour anonymous limit to 1000/hour.
-          # ~31 requests per run, so this is only about not being throttled
-          # when several runs land together.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy-check:
-    name: Deployment Check
-    runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Deployment Status
-        run: |
-          echo "Ready for deployment - Vercel will auto-deploy this build"
