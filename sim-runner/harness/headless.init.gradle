@@ -1,0 +1,25 @@
+// Gradle init script for the browser simulation runner. Passed with -I at bake
+// time so the student's build.gradle stays exactly as the lesson branch has it.
+//
+//  1. Adds the halsim_ws_server extension, so its Linux native is resolved and
+//     extracted into build/jni/release next to halsim_gui.
+//  2. Registers writeSimRuntime, which records what a plain `java` launch needs
+//     (runtime classpath and the JVM flags GradleRIO's run task uses) so each
+//     student run can skip Gradle entirely.
+allprojects {
+  plugins.withId('org.wpilib.GradleRIO') {
+    wpi.sim.addWebsocketsServer()
+
+    tasks.register('writeSimRuntime') {
+      dependsOn 'jar', 'extractReleaseNative'
+      doLast {
+        def out = file(System.getenv('SIM_RUNTIME_DIR') ?: "${buildDir}/sim-runtime")
+        out.mkdirs()
+        new File(out, 'classpath.txt').text =
+            sourceSets.main.runtimeClasspath.filter { !it.path.startsWith(buildDir.path) }.asPath
+        new File(out, 'jvmargs.txt').text = tasks.named('run').get().jvmArgs.join('\n')
+        new File(out, 'libdir.txt').text = file("${buildDir}/jni/release").path
+      }
+    }
+  }
+}

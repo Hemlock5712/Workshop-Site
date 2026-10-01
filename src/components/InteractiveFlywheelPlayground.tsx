@@ -194,7 +194,7 @@ const FLY_CENTER = { x: FLY_VB / 2, y: FLY_VB / 2 - 6 };
 const FLY_RADIUS = 78;
 const SAMPLE_RATE_MS = 1;
 
-function FlywheelViz({
+export function FlywheelViz({
   responseAngleRad,
   responseRpm,
   durationSec,

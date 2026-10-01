@@ -5,6 +5,7 @@ import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import PairedLesson from "@/components/lesson/PairedLesson";
+import SimSpike from "@/components/sim/SimSpike";
 import { M, Mech } from "@/components/lesson/Mechanism";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -302,6 +303,7 @@ export default function MotionMagicCode() {
         </p>
       </LessonSection>
 
+      <SimSpike branch="mech-3-MotionMagic" />
       <Quiz
         questions={[
           {

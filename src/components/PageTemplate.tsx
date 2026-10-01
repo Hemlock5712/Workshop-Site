@@ -1,6 +1,7 @@
 import type { Route } from "next";
 import { Children, isValidElement, type ReactNode } from "react";
 import NavFooter, { type NavOverride } from "@/components/NavFooter";
+import OpenInCodespaces from "@/components/OpenInCodespaces";
 import LessonOutline from "@/components/lesson/LessonOutline";
 import LessonSection from "@/components/lesson/LessonSection";
 import LessonKicker from "@/components/lesson/LessonKicker";
@@ -249,6 +250,7 @@ export default function PageTemplate({
                 )}
               </div>
             )}
+            <OpenInCodespaces branch={branch} />
           </div>
 
           {/* Two columns from `sm` up, and that is about the width it
