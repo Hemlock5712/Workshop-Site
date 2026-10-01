@@ -5,6 +5,11 @@
   "ignorePaths": ["node_modules", "public", ".next"],
   "ignoreRegExpList": ["/<VideoEmbed[^>]*?\\bid=\"[A-Za-z0-9_-]{11}\"/g"],
   "words": [
+    "clinit",
+    "commandv",
+    "navgrid",
+    "pnpmfile",
+    "teleops",
     "pathfind",
     "Pathfind",
     "pathfinding",

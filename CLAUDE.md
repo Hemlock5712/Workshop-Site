@@ -168,7 +168,7 @@ Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/
 - **Production build**: `pnpm build` (runs `generate-search`, then `next build`)
 - **Production server**: `pnpm start`
 - **Linting**: `pnpm lint` (ESLint with Next.js config). ESLint's TypeScript plugins refuse TS 7, so `.pnpmfile.cjs` gives that chain its own TS 6 while `tsc` and the build stay on 7. `.mjs` files are not linted
-- **Unit tests**: `pnpm test:unit` (Vitest; behavioural tests on the playground physics in `src/lib/*Physics.ts`)
+- **Unit tests**: `pnpm test:unit` (Vitest; behavioral tests on the playground physics in `src/lib/*Physics.ts`)
 - **Type checking**: `pnpm type-check` (TypeScript compiler check)
 - **Code formatting**: `pnpm format` (Prettier with write), `pnpm format:check` (check only)
 - **Search data generation**: `pnpm generate-search` (rewrites `public/search-index.json`, and fails the build when the lesson list and the filesystem disagree)
