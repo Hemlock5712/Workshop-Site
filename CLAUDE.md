@@ -35,7 +35,7 @@ initialises against a directory still being emptied, comes up without
 
 ## Project Overview
 
-Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 15, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
+Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 16, focusing on teaching best programming practices, hardware setup, command-based programming, and PID tuning. The site transforms Canva presentation content into an interactive web learning platform.
 
 **Live Site:** [frc5712.com](https://frc5712.com)  
 **Repository:** [https://github.com/Hemlock5712/Workshop-Site](https://github.com/Hemlock5712/Workshop-Site)  
@@ -52,9 +52,11 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
 - **Key v3 APIs**: `Mechanism` is an **interface**, so subsystems `implement Mechanism` and get a default `getName()` from the class name; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`; geometry constants are `ZERO`, not `kZero`.
 - **There is no implicit default command.** Alpha-7 stopped registering `idle()` as a mechanism's default, and `Scheduler` only ever populates a default from `setDefaultCommand`. The `Mechanism` javadoc still claims otherwise and is stale. So an unclaimed mechanism has nothing running on it, nothing sends a zero on the way out, and the last request stays latched in the motor controller. Never write that a mechanism "falls back to `idle()`".
+- **`SwerveRequest.Idle` is not a stop.** It does nothing to the module state, so a drive command that ends on Idle leaves every module on its last request and the robot keeps rolling. Stop with a zero-velocity request on the command's own request object, `driveRequest.withVelocity(new ChassisVelocities())`. Idle in a `disabled()` binding is harmless, because disabling cuts output anyway.
+- **Latched requests are taught once.** `/running-program#latched` is the demo (delete a `whileFalse`, release, watch it keep going) and `/mechanisms#configs-and-requests` is the concept. Every other page links to one of them rather than re-explaining canceling-is-not-stopping.
 - **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
 - **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
-- **PathPlanner boundary**: Workshop 5 teaches the PathPlanner editor, path/auto vocabulary, and the documented AD* path-finding model. Its published Java integration examples still target Commands v2, so never paste `edu.wpi.first`, `RobotContainer`, or v2 `Command` code into this project. Commands v3 autonomous examples use the workshop drivetrain commands until an official v3 adapter is available.
+- **PathPlanner is PathPlannerLib `2027.0.0-alpha-4`, and only its non-command classes.** Install from `https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLibSystemCoreAlpha.json` (`wpilibYear: 2027_alpha7`); the plain `PathplannerLib.json` is the 2026 release. `AutoBuilder`, `FollowPathCommand`, `PathfindingCommand`, `NamedCommands`, `PathPlannerAuto` and event markers are built on `org.wpilib.command2`, so no lesson uses them, the Auto editor, or `.auto` files. Lessons use `PathPlannerPath.fromPathFile`, `RobotConfig.fromGUISettings`, `PathPlannerTrajectory.sample`, `PPHolonomicDriveController` and `Pathfinding`, driven from `DriveMechanism.followPath` / `pathfindTo`: `run(coroutine -> ...)` loops that send zero speed on the way out and in `whenCanceled`. An auto is one `@Autonomous` class per path, matching WPILib's OpMode and commandv3 templates; WPILib shows `Selectable` only in TimedRobot templates, as the `SendableChooser` replacement. Branches: `swerve-autonomous` → `swerve-pathplanner` → `swerve-pathfinding`, off `1-Swerve`. alpha-4 crashes at boot on alpha-7 (`AlertException: Alert already allocated` in `RobotConfig.<clinit>`, every alert shares the id `"PathPlanner"`), and `/pathplanner` carries one WatchOut about it; delete it when a fixed release ships. Never teach or commit a patched PathPlannerLib. The desktop app is v2026.1.2, which writes path version `2025.0`, and the 2027 library reads it.
 - **Vision is LimelightLib 2, installed as a vendordep, and the URL is pinned
   to the alpha.** The vendordep is published per WPILib alpha and the file is
   **not** called `LimelightLib.json`. A bare `LimelightLib.json` 404s, and so
@@ -98,7 +100,7 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Paste the generated config whole, then make one edit.** Generate Code emits `final TalonFXConfiguration talonFXCfg = new TalonFXConfiguration()`, so the chain uses that name and that `final`, and it needs `import static org.wpilib.units.Units.*` members (`Volts`, `RotationsPerSecond`, `RotationsPerSecondPerSecond`) for the unit forms. The emitted feedback block hardcodes the encoder: `withFeedback(new FeedbackConfigs().withFeedbackRemoteSensorID(32).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder))`. **Leave it exactly as generated.** `withRemoteCANcoder(encoder)` is equivalent (a remote sensor must sit on the Talon's own CAN bus, so the bare ID is unambiguous) but it was rejected: every edit a student has to make after a paste is a step they can get wrong, and this one breaks nothing when forgotten. The cost is that `Arm`'s `encoder` field has no reader until `mech-4-ReadingState` calls `getPosition()`. Tuner X still owns the encoder's own configuration, so never put a `CANcoderConfiguration` in a lesson.
 - **The generated OpMode keeps its generated name.** The New Project Creator writes `opmode/MyTeleop.java` with `@Teleop` already on it, and every mech branch edits that file rather than renaming it. It was `TeleopOpMode` until August 2026, which cost a lesson an F2-rename step and left a real trap: create a second file instead of renaming and two `@Teleop` classes both appear on the driver station. `MyAuto.java` is the same idea, though `/autonomous` still renames it to `LeaveStartAuto` on the swerve chain.
 - **OpModes reach mechanisms through `robot` directly.** No `final Arm arm = robot.arm;` aliases in a constructor: write `robot.arm.runFast()`. Two locals that only shorten a field access are two more names to carry, and `robot.arm` already says where the mechanism lives. `Robot`'s own `public final Arm arm = new Arm();` field is a different thing and stays.
-- **The raw setter is `private` from lesson one, and the stop helper is `stopMotor`.** Nothing outside a mechanism ever called `setVoltage`, and `stop` is the name a Command wants in `mech-2-Commands`, so both are settled on `mech-1-Mechanisms`. That leaves the mech-1 to mech-2 diff purely additive: three Commands and one import, with no visibility change and no deleted method. The stop Command routes through `this::stopMotor` rather than `motor::stopMotor` so the helper stays used.
+- **The raw setter is `private` from lesson one, and the stop helper is `stopMotor`.** Nothing outside a mechanism ever called `setVoltage`, and `stop` is the name a Command wants in `mech-2-Commands`, so both are settled on `mech-1-Mechanisms`. That leaves the mech-1 to mech-2 diff purely additive: three Commands and one import, with no visibility change and no deleted method. The stop Command routes through `() -> stopMotor()` rather than calling the motor directly so the helper stays used.
 - **`Inverted` is not presented as a choice.** The direction is settled on the bench in `/mechanism-setup`, so lesson prose names only `NeutralMode` as a setting the student picks.
 - **Generate Code always emits the Expo pair, tuned or not.** A factory-defaulted device still produces `withMotionMagicExpo_kV(Volts.per(RotationsPerSecond).ofNative(0.119999997317791))` and `withMotionMagicExpo_kA(...ofNative(0.10000000149011612))`. Those are defaults riding along in the paste and nothing reads them: the course teaches the trapezoid, `MotionMagicCruiseVelocity` and `MotionMagicAcceleration`, and `/motion-magic` stays as written. Do not rewrite Workshop 1 around Expo, and do not strip the Expo lines out of a pasted block either.
 - **Students must not be able to copy our gains.** A tuned config belongs on the page as a screenshot of the Tuner X panel, never as a `CodeBlock` with a copy button. Code blocks in the paste lesson show the shape with `0.0` placeholders or show the edit, not somebody else's numbers.
@@ -114,15 +116,15 @@ against the code it embeds without leaving the project:
 ```
 reference/
   .git-store/            bare mirrors, one shared object store per repo
-  Workshop-Code/         15 detached worktrees: mech-1 … mech-7, the 7 swerve, main
+  Workshop-Code/         14 detached worktrees: mech-1 … mech-6, the 7 swerve, main
   2027-Template/2027-dev comparison only, stale on alpha-6
 ```
 
-Sixteen checkouts cost 4.2 MB, because the worktrees share the mirror's
+Fifteen checkouts cost 4.2 MB, because the worktrees share the mirror's
 history. Cross-state diffs work, and they are the teaching artifact:
 
 ```bash
-git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-4-MotionMagic
+git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-3-MotionMagic
 ```
 
 - **`reference/` is gitignored**, so `scripts/sync-reference.mjs` is the only
@@ -131,11 +133,17 @@ git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-4-Motion
 - **The worktrees are detached on purpose.** A worktree holding `refs/heads/X`
   makes git refuse to move that ref, and the teaching chain gets rebased and
   force-pushed whenever the WPILib alpha breaks an API. Don't commit here.
+- **To change the teaching code, use `pnpm workshop-code`.** It clones
+  Workshop-Code into `reference/work/Workshop-Code` (also gitignored) with
+  every branch tracked locally, which is the one place to commit, rebase the
+  linear mech chain, and run `./gradlew build` before a push. The header of
+  `scripts/workbench.mjs` has the rebase recipe. Push with
+  `--force-with-lease`, then `pnpm reference:refresh`.
 - **`pnpm reference:refresh`** fetches upstream, fast-forwards each worktree,
   and prunes ones whose branch is gone. It skips any worktree with local
   changes rather than clobbering it.
 - **This is not a submodule and must not become one.** A submodule tracks one
-  ref at one pinned commit; the teaching states are fifteen refs, and the pin
+  ref at one pinned commit; the teaching states are fourteen refs, and the pin
   would need a commit here every time Workshop-Code moved.
 - **Nothing at build time reads it.** The embeds still fetch from GitHub
   through `src/app/api/github/route.ts`, whose `ALLOWED_REPOS` is a one-entry
@@ -159,14 +167,15 @@ Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/
 - **Development server**: `pnpm dev` (with Turbopack for faster builds). One at a time, and see **Development Server Rules** above
 - **Production build**: `pnpm build` (runs `generate-search`, then `next build`)
 - **Production server**: `pnpm start`
-- **Linting**: `pnpm lint` (ESLint with Next.js config)
+- **Linting**: `pnpm lint` (ESLint with Next.js config). ESLint's TypeScript plugins refuse TS 7, so `.pnpmfile.cjs` gives that chain its own TS 6 while `tsc` and the build stay on 7. `.mjs` files are not linted
+- **Unit tests**: `pnpm test:unit` (Vitest; behavioural tests on the playground physics in `src/lib/*Physics.ts`)
 - **Type checking**: `pnpm type-check` (TypeScript compiler check)
 - **Code formatting**: `pnpm format` (Prettier with write), `pnpm format:check` (check only)
 - **Search data generation**: `pnpm generate-search` (rewrites `public/search-index.json`, and fails the build when the lesson list and the filesystem disagree)
 - **Spell checking**: `pnpm spell` (cspell on TypeScript and markdown files)
 - **Prose linting**: `pnpm prose` (reading budget, title and heading length, sentence length, em dashes, banned constructions, quiz answer patterning). `--only=pid-control` checks one page, `--sentences` prints every over-length sentence in full, `--json` is machine-readable. A finding marked `(advisory)` does not fail the run
 - **Quiz answer keys**: `npx tsx scripts/quiz-shuffle.ts --all` rotates a patterned answer key without changing any option's text
-- **Full test suite**: `pnpm test` (runs format:check + lint + type-check + build)
+- **Full test suite**: `pnpm test` (runs format:check + lint + type-check + test:unit + build)
 
 Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
 
@@ -188,7 +197,8 @@ reintroduce them.
 - **`src/components/shell/Topbar.tsx`**: Breadcrumb, search affordance, and the course-wide derived completion count.
 - **`src/components/shell/SearchPalette.tsx`**: ⌘K palette (cmdk + lazy MiniSearch).
 - **`src/contexts/ShellContext.tsx`**: `navOpen` / `searchOpen` / `scrollPct` / `mainRef`. Owns ⌘K and Escape.
-- **`src/components/PageTemplate.tsx`**: Lesson frame — outline rail + article. Props: `title`, `emphasis`, `lede`, `needs`, `branch`, `time`.
+- **`src/components/PageTemplate.tsx`**: Lesson frame — outline rail + article. Props: `title`, `lede`, `needs`, `branch`, `time`, and `slug` for a page whose title differs from its `lessons.ts` title (the lesson number is looked up by title otherwise). Every lesson page also exports `metadata = lessonMetadata("/slug")` for its tab title.
+- **`src/components/lesson/PairedLesson.tsx`**: the Tuner X ↔ code bridge. `kind="code"` on a Workshop 1 page links its code lesson; `kind="tuner"` on a code page links back.
 
 #### Search System
 
@@ -209,7 +219,7 @@ reintroduce them.
 #### Lesson vocabulary
 
 Building blocks for lesson bodies. Prefer these over hand-rolled markup — they
-are what keeps 29 pages looking like one site.
+are what keeps every lesson looking like one site.
 
 - **`src/components/lesson/LessonSection.tsx`**: A numbered step. `id` + `title`. The number is a CSS counter (`.sec-num`), never a prop — inserting a section renumbers the rest for free.
 - **`src/components/lesson/Prose.tsx`**: `<Prose>`, `<ProseBlock>`, `<Split>`, `<MarginNote>`, `<WatchOut>`, `<Mark>`.
@@ -292,7 +302,7 @@ term; add a term there, not to a page.
 August 2026 — `frc5712.com/planner` is served from a separate repository. The
 route, its ten components, four hooks and four lib modules (~5,100 lines) are
 gone, and nothing here linked to them. Don't reintroduce it, and don't confuse
-it with `/pathplanner`, which is lesson 26 and stays.
+it with `/pathplanner`, which is a lesson and stays.
 
 **Retired slugs, kept as 308 redirects in `next.config.ts`** — they're printed
 on old slides: `/logging-options` → `/logging-implementation`,
@@ -333,7 +343,7 @@ section of `/mechanisms`, next to the classes they own, because
 - **File Naming**: kebab-case for routes, PascalCase for components
 - **Import Alias**: `@/*` maps to `src/*`
 - **Component Structure**: Functional components with TypeScript interfaces
-- **Styling**: Tailwind utility classes plus the design tokens in `globals.css`. Use template literals for conditional classNames (e.g., ``className={`p-4 ${isOpen ? "px-6" : "px-2"}`}``). The `cn()` utility from `@/lib/utils` is reserved for UI primitives only (`Box.tsx`, `button.tsx`, `animated-theme-toggler.tsx`).
+- **Styling**: Tailwind utility classes plus the design tokens in `globals.css`. Use template literals for conditional classNames (e.g., ``className={`p-4 ${isOpen ? "px-6" : "px-2"}`}``). The `cn()` utility from `@/lib/utils` is reserved for UI primitives only (`Box.tsx`, `animated-theme-toggler.tsx`).
 - **Colour**: **never hard-code a Tailwind colour scale.** `text-slate-600`, `bg-blue-50`, `border-primary-200` and friends were swept out entirely and the scales are no longer registered — they will silently render as nothing. Use the tokens: surfaces `--bg` / `--bg2` / `--bg3`, text `--tx` / `--tx2` / `--tx3`, rules `--rule` / `--rule-soft`, and `--accent` (+ `--accent-ink`, `--accent-soft`). Signals are `--ok` and `--err` only. **One accent hue** — if something needs to stand out and isn't the primary action, use a mono micro-label, not a second colour.
 - **Radius & elevation**: Tailwind's `--radius-*` and `--shadow-*` scales are redefined in `@theme` to the design's near-square corners and near-flat shadows. `rounded-lg` is 3px here. Don't fight it with arbitrary values.
 - **Navigation**: Client-side routing with active state management
@@ -465,3 +475,13 @@ Invoke the `@agent-design-review` subagent for thorough design validation when:
 - Completing significant UI/UX features
 - Before finalizing PRs with visual changes
 - Needing comprehensive accessibility and responsiveness testing
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

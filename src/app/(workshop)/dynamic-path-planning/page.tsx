@@ -1,207 +1,270 @@
 import PageTemplate from "@/components/PageTemplate";
+import Quiz from "@/components/Quiz";
 import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
 
+export const metadata = lessonMetadata("/dynamic-path-planning");
+
+/**
+ * Written against Workshop-Code `swerve-pathfinding`, one commit on top of
+ * `swerve-pathplanner`. It reuses `followPath` from /pathplanner and adds
+ * `pathfindTo`, which drives PathPlannerLib's `Pathfinding` (LocalADStar) from
+ * a Commands v3 coroutine.
+ *
+ * The route is planned once. PathPlannerLib replans inside its own
+ * PathfindingCommand, which is built on the other command framework, so this
+ * page does not teach replanning. The replan-policy table that used to be
+ * here described code nobody could run.
+ */
 export default function DynamicPathPlanning() {
   return (
     <PageTemplate
-      title="Dynamic Path Planning"
-      lede="A preplanned path assumes a known start and a mostly known field. Dynamic planning starts from the current vision-corrected pose, finds a collision-free route to a target, and can replace that route when the field changes."
+      title="Pathfinding"
+      lede="A drawn path starts where you drew it. Pathfinding starts wherever the robot is and searches a grid of the field for a way around the obstacles. The route goes to the same follower."
       needs={[
-        <>Vision measurements accepted into drivetrain odometry.</>,
-        <>A basic and profiled drive-to-point command that finish reliably.</>,
-        <>The PathPlanner field model and navigation grid from Workshop 4.</>,
+        <>
+          <code>followPath</code> and the Leave Start Path auto from{" "}
+          <strong>PathPlanner</strong>, working in simulation.
+        </>,
+        <>A pose you trust, from odometry or from vision.</>,
       ]}
-      time="7 minutes"
+      branch="swerve-pathfinding"
+      time="15 minutes"
     >
-      <Split>
-        <KeyConceptSection
-          description={[
-            "The planner chooses geometry around obstacles. The follower turns that geometry into motion. The pose estimator tells both where the robot really is.",
-            "Replanning is a decision, not a reflex. A small pose correction should not throw away a good route; a blocked corridor or large deviation should.",
-          ]}
-          concept="Estimate, plan, follow, validate, and replan only when the current route is no longer safe or useful."
-        />
-        <MarginNote label="INTEGRATION BOUNDARY">
-          PathPlanner documents its AD* pathfinder and dynamic-obstacle model,
-          but its published Java command examples still target Commands v2. Keep
-          the Commands v3 adapter isolated; do not mix v2 command types into
-          this project.
-        </MarginNote>
-      </Split>
-
-      <LessonSection id="five-parts" title="The five parts">
-        <FigureGrid
-          items={[
-            {
-              label: "1 · Estimate",
-              term: "Current pose",
-              body: "Swerve odometry supplies smooth motion; vision corrects drift. Reject stale or implausible measurements before planning.",
-            },
-            {
-              label: "2 · Model",
-              term: "Obstacles",
-              body: "The navigation grid describes fixed blocked space. Runtime detections add temporary obstacle bounds.",
-            },
-            {
-              label: "3 · Search",
-              term: "Route",
-              body: "The planner searches from the current translation to the goal and refines the path while keeping clear of blocked cells.",
-            },
-            {
-              label: "4 · Follow",
-              term: "Motion",
-              body: "A profiled follower tracks the route within velocity and acceleration limits. Final heading can be handled separately from travel direction.",
-            },
-            {
-              label: "5 · Validate",
-              term: "Replan decision",
-              body: "Watch route clearance, pose error, and target validity. Replace the route only when a defined condition crosses its threshold.",
-            },
-          ]}
-        />
-      </LessonSection>
-
       <LessonSection id="navigation-grid" title="The navigation grid">
         <p>
-          The grid marks where the robot center may travel after accounting for
-          the full bumper footprint. Inflate fixed obstacles by the robot&apos;s
-          half-width plus a margin; otherwise a centerline that looks clear can
-          still sweep a bumper through field structure.
+          The PathPlanner app wrote <code>deploy/pathplanner/navgrid.json</code>{" "}
+          the first time it opened the project. It splits the field into 0.3 m
+          squares and marks each one blocked or open. Open means the{" "}
+          <em>center</em> of the robot can pass through without the bumpers
+          touching anything.
         </p>
-        <ul className="ml-5 list-disc space-y-2">
-          <li>
-            Keep walls, stages, and protected structures in the static grid.
-          </li>
-          <li>
-            Represent movable robots or game pieces as runtime obstacles only
-            when the sensor can support that claim.
-          </li>
-          <li>
-            Leave deliberate corridors wider than the robot&apos;s theoretical
-            minimum.
-          </li>
-          <li>
-            Version the grid with the field layout so an old obstacle map cannot
-            silently ship.
-          </li>
-        </ul>
-        <Box
-          variant="alert-warning"
-          tag="SAFETY"
-          title="Unknown space is not automatically free space"
-        >
-          <p>
-            A camera losing sight of an obstacle does not prove it disappeared.
-            Give runtime obstacles a deliberate confidence and expiration
-            policy, then slow or stop when the planner cannot establish a safe
-            route.
-          </p>
-        </Box>
-      </LessonSection>
-
-      <LessonSection id="replan-policy" title="Write the replan policy">
         <p>
-          Choose measurable triggers rather than &quot;replan whenever it looks
-          wrong.&quot;
+          That is why the default grid blocks a wide band around the hub, not
+          just the hub. The margin is the bumper. Open the{" "}
+          <strong>Navigation Grid</strong> page in the app to see it. Leave it
+          as shipped until a run shows the bumper reaching an obstacle.
         </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[620px] text-left text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="py-2 pr-4">Signal</th>
-                <th className="py-2 pr-4">Replan when</th>
-                <th className="py-2">Do not replan for</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">Route clearance</td>
-                <td className="py-2 pr-4">
-                  A trusted obstacle intersects the remaining corridor.
-                </td>
-                <td className="py-2">An obstacle behind the robot.</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">Cross-track error</td>
-                <td className="py-2 pr-4">
-                  The robot remains outside a tolerance for a defined time.
-                </td>
-                <td className="py-2">One noisy pose sample.</td>
-              </tr>
-              <tr>
-                <td className="py-2 pr-4">Goal</td>
-                <td className="py-2 pr-4">
-                  The requested target moves or becomes invalid.
-                </td>
-                <td className="py-2">
-                  A new goal equal to the current goal within tolerance.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <Box variant="concept" title="Add hysteresis and a short delay">
-          <p>
-            Use a stricter threshold to trigger replanning than to remain on the
-            new route, and wait briefly before another replan. Without those two
-            guards, noise can make the planner alternate between equally good
-            routes every loop.
-          </p>
-        </Box>
       </LessonSection>
 
-      <LessonSection id="final-approach" title="Travel, not alignment">
+      <LessonSection id="find-a-route" title="Find a route, then follow it">
         <p>
-          Global planning is good at finding a clear route across the field. It
-          is not the best tool for the last few centimeters at a scoring
-          station. Plan to a staging pose with clearance, then hand control to
-          the profiled drive-to-point command for the final approach. That keeps
-          obstacle avoidance and precision alignment independently testable.
+          The search, AD*, runs on its own thread from the moment the robot
+          program starts. A command hands it a start and a goal, waits for a
+          route, and drives it with <code>followPath</code>.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
+          title="pathfindTo: plan once, then follow"
+          code={`public Command pathfindTo(Pose2d goal) {
+  return run(coroutine -> {
+        Pathfinding.setStartPosition(getPose().getTranslation());
+        Pathfinding.setGoalPosition(goal.getTranslation());
+
+        if (coroutine
+            .waitUntil(() -> Pathfinding.isNewPathAvailable(), Seconds.of(1.0))
+            .timedOut()) {
+          stopDriving();
+          return;
+        }
+
+        PathPlannerPath route =
+            Pathfinding.getCurrentPath(
+                pathfindConstraints, new GoalEndState(0.0, goal.getRotation()));
+        if (route == null) {
+          stopDriving(); // the search found no route
+          return;
+        }
+
+        coroutine.await(followPath(route));
+      })
+      .whenCanceled(() -> stopDriving())
+      .named("PathfindTo");
+}`}
+        />
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              Every way out of this command sends zero speed first. A search
+              that never answers and a search that answers with nothing both end
+              the command. Stopping before the <code>return</code> means a robot
+              that was moving does not keep its last request.
+            </p>
+            <p>
+              <code>Pathfinding.ensureInitialized()</code> goes in the{" "}
+              <code>DriveMechanism</code> constructor. It loads the grid and
+              starts the search thread at boot, so the first button press does
+              not pay for it.
+            </p>
+          </div>
+          <MarginNote label="Planned once">
+            The route is fixed when the command starts. A robot pushed off it is
+            pulled back by the follower, not rerouted. Rerouting lives in
+            PathPlannerLib&apos;s own pathfinding command, which this project
+            cannot run.
+          </MarginNote>
+        </Split>
+      </LessonSection>
+
+      <LessonSection id="bind-it" title="Bind it to a button">
+        <p>
+          Hold A in teleop and the robot drives itself to the middle of the
+          neutral zone, around the hub. Let go and the command is canceled,{" "}
+          <code>whenCanceled</code> sends the zero, and the joystick default
+          takes the drivetrain back.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          title="Hold A to pathfind"
+          code={`driver.a().whileTrue(drivetrain.pathfindTo(new Pose2d(7.5, 4.0, Rotation2d.ZERO)));`}
+        />
+        <p>
+          The goal is blue-origin, like every pose on this robot. Pathfinding is
+          good at crossing the field and poor at the last few centimeters,
+          because it picks its own heading on the way in. Send it to a pose near
+          the target, then finish with <strong>Drive to Point</strong>.
         </p>
       </LessonSection>
 
-      <LessonSection
-        id="test-matrix"
-        title="Test failures before testing speed"
-      >
+      <LessonSection id="failure-shapes" title="Three failure shapes">
+        <FigureGrid
+          cols={3}
+          items={[
+            {
+              label: "Nothing moves",
+              term: "No route",
+              body: (
+                <>
+                  The wait timed out or the route came back empty. A goal deep
+                  inside a blocked area, or a grid painted solid by mistake.
+                </>
+              ),
+            },
+            {
+              label: "Clips the hub",
+              term: "Grid too thin",
+              body: (
+                <>
+                  The center stayed on open squares and the bumper still hit.
+                  The robot is wider than the grid&apos;s margin. Paint more
+                  squares blocked around that obstacle.
+                </>
+              ),
+            },
+            {
+              label: "Odd start",
+              term: "A bad pose",
+              body: (
+                <>
+                  The route begins somewhere the robot is not. The search trusts{" "}
+                  <code>getPose()</code>, so fix odometry or vision before the
+                  grid.
+                </>
+              ),
+            },
+          ]}
+        />
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            <strong>Static route:</strong> start and goal with no runtime
-            obstacles.
+            In simulation, run the <strong>Leave Start Path</strong> auto so the
+            robot ends where your path does, on the near side of the hub.
           </li>
           <li>
-            <strong>Blocked corridor:</strong> add one obstacle and confirm the
-            route clears the inflated boundary.
+            Switch to <strong>Teleop</strong>, enable, and hold A. Watch{" "}
+            <code>Drivetrain/Pose</code> on the 2D field in AdvantageScope.
           </li>
-          <li>
-            <strong>Obstacle appears:</strong> introduce it after motion begins
-            and verify one controlled replan.
-          </li>
-          <li>
-            <strong>Obstacle disappears:</strong> verify the current safe route
-            is not abandoned merely because a shorter one becomes available.
-          </li>
-          <li>
-            <strong>Vision loss:</strong> confirm the system slows, stops, or
-            continues under the written confidence policy.
-          </li>
-          <li>
-            <strong>No route:</strong> verify the command finishes or fails
-            safely instead of driving through blocked space.
-          </li>
+          <li>Drive back with the sticks, hold A again, and let go halfway.</li>
         </ol>
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              A route that passes beside the hub, never through it, and ends
+              within a few centimeters of (7.5, 4.0), facing down the field.
+            </li>
+            <li>A stop at the goal that stays stopped while A is held.</li>
+            <li>
+              Letting go halfway stops the robot at once, and the sticks drive
+              it again.
+            </li>
+          </ul>
+        </Box>
         <DocumentationButton
           href="https://pathplanner.dev/pplib-pathfinding.html"
-          title="PathPlanner: Path finding and dynamic obstacles"
+          title="PathPlanner: Pathfinding"
           icon={<BookOpen className="h-5 w-5" />}
         />
       </LessonSection>
+
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question: "What does an open square on the navigation grid mean?",
+            options: [
+              "The whole robot fits inside that square",
+              "The center of the robot can pass through it without the bumpers hitting anything",
+              "A camera has seen that square recently",
+              "No robot has driven there yet this match",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "The search plans for one point, the robot's center. The bumper is accounted for by blocking a margin around every obstacle, so the default grid blocks far more than the hub itself.",
+          },
+          {
+            id: 2,
+            question:
+              "pathfindTo times out waiting for a route. Why does it call stopDriving() before return?",
+            options: [
+              "The scheduler requires a request before a command can end",
+              "return cancels the command, which then sends its own zero",
+              "Pathfinding needs a stopped robot to search again",
+              "The robot may still be moving, and its last request stays latched after the command ends",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "Ending a command sends nothing to the motors. If the drivetrain was moving when the command took it, that speed stays applied. Stopping first is the rule for every way out of a routine.",
+          },
+          {
+            id: 3,
+            question:
+              "Someone bumps the robot halfway along a found route. What happens?",
+            options: [
+              "The follower pulls it back toward the same route, because the route was planned once",
+              "AD* plans a new route from the new pose",
+              "The command cancels and the sticks take over",
+              "The robot stops and waits for the button again",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "pathfindTo asks for one route when it starts and then hands it to followPath. The follower corrects toward that plan. Rerouting mid-drive is something this command does not do.",
+          },
+          {
+            id: 4,
+            question:
+              "You need the robot square to a scoring target within 2 cm. What is the better plan?",
+            options: [
+              "Pathfind straight to the target pose",
+              "Shrink the grid squares until the route is precise enough",
+              "Pathfind to a pose near the target, then finish with Drive to Point",
+              "Raise the follower gains until it lands on the target",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Pathfinding chooses its own heading on the way in, so it is weak at the final line-up. Use it to cross the field, then hand the last short move to a command built for precision.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

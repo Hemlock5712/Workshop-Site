@@ -6,18 +6,21 @@ import Quiz from "@/components/Quiz";
 import { Split } from "@/components/lesson/Prose";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/adding-commands");
 
 /**
- * Written once, read twice — see `src/data/mechanisms.ts`.
+ * Written once, read twice. See `src/data/mechanisms.ts`.
  *
  * "Three commands on the arm" and "Repeat on the flywheel" were the same
  * section twice, and the second one opened by telling the reader to repeat all
  * of it. They are one section now, and which mechanism it is about comes from
  * the question at the top.
  *
- * The binding section stays shared and stays last: `MyTeleop` is one file
- * that names both mechanisms, so it is not a fork, and it is the reason the
- * command section ends by sending the reader back to write the other one.
+ * Bindings are not taught here. `/opmodes` is the next lesson and owns
+ * `whileTrue` and `whileFalse`, so nothing on this page, quiz included, asks
+ * about them.
  */
 export default function AddingCommands() {
   return (
@@ -31,13 +34,7 @@ export default function AddingCommands() {
           and <code>Flywheel</code>.
         </>,
         <>
-          Lambdas, method references, and <code>private</code> from{" "}
-          <strong>Java Basics</strong>.
-        </>,
-        <>
-          <code>robot.arm</code> and <code>robot.flywheel</code> from{" "}
-          <strong>Mechanisms</strong>. The bindings below reach the mechanisms
-          through that object.
+          Lambdas and <code>private</code> from <strong>Java Basics</strong>.
         </>,
       ]}
       branch="mech-2-Commands"
@@ -145,8 +142,8 @@ import org.wpilib.command3.Mechanism;`}
             <code>runRepeatedly</code>, which makes it for you every loop.
           </li>
           <li>
-            <code>runRepeatedly</code> comes from <code>Mechanism</code>, which
-            is what the class extends.
+            <code>runRepeatedly</code> comes from <code>Mechanism</code>, the
+            interface the class implements.
           </li>
           <li>
             <code>.named(...)</code> gives the command a name. Names show up in
@@ -156,12 +153,16 @@ import org.wpilib.command3.Mechanism;`}
         </ul>
 
         <p>
-          <code>() -&gt; stopMotor()</code> is the same as{" "}
-          <code>() -&gt; stopMotor()</code>, pointing at the private helper from
-          last lesson. Every name ends in <code>(hold)</code> because{" "}
-          <code>runRepeatedly</code> has no exit: these run until something else
-          claims the mechanism. Even <code>stop()</code> holds, sending zero
-          every loop rather than once.
+          <code>() -&gt; stopMotor()</code> in <code>stop()</code> works the
+          same way, calling the private helper from last lesson. Every name ends
+          in <code>(hold)</code> because <code>runRepeatedly</code> has no exit:
+          these run until something else claims the mechanism. Even{" "}
+          <code>stop()</code> holds, sending zero every loop rather than once.
+          It exists because{" "}
+          <a href="/running-program#latched" className="underline">
+            canceling a command does not stop the motor
+          </a>
+          .
         </p>
 
         <Box variant="alert-warning" title="A hold never finishes">
@@ -270,16 +271,16 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 3,
             question:
-              "You bind driver.a().whileTrue(robot.flywheel.runFast()) and leave the whileFalse off. You release A. What happens?",
+              "A routine is written Command.sequence(robot.arm.runSlow(), robot.flywheel.runFast()). What happens when it runs?",
             options: [
-              "Nothing changes, because whileTrue only ever schedules",
-              "The command is canceled, nothing commands the flywheel afterwards, and the wheel keeps spinning at 6 V",
-              "The build fails: whileTrue requires a matching whileFalse",
-              "The flywheel stops: releasing the button cancels the command, and canceling stops the motor",
+              "Both commands run at once, because they need different mechanisms",
+              "The sequence skips runSlow, because a hold has no ending to wait for",
+              "The arm runs for one loop, then the flywheel takes over",
+              "The arm pushes at 3 V forever and the flywheel never starts, because runSlow is a hold and never finishes",
             ],
-            correctAnswer: 1,
+            correctAnswer: 3,
             explanation:
-              "whileTrue does cancel on the release, so the command really does end. Canceling is not stopping. Nothing is commanding the flywheel afterwards and nothing sent a zero, so Phoenix keeps applying the last 6 V request. whileFalse(robot.flywheel.stop()) is what sends zero.",
+              "A sequence starts each step when the one before it finishes, and a runRepeatedly command never does. The fix goes where the command is used, such as robot.arm.runSlow().until(someCondition). The (hold) in the name is there so the log points at the step that stuck.",
           },
         ]}
       />

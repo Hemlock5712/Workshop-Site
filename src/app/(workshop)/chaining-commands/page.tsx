@@ -4,6 +4,9 @@ import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/chaining-commands");
 
 /**
  * Lesson 16, and no longer "advanced". It left Workshop 6 because
@@ -40,6 +43,13 @@ import Quiz from "@/components/Quiz";
  * which is not a failure a student can see; a latched 75 RPS keeps the
  * flywheel spinning, and `Flywheel.stop()` still exists to be the fix. There
  * is no `Arm.stop()` to point at any more and the page does not invent one.
+ *
+ * October 2026 cut that explanation to a link. Cancel-is-not-stop is taught
+ * once, on `/running-program`, and this page only says what to do about it.
+ * The same pass added the line that a sequence is a coroutine awaiting each
+ * member (`SequentialGroup.run()` is that loop), so `await` is not new on
+ * `/coroutines`, and swapped a quiz question on unit types for one on what
+ * the last member does to a group.
  *
  * The group is called `spinUpWhenReady` because `/finish-conditions` builds
  * that same routine as a coroutine, under that name, on `mech-4-ReadingState`.
@@ -150,6 +160,11 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
         />
 
         <p>
+          A sequence is itself a small coroutine. Its body is one loop that
+          calls <code>coroutine.await(member)</code> on each member in turn, and
+          Coroutines writes that call by hand.
+        </p>
+        <p>
           <code>Command.sequence(...)</code> returns a builder rather than a{" "}
           <code>Command</code>. <code>.named(&quot;...&quot;)</code> is what
           finishes it, and leaving it off will not compile. Name the group after
@@ -204,13 +219,16 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
 
       <LessonSection id="bind-the-group" title="Bind the group">
         <p>
-          A group is a command, so it binds like one, and it binds the same way
-          a single command does. <code>whileTrue</code> runs the group while the
-          button is held and cancels it on release.
-        </p>
-        <p>
-          Canceling a group is not the same as stopping the hardware, so the
-          release has to send a stop of its own.
+          A group is a command, so it binds the same way a single command does.{" "}
+          <code>whileTrue</code> runs the group while the button is held and
+          cancels it on release. Canceling sends nothing to the motors, as{" "}
+          <a
+            href="/running-program#latched"
+            className="text-[var(--accent)] underline hover:text-[var(--accent)]"
+          >
+            Hardware Simulation
+          </a>{" "}
+          showed, so the release sends a stop of its own.
         </p>
 
         <CodeBlock
@@ -219,27 +237,11 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           code={`driver.y().whileTrue(spinUpWhenReady).whileFalse(robot.flywheel.stop());`}
         />
 
-        <Box variant="alert-warning" title="Canceling never stops the motor">
-          <p>
-            A canceled command leaves the mechanism with nothing commanding it,
-            and nothing sends zero on the way out. The last request is still
-            latched in the motor controller, so Phoenix goes on closing the loop
-            on it.
-          </p>
-          <p>
-            What that costs depends on the request. The arm holds the angle it
-            was last given, which is usually what you wanted. The flywheel holds
-            75 rotations per second, which is not. A group that ends with a
-            speed still commanded needs a stop: a <code>whileFalse</code>{" "}
-            binding, or a stop step of its own.
-          </p>
-        </Box>
-
         <p>
-          Whether a group ends at all comes down to its last member. End on a
-          hold and the group is a hold. End on a step and the group finishes by
-          itself, with nothing left commanding the mechanism. Then the stop
-          belongs inside the group.
+          The last member decides whether a group ends at all. End on a hold and
+          the group is a hold. End on a step and the group finishes by itself,
+          and the last request stays latched, so the stop belongs inside the
+          group.
         </p>
       </LessonSection>
 
@@ -298,8 +300,12 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
             </thead>
             <tbody style={{ color: "var(--tx2)" }}>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Y does nothing</td>
-                <td className="px-3 py-2">A member with no ending.</td>
+                <td className="px-3 py-2">
+                  The arm moves and the flywheel never starts
+                </td>
+                <td className="px-3 py-2">
+                  A member with no ending ahead of it.
+                </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">The group will not compile</td>
@@ -345,16 +351,16 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           {
             id: 2,
             question:
-              "Why does .withTimeout(Seconds.of(2.0)) refuse a plain 2.0?",
+              "You bind Y to Command.sequence(stepA, stepB, robot.flywheel.runFast()), where stepA and stepB each end on a timeout. You hold Y for ten seconds. When does the group end?",
             options: [
-              "The scheduler needs the value at compile time",
-              "It accepts a double, and Seconds.of(...) is a style preference",
-              "It takes a Time, a WPILib unit type, so seconds and milliseconds cannot be mixed up",
-              "Timeouts must be whole numbers of seconds",
+              "As soon as stepA and stepB have both finished",
+              "After the first member ends, because a sequence only waits on its first member",
+              "When you release Y. The last member is a hold, so the group is a hold too",
+              "Never. A sequence that contains a hold keeps running after the button is released",
             ],
             correctAnswer: 2,
             explanation:
-              "WPILib uses unit types for quantities like this. Seconds.of(2.0) produces a Time, which is what the method signature asks for. It needs `import static org.wpilib.units.Units.Seconds;` at the top of the file.",
+              "A sequence runs its members in order and finishes when its last member finishes. runFast() is a hold, so the group never ends by itself, and whileTrue cancels it when Y comes up. End the list on a step instead and the group ends on its own, with the last request still latched in the motor controller.",
           },
           {
             id: 3,

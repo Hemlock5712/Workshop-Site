@@ -233,15 +233,15 @@ export const armBOMData: BOMItem[] = [
     is3DPrinted: false,
   },
   {
-    partDescription: '6 Gauge 12" Battery Connector',
+    partDescription: "SB50 to Alligator Clips Adapter Cable (12 AWG)",
     quantity: 1,
     vendor: "AndyMark",
-    partNumber: "am-4483",
-    pricePerUnit: 21.0,
+    partNumber: "am-2561",
+    pricePerUnit: 28.0,
     productLink:
-      "https://andymark.com/products/6-gauge-12-inch-battery-cable?variant=44497405870252",
+      "https://www.andymark.com/products/anderson-power-connector-with-two-alligator-clips",
     notes:
-      "You will have to cut off the crimped ends and trim the wires to insert them into the WAGO connectors.",
+      "Plugs into the SB50 on a standard FRC battery cable. Cut the alligator clips off and strip the ends to insert them into the WAGO connectors.",
     is3DPrinted: false,
   },
   {

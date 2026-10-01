@@ -9,6 +9,11 @@ import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
+import PairedLesson from "@/components/lesson/PairedLesson";
+import Link from "next/link";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/mechanism-setup");
 
 /**
  * Written once, read twice — see `src/data/mechanisms.ts`.
@@ -42,9 +47,10 @@ export default function MechanismSetup() {
         </>,
         <>No robot program running. Tuner X owns the bus here.</>,
       ]}
-      time="11 minutes"
+      time="12 minutes"
     >
       <MechanismSelector />
+      <PairedLesson kind="code" to="/mechanisms" />
 
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
         <p>
@@ -220,6 +226,16 @@ export default function MechanismSetup() {
             alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
             caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
           />
+          <p>
+            Leave <code>Sensor To Mechanism Ratio</code> at 1. The CANcoder sits
+            on the output shaft, so it already reads the arm. With a Pro license
+            you could pick <code>FusedCANcoder</code> or{" "}
+            <code>SyncCANcoder</code> instead, and then{" "}
+            <code>Rotor To Sensor Ratio</code> must be the gear reduction. If
+            you ever change a ratio, do it before you tune, because it changes
+            what every gain means. It is saved on the device, so Generate Code
+            includes it.
+          </p>
         </LessonSection>
       </Mech>
 
@@ -264,8 +280,8 @@ export default function MechanismSetup() {
             Make sure the mechanism is clear of obstacles. Blink the device
             first: voltage goes to a CAN ID, not to the one you meant. Start at
             1 volt and enable for about a second at a time. A Voltage Out
-            request runs until you stop it, into the hard stop if that is where
-            the mechanism is pointed.
+            request runs until you stop it. The bench arm keeps turning, and an
+            arm with hard stops drives into one.
           </p>
         </Box>
 
@@ -278,7 +294,15 @@ export default function MechanismSetup() {
             <Mech for="flywheel">
               flywheel TalonFX on <code>21</code>
             </Mech>{" "}
-            and set the control drop-down to <strong>Voltage Out</strong>.
+            and set the control drop-down to <strong>Voltage Out</strong>, the
+            same request your code sends in{" "}
+            <Link
+              href="/mechanisms#configs-and-requests"
+              className="underline font-medium"
+            >
+              Mechanisms
+            </Link>
+            .
           </li>
           <li>
             Enter <code>1 V</code>, click <strong>DISABLED</strong> to enable
@@ -315,6 +339,15 @@ export default function MechanismSetup() {
           </Mech>{" "}
           You are checking which way it goes, not how fast.
         </p>
+        <Mech for="flywheel" as="p">
+          The flywheel reads the motor&apos;s own sensor, so its positions and
+          speeds are motor rotations. Setting{" "}
+          <code>Sensor To Mechanism Ratio</code> in the Feedback configs to the
+          gear reduction would make them, and the gains, read at the wheel. This
+          course leaves it at 1 to keep things simple. If you do set it, set it
+          before you tune, because it changes what every gain means. It is saved
+          on the device, so Generate Code includes it.
+        </Mech>
 
         <VideoEmbed id="cDWF3bj1Juk" title="Motor test" />
       </LessonSection>

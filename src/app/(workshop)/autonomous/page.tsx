@@ -4,7 +4,17 @@ import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import { MarginNote, Split } from "@/components/lesson/Prose";
+import Quiz from "@/components/Quiz";
+import { lessonMetadata } from "@/lib/lessonMetadata";
 
+export const metadata = lessonMetadata("/autonomous");
+
+/**
+ * Written against Workshop-Code `swerve-autonomous`, one commit on top of
+ * `1-Swerve` that adds LeaveStartAuto. `/pathplanner` follows this lesson on
+ * `swerve-pathplanner` and replaces the timer with a drawn path, holding it
+ * against the three numbers measured here.
+ */
 export default function Autonomous() {
   return (
     <PageTemplate
@@ -13,26 +23,24 @@ export default function Autonomous() {
       needs={[
         <>
           A swerve robot you can drive, with a pose you trust, from{" "}
-          <strong>Swerve Calibration</strong>.
+          <strong>Swerve Drive Tuning</strong>.
         </>,
         <>
-          A route plan and a starting pose from <strong>PathPlanner</strong>.
-        </>,
-        <>
-          <code>Command.sequence</code> and <code>.withTimeout</code>, from{" "}
-          <strong>Command Composition</strong>.
+          <code>run(coroutine -&gt; ...)</code> and{" "}
+          <code>coroutine.wait(...)</code>, from <strong>Coroutines</strong>.
         </>,
         <>Three meters of clear floor and one person on the disable switch.</>,
       ]}
-      time="10 minutes"
+      branch="swerve-autonomous"
+      time="30 minutes"
     >
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            Nothing here is new syntax. Command Composition gave you{" "}
-            <code>Command.sequence</code>. Finish Conditions gave you the rule
-            that every step needs an ending. This lesson puts both inside an
-            OpMode and drives a real robot with them.
+            You have written an <code>@Autonomous</code> class once already:
+            Raise And Shoot, on <strong>Coroutines</strong>, ran the arm and
+            flywheel with no one holding a button. This one has the same shape
+            and drives the whole robot.
           </p>
           <p>
             The routine is a timed drive, and it is crude on purpose. A timed
@@ -41,10 +49,10 @@ export default function Autonomous() {
             where the robot ended up.
           </p>
         </div>
-        <MarginNote label="No chooser">
+        <MarginNote label="One class each">
           The driver station lists every <code>@Autonomous</code> class it finds
-          and builds the one you pick. Four routines, four classes. There is no{" "}
-          <code>SendableChooser</code> anywhere in this project.
+          and builds the one you pick. Four routines, four classes, and nothing
+          in <code>Robot.java</code> chooses between them.
         </MarginNote>
       </Split>
 
@@ -83,17 +91,13 @@ export default function Autonomous() {
 
       <LessonSection id="build-the-routine" title="Build the routine">
         <p>
-          The PathPlanner plan does not become code yet. Its published Java
-          examples target Commands v2, and pasting them into this project will
-          not compile. What carries over is the geometry: where the robot
-          starts, which way the first segment runs, and roughly how far.
-        </p>
-        <p>
           Everything gets built in the constructor, which runs the moment
           somebody picks the mode. The routine lives in a field because{" "}
           <code>end()</code> needs a reference to the command it cancels.
           Building a command sends no output, so the constructor is safe to run
-          while the robot is still disabled.
+          while the robot is still disabled. <code>start()</code> runs when the
+          mode is enabled, and <code>end()</code> runs when it stops for any
+          reason, a disable included.
         </p>
         <CodeBlock
           language="java"
@@ -115,22 +119,21 @@ public class LeaveStartAuto extends PeriodicOpMode {
   private final Command routine;
 
   public LeaveStartAuto(Robot robot) {
-    Command drive =
-        robot.drivetrain
-            .applyRequest(
-                () ->
-                    new SwerveRequest.RobotCentric()
-                        .withVelocityX(1.0)
-                        .withVelocityY(0.0)
-                        .withRotationalRate(0.0))
-            .withTimeout(Seconds.of(1.5));
+    // Robot-centric: X is the robot's own forward, so the starting heading sets the direction.
+    final var forward = new SwerveRequest.RobotCentric().withVelocityX(1.0); // meters per second
+    final var stopped = new SwerveRequest.RobotCentric(); // every speed is zero
 
-    Command stop =
-        robot.drivetrain
-            .applyRequest(() -> new SwerveRequest.RobotCentric())
-            .withTimeout(Seconds.of(0.1));
-
-    routine = Command.sequence(drive, stop).named("Leave Start");
+    routine =
+        robot
+            .drivetrain
+            .run(
+                coroutine -> {
+                  robot.drivetrain.setControl(forward);
+                  coroutine.wait(Seconds.of(1.5));
+                  robot.drivetrain.setControl(stopped);
+                })
+            .whenCanceled(() -> robot.drivetrain.setControl(stopped))
+            .named("Leave Start");
   }
 
   @Override
@@ -145,34 +148,33 @@ public class LeaveStartAuto extends PeriodicOpMode {
 }`}
         />
         <p>
-          A timeout is the only finish line available here.{" "}
+          A wait is the only finish line available here.{" "}
           <code>DriveMechanism</code> reports its pose, but nothing on it
           answers <em>am I there yet</em> the way{" "}
-          <code>robot.arm.isAtTarget()</code> did on Finish Conditions. Workshop
-          5 adds a command that measures against a field pose and finishes when
-          it arrives.
+          <code>robot.arm.isAtTarget()</code> did on Finish Conditions.{" "}
+          <strong>PathPlanner</strong>, the next lesson, replaces the wait with
+          a drawn path that knows where it ends.
         </p>
         <p>
           Two names go into this file and they do different jobs. The one in the
           annotation is what the driver station lists, so it is the one a driver
           reads under pressure. The one in <code>.named(...)</code> is what the
-          command is called in the log.
+          command is called in the scheduler and on the dashboard.
         </p>
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
-              The second step is the one people leave out.{" "}
+              The <code>stopped</code> request is the line people leave out.{" "}
               <code>setControl</code> latches a request: the drivetrain keeps
               applying it until something sends a different one. When a routine
-              ends, nothing does. This OpMode sets no default command, so
-              nothing is commanding the drivetrain afterwards, and the wheels
-              carry on at the last speed they were given.
+              ends, nothing does. This OpMode sets no default command, so the
+              wheels carry on at the last speed they were given.
             </p>
             <p>
-              In teleop the joystick default covers that. It is set in{" "}
-              <code>TeleopOpMode</code>, and bindings belong to the mode that
-              made them, so no such default exists in this class. A zero-speed
-              step is what stops the robot.
+              It is sent twice for that reason. The last line of the coroutine
+              covers a routine that runs to the end. A cancel stops the
+              coroutine where it is and skips that line, so{" "}
+              <code>whenCanceled</code> sends the same zero.
             </p>
           </div>
           <MarginNote label="Do the arithmetic">
@@ -183,11 +185,10 @@ public class LeaveStartAuto extends PeriodicOpMode {
           </MarginNote>
         </Split>
         <p>
-          The robot&apos;s field position is never set in this project, so the
-          starting pose you wrote down in PathPlanner appears nowhere in the
-          code. <code>Drivetrain/Pose</code> starts wherever odometry left off.
+          The robot&apos;s field position is never set in this routine.{" "}
+          <code>Drivetrain/Pose</code> starts wherever odometry left off.
           Restart the robot code before a measured run and it reads near zero,
-          which makes the distance easy to read straight off the log.
+          which makes the distance easy to read straight off AdvantageScope.
         </p>
       </LessonSection>
 
@@ -222,9 +223,9 @@ public class LeaveStartAuto extends PeriodicOpMode {
           <li>
             <strong>Measured, three times.</strong> Tape the floor at the front
             edge before and after each run, starting from the same mark every
-            time. The taped distance and the end of <code>Drivetrain/Pose</code>{" "}
-            in the log should agree within a few centimeters. The three runs
-            should land inside about ten.
+            time. The taped distance and the last <code>Drivetrain/Pose</code>{" "}
+            in AdvantageScope should agree within a few centimeters. The three
+            runs should land inside about ten.
           </li>
           <li>
             <strong>Disabled partway.</strong> Hit disable about a second into
@@ -236,7 +237,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
         <p>
           A second and a half is a small slice of an autonomous period. A robot
           that sits still for the rest of it has not failed. That is the stop
-          step doing its job.
+          doing its job.
         </p>
       </LessonSection>
 
@@ -251,12 +252,13 @@ public class LeaveStartAuto extends PeriodicOpMode {
           items={[
             {
               label: "Nothing moves",
-              term: "Stuck on a step",
+              term: "Stuck on a wait",
               body: (
                 <>
-                  Selected, enabled, sitting still. A step with no ending holds
-                  the sequence there forever. Look for a request with no{" "}
-                  <code>.withTimeout(...)</code> on it.
+                  Selected, enabled, sitting still. A wait with no time limit
+                  holds the routine there forever. Every{" "}
+                  <code>coroutine.waitUntil(...)</code> in a routine takes a
+                  timeout.
                 </>
               ),
             },
@@ -265,9 +267,9 @@ public class LeaveStartAuto extends PeriodicOpMode {
               term: "A latched request",
               body: (
                 <>
-                  The timeout expires and the robot keeps rolling. Nothing
-                  zeroes the drivetrain, so the last request stays applied. The
-                  zero-speed step is the fix.
+                  The wait ends and the robot keeps rolling. Nothing zeroes the
+                  drivetrain, so the last request stays applied. Send{" "}
+                  <code>stopped</code> on every way out.
                 </>
               ),
             },
@@ -276,7 +278,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
               term: "Heading or voltage",
               body: (
                 <>
-                  It moves, and not where you drew it. Robot-centric X follows
+                  It moves, and not where you aimed it. Robot-centric X follows
                   the starting heading, and a tired battery shortens a timed
                   step by a surprising amount.
                 </>
@@ -291,17 +293,17 @@ public class LeaveStartAuto extends PeriodicOpMode {
           does not take <code>Robot</code>.
         </p>
         <p>
-          Read the log before guessing. <code>Drivetrain/Pose</code> at the end
-          of a run separates a robot that went the wrong way from one that never
-          went anywhere.
+          Read <code>Drivetrain/Pose</code> before guessing. Its value at the
+          end of a run separates a robot that went the wrong way from one that
+          never went anywhere.
         </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
           Run the routine three times from the same tape mark, on the floor,
-          with logging on. You are done when the three runs land on top of each
-          other.
+          with AdvantageScope connected. You are done when the three runs land
+          on top of each other.
         </p>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
@@ -313,7 +315,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
               The robot leaving in the direction its front bumper was pointing.
             </li>
             <li>
-              A full stop that stays stopped, with no creep after the timeout.
+              A full stop that stays stopped, with no creep after the wait.
             </li>
             <li>
               Three end poses in <code>Drivetrain/Pose</code> within about ten
@@ -322,10 +324,10 @@ public class LeaveStartAuto extends PeriodicOpMode {
           </ul>
         </Box>
         <p>
-          Write down the distance the tape measured, the end pose out of the
-          log, and the timeout that produced them. Workshop 5 replaces that
-          timeout with a field pose the command can steer to. These three
-          numbers are what you will hold the new routine against.
+          Write down the distance the tape measured, the end pose, and the wait
+          that produced them. PathPlanner replaces that wait with a path drawn
+          from the same tape mark. These three numbers are what you will hold
+          the path against.
         </p>
         <p>
           A second routine is a second file. Copy this one, change the
@@ -334,6 +336,66 @@ public class LeaveStartAuto extends PeriodicOpMode {
           <code>Robot.java</code> chooses between the two.
         </p>
       </LessonSection>
+      <Quiz
+        questions={[
+          {
+            id: 1,
+            question:
+              "You delete the setControl(stopped) line after the wait and run Leave Start on blocks. What do the wheels do after 1.5 seconds?",
+            options: [
+              "They stop, because the command ends when the coroutine returns",
+              "They stop, because autonomous sets a default command",
+              "They keep turning at 1 m/s, because the last request stays latched and nothing replaces it",
+              "They slow down gradually as the battery sags",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "The coroutine returns and the command ends, and ending a command sends nothing to the motors. This OpMode sets no default, so nothing claims the drivetrain afterwards. The zero-speed request is what replaces the moving one.",
+          },
+          {
+            id: 2,
+            question:
+              "The robot starts the run facing the side wall instead of down the field. Which way does it drive?",
+            options: [
+              "Toward the side wall, because RobotCentric X is the robot's own forward",
+              "Down the field, because the pose is measured from the blue corner",
+              "Away from the driver station, because forward flips with alliance",
+              "It does not move until the heading is reset",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "RobotCentric means the velocities are relative to the robot's front bumper. Point the robot at the side wall and X is toward the side wall. The starting heading on the tape mark is what aims the routine.",
+          },
+          {
+            id: 3,
+            question:
+              "You want a second routine that drives 2 meters. What do you do?",
+            options: [
+              "Add a second @Autonomous annotation to LeaveStartAuto",
+              "Copy the class, give it a new @Autonomous name and new numbers, and it appears on the mode list",
+              "Add an if statement to LeaveStartAuto that picks a wait from the match clock",
+              "Register the new class in the Robot constructor",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "The driver station lists every @Autonomous class it finds. One routine is one class, and nothing registers it or chooses between them in code. The name in the annotation is the one a driver reads off the list.",
+          },
+          {
+            id: 4,
+            question:
+              "You hit disable one second into the drive. Which method stops the routine, and what do you do before the next run?",
+            options: [
+              "start() runs again on disable, so just enable to resume",
+              "Nothing stops it; the routine finishes on its own after re-enable",
+              "The constructor runs again on disable, so nothing else is needed",
+              "end() cancels the routine, and you pick the mode off the list again so a fresh OpMode builds a fresh routine",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "end() runs when the mode stops for any reason, and it cancels the routine. The cancel runs whenCanceled, which sends the zero. Picking the mode builds the OpMode fresh, so the next run starts from the first line.",
+          },
+        ]}
+      />
     </PageTemplate>
   );
 }

@@ -8,6 +8,9 @@ import { MarginNote, Split } from "@/components/lesson/Prose";
 import { armBOMData } from "@/data/armBOM";
 import { shooterBOMData } from "@/data/shooterBOM";
 import { Package, Wrench, Box as BoxIcon } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/mechanism-cad");
 
 /* Every download link is the same control, so it is written once. Three copies
    of a 200-character className is how the three of them drifted apart on the
@@ -20,7 +23,7 @@ export default function MechanismCAD() {
   return (
     <PageTemplate
       title="Mechanism CAD"
-      lede="This page is optional for teams attending the workshop in person. Workshops 1 and 3 run on a real arm or a real flywheel on a bench. This page has the 3D models, the full parts lists, and the build notes for both. If your team already has a mechanism with a TalonFX on it, use that and skip the rest."
+      lede="Workshops 1 and 3 run on a real arm or a real flywheel on a bench. This page has the 3D models, the parts lists, and the build notes for both. Teams attending in person can skip it, and so can a team that already has a mechanism with a TalonFX on it."
       needs={[
         <>Nothing installed. The models spin in the browser.</>,
         <>To build one: a 3D printer, a saw, and hex keys.</>,
@@ -28,7 +31,10 @@ export default function MechanismCAD() {
           The CTRE hardware from <strong>Prerequisites</strong>: Kraken X44,
           CANivore, CANcoder.
         </>,
-        <>Bench space the arm can swing through without hitting anything.</>,
+        <>
+          Bench space for the arm to turn a full circle without hitting
+          anything.
+        </>,
       ]}
       time="11 minutes"
     >
@@ -47,9 +53,9 @@ export default function MechanismCAD() {
           </p>
         </div>
         <MarginNote label="Already have one?">
-          An old competition arm or shooter works. It needs a TalonFX on it, a
-          CANivore, and room to move without hitting the bench. If that
-          describes something on your shelf, none of this page applies.
+          An old competition arm or shooter works. It needs a TalonFX on it and
+          a CANivore. An arm too long to clear the bench through a full turn
+          also needs a hard stop at each end of travel.
         </MarginNote>
       </Split>
 
@@ -62,8 +68,9 @@ export default function MechanismCAD() {
             body: (
               <>
                 One motor, one through-bore CANcoder, and a 9 inch tube on the
-                output shaft. It swings, so it needs bench clearance and a stop
-                at each end of travel.
+                output shaft. The tube is short enough to clear the bench
+                through a full 360 degrees, so a wrong sign or a bad gain spins
+                the arm instead of crashing it.
               </>
             ),
           },
@@ -300,9 +307,8 @@ export default function MechanismCAD() {
 
       <LessonSection id="assembly-notes" title="Assembly notes">
         <p>
-          None of this is in the CAD. It is the order that keeps you from taking
-          the mechanism back apart, and every line came from taking one back
-          apart.
+          None of this is in the CAD. Build in this order and you will not have
+          to take the mechanism back apart.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -332,18 +338,19 @@ export default function MechanismCAD() {
           </li>
           <li>
             Land the battery leads dead last, with the battery in another room.
-            Fitting 6 gauge cable into WAGO lever nuts means cutting the crimped
-            ends off. That leaves bare copper on a lead that will weld a wrench
-            to your frame.
+            The 12 gauge cable goes into the WAGO lever nuts once its alligator
+            clips are cut off. Strip only enough to seat the wire, because bare
+            copper on a battery lead will weld a wrench to your frame.
           </li>
         </ol>
-        <Box variant="alert-danger" title="Bolt it down, then add stops">
+        <Box variant="alert-danger" title="Bolt it down before power">
           <p>
             A Kraken X44 behind this gearbox will drag a bench that is not fixed
-            down. Before the arm sees power, bolt the base and put a physical
-            stop at each end of travel. Workshop 1 has you applying voltage by
-            hand in Tuner X, and an inverted motor drives straight into that
-            stop at full output.
+            down. Bolt the base before the arm sees power. The bench arm needs
+            no stops because it clears a full turn. A reused or longer arm that
+            cannot clear the bench needs a physical stop at each end of travel.
+            Workshop 1 applies voltage by hand in Tuner X, and an inverted motor
+            drives straight into whatever is in the way.
           </p>
         </Box>
       </LessonSection>
@@ -360,12 +367,10 @@ export default function MechanismCAD() {
               The base is bolted down and does not shift when you lean on it.
             </li>
             <li>
-              <strong>Arm:</strong> it swings its full travel by hand, with no
-              binding and nothing rubbing the encoder.
-            </li>
-            <li>
-              <strong>Arm:</strong> both ends of travel land on a stop you
-              built, not on the gearbox.
+              <strong>Arm:</strong> it turns a full circle by hand without
+              touching the bench, with no binding and nothing rubbing the
+              encoder. An arm that cannot clear lands on a stop you built at
+              each end, not on the gearbox.
             </li>
             <li>
               <strong>Flywheel:</strong> it spins freely by hand and coasts for
@@ -379,10 +384,11 @@ export default function MechanismCAD() {
           </ul>
         </Box>
         <p>
-          Write the gear tooth counts on tape and stick it to the extrusion.
-          Motor Setup and PID Tuning both ask for the reduction between motor
-          and mechanism. Counting teeth through an assembled gearbox is
-          miserable.
+          Write the gear tooth counts on tape and stick it to the extrusion. The
+          arm list builds 8:60 then 16:60, about 28:1. Workshop 1 never asks for
+          it, because the arm&apos;s CANcoder reads the output shaft directly. A
+          mechanism that reads only the motor&apos;s own sensor does need it.
+          Counting teeth through an assembled gearbox is miserable.
         </p>
       </LessonSection>
     </PageTemplate>

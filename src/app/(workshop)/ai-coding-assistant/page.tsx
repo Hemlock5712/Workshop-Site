@@ -56,7 +56,7 @@ export default function AICodingAssistant() {
         <>One assistant installed: Claude Code, Copilot, or Codex.</>,
         <>
           Enough Java to argue with a diff, and{" "}
-          <strong>Running Your Code</strong> already done.
+          <strong>Hardware Simulation</strong> already done.
         </>,
       ]}
       branch="mech-2-Commands"
@@ -345,7 +345,7 @@ Show me the diff before you write anything.`}
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Run the code and enable the robot the way{" "}
-            <strong>Running Your Code</strong> showed you.
+            <strong>Hardware Simulation</strong> showed you.
           </li>
           <li>
             Hold the left trigger, then release.{" "}

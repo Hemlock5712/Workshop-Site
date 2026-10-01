@@ -2,185 +2,370 @@ import PageTemplate from "@/components/PageTemplate";
 import Quiz from "@/components/Quiz";
 import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import KeyConceptSection from "@/components/KeyConceptSection";
+import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { MarginNote, Split, WatchOut } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
 
+export const metadata = lessonMetadata("/pathplanner");
+
+/**
+ * Written against Workshop-Code `swerve-pathplanner`, whose parent is
+ * `swerve-autonomous` (the Leave Start routine from /autonomous), whose parent
+ * is `1-Swerve`.
+ *
+ * PathPlannerLib 2027.0.0-alpha-4 is the 2027_alpha7 vendordep. Its AutoBuilder,
+ * FollowPathCommand, NamedCommands and PathPlannerAuto are still built on the
+ * other command framework, so the lesson uses only the classes that are not
+ * commands: PathPlannerPath, RobotConfig, PathPlannerTrajectory and
+ * PPHolonomicDriveController, driven from a Commands v3 coroutine. Every name
+ * below was read off the jar, not the docs.
+ *
+ * One path is one @Autonomous class, because that is how the WPILib 2027
+ * OpMode and commandv3 templates choose autos. WPILib shows Selectable only in
+ * its TimedRobot templates, as the SendableChooser replacement.
+ *
+ * The 2027 alpha WatchOut covers a crash in that release: on WPILib alpha-7,
+ * RobotConfig's static initializer throws "Alert already allocated". Delete
+ * it when a PathPlannerLib release fixes it.
+ */
 export default function PathPlannerLesson() {
   return (
     <PageTemplate
-      title="PathPlanner Paths and Autos"
-      lede="PathPlanner is a field editor for shaping reusable path segments and assembling them into an autonomous plan. This lesson covers the robot configuration the editor needs, one drawn path, and event markers. The routine itself belongs to the next lesson."
+      title="PathPlanner Paths"
+      lede="PathPlanner is a field editor. You draw a path on the field, and PathPlannerLib turns it into a speed for every loop. This lesson replaces the Leave Start timer with a drawn path."
       needs={[
-        <>A calibrated swerve drive with trustworthy odometry.</>,
-        <>The robot project opened once in the PathPlanner desktop app.</>,
         <>
-          The current season field image and the robot&apos;s measured
-          dimensions.
+          The <strong>Leave Start</strong> routine from{" "}
+          <strong>Autonomous</strong>, and the three numbers it measured.
+        </>,
+        <>
+          Wheel radius, top speed and slip current from{" "}
+          <strong>Swerve Drive Tuning</strong>.
+        </>,
+        <>
+          The robot&apos;s weight with battery and bumpers, and a tape measure.
         </>,
       ]}
-      time="9 minutes"
+      branch="swerve-pathplanner"
+      time="30 minutes"
     >
       <Split>
-        <KeyConceptSection
-          description={[
-            "A path is one continuous drive segment. An auto is an ordered routine that can combine paths, waits, and mechanism events.",
-            "For a holonomic drivetrain, direction of travel and robot rotation are separate. The robot can follow a curve while facing a game piece or scoring target.",
-          ]}
-          concept="Plan geometry in the field editor. Keep robot behavior in commands. Connect the two only at deliberate event points."
-        />
-        <MarginNote label="THIS LESSON">
-          The goal here is route design and file vocabulary. The next lesson
-          owns the Commands v3 Autonomous OpMode that runs a routine.
+        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+          <p>
+            A <strong>path</strong> is one drive from a start pose to an end
+            pose. Waypoints shape the curve. The rotation is set apart from
+            them, so a swerve robot can travel one way while it faces another.
+          </p>
+          <p>
+            The app saves each path as a file in the robot project. The robot
+            reads that file, plans the trip from wherever it is, and follows the
+            plan one loop at a time.
+          </p>
+        </div>
+        <MarginNote label="Paths, not autos">
+          The app&apos;s Auto editor, event markers and named commands build
+          commands for PathPlannerLib&apos;s own classes, which use a different
+          command framework from this project. Here an auto is an{" "}
+          <code>@Autonomous</code> class, the same as Leave Start.
         </MarginNote>
       </Split>
 
-      <Box
-        variant="alert-warning"
-        tag="2027 ALPHA"
-        title="Do not paste the current RobotContainer examples"
-      >
-        <p>
-          PathPlanner&apos;s published Java integration examples target the
-          classic Commands v2 stack and use <code>edu.wpi.first</code>,
-          <code>RobotContainer</code>, and <code>frc2.Command</code>-style
-          assumptions. This workshop uses Commands v3, OpModes, and
-          <code>org.wpilib</code>. Use the editor in this lesson, but do not add
-          v2 integration code to the 2027 project. The autonomous lesson builds
-          its routine from the v3 commands already supplied by the workshop.
-        </p>
-      </Box>
+      <LessonSection id="install" title="Install the app and the library">
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Install <strong>PathPlanner</strong> from the Microsoft Store or the
+            GitHub releases page.
+          </li>
+          <li>
+            Click <strong>Open Robot Project</strong> and pick the project root,
+            the folder with <code>build.gradle</code> in it. The app creates{" "}
+            <code>src/main/deploy/pathplanner</code>.
+          </li>
+          <li>
+            In VS Code, open <strong>WPILib: Manage Vendor Libraries</strong>,
+            choose <strong>Install new libraries (online)</strong>, and paste
+            the URL below.
+          </li>
+          <li>Build the project. It should compile with nothing else added.</li>
+        </ol>
+        <CodeBlock
+          language="text"
+          title="PathPlannerLib for WPILib 2027 alpha-7"
+          code="https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLibSystemCoreAlpha.json"
+        />
+        <WatchOut label={"2027\nalpha"}>
+          <p>
+            PathPlannerLib <code>2027.0.0-alpha-4</code> builds, then stops the
+            robot program at boot with{" "}
+            <code>AlertException: Alert already allocated</code> from{" "}
+            <code>RobotConfig.&lt;clinit&gt;</code>. The fault is in that
+            release. Update the vendordep when a fixed one is published.
+          </p>
+        </WatchOut>
+      </LessonSection>
 
-      <LessonSection id="path-and-auto" title="Separate a path from an auto">
+      <LessonSection id="robot-config" title="Robot Config">
+        <p>
+          Open <strong>Settings</strong> and the <strong>Robot Config</strong>{" "}
+          tab. PathPlannerLib reads these numbers back on the robot and uses
+          them to decide how hard each wheel can push. A guessed number shapes
+          every path the robot drives.
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Setting</th>
+                <th className="px-3 py-2 text-left">Where it comes from</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Robot Mass</td>
+                <td className="px-3 py-2">
+                  A scale, with battery and bumpers on, in kilograms. 68 kg is
+                  the usual stand-in until you weigh it.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Robot MOI</td>
+                <td className="px-3 py-2">
+                  Mass &times; (length&sup2; + width&sup2;) &divide; 12, in
+                  meters. A 68 kg robot, 0.84 m square, comes to about 8.0.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Bumper Width, Length</td>
+                <td className="px-3 py-2">
+                  The tape measure, outside edge to outside edge.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Wheel Radius, Drive Gearing</td>
+                <td className="px-3 py-2">
+                  <code>kWheelRadius</code> and <code>kDriveGearRatio</code> in{" "}
+                  <code>TunerConstants.java</code>. The radius there is in
+                  inches. Multiply by 0.0254.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">True Max Drive Speed</td>
+                <td className="px-3 py-2">
+                  The plateau you measured for <code>kSpeedAt12Volts</code>.
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Drive Motor, Current Limit</td>
+                <td className="px-3 py-2">
+                  Kraken X60, and <code>kSlipCurrent</code>. Leave Wheel COF at
+                  1.2 unless your wheel vendor lists one.
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">Module Offsets</td>
+                <td className="px-3 py-2">
+                  <code>kFrontLeftXPos</code> and the other seven, converted to
+                  meters. The shipped 10 inches is 0.254.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </LessonSection>
+
+      <LessonSection id="draw-one-path" title="Draw one path">
+        <p>
+          Draw the trip Leave Start made, from the same tape mark. The field in
+          the app has its origin at the blue alliance corner, the same as{" "}
+          <code>Drivetrain/Pose</code>.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Click <strong>+</strong> in the Paths section and name the path{" "}
+            <code>Leave Start</code>.
+          </li>
+          <li>
+            Drag the first waypoint onto the tape mark. Set{" "}
+            <strong>Ideal Starting State</strong> rotation to the way the front
+            bumper points.
+          </li>
+          <li>
+            Drag the last waypoint about two meters out, in open floor. Set{" "}
+            <strong>Goal End State</strong> rotation to 45 degrees.
+          </li>
+          <li>
+            Set <strong>Global Constraints</strong> to 2 m/s and 2 m/s². Watch
+            the bumper outline through the preview, not just the line.
+          </li>
+        </ol>
+        <p>
+          The app saves as you go, to{" "}
+          <code>deploy/pathplanner/paths/Leave Start.path</code>. That file
+          ships to the robot with every deploy.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="drive-it-from-code" title="Drive it from code">
+        <p>
+          <code>DriveMechanism</code> gets one new command. When it starts, it
+          plans the whole trip from the robot&apos;s pose and speed. Then each
+          loop asks the plan where the robot should be, and{" "}
+          <code>PPHolonomicDriveController</code> turns the gap into a speed.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
+          title="followPath: plan once, then follow"
+          code={`public Command followPath(PathPlannerPath path) {
+  return run(coroutine -> {
+        PathPlannerTrajectory trajectory =
+            path.generateTrajectory(getRobotVelocity(), getPose().getRotation(), pathConfig);
+        pathController.reset(getPose(), getRobotVelocity());
+        double startTime = Utils.getCurrentTimeSeconds();
+        double elapsed = 0.0;
+
+        while (elapsed < trajectory.getTotalTimeSeconds()) {
+          PathPlannerTrajectoryState target = trajectory.sample(elapsed);
+          drivetrain.setControl(
+              pathRequest.withVelocity(
+                  pathController.calculateRobotRelativeSpeeds(getPose(), target)));
+          Telemetry.getTable(getName()).log("PathTarget", target.pose);
+          coroutine.yield();
+          elapsed = Utils.getCurrentTimeSeconds() - startTime;
+        }
+
+        stopDriving();
+      })
+      .whenCanceled(() -> stopDriving())
+      .named("FollowPath " + path.name);
+}`}
+        />
+        <p>
+          <code>stopDriving()</code> sends zero speed, and it runs on both
+          exits. A canceled command sends nothing to the motors, so without{" "}
+          <code>whenCanceled</code> a disable halfway leaves the last speed
+          latched in the drivetrain.
+        </p>
+        <p>
+          One path is one <code>@Autonomous</code> class, the same as Leave
+          Start. The constructor loads the file while the robot is still
+          disabled. A bad name fails when the mode is picked, not at the start
+          of a match. The routine resets odometry to the path&apos;s first pose,
+          gives odometry one loop, and awaits the follower.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/LeaveStartPathAuto.java"
+          title="Leave Start Path: one path, one class"
+          code={`@Autonomous(name = "Leave Start Path")
+public class LeaveStartPathAuto extends PeriodicOpMode {
+  private final Command routine;
+
+  public LeaveStartPathAuto(Robot robot) {
+    // Loaded here, while the robot is still disabled. The name must match the app exactly.
+    final PathPlannerPath path = DriveMechanism.loadPath("Leave Start");
+
+    routine =
+        Command.noRequirements(
+                coroutine -> {
+                  path.getStartingHolonomicPose()
+                      .ifPresent(pose -> robot.drivetrain.resetPose(pose));
+                  coroutine.yield(); // give odometry one loop to report the new pose
+
+                  coroutine.await(robot.drivetrain.followPath(path));
+                })
+            .named("Leave Start Path");
+  }
+
+  @Override
+  public void start() {
+    Scheduler.getDefault().schedule(routine);
+  }
+
+  @Override
+  public void end() {
+    Scheduler.getDefault().cancel(routine);
+  }
+}`}
+        />
+        <p>
+          A second path is a copy of this file with a new annotation name and a
+          new path name. The driver station lists both.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="failure-shapes" title="Three failure shapes">
         <FigureGrid
-          cols={2}
+          cols={3}
           items={[
             {
-              label: "Reusable movement",
-              term: "Path",
-              body: "One segment from a start to an end. Waypoints shape the curve; the goal end rotation and rotation targets control where a holonomic robot faces; constraints cap motion.",
+              label: "Fails on pick",
+              term: "A name or a file",
+              body: (
+                <>
+                  <code>Could not load PathPlanner path</code> means the name in
+                  the OpMode and the name in the app differ. A missing{" "}
+                  <code>settings.json</code> stops the program at boot: the app
+                  never opened this project.
+                </>
+              ),
             },
             {
-              label: "Complete routine",
-              term: "Auto",
-              body: "An ordered plan made from paths and actions. The same path can appear in several autos without being redrawn.",
+              label: "Wrong place",
+              term: "Pose and plan disagree",
+              body: (
+                <>
+                  The robot drives the right shape, offset or rotated. The
+                  starting rotation in the app does not match the way the robot
+                  sat on the tape.
+                </>
+              ),
+            },
+            {
+              label: "Lags or overshoots",
+              term: "Config or gains",
+              body: (
+                <>
+                  <code>PathTarget</code> runs away from <code>Pose</code>. A
+                  guessed top speed or mass asks for more than the robot has.
+                  Fix the config before the gains.
+                </>
+              ),
             },
           ]}
         />
-        <p>
-          Draw separate paths for actions you may reuse: leave the starting
-          area, reach a pickup, return to score. A single path with many
-          unrelated responsibilities is harder to tune and harder to replace.
-        </p>
       </LessonSection>
 
-      <LessonSection
-        id="configure-project"
-        title="Configure the editor from measurements"
-      >
+      <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Open the root of the robot project, not the <code>src</code> folder.
-          </li>
-          <li>Select the current field and enable holonomic mode.</li>
-          <li>
-            Enter robot mass, moment of inertia, wheel radius, drive gearing,
-            current limit, and module positions from the calibrated drivetrain.
+            Run <strong>WPILib: Simulate Robot Code</strong>, pick{" "}
+            <strong>Leave Start Path</strong> from the autonomous list, and
+            enable. Plot <code>Drivetrain/Pose</code> and{" "}
+            <code>Drivetrain/PathTarget</code> in AdvantageScope.
           </li>
           <li>
-            Enter conservative default velocity, acceleration, angular velocity,
-            and angular acceleration constraints.
-          </li>
-          <li>
-            Set the robot footprint so the preview shows whether bumpers clear
-            field obstacles.
+            Deploy, put the robot on the tape mark, and run it three times with
+            one person on disable.
           </li>
         </ol>
-        <Box
-          variant="concept"
-          title="The editor cannot correct a bad measurement"
-        >
-          <p>
-            A path preview is only as honest as the robot configuration. Wheel
-            radius and module position came from Swerve Calibration; do not tune
-            the drawn curve to compensate for odometry that is still wrong.
-          </p>
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              In sim, <code>Pose</code> tracking <code>PathTarget</code> the
+              whole way and ending within a few centimeters of the last
+              waypoint, turned to 45 degrees.
+            </li>
+            <li>A full stop at the end that stays stopped.</li>
+            <li>
+              Three floor runs that land closer together than the three timed
+              runs of Leave Start did.
+            </li>
+          </ul>
         </Box>
-      </LessonSection>
-
-      <LessonSection id="draw-one-path" title="Draw one testable path">
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Place the first waypoint at the robot&apos;s known starting pose.
-          </li>
-          <li>
-            Place the final waypoint in open field space, not at a scoring
-            target yet.
-          </li>
-          <li>
-            Adjust control handles so the curve is smooth and does not skim an
-            obstacle.
-          </li>
-          <li>
-            Set the goal end rotation, then add rotation targets only where the
-            robot needs to turn along the way.
-          </li>
-          <li>
-            Apply slower constraints near tight geometry instead of slowing the
-            entire route.
-          </li>
-          <li>
-            Name the segment for its job, such as <code>Leave Start Left</code>,
-            and save it.
-          </li>
-        </ol>
-        <Box
-          variant="alert-warning"
-          tag="FOOTPRINT"
-          title="The center point is not the whole robot"
-        >
-          <p>
-            A curve can clear an obstacle while the bumper clips it. Inspect the
-            full robot preview through turns, especially where rotation and
-            translation happen together.
-          </p>
-        </Box>
-      </LessonSection>
-
-      <LessonSection id="events" title="Add events one at a time">
-        <p>
-          Event markers connect route progress to robot commands. Name the event
-          after an action such as <code>Start Intake</code>, not after a button
-          or motor voltage. First test the path with no events. Then add one
-          event at a time so a mechanism problem cannot masquerade as a
-          path-following problem.
-        </p>
-        <ul className="ml-5 list-disc space-y-2">
-          <li>Use position-based events for actions tied to a location.</li>
-          <li>
-            Use waits for intentional time, not to hide a command with no finish
-            condition.
-          </li>
-          <li>
-            Keep final alignment as its own short segment when precision
-            matters.
-          </li>
-          <li>
-            Give every event command a name that matches the editor exactly.
-          </li>
-        </ul>
-      </LessonSection>
-
-      <LessonSection id="handoff" title="Hand off the route plan">
-        <p>
-          Finish with one tested-looking path segment, a written starting pose,
-          the end pose, constraints, and a short list of intended events. The
-          Autonomous lesson will turn that plan into an <code>@Autonomous</code>
-          OpMode and v3 commands without depending on concepts from Workshops 5
-          or 6.
-        </p>
         <DocumentationButton
           href="https://pathplanner.dev/gui-editing-paths-and-autos.html"
           title="PathPlanner: Editing paths and autos"
@@ -192,85 +377,86 @@ export default function PathPlannerLesson() {
         questions={[
           {
             id: 1,
-            question: "What separates a path from an auto?",
+            question:
+              "On a swerve path, what sets the direction the robot faces?",
             options: [
-              "A path is one continuous drive segment; an auto is an ordered routine built from paths and actions",
-              "A path is the blue alliance route; an auto is its red alliance mirror",
-              "A path belongs to one auto, so a second auto needs its own copy of it",
-              "A path is an auto that has already been tested on the field",
+              "The waypoints, because the robot always faces along the curve",
+              "The order the waypoints were placed in",
+              "The starting and goal rotations and any rotation targets, set apart from the waypoints",
+              "The angular velocity constraint",
             ],
-            correctAnswer: 0,
+            correctAnswer: 2,
             explanation:
-              "One path is one trip, from a start pose to an end pose. An auto orders paths, waits, and events into a routine. Because the editor saves them as separate files, the same segment can appear in several autos without being redrawn.",
+              "Waypoints shape where the robot goes. Facing is set on its own: the ideal starting state, the goal end state, and rotation targets in between. Angular constraints cap how fast it turns, never where it ends up.",
           },
           {
             id: 2,
             question:
-              "On a holonomic path, what sets the direction the robot faces?",
+              "Where do wheel radius and True Max Drive Speed in Robot Config come from?",
             options: [
-              "The waypoints, because the robot always faces along the curve",
-              "The goal end rotation and the rotation targets, both separate from the waypoints",
-              "The order the waypoints were placed in",
-              "The angular velocity constraint",
+              "TunerConstants and the top speed you measured, because the robot reads them back to plan every path",
+              "The defaults, since they only change the preview drawing",
+              "The app measures them from the field image",
+              "Whatever numbers make the preview look smooth",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
-              "Waypoints and their control handles shape where the robot goes. Facing is set apart from them. The goal end rotation fixes where the robot looks at the finish, and a rotation target turns it anywhere along the way. Angular constraints cap how fast it turns, never where it ends up.",
+              "The app saves Robot Config to settings.json, and the robot loads it to decide how hard each wheel can push. A guessed number shapes every path the robot drives, not just the picture on screen.",
           },
           {
             id: 3,
-            question:
-              "Where do the mass, wheel radius, and module positions in the editor come from?",
+            question: "The drawn line clears the hub. What can still hit it?",
             options: [
-              "The editor measures them from the field image once you pick the season",
-              "Defaults are fine, since the numbers only affect the preview drawing",
-              "Measured values from the calibrated drivetrain, typed into the editor settings",
-              "Whichever numbers make the preview match the curve you drew",
+              "Nothing, as long as the line itself is clear",
+              "Nothing, because the app refuses to save a path that clips",
+              "The wheels, since module positions are left out of the preview",
+              "The bumpers, because the line tracks the robot's center",
             ],
-            correctAnswer: 2,
+            correctAnswer: 3,
             explanation:
-              "Mass, moment of inertia, wheel radius, gearing, current limit, and module positions all describe the real robot. The editor cannot discover any of them. Wheel radius came out of Swerve Calibration, and module positions match the ones the drive code already uses. Those numbers shape the motion the robot is asked to produce, so a default carries onto the field.",
+              "The line is the path of one point, the center of the robot. Set the bumper size in Robot Config and watch the outline. A corner sweeps wide where the robot turns and moves at once, and the app saves the path either way.",
           },
           {
             id: 4,
             question:
-              "The drawn curve clears an obstacle. What can still hit it?",
+              "Why does Leave Start Path load its path in the constructor and not in start()?",
             options: [
-              "Nothing, as long as the curve itself is clear",
-              "The wheels, since module positions are left out of the preview",
-              "Nothing, because the editor refuses to save a path whose preview clips a wall",
-              "The bumpers, because the curve tracks the robot center and not its outline",
+              "A path file can only be read while the robot is disabled",
+              "The constructor runs when the mode is picked, so a bad file shows up before anyone enables",
+              "start() cannot reach the Robot fields",
+              "Loading in start() would load the path twice",
             ],
-            correctAnswer: 3,
+            correctAnswer: 1,
             explanation:
-              "The curve is the path of one point, the center of the robot. Set the bumper footprint and watch the whole outline through the preview. A corner sweeps wide where rotation and translation happen together, so a clear-looking line can still clip a wall. The editor checks nothing for you, and it saves the path either way.",
+              "Picking the mode on the driver station builds the OpMode with the robot still disabled. A missing or misnamed file fails right there, at the bench, instead of at the start of a match. start() then only schedules a routine that is already built.",
           },
           {
             id: 5,
             question:
-              "You have drawn a new path. When do the event markers go on?",
+              "Why does followPath call stopDriving() in whenCanceled as well as after the loop?",
             options: [
-              "Before the first test, so the path and the mechanisms get tested together",
-              "After the path drives repeatably, one event at a time",
-              "Never on a path; markers belong to the auto instead",
-              "Last, once the whole routine is competition ready",
+              "The scheduler calls whenCanceled first, so it stops the robot sooner",
+              "whenCanceled runs on every exit, so the second call is a spare",
+              "A canceled command never reaches the code after the loop, and the last speed stays latched",
+              "The disabled binding in Robot needs a zero to start from",
             ],
-            correctAnswer: 1,
+            correctAnswer: 2,
             explanation:
-              "Test the path with nothing on it first, then add one event at a time. An intake that misbehaves looks exactly like a path-following problem. Debug them together and you will redraw a curve that was never wrong. Markers ride on the path itself, so they follow that segment into every auto that uses it.",
+              "Cancel stops the coroutine where it is, so the line after the loop never runs. Canceling sends nothing to the motors, and setControl keeps applying the last request. whenCanceled runs only on a cancel, so the normal exit needs its own call.",
           },
           {
             id: 6,
-            question: "How should an event marker be named?",
+            question:
+              "You rename the path to Leave Start Left in the app and deploy. Picking Leave Start Path now fails. What fixes it?",
             options: [
-              "After the action it starts, spelled the same as the command it runs",
-              "After the button a driver would press to do it by hand",
-              "After the motor output it applies, such as forty percent",
-              "After the path it sits on, so markers sort by path",
+              "Change the name in LeaveStartPathAuto to match, spelled exactly the same",
+              "Redraw the path from scratch",
+              "Delete settings.json so the app writes it again",
+              "Install the vendordep again",
             ],
             correctAnswer: 0,
             explanation:
-              "The name you type in the editor is the string the robot code looks up, so the two have to be spelled identically. Rename one side and the marker fires nothing while the path drives on. Start Intake still describes the action next season. A button or a voltage describes the wiring you happen to have today.",
+              "loadPath looks for a file named after the string in the OpMode. Rename one side and the file is not found. It fails when the mode is picked, not in the middle of a match.",
           },
         ]}
       />
