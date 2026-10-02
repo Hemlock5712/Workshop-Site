@@ -19,8 +19,8 @@
  * commit per lesson:
  *
  *     git checkout mech-5-Coroutines   # make the change, commit
- *     git checkout mech-6-StateBased && git rebase mech-5-Coroutines
- *     git push --force-with-lease origin mech-5-Coroutines mech-6-StateBased
+ *     git checkout mech-6-Testing && git rebase mech-5-Coroutines
+ *     git push --force-with-lease origin mech-5-Coroutines mech-6-Testing
  *
  * Push only after `./gradlew build` passes on every branch you moved, then
  * run `pnpm reference:refresh` so the reference copies follow.

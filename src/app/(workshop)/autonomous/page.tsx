@@ -52,7 +52,8 @@ export default function Autonomous() {
         <MarginNote label="One class each">
           The driver station lists every <code>@Autonomous</code> class it finds
           and builds the one you pick. Four routines, four classes, and nothing
-          in <code>Robot.java</code> chooses between them.
+          in <code>Robot.java</code> chooses between them. PathPlanner adds one
+          choice inside a routine: which path Follow Path drives.
         </MarginNote>
       </Split>
 

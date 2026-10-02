@@ -23,9 +23,12 @@ export const metadata = lessonMetadata("/pathplanner");
  * PPHolonomicDriveController, driven from a Commands v3 coroutine. Every name
  * below was read off the jar, not the docs.
  *
- * One path is one @Autonomous class, because that is how the WPILib 2027
- * OpMode and commandv3 templates choose autos. WPILib shows Selectable only in
- * its TimedRobot templates, as the SendableChooser replacement.
+ * The path is picked with org.wpilib.tunable.Selectable, the owner's call in
+ * October 2026. WPILib's own templates show Selectable only in TimedRobot
+ * projects; the OpMode templates pick autos with @Autonomous classes. Here the
+ * auto is one @Autonomous class and the Selectable picks the path inside it.
+ * Topic names below were read off a sim run: /Tunables/Auto Path/{.type,
+ * default, options, selected/value}.
  *
  * The 2027 alpha WatchOut covers a crash in that release: on WPILib alpha-7,
  * RobotConfig's static initializer throws "Alert already allocated". Delete
@@ -73,7 +76,7 @@ export default function PathPlannerLesson() {
         </MarginNote>
       </Split>
 
-      <LessonSection id="install" title="Install the app and the library">
+      <LessonSection id="install" title="Install and configure">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Install <strong>PathPlanner</strong> from the Microsoft Store or the
@@ -105,14 +108,11 @@ export default function PathPlannerLesson() {
             release. Update the vendordep when a fixed one is published.
           </p>
         </WatchOut>
-      </LessonSection>
-
-      <LessonSection id="robot-config" title="Robot Config">
         <p>
-          Open <strong>Settings</strong> and the <strong>Robot Config</strong>{" "}
-          tab. PathPlannerLib reads these numbers back on the robot and uses
-          them to decide how hard each wheel can push. A guessed number shapes
-          every path the robot drives.
+          Then open <strong>Settings</strong> and the{" "}
+          <strong>Robot Config</strong> tab. PathPlannerLib reads these numbers
+          back on the robot and uses them to decide how hard each wheel can
+          push. A guessed number shapes every path the robot drives.
         </p>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-note">
@@ -250,50 +250,71 @@ export default function PathPlannerLesson() {
           latched in the drivetrain.
         </p>
         <p>
-          One path is one <code>@Autonomous</code> class, the same as Leave
-          Start. The constructor loads the file while the robot is still
-          disabled. A bad name fails when the mode is picked, not at the start
-          of a match. The routine resets odometry to the path&apos;s first pose,
-          gives odometry one loop, and awaits the follower.
+          The <strong>Follow Path</strong> OpMode runs whichever path is picked.
+          It reads the choice in <code>start()</code>, because the choice can
+          still change after the mode is picked. Then it resets odometry to the
+          path&apos;s first pose, gives odometry one loop, and awaits the
+          follower.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/LeaveStartPathAuto.java"
-          title="Leave Start Path: one path, one class"
-          code={`@Autonomous(name = "Leave Start Path")
-public class LeaveStartPathAuto extends PeriodicOpMode {
-  private final Command routine;
+          filename="src/main/java/frc/robot/opmodes/FollowPathAuto.java"
+          title="Follow Path: read the choice at enable"
+          code={`@Override
+public void start() {
+  PathPlannerPath path = robot.autoPath.getSelected();
 
-  public LeaveStartPathAuto(Robot robot) {
-    // Loaded here, while the robot is still disabled. The name must match the app exactly.
-    final PathPlannerPath path = DriveMechanism.loadPath("Leave Start");
+  routine =
+      Command.noRequirements(
+              coroutine -> {
+                path.getStartingHolonomicPose()
+                    .ifPresent(pose -> robot.drivetrain.resetPose(pose));
+                coroutine.yield(); // give odometry one loop to report the new pose
+                coroutine.await(robot.drivetrain.followPath(path));
+              })
+          .named("Follow Path");
 
-    routine =
-        Command.noRequirements(
-                coroutine -> {
-                  path.getStartingHolonomicPose()
-                      .ifPresent(pose -> robot.drivetrain.resetPose(pose));
-                  coroutine.yield(); // give odometry one loop to report the new pose
+  Scheduler.getDefault().schedule(routine);
+}`}
+        />
+      </LessonSection>
 
-                  coroutine.await(robot.drivetrain.followPath(path));
-                })
-            .named("Leave Start Path");
-  }
+      <LessonSection id="auto-path" title="The Auto Path drop-down">
+        <p>
+          The list of paths is a <code>Selectable</code>, the WPILib 2027
+          drop-down for choosing one value out of several. <code>Robot</code>{" "}
+          owns it, so it exists from boot, before any mode is picked.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/Robot.java"
+          title="One line per path"
+          code={`public final Selectable<PathPlannerPath> autoPath = new Selectable<>();
 
-  @Override
-  public void start() {
-    Scheduler.getDefault().schedule(routine);
-  }
-
-  @Override
-  public void end() {
-    Scheduler.getDefault().cancel(routine);
-  }
+public Robot() {
+  // ...
+  // The name in quotes must match the path's name in the PathPlanner app exactly.
+  autoPath.addDefault("Leave Start", DriveMechanism.loadPath("Leave Start"));
+  Tunables.publish("Auto Path", autoPath);
 }`}
         />
         <p>
-          A second path is a copy of this file with a new annotation name and a
-          new path name. The driver station lists both.
+          On the dashboard it appears under <code>Tunables/Auto Path</code>. The{" "}
+          <code>options</code> entry lists every name, <code>default</code>{" "}
+          names the one marked with <code>addDefault</code>, and{" "}
+          <code>selected</code> is the one you set. Nothing set, or a name that
+          is not on the list, and <code>getSelected()</code> hands back the
+          default.
+        </p>
+        <p>
+          To add a path, draw it in the app and add one line under the first:{" "}
+          <code>
+            autoPath.add(&quot;Pickup&quot;,
+            DriveMechanism.loadPath(&quot;Pickup&quot;));
+          </code>{" "}
+          Keep exactly one <code>addDefault</code>. With none,{" "}
+          <code>getSelected()</code> returns <code>null</code> when nothing is
+          set, and Follow Path throws a NullPointerException at enable.
         </p>
       </LessonSection>
 
@@ -302,14 +323,14 @@ public class LeaveStartPathAuto extends PeriodicOpMode {
           cols={3}
           items={[
             {
-              label: "Fails on pick",
-              term: "A name or a file",
+              label: "Stops at boot",
+              term: "A missing file",
               body: (
                 <>
-                  <code>Could not load PathPlanner path</code> means the name in
-                  the OpMode and the name in the app differ. A missing{" "}
-                  <code>settings.json</code> stops the program at boot: the app
-                  never opened this project.
+                  <code>Could not load PathPlanner path</code> means a name in{" "}
+                  <code>Robot</code> has no file under <code>paths/</code>. A
+                  missing <code>settings.json</code> means the app never opened
+                  this project.
                 </>
               ),
             },
@@ -342,8 +363,13 @@ public class LeaveStartPathAuto extends PeriodicOpMode {
       <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Run <strong>WPILib: Simulate Robot Code</strong>, pick{" "}
-            <strong>Leave Start Path</strong> from the autonomous list, and
+            Run <strong>WPILib: Simulate Robot Code</strong>. In the sim GUI,
+            open <strong>NetworkTables</strong> and check that{" "}
+            <code>Tunables/Auto Path/options</code> lists{" "}
+            <code>Leave Start</code>.
+          </li>
+          <li>
+            Pick <strong>Follow Path</strong> from the autonomous list and
             enable. Plot <code>Drivetrain/Pose</code> and{" "}
             <code>Drivetrain/PathTarget</code> in AdvantageScope.
           </li>
@@ -419,16 +445,16 @@ public class LeaveStartPathAuto extends PeriodicOpMode {
           {
             id: 4,
             question:
-              "Why does Leave Start Path load its path in the constructor and not in start()?",
+              "Why does Follow Path read the Selectable in start() and not in its constructor?",
             options: [
-              "A path file can only be read while the robot is disabled",
-              "The constructor runs when the mode is picked, so a bad file shows up before anyone enables",
-              "start() cannot reach the Robot fields",
-              "Loading in start() would load the path twice",
+              "A Selectable can only be read while the robot is enabled",
+              "The constructor runs when the mode is picked, and the choice can change after that",
+              "The constructor cannot see the Robot fields",
+              "Reading it twice would load the path twice",
             ],
             correctAnswer: 1,
             explanation:
-              "Picking the mode on the driver station builds the OpMode with the robot still disabled. A missing or misnamed file fails right there, at the bench, instead of at the start of a match. start() then only schedules a routine that is already built.",
+              "Picking Follow Path on the driver station builds the OpMode. Someone can still change Auto Path before enabling. start() runs at enable, so it reads the choice that is set when the robot moves.",
           },
           {
             id: 5,
@@ -447,16 +473,16 @@ public class LeaveStartPathAuto extends PeriodicOpMode {
           {
             id: 6,
             question:
-              "You rename the path to Leave Start Left in the app and deploy. Picking Leave Start Path now fails. What fixes it?",
+              "You rename the path to Leave Start Left in the app and deploy. The robot program stops at boot. What fixes it?",
             options: [
-              "Change the name in LeaveStartPathAuto to match, spelled exactly the same",
+              "Change the name in Robot.java to match, spelled exactly the same",
               "Redraw the path from scratch",
               "Delete settings.json so the app writes it again",
               "Install the vendordep again",
             ],
             correctAnswer: 0,
             explanation:
-              "loadPath looks for a file named after the string in the OpMode. Rename one side and the file is not found. It fails when the mode is picked, not in the middle of a match.",
+              "loadPath looks for a file named after the string in Robot.java. Rename one side and the file is not found. Robot loads every path at boot, so it fails on the bench, not in the middle of a match.",
           },
         ]}
       />

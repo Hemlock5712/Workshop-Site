@@ -16,12 +16,9 @@ Check items off as they land and delete this file when the list is empty.
       three new PathPlanner branches. Blocked on permission to rewrite history.
       Local commits waiting in `reference/work/Workshop-Code`: the kV fix on
       mech-3 to mech-6, the flywheel stop on mech-5, the Idle stop on 5 to 7,
-      `mech-7-Testing` (to become `mech-6-Testing`), and in
+      `mech-7-Testing` (becomes `mech-6-Testing`; scripts written, waiting to be run), and in
       `reference/work/wt-pathplanner` `swerve-autonomous`,
       `swerve-pathplanner`, `swerve-pathfinding`.
-- [ ] **Choosing an auto.** One `@Autonomous` class per path, as WPILib's
-      OpMode templates do (current), or a `Selectable` path chooser
-      (`swerve-pathplanner-selectable`, local only).
 - [ ] **PathPlannerLib crash upstream.** alpha-4 throws
       `AlertException: Alert already allocated` at boot on alpha-7. A drafted
       issue and one-line fix are in the session notes; file them, then drop

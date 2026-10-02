@@ -29,7 +29,7 @@ export default function DynamicPathPlanning() {
       lede="A drawn path starts where you drew it. Pathfinding starts wherever the robot is and searches a grid of the field for a way around the obstacles. The route goes to the same follower."
       needs={[
         <>
-          <code>followPath</code> and the Leave Start Path auto from{" "}
+          <code>followPath</code> and the Follow Path auto from{" "}
           <strong>PathPlanner</strong>, working in simulation.
         </>,
         <>A pose you trust, from odometry or from vision.</>,
@@ -177,7 +177,7 @@ export default function DynamicPathPlanning() {
       <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            In simulation, run the <strong>Leave Start Path</strong> auto so the
+            In simulation, run the <strong>Follow Path</strong> auto so the
             robot ends where your path does, on the near side of the hub.
           </li>
           <li>

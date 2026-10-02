@@ -234,7 +234,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   // Testing closes Routines: a routine nobody watches is checked by a log
   // after the fact, or by a test before the robot ever runs it. Its branch,
-  // `mech-7-Testing`, adds JUnit tests on top of the coroutine chain.
+  // `mech-6-Testing`, adds JUnit tests on top of the coroutine chain.
   { slug: "/testing", title: "Testing", section: "workshop4" },
 
   // Workshop 5: Swerve & Autonomous

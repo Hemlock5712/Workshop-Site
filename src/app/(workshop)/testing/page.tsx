@@ -12,7 +12,7 @@ export const metadata = lessonMetadata("/testing");
  * Testing, in the order a team needs it: a person at the robot first, then
  * tests the computer runs on every build.
  *
- * The automated half teaches `mech-7-Testing`, whose four tests were run
+ * The automated half teaches `mech-6-Testing`, whose four tests were run
  * green against WPILib 2027 alpha-7 and Phoenix 6 26.70.0-alpha-2 before this
  * page was written. Three facts on the page came out of breaking them on
  * purpose, not out of documentation:
@@ -39,11 +39,11 @@ export default function Testing() {
           <a href="/coroutines" className="underline">
             Coroutines
           </a>
-          , building clean, or the <code>mech-7-Testing</code> branch.
+          , building clean, or the <code>mech-6-Testing</code> branch.
         </>,
         <>A charged battery and a clear bench for the on-robot half.</>,
       ]}
-      branch="mech-7-Testing"
+      branch="mech-6-Testing"
       time="15 minutes"
     >
       <Split>
@@ -112,7 +112,7 @@ export default function Testing() {
         </p>
         <CodeBlock
           filename="src/test/java/first/robot/mechanisms/ArmTest.java"
-          branch="mech-7-Testing"
+          branch="mech-6-Testing"
           code={`class ArmTest {
   private final Scheduler scheduler = Scheduler.getDefault();
   private Arm arm;
@@ -162,7 +162,7 @@ export default function Testing() {
         </p>
         <CodeBlock
           filename="src/test/java/first/robot/mechanisms/FlywheelTest.java"
-          branch="mech-7-Testing"
+          branch="mech-6-Testing"
           code={`// A second handle on CAN ID 21 reaches the same simulated motor as the one inside Flywheel,
 // so the mechanism's hardware can stay private.
 motorSim = new TalonFX(21, new CANBus("canivore")).getSimState();
