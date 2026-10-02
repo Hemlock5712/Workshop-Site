@@ -7,6 +7,13 @@ import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
+import Link from "next/link";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/drive-to-point");
+
+const linkStyle =
+  "text-[var(--accent)] underline hover:no-underline font-medium";
 
 /**
  * Five sections against the old eight, four excerpts and one embed against
@@ -37,6 +44,14 @@ import { GitBranch } from "lucide-react";
  * taught on this page rather than on the branch, and the tolerance numbers
  * behind `atSetpoint()` came back with them.
  *
+ * October 2026: there is no Classic Commands lesson, and there never was one
+ * behind the `needs` line that named it. `ClassicCommand` is now explained
+ * here, by its `run()` and `onCancel()`, which are the whole idea: a coroutine
+ * body that calls your four methods. The student still copies the file from
+ * the branch. The stop in `end()` is a zero `ChassisVelocities`, not
+ * `SwerveRequest.Idle`, which leaves the modules on their last request; the
+ * branch still sends Idle and needs the same one-line edit.
+ *
  * This is the first page in the course to use Java `super` and `this`.
  * `/java-basics` used to pre-teach both, fifteen lessons early, and no longer
  * does. Both are defined here, where they first appear.
@@ -52,8 +67,8 @@ export default function DriveToPoint() {
           as the pose it subtracts from.
         </>,
         <>
-          <strong>Classic Commands</strong> and <strong>OpModes</strong>, for
-          the lifecycle and <code>whileTrue</code>.
+          <strong>Coroutines</strong>, for a command body that loops and yields,
+          and <code>whileTrue</code> from <strong>Writing Commands</strong>.
         </>,
         <>
           <strong>Logging</strong>. The last check below is a graph.
@@ -91,19 +106,11 @@ export default function DriveToPoint() {
         >
           <p>
             <code>getPose()</code> returns whatever odometry has counted since
-            the code started. Nothing on this branch resets it to a known field
-            position. The left-bumper <code>seedFieldCentric()</code> call
-            re-zeroes the driver&apos;s forward, not odometry.
-          </p>
-          <p className="mt-3">
-            The simulator has no camera, so holding <strong>A</strong> returns
-            the robot to wherever odometry started counting. On a real field an
-            unseeded pose sends it somewhere you did not intend. Seeding belongs
-            to{" "}
-            <a href="/swerve-calibration" className="underline font-medium">
-              Swerve Calibration
-            </a>
-            .
+            the code started, and the left bumper re-zeroes the driver&apos;s
+            forward, not odometry. In the simulator, holding <strong>A</strong>{" "}
+            returns the robot to wherever it started. On a real field, without{" "}
+            <strong>Vision</strong> correcting the pose, it sends the robot
+            somewhere you did not intend.
           </p>
         </Box>
       </LessonSection>
@@ -154,12 +161,46 @@ export default function DriveToPoint() {
         </p>
 
         <p>
-          <code>ClassicCommand</code> is a file, not a framework class: 123
-          lines that turn your four methods into an ordinary{" "}
-          <code>Command</code>. Before anything else, paste the branch&apos;s
-          copy into{" "}
-          <code>src/main/java/frc/robot/utils/ClassicCommand.java</code> and
-          leave it alone. It is in the PR diff below.
+          <code>ClassicCommand</code> is a workshop file, not a WPILib class. It
+          implements <code>Command</code>, and its coroutine body is the whole
+          trick:
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="ClassicCommand.java: the part that matters"
+          code={`@Override
+public final void run(Coroutine coroutine) {
+  initialize();
+  while (true) {
+    execute();
+    if (isFinished()) {
+      break;
+    }
+    coroutine.yield();
+  }
+  end(false); // natural finish
+}
+
+@Override
+public final void onCancel() {
+  end(true);
+}`}
+        />
+
+        <p>
+          It is an ordinary coroutine body with your four methods dropped into
+          it. <code>onCancel()</code> is why <code>end(...)</code> runs on both
+          exits. Copy the{" "}
+          <a
+            href="https://github.com/Hemlock5712/Workshop-Code/blob/5-DriveToPoint/src/main/java/frc/robot/utils/ClassicCommand.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkStyle}
+          >
+            branch&apos;s file
+          </a>{" "}
+          into <code>src/main/java/frc/robot/utils/</code> and leave it alone.
         </p>
       </LessonSection>
 
@@ -170,7 +211,16 @@ export default function DriveToPoint() {
           the target pose. Three are <code>PIDController</code> fields with kP
           of 10 on X and Y and 7 on heading. The sixth is one{" "}
           <code>SwerveRequest.ApplyFieldVelocity</code>, built once and reused
-          every loop. Copy them from the file at the end of this section.
+          every loop. Copy them from{" "}
+          <a
+            href="https://github.com/Hemlock5712/Workshop-Code/blob/5-DriveToPoint/src/main/java/frc/robot/commands/DriveToPoint.java"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkStyle}
+          >
+            the branch&apos;s file
+          </a>
+          .
         </p>
 
         <p>
@@ -257,9 +307,7 @@ export default function DriveToPoint() {
           then where you want to be. With kI and kD at zero, out comes kP times
           the error. <code>ChassisVelocities</code> holds the three results:{" "}
           <code>vx</code> and <code>vy</code> in meters per second,{" "}
-          <code>omega</code> in radians per second. It was called{" "}
-          <code>ChassisSpeeds</code> until recently, so an example using that
-          name targets an older WPILib.
+          <code>omega</code> in radians per second.
         </p>
 
         <p>
@@ -283,24 +331,25 @@ export default function DriveToPoint() {
         </p>
 
         <p>
-          <code>end(boolean interrupted)</code> sends{" "}
-          <code>new SwerveRequest.Idle()</code>. It runs whether the command
-          finished or something took the drivetrain away, and the flag tells you
-          which. No exit skips it, so that is where the stop belongs.
+          <code>end(...)</code> runs whether the command finished or something
+          took the drivetrain away, so that is where the stop belongs:{" "}
+          <code>
+            drivetrain.setControl(driveRequest.withVelocity(new
+            ChassisVelocities()))
+          </code>
+          .{" "}
+          <Link href="/running-program#latched" className={linkStyle}>
+            Ending a command does not stop a motor
+          </Link>
+          . Teleop would forgive a missing stop, because the joystick default
+          takes the drivetrain back and asks for zero. An autonomous OpMode has
+          no default, and the robot would keep its last velocity.
         </p>
 
         <p>
-          Canceling does not stop a motor: it ends the command, and the hardware
-          carries on doing what it was last told. Teleop would forgive the
-          omission, since the joystick default takes the drivetrain back and
-          asks for nothing.
-        </p>
-
-        <p>
-          That default belongs to one OpMode. Schedule the command anywhere
-          without it and nothing claims the drivetrain when the command ends. No
-          default command means nothing sends a zero, and Phoenix keeps applying
-          the last velocity.
+          Send zero speed, not <code>new SwerveRequest.Idle()</code>, which the
+          branch&apos;s copy still sends. Idle does nothing to the modules, so
+          each one keeps its last request.
         </p>
 
         <p>
@@ -370,10 +419,16 @@ import org.wpilib.math.geometry.Rotation2d;
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            Enable Teleop in the simulator, drive a few meters from where the
-            robot started, and turn it. Now hold <strong>A</strong>: it should
-            drive back and rotate to 0° together, not spin first and drive
-            second.
+            Enable Teleop in{" "}
+            <Link
+              href="/swerve-drive-project#full-simulation"
+              className={linkStyle}
+            >
+              full simulation
+            </Link>
+            , drive a few meters from where the robot started, and turn it. Now
+            hold <strong>A</strong>: it should drive back and rotate to 0°
+            together, not spin first and drive second.
           </li>
           <li>
             Keep holding <strong>A</strong> and push the left stick. Nothing
@@ -414,10 +469,10 @@ import org.wpilib.math.geometry.Rotation2d;
         </p>
 
         <p>
-          <strong>It will not compile.</strong> Usually one of three. A{" "}
-          <code>ChassisSpeeds</code> where <code>ChassisVelocities</code>{" "}
-          belongs, a <code>.named(...)</code> call on the new command, or a{" "}
-          <code>super(...)</code> that is not the first line of the constructor.
+          <strong>It will not compile.</strong> Look for an old{" "}
+          <code>ChassisSpeeds</code>, a <code>.named(...)</code> call on the new
+          command, or a <code>super(...)</code> that is not the
+          constructor&apos;s first line.
         </p>
 
         <p>
@@ -470,7 +525,7 @@ import org.wpilib.math.geometry.Rotation2d;
             options: [
               "end() runs on a natural finish and on an interrupt, so no exit from the command skips the stop",
               "end() is the only method permitted to call setControl",
-              "SwerveRequest.Idle() puts the drive motors in brake mode, which only takes effect once the command is over",
+              "A zero-speed request only takes effect once the command is over",
               "The scheduler will not release a mechanism until the command sends one final request",
             ],
             correctAnswer: 0,

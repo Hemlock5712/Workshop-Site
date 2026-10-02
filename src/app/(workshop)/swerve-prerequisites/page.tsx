@@ -9,6 +9,9 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import Link from "next/link";
 import { Book } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/swerve-prerequisites");
 
 const linkClass = "underline hover:no-underline font-medium";
 
@@ -16,21 +19,19 @@ export default function SwervePrerequisites() {
   return (
     <PageTemplate
       title="How Swerve Works"
-      lede="Workshop #3 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
+      lede="Workshop 5 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
       needs={[
+        <>Nothing installed, nothing typed. There is no code on this page.</>,
         <>
-          Nothing installed, nothing typed. There is no code on this page and no
-          branch to check out.
-        </>,
-        <>
+          The words CAN bus, CANcoder and CANivore, from{" "}
           <Link href="/hardware" className={linkClass}>
             Hardware Setup
-          </Link>{" "}
-          helps, because this page uses the words CAN bus, CANcoder and CANivore
-          without re-explaining them. That page owns the hardware.
+          </Link>
+          .
         </>,
+        <>A swerve robot to look at, for the check at the end.</>,
       ]}
-      time="11 minutes"
+      time="12 minutes"
     >
       <Split>
         <KeyConceptSection
@@ -40,7 +41,7 @@ export default function SwervePrerequisites() {
           concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
         />
         <MarginNote label="WHAT YOU'LL GET">
-          The vocabulary the next six pages assume: field-centric driving,{" "}
+          The vocabulary the rest of the course assumes: field-centric driving,{" "}
           <code>Pose2d</code>, the field&apos;s coordinate frame, and odometry.
         </MarginNote>
       </Split>
@@ -72,12 +73,11 @@ export default function SwervePrerequisites() {
             it for you, in two files you will meet on the next page.{" "}
             <code>TunerConstants.java</code> holds every device ID, gear ratio,
             wheel radius and gain. <code>CommandSwerveDrivetrain.java</code> is
-            the drivetrain itself, and its own comment says it &quot;owns the
-            hardware and odometry&quot;.
+            the drivetrain itself: the motors, the sensors, and odometry.
           </p>
           <p className="mt-3">
             You ask for a chassis speed. Those two files decide what all eight
-            motors do. Nothing in Workshop #3 asks you to compute a wheel angle.
+            motors do. Nothing in Workshop 5 asks you to compute a wheel angle.
           </p>
         </Box>
 
@@ -154,18 +154,9 @@ export default function SwervePrerequisites() {
             Two drivers stand at opposite ends of the field. Both should be able
             to push the stick away and watch the robot go away. So the code
             flips what &quot;forward&quot; means depending on which side you are
-            on. <code>DriveMechanism</code> registers{" "}
-            <code>applyOperatorPerspective</code> to run every loop, with the
-            comment{" "}
-            <em>
-              &quot;Every loop, check which alliance we are on so
-              &apos;forward&apos; faces the right way.&quot;
-            </em>
-          </p>
-          <p className="mt-3">
-            The generated drivetrain spells out the two cases.{" "}
-            <em>Blue sees forward as 0 degrees, toward the red wall</em>, and{" "}
-            <em>red sees forward as 180 degrees, toward the blue wall</em>.
+            on. Every loop, <code>applyOperatorPerspective</code> checks the
+            alliance color. Blue sees forward as 0 degrees, toward the red wall.
+            Red sees forward as 180 degrees, toward the blue wall.
           </p>
           <p className="mt-3">
             Hold on to this, because the next section is the other half of it:{" "}
@@ -231,24 +222,17 @@ export default function SwervePrerequisites() {
           title="(0, 0) is the blue corner, even when you are on red"
         >
           <p>
-            The <code>getPose()</code> method in <code>DriveMechanism</code>{" "}
-            says it in its own comment:{" "}
-            <em>
-              &quot;The robot&apos;s position on the field, from odometry. (0,
-              0) is always the blue alliance corner. It does not flip when you
-              are on red.&quot;
-            </em>
+            <code>drivetrain.getPose()</code> measures from the blue alliance
+            corner on both alliances. This is the one that catches people,
+            because the section above said forward <em>{"does "}</em> flip. Both
+            are true, and they are about different things. The driver&apos;s
+            forward flips so driving feels the same from either end of the
+            field. The coordinate frame stays put so that two poses can be
+            compared at all. A red robot parked against its own wall reports a
+            large X, not zero.
           </p>
           <p className="mt-3">
-            This is the one that catches people, because the section above said
-            forward <em>{"does "}</em> flip. Both are true, and they are about
-            different things. The driver&apos;s forward flips so driving feels
-            the same from either end of the field. The coordinate frame stays
-            put so that two poses can be compared at all. A red robot parked
-            against its own wall reports a large X, not zero.
-          </p>
-          <p className="mt-3">
-            Every pose in Workshops #3 and #4 is measured from that same blue
+            Every pose in Workshops 5 and 6 is measured from that same blue
             corner. That covers what odometry reports, what the camera
             estimates, and the target you hand a drive command.
           </p>
@@ -311,10 +295,10 @@ export default function SwervePrerequisites() {
             <li>
               <strong>Give it something that does look at the field.</strong> A
               camera reading AprilTags knows where it is in absolute terms.{" "}
-              <code>DriveMechanism</code> already has the door for it:{" "}
-              <code>addVisionMeasurement(...)</code>. Its own comment describes
-              it as &quot;Feeds a camera position estimate into the drivetrain
-              so it can correct odometry.&quot; That is{" "}
+              <code>DriveMechanism</code> already has the door for it,{" "}
+              <code>addVisionMeasurement(...)</code>, which hands a
+              camera&apos;s estimate to the drivetrain to correct odometry. That
+              is{" "}
               <Link href="/vision-implementation" className={linkClass}>
                 Vision
               </Link>
@@ -329,41 +313,33 @@ export default function SwervePrerequisites() {
         </Box>
       </LessonSection>
 
-      {/* ── 5. WHERE THIS LANDS ──────────────────────────────────────── */}
-      <LessonSection
-        id="where-each-idea-shows-up"
-        title="Where each idea shows up"
-      >
-        <ul className="ml-5 list-disc space-y-2">
-          <li>
-            <strong>Field-centric driving</strong>: the next page. The teleop
-            default command is a field-centric request wired straight to the
-            sticks.
-          </li>
-          <li>
-            <strong>Odometry and drift</strong>: the two pages named in the box
-            above.
-          </li>
-          <li>
-            <strong>
-              <code>Pose2d</code> and <code>Rotation2d</code>
-            </strong>
-            : Drive to Point and the autonomous page, where a pose stops being a
-            reading and becomes a destination.
-          </li>
-          <li>
-            <strong>The blue-corner frame</strong>: all of the above. It is why
-            the camera is asked for a blue-origin estimate. It is also why a
-            drive command pins its velocities to that frame, not the
-            driver&apos;s.
-          </li>
-        </ul>
-
+      <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Next you open Phoenix Tuner X, point it at the four modules, and let
-          it generate the drivetrain.
+          Find each part on a real swerve robot before the next page asks you
+          for its CAN ID. Power off. Stand behind it with its front pointing
+          away from you.
         </p>
-
+        <ol className="ml-5 list-decimal space-y-2">
+          <li>
+            Name the four corners out loud: front left, front right, back left,
+            back right. Put a strip of tape with the name on each module.
+          </li>
+          <li>
+            On one module, find the motor that spins the wheel, the motor that
+            points it, and the CANcoder on top that reads the angle.
+          </li>
+          <li>
+            Find the Pigeon 2 and the CANivore. Count the devices on the bus.
+          </li>
+        </ol>
+        <Box variant="alert-success" title="You should see">
+          <p>
+            Thirteen devices: eight motors, four CANcoders, and one Pigeon 2,
+            all on the CANivore. Four taped corners, named from behind the
+            robot, so the IDs you write down on the next page land on the right
+            wheel. Fewer than thirteen is a wiring fault to fix first.
+          </p>
+        </Box>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html"
           title="CTRE: Tuner X Swerve Project Generator"
@@ -413,7 +389,7 @@ export default function SwervePrerequisites() {
             ],
             correctAnswer: 3,
             explanation:
-              'Two separate things. applyOperatorPerspective flips what the sticks call forward, 0 degrees on blue, 180 on red, so driving feels the same from either end. The pose frame never moves: DriveMechanism.getPose() says "(0, 0) is always the blue alliance corner. It does not flip when you are on red." A red robot at its own wall reports a large X.',
+              "Two separate things. applyOperatorPerspective flips what the sticks call forward, 0 degrees on blue, 180 on red, so driving feels the same from either end. The pose frame never moves: getPose() measures from the blue corner on both alliances, so a red robot at its own wall reports a large X.",
           },
           {
             id: 4,

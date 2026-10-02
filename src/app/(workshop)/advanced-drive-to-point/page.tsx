@@ -7,6 +7,13 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { GitBranch } from "lucide-react";
+import Link from "next/link";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/advanced-drive-to-point");
+
+const linkStyle =
+  "text-[var(--accent)] underline hover:no-underline font-medium";
 
 /**
  * Five sections against the old eight, four excerpts and one embed against
@@ -83,8 +90,13 @@ export default function ProfiledDriveToPoint() {
 
         <p>
           Plot that planned speed against time and you get a trapezoid, which is
-          where <code>TrapezoidProfile</code> gets its name. The branch drives
-          at 2.5 m/s with 3.0 m/s² of acceleration.
+          where <code>TrapezoidProfile</code> gets its name. It is the same
+          shape you tuned on one motor in{" "}
+          <Link href="/motion-magic" className={linkStyle}>
+            Motion Magic in Tuner X
+          </Link>
+          , a cruise velocity and an acceleration, planned here for the whole
+          chassis. The branch drives at 2.5 m/s with 3.0 m/s² of acceleration.
         </p>
 
         <FigureGrid
@@ -280,10 +292,16 @@ protected void execute() {
           style={{ color: "var(--tx2)" }}
         >
           <li>
-            Enable Teleop in the simulator and hold <strong>B</strong>. The
-            robot eases away, holds a steady speed, and eases off at the end.
-            From the origin that goal is 3.6 m out, past the 2.1 m needed for
-            cruise.
+            Enable Teleop in{" "}
+            <Link
+              href="/swerve-drive-project#full-simulation"
+              className={linkStyle}
+            >
+              full simulation
+            </Link>{" "}
+            and hold <strong>B</strong>. The robot eases away, holds a steady
+            speed, and eases off at the end. From the origin that goal is 3.6 m
+            out, past the 2.1 m needed for cruise.
           </li>
           <li>
             Keep holding <strong>B</strong> after it arrives. The robot stays

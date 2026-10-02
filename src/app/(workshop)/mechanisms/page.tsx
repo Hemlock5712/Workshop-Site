@@ -7,8 +7,13 @@ import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { Split } from "@/components/lesson/Prose";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
+import PairedLesson from "@/components/lesson/PairedLesson";
+import GlossaryTerm from "@/components/GlossaryTerm";
 import { M, Mech } from "@/components/lesson/Mechanism";
 import { GitBranch } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/mechanisms");
 
 /**
  * The first file a student writes by hand, and the first lesson written once
@@ -54,16 +59,9 @@ export default function Mechanisms() {
       branch="mech-1-Mechanisms"
       time="14 minutes"
     >
-      <Box variant="alert-success" tag="Nice work" title="Setup is behind you">
-        <p>
-          The arm and the flywheel work in Tuner X, the project builds, and you
-          know what a mechanism, a command, and the scheduler each do. That is
-          what every page before this one was for. This is the lesson where you
-          start writing the code.
-        </p>
-      </Box>
-
       <MechanismSelector />
+
+      <PairedLesson kind="tuner" to="/mechanism-setup" />
 
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -120,8 +118,8 @@ export default function Mechanisms() {
             code={`package first.robot.mechanisms;
 
 // The static imports are the ones your editor will not offer to add for you.
-// Tuner X writes Volts.per(RotationsPerSecond) into the config you paste two
-// lessons from now, so they are here already and that paste just works.
+// Tuner X writes Volts.per(RotationsPerSecond) into the config you paste below,
+// so they are here already and that paste just works.
 import static org.wpilib.units.Units.RotationsPerSecond;
 import static org.wpilib.units.Units.RotationsPerSecondPerSecond;
 import static org.wpilib.units.Units.Volts;
@@ -162,8 +160,8 @@ public class Arm implements Mechanism {
             code={`package first.robot.mechanisms;
 
 // The static imports are the ones your editor will not offer to add for you.
-// Tuner X writes Volts.per(RotationsPerSecond) into the config you paste two
-// lessons from now, so they are here already and that paste just works.
+// Tuner X writes Volts.per(RotationsPerSecond) into the config you paste below,
+// so they are here already and that paste just works.
 import static org.wpilib.units.Units.RotationsPerSecond;
 import static org.wpilib.units.Units.RotationsPerSecondPerSecond;
 import static org.wpilib.units.Units.Volts;
@@ -193,9 +191,10 @@ public class Flywheel implements Mechanism {
         </Mech>
 
         <p>
-          Your editor will grey the imports out until you use them. That is
-          expected, and they go quiet one block at a time as you fill the class
-          in. The fields come first.
+          Your editor greys out an import until something uses it. That is
+          expected. Most go quiet as you fill the class in, and a few wait for{" "}
+          <strong>Motion Magic in Code</strong>. The class compiles at every
+          step from here. The fields come first.
         </p>
 
         <Mech for="arm">
@@ -229,11 +228,9 @@ public class Flywheel implements Mechanism {
 
         <ul className="ml-5 list-disc space-y-2">
           <li>
-            <code>implements Mechanism</code> is what makes this a mechanism
-            rather than a plain object. Every method on that interface already
-            has a body. So the one line is the whole of it: no constructor to
-            call and nothing to override, and <code>runRepeatedly(...)</code> is
-            yours from here on.
+            <code>implements Mechanism</code> makes this a mechanism. Every
+            method on that interface already has a body, so there is nothing to
+            override, and <code>runRepeatedly(...)</code> is yours from here on.
           </li>
           <li>
             <code>new CANBus(&quot;canivore&quot;)</code> names the bus these
@@ -252,18 +249,11 @@ public class Flywheel implements Mechanism {
             moment the robot boots.
           </Mech>
           <li>
-            <code>VoltageOut</code> is a Phoenix 6 control request: an object
-            that says &quot;apply this many volts&quot;. Build it once as a
-            field, not fresh every loop.
+            <code>VoltageOut</code> is a control request, built once as a field
+            and reused. <strong>Configs and requests</strong> below says what
+            that means.
           </li>
         </ul>
-
-        <p>
-          There is nothing to import. They are all at the top of the file
-          already, and the greyed-out ones stop being grey as you use them. The
-          class compiles at every step from here, because what you pasted was a
-          complete class to begin with.
-        </p>
       </LessonSection>
 
       <LessonSection id="configure-once" title="Configure the motor once">
@@ -292,12 +282,12 @@ public class Flywheel implements Mechanism {
 
         <Box variant="alert-warning" title="These are our numbers, not yours">
           <p>
-            The block below is the shape, not a config to copy. Yours comes off
-            your own bench. Open the config panel in Tuner X, press the three
-            dots, and choose <strong>Generate Code</strong>. Paste the result
-            over the whole statement. The mechanism is still open loop here, so
-            a fresh config looks much like this one. From{" "}
-            <strong>Motion Magic</strong> on it has the gains you measured.
+            The block below is the shape, not a config to copy. Open the config
+            panel in Tuner X, press the three dots, choose{" "}
+            <strong>Generate Code</strong>, and paste the result over the whole
+            statement. If the device holds your gains from Workshop 1, they come
+            along. Leave them in. Nothing reads them until{" "}
+            <strong>Motion Magic in Code</strong>.
           </p>
         </Box>
 
@@ -355,13 +345,9 @@ public class Flywheel implements Mechanism {
         <Box variant="concept" tag="NEUTRAL MODE" title="Coast, not Brake">
           <p>
             Neutral mode is what the motor does when nothing is commanding it.{" "}
-            <code>Coast</code> cuts the power and lets the shaft spin freely.{" "}
-            <code>Brake</code> makes the motor resist being turned, so the
-            mechanism stays roughly where you left it.
-          </p>
-          <p className="mt-3">
-            The lesson <M k="noun" /> picks <code>Coast</code>, and the branch
-            says why on that line. You will <M k="byHand" /> all day.
+            <code>Coast</code> lets the shaft spin freely, and{" "}
+            <code>Brake</code> resists being turned. The lesson <M k="noun" />{" "}
+            picks <code>Coast</code> because you will <M k="byHand" /> all day.
             <Mech for="arm">
               {" "}
               A competition arm carrying weight usually wants <code>Brake</code>
@@ -383,15 +369,11 @@ public class Flywheel implements Mechanism {
             title="The CANcoder in the loop"
           >
             <p>
-              A TalonFX counts its own rotor turns, and that count starts at
-              zero every time the controller powers on. The CANcoder is
-              absolute. It knows the arm&apos;s angle the moment it boots.
-            </p>
-            <p className="mt-3">
-              That one line makes the CANcoder the motor&apos;s position source
-              instead of the rotor. Nothing reads a position on this branch.
-              Leave the line out and the motor measures every angle you ask for
-              later from wherever the arm sat at power-on.
+              A TalonFX counts its own rotor turns from zero at every power-on.
+              The CANcoder is absolute, and <code>withFeedback</code> makes it
+              the motor&apos;s position source. Nothing reads a position on this
+              branch. Leave the block out and every angle you ask for later is
+              measured from wherever the arm sat at power-on.
             </p>
           </Box>
         </Mech>
@@ -403,15 +385,10 @@ public class Flywheel implements Mechanism {
             title="Nothing to point the motor at"
           >
             <p>
-              The arm&apos;s config has a <code>withFeedback</code> block,
-              naming the CANcoder as the motor&apos;s position source. The
-              flywheel has none, because it has no such device.
-            </p>
-            <p className="mt-3">
-              A TalonFX counts its own rotor turns, and a rotor count is a fine
-              way to measure speed. It is a poor way to measure an angle,
-              because it starts at zero every power-on. Speed is the only thing
-              this mechanism is ever asked for.
+              The arm&apos;s config has a <code>withFeedback</code> block naming
+              its CANcoder. The flywheel has no CANcoder, so it has no such
+              block. A rotor count starts at zero every power-on, which ruins an
+              angle and does not matter to a speed.
             </p>
           </Box>
         </Mech>
@@ -421,9 +398,7 @@ public class Flywheel implements Mechanism {
             <M k="motor" />
             .getConfigurator().apply(talonFXCfg)
           </code>{" "}
-          sends every setting above to the motor controller in one message. It
-          runs once, in the constructor, because the controller keeps those
-          settings until something changes them.
+          sends every setting above to the motor controller in one message.
         </p>
       </LessonSection>
 
@@ -477,7 +452,7 @@ public class Flywheel implements Mechanism {
             <M k="motor" />
             .setControl(...)
           </code>{" "}
-          sends it. The motor holds that request until something replaces it.
+          sends it.
         </p>
         <p>
           Nothing here reads a sensor. Ask for 6 V and you get 6 V, whatever the{" "}
@@ -486,22 +461,128 @@ public class Flywheel implements Mechanism {
 
         <p>
           Both are <code>private</code>, and nothing calls them yet. The next
-          lesson wraps them in commands, and those are what the rest of the
-          robot gets to use. The stop helper is named <code>stopMotor</code>{" "}
-          rather than <code>stop</code> because a command takes that name next
-          lesson.
+          lesson wraps them in commands, and one of those commands takes the
+          name <code>stop</code>, so the helper is <code>stopMotor</code>.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="configs-and-requests" title="Configs and requests">
+        <p>
+          This file sends the motor two kinds of message. A{" "}
+          <strong>config</strong> is settings: inversion, neutral mode, gains,
+          the feedback sensor. The TalonFX saves it, so the constructor applies
+          it once. A{" "}
+          <GlossaryTerm term="control request">control request</GlossaryTerm> is
+          what to do right now, and it carries the target. The target changes
+          while the robot runs, so code sends a request every loop.
+        </p>
+        <p>
+          You have used both in Tuner X. The config panel is the config, and the{" "}
+          <strong>Control</strong> drop-down on <strong>Motor Setup</strong>{" "}
+          picks a request. Voltage Out in that drop-down is{" "}
+          <code>VoltageOut</code> here. Motion Magic Voltage is{" "}
+          <code>MotionMagicVoltage</code>, which replaces it two lessons from
+          now.
+        </p>
+        <p>
+          Every request name is made of the same parts. The column is what the
+          motor outputs. The row is what it aims at, and a{" "}
+          <code>MotionMagic</code> prefix means a profile shapes the move.
+        </p>
+
+        <div className="measure-wide overflow-x-auto">
+          <table className="w-full min-w-[620px] border-collapse text-note">
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="px-3 py-2 text-left">Aims at</th>
+                <th className="px-3 py-2 text-left">Duty cycle</th>
+                <th className="px-3 py-2 text-left">Volts</th>
+                <th className="px-3 py-2 text-left">Amps</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">Nothing</td>
+                <td className="px-3 py-2">
+                  <code>DutyCycleOut</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>VoltageOut</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>TorqueCurrentFOC</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">A position</td>
+                <td className="px-3 py-2">
+                  <code>PositionDutyCycle</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>PositionVoltage</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>PositionTorqueCurrentFOC</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">A velocity</td>
+                <td className="px-3 py-2">
+                  <code>VelocityDutyCycle</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>VelocityVoltage</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>VelocityTorqueCurrentFOC</code>
+                </td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">A position, profiled</td>
+                <td className="px-3 py-2">
+                  <code>MotionMagicDutyCycle</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>MotionMagicVoltage</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>MotionMagicTorqueCurrentFOC</code>
+                </td>
+              </tr>
+              <tr>
+                <td className="px-3 py-2">A velocity, profiled</td>
+                <td className="px-3 py-2">
+                  <code>MotionMagicVelocityDutyCycle</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>MotionMagicVelocityVoltage</code>
+                </td>
+                <td className="px-3 py-2">
+                  <code>MotionMagicVelocityTorqueCurrentFOC</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          This course stays in the volts column, so the gains you tuned are in
+          volts. A request also stays latched. The motor keeps applying the last
+          one it received until a different one arrives, even after the code
+          that sent it has stopped running. That is what{" "}
+          <code>stopMotor()</code> is for, and{" "}
+          <a href="/running-program#latched" className="underline">
+            Hardware Simulation
+          </a>{" "}
+          shows what happens without it.
         </p>
       </LessonSection>
 
       <LessonSection id="register-on-robot" title="Hand it to Robot">
         <p>
-          You have written the class, but nothing has built one yet. Right now{" "}
-          <code>
-            <M k="file" />
-          </code>{" "}
-          is a file and nothing more. <code>Robot</code> is where it becomes a
-          real object: built once at startup, outliving every mode, and handed
-          to every OpMode that needs a mechanism. Add the two lines.
+          Nothing has built the class yet. <code>Robot</code> is where it
+          becomes a real object: built once at startup, outliving every mode,
+          and handed to every OpMode. Add the two fields.
         </p>
 
         <CodeBlock
@@ -530,9 +611,8 @@ public class Robot extends OpModeRobot {
         />
 
         <p>
-          <code>public final</code> because every OpMode reaches the mechanisms
-          through the one <code>Robot</code> it is handed, and nothing should
-          ever swap them out.
+          <code>public</code> so every OpMode can reach them, and{" "}
+          <code>final</code> so nothing swaps them out.
         </p>
 
         <p>
@@ -546,16 +626,13 @@ public class Robot extends OpModeRobot {
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
-        <p>
-          Nothing on this branch moves a motor, so the check is a build and
-          three things you can see.
-        </p>
+        <p>Nothing on this branch moves a motor, so the check is a build.</p>
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Run <em>WPILib: Build Robot Code</em>. You should see{" "}
-            <code>BUILD SUCCESSFUL</code>. That is the real check here: every
-            import resolved, and every name you typed exists.
+            <code>BUILD SUCCESSFUL</code>, which means every import resolved and
+            every name you typed exists.
           </li>
           <li>
             List <code>src/main/java/first/robot/mechanisms/</code>.{" "}
@@ -563,14 +640,6 @@ public class Robot extends OpModeRobot {
               <M k="file" />
             </code>{" "}
             is in it, beside <code>Robot.java</code>.
-          </li>
-          <li>
-            Search{" "}
-            <code>
-              <M k="file" />
-            </code>{" "}
-            for <code>Command</code>. Not one line of code on this branch builds
-            one.
           </li>
           <li>
             In Tuner X, confirm every device answers on the{" "}
@@ -617,8 +686,7 @@ public class Robot extends OpModeRobot {
         questions={[
           {
             id: 1,
-            question:
-              "Which statement about the v3 Mechanism base class is correct?",
+            question: "Which statement about Mechanism is correct?",
             options: [
               "Mechanism is final, so you wrap one in a helper class instead of subclassing",
               "Mechanism is an empty marker: implementing it changes nothing about the class",
@@ -627,7 +695,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 2,
             explanation:
-              "Mechanism.java declares `public interface Mechanism`, and every lesson branch writes `implements Mechanism`. It was a class you extended in earlier alphas, so older examples say otherwise. It is not an empty marker either: every one of its methods carries a default body, so runRepeatedly(...), run(...), idle() and setDefaultCommand(...) all arrive with that one line.",
+              "Mechanism.java declares `public interface Mechanism`, and every lesson branch writes `implements Mechanism`. It is not an empty marker either: every one of its methods carries a default body, so runRepeatedly(...), run(...), idle() and setDefaultCommand(...) all arrive with that one line.",
           },
           {
             id: 2,
@@ -660,16 +728,16 @@ public class Robot extends OpModeRobot {
           {
             id: 4,
             question:
-              "Arm's config ends with a withFeedback block naming CANcoder 32, and Flywheel's has no withFeedback at all. Why not?",
+              "setVoltage sends voltageOut.withOutput(6.0) once, and then nothing calls it again. What does the motor do?",
             options: [
-              "The flywheel's CANcoder is configured in Tuner X, so the code does not repeat it",
-              "withFeedback is set once per project, and Arm.java gets there first",
-              "The flywheel is tuned for speed, not angle, and the TalonFX's own rotor count already measures speed. There is no CANcoder on the mechanism to point at.",
-              "A TalonFX refuses a remote sensor on any mechanism that spins continuously",
+              "Keeps applying 6 V, because a request stays latched until a different one replaces it",
+              "Applies 6 V for one 20 ms loop, then drops to zero",
+              "Applies 6 V until the config is applied again",
+              "Nothing, because a request has to be saved to the device like a config",
             ],
-            correctAnswer: 2,
+            correctAnswer: 0,
             explanation:
-              "A rotor count is a fine speed measurement and a poor angle measurement, because it starts at zero every power-on. The arm needs to know its real angle the moment it boots, so it has an absolute CANcoder and points the motor's feedback at it. The flywheel is only ever asked how fast it is going, so the encoder inside the motor is enough and the mechanism has no second device.",
+              "A config is saved and applied once. A request is an instruction the motor keeps following until it gets a different one. Nothing times it out after a loop. A motor left on its last request keeps going, and stopMotor() exists to replace it.",
           },
         ]}
       />

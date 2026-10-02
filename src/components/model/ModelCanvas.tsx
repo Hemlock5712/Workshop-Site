@@ -84,6 +84,19 @@ function LoadingFallback() {
 }
 
 /**
+ * Outside the component because it mutates a node reached through a prop,
+ * which the React Compiler refuses to compile inside one. The write is the
+ * point, so it moves rather than goes away.
+ */
+function writeReadout(
+  node: HTMLElement | null,
+  p: { x: number; y: number; z: number }
+) {
+  if (!node) return;
+  node.textContent = `${Math.round(p.x)}, ${Math.round(p.y)}, ${Math.round(p.z)}`;
+}
+
+/**
  * Writes the camera position straight into the DOM node.
  *
  * This used to lift the position into React state, which meant a `setState`
@@ -96,12 +109,7 @@ function CameraTracker({
 }: {
   readout: RefObject<HTMLElement | null>;
 }) {
-  useFrame(({ camera }) => {
-    const node = readout.current;
-    if (!node) return;
-    const p = camera.position;
-    node.textContent = `${Math.round(p.x)}, ${Math.round(p.y)}, ${Math.round(p.z)}`;
-  });
+  useFrame(({ camera }) => writeReadout(readout.current, camera.position));
 
   return null;
 }

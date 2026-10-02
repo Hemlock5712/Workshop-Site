@@ -205,7 +205,7 @@ const ARM_LENGTH = 110;
 const TICK_RADIUS = 96; // arc radius for reference ticks
 const SAMPLE_RATE_MS = 1;
 
-function ArmViz({
+export function ArmViz({
   responseTheta,
   targetDeg,
   initialDeg,
@@ -860,9 +860,9 @@ export default function InteractivePidPlayground() {
           (horizontal). For the first second the setpoint stays at{" "}
           <span className="font-mono">0°</span>. Use that window to tune{" "}
           <span className="font-mono">kG</span> until the arm holds. For a
-          Kraken X44 + 25:1 driving a 2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm,
-          CTRE&apos;s dyno numbers give{" "}
-          <span className="font-mono">kG = mgL / (Kₜ·R) ≈ 0.92&nbsp;V</span>.
+          Kraken X44 + 28:1 driving this competition-size
+          2&nbsp;kg&nbsp;·&nbsp;0.4&nbsp;m arm, CTRE&apos;s dyno numbers give{" "}
+          <span className="font-mono">kG = mgL / (Kₜ·R) ≈ 0.81&nbsp;V</span>.
           Add <span className="font-mono">kS</span> to overcome residual static
           friction. At <span className="font-mono">t&nbsp;=&nbsp;1&nbsp;s</span>{" "}
           the setpoint steps to your slider target;{" "}
@@ -891,15 +891,14 @@ export default function InteractivePidPlayground() {
 
       {/* ── Footer ──────────────────────────── */}
       <p className="mt-4 max-w-[70ch] text-meta text-[var(--tx2)]">
-        2 kg · 0.4 m arm on a Kraken X44 + 25:1 reduction (4.11 N·m stall, 7758
-        RPM free per CTRE dyno data; ≈ 103 N·m / 310 RPM at the arm; back-EMF
-        modelled, ±12 V saturation). Gains use Phoenix 6 / WPILib mechanism-side
-        units. Drop these values straight into a{" "}
-        <span className="font-mono text-[var(--tx)]">Slot0Configs</span> with{" "}
-        <span className="font-mono text-[var(--tx)]">
-          SensorToMechanismRatio&nbsp;=&nbsp;25
-        </span>
-        .
+        A competition-size 2 kg · 0.4 m arm, not the 9 inch bench arm, on a
+        Kraken X44 + 28:1 reduction, the bench gearbox&apos;s 8:60 then 16:60
+        (4.11 N·m stall, 7758 RPM free per CTRE dyno data; ≈ 116 N·m / 276 RPM
+        at the arm; back-EMF modelled, ±12 V saturation). Gains are in arm
+        rotations, which is what a CANcoder on the arm shaft reads, so they use
+        the same units as a{" "}
+        <span className="font-mono text-[var(--tx)]">Slot0Configs</span> on the
+        bench arm. The numbers do not carry over: the bench arm is far lighter.
       </p>
     </section>
   );

@@ -9,6 +9,10 @@ import GlossaryTerm from "@/components/GlossaryTerm";
 import DocumentationButton from "@/components/DocumentationButton";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
+import PairedLesson from "@/components/lesson/PairedLesson";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/hardware");
 
 export default function Hardware() {
   return (
@@ -27,6 +31,7 @@ export default function Hardware() {
       ]}
       time="9 minutes"
     >
+      <PairedLesson kind="code" to="/project-setup" />
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
@@ -36,8 +41,8 @@ export default function Hardware() {
           </p>
           <p>
             The most important part of FRC programming is getting the hardware
-            set up properly. If it's not set up properly, you'll be fighting it
-            every step of the way.
+            set up properly. If it&apos;s not set up properly, you&apos;ll be
+            fighting it every step of the way.
           </p>
         </div>
       </Split>

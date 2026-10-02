@@ -3,7 +3,11 @@ import LessonSection from "@/components/lesson/LessonSection";
 import ImageBlock from "@/components/ImageBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
-import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import { ProseBlock, Split } from "@/components/lesson/Prose";
+import PairedLesson from "@/components/lesson/PairedLesson";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/project-setup");
 
 /**
  * The lesson that opens Workshop 3, and the gate to every code lesson
@@ -35,8 +39,10 @@ export default function ProjectSetup() {
         <>An internet connection. The first build downloads a lot.</>,
         <>A local folder to work in, not one synced to the cloud.</>,
       ]}
-      time="10 minutes"
+      time="11 minutes"
     >
+      <PairedLesson kind="tuner" to="/hardware" />
+
       <Split>
         <ProseBlock>
           <p>
@@ -120,16 +126,16 @@ export default function ProjectSetup() {
             for without it, and the screenshot below shows 5712.
           </li>
           <li>
-            <strong>Enable Desktop Support.</strong> Tick it. This is the box
-            that turns on simulation, and Workshop 3 runs the arm in simulation
-            before it runs on a motor.
+            <strong>Enable Desktop Support.</strong> Tick it. Workshop 3 runs
+            your program on this laptop, driving the real motors through the
+            CANivore, and that needs the desktop build this box turns on.
           </li>
         </ol>
         <ImageBlock
           src="/images/project-setup/step-5.png"
           alt="WPILib New Project Creator step 3, with base folder Downloads, project name Workshop, team number 5712, and Enable Desktop Support circled and checked"
           title="Step 5 · Location and config"
-          caption="Enable Desktop Support is circled. Miss it and simulation is not available in this project."
+          caption="Enable Desktop Support is circled. Miss it and the project cannot run on the laptop, so hardware simulation is not available."
           width={1908}
           height={821}
         />
@@ -305,7 +311,7 @@ export default function ProjectSetup() {
             ],
             correctAnswer: 1,
             explanation:
-              "Workshop 3 runs the arm in simulation before it runs on a motor. Leave the box unticked and simulation is not available, and the fix is making the project again.",
+              "Workshop 3 runs the program on your laptop, which sends real requests to the real motors through the CANivore. That runs through the simulator, so it needs the desktop build. Miss the box and the fix is one line in build.gradle: set includeDesktopSupport to true.",
           },
         ]}
       />

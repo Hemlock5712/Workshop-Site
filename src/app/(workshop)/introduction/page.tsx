@@ -5,6 +5,9 @@ import FigureGrid from "@/components/lesson/FigureGrid";
 import Box from "@/components/Box";
 import Link from "next/link";
 import { getLessonGroups } from "@/data/lessons";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/introduction");
 
 /**
  * The roadmap is read straight off `src/data/lessons.ts`: group number, group
@@ -94,8 +97,8 @@ export default function Introduction() {
           <ProseBlock>
             <p>
               For the 2027 season, WPILib introduced Commands v3, a new
-              programming style which changes how you write code. We're going
-              over Commands v3 in this workshop, not the old system.
+              programming style which changes how you write code. We&rsquo;re
+              going over Commands v3 in this workshop, not the old system.
             </p>
           </ProseBlock>
           <MarginNote label="Alpha">

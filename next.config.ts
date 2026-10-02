@@ -7,13 +7,12 @@ const nextConfig: NextConfig = {
   // actually exist, so a renamed folder or a typo'd slug shipped as a 404 that
   // only a reader would find. Stable since 15.5; this makes it a build error.
   typedRoutes: true,
-  // Stable in Next 16. Matters here because the three playgrounds and the
-  // planner carry ~60 hand-written useMemo / useCallback / memo calls between
-  // them, written by hand precisely because those components re-render on
-  // every slider drag.
+  // Stable in Next 16. Matters here because the three playgrounds carry
+  // dozens of hand-written useMemo / useCallback / memo calls, written by hand
+  // precisely because those components re-render on every slider drag.
   //
-  // `react-compiler-healthcheck` reports 121 of 121 components compiling with
-  // no bailouts, including the playgrounds that mutate SVG through refs at
+  // `react-compiler-healthcheck` reported 121 of 121 components compiling with
+  // no bailouts when this was turned on, including the playgrounds that mutate SVG through refs at
   // 60 Hz — which was the thing most likely to defeat it.
   //
   // Verifying this is harder than it should be. React 19 has useMemoCache
@@ -23,11 +22,9 @@ const nextConfig: NextConfig = {
   // 15,061,017 bytes on versus 14,970,029 off, and the chunk digests differ.
   // The ~91 KB is the memoization bookkeeping.
   //
-  // One caveat while ESLint is off (see the note in package.json / the lint
-  // script): the compiler's diagnostics ship as an eslint-plugin-react-hooks
-  // rule, so nothing warns in the normal loop if a future edit makes a
-  // component un-compilable. `pnpm dlx react-compiler-healthcheck` is the
-  // standalone way to check, and it needs no linting.
+  // The compiler's diagnostics ship as eslint-plugin-react-hooks rules, so
+  // `pnpm lint` is what says when an edit makes a component un-compilable.
+  // `pnpm dlx react-compiler-healthcheck` is the standalone check.
   reactCompiler: true,
   experimental: {
     // TypeScript 7 is the Go port and does not ship the programmatic compiler
@@ -50,8 +47,8 @@ const nextConfig: NextConfig = {
   // function of (code, language, theme), so it is about as cacheable as
   // anything gets.
   //
-  // Worth knowing before spending time on it: the site already prerenders all
-  // 38 routes as static, so PPR has no dynamic holes to fill here. The gain is
+  // Worth knowing before spending time on it: the site already prerenders
+  // every route as static, so PPR has no dynamic holes to fill here. The gain is
   // the stricter correctness checking, not speed. It already earned its keep
   // once — it is what caught `new Date()` being called during the prerender of
   // the footer copyright, which would have frozen the year into static HTML.

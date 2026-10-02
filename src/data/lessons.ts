@@ -152,6 +152,20 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   // Workshop 2: making the project is the first thing you do to write code,
   // not the last idea you learn before writing it.
   { slug: "/project-setup", title: "Project Setup", section: "workshop3" },
+  // Where each kind of code goes, then how a team shares it, before the first
+  // class is written. Both answer questions a student hits on day one of a
+  // shared repo, and neither needs a mechanism to move.
+  {
+    slug: "/project-structure",
+    title: "Project Structure",
+    section: "workshop3",
+  },
+  {
+    slug: "/git-workflow",
+    title: "Git and Pull Requests",
+    shortLabel: "Git & PRs",
+    section: "workshop3",
+  },
   {
     slug: "/mechanisms",
     title: "Mechanisms",
@@ -218,6 +232,10 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     title: "Logging",
     section: "workshop4",
   },
+  // Testing closes Routines: a routine nobody watches is checked by a log
+  // after the fact, or by a test before the robot ever runs it. Its branch,
+  // `mech-6-Testing`, adds JUnit tests on top of the coroutine chain.
+  { slug: "/testing", title: "Testing", section: "workshop4" },
 
   // Workshop 5: Swerve & Autonomous
   {
@@ -236,10 +254,25 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     title: "Swerve Calibration",
     section: "workshop5",
   },
-  { slug: "/pathplanner", title: "PathPlanner", section: "workshop5" },
+  // Split from Swerve Calibration in October 2026, when it ran 18 steps and
+  // 15 minutes: zeroing and steer gains stay there, and the carpet
+  // measurements and drive loop come here.
+  {
+    slug: "/swerve-drive-tuning",
+    title: "Swerve Drive Tuning",
+    section: "workshop5",
+  },
+  // Autonomous comes first: it drives a timed routine with no library, so a
+  // student has a working auto before PathPlanner adds paths on top of it.
   {
     slug: "/autonomous",
     title: "Autonomous",
+    section: "workshop5",
+  },
+  {
+    slug: "/pathplanner",
+    title: "PathPlanner Paths",
+    shortLabel: "PathPlanner",
     section: "workshop5",
   },
 
@@ -266,8 +299,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   },
   {
     slug: "/dynamic-path-planning",
-    title: "Dynamic Path Planning",
-    shortLabel: "Dynamic Paths",
+    title: "Pathfinding",
     section: "workshop6",
   },
   // Drive to Tag closes Vision & Navigation, which is the material it uses.

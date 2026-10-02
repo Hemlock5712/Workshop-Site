@@ -1,10 +1,13 @@
 import PageTemplate from "@/components/PageTemplate";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import { Split } from "@/components/lesson/Prose";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/command-framework");
 
 /**
  * The conceptual spine of Workshop 2: trigger, mechanism, command, scheduler.
@@ -21,14 +24,14 @@ export default function CommandFramework() {
   return (
     <PageTemplate
       title="The Command Framework"
-      lede="Robot code is built using three main concepts: triggers, mechanisms, and commands. Underneath them a scheduler runs fifty times a second and settles which command owns which motor."
+      lede="Robot code here is made of triggers, mechanisms and commands. Underneath them a scheduler runs fifty times a second and settles which command owns which motor."
       needs={[
         <>
           The vocabulary from <strong>Java Basics</strong>: class, field,
-          method, constructor, lambda, method reference.
+          method, constructor, lambda.
         </>,
       ]}
-      time="9 minutes"
+      time="10 minutes"
     >
       {/* ── the triad ────────────────────────────────────────────────── */}
       <FigureGrid
@@ -130,15 +133,13 @@ export default function CommandFramework() {
             <em>nothing at all</em> to the motor.
           </p>
           <p className="mt-3">
-            Read that last part twice. Nothing commanding the motor is not the
-            same as the motor being off. Phoenix keeps applying whatever request
-            it was last given, so canceling a command does not stop hardware.{" "}
-            <strong>Writing Commands</strong> deals with that.
-          </p>
-          <p className="mt-3">
-            The arm and flywheel are rarely unclaimed in this workshop. A
-            command with no finish condition keeps its mechanism, and every
-            binding here replaces one such command with another.
+            Nothing commanding the motor is not the same as the motor being off.
+            Phoenix keeps applying the last request it was given, so canceling a
+            command does not stop hardware.{" "}
+            <a href="/running-program#latched" className="underline">
+              Hardware Simulation
+            </a>{" "}
+            shows it on the bench.
           </p>
         </Box>
       </LessonSection>
@@ -220,6 +221,16 @@ public class MyTeleop extends PeriodicOpMode {
           seen a <code>while</code> loop before, this is one. Each pass runs the
           body, then waits for the next loop, 20 milliseconds later.
         </p>
+        <MarginNote label="Coroutine">
+          <code>runRepeatedly(body)</code> is shorthand. <code>Mechanism</code>{" "}
+          writes it as{" "}
+          <code>
+            {"run(coroutine -> { while (true) { body; coroutine.yield(); } })"}
+          </code>
+          . The <code>coroutine</code> is the command&apos;s own handle, and{" "}
+          <code>yield()</code> is where it waits for the next loop. Workshop 4
+          writes bodies like that by hand.
+        </MarginNote>
         <p>
           Nothing inside it decides when to stop, so ending it is somebody
           else&apos;s job. Releasing the trigger is what does it above:{" "}
@@ -233,13 +244,16 @@ public class MyTeleop extends PeriodicOpMode {
           names what has the arm right now.
         </p>
 
-        <p>Here is a real one, from the arm you build two lessons from now.</p>
+        <p>
+          Here is a real one, from the arm you build in{" "}
+          <strong>Writing Commands</strong>.
+        </p>
 
         <CodeBlock
           language="java"
           title="Arm.java: one command, from the arm you build later"
           filename="Workshop-Code, branch mech-2-Commands · mechanisms/Arm.java"
-          code={`/** Push the arm with a stronger voltage and keep pushing. Never finishes. */
+          code={`/** Push the arm at 6 volts and keep pushing. Never finishes. */
 public Command runFast() {
   return runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)");
 }`}
@@ -256,6 +270,27 @@ public Command runFast() {
           Six volts is a push, not a position. The arm ends up wherever gravity
           and friction let it.
         </p>
+      </LessonSection>
+
+      <LessonSection id="check-your-work" title="Check your work">
+        <p>
+          No editor yet. Take the left-trigger binding in <code>MyTeleop</code>{" "}
+          above. Write down which command owns the arm before the press, while
+          the trigger is held, and after the release.
+        </p>
+        <Box variant="alert-success" title="You should have">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>Before the press: nothing. The arm is unclaimed.</li>
+            <li>
+              While held: <code>runFast (hold)</code>, started by{" "}
+              <code>whileTrue</code>.
+            </li>
+            <li>
+              After the release: <code>stop (hold)</code>, started by{" "}
+              <code>whileFalse</code> as <code>runFast</code> is canceled.
+            </li>
+          </ul>
+        </Box>
       </LessonSection>
 
       {/* ── the check ────────────────────────────────────────────────── */}
@@ -301,7 +336,7 @@ public Command runFast() {
             ],
             correctAnswer: 1,
             explanation:
-              "That is what the (hold) suffix is for. A hold has no ending by design, so anything waiting on one waits forever. Chaining Commands and Finish Lines give a hold an ending two ways: .withTimeout(...) and .until(...).",
+              "That is what the (hold) suffix is for. A hold has no ending by design, so anything waiting on one waits forever. Command Composition and Finish Conditions give a hold an ending two ways: .withTimeout(...) and .until(...).",
           },
           {
             id: 4,

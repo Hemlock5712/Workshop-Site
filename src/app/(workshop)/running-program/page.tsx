@@ -6,6 +6,11 @@ import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import { ProseBlock, Split } from "@/components/lesson/Prose";
 import VideoEmbed from "@/components/VideoEmbed";
+import MechanismSelector from "@/components/lesson/MechanismSelector";
+import { M, Mech } from "@/components/lesson/Mechanism";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/running-program");
 
 export default function RunningProgram() {
   return (
@@ -30,8 +35,10 @@ export default function RunningProgram() {
         <>An Xbox-style controller plugged into the same laptop.</>,
       ]}
       branch="mech-2-Commands"
-      time="13 minutes"
+      time="15 minutes"
     >
+      <MechanismSelector />
+
       <Split>
         <ProseBlock>
           <p>
@@ -162,8 +169,7 @@ export default function RunningProgram() {
             that binding&apos;s <code>whileFalse</code> says when you let go.
           </li>
           <li>
-            Click <strong>Disable</strong> before you walk away. Leave the
-            program running for the next section.
+            Click <strong>Disable</strong>. Leave the program running for now.
           </li>
         </ol>
         <p>Two things go wrong here more than anything else.</p>
@@ -185,6 +191,57 @@ export default function RunningProgram() {
         </ul>
       </LessonSection>
 
+      <LessonSection id="latched" title="The latched request">
+        <p>
+          Every hold here is bound <code>whileTrue</code> with a{" "}
+          <code>whileFalse</code> behind it. This step takes the{" "}
+          <code>whileFalse</code> away for one run, so you see what it is for.
+          Keep a hand on <strong>Disable</strong>.
+          <Mech for="arm">
+            {" "}
+            Run it only on an arm that turns a full circle. An arm with hard
+            stops drives into one at 6 V.
+          </Mech>
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Stop the program. In <code>MyTeleop.java</code>, delete{" "}
+            <Mech for="arm">
+              <code>.whileFalse(robot.arm.stop())</code> from the left-trigger
+              line.
+            </Mech>
+            <Mech for="flywheel">
+              <code>.whileFalse(robot.flywheel.stop())</code> from the{" "}
+              <code>a()</code> line.
+            </Mech>
+          </li>
+          <li>
+            Start <strong>Hardware Sim Robot Code</strong> again, pick
+            Teleoperated and your OpMode, and enable.
+          </li>
+          <li>
+            Hold the button for a second, then let go.{" "}
+            <strong>You should see:</strong> the <M k="noun" /> carry on at 6 V
+            after the release. Click <strong>Disable</strong>.
+          </li>
+          <li>
+            Put the <code>whileFalse</code> back, and run once more to see the
+            release stop it.
+          </li>
+        </ol>
+        <p>
+          Releasing the button did cancel the command. Canceling ends the code
+          that was sending the request, and sends nothing to the motor. The
+          TalonFX keeps applying the last request it received, because{" "}
+          <a href="/mechanisms#configs-and-requests" className="underline">
+            requests stay latched
+          </a>
+          . Something has to send a new one, and that is the job of{" "}
+          <code>whileFalse(stop())</code>. Disable works because it cuts every
+          output, which is no use as a plan in the middle of a match.
+        </p>
+      </LessonSection>
+
       <LessonSection id="check-your-work" title="Check your work">
         <p>
           Walk your bindings once more. You are done when each one repeats
@@ -202,6 +259,21 @@ export default function RunningProgram() {
             </li>
           </ul>
         </Box>
+      </LessonSection>
+
+      <LessonSection id="deploy" title="Deploy to a SystemCore">
+        <p>
+          A robot runs the same program, deployed the same way. Connect the
+          laptop to the robot, open the same <strong>&hellip;</strong> menu, and
+          choose <strong>Deploy Robot Code</strong> instead of the hardware sim
+          entry. <strong>You should see:</strong> <code>BUILD SUCCESSFUL</code>,
+          and the robot runs your OpModes from the driver station.
+        </p>
+        <p>
+          The usual failure is a deploy that cannot find the robot. Check the
+          team number in <code>.wpilib/wpilib_preferences.json</code>, and check
+          that the laptop is on the robot&apos;s network.
+        </p>
       </LessonSection>
 
       <Quiz
@@ -233,6 +305,20 @@ export default function RunningProgram() {
             correctAnswer: 1,
             explanation:
               "Only one program can own the CAN bus over USB. With CANivore USB on, Tuner X holds the bus and the simulator cannot reach your motors. It is one switch with two positions: on for bench work in Tuner X, off when your code is driving.",
+          },
+          {
+            id: 3,
+            question:
+              "With the whileFalse deleted, you release the button and the mechanism keeps going at 6 V. Which fix makes the release stop it?",
+            options: [
+              "Call cancel() on the command when the button is released",
+              "Lower the voltage in runFast() so the motor coasts down",
+              "Bind whileFalse(stop()), so a command sends the motor a new request on the release",
+              "Switch the binding from whileTrue to onTrue",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "The command was already canceled, and canceling sends nothing to the motor. The TalonFX keeps applying the last request until a new one arrives. stop() sends that new request, and whileFalse runs it the moment the button comes up.",
           },
         ]}
       />

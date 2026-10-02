@@ -7,6 +7,9 @@ import Quiz from "@/components/Quiz";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/finish-conditions");
 
 /**
  * Lesson 17, and the page for `mech-4-ReadingState`. It left Workshop 6
@@ -27,12 +30,19 @@ import { M, Mech } from "@/components/lesson/Mechanism";
  * `BooleanSupplier`. `/java-basics` pre-taught both fourteen lessons early and
  * no longer does, so section one defines them where they first appear.
  *
- * Written once, read twice from "The arrival question" down — see
+ * Written once, read twice, from the first lambda down; see
  * `src/data/mechanisms.ts`. The arm compares an angle and the flywheel
- * compares a speed, which is two different `isAtTarget()` and not one with a
- * noun swapped, so that section forks. Everything from "Both endings on one
- * step" stays shared, because a condition and a timeout read the same on
- * either mechanism.
+ * compares a speed, so "The arrival question" forks whole. From "Both endings
+ * on one step" on, the flywheel reader gets `spinUp` (`runFast().until(...)`)
+ * where the arm reader gets `raiseArm`, and the failure grid and the check
+ * fork with them. Until October 2026 those sections were shared and showed a
+ * flywheel reader arm-only code. "One button, both mechanisms" is shared
+ * because it drives both.
+ *
+ * That section is a preview of `/coroutines`, not a lesson in it: three
+ * calls read once, and the house rules live on the next page. Adding the
+ * `robot` field to `MyTeleop` is a numbered step now. It was a sentence
+ * after the code block, and the routine does not compile without it.
  *
  * There is no `Command.sequence` on this page. It carried a `score` routine
  * with two flywheel members until September 2026, which meant the arrival
@@ -88,17 +98,20 @@ export default function FinishConditions() {
           second.
         </p>
         <p>
-          Hand it a lambda. <code>() -&gt; robot.arm.isAtTarget()</code> is a
-          question the scheduler can ask on every loop. Drop the{" "}
+          Hand it a lambda.{" "}
+          <code>
+            () -&gt; robot.
+            <M k="noun" />
+            .isAtTarget()
+          </code>{" "}
+          is a question the scheduler can ask on every loop. Drop the{" "}
           <code>() -&gt;</code> and the method runs on the spot, passing one
           frozen answer. The build stops on{" "}
           <code>boolean cannot be converted to BooleanSupplier</code>.
         </p>
         <p>
-          <code>.until(...)</code> returns a builder, not a <code>Command</code>
-          , the same way <code>Command.sequence(...)</code> did.{" "}
-          <code>.named(&quot;...&quot;)</code> closes it, and leaving it off
-          fails the build.
+          Like <code>Command.sequence(...)</code>, <code>.until(...)</code>{" "}
+          returns a builder, and <code>.named(&quot;...&quot;)</code> closes it.
         </p>
       </LessonSection>
 
@@ -208,37 +221,53 @@ public boolean isAtTarget() {
 
       <LessonSection id="decorate-the-hold" title="Both endings on one step">
         <p>
-          <code>robot.arm.vertical()</code> is a hold. It re-sends its position
-          request every loop and never finishes, which suits a held button and
-          is useless in a list. One call site turns it into a step.
+          <Mech for="arm">
+            <code>robot.arm.vertical()</code>
+          </Mech>
+          <Mech for="flywheel">
+            <code>robot.flywheel.runFast()</code>
+          </Mech>{" "}
+          is a hold. It re-sends its request every loop and never finishes,
+          which suits a held button and is useless in a list. One call site
+          turns it into a step.
         </p>
-        <CodeBlock
-          language="java"
-          title="A condition to finish on, a timeout to give up on"
-          code={`import static org.wpilib.units.Units.Seconds;
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            title="A condition to finish on, a timeout to give up on"
+            code={`import static org.wpilib.units.Units.Seconds;
 
 Command raiseArm =
     robot.arm.vertical()
         .until(() -> robot.arm.isAtTarget())
         .named("vertical until at target")
         .withTimeout(Seconds.of(2.0));`}
-        />
+          />
+        </Mech>
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            title="A condition to finish on, a timeout to give up on"
+            code={`import static org.wpilib.units.Units.Seconds;
+
+Command spinUp =
+    robot.flywheel.runFast()
+        .until(() -> robot.flywheel.isAtTarget())
+        .named("runFast until at target")
+        .withTimeout(Seconds.of(2.0));`}
+          />
+        </Mech>
         <p>
-          <code>vertical()</code> itself is untouched. The condition is the
-          ending you want; the timeout is the ending you get when a sensor dies
-          or the arm jams. It goes after <code>.named(...)</code>, because{" "}
+          The hold itself is untouched. The condition is the ending you want;
+          the timeout is the ending you get when a sensor dies or the{" "}
+          <M k="noun" /> jams. It goes after <code>.named(...)</code>, because{" "}
           <code>.withTimeout(...)</code> is a method on <code>Command</code>,
           not on the builder.
-        </p>
-        <p>
-          <code>raiseArm</code> is a <code>Command</code> like any other now, so
-          it can be bound to a button or dropped into a routine. It ends itself
-          either way.
         </p>
         <Box variant="concept" title="What a timeout proves">
           <p>
             That the waiting is over, and nothing else. If the next step assumes
-            the arm arrived, ask <code>robot.arm.isAtTarget()</code> again
+            the <M k="noun" /> arrived, ask <code>isAtTarget()</code> again
             before running it.
           </p>
         </Box>
@@ -246,16 +275,35 @@ Command raiseArm =
 
       <LessonSection id="one-button" title="One button, both mechanisms">
         <p>
-          Raise the arm, wait for it to really arrive, then spin the flywheel
-          while the arm goes on holding. That is not a list of steps. A sequence
-          drives the mechanisms it names one at a time, so the arm cannot keep
-          holding while the flywheel spins.
+          Raise the arm, wait for it to arrive, then spin the flywheel while the
+          arm keeps holding. A sequence cannot do that, because each member has
+          to finish before the next starts, so the arm&apos;s hold would end
+          first.
         </p>
         <p>
-          The shape with two timelines is a <strong>coroutine</strong>. Its body
-          is ordinary Java, read top to bottom, and it can pause partway through
-          and carry on from the same line.
+          The shape for it is a <strong>coroutine</strong>. Its body is ordinary
+          Java, read top to bottom, and it can pause on a line and carry on from
+          there. This is a first look; Coroutines, next, takes it apart.
         </p>
+
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Give <code>MyTeleop</code> a <code>robot</code> field. The routine
+            body is a method of its own, outside the constructor, and the
+            constructor&apos;s <code>robot</code> parameter does not reach it.
+            Add <code>private final Robot robot;</code> beside{" "}
+            <code>driver</code>, and make <code>this.robot = robot;</code> the
+            first line of the constructor.
+          </li>
+          <li>
+            Import <code>org.wpilib.command3.Command</code> and{" "}
+            <code>org.wpilib.command3.Coroutine</code>.
+          </li>
+          <li>
+            Add the Y binding to the constructor and the method below it to the
+            class.
+          </li>
+        </ol>
 
         <CodeBlock
           language="java"
@@ -282,34 +330,25 @@ private void spinUpWhenReady(Coroutine coroutine) {
 }`}
         />
 
-        <p>
-          Three verbs, and the middle one is this lesson&apos;s.{" "}
-          <code>fork</code> starts a command and keeps reading, so the arm hold
-          runs underneath everything after it. <code>waitUntil</code> stops
-          until <code>isAtTarget()</code> comes back true. <code>await</code>{" "}
-          runs a command and stops until it finishes.
-        </p>
-        <p>
-          <code>MyTeleop</code> needs <code>robot</code> as a field:{" "}
-          <code>private final Robot robot;</code>, assigned in the constructor.
-          Import <code>org.wpilib.command3.Command</code> and{" "}
-          <code>org.wpilib.command3.Coroutine</code>.
-        </p>
-
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
-              <code>Command.noRequirements</code> claims no mechanism of its
-              own, and does not need to: each forked command claims its own, for
-              only as long as it runs. One mechanism, write a composition. Two
-              that have to overlap, write a coroutine.
+              Read it as three lines. <code>fork</code> starts the arm hold and
+              moves on while it keeps running. <code>waitUntil</code> pauses
+              until <code>isAtTarget()</code> comes back true, the same question{" "}
+              <code>.until(...)</code> asks. <code>await</code> starts the
+              flywheel and pauses until it finishes. A hold never finishes, so
+              the routine runs until you let go.
+            </p>
+            <p>
+              <code>Command.noRequirements</code> claims no mechanism itself.
+              Each forked command claims its own, for only as long as it runs.
             </p>
           </div>
           <MarginNote label="No timeout here">
-            Every wait on this page is unbounded, and that is safe only because
-            a driver is holding Y and can let go. Coroutines does the same
-            routine in autonomous, where nobody can, so every wait there is
-            bounded.
+            Every wait on this page is unbounded, which is safe only because a
+            driver is holding Y and can let go. Coroutines runs the same routine
+            in autonomous, where nobody can.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -319,49 +358,89 @@ private void spinUpWhenReady(Coroutine coroutine) {
         title="Conditions that never come true"
       >
         <p>
-          A condition that cannot go true is as bad as a bare hold. The sequence
-          sits on that step, nothing throws, nothing logs, and the arm keeps
+          A condition that cannot go true is as bad as a bare hold. The step
+          never ends, nothing throws, nothing logs, and the <M k="noun" /> keeps
           pushing. Fifteen seconds of autonomous go on step one.
         </p>
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "Never true",
-              term: "Tolerance too tight",
-              body: (
-                <>
-                  The arm settles half a degree outside the band and stops
-                  there. The plot looks fine. The routine does not move.
-                </>
-              ),
-            },
-            {
-              label: "Never changes",
-              term: "A dead sensor",
-              body: (
-                <>
-                  A CANcoder off the bus reports one value forever, so{" "}
-                  <code>isAtTarget()</code> gives the same answer every loop
-                  whatever the arm does.
-                </>
-              ),
-            },
-            {
-              label: "True too early",
-              term: "Passing through",
-              body: (
-                <>
-                  A fast mechanism crosses the target for one loop on its way
-                  past. The step ends while it is still moving.
-                </>
-              ),
-            },
-          ]}
-        />
+        <Mech for="arm">
+          <FigureGrid
+            cols={3}
+            items={[
+              {
+                label: "Never true",
+                term: "Tolerance too tight",
+                body: (
+                  <>
+                    The arm settles half a degree outside the band and stops
+                    there. The plot looks fine. The routine does not move.
+                  </>
+                ),
+              },
+              {
+                label: "Never changes",
+                term: "A dead sensor",
+                body: (
+                  <>
+                    A CANcoder off the bus reports one value forever, so{" "}
+                    <code>isAtTarget()</code> gives the same answer every loop
+                    whatever the arm does.
+                  </>
+                ),
+              },
+              {
+                label: "True too early",
+                term: "Passing through",
+                body: (
+                  <>
+                    A fast arm crosses the target for one loop on its way past.
+                    The step ends while it is still moving.
+                  </>
+                ),
+              },
+            ]}
+          />
+        </Mech>
+        <Mech for="flywheel">
+          <FigureGrid
+            cols={3}
+            items={[
+              {
+                label: "Never true",
+                term: "Tolerance too tight",
+                body: (
+                  <>
+                    The wheel settles at 74.3 rotations a second, outside the
+                    band, and stays there. The routine does not move.
+                  </>
+                ),
+              },
+              {
+                label: "Never changes",
+                term: "A dead sensor",
+                body: (
+                  <>
+                    A motor off the bus reports one speed forever, so{" "}
+                    <code>isAtTarget()</code> gives the same answer every loop
+                    whatever the wheel does.
+                  </>
+                ),
+              },
+              {
+                label: "True too early",
+                term: "Passing through",
+                body: (
+                  <>
+                    A wheel that overshoots crosses 75 for one loop on the way
+                    up. The step ends before the speed has settled.
+                  </>
+                ),
+              },
+            ]}
+          />
+        </Mech>
         <p>
-          The timeout covers the first two and cannot help with the third. For a
-          mechanism that overshoots, require the reading to stay inside
+          The timeout covers the first two and cannot help with the third. For a{" "}
+          <M k="noun" /> that overshoots, require the reading to stay inside
           tolerance for several loops in a row. Keep that behind the same{" "}
           <code>isAtTarget()</code>, so no call site changes.
         </p>
@@ -375,36 +454,50 @@ private void spinUpWhenReady(Coroutine coroutine) {
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Add <code>isAtTarget()</code> to <code>Arm</code> and{" "}
-            <code>Flywheel</code>, then bind <code>raiseArm</code> to a button
-            with <code>onTrue</code> in your <code>MyTeleop</code>. It is a step
-            now, so it ends itself.
+            <code>Flywheel</code>, then bind{" "}
+            <Mech for="arm">
+              <code>raiseArm</code>
+            </Mech>
+            <Mech for="flywheel">
+              <code>spinUp</code>
+            </Mech>{" "}
+            to a button with <code>onTrue</code> in your <code>MyTeleop</code>.
+            It is a step now, so it ends itself.
           </li>
           <li>Press it once and time how long the step takes to end.</li>
           <li>
-            Change the arm&apos;s <code>tolerance</code> to{" "}
-            <code>Degrees.of(0.001)</code> and press it again.
+            Change the <M k="noun" />
+            &apos;s <code>tolerance</code> to{" "}
+            <Mech for="arm">
+              <code>Degrees.of(0.001)</code>
+            </Mech>
+            <Mech for="flywheel">
+              <code>RotationsPerSecond.of(0.001)</code>
+            </Mech>{" "}
+            and press it again.
           </li>
           <li>
             Leave the tolerance broken, drop <code>.withTimeout(...)</code>, and
             press it once more.
           </li>
           <li>
-            Put the tolerance back, add the Y binding, and hold Y. The arm goes
-            up, and the flywheel starts only once the arm is there.
+            Put the tolerance back and hold Y. The arm goes up, and the flywheel
+            starts only once the arm is there.
           </li>
         </ol>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              The arm reaching its angle and the step ending well under two
-              seconds.
+              The <M k="noun" /> reaching its target and the step ending well
+              under two seconds.
             </li>
             <li>
               At <code>0.001</code>, the step running the full two seconds every
               time.
             </li>
             <li>
-              With the timeout gone as well, the arm pushing until you disable.
+              With the timeout gone as well, the step never ending until you
+              disable.
             </li>
             <li>
               On Y, the flywheel waiting out the arm&apos;s travel, then
@@ -454,10 +547,10 @@ private void spinUpWhenReady(Coroutine coroutine) {
             question:
               "What does () -> robot.arm.isAtTarget() hand to .until(...), and why does a bare robot.arm.isAtTarget() not work in the same place?",
             options: [
-              "Both work; the double colon is a style preference",
+              "Both work; the () -> is optional punctuation",
               "The method itself, so the scheduler can call it every loop. The version with parentheses runs it once and passes a frozen boolean, which does not compile",
               "A copy of the arm object, which .until then queries each loop",
-              "The method reference is faster because it skips building a lambda",
+              "A background thread that runs isAtTarget() until it returns true",
             ],
             correctAnswer: 1,
             explanation:
@@ -469,7 +562,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
               "robot.arm.vertical().until(() -> robot.arm.isAtTarget()) on its own will not compile. What is missing?",
             options: [
               "vertical() is a hold, and holds cannot take a finish condition",
-              "The condition has to be a lambda rather than a method reference",
+              "The condition has to be a separate method on Arm",
               ".until can only be used inside Command.sequence",
               '.until returns a builder, and .named("...") is what turns it into a Command',
             ],
