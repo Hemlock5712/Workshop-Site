@@ -9,16 +9,6 @@ Check items off as they land and delete this file when the list is empty.
 
 ## Needs the owner
 
-- [ ] **Workshop-Code history.** Rebuild the mech chain as one commit per
-      lesson (`main → mech-1 … mech-5 → mech-6-Testing`), delete
-      `mech-6-StateBased` (closes PR #23), open the mech-6-Testing PR, and
-      force-push. Same treatment for the swerve chain (PRs #8 to #12) and the
-      three new PathPlanner branches. Blocked on permission to rewrite history.
-      Local commits waiting in `reference/work/Workshop-Code`: the kV fix on
-      mech-3 to mech-6, the flywheel stop on mech-5, the Idle stop on 5 to 7,
-      `mech-7-Testing` (becomes `mech-6-Testing`; scripts written, waiting to be run), and in
-      `reference/work/wt-pathplanner` `swerve-autonomous`,
-      `swerve-pathplanner`, `swerve-pathfinding`.
 - [ ] **PathPlannerLib crash upstream.** alpha-4 throws
       `AlertException: Alert already allocated` at boot on alpha-7. A drafted
       issue and one-line fix are in the session notes; file them, then drop
@@ -38,9 +28,6 @@ Check items off as they land and delete this file when the list is empty.
 
 ## Still to do
 
-- [ ] Push the branches, then confirm every page's `branch` prop names a
-      branch that exists on GitHub (`/testing`, `/pathplanner`,
-      `/autonomous`, `/dynamic-path-planning` name new ones).
 - [ ] Rebuild `7-InlineCommands` on LimelightLib 2 so `/drive-to-tag-inline`
       can set its `branch` prop again (the page is ahead of the branch, like
       `/vision-implementation` and `3-Limelight`).
