@@ -39,7 +39,7 @@ const linkStyle =
  * nothing), so the modules keep their last request. The stop is a zero
  * `ChassisVelocities` on the same robot-relative request.
  *
- * No `branch` prop: `7-InlineCommands` still has the helper and the Idle stop.
+ * No `branch` prop: `7-InlineCommands` still has the copied LimelightHelpers and the old target-space axes.
  * With no embed, the three excerpts together are the whole class except the
  * package line and imports, which are listed in prose.
  */

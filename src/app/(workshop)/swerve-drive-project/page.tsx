@@ -76,7 +76,7 @@ export default function SwerveDriveProject() {
           steps 5 and 6 are the only two edits it needs.
         </p>
         <a
-          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.0-swerve.zip"
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.1-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)] px-6 py-3 font-medium text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
@@ -143,8 +143,9 @@ export default function SwerveDriveProject() {
                 distance between module centers.
               </li>
               <li>
-                <strong>Wheel radius</strong>: half the tread width, on a wheel
-                already driven on. The field asks for radius, not diameter.
+                <strong>Wheel radius</strong>: half the wheel&apos;s diameter,
+                measured on a wheel already driven on. The field asks for
+                radius, not diameter.
               </li>
               <li>
                 <strong>Drive gear ratio</strong>: motor rotations per wheel

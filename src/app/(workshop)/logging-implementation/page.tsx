@@ -73,8 +73,7 @@ export default function LoggingImplementation() {
       lede="Telemetry publishes a number under a name. DataLogManager copies every published value and every console line into one file on disk. You start the recorder in Robot.java, log three signals from your mechanism, then open the file and read them back."
       needs={[
         <>
-          The project from <strong>Hardware Simulation</strong> running on the
-          bench.
+          The project from <strong>Coroutines</strong> running on the bench.
         </>,
         <>
           <strong>Robot.java</strong> and one mechanism class from the previous

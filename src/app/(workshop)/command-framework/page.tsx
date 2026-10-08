@@ -117,10 +117,10 @@ export default function CommandFramework() {
         </p>
 
         <p>
-          Priorities are new in Commands v3. A second command takes a mechanism
-          only if its priority is the same or higher than the command already
-          holding it. Every command in this workshop uses the same priority, so
-          a new one always gets to run.
+          Every command has a priority. A second command takes a mechanism only
+          if its priority is the same or higher than the command already holding
+          it. Every command in this workshop uses the same priority, so a new
+          one always gets to run.
         </p>
 
         <Box variant="concept" title="Canceling is not stopping">
