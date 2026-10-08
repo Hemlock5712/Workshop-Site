@@ -9,13 +9,14 @@ Check items off as they land and delete this file when the list is empty.
 
 ## Needs the owner
 
-- [ ] **PathPlannerLib crash upstream.** alpha-4 throws
-      `AlertException: Alert already allocated` at boot on alpha-7. A drafted
-      issue and one-line fix are in the session notes; file them, then drop
-      the WatchOut on `/pathplanner` once a fixed release ships.
-- [ ] **A Commands v3 layer for PathPlannerLib.** Propose upstream as an
-      issue before a PR: a v3 command package beside the v2 one, chosen by
-      which WPILib command vendordep a team installs.
+- [x] **PathPlannerLib crash.** Fixed by giving each `RobotConfig` alert its
+      own ID; the team's `2027.0.0-alpha-7-commandsv3-1` build carries it, and
+      the WatchOut is gone from `/pathplanner`.
+- [ ] **A Commands v3 layer for PathPlannerLib, upstream.** Built as
+      `com.pathplanner.lib.command3` on JosephTLockwood/pathplanner
+      `new-path-2027-commands-v3`, and `/pathplanner` installs it from that
+      fork's `vendordep` branch. Propose it upstream, and point the lesson
+      back at the official vendordep once a release ships it.
 - [ ] **Re-record the Tuner X videos** (2026 moved configs to a nested menu):
       `pid-control` `Pt7SBFfl3oM`, `motion-magic` `7I7r9p1RBZI`,
       `mechanism-setup` `cDWF3bj1Juk` and `mjGn3y19eUc`; lower priority

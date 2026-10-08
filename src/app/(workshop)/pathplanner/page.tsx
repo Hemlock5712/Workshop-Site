@@ -5,7 +5,7 @@ import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
-import { MarginNote, Split, WatchOut } from "@/components/lesson/Prose";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -16,29 +16,24 @@ export const metadata = lessonMetadata("/pathplanner");
  * `swerve-autonomous` (the Leave Start routine from /autonomous), whose parent
  * is `1-Swerve`.
  *
- * PathPlannerLib 2027.0.0-alpha-4 is the 2027_alpha7 vendordep. Its AutoBuilder,
- * FollowPathCommand, NamedCommands and PathPlannerAuto are still built on the
- * other command framework, so the lesson uses only the classes that are not
- * commands: PathPlannerPath, RobotConfig, PathPlannerTrajectory and
- * PPHolonomicDriveController, driven from a Commands v3 coroutine. Every name
- * below was read off the jar, not the docs.
+ * PathPlannerLib is the team's Commands v3 build,
+ * `2027.0.0-alpha-7-commandsv3-1`, from the `vendordep` branch of
+ * JosephTLockwood/pathplanner. It adds `com.pathplanner.lib.command3`:
+ * AutoBuilder, NamedCommands, PathPlannerAuto, FollowPathCommand and
+ * PathfindingCommand written as coroutines, and it carries the fix for the
+ * alpha-4 "Alert already allocated" crash. Every name below was read off
+ * `new-path-2027-commands-v3`, not the upstream docs. Swap the URL back to
+ * the official vendordep once upstream ships Commands v3.
  *
- * The path is picked with org.wpilib.tunable.Selectable, the owner's call in
- * October 2026. WPILib's own templates show Selectable only in TimedRobot
- * projects; the OpMode templates pick autos with @Autonomous classes. Here the
- * auto is one @Autonomous class and the Selectable picks the path inside it.
- * Topic names below were read off a sim run: /Tunables/Auto Path/{.type,
- * default, options, selected/value}.
- *
- * The 2027 alpha WatchOut covers a crash in that release: on WPILib alpha-7,
- * RobotConfig's static initializer throws "Alert already allocated". Delete
- * it when a PathPlannerLib release fixes it.
+ * A path that finishes with a goal velocity under 0.1 m/s sends zero speed.
+ * A canceled one sends nothing (`PathFollower.stop(true)`), so the stop on a
+ * cancel comes from disabling or from the drive default command taking over.
  */
 export default function PathPlannerLesson() {
   return (
     <PageTemplate
       title="PathPlanner Paths"
-      lede="PathPlanner is a field editor. You draw a path on the field, and PathPlannerLib turns it into a speed for every loop. This lesson replaces the Leave Start timer with a drawn path."
+      lede="PathPlanner is a field editor. You draw paths on the field, string them into autos with the actions between them, and PathPlannerLib turns each auto into one command. This lesson replaces the Leave Start timer with a drawn auto."
       needs={[
         <>
           The <strong>Leave Start</strong> routine from{" "}
@@ -63,17 +58,12 @@ export default function PathPlannerLesson() {
             them, so a swerve robot can travel one way while it faces another.
           </p>
           <p>
-            The app saves each path as a file in the robot project. The robot
-            reads that file, plans the trip from wherever it is, and follows the
-            plan one loop at a time.
+            An <strong>auto</strong> is a list: drive this path, run this
+            action, drive the next path. The app saves both as files in the
+            robot project, and the robot builds each auto into a single command
+            at boot.
           </p>
         </div>
-        <MarginNote label="Paths, not autos">
-          The app&apos;s Auto editor, event markers and named commands build
-          commands for PathPlannerLib&apos;s own classes, which use a different
-          command framework from this project. Here an auto is an{" "}
-          <code>@Autonomous</code> class, the same as Leave Start.
-        </MarginNote>
       </Split>
 
       <LessonSection id="install" title="Install and configure">
@@ -96,24 +86,23 @@ export default function PathPlannerLesson() {
         </ol>
         <CodeBlock
           language="text"
-          title="PathPlannerLib for WPILib 2027 alpha-7"
-          code="https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLibSystemCoreAlpha.json"
+          title="PathPlannerLib for Commands v3, WPILib 2027 alpha-7"
+          code="https://raw.githubusercontent.com/JosephTLockwood/pathplanner/vendordep/PathplannerLib.json"
         />
-        <WatchOut label={"2027\nalpha"}>
-          <p>
-            PathPlannerLib <code>2027.0.0-alpha-4</code> builds, then stops the
-            robot program at boot with{" "}
-            <code>AlertException: Alert already allocated</code> from{" "}
-            <code>RobotConfig.&lt;clinit&gt;</code>. The fault is in that
-            release. Update the vendordep when a fixed one is published.
+        <Split>
+          <p className="measure prose-body m-0">
+            Then open <strong>Settings</strong> and the{" "}
+            <strong>Robot Config</strong> tab. PathPlannerLib reads these
+            numbers back on the robot and uses them to decide how hard each
+            wheel can push. A guessed number shapes every path the robot drives.
           </p>
-        </WatchOut>
-        <p>
-          Then open <strong>Settings</strong> and the{" "}
-          <strong>Robot Config</strong> tab. PathPlannerLib reads these numbers
-          back on the robot and uses them to decide how hard each wheel can
-          push. A guessed number shapes every path the robot drives.
-        </p>
+          <MarginNote label="Which build">
+            The official PathPlannerLib release for 2027 builds its commands on
+            the older command framework. This build is the same library with a{" "}
+            <code>command3</code> package added, so every command it makes runs
+            on the Commands v3 scheduler.
+          </MarginNote>
+        </Split>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-note">
             <thead>
@@ -176,7 +165,7 @@ export default function PathPlannerLesson() {
         </div>
       </LessonSection>
 
-      <LessonSection id="draw-one-path" title="Draw one path">
+      <LessonSection id="draw-one-path" title="Draw a path and auto">
         <p>
           Draw the trip Leave Start made, from the same tape mark. The field in
           the app has its origin at the blue alliance corner, the same as{" "}
@@ -194,7 +183,8 @@ export default function PathPlannerLesson() {
           </li>
           <li>
             Drag the last waypoint about two meters out, in open floor. Set{" "}
-            <strong>Goal End State</strong> rotation to 45 degrees.
+            <strong>Goal End State</strong> rotation to 45 degrees and leave its
+            velocity at 0.
           </li>
           <li>
             Set <strong>Global Constraints</strong> to 2 m/s and 2 m/s². Watch
@@ -206,116 +196,167 @@ export default function PathPlannerLesson() {
           <code>deploy/pathplanner/paths/Leave Start.path</code>. That file
           ships to the robot with every deploy.
         </p>
+        <p>
+          A path on its own does nothing. The robot runs autos, so wrap the path
+          in one. Click <strong>+</strong> in the Autos section, name it{" "}
+          <code>Leave Start</code>, and drag the <code>Leave Start</code> path
+          into its command list. Leave <strong>Reset Odometry</strong> on. At
+          enable it tells odometry the robot is sitting on the first path&apos;s
+          start pose.
+        </p>
+        <p>
+          The branch ships two longer autos built the same way. Each box in the
+          list runs after the one above it finishes:
+        </p>
+        <FigureGrid
+          cols={2}
+          items={[
+            {
+              label: "Shoot and Leave",
+              term: "Path, action, path",
+              body: (
+                <>
+                  <code>Start to Shoot</code>, then the <code>Shoot</code> named
+                  command, then <code>Shoot to Neutral Zone</code>.
+                </>
+              ),
+            },
+            {
+              label: "Neutral Zone Run",
+              term: "Path, path, action",
+              body: (
+                <>
+                  <code>Start to Neutral Zone</code>, with an{" "}
+                  <code>Intake</code> zone along it, then{" "}
+                  <code>Neutral Zone to Shoot</code> and <code>Shoot</code>.
+                </>
+              ),
+            },
+          ]}
+        />
       </LessonSection>
 
-      <LessonSection id="drive-it-from-code" title="Drive it from code">
+      <LessonSection id="configure" title="Teach AutoBuilder the robot">
         <p>
-          <code>DriveMechanism</code> gets one new command. When it starts, it
-          plans the whole trip from the robot&apos;s pose and speed. Then each
-          loop asks the plan where the robot should be, and{" "}
-          <code>PPHolonomicDriveController</code> turns the gap into a speed.
+          <code>AutoBuilder</code> is what turns a file into a command. It has
+          to know how to read this robot and how to drive it, once, before any
+          auto loads. That goes in the <code>DriveMechanism</code> constructor.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          title="followPath: plan once, then follow"
-          code={`public Command followPath(PathPlannerPath path) {
-  return run(coroutine -> {
-        PathPlannerTrajectory trajectory =
-            path.generateTrajectory(getRobotVelocity(), getPose().getRotation(), pathConfig);
-        pathController.reset(getPose(), getRobotVelocity());
-        double startTime = Utils.getCurrentTimeSeconds();
-        double elapsed = 0.0;
-
-        while (elapsed < trajectory.getTotalTimeSeconds()) {
-          PathPlannerTrajectoryState target = trajectory.sample(elapsed);
-          drivetrain.setControl(
-              pathRequest.withVelocity(
-                  pathController.calculateRobotRelativeSpeeds(getPose(), target)));
-          Telemetry.getTable(getName()).log("PathTarget", target.pose);
-          coroutine.yield();
-          elapsed = Utils.getCurrentTimeSeconds() - startTime;
-        }
-
-        stopDriving();
-      })
-      .whenCanceled(() -> stopDriving())
-      .named("FollowPath " + path.name);
-}`}
+          title="In the constructor, after registerTelemetry"
+          code={`// Teaches PathPlanner how to drive this robot. After this, AutoBuilder can turn any path or
+// auto drawn in the PathPlanner app into a command.
+AutoBuilder.configure(
+    () -> getPose(), // where the robot is
+    pose -> resetPose(pose), // used when an auto says where the robot starts
+    () -> getRobotVelocity(), // how fast it is moving, in its own directions
+    speeds -> drivetrain.setControl(pathRequest.withVelocity(speeds)), // drive like this
+    // Pulls the robot back onto the path when it drifts. The first gain is for position (m/s
+    // of correction per meter of error), the second for heading. TODO: tune on your robot.
+    new PPHolonomicDriveController(
+        new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+    loadPathConfig(),
+    // Paths are drawn from the blue side. On red, PathPlanner mirrors them across the field.
+    () -> MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED,
+    this); // path commands require this mechanism`}
         />
         <p>
-          <code>stopDriving()</code> sends zero speed, and it runs on both
-          exits. A canceled command sends nothing to the motors, so without{" "}
-          <code>whenCanceled</code> a disable halfway leaves the last speed
-          latched in the drivetrain.
+          Import <code>AutoBuilder</code> from{" "}
+          <code>com.pathplanner.lib.command3</code>. The one in{" "}
+          <code>com.pathplanner.lib.auto</code> makes commands for the other
+          framework, and they will not compile against{" "}
+          <code>org.wpilib.command3.Command</code>.
         </p>
         <p>
-          The <strong>Follow Path</strong> OpMode runs whichever path is picked.
-          It reads the choice in <code>start()</code>, because the choice can
-          still change after the mode is picked. Then it resets odometry to the
-          path&apos;s first pose, gives odometry one loop, and awaits the
-          follower.
+          <code>pathRequest</code> is a{" "}
+          <code>SwerveRequest.ApplyRobotVelocity</code> field, because
+          PathPlannerLib hands back speeds relative to the robot.{" "}
+          <code>loadPathConfig()</code> wraps{" "}
+          <code>RobotConfig.fromGUISettings()</code>, which reads the Robot
+          Config tab out of <code>deploy/pathplanner/settings.json</code>.
         </p>
-        <CodeBlock
-          language="java"
-          filename="src/main/java/frc/robot/opmodes/FollowPathAuto.java"
-          title="Follow Path: read the choice at enable"
-          code={`@Override
-public void start() {
-  PathPlannerPath path = robot.autoPath.getSelected();
-
-  routine =
-      Command.noRequirements(
-              coroutine -> {
-                path.getStartingHolonomicPose()
-                    .ifPresent(pose -> robot.drivetrain.resetPose(pose));
-                coroutine.yield(); // give odometry one loop to report the new pose
-                coroutine.await(robot.drivetrain.followPath(path));
-              })
-          .named("Follow Path");
-
-  Scheduler.getDefault().schedule(routine);
-}`}
-        />
       </LessonSection>
 
-      <LessonSection id="auto-path" title="The Auto Path drop-down">
+      <LessonSection id="auto-opmode" title="One Auto OpMode">
         <p>
-          The list of paths is a <code>Selectable</code>, the WPILib 2027
-          drop-down for choosing one value out of several. <code>Robot</code>{" "}
-          owns it, so it exists from boot, before any mode is picked.
+          Delete <code>LeaveStartAuto.java</code>. The drawn auto replaces it,
+          and one <code>@Autonomous</code> class now runs every auto in the
+          project. It registers the named commands, asks{" "}
+          <code>AutoBuilder</code> for a drop-down of autos, and runs the
+          selected one at enable.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/Robot.java"
-          title="One line per path"
-          code={`public final Selectable<PathPlannerPath> autoPath = new Selectable<>();
+          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          title="AutoOpMode: register, list, run"
+          code={`@Autonomous(name = "Auto")
+public class AutoOpMode extends PeriodicOpMode {
+  private final Selectable<Command> autoChooser;
+  private Command routine;
 
-public Robot() {
-  // ...
-  // The name in quotes must match the path's name in the PathPlanner app exactly.
-  autoPath.addDefault("Leave Start", DriveMechanism.loadPath("Leave Start"));
-  Tunables.publish("Auto Path", autoPath);
+  public AutoOpMode(Robot robot) {
+    // The name in quotes must match the name in the PathPlanner app exactly.
+    NamedCommands.registerCommand(
+        "Shoot",
+        Command.noRequirements(coroutine -> coroutine.wait(Seconds.of(1.0))).named("Shoot"));
+    NamedCommands.registerCommand(
+        "Intake", Command.noRequirements(coroutine -> coroutine.park()).named("Intake"));
+
+    // PathPlanner fills this with one choice per auto drawn in the app, plus "None". It loads
+    // every auto, so the named commands above have to be registered first.
+    autoChooser = AutoBuilder.buildAutoChooser("Leave Start");
+    Tunables.publish("Auto", autoChooser);
+  }
+
+  @Override
+  public void start() {
+    routine = autoChooser.getSelected();
+    Scheduler.getDefault().schedule(routine);
+  }
+
+  @Override
+  public void end() {
+    Scheduler.getDefault().cancel(routine);
+  }
+
+  /** Takes the drop-down off the dashboard when another OpMode is picked. */
+  @Override
+  public void close() {
+    Tunables.remove("Auto");
+  }
 }`}
         />
-        <p>
-          On the dashboard it appears under <code>Tunables/Auto Path</code>. The{" "}
-          <code>options</code> entry lists every name, <code>default</code>{" "}
-          names the one marked with <code>addDefault</code>, and{" "}
-          <code>selected</code> is the one you set. Nothing set, or a name that
-          is not on the list, and <code>getSelected()</code> hands back the
-          default.
-        </p>
-        <p>
-          To add a path, draw it in the app and add one line under the first:{" "}
-          <code>
-            autoPath.add(&quot;Pickup&quot;,
-            DriveMechanism.loadPath(&quot;Pickup&quot;));
-          </code>{" "}
-          Keep exactly one <code>addDefault</code>. With none,{" "}
-          <code>getSelected()</code> returns <code>null</code> when nothing is
-          set, and Follow Path throws a NullPointerException at enable.
-        </p>
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              <code>Shoot</code> and <code>Intake</code> are stand-ins that only
+              take time. A robot with a shooter registers its real command under
+              the same name. Every auto that uses <code>Shoot</code> picks it up
+              with no change in the app.
+            </p>
+            <p>
+              <code>Intake</code> parks, so it never finishes on its own. It
+              runs inside the event marker zone on{" "}
+              <code>Start to Neutral Zone</code>. The path starts it when the
+              robot enters the zone and cancels it when the robot leaves.
+            </p>
+            <p>
+              The selected auto is read in <code>start()</code>, because someone
+              can still change the drop-down after picking the mode. On the
+              dashboard it appears under <code>Tunables/Auto</code>.
+            </p>
+          </div>
+          <MarginNote label="How it stops">
+            A path whose goal velocity is 0 sends zero speed when it finishes. A
+            path canceled halfway sends nothing, the same{" "}
+            <a href="/running-program#latched" className="underline">
+              latched request
+            </a>{" "}
+            as any other command. In auto, disabling cuts the output.
+          </MarginNote>
+        </Split>
       </LessonSection>
 
       <LessonSection id="failure-shapes" title="Three failure shapes">
@@ -323,14 +364,13 @@ public Robot() {
           cols={3}
           items={[
             {
-              label: "Stops at boot",
-              term: "A missing file",
+              label: "Does nothing",
+              term: "A missing name",
               body: (
                 <>
-                  <code>Could not load PathPlanner path</code> means a name in{" "}
-                  <code>Robot</code> has no file under <code>paths/</code>. A
-                  missing <code>settings.json</code> means the app never opened
-                  this project.
+                  The driver station reports a missing file, or the auto skips
+                  an action. A name in the app does not match a path file or a
+                  registered command, letter for letter.
                 </>
               ),
             },
@@ -350,7 +390,7 @@ public Robot() {
               term: "Config or gains",
               body: (
                 <>
-                  <code>PathTarget</code> runs away from <code>Pose</code>. A
+                  The robot falls behind the path or swings past its end. A
                   guessed top speed or mass asks for more than the robot has.
                   Fix the config before the gains.
                 </>
@@ -363,29 +403,35 @@ public Robot() {
       <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Run <strong>WPILib: Simulate Robot Code</strong>. In the sim GUI,
-            open <strong>NetworkTables</strong> and check that{" "}
-            <code>Tunables/Auto Path/options</code> lists{" "}
-            <code>Leave Start</code>.
+            Run <strong>WPILib: Simulate Robot Code</strong>. Pick{" "}
+            <strong>Auto</strong> from the autonomous list. In the sim GUI, open{" "}
+            <strong>NetworkTables</strong> and check that{" "}
+            <code>Tunables/Auto/options</code> lists all three autos and{" "}
+            <code>None</code>.
           </li>
           <li>
-            Pick <strong>Follow Path</strong> from the autonomous list and
-            enable. Plot <code>Drivetrain/Pose</code> and{" "}
-            <code>Drivetrain/PathTarget</code> in AdvantageScope.
+            Enable with <code>Leave Start</code> selected. Watch{" "}
+            <code>Drivetrain/Pose</code> on the 2D field in AdvantageScope.
           </li>
           <li>
-            Deploy, put the robot on the tape mark, and run it three times with
-            one person on disable.
+            Select <code>Neutral Zone Run</code>, enable again, and watch the
+            scheduler for <code>Intake</code> and <code>Shoot</code>.
+          </li>
+          <li>
+            Deploy, put the robot on the tape mark, and run{" "}
+            <code>Leave Start</code> three times with one person on disable.
           </li>
         </ol>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              In sim, <code>Pose</code> tracking <code>PathTarget</code> the
-              whole way and ending within a few centimeters of the last
-              waypoint, turned to 45 degrees.
+              In sim, the robot ending within a few centimeters of the last
+              waypoint, turned to 45 degrees, and staying stopped.
             </li>
-            <li>A full stop at the end that stays stopped.</li>
+            <li>
+              <code>Intake</code> running only through the marked zone, and{" "}
+              <code>Shoot</code> taking one second at the end.
+            </li>
             <li>
               Three floor runs that land closer together than the three timed
               runs of Leave Start did.
@@ -445,44 +491,44 @@ public Robot() {
           {
             id: 4,
             question:
-              "Why does Follow Path read the Selectable in start() and not in its constructor?",
+              "Why does AutoOpMode register its named commands before it calls buildAutoChooser?",
             options: [
-              "A Selectable can only be read while the robot is enabled",
-              "The constructor runs when the mode is picked, and the choice can change after that",
-              "The constructor cannot see the Robot fields",
-              "Reading it twice would load the path twice",
+              "Tunables.publish only accepts a chooser built after registration",
+              "buildAutoChooser loads every auto, and each auto looks up its named commands as it loads",
+              "Named commands only run if they are registered in an OpMode",
+              "The order does not matter, it is only for readability",
             ],
             correctAnswer: 1,
             explanation:
-              "Picking Follow Path on the driver station builds the OpMode. Someone can still change Auto Path before enabling. start() runs at enable, so it reads the choice that is set when the robot moves.",
+              "Building the chooser builds every auto in the project. An auto that names Shoot looks Shoot up right then, so a command registered afterward is missing from every auto already built.",
           },
           {
             id: 5,
             question:
-              "Why does followPath call stopDriving() in whenCanceled as well as after the loop?",
+              "Intake parks forever. Why does it stop in Neutral Zone Run?",
             options: [
-              "The scheduler calls whenCanceled first, so it stops the robot sooner",
-              "whenCanceled runs on every exit, so the second call is a spare",
-              "A canceled command never reaches the code after the loop, and the last speed stays latched",
-              "The disabled binding in Robot needs a zero to start from",
+              "Its event marker is a zone, and the path cancels it when the robot leaves the zone",
+              "Named commands time out after one second",
+              "Shoot requires the same mechanism and takes it over",
+              "The auto ends, and only then is it canceled",
             ],
-            correctAnswer: 2,
+            correctAnswer: 0,
             explanation:
-              "Cancel stops the coroutine where it is, so the line after the loop never runs. Canceling sends nothing to the motors, and setControl keeps applying the last request. whenCanceled runs only on a cancel, so the normal exit needs its own call.",
+              "A zone marker starts its command when the robot enters the zone and cancels it at the zone's end. Event commands are children of the path command, so they also end if the path ends first.",
           },
           {
             id: 6,
             question:
-              "You rename the path to Leave Start Left in the app and deploy. The robot program stops at boot. What fixes it?",
+              "You rename the Shoot and Leave auto in the app and deploy. What changes on the robot?",
             options: [
-              "Change the name in Robot.java to match, spelled exactly the same",
-              "Redraw the path from scratch",
-              "Delete settings.json so the app writes it again",
-              "Install the vendordep again",
+              "The program stops at boot until AutoOpMode is edited to match",
+              "Nothing, until the vendordep is installed again",
+              "The drop-down lists the new name, with no code change",
+              "The auto runs, but its named commands are skipped",
             ],
-            correctAnswer: 0,
+            correctAnswer: 2,
             explanation:
-              "loadPath looks for a file named after the string in Robot.java. Rename one side and the file is not found. Robot loads every path at boot, so it fails on the bench, not in the middle of a match.",
+              "buildAutoChooser lists whatever .auto files are deployed. Only the default auto is named in code. Rename Leave Start and the default falls back to None until the string in AutoOpMode matches.",
           },
         ]}
       />
