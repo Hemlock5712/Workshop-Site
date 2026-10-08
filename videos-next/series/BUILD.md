@@ -87,3 +87,25 @@ Keep it short: one line per beat saying what's on screen, the gate test output, 
 - the PID shapes on the arm, the latched-request picture: `lessons/latched`
 - the scheduler lanes: `lessons/command-framework`, `lessons/chaining-commands`
 - the coroutine loop: `lessons/coroutines`
+
+## Real footage for rec beats (October 2026)
+
+A rec beat's schematic is replaced by footage without touching its `scene.js`: the
+player looks for `lessons/<id>/clips/clips.json` and draws `engine/clip.js` over any
+line it lists, crossfading with the scene at each end. No clip, no change.
+
+1. Record the tool window: `powershell -File tools/record-window.ps1 -Process <proc> -Out captures/<id>/raw.mp4`
+   (stop early with `New-Item captures/<id>/raw.mp4.stop`). It writes `raw.mp4.json`
+   with the first frame's wall-clock time and the window rectangle.
+2. Drive it with `tools/ui.ps1` and `$env:UI_LOG = "captures/<id>/raw.mp4.log.jsonl"`
+   (`$env:UI_APP` = the process to focus). Before each beat's actions,
+   `ui.ps1 mark beat:<lineId>`; finish with `ui.ps1 mark end`.
+3. Cut each beat: `node tools/capture-edit.mjs captures/<id>/raw.mp4 --lesson lessons/<id> --beat <lineId> [--mask x,y,w,h]`.
+   It keeps every action, speeds up the waits, fits the clip to the line (start to the
+   next line's start), paints masks over solid, and writes the zoom track. Mask every
+   gain; mask coordinates are the raw video's pixels.
+4. Sheet the beat, check it, then render the MP4 as usual. `render.mjs` awaits the
+   clip seek on every frame, so export stays deterministic.
+
+Clips are WebM (VP9): Playwright's Chromium has no H.264 decoder. `captures/` and
+`lessons/*/clips/` are gitignored; raw captures may show gains.

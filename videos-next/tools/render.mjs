@@ -37,8 +37,8 @@ try {
       : Array.from({ length: Math.floor(duration / Number(opt("--every", 4))) }, (_, i) => (i + 0.5) * Number(opt("--every", 4)));
     const tmp = fs.mkdtempSync(path.join(path.dirname(path.resolve(opt("--sheet"))), ".sheet-"));
     for (const [i, t] of times.entries()) {
-      const url = await page.evaluate((t) => {
-        window.renderAt(t);
+      const url = await page.evaluate(async (t) => {
+        await window.renderAt(t);
         const c = document.querySelector("canvas").getContext("2d");
         c.setTransform(1, 0, 0, 1, 0, 0);
         c.fillStyle = "rgba(0,0,0,0.7)";

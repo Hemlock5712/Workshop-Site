@@ -8,3 +8,6 @@ lessons/*/voice/
 voices/
 # TTS bake-off: Python venvs, model caches and samples of the owner's cloned voice.
 voice-bakeoff/
+# Edited tool footage for rec beats (tools/capture-edit.mjs). Rebuilt from captures/;
+# the raw captures can show gains, so neither is committed.
+lessons/*/clips/

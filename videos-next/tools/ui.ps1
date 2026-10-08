@@ -5,6 +5,10 @@
 #   ui.ps1 type  "<text>"                SendKeys syntax; {ENTER}, ^a (ctrl+a), {TAB}
 #   ui.ps1 scroll <x> <y> <clicks>       negative = down
 #   ui.ps1 focus [process]
+#   ui.ps1 mark  <label>                 a named point in the log (e.g. "beat:zero", "end")
+# With $env:UI_LOG set, every action appends one JSON line to that file:
+#   {"t": <unix ms>, "a": "click", "x": 1234, "y": 567, ...}   x/y are physical screen pixels
+# tools/capture-edit.mjs reads that log next to a record-window.ps1 recording.
 param([string]$Action, [string]$A1, [string]$A2, [string]$A3)
 
 Add-Type -AssemblyName System.Drawing, System.Windows.Forms
@@ -20,7 +24,16 @@ public class U {
 "@
 [U]::SetProcessDPIAware() | Out-Null
 
-function Focus($name = "phoenix-tuner-x") {
+function Log($a, $x, $y, $extra = @{}) {
+  if (-not $env:UI_LOG) { return }
+  $o = [ordered]@{ t = [DateTimeOffset]::Now.ToUnixTimeMilliseconds(); a = $a; x = [int]$x; y = [int]$y }
+  foreach ($k in $extra.Keys) { $o[$k] = $extra[$k] }
+  Add-Content -Path $env:UI_LOG -Value ($o | ConvertTo-Json -Compress) -Encoding utf8
+}
+function Cursor { $p = [System.Windows.Forms.Cursor]::Position; @($p.X, $p.Y) }
+
+# $env:UI_APP names the process clicks focus first; Tuner X when unset.
+function Focus($name = $(if ($env:UI_APP) { $env:UI_APP } else { "phoenix-tuner-x" })) {
   $p = Get-Process $name -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 } | Select-Object -First 1
   if ($p) { [U]::ShowWindow($p.MainWindowHandle, 3) | Out-Null; [U]::SetForegroundWindow($p.MainWindowHandle) | Out-Null; Start-Sleep -Milliseconds 250 }
 }
@@ -48,14 +61,16 @@ switch ($Action) {
       [U]::mouse_event(0x02, 0, 0, 0, 0); Start-Sleep -Milliseconds 60; [U]::mouse_event(0x04, 0, 0, 0, 0)
       if ($A3 -eq "double") { Start-Sleep -Milliseconds 80; [U]::mouse_event(0x02, 0, 0, 0, 0); [U]::mouse_event(0x04, 0, 0, 0, 0) }
     }
+    Log "click" $A1 $A2 @{ button = $(if ($A3) { $A3 } else { "left" }) }
     "click $A1,$A2 $A3"
   }
-  "move" { [U]::SetCursorPos([int]$A1, [int]$A2) | Out-Null; "move $A1,$A2" }
-  "type" { [System.Windows.Forms.SendKeys]::SendWait($A1); "typed" }
+  "move" { [U]::SetCursorPos([int]$A1, [int]$A2) | Out-Null; Log "move" $A1 $A2; "move $A1,$A2" }
+  "type" { $c = Cursor; Log "type" $c[0] $c[1] @{ text = $A1 }; [System.Windows.Forms.SendKeys]::SendWait($A1); Log "typed" $c[0] $c[1]; "typed" }
   "scroll" {
     Focus
     [U]::SetCursorPos([int]$A1, [int]$A2) | Out-Null
-    [U]::mouse_event(0x0800, 0, 0, [int]$A3 * 120, 0); "scroll $A3"
+    [U]::mouse_event(0x0800, 0, 0, [int]$A3 * 120, 0); Log "scroll" $A1 $A2 @{ clicks = [int]$A3 }; "scroll $A3"
   }
   "focus" { if ($A1) { Focus $A1 } else { Focus }; "focused" }
+  "mark" { $c = Cursor; Log "mark" $c[0] $c[1] @{ label = $A1 }; "mark $A1" }
 }

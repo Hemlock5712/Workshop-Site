@@ -5,6 +5,7 @@
 // In export (and when the student skips) a gate plays its scripted version, so
 // the MP4 and the page tell the same story.
 
+import { loadClips } from "./clip.js";
 import { C, H, MONO, W, captions, micro, rrect, text } from "./core.js";
 
 export function mountPlayer(root, { VOICE, scene, audioSrc }) {
@@ -44,6 +45,17 @@ export function mountPlayer(root, { VOICE, scene, audioSrc }) {
   let live = null; // the gate's live model while a student drives it
   const done = new Set(); // gates already played this session
   let showCaptions = true;
+  // real footage for rec beats, from clips/ beside the lesson (engine/clip.js)
+  let clips = null;
+  const clipsLoaded = loadClips(new URL("clips/", location.href), VOICE).then(
+    (c) => (clips = c)
+  );
+  // the scene, or a clip over it during a rec beat
+  function drawAt(time) {
+    if (!clips?.draw(ctx, time, () => scene.draw(ctx, time), { exporting }))
+      scene.draw(ctx, time);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
 
   function paint() {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -51,7 +63,7 @@ export function mountPlayer(root, { VOICE, scene, audioSrc }) {
       scene.draw(ctx, live.state.time, live.state);
       gatePrompt(live.prompt());
     } else {
-      scene.draw(ctx, t);
+      drawAt(t);
       const gp = scene.gatePromptAt?.(t);
       if (gp) gatePrompt(gp);
       else if (showCaptions) captions(ctx, VOICE, t);
@@ -255,10 +267,12 @@ export function mountPlayer(root, { VOICE, scene, audioSrc }) {
   };
 
   // ---- export hook ---------------------------------------------------------------
-  window.renderAt = (time) => {
+  // async: a clip has to finish seeking before its frame can be drawn
+  window.renderAt = async (time) => {
     t = time;
+    await clips?.prepare(t);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    scene.draw(ctx, t);
+    drawAt(t);
     const gp = scene.gatePromptAt?.(t);
     if (gp) gatePrompt(gp);
     else captions(ctx, VOICE, t);
@@ -266,7 +280,7 @@ export function mountPlayer(root, { VOICE, scene, audioSrc }) {
   };
   window.lessonDuration = VOICE.duration;
 
-  document.fonts.ready.then(() => {
+  Promise.all([document.fonts.ready, clipsLoaded]).then(() => {
     window.ready = true;
     if (!exporting) requestAnimationFrame(frame);
     else paint();
