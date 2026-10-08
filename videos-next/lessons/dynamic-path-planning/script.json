@@ -1,0 +1,68 @@
+{
+  "title": "Starting From Anywhere",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A drawn path starts where you drew it. Pathfinding starts wherever the robot is.",
+      "after": 0.6
+    },
+    {
+      "id": "grid",
+      "text": "PathPlanner splits the field into squares about thirty centimeters across, and marks the ones you can't drive through.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "margin",
+      "text": "The margin is your bumper. The center of the robot threads through open squares, so the bumpers clear the walls.",
+      "after": 0.6
+    },
+    {
+      "id": "search",
+      "text": "It searches for a route, then keeps refining it while the robot drives, until it's close to the goal.",
+      "after": 0.6
+    },
+    {
+      "id": "code",
+      "text": "In code, it's two lines: set up the pathfinder once, then ask for a pose with speed limits.",
+      "after": 0.6
+    },
+    {
+      "id": "hold",
+      "text": "Hold the button, and the robot routes around the hub to its goal.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "letgo",
+      "text": "Let go halfway. A canceled path sends no stop, but the drive's default command takes over and sends zero.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Widen the margin, or wall off the shortest way.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "shapes",
+      "text": "If it clips the hub, the margin's too small, or the robot's size is wrong in the settings.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Pathfinding crosses the field. The last few centimeters belong to a command built for them.",
+      "after": 0.6
+    }
+  ]
+}

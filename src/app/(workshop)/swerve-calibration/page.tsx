@@ -32,13 +32,13 @@ export default function SwerveCalibration() {
   return (
     <PageTemplate
       title="Swerve Calibration"
-      lede="The project you generated came with somebody else's numbers in TunerConstants.java. This lesson zeroes the four modules against a straight edge and tunes the motors that steer them. No Java."
+      lede="The project you generated holds offsets from wheels you held straight by eye. This lesson zeroes the four modules against a straight edge and tunes the motors that steer them. No Java."
       needs={[
         <>
           A swerve robot you can drive, from{" "}
           <strong>Swerve Project Generator</strong>.
         </>,
-        <>Logging on, and AdvantageScope to plot it.</>,
+        <>AdvantageScope connected to the robot, for live plots.</>,
         <>Phoenix Tuner X, and a long straight edge.</>,
       ]}
       time="12 minutes"
@@ -74,8 +74,9 @@ export default function SwerveCalibration() {
         <p>
           Each module has a CANcoder reading which way its wheel points, and an
           offset saying which reading counts as straight ahead. The four{" "}
-          <code>k*EncoderOffset</code> constants in your file came off somebody
-          else&apos;s robot.
+          <code>k*EncoderOffset</code> constants in your file came from the
+          wheels you held straight by eye in the generator. A straight edge does
+          better.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>

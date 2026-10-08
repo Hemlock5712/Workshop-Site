@@ -60,8 +60,8 @@ export default function ProfiledDriveToPoint() {
       <Split>
         <ProseBlock>
           <p>
-            One file changes: <code>commands/DriveToPoint.java</code>, 87 lines
-            to 120. A and B are already bound from the last lesson, and nothing
+            One file changes: <code>commands/DriveToPoint.java</code>, 88 lines
+            to 121. A and B are already bound from the last lesson, and nothing
             else on the branch moves.
           </p>
         </ProseBlock>
@@ -425,7 +425,7 @@ protected void execute() {
             ],
             correctAnswer: 2,
             explanation:
-              "Nothing may wait on a command that never ends. The old version ran until interrupted, so it would hang a sequence on its first leg. A real finish line makes the command usable in routines and as the final approach after dynamic planning.",
+              "Nothing may wait on a command that never ends. The old version ran until interrupted, so it would hang a sequence on its first leg. A real finish line makes the command usable in routines.",
           },
         ]}
       />

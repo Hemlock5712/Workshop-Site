@@ -1,0 +1,71 @@
+{
+  "title": "Speed From Distance",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Hold a button, and the robot drives itself to a spot on the field.",
+      "after": 0.6
+    },
+    {
+      "id": "connect",
+      "text": "Every meter so far, a person drove. Now the robot uses its own pose.",
+      "after": 0.6
+    },
+    {
+      "id": "goal",
+      "text": "The goal is a pose too: three meters, two meters, facing the other way.",
+      "after": 0.6
+    },
+    {
+      "id": "loop",
+      "text": "The command is the same loop you already know. Start, run every loop, check if it's done, and stop on the way out.",
+      "after": 0.6
+    },
+    {
+      "id": "three",
+      "text": "Three controllers run at once: one for X, one for Y, and one for heading. Each one turns its error into a speed.",
+      "after": 0.6
+    },
+    {
+      "id": "wrap",
+      "text": "Heading needs one extra line. Otherwise, turning from a hundred seventy nine degrees to minus a hundred seventy nine goes the long way around.",
+      "after": 0.6
+    },
+    {
+      "id": "math",
+      "text": "Three meters out, with a gain of ten, it asks for thirty meters per second. The robot can't do that, so it runs flat out.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Drag the goal somewhere else, and hold the button.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "creep",
+      "text": "Close to the goal, the error is small, so the speed is small, and it creeps up short. That's the falls short shape from tuning.",
+      "after": 0.6
+    },
+    {
+      "id": "stop",
+      "text": "Let go, and the command ends with a zero speed request. Sending idle instead would leave every wheel on its last speed.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Speed from distance gets you there, badly. Next, plan the trip.",
+      "after": 0.6
+    }
+  ]
+}

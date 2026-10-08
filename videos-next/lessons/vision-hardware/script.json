@@ -1,0 +1,74 @@
+{
+  "title": "Seeing the Field",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Your autos trust the robot's pose, and every skid goes into it and stays there.",
+      "after": 0.6
+    },
+    {
+      "id": "drift",
+      "text": "Odometry drifts further the longer you drive. A camera that sees a tag gives an answer that doesn't drift. It's noisy, but the error doesn't grow.",
+      "after": 0.6
+    },
+    {
+      "id": "tag",
+      "text": "An AprilTag has an ID and a known spot on the field. From its four corners, the camera works backwards to where the robot must be.",
+      "after": 0.6
+    },
+    {
+      "id": "blend",
+      "text": "Those sightings come now and then, and they're noisy, so they don't replace odometry. The next lesson blends the two.",
+      "after": 0.6
+    },
+    {
+      "id": "mount",
+      "text": "Mount the camera where it sees the scoring tags while you're scoring, and give it its own breaker.",
+      "after": 0.6
+    },
+    {
+      "id": "angle",
+      "text": "Never mount it level and square to a tag. Head on, small errors smear the answer. At an angle, the answer tightens up.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Move the camera until the cloud of answers is tight.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "setup",
+      "text": "In the camera's web page, load the field map, pick the AprilTag pipeline, and turn the exposure down.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "offsets",
+      "text": "Enter where the camera sits on the robot, calibrate it with the ChArUco board, and give it a name.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "check",
+      "text": "Hold a tag a meter away. You should see its ID, the right distance, and a pose that holds steady.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "close",
+      "text": "Write down the camera's name. Next, the code feeds these sightings into the pose.",
+      "after": 0.6
+    }
+  ]
+}

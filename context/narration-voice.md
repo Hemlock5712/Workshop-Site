@@ -1,109 +1,98 @@
 # Narration Voice
 
-Rules for `beats[].text` in `videos/src/trailer/trailers/*.ts`. The mechanically
-checkable subset is enforced by `pnpm --filter @gray-matter/videos narration:lint`;
-this file covers the judgement the linter can't make.
+How the lesson videos sound. The narration lives in
+`videos-next/series/series.json` (one entry per lesson, `lines` as
+`[id, text, flag]`), is copied into `lessons/<id>/script.json` by
+`node tools/series.mjs --emit <id>`, and is voiced with
+`node tools/voice.mjs lessons/<id>`. This file covers the judgement no tool
+makes. The cadence findings below apply to the website's prose too.
 
 ## Who is listening
 
-A second-year FRC student who has deployed code to a robot and has never tuned a
-control loop. They know what teleop is. They know what deploying means. They have
-stood in a driver station. They have not seen a Motion Magic profile fail.
+A student following the course in order, 11 to 18, often with a mechanism on
+the bench beside them. By the time a video plays they have read that lesson's
+page or are about to. They know what the earlier lessons taught, and nothing
+after.
 
-Write for that person. `IntroductionTrailer` and `PrerequisitesTrailer` are the
-two exceptions where a genuine rookie floor is correct.
+## Spoken, not written
 
-## What went wrong last time
+Narration is heard once, at speaking pace, with no way to reread.
 
-Three plain-language passes (`542f19f`, `501c462`, `e344223`, `e6a3a6e`) fixed the
-vocabulary and broke the rhythm. They did it by turning every idea into a short
-declarative sentence with an inline gloss. Measured across the 27 scripts at the
-time of the audit:
+- Contractions, the way a mentor at the bench talks. "It's", "you'll", "don't".
+- **Never read a code identifier aloud.** Say what it does: "every loop, it
+  sends the motor a new request", not "run fast". The identifier belongs on
+  screen, in the code panel.
+- Each idea once. A video that says the same thing twice in different words
+  reads as padding to anyone who watches carefully, and students do.
+- The order the owner set: name the concept once, connect it to what the
+  student already did (Tuner X in Workshop 1, for example), show their code,
+  demo cause and effect, then the fix.
+
+## What went wrong once
+
+The first trailers (a Remotion pipeline, retired October 2026) went through
+plain-language passes that fixed the vocabulary and broke the rhythm, by
+turning every idea into a short declarative sentence with an inline gloss.
+Measured across those 27 scripts:
 
 - mean sentence length **7.50 words**, coefficient of variation **0.44**
 - **73.8%** of sentences were 9 words or shorter
-- **zero** sentences in the entire corpus exceeded 19 words
+- **zero** sentences exceeded 19 words
 - **120 of 237** beats ended on a button of 8 words or fewer
-- **27 of 27** scripts closed on a `frc5712.com` CTA; **13** used the identical
-  phrase "waiting at frc5712.com"
-- **36** sentences appeared byte-identical in two different scripts
+- **36** sentences appeared word for word in two different scripts
 
-Nothing in that list is a word choice. It is all cadence, and cadence is what a
-listener detects before they parse a single word. That is the thing that reads as
-machine-written.
+None of that is word choice. It is cadence, and cadence is what a listener
+detects before they parse a word. That is what reads as machine-written.
 
 ## The moves
 
-**Vary sentence length inside the existing word budget.** This is the single
-highest-value change, and the trap is that it is easy to do by _adding_ words.
-Don't — trailers are capped at 45 words per beat and lessons at 55, and beats are
-already over. Take the words from the CTA boilerplate, the second gloss in a beat,
-and the numerals that are already on screen.
+**Vary sentence length.** The single highest-value change, and the trap is
+doing it by adding words. Take them from the second gloss in a line and from
+numbers already on screen.
 
-**Define by use, not by apposition.** One gloss per beat, two per script. If a
-term genuinely needs defining on first use, put the definition on screen where it
-costs zero narration seconds — `DiagramNode.sublabel` and `ImageArtifact.caption`
-both already exist and are free.
+**Define by use, not by apposition.** If a term needs defining, put the
+definition on screen, where it costs no narration time.
 
-**Never narrate what the frame already says.** If the diagram sublabel reads
-"ramp speed up at a fixed rate," the voice does not get to say "speed ramps up at
-a fixed rate." Same for a value the HUD chip is displaying and a comment the code
-panel is typing out. When the voice, the burned-in caption and the artifact all
-carry the same sentence, nothing on screen is new, so the viewer stops looking at
-the picture. Say why it matters; let the frame say what it is.
+**Never narrate what the frame already says.** If the code panel shows the
+value and the caption shows the sentence, the voice says why it matters, not
+what it is. When voice, caption and picture all carry the same sentence,
+nothing on screen is new and the viewer stops looking.
 
-**One rhetorical question per script, maximum.** And never answer it in the next
-breath with a sentence that reuses its keyword. "How hard? A number called the P
-gain decides." is the shape to avoid.
+**One rhetorical question per video, at most.** Never answer it in the next
+breath with a sentence that reuses its keyword.
 
 **No tidy triples.** "Feedback corrects. Feedforward predicts. Motion Magic
-plans." is a recap, not a thought. Recap-triple-then-URL was the house closer in
-16 beats.
+plans." is a recap, not a thought.
 
-**Every closing line should be one only that lesson could have.** The URL is on
-the EndCard for the whole hold — `EndArtifact.url` renders it. Speaking it is pure
-redundancy in all 27 scripts.
+**The closing line is one only that lesson could have.** No URLs, no
+"see you next time".
 
-**A Lesson is a different genre from its Trailer, not an expansion of it.** It may
-reuse a teaching point but must reach it from a different angle. The Feedforward
-pair shared 16 verbatim sentences, which reads as padding to anyone who watches
-both.
+**Let a sentence be dry or incomplete.** A mentor at a workbench does not speak
+in matched pairs.
 
-**Let a sentence be dry, or incomplete, or funny.** A real mentor at a workbench
-does not speak in matched pairs.
+## Mechanical rules
 
-## Two hard mechanical constraints
+**Scenes cue off words.** A scene's `W(lineId, word)` throws if the word is no
+longer in that line, so the page shows an error instead of a video. After
+editing a line in `series.json`, emit it, then render a contact sheet for the
+lesson (`node tools/render.mjs lessons/<id> --sheet out/<id>.png --every 6`)
+before voicing anything.
 
-**Preserve `events[].at.word`.** An anchor word that a rewrite deletes does not
-raise an error — `resolveTimeline` logs a warning and fires the event at 30% of
-the beat, which can collapse two staged reveals onto one frame. The linter treats
-this as an error and it is pinned at zero. If you need to drop an anchor word,
-change the event to `at: { progress: n }` in the same edit.
+**Pronunciation is not spelling.** The caption shows `text`. If the voice
+mispronounces something, give that line in `script.json` a `say` field with
+the respelling; `voice.mjs` speaks `say` and the caption keeps `text`. Writing
+"k P" into `text` puts it in the caption, where it is wrong next to a code
+panel showing `kP`. Note that `series.mjs --emit` rewrites `script.json` and
+drops `say`, so re-add it after an emit.
 
-**Run `pnpm --filter @gray-matter/videos whisper:setup` before writing long
-sentences.** Without whisper, word timings are estimated by linear interpolation
-_inside each sentence_, so anchor accuracy is inversely proportional to sentence
-length. A 45-word sentence places its anchors by guesswork across ~17 seconds of
-audio. Verify `refined: true` on every beat in the emitted
-`public/trailer-audio/*.timeline.json` before relying on word-anchored events.
-
-## Pronunciation, not spelling
-
-Respellings belong in `videos/scripts/pronunciations.ts`, never in `beats[].text`
-— `Beat.text` is documented as caption text with pronunciations applied for TTS
-only. Writing "Command dot sequence" or "k P" in the narration puts it in the
-burned-in caption, where it is simply wrong next to a code panel showing
-`Command.sequence(` and `kP`.
-
-If you remove a letter-split like `k G`, add the `kG` entry to
-`pronunciations.ts` **in the same commit** — `kP`/`kI`/`kD` have entries but
-`kG`/`kS`/`kV`/`kA` do not, and stripping the split without the entry regresses
-the audio.
+**Re-voicing is incremental.** `voice.mjs` hashes each line's spoken text and
+regenerates only lines that changed. The voice is the owner's, cloned with
+Chatterbox; the reference recording and every generated clip are gitignored
+and must never be committed or uploaded.
 
 ## Content rules still bind
 
-Everything in `CLAUDE.md` applies to narration: WPILib 2027 / Commands v3 only,
-`org.wpilib.*`, OpModes rather than `RobotContainer`, no invented v3 APIs, no
-PathPlanner, no AdvantageKit, no enums in examples, and no `SendableChooser` —
-including as the thing being replaced. Re-run `pnpm spell` after any pass;
-cspell has caught this repo before (`2a8a695`).
+Everything in `CLAUDE.md` applies to narration: WPILib 2027 and Commands v3
+only, OpModes rather than `RobotContainer`, no invented APIs, no AdvantageKit,
+no enums, and no mention of Commands v2 or "the old way". PathPlanner is the
+team's Commands v3 build, as on the site. Run `pnpm spell` after any pass.

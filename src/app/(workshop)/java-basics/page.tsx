@@ -174,7 +174,7 @@ export default function JavaBasics() {
                 <td className="px-3 py-2">
                   Code written down and handed over rather than run.{" "}
                   <code>() -&gt; setVoltage(3.0)</code> is one, and{" "}
-                  <code>() -&gt; motor.stopMotor()</code> is another. The{" "}
+                  <code>() -&gt; stopMotor()</code> is another. The{" "}
                   <code>() -&gt;</code> is what makes it a parcel instead of a
                   call.
                 </td>
@@ -261,16 +261,16 @@ public Command runSlow() {
             {
               id: 2,
               question:
-                "Why is it () -> motor.stopMotor() and not motor.stopMotor() inside runRepeatedly(...)?",
+                "Why is it () -> stopMotor() and not stopMotor() inside runRepeatedly(...)?",
               options: [
-                "() -> hands the call over to run later; motor.stopMotor() on its own runs right now and hands back nothing",
+                "() -> hands the call over to run later; stopMotor() on its own runs right now and hands back nothing",
                 "() -> is required whenever the method takes no arguments",
-                "motor.stopMotor() on its own would stop the motor twice",
+                "stopMotor() on its own would stop the motor twice",
                 "It is a style preference, and both compile",
               ],
               correctAnswer: 0,
               explanation:
-                "runRepeatedly needs code it can call every loop, and () -> motor.stopMotor() hands over the call itself rather than its result. Writing motor.stopMotor() runs the method on the spot and produces nothing to hand over, so it does not compile.",
+                "runRepeatedly needs code it can call every loop, and () -> stopMotor() hands over the call itself rather than its result. Writing stopMotor() runs the method on the spot and produces nothing to hand over, so it does not compile.",
             },
             {
               id: 3,

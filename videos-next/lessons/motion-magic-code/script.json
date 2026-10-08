@@ -1,0 +1,81 @@
+{
+  "title": "Naming a Target",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A request can name a voltage, or it can name a target.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "In Tuner X, you picked Motion Magic, gave it a position, and watched the arm speed up, cruise, and slow down into place.",
+      "after": 0.6
+    },
+    {
+      "id": "swap",
+      "text": "In code, it's the same swap. The voltage request comes out, and a Motion Magic request goes in.",
+      "after": 0.6
+    },
+    {
+      "id": "gains",
+      "text": "Your gains come from the bench. Out of the box every one of them is zero, so paste your config from Tuner X again.",
+      "after": 0.6
+    },
+    {
+      "id": "target",
+      "text": "The commands change too. Instead of a voltage, this one names a place: straight up.",
+      "after": 0.6
+    },
+    {
+      "id": "binding",
+      "text": "And the release binding comes out. You'll see why in a second.",
+      "after": 0.6
+    },
+    {
+      "id": "press",
+      "text": "Hold the trigger. The motor plans the whole move, then follows it: speed up, cruise, slow down, arrive.",
+      "after": 0.6
+    },
+    {
+      "id": "release",
+      "text": "Now let go. The command ends, and the request stays on the motor, just like last time.",
+      "after": 0.6
+    },
+    {
+      "id": "reverse",
+      "text": "But this time the request is a position, so staying is exactly what holds the arm up.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try letting go halfway through the move.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "halfway",
+      "text": "It still finishes. The motor already knows where the arm is supposed to end up.",
+      "after": 0.6
+    },
+    {
+      "id": "wrong",
+      "text": "If the arm doesn't move at all, the gains are still zero. If it overshoots and hunts, retune in Tuner X and paste again. Don't fix it in code.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Name where the arm should be, and the motor keeps it there, even after the command ends.",
+      "after": 0.6
+    }
+  ]
+}

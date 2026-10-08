@@ -1,0 +1,185 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Workshop Videos</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..600&family=Newsreader:opsz,wght@6..72,400..600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:oklch(0.155 0.038 265);--bg2:oklch(0.196 0.042 265);--tx:oklch(0.955 0.012 85);--tx2:oklch(0.795 0.016 260);--tx3:oklch(0.615 0.022 260);--rule:oklch(0.325 0.032 265);--accent:oklch(0.755 0.155 55)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 "Instrument Sans",system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:40px 16px 80px}h1{font:500 44px Newsreader,Georgia,serif;margin:0 0 6px}
+.lede{color:var(--tx2);margin:0 0 28px}ol{list-style:none;padding:0;margin:0}
+li{display:grid;grid-template-columns:44px 1fr auto auto;gap:18px;align-items:center;padding:18px 0;border-top:1px solid var(--rule)}
+.n{font:14px "JetBrains Mono",monospace;color:var(--tx3)}.kick{font:12px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0}
+h2{font:500 26px Newsreader,Georgia,serif;margin:2px 0}.gate{margin:0;color:var(--tx3);font-size:14px}
+.dur{font:14px "JetBrains Mono",monospace;color:var(--tx2)}.links{display:flex;gap:8px}
+.links a{font:600 14px "Instrument Sans",sans-serif;color:var(--tx);text-decoration:none;border:1px solid var(--rule);border-radius:3px;padding:8px 12px;white-space:nowrap}
+.links a:first-child{border-color:var(--accent)}.links a:hover{background:var(--bg2)}em{color:var(--tx3);font-size:13px}
+@media(max-width:700px){li{grid-template-columns:32px 1fr}.dur,.links{grid-column:2}}
+</style></head><body><main>
+<h1>Workshops 2–4, on video</h1>
+<p class="lede">28 videos, 39:22 in total, in course order. Each one is a coded animation narrated in a cloned voice. The interactive version pauses at "your turn" so you can drive it yourself.</p>
+<ol><li>
+  <span class="n">01</span>
+  <div><p class="kick">Workshop 1 · Hardware &amp; CTRE · /hardware</p><h2>Three Parts and a Bus</h2><p class="gate">Your turn: None. A procedure, recorded.</p></div>
+  <span class="dur">1:29</span>
+  <span class="links"><a href="out/hardware.mp4">Video</a><a href="lessons/hardware/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">02</span>
+  <div><p class="kick">Workshop 1 · Hardware &amp; CTRE · /mechanism-setup</p><h2>Numbers and First Motion</h2><p class="gate">Your turn: Animated insert: the arm at 1 V with no target; the student enables and must stop it before the end of travel.</p></div>
+  <span class="dur">1:32</span>
+  <span class="links"><a href="out/mechanism-setup.mp4">Video</a><a href="lessons/mechanism-setup/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">03</span>
+  <div><p class="kick">Workshop 1 · Hardware &amp; CTRE · /pid-control</p><h2>One Motion, Then Silence</h2><p class="gate">Your turn: Pick a kP that's too low, then too high, and read the plot. Mirrors the playground; the video's version is three fixed choices.</p></div>
+  <span class="dur">1:25</span>
+  <span class="links"><a href="out/pid-control.mp4">Video</a><a href="lessons/pid-control/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">04</span>
+  <div><p class="kick">Workshop 1 · Hardware &amp; CTRE · /motion-magic</p><h2>Walking the Target</h2><p class="gate">Your turn: Shorten the move and watch the cruise disappear: the triangle.</p></div>
+  <span class="dur">1:31</span>
+  <span class="links"><a href="out/motion-magic.mp4">Video</a><a href="lessons/motion-magic/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">05</span>
+  <div><p class="kick">Workshop 2 · Code Foundations · /java-basics</p><h2>Handing Over Code</h2><p class="gate">Your turn: Two keys: C calls the method (a sealed package lands in a command, arm stays still), S runs the command (package opens every loop, arm moves).</p></div>
+  <span class="dur">1:12</span>
+  <span class="links"><a href="out/java-basics.mp4">Video</a><a href="lessons/java-basics/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">06</span>
+  <div><p class="kick">Workshop 2 · Code Foundations · /command-framework</p><h2>The Scheduler</h2><p class="gate">Your turn: Hold either trigger or both; each mechanism's lane changes owner independently.</p></div>
+  <span class="dur">1:22</span>
+  <span class="links"><a href="out/command-framework.mp4">Video</a><a href="lessons/command-framework/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">07</span>
+  <div><p class="kick">Workshop 3 · Robot Programming · /mechanisms</p><h2>Configs and Requests</h2><p class="gate">Your turn: Drag the arm to any angle, press power. The motor's own count snaps to zero; the CANcoder keeps the real angle.</p></div>
+  <span class="dur">1:31</span>
+  <span class="links"><a href="out/mechanisms.mp4">Video</a><a href="lessons/mechanisms/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">08</span>
+  <div><p class="kick">Workshop 3 · Robot Programming · /adding-commands</p><h2>Every Command Is a Hold</h2><p class="gate">Your turn: Three chips (three volts, six volts, stop). Tap one, watch its request land every loop; tap another, watch it take over.</p></div>
+  <span class="dur">1:04</span>
+  <span class="links"><a href="out/adding-commands.mp4">Video</a><a href="lessons/adding-commands/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">09</span>
+  <div><p class="kick">Workshop 3 · Robot Programming · /opmodes</p><h2>Two Edges</h2><p class="gate">Your turn: Right trigger held, flywheel spinning. Pick what the release runs (stop, three volts, six volts), then let go.</p></div>
+  <span class="dur">1:17</span>
+  <span class="links"><a href="out/opmodes.mp4">Video</a><a href="lessons/opmodes/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">10</span>
+  <div><p class="kick">Workshop 3 · Robot Programming · /running-program</p><h2>The Latched Request</h2><p class="gate">Your turn: Hold the trigger, let go, watch it keep spinning, press Disable.</p></div>
+  <span class="dur">1:38</span>
+  <span class="links"><a href="out/latched.mp4">Video</a><a href="lessons/latched/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">11</span>
+  <div><p class="kick">Workshop 3 · Robot Programming · /motion-magic-code</p><h2>Naming a Target</h2><p class="gate">Your turn: Hold the trigger and let go halfway through the move. The command ends; the arm still finishes and holds.</p></div>
+  <span class="dur">1:32</span>
+  <span class="links"><a href="out/motion-magic-code.mp4">Video</a><a href="lessons/motion-magic-code/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">12</span>
+  <div><p class="kick">Workshop 4 · Routines · /chaining-commands</p><h2>Steps</h2><p class="gate">Your turn: Remove the timeout chip from the first command and press Y again. The flywheel never starts.</p></div>
+  <span class="dur">1:21</span>
+  <span class="links"><a href="out/chaining-commands.mp4">Video</a><a href="lessons/chaining-commands/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">13</span>
+  <div><p class="kick">Workshop 4 · Routines · /finish-conditions</p><h2>Ask Every Loop</h2><p class="gate">Your turn: Drag the tolerance down to 0.001 degrees and run it. The stopwatch wins at two seconds; the next step starts with the arm short.</p></div>
+  <span class="dur">1:15</span>
+  <span class="links"><a href="out/finish-conditions.mp4">Video</a><a href="lessons/finish-conditions/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">14</span>
+  <div><p class="kick">Workshop 4 · Routines · /coroutines</p><h2>Fork and Wait</h2><p class="gate">Your turn: Line one is a two-way chip: fork or await. Await freezes on line one while the 15 second auto clock drains; fork carries on.</p></div>
+  <span class="dur">1:24</span>
+  <span class="links"><a href="out/coroutines.mp4">Video</a><a href="lessons/coroutines/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">15</span>
+  <div><p class="kick">Workshop 4 · Routines · /logging-implementation</p><h2>What Nobody Watched</h2><p class="gate">Your turn: Scrub the finished plot. Find where the routine gave up; snapping there lights the timedOut() line.</p></div>
+  <span class="dur">1:12</span>
+  <span class="links"><a href="out/logging-implementation.mp4">Video</a><a href="lessons/logging-implementation/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">16</span>
+  <div><p class="kick">Workshop 4 · Routines · /testing</p><h2>One Tick by Hand</h2><p class="gate">Your turn: Be the teammate: drag the flywheel tolerance from 0.5 up to 10 and press Run Tests. Past about 5, the second check fails.</p></div>
+  <span class="dur">1:30</span>
+  <span class="links"><a href="out/testing.mp4">Video</a><a href="lessons/testing/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">17</span>
+  <div><p class="kick">Workshop 5 · Swerve &amp; Autonomous · /swerve-prerequisites</p><h2>Facing One Way, Driving Another</h2><p class="gate">Your turn: Hold a direction and spin the robot; toggle field- and robot-centric.</p></div>
+  <span class="dur">1:45</span>
+  <span class="links"><a href="out/swerve-prerequisites.mp4">Video</a><a href="lessons/swerve-prerequisites/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">18</span>
+  <div><p class="kick">Workshop 5 · Swerve &amp; Autonomous · /swerve-drive-project</p><h2>One File From Tuner X</h2><p class="gate">Your turn: None in the recording; the default-command beat is animated (lane with applyRequest running forever, request card ticking vx 0.0 when the sticks centre).</p></div>
+  <span class="dur">1:32</span>
+  <span class="links"><a href="out/swerve-drive-project.mp4">Video</a><a href="lessons/swerve-drive-project/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">19</span>
+  <div><p class="kick">Workshop 5 · Swerve &amp; Autonomous · /swerve-calibration</p><h2>Straight Means Straight</h2><p class="gate">Your turn: Tilt one module half a degree and drive 6 m down a line: it ends 5 cm off.</p></div>
+  <span class="dur">1:32</span>
+  <span class="links"><a href="out/swerve-calibration.mp4">Video</a><a href="lessons/swerve-calibration/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">20</span>
+  <div><p class="kick">Workshop 5 · Swerve &amp; Autonomous · /swerve-drive-tuning</p><h2>What the Carpet Says</h2><p class="gate">Your turn: Drag the wheel radius until the tape mark and the odometry mark agree. (Script avoids naming which way the correction goes until SITE-FIXES #5 is settled.)</p></div>
+  <span class="dur">1:17</span>
+  <span class="links"><a href="out/swerve-drive-tuning.mp4">Video</a><a href="lessons/swerve-drive-tuning/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">21</span>
+  <div><p class="kick">Workshop 5 · Swerve &amp; Autonomous · /autonomous</p><h2>Fifteen Seconds, No Driver</h2><p class="gate">Your turn: Live Disable key: disable mid-wait and watch the canceled branch send the zero.</p></div>
+  <span class="dur">1:22</span>
+  <span class="links"><a href="out/autonomous.mp4">Video</a><a href="lessons/autonomous/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">22</span>
+  <div><p class="kick">Workshop 5 · Swerve &amp; Autonomous · /pathplanner</p><h2>A Path That Knows Where It Ends</h2><p class="gate">Your turn: Shove the robot off the path; the correction pulls it back.</p></div>
+  <span class="dur">1:26</span>
+  <span class="links"><a href="out/pathplanner.mp4">Video</a><a href="lessons/pathplanner/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">23</span>
+  <div><p class="kick">Workshop 6 · Vision &amp; Navigation · /vision-hardware</p><h2>Seeing the Field</h2><p class="gate">Your turn: Drag the camera's mount angle until the cloud of solved poses is tight.</p></div>
+  <span class="dur">1:29</span>
+  <span class="links"><a href="out/vision-hardware.mp4">Video</a><a href="lessons/vision-hardware/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">24</span>
+  <div><p class="kick">Workshop 6 · Vision &amp; Navigation · /vision-implementation</p><h2>Blending, Not Replacing</h2><p class="gate">Your turn: Cover the camera, push the robot, uncover: the estimate walks home. Sliders for distance and tag count.</p></div>
+  <span class="dur">1:29</span>
+  <span class="links"><a href="out/vision-implementation.mp4">Video</a><a href="lessons/vision-implementation/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">25</span>
+  <div><p class="kick">Workshop 6 · Vision &amp; Navigation · /drive-to-point</p><h2>Speed From Distance</h2><p class="gate">Your turn: Drag the goal pose and hold A.</p></div>
+  <span class="dur">1:29</span>
+  <span class="links"><a href="out/drive-to-point.mp4">Video</a><a href="lessons/drive-to-point/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">26</span>
+  <div><p class="kick">Workshop 6 · Vision &amp; Navigation · /advanced-drive-to-point</p><h2>Plan the Trip</h2><p class="gate">Your turn: Shove the robot mid-trip; flip the correction gain between 10 and 3.</p></div>
+  <span class="dur">1:20</span>
+  <span class="links"><a href="out/advanced-drive-to-point.mp4">Video</a><a href="lessons/advanced-drive-to-point/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">27</span>
+  <div><p class="kick">Workshop 6 · Vision &amp; Navigation · /dynamic-path-planning</p><h2>Starting From Anywhere</h2><p class="gate">Your turn: Widen the margin slider, or wall off the shortest route, and watch it re-plan.</p></div>
+  <span class="dur">1:12</span>
+  <span class="links"><a href="out/dynamic-path-planning.mp4">Video</a><a href="lessons/dynamic-path-planning/">Interactive</a></span>
+</li>
+<li>
+  <span class="n">28</span>
+  <div><p class="kick">Workshop 6 · Vision &amp; Navigation · /drive-to-tag-inline</p><h2>Every Way Out Stops</h2><p class="gate">Your turn: Cover the camera mid-approach: it stops, waits up to a second, and gives up stopped.</p></div>
+  <span class="dur">1:16</span>
+  <span class="links"><a href="out/drive-to-tag-inline.mp4">Video</a><a href="lessons/drive-to-tag-inline/">Interactive</a></span>
+</li></ol></main></body></html>

@@ -1,0 +1,66 @@
+{
+  "title": "Two Edges",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "An OpMode is one way the robot can run. Teleop is one of them, and each one is its own class.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "The project creator already made a teleop for you. The annotation at the top is what puts it on the driver station.",
+      "after": 0.6
+    },
+    {
+      "id": "edit",
+      "text": "So edit that file. Don't add a second one, or you'll end up with two teleops on the list.",
+      "after": 0.6
+    },
+    {
+      "id": "bind",
+      "text": "Clear out the empty methods, and bind the buttons in the constructor. The robot hands it the arm and the flywheel.",
+      "after": 0.6
+    },
+    {
+      "id": "edges",
+      "text": "Every button has two edges. Pressing it is one, letting go is the other, and each edge gets its own binding.",
+      "after": 0.6
+    },
+    {
+      "id": "left",
+      "text": "Hold the left trigger, and the arm pushes. Let go, and the release runs stop.",
+      "after": 0.6
+    },
+    {
+      "id": "right",
+      "text": "The right trigger's release is different. It drops the flywheel back to three volts, not to zero.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Your turn. Choose what the release does, then let go.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "mode",
+      "text": "Bindings belong to their mode. Switch to auto, and the triggers do nothing. Switch back, and they're there again. There's nothing to clean up.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Every hold needs a release. Next, you'll see exactly what happens without one.",
+      "after": 0.6
+    }
+  ]
+}

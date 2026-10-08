@@ -1,0 +1,72 @@
+{
+  "title": "Blending, Not Replacing",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "The camera can see a tag and work out where the robot is. Now the robot has to listen.",
+      "after": 0.6
+    },
+    {
+      "id": "install",
+      "text": "Install the Limelight library from its vendor file. The address is pinned to the WPILib alpha, so copy it exactly.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "solvers",
+      "text": "There are two ways to solve a pose. One works out the heading from the tags. The other borrows the robot's own heading, and that's the one to trust with a single tag.",
+      "after": 0.6
+    },
+    {
+      "id": "heading",
+      "text": "So every loop, the robot sends its heading to the camera first.",
+      "after": 0.6
+    },
+    {
+      "id": "queue",
+      "text": "The camera and the robot run on different clocks. Reading the frame queue takes exactly the frames that arrived, no more and no fewer.",
+      "after": 0.6
+    },
+    {
+      "id": "gates",
+      "text": "Some sightings get thrown out: anything the library flags, and anything more than four meters away.",
+      "after": 0.6
+    },
+    {
+      "id": "trust",
+      "text": "The rest get weighed. Far away, the error circle grows. A second tag shrinks it to a quarter.",
+      "after": 0.6
+    },
+    {
+      "id": "rewind",
+      "text": "Each picture was taken a moment ago. The estimator rewinds to that moment, folds the sighting in, and replays forward to now.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Cover the camera, push the robot, then uncover it.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "walk",
+      "text": "It doesn't jump. The estimate walks back over about a second, and faster when the sighting is good.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Blend the camera into the pose. Don't replace the pose with the camera.",
+      "after": 0.6
+    }
+  ]
+}

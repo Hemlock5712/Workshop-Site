@@ -1,0 +1,71 @@
+{
+  "title": "Plan the Trip",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Plan the whole trip before the robot moves, then follow the plan.",
+      "after": 0.6
+    },
+    {
+      "id": "connect",
+      "text": "Last time, it asked for thirty meters per second, then crawled the last stretch.",
+      "after": 0.6
+    },
+    {
+      "id": "shape",
+      "text": "You've seen this shape on the arm: speed up, cruise, slow down. Now it's in meters.",
+      "after": 0.6
+    },
+    {
+      "id": "triangle",
+      "text": "On a trip under about two meters, there's no room to cruise, so the plan is a triangle.",
+      "after": 0.6
+    },
+    {
+      "id": "snapshot",
+      "text": "When you press the button, the plan starts from where the robot is, and how fast it's already moving.",
+      "after": 0.6
+    },
+    {
+      "id": "loop",
+      "text": "Every loop, the clock moves forward, and the plan says where the robot should be, and how fast it should go.",
+      "after": 0.6
+    },
+    {
+      "id": "ff",
+      "text": "The plan's speed does most of the driving. A small correction pulls the robot toward where it should be.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Shove the robot, and flip the correction gain between ten and three.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "why",
+      "text": "At ten, a few centimeters of drift turn into meters per second. That's the buzz shape. Three is calm.",
+      "after": 0.6
+    },
+    {
+      "id": "clock",
+      "text": "The command ends when the plan's clock runs out, even if the robot is a little short. That ending is what makes it a step.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "A command with an ending can go in a list, after anything else.",
+      "after": 0.6
+    }
+  ]
+}

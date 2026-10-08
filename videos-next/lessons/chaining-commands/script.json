@@ -1,0 +1,71 @@
+{
+  "title": "Steps",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A routine is a list of commands that run in order.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "Every command you've written so far is a hold. Hold the button, and it runs until you let go. On this timeline, that's a bar with no end.",
+      "after": 0.6
+    },
+    {
+      "id": "problem",
+      "text": "Put a hold first in a list, and the list never moves on. There's no error. It just looks frozen.",
+      "after": 0.6
+    },
+    {
+      "id": "step",
+      "text": "So give it an ending. A one second timeout turns the hold into a step.",
+      "after": 0.6
+    },
+    {
+      "id": "sequence",
+      "text": "Now the list works. The arm goes up, and one second later the flywheel starts.",
+      "after": 0.6
+    },
+    {
+      "id": "stays",
+      "text": "When the arm's step ends, the arm stays up. Its position request is still on the motor.",
+      "after": 0.6
+    },
+    {
+      "id": "last",
+      "text": "The flywheel is still a hold, so the whole routine is a hold too. Letting go of the button is what ends it.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Take the timeout off, and run it again.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 9
+      }
+    },
+    {
+      "id": "never",
+      "text": "The flywheel never starts. The list is still waiting on a command that never ends.",
+      "after": 0.6
+    },
+    {
+      "id": "race",
+      "text": "A race is the other way to combine commands. They run side by side, and the race ends when the first one finishes. So a hold can never win one.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Give every step an ending. The last one decides whether the whole list ends.",
+      "after": 0.6
+    }
+  ]
+}

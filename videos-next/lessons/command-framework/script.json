@@ -1,0 +1,66 @@
+{
+  "title": "The Scheduler",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Robot code comes down to three things. Triggers say when. Mechanisms are what moves. Commands say how.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "Last time, a command was a package waiting for something to run it. That something is the scheduler.",
+      "after": 0.6
+    },
+    {
+      "id": "tick",
+      "text": "Fifty times a second, the robot calls one line, and the scheduler takes a turn. It checks every trigger, starts and cancels commands, and runs whatever's scheduled.",
+      "after": 0.6
+    },
+    {
+      "id": "lanes",
+      "text": "Each mechanism gets a lane, and a lane holds one command at a time.",
+      "after": 0.6
+    },
+    {
+      "id": "press",
+      "text": "Hold the left trigger. The command that pushes at six volts takes the arm's lane. It owns the arm now, and nothing else can drive that motor.",
+      "after": 0.6
+    },
+    {
+      "id": "hold",
+      "text": "That command never decides to stop on its own. Ending it is the trigger's job.",
+      "after": 0.6
+    },
+    {
+      "id": "release",
+      "text": "Let go, and in a single tick it's canceled, and the stop command takes the lane.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Your turn. Hold one trigger, then both. Each mechanism has its own lane, so each one has its own owner.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 9
+      }
+    },
+    {
+      "id": "newcomer",
+      "text": "If a second command asks for a lane that's already taken, the newcomer wins, and the old one is canceled.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Fifty times a second, the scheduler decides which one command owns each mechanism.",
+      "after": 0.6
+    }
+  ]
+}

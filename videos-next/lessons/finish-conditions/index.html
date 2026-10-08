@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ask Every Loop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=JetBrains+Mono:wght@400..700&family=Newsreader:opsz,wght@6..72,400..600&display=block"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../engine/player.css" />
+  </head>
+  <body>
+    <main>
+      <p class="kicker">videos-next · prototype</p>
+      <div id="player"></div>
+      <p class="note">
+        Space plays and pauses. At “Try it” the narration waits for you: drag the tolerance down to 0.001, then press R to run the step.
+      </p>
+    </main>
+    <script src="voice.js"></script>
+    <script type="module">
+      import { mountPlayer } from "../../engine/player.js";
+      import { createScene } from "./scene.js";
+      // load the fonts the canvas uses before the first frame
+      await Promise.all(
+        ['500 20px "Instrument Sans"', '600 20px "JetBrains Mono"', '500 20px "Newsreader"'].map((f) => document.fonts.load(f)),
+      );
+      mountPlayer(document.getElementById("player"), {
+        VOICE: window.VOICE,
+        scene: createScene(window.VOICE),
+        audioSrc: "voice/voice.wav",
+      });
+    </script>
+  </body>
+</html>

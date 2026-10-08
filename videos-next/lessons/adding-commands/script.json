@@ -1,0 +1,56 @@
+{
+  "title": "Every Command Is a Hold",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "The arm's setters are private, so nothing outside the arm can call them. A command is the only way in.",
+      "after": 0.6
+    },
+    {
+      "id": "first",
+      "text": "Here's the first one. It pushes at three volts.",
+      "after": 0.6
+    },
+    {
+      "id": "every",
+      "text": "You've seen the arrow before. It hands the job over, and this part runs that job every loop, for as long as the command runs.",
+      "after": 0.6
+    },
+    {
+      "id": "named",
+      "text": "The name on the end is what makes it a command. Leave it off, and the build fails with an error that doesn't tell you why.",
+      "after": 0.6
+    },
+    {
+      "id": "three",
+      "text": "The other two work the same way: six volts, and stop. Even stop sends its zero every loop.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Pick a command and watch the request it sends, then pick another.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "hold",
+      "text": "Look at the word at the end of every name. Hold. None of these ever finishes. Each one runs until something else takes the arm.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "So what takes it? On the robot, it's the driver's thumb, and that's the next lesson.",
+      "after": 0.6
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "title": "Straight Means Straight",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Three different things on a swerve robot get called zeroing, and they reset three different things.",
+      "after": 0.6
+    },
+    {
+      "id": "bumper",
+      "text": "The bumper button resets which way is forward. It doesn't move the robot's position.",
+      "after": 0.6
+    },
+    {
+      "id": "perspective",
+      "text": "The alliance setting flips forward for red. That doesn't touch the position either.",
+      "after": 0.6
+    },
+    {
+      "id": "pose",
+      "text": "Resetting the pose is what would move it, and nothing calls that yet. For now, the pose is just distance since the robot turned on.",
+      "after": 0.6
+    },
+    {
+      "id": "offsets",
+      "text": "The module zeros came from wheels you held straight by eye. Half a degree off walks the robot five centimeters sideways over six meters.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Tilt one wheel half a degree, and drive the robot down the line.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "edge",
+      "text": "So lay a straight edge along both wheels on each side. And check that every bevel gear faces the middle of the robot, or that module zeroes half a turn off.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "calibrate",
+      "text": "Run the encoder calibration for each module, generate the constants again, and redeploy.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "steer",
+      "text": "The steering is a position loop with no gravity, so skip the gravity gain, and start from the static gain. The values it shipped with are usually close.",
+      "after": 0.6
+    },
+    {
+      "id": "plot",
+      "text": "Plot where each module points against where it was told to point, and flick the stick. Tuned, the two lines sit on top of each other.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "close",
+      "text": "A curve that's the same every time is a zero. A wander that comes and goes is the gains.",
+      "after": 0.6
+    }
+  ]
+}

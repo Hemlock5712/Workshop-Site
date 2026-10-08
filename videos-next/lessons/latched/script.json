@@ -1,0 +1,75 @@
+{
+  "title": "The Latched Request",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Every motor on this robot is controlled with requests. A request tells the motor controller what to do right now.",
+      "after": 0.6
+    },
+    {
+      "id": "tuner",
+      "text": "You've already sent a few in Tuner X. Voltage Out pushed the motor with a fixed voltage, and Motion Magic moved it to a position.",
+      "after": 0.5
+    },
+    {
+      "id": "tunerstop",
+      "text": "And remember how Voltage Out kept running until you stopped it? Our code works the same way.",
+      "after": 0.8
+    },
+    {
+      "id": "code",
+      "text": "Here's the code we wrote. The left trigger is bound to a command that sets the arm to six volts.",
+      "after": 0.6
+    },
+    {
+      "id": "press",
+      "text": "Press the trigger, and that command sends a six volt request to the motor. The arm climbs.",
+      "after": 0.5
+    },
+    { "id": "release", "text": "Now let go. The command ends.", "after": 1.1 },
+    { "id": "spins", "text": "But the arm keeps spinning.", "after": 0.9 },
+    {
+      "id": "why",
+      "text": "Ending a command doesn't remove its request. Six volts is still on the motor, and nothing has told it to do anything else.",
+      "after": 0.8
+    },
+    {
+      "id": "tryit",
+      "text": "Try it yourself. Hold the trigger, then let go.",
+      "after": 0.3,
+      "gate": { "id": "try", "seconds": 7.5 }
+    },
+    {
+      "id": "fix",
+      "text": "So when the trigger is released, we need to stop the motor. We add a second binding that runs the arm's stop command.",
+      "after": 0.5
+    },
+    {
+      "id": "stopmotor",
+      "text": "That command calls stop motor, a function built into CTRE's motor class. It replaces whatever request is running with neutral, so the motor stops pushing.",
+      "after": 0.7
+    },
+    {
+      "id": "demo1",
+      "text": "Let's try it again. Hold the trigger, and the arm climbs just like before. Now let go.",
+      "after": 0.4
+    },
+    {
+      "id": "demo2",
+      "text": "This time the arm stops pushing and swings back down.",
+      "after": 1.2
+    },
+    {
+      "id": "close",
+      "text": "A request stays on the motor until something replaces it. So whenever a command ends, decide what replaces it.",
+      "after": 0.6
+    }
+  ]
+}

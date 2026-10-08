@@ -1,0 +1,76 @@
+{
+  "title": "Facing One Way, Driving Another",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A swerve robot can face one way and drive another.",
+      "after": 0.6
+    },
+    {
+      "id": "anatomy",
+      "text": "Each corner has a module with two motors. One spins the wheel, and the other points it. You never write the math that coordinates them. Two generated files do that.",
+      "after": 0.6
+    },
+    {
+      "id": "holonomic",
+      "text": "Ask for a direction, and all four wheels point that way. Ask for a spin at the same time, and each wheel works out its own angle.",
+      "after": 0.6
+    },
+    {
+      "id": "robot",
+      "text": "Which way is forward? Robot centric means forward follows the robot's nose. Turn the robot around, and the stick turns with it.",
+      "after": 0.6
+    },
+    {
+      "id": "field",
+      "text": "Field centric means forward is down the field, no matter which way the robot faces. For that, it needs a gyro to know its heading.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Hold a direction, and spin the robot.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "alliance",
+      "text": "On the red side, the driver's forward flips around, so pushing away still drives away from you.",
+      "after": 0.6
+    },
+    {
+      "id": "pose",
+      "text": "The robot's position is a pose: X down the field, Y across it, and a heading. The origin is the blue corner.",
+      "after": 0.6
+    },
+    {
+      "id": "trap",
+      "text": "And it stays the blue corner, even when you're on red. Only the driver's forward flips. The field never does.",
+      "after": 0.6
+    },
+    {
+      "id": "odometry",
+      "text": "Odometry tracks the pose by adding up how far each wheel turned, every loop. It only ever adds, so every error stays in.",
+      "after": 0.6
+    },
+    {
+      "id": "drift",
+      "text": "A wheel slips, someone shoves you, the wheel size is a little off, and the estimate walks away from the truth. Calibration slows that down. Vision corrects it.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Find all thirteen devices on your robot, and write down their IDs. The generator asks for them next.",
+      "after": 0.6
+    }
+  ]
+}

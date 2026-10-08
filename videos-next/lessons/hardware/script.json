@@ -1,0 +1,66 @@
+{
+  "title": "Three Parts and a Bus",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Every mechanism in this workshop is three parts: a motor, a sensor, and a bus that connects them to your laptop.",
+      "after": 0.6
+    },
+    {
+      "id": "motor",
+      "text": "The motor has its controller built into the back. It runs its own control loop and reports its own position, so the motor is a sensor too.",
+      "after": 0.6
+    },
+    {
+      "id": "sensor",
+      "text": "The arm also gets an absolute encoder. It still knows the arm's angle after the power's been off all week. The flywheel doesn't need one.",
+      "after": 0.6
+    },
+    {
+      "id": "bus",
+      "text": "The CANivore gives those devices their own bus, and your laptop plugs straight into it. There's no robot in between, so you can start right now.",
+      "after": 0.6
+    },
+    {
+      "id": "connect",
+      "text": "Power the mechanism first, then plug in the USB. In Tuner X, turn on CANivore USB, and set the address to localhost.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "name",
+      "text": "Your CANivore shows up. Rename it canivore, all lowercase. Every line of code in this course uses that name, so spell it exactly the same.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "firmware",
+      "text": "Old firmware still connects, and then it fails later in ways that come and go. Put every device on the same version.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "colors",
+      "text": "The card's color tells you where you stand. Green is current. Yellow means there's an update. Red means two devices share an ID, and that's the next lesson.",
+      "after": 0.6
+    },
+    {
+      "id": "check",
+      "text": "Power cycle everything. The name and the firmware live on the devices, so they come back exactly as you left them.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "close",
+      "text": "Three parts, one bus, and a name that matches the code.",
+      "after": 0.6
+    }
+  ]
+}

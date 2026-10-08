@@ -78,9 +78,9 @@ export default function PathPlannerLesson() {
             <code>src/main/deploy/pathplanner</code>.
           </li>
           <li>
-            In VS Code, open <strong>WPILib: Manage Vendor Libraries</strong>,
-            choose <strong>Install new libraries (online)</strong>, and paste
-            the URL below.
+            In VS Code, open the <strong>WPILib Vendor Dependencies</strong>{" "}
+            view from the activity bar. Expand <strong>INSTALL FROM URL</strong>
+            , paste the URL below, and press <strong>Install</strong>.
           </li>
           <li>Build the project. It should compile with nothing else added.</li>
         </ol>

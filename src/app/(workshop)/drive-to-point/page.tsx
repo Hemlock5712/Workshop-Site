@@ -49,8 +49,8 @@ const linkStyle =
  * here, by its `run()` and `onCancel()`, which are the whole idea: a coroutine
  * body that calls your four methods. The student still copies the file from
  * the branch. The stop in `end()` is a zero `ChassisVelocities`, not
- * `SwerveRequest.Idle`, which leaves the modules on their last request; the
- * branch still sends Idle and needs the same one-line edit.
+ * `SwerveRequest.Idle`, which leaves the modules on their last request. The
+ * branch sends the same zero.
  *
  * This is the first page in the course to use Java `super` and `this`.
  * `/java-basics` used to pre-teach both, fifteen lessons early, and no longer
@@ -347,9 +347,8 @@ public final void onCancel() {
         </p>
 
         <p>
-          Send zero speed, not <code>new SwerveRequest.Idle()</code>, which the
-          branch&apos;s copy still sends. Idle does nothing to the modules, so
-          each one keeps its last request.
+          Send zero speed, not <code>new SwerveRequest.Idle()</code>. Idle does
+          nothing to the modules, so each one keeps its last request.
         </p>
 
         <p>

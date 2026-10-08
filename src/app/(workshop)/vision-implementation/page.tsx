@@ -68,7 +68,7 @@ export default function VisionImplementation() {
           Odometry you trust, from <strong>Swerve Drive Tuning</strong>. Vision
           corrects drift, not a wrong wheel radius.
         </>,
-        <>The swerve project, with logging.</>,
+        <>The swerve project.</>,
         <>An AprilTag. A printed one on a wall works.</>,
       ]}
       time="14 minutes"

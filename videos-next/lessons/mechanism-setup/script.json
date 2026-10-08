@@ -1,0 +1,77 @@
+{
+  "title": "Numbers and First Motion",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Before anything moves, every device gets its own number.",
+      "after": 0.6
+    },
+    {
+      "id": "reset",
+      "text": "Open the motor, and factory default it. That clears whatever last season left behind.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "blink",
+      "text": "Click Blink. The device that flashes is the one you're editing. If two flash together, they share an ID.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "ids",
+      "text": "Give each one its number and a name. The arm's motor is thirty one, its encoder is thirty two, and the flywheel is twenty one.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "encoder",
+      "text": "On the arm, turn it counterclockwise by hand, and the encoder's number should climb. Zero it with the arm level, and a quarter turn up reads point two five.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "link",
+      "text": "Then tell the arm's motor to use that encoder for its position. In the feedback settings, that's the encoder's ID, and remote CANcoder.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "voltage",
+      "text": "Now the first motion. Pick Voltage Out, and ask for one volt. It sends that voltage and nothing else. There's no target, and no place to stop.",
+      "after": 0.6
+    },
+    {
+      "id": "enable",
+      "text": "Enable it. The mechanism moves the moment you click, and it keeps going until you click again.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Enable it, and stop it before it reaches the end.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "direction",
+      "text": "Check the direction. The arm should turn counterclockwise, with the encoder counting up. If it goes the wrong way, invert the motor in its settings. Don't type a negative voltage.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Every device has its own number, and positive means the same thing everywhere, before any code runs.",
+      "after": 0.6
+    }
+  ]
+}

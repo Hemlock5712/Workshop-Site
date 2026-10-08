@@ -209,6 +209,9 @@
     "wpijava",
     "wpilib",
     "wpilibj",
-    "wpilog"
+    "wpilog",
+    "WPIRED",
+    "venv",
+    "bakeoff"
   ]
 }

@@ -1,0 +1,1595 @@
+{
+  "_": "Source of truth for the Workshop 2-4 video series. tools/series.mjs renders series/index.html for review and, once approved, writes lessons/<id>/script.json. Each concept has exactly one owner video; everywhere else it is a one-line callback.",
+  "owners": [
+    ["Signal path: laptop, USB, CANivore, devices, no robot", "hardware"],
+    ["Voltage Out has no target; enable to disable", "mechanism-setup"],
+    ["kG cancels gravity; the three kP shapes", "pid-control"],
+    ["The trapezoid; Generate Code", "motion-magic"],
+    ["A lambda hands code over to run later", "java-basics"],
+    [
+      "The scheduler ticks 50x/s; one command owns each mechanism",
+      "command-framework"
+    ],
+    [
+      "Config once vs request every loop; CANcoder knows the real angle",
+      "mechanisms"
+    ],
+    [
+      "Building a command: runRepeatedly + .named; every one is a hold",
+      "adding-commands"
+    ],
+    ["A button has two edges; bindings belong to their mode", "opmodes"],
+    ["The latched request; stopMotor replaces it", "latched"],
+    [
+      "A request can name a target, and staying holds the arm",
+      "motion-magic-code"
+    ],
+    ["Holds have no ending; steps, sequence, race", "chaining-commands"],
+    [
+      "A condition asked every loop; a timeout is not arrival",
+      "finish-conditions"
+    ],
+    ["fork vs await; bounded waits; stop what you started", "coroutines"],
+    [
+      "Log from addPeriodic, all the time; read what nobody saw",
+      "logging-implementation"
+    ],
+    ["A test runs the loop by hand; check both sides", "testing"],
+    [
+      "Field- vs robot-centric; the blue-corner origin; drift",
+      "swerve-prerequisites"
+    ],
+    [
+      "A drivetrain's latched speed needs a default command",
+      "swerve-drive-project"
+    ],
+    [
+      "Three kinds of zeroing; a steady curve is an offset",
+      "swerve-calibration"
+    ],
+    ["Radius, plateau, slip knee from the carpet", "swerve-drive-tuning"],
+    [
+      "A canceled routine skips its last line; whenCanceled stops",
+      "autonomous"
+    ],
+    ["Follow a plan, correct back onto it; events", "pathplanner"],
+    ["Tags don't drift; never mount square", "vision-hardware"],
+    ["Fusion: weigh, rewind, replay", "vision-implementation"],
+    ["Speed proportional to distance bolts then creeps", "drive-to-point"],
+    [
+      "Feedforward drives a planned trip; a clock ends it",
+      "advanced-drive-to-point"
+    ],
+    ["Grid search with a bumper margin", "dynamic-path-planning"],
+    ["One loop, a stop on every exit", "drive-to-tag-inline"]
+  ],
+  "videos": [
+    {
+      "id": "hardware",
+      "workshop": "Workshop 1 · Hardware & CTRE",
+      "title": "Three Parts and a Bus",
+      "page": "/hardware",
+      "format": "recording + 10 s animated opener",
+      "opensFrom": "The start of the course: nothing installed but Tuner X.",
+      "handsTo": "'Red means two devices share an ID' hands to Motor Setup; the name canivore is what the code matches in Mechanisms.",
+      "gate": "None. A procedure, recorded.",
+      "visuals": "Animated: laptop → USB → CANivore → devices, a greyed 'robot controller' the packet skips. Recorded: CANivore USB, localhost, rename (staged), batch firmware, power cycle. Card colours as a still strip (only green can be shown live).",
+      "lines": [
+        [
+          "intro",
+          "Every mechanism in this workshop is three parts: a motor, a sensor, and a bus that connects them to your laptop."
+        ],
+        [
+          "motor",
+          "The motor has its controller built into the back. It runs its own control loop and reports its own position, so the motor is a sensor too."
+        ],
+        [
+          "sensor",
+          "The arm also gets an absolute encoder. It still knows the arm's angle after the power's been off all week. The flywheel doesn't need one."
+        ],
+        [
+          "bus",
+          "The CANivore gives those devices their own bus, and your laptop plugs straight into it. There's no robot in between, so you can start right now."
+        ],
+        [
+          "connect",
+          "Power the mechanism first, then plug in the USB. In Tuner X, turn on CANivore USB, and set the address to localhost.",
+          "rec"
+        ],
+        [
+          "name",
+          "Your CANivore shows up. Rename it canivore, all lowercase. Every line of code in this course uses that name, so spell it exactly the same.",
+          "rec"
+        ],
+        [
+          "firmware",
+          "Old firmware still connects, and then it fails later in ways that come and go. Put every device on the same version.",
+          "rec"
+        ],
+        [
+          "colors",
+          "The card's color tells you where you stand. Green is current. Yellow means there's an update. Red means two devices share an ID, and that's the next lesson."
+        ],
+        [
+          "check",
+          "Power cycle everything. The name and the firmware live on the devices, so they come back exactly as you left them.",
+          "rec"
+        ],
+        ["close", "Three parts, one bus, and a name that matches the code."]
+      ]
+    },
+    {
+      "id": "mechanism-setup",
+      "workshop": "Workshop 1 · Hardware & CTRE",
+      "title": "Numbers and First Motion",
+      "page": "/mechanism-setup",
+      "format": "recording + animated insert",
+      "opensFrom": "Last video's red card: two devices sharing an ID.",
+      "handsTo": "Voltage Out 'pushed the moment you enabled it' and 'kept running until you stopped it' are what Java Basics and the Latched Request call back to.",
+      "gate": "Animated insert: the arm at 1 V with no target; the student enables and must stop it before the end of travel.",
+      "visuals": "Recorded: three dots → Factory Default, Blink with a camera inset of the LEDs, IDs 31/32/21, CANcoder hand test and zero (needs the arm build), Feedback section, Control → Voltage Out at 1 V, Disabled/Enabled. Animated: the no-target sweep and the Disable button.",
+      "lines": [
+        ["intro", "Before anything moves, every device gets its own number."],
+        [
+          "reset",
+          "Open the motor, and factory default it. That clears whatever last season left behind.",
+          "rec"
+        ],
+        [
+          "blink",
+          "Click Blink. The device that flashes is the one you're editing. If two flash together, they share an ID.",
+          "rec"
+        ],
+        [
+          "ids",
+          "Give each one its number and a name. The arm's motor is thirty one, its encoder is thirty two, and the flywheel is twenty one.",
+          "rec"
+        ],
+        [
+          "encoder",
+          "On the arm, turn it counterclockwise by hand, and the encoder's number should climb. Zero it with the arm level, and a quarter turn up reads point two five.",
+          "rec"
+        ],
+        [
+          "link",
+          "Then tell the arm's motor to use that encoder for its position. In the feedback settings, that's the encoder's ID, and remote CANcoder.",
+          "rec"
+        ],
+        [
+          "voltage",
+          "Now the first motion. Pick Voltage Out, and ask for one volt. It sends that voltage and nothing else. There's no target, and no place to stop."
+        ],
+        [
+          "enable",
+          "Enable it. The mechanism moves the moment you click, and it keeps going until you click again.",
+          "rec"
+        ],
+        [
+          "tryit",
+          "Try it. Enable it, and stop it before it reaches the end.",
+          "gate"
+        ],
+        [
+          "direction",
+          "Check the direction. The arm should turn counterclockwise, with the encoder counting up. If it goes the wrong way, invert the motor in its settings. Don't type a negative voltage."
+        ],
+        [
+          "close",
+          "Every device has its own number, and positive means the same thing everywhere, before any code runs."
+        ]
+      ]
+    },
+    {
+      "id": "pid-control",
+      "workshop": "Workshop 1 · Hardware & CTRE",
+      "title": "One Motion, Then Silence",
+      "page": "/pid-control",
+      "format": "hybrid, about 40% animated",
+      "opensFrom": "Voltage Out had no target; now the motor gets one.",
+      "handsTo": "The three shapes (runs away, buzzes, falls short) are called back by Drive to Point and Profiled Drive to Point. Hands off to the page's MechanismPlayground rather than duplicating it.",
+      "gate": "Pick a kP that's too low, then too high, and read the plot. Mirrors the playground; the video's version is three fixed choices.",
+      "visuals": "Animated: gravity arrow shrinking with cos(angle) and the kG counter-arrow matching it; the three kP shapes as arm + trace, then the arm stripped away; a stacked output bar (feedforward slab, feedback sliver). Recorded: plot setup, Slot 0 to zero, enable on zero gains, kG/kP/kD steps with every value masked, apply and power cycle.",
+      "lines": [
+        [
+          "intro",
+          "The motor runs its own control loop. Tuner X just sends it a target, and draws what happens."
+        ],
+        [
+          "zero",
+          "Start with every gain at zero, and enable. Nothing moves. That's correct: zero gains mean zero volts.",
+          "rec"
+        ],
+        [
+          "gravity",
+          "Gravity pulls hardest when the arm is level, and not at all when it's straight up."
+        ],
+        [
+          "kg",
+          "The gravity gain cancels exactly that pull, at every angle. Raise it until the arm holds level on its own.",
+          "rec"
+        ],
+        [
+          "ks",
+          "The static gain covers friction. Set it to half the gap between the smallest and largest gravity gains that hold."
+        ],
+        [
+          "kp",
+          "Now the feedback. Double the proportional gain until the arm overshoots, then cut it in half.",
+          "rec"
+        ],
+        [
+          "kd",
+          "The derivative gain takes out the overshoot. Too much of it, and the arm buzzes."
+        ],
+        [
+          "tryit",
+          "Try it. Pick a gain that's too low, then one that's too high, and watch the plot.",
+          "gate"
+        ],
+        [
+          "shapes",
+          "Three shapes tell you what's wrong. It runs away, it buzzes, or it falls short. Read the plot, not the mechanism."
+        ],
+        [
+          "apply",
+          "Apply the gains, and power cycle. They're saved on the motor.",
+          "rec"
+        ],
+        [
+          "close",
+          "Feedforward pays for holding. Feedback fixes what's left. A tuned arm makes one motion, and then it's silent."
+        ]
+      ]
+    },
+    {
+      "id": "motion-magic",
+      "workshop": "Workshop 1 · Hardware & CTRE",
+      "title": "Walking the Target",
+      "page": "/motion-magic",
+      "format": "hybrid, about 50% animated",
+      "opensFrom": "Last video's target jumped all at once.",
+      "handsTo": "Owns the trapezoid ('speed up, cruise, slow down'), which Naming a Target and Profiled Drive to Point call back to. Ends on Generate Code, where Configs and Requests picks up.",
+      "gate": "Shorten the move and watch the cruise disappear: the triangle.",
+      "visuals": "Animated: three synced panels on one playhead (ghost setpoint arm, velocity trapezoid, position S-curve); the triangle on a short move; flywheel with cruise greyed 'not read'. Recorded: Motion Magic config (cruise 0.5, accel 1, jerk 0), Control → MotionMagicVoltage at 0.25, the plot's ramp-cruise-ramp, raising limits, three dots → Generate Code. Slot 0 values masked.",
+      "lines": [
+        [
+          "intro",
+          "Last time, the target jumped all at once. Motion Magic walks it there instead."
+        ],
+        [
+          "route",
+          "Two numbers describe the walk: how fast it may go, and how fast it may speed up."
+        ],
+        [
+          "trapezoid",
+          "So every move has three parts. It speeds up, it cruises, and it slows down, arriving with no speed left."
+        ],
+        [
+          "same",
+          "Your gains don't change. Motion Magic only moves the target they chase."
+        ],
+        [
+          "set",
+          "In the Motion Magic settings, start slow: half a rotation per second, and one rotation per second squared. Leave jerk at zero, and apply.",
+          "rec"
+        ],
+        [
+          "run",
+          "Pick Motion Magic from the control menu, ask for a quarter turn, and enable. The plot draws the shape.",
+          "rec"
+        ],
+        [
+          "tryit",
+          "Try it. Make the move shorter, and watch what happens to the cruise.",
+          "gate"
+        ],
+        [
+          "triangle",
+          "On a short move, there's no room to cruise. It starts slowing down before it reaches top speed, and that's correct."
+        ],
+        [
+          "flywheel",
+          "A flywheel isn't going anywhere, so it has no cruise. Only the acceleration shapes its ramp."
+        ],
+        [
+          "raise",
+          "Raise the limits one step at a time, until the arm starts to lag, then back off a little.",
+          "rec"
+        ],
+        [
+          "generate",
+          "Everything you set now lives on the motor. In the three dot menu, Generate Code copies it out, and that's where the code picks up in Workshop 3.",
+          "rec"
+        ],
+        [
+          "close",
+          "Name where it should end up, and the motor plans the way there."
+        ]
+      ]
+    },
+    {
+      "id": "java-basics",
+      "workshop": "Workshop 2 · Code Foundations",
+      "title": "Handing Over Code",
+      "page": "/java-basics",
+      "opensFrom": "Tuner X: Voltage Out pushed the instant you enabled it.",
+      "handsTo": "Names the 'someone' who runs the command: the scheduler.",
+      "gate": "Two keys: C calls the method (a sealed package lands in a command, arm stays still), S runs the command (package opens every loop, arm moves).",
+      "visuals": "runSlow() code; a sealed 'package' token holding setVoltage(3.0); a command card; loop pulse; TalonFX card; arm. No controller yet.",
+      "lines": [
+        [
+          "intro",
+          "Most of the Java in this course is ordinary: classes, fields, methods. One piece works differently, and everything else is built on it."
+        ],
+        [
+          "callback",
+          "In Tuner X, the motor pushed the moment you enabled Voltage Out. Code doesn't have to work that way."
+        ],
+        [
+          "show",
+          "Here's a method on the arm. It builds a command that pushes the arm at three volts."
+        ],
+        [
+          "parcel",
+          "That little arrow makes a lambda. It turns the code after it into a package that's written down and handed over, but not run."
+        ],
+        [
+          "call",
+          "So when this method runs, the motor doesn't move. You get back a command with that package inside, and that's all."
+        ],
+        [
+          "silent",
+          "There's no error and no warning. The arm just sits there, because nothing has run the command yet."
+        ],
+        [
+          "run",
+          "When something does run it, the package opens, and it keeps opening every loop. Now the motor gets its three volts."
+        ],
+        [
+          "tryit",
+          "Try it. Call the method, then run the command, and watch which one moves the arm.",
+          "gate"
+        ],
+        [
+          "close",
+          "A lambda is code you hand to something else to run later. Next, you'll meet what runs it."
+        ]
+      ]
+    },
+    {
+      "id": "command-framework",
+      "workshop": "Workshop 2 · Code Foundations",
+      "title": "The Scheduler",
+      "page": "/command-framework",
+      "opensFrom": "Last video's package needed something to run it.",
+      "handsTo": "Lanes and owners are reused by every later video; the empty lane before the first press is left unexplained on purpose (latched owns it).",
+      "gate": "Hold either trigger or both; each mechanism's lane changes owner independently.",
+      "visuals": "When/What/How cards; a 50-per-second tick clock; one lane per mechanism (Arm, Flywheel) with command blocks; controller with both triggers; Robot.robotPeriodic and the MyTeleop bindings; flywheel drawable (new).",
+      "lines": [
+        [
+          "intro",
+          "Robot code comes down to three things. Triggers say when. Mechanisms are what moves. Commands say how."
+        ],
+        [
+          "callback",
+          "Last time, a command was a package waiting for something to run it. That something is the scheduler."
+        ],
+        [
+          "tick",
+          "Fifty times a second, the robot calls one line, and the scheduler takes a turn. It checks every trigger, starts and cancels commands, and runs whatever's scheduled."
+        ],
+        [
+          "lanes",
+          "Each mechanism gets a lane, and a lane holds one command at a time."
+        ],
+        [
+          "press",
+          "Hold the left trigger. The command that pushes at six volts takes the arm's lane. It owns the arm now, and nothing else can drive that motor."
+        ],
+        [
+          "hold",
+          "That command never decides to stop on its own. Ending it is the trigger's job."
+        ],
+        [
+          "release",
+          "Let go, and in a single tick it's canceled, and the stop command takes the lane."
+        ],
+        [
+          "tryit",
+          "Your turn. Hold one trigger, then both. Each mechanism has its own lane, so each one has its own owner.",
+          "gate"
+        ],
+        [
+          "newcomer",
+          "If a second command asks for a lane that's already taken, the newcomer wins, and the old one is canceled."
+        ],
+        [
+          "close",
+          "Fifty times a second, the scheduler decides which one command owns each mechanism."
+        ]
+      ]
+    },
+    {
+      "id": "mechanisms",
+      "workshop": "Workshop 3 · Robot Programming",
+      "title": "Configs and Requests",
+      "page": "/mechanisms",
+      "opensFrom": "Tuner X Generate Code: the config you built by hand gets pasted here.",
+      "handsTo": "Plants 'the last request sticks', which the latched video pays off. Ends on Robot owning the arm once, which OpModes uses.",
+      "gate": "Drag the arm to any angle, press power. The motor's own count snaps to zero; the CANcoder keeps the real angle.",
+      "visuals": "Arm.java (fields, pasted config, two private methods); TalonFX card split into Config (stays) and Current request (changes); CAN wire with a one-shot config packet and repeating request packets; CANcoder with absolute angle beside the rotor count; power button with a blackout; Robot.java fields. Folds in /project-structure's one animated idea (Robot builds the mechanisms once).",
+      "lines": [
+        [
+          "intro",
+          "A mechanism is one part of the robot, written as one class. This one's the arm."
+        ],
+        [
+          "callback",
+          "In Tuner X, you set this motor up by hand. Generate Code copies those settings out. That copy goes right here, in the constructor."
+        ],
+        [
+          "fields",
+          "First, the hardware: the CAN bus, the motor on thirty one, and the CANcoder on thirty two."
+        ],
+        [
+          "config",
+          "When the arm gets built, the constructor sends that config to the motor once. The motor saves it and keeps it."
+        ],
+        [
+          "request",
+          "A request is different. It says what to do right now, and the code sends a new one every loop."
+        ],
+        [
+          "sticks",
+          "Whichever request arrives last is the one the motor keeps doing. Hold on to that. It comes back in a few lessons."
+        ],
+        [
+          "count",
+          "One setting matters more than it looks. The motor counts its own turns, but that count starts over at zero every time the robot powers on."
+        ],
+        [
+          "tryit",
+          "Try it. Move the arm, power cycle the robot, and compare the two readings.",
+          "gate"
+        ],
+        [
+          "feedback",
+          "The CANcoder remembers the real angle. These lines make it the motor's source, so every angle you ask for later is a real one."
+        ],
+        [
+          "robot",
+          "Last, the robot builds the arm once, as a field, and every mode you write uses that same arm."
+        ],
+        [
+          "close",
+          "Settings go in once. Requests go every loop, and the last one sticks."
+        ]
+      ]
+    },
+    {
+      "id": "adding-commands",
+      "workshop": "Workshop 3 · Robot Programming",
+      "title": "Every Command Is a Hold",
+      "page": "/adding-commands",
+      "opensFrom": "The setters were made private in Mechanisms; the package arrow from Java Basics.",
+      "handsTo": "Ends on the question 'what ends a hold?', which OpModes answers.",
+      "gate": "Three chips (three volts, six volts, stop). Tap one, watch its request land every loop; tap another, watch it take over.",
+      "visuals": "Lock on setVoltage; Arm.java commands typing in; a builder piece that snaps into a command when .named attaches; loop pulse; TalonFX card; owner badge on the arm.",
+      "lines": [
+        [
+          "intro",
+          "The arm's setters are private, so nothing outside the arm can call them. A command is the only way in."
+        ],
+        ["first", "Here's the first one. It pushes at three volts."],
+        [
+          "every",
+          "You've seen the arrow before. It hands the job over, and this part runs that job every loop, for as long as the command runs."
+        ],
+        [
+          "named",
+          "The name on the end is what makes it a command. Leave it off, and the build fails with an error that doesn't tell you why."
+        ],
+        [
+          "three",
+          "The other two work the same way: six volts, and stop. Even stop sends its zero every loop."
+        ],
+        [
+          "tryit",
+          "Try it. Pick a command and watch the request it sends, then pick another.",
+          "gate"
+        ],
+        [
+          "hold",
+          "Look at the word at the end of every name. Hold. None of these ever finishes. Each one runs until something else takes the arm."
+        ],
+        [
+          "close",
+          "So what takes it? On the robot, it's the driver's thumb, and that's the next lesson."
+        ]
+      ]
+    },
+    {
+      "id": "opmodes",
+      "workshop": "Workshop 3 · Robot Programming",
+      "title": "Two Edges",
+      "page": "/opmodes",
+      "opensFrom": "A hold never ends on its own (last video).",
+      "handsTo": "'Every hold needs a release' sets up the latched video, which removes one.",
+      "gate": "Right trigger held, flywheel spinning. Pick what the release runs (stop, three volts, six volts), then let go.",
+      "visuals": "Generated MyTeleop collapsing into three bindings; driver station mode list (Teleop / My Auto) with a ghost second Teleop struck off; press/release edge strip under the controller; flywheel and arm; lanes from The Scheduler.",
+      "lines": [
+        [
+          "intro",
+          "An OpMode is one way the robot can run. Teleop is one of them, and each one is its own class."
+        ],
+        [
+          "callback",
+          "The project creator already made a teleop for you. The annotation at the top is what puts it on the driver station."
+        ],
+        [
+          "edit",
+          "So edit that file. Don't add a second one, or you'll end up with two teleops on the list."
+        ],
+        [
+          "bind",
+          "Clear out the empty methods, and bind the buttons in the constructor. The robot hands it the arm and the flywheel."
+        ],
+        [
+          "edges",
+          "Every button has two edges. Pressing it is one, letting go is the other, and each edge gets its own binding."
+        ],
+        [
+          "left",
+          "Hold the left trigger, and the arm pushes. Let go, and the release runs stop."
+        ],
+        [
+          "right",
+          "The right trigger's release is different. It drops the flywheel back to three volts, not to zero."
+        ],
+        [
+          "tryit",
+          "Your turn. Choose what the release does, then let go.",
+          "gate"
+        ],
+        [
+          "mode",
+          "Bindings belong to their mode. Switch to auto, and the triggers do nothing. Switch back, and they're there again. There's nothing to clean up."
+        ],
+        [
+          "close",
+          "Every hold needs a release. Next, you'll see exactly what happens without one."
+        ]
+      ]
+    },
+    {
+      "id": "latched",
+      "workshop": "Workshop 3 · Robot Programming",
+      "title": "The Latched Request",
+      "page": "/running-program",
+      "status": "built",
+      "opensFrom": "Tuner X Voltage Out kept running until you stopped it.",
+      "handsTo": "Motion Magic in Code reverses it.",
+      "gate": "Hold the trigger, let go, watch it keep spinning, press Disable.",
+      "visuals": "Already built: lessons/latched.",
+      "lines": [
+        [
+          "note",
+          "Built and approved. Optional tweak for continuity: open with 'Last time, every hold got a release. Let's take one away.' before the Tuner X recap."
+        ]
+      ]
+    },
+    {
+      "id": "motion-magic-code",
+      "workshop": "Workshop 3 · Robot Programming",
+      "title": "Naming a Target",
+      "page": "/motion-magic-code",
+      "opensFrom": "The latched request: last time, staying was the problem.",
+      "handsTo": "Commands that name a target and hold forever: Workshop 4 has to give them endings.",
+      "gate": "Hold the trigger and let go halfway through the move. The command ends; the arm still finishes and holds.",
+      "visuals": "Field swap VoltageOut to MotionMagicVoltage; Slot 0 strip at 0.0, then 'your gains' hatched (never numbers); target marker at vertical; ghost setpoint arm leading the real one; velocity-time trapezoid with a playhead; TalonFX card with a target instead of volts; a small freeze-frame of the latched runaway for contrast.",
+      "lines": [
+        ["intro", "A request can name a voltage, or it can name a target."],
+        [
+          "callback",
+          "In Tuner X, you picked Motion Magic, gave it a position, and watched the arm speed up, cruise, and slow down into place."
+        ],
+        [
+          "swap",
+          "In code, it's the same swap. The voltage request comes out, and a Motion Magic request goes in."
+        ],
+        [
+          "gains",
+          "Your gains come from the bench. Out of the box every one of them is zero, so paste your config from Tuner X again."
+        ],
+        [
+          "target",
+          "The commands change too. Instead of a voltage, this one names a place: straight up."
+        ],
+        [
+          "binding",
+          "And the release binding comes out. You'll see why in a second."
+        ],
+        [
+          "press",
+          "Hold the trigger. The motor plans the whole move, then follows it: speed up, cruise, slow down, arrive."
+        ],
+        [
+          "release",
+          "Now let go. The command ends, and the request stays on the motor, just like last time."
+        ],
+        [
+          "reverse",
+          "But this time the request is a position, so staying is exactly what holds the arm up."
+        ],
+        ["tryit", "Try letting go halfway through the move.", "gate"],
+        [
+          "halfway",
+          "It still finishes. The motor already knows where the arm is supposed to end up."
+        ],
+        [
+          "wrong",
+          "If the arm doesn't move at all, the gains are still zero. If it overshoots and hunts, retune in Tuner X and paste again. Don't fix it in code."
+        ],
+        [
+          "close",
+          "Name where the arm should be, and the motor keeps it there, even after the command ends."
+        ]
+      ]
+    },
+    {
+      "id": "chaining-commands",
+      "workshop": "Workshop 4 · Routines",
+      "title": "Steps",
+      "page": "/chaining-commands",
+      "opensFrom": "Every command so far is a hold that runs until you let go.",
+      "handsTo": "A one-second timeout is a guess; Finish Conditions replaces it with the sensor.",
+      "gate": "Remove the timeout chip from the first command and press Y again. The flywheel never starts.",
+      "visuals": "Introduces the scheduler timeline used for all of Workshop 4: lanes per mechanism, bars that end vs bars with no right edge, a playhead, a bracket for the group, a stopwatch chip for withTimeout. Arm stays up after its step (latched position).",
+      "lines": [
+        ["intro", "A routine is a list of commands that run in order."],
+        [
+          "callback",
+          "Every command you've written so far is a hold. Hold the button, and it runs until you let go. On this timeline, that's a bar with no end."
+        ],
+        [
+          "problem",
+          "Put a hold first in a list, and the list never moves on. There's no error. It just looks frozen."
+        ],
+        [
+          "step",
+          "So give it an ending. A one second timeout turns the hold into a step."
+        ],
+        [
+          "sequence",
+          "Now the list works. The arm goes up, and one second later the flywheel starts."
+        ],
+        [
+          "stays",
+          "When the arm's step ends, the arm stays up. Its position request is still on the motor."
+        ],
+        [
+          "last",
+          "The flywheel is still a hold, so the whole routine is a hold too. Letting go of the button is what ends it."
+        ],
+        ["tryit", "Try it. Take the timeout off, and run it again.", "gate"],
+        [
+          "never",
+          "The flywheel never starts. The list is still waiting on a command that never ends."
+        ],
+        [
+          "race",
+          "A race is the other way to combine commands. They run side by side, and the race ends when the first one finishes. So a hold can never win one."
+        ],
+        [
+          "close",
+          "Give every step an ending. The last one decides whether the whole list ends."
+        ]
+      ]
+    },
+    {
+      "id": "finish-conditions",
+      "workshop": "Workshop 4 · Routines",
+      "title": "Ask Every Loop",
+      "page": "/finish-conditions",
+      "opensFrom": "Last video's one-second timeout was a guess.",
+      "handsTo": "'A timeout is not arrival' is what Coroutines checks for with timedOut().",
+      "gate": "Drag the tolerance down to 0.001 degrees and run it. The stopwatch wins at two seconds; the next step starts with the arm short.",
+      "visuals": "Arm angle gauge with a target tick and a shaded tolerance band; the condition line pulsing each loop with a true/false chip; on the timeline, the step drawn as a race between a condition bar and a stopwatch bar.",
+      "lines": [
+        [
+          "intro",
+          "A finish condition ends a step when the mechanism says it got there."
+        ],
+        [
+          "callback",
+          "Last time, the arm's step ended after one second. That number was a guess."
+        ],
+        [
+          "question",
+          "This method asks the sensor whether the arm is close enough to its target. Close enough, because a real arm is never exactly on the number."
+        ],
+        [
+          "every",
+          "The arrow matters again. It hands the question over, so it gets asked every loop, and the step ends on the loop the answer turns true."
+        ],
+        [
+          "timeout",
+          "Back it with a timeout. Now the step has two ways to end: the arm arrives, or the clock runs out."
+        ],
+        ["race", "On most runs, the sensor wins in about half a second."],
+        [
+          "tryit",
+          "Try it. Squeeze the tolerance down to almost nothing, and run it again.",
+          "gate"
+        ],
+        [
+          "lose",
+          "The arm gets close, but never close enough, so the clock wins at two seconds."
+        ],
+        [
+          "proves",
+          "And the next step starts anyway, with the arm short of its target. A timeout tells you the waiting is over. It doesn't tell you where the arm is."
+        ],
+        [
+          "close",
+          "End on the sensor, back it with a timer, and never treat the timer running out as arriving."
+        ]
+      ]
+    },
+    {
+      "id": "coroutines",
+      "workshop": "Workshop 4 · Routines",
+      "title": "Fork and Wait",
+      "page": "/coroutines",
+      "opensFrom": "Autonomous: nobody is holding a button, so nobody can let go.",
+      "handsTo": "The routine gives up silently after three seconds, which is Logging's cold open.",
+      "gate": "Line one is a two-way chip: fork or await. Await freezes on line one while the 15 second auto clock drains; fork carries on.",
+      "visuals": "Matches the existing CoroutineTimeline component on /coroutines: main flow column, peel-off lanes for Arm and Flywheel, solid = running, dashed = waiting, two exits from a wait (arrived / gave up), a 15 s autonomous clock, driver station auto picker showing 'Raise And Shoot'. Controller idle on purpose.",
+      "lines": [
+        [
+          "intro",
+          "A coroutine is a routine written as plain code, one line after another, that can pause on a line."
+        ],
+        [
+          "callback",
+          "In autonomous, nobody's holding a button. There's nobody to let go."
+        ],
+        [
+          "why",
+          "And the arm has to keep holding while everything after it happens. A list can't do that."
+        ],
+        [
+          "fork",
+          "Fork starts a command and moves straight on. The arm's lane keeps running on its own."
+        ],
+        [
+          "wait",
+          "Then the routine waits until the arm is in place, but never longer than three seconds."
+        ],
+        [
+          "tryit",
+          "Your turn. Fork the arm, or await it. Pick one, and run it.",
+          "gate"
+        ],
+        [
+          "await",
+          "Await waits for the command to finish. The arm holds forever, so the routine never gets past the first line."
+        ],
+        [
+          "timeout",
+          "If that wait runs out, the routine checks, and leaves. Without the check, it would shoot at an angle nobody looked at."
+        ],
+        [
+          "shoot",
+          "Then the flywheel spins up, the routine waits for it to reach speed, and the shot gets one second."
+        ],
+        [
+          "stop",
+          "Last, it forks a stop for the flywheel. Ending a routine cancels everything it started, and canceling doesn't stop a motor."
+        ],
+        [
+          "close",
+          "Fork the holds, await the steps, put a limit on every wait, and stop what you started before you leave."
+        ]
+      ]
+    },
+    {
+      "id": "logging-implementation",
+      "workshop": "Workshop 4 · Routines",
+      "title": "What Nobody Watched",
+      "page": "/logging-implementation",
+      "opensFrom": "Cold open: the coroutine routine gives up after three seconds and nobody sees it.",
+      "handsTo": "Testing: catching a problem before the robot ever runs.",
+      "gate": "Scrub the finished plot. Find where the routine gave up; snapping there lights the timedOut() line.",
+      "visuals": "Values leaving a trail on a scrolling strip that becomes a plot; enabled band and mode label; Robot constructor lines; record() with unit words glowing; the command-vs-addPeriodic replay where the trace goes flat at release. AdvantageScope itself is a short screen recording, not animated.",
+      "lines": [
+        [
+          "cold",
+          "Autonomous runs. The arm rises, stops short, and the flywheel never spins. Then it's over."
+        ],
+        [
+          "intro",
+          "Nobody saw why. A log is a recording of numbers over time, kept in a file you can open afterwards."
+        ],
+        [
+          "start",
+          "Two lines in the robot's constructor start the recorder. It notes when the robot is enabled, and which mode is running."
+        ],
+        [
+          "record",
+          "Then the arm records three numbers: where it is, where it's trying to be, and the voltage it's using. The units go in the names."
+        ],
+        [
+          "always",
+          "This line runs that recording every loop, for the whole program."
+        ],
+        [
+          "wrong",
+          "Put it inside a command instead, and it only records while that command runs. Let go of the trigger, and the line goes flat even though the arm keeps moving."
+        ],
+        ["tryit", "Now find the moment the routine gave up.", "gate"],
+        [
+          "found",
+          "Three seconds after the target changed, the arm was still short. That's the timeout. And the voltage was working the whole time, so this is a tuning problem, not a wiring one."
+        ],
+        [
+          "close",
+          "Log from the start, all the time, and the file will tell you what nobody watched."
+        ]
+      ]
+    },
+    {
+      "id": "testing",
+      "workshop": "Workshop 4 · Routines",
+      "title": "One Tick by Hand",
+      "page": "/testing",
+      "opensFrom": "Hook: a teammate changes one number while the robot is packed in a crate.",
+      "handsTo": "End of the mechanism chain; Workshop 5 starts swerve.",
+      "gate": "Be the teammate: drag the flywheel tolerance from 0.5 up to 10 and press Run Tests. Past about 5, the second check fails.",
+      "visuals": "ArmTest code; a 'waiting' slot vs 'running' slot for the scheduled command; one manual tick pulse; TalonFX card reading the target; flywheel speed dial with a tolerance band and two markers (just inside, well outside); a stylised test-results panel (PASSED / FAILED with a line number).",
+      "lines": [
+        [
+          "hook",
+          "Three weeks before an event, a teammate changes one number. The robot's packed in a crate. Who notices?"
+        ],
+        [
+          "intro",
+          "A test is a check the computer runs for you, every time the code changes."
+        ],
+        [
+          "callback",
+          "Hardware Simulation already ran your program with no robot. A test uses that same simulator, but nothing loops unless the test says so."
+        ],
+        [
+          "schedule",
+          "This test schedules the command that sends the arm straight up. Scheduling only puts it in line, so the motor still has no request."
+        ],
+        [
+          "tick",
+          "Then the test runs the scheduler once. One tick. Now the request names the target, and the check passes."
+        ],
+        [
+          "skip",
+          "Leave that tick out, and the check fails. It's the most common mistake in this lesson."
+        ],
+        [
+          "fake",
+          "The flywheel test fakes the sensor. It sets the speed just inside the tolerance and checks that it counts, then sets it well outside and checks that it doesn't."
+        ],
+        [
+          "tryit",
+          "Be the teammate. Widen the tolerance, and run the tests.",
+          "gate"
+        ],
+        [
+          "caught",
+          "The far-off speed slides inside the band, and the second check fails. That edit just got caught."
+        ],
+        [
+          "limits",
+          "A test checks the request, not the motion. The bench still has to show the arm really gets there."
+        ],
+        [
+          "close",
+          "Put decisions where a test can read them, and let the computer check them every time."
+        ]
+      ]
+    },
+    {
+      "id": "swerve-prerequisites",
+      "workshop": "Workshop 5 · Swerve & Autonomous",
+      "title": "Facing One Way, Driving Another",
+      "page": "/swerve-prerequisites",
+      "format": "animated",
+      "opensFrom": "Workshop 4's mechanisms each did one thing; this robot moves in any direction.",
+      "handsTo": "Thirteen device IDs, which the generator asks for next. Drift sets up calibration, tuning and vision.",
+      "gate": "Hold a direction and spin the robot; toggle field- and robot-centric.",
+      "visuals": "New top-down field + swerve robot drawable: four modules at their steer angles with speed arrows that reverse, a front marker and heading arrow, field axes fixed at the blue corner, a driver-forward arrow, a pose readout, and a ghost odometry pose. The controller needs sticks and a left bumper.",
+      "lines": [
+        ["intro", "A swerve robot can face one way and drive another."],
+        [
+          "anatomy",
+          "Each corner has a module with two motors. One spins the wheel, and the other points it. You never write the math that coordinates them. Two generated files do that."
+        ],
+        [
+          "holonomic",
+          "Ask for a direction, and all four wheels point that way. Ask for a spin at the same time, and each wheel works out its own angle."
+        ],
+        [
+          "robot",
+          "Which way is forward? Robot centric means forward follows the robot's nose. Turn the robot around, and the stick turns with it."
+        ],
+        [
+          "field",
+          "Field centric means forward is down the field, no matter which way the robot faces. For that, it needs a gyro to know its heading."
+        ],
+        ["tryit", "Try it. Hold a direction, and spin the robot.", "gate"],
+        [
+          "alliance",
+          "On the red side, the driver's forward flips around, so pushing away still drives away from you."
+        ],
+        [
+          "pose",
+          "The robot's position is a pose: X down the field, Y across it, and a heading. The origin is the blue corner."
+        ],
+        [
+          "trap",
+          "And it stays the blue corner, even when you're on red. Only the driver's forward flips. The field never does."
+        ],
+        [
+          "odometry",
+          "Odometry tracks the pose by adding up how far each wheel turned, every loop. It only ever adds, so every error stays in."
+        ],
+        [
+          "drift",
+          "A wheel slips, someone shoves you, the wheel size is a little off, and the estimate walks away from the truth. Calibration slows that down. Vision corrects it."
+        ],
+        [
+          "close",
+          "Find all thirteen devices on your robot, and write down their IDs. The generator asks for them next."
+        ]
+      ]
+    },
+    {
+      "id": "swerve-drive-project",
+      "workshop": "Workshop 5 · Swerve & Autonomous",
+      "title": "One File From Tuner X",
+      "page": "/swerve-drive-project",
+      "format": "hybrid, mostly recorded",
+      "opensFrom": "The thirteen IDs from last video.",
+      "handsTo": "The drivetrain default command, the only setDefaultCommand in the course, reused by Pathfinding's 'let go' beat.",
+      "gate": "None in the recording; the default-command beat is animated (lane with applyRequest running forever, request card ticking vx 0.0 when the sticks centre).",
+      "visuals": "Recorded: Devices list, Mechanisms → New Project, four dimension fields, module setup, Encoder Calibration, Verify Steer / Verify Drive, Generate only TunerConstants, VS Code file swap, team number, Simulate Robot Code with AdvantageScope 2D field. Animated: the latched-speed / default-command beat.",
+      "lines": [
+        [
+          "intro",
+          "Tuner X can measure your drivetrain, test every module, and write one file for you."
+        ],
+        [
+          "devices",
+          "Start with thirteen devices on one bus, each with its own ID, and no warnings.",
+          "rec"
+        ],
+        [
+          "measure",
+          "Make a new swerve project, and enter four numbers: front to back, side to side, the wheel's radius, and the drive ratio. The two distance labels are easy to swap, so read them twice.",
+          "rec"
+        ],
+        [
+          "modules",
+          "Then set up each corner. Pick its encoder and its two motors, and hold the wheel straight when it asks. That's the module's zero.",
+          "rec"
+        ],
+        [
+          "verify",
+          "Verify each one. If the wrong corner moves, two IDs are swapped.",
+          "rec"
+        ],
+        [
+          "generate",
+          "Generate only the constants file, and replace yours with it. Then set your team number, and deploy.",
+          "rec"
+        ],
+        [
+          "sim",
+          "You can drive it before the robot's even finished. Run the simulator, push the stick, and watch the pose move on the field.",
+          "rec"
+        ],
+        [
+          "files",
+          "Three files make the drivetrain. Two come from CTRE. The third, the drive mechanism, is the one your code talks to."
+        ],
+        [
+          "default",
+          "Here's what's different from the arm. A drivetrain's last request is a speed, and you know a request stays on the motor. So teleop gives it a default command that reads the sticks every loop. Let go, and it sends zero."
+        ],
+        [
+          "check",
+          "On blocks, pushing forward lines up all four wheels. On the floor, let go of the sticks, and it stops.",
+          "rec"
+        ],
+        [
+          "close",
+          "Measure it, generate it, and drive it in simulation before it ever touches the floor."
+        ]
+      ]
+    },
+    {
+      "id": "swerve-calibration",
+      "workshop": "Workshop 5 · Swerve & Autonomous",
+      "title": "Straight Means Straight",
+      "page": "/swerve-calibration",
+      "format": "hybrid",
+      "opensFrom": "The generator's by-eye wheel zeros.",
+      "handsTo": "'A steady curve is a zero, a wander is the gains' — then the carpet, next.",
+      "gate": "Tilt one module half a degree and drive 6 m down a line: it ends 5 cm off.",
+      "visuals": "Animated: three 'zeroing' cards on the field drawable (bumper moves forward arrow, perspective flips it, resetPose moves the pose but is greyed 'not exposed'); the half-degree walk. Recorded: straight edge and bevel gears on camera, Encoder Calibration ×4, Generate only TunerConstants, AdvantageScope ModuleStates vs ModuleTargets during stick flicks.",
+      "lines": [
+        [
+          "intro",
+          "Three different things on a swerve robot get called zeroing, and they reset three different things."
+        ],
+        [
+          "bumper",
+          "The bumper button resets which way is forward. It doesn't move the robot's position."
+        ],
+        [
+          "perspective",
+          "The alliance setting flips forward for red. That doesn't touch the position either."
+        ],
+        [
+          "pose",
+          "Resetting the pose is what would move it, and nothing calls that yet. For now, the pose is just distance since the robot turned on."
+        ],
+        [
+          "offsets",
+          "The module zeros came from wheels you held straight by eye. Half a degree off walks the robot five centimeters sideways over six meters."
+        ],
+        [
+          "tryit",
+          "Try it. Tilt one wheel half a degree, and drive the robot down the line.",
+          "gate"
+        ],
+        [
+          "edge",
+          "So lay a straight edge along both wheels on each side. And check that every bevel gear faces the middle of the robot, or that module zeroes half a turn off.",
+          "rec"
+        ],
+        [
+          "calibrate",
+          "Run the encoder calibration for each module, generate the constants again, and redeploy.",
+          "rec"
+        ],
+        [
+          "steer",
+          "The steering is a position loop with no gravity, so skip the gravity gain, and start from the static gain. The values it shipped with are usually close."
+        ],
+        [
+          "plot",
+          "Plot where each module points against where it was told to point, and flick the stick. Tuned, the two lines sit on top of each other.",
+          "rec"
+        ],
+        [
+          "close",
+          "A curve that's the same every time is a zero. A wander that comes and goes is the gains."
+        ]
+      ]
+    },
+    {
+      "id": "swerve-drive-tuning",
+      "workshop": "Workshop 5 · Swerve & Autonomous",
+      "title": "What the Carpet Says",
+      "page": "/swerve-drive-tuning",
+      "format": "hybrid",
+      "opensFrom": "Calibration's 'next, the carpet'.",
+      "handsTo": "A drivetrain whose numbers match the floor, which Autonomous measures against.",
+      "gate": "Drag the wheel radius until the tape mark and the odometry mark agree. (Script avoids naming which way the correction goes until SITE-FIXES #5 is settled.)",
+      "visuals": "Recorded: tape-measure runs, AdvantageScope speed plateau, Voltage Out wall test with stator current, the OpenLoopVoltage → Velocity edit. Animated: tape vs odometry marks with the radius slider; the slip knee on velocity and current traces.",
+      "lines": [
+        [
+          "intro",
+          "The generator guessed three numbers. The carpet tells you the real ones."
+        ],
+        [
+          "order",
+          "Tune them in order: the wheel radius, then top speed, then slip, and close the speed loop last."
+        ],
+        [
+          "radius",
+          "Drive a measured distance, and compare the tape with what odometry says. The ratio between them tells you how far off the radius is.",
+          "rec"
+        ],
+        [
+          "tryit",
+          "Try it. Change the radius until the two marks agree.",
+          "gate"
+        ],
+        [
+          "speed",
+          "For top speed, drive flat out, and read where the speed levels off. Use that plateau, not the spike before it.",
+          "rec"
+        ],
+        [
+          "slip",
+          "For slip, push the robot into a wall with Voltage Out, and watch the current climb. Read the top of the climb, right before the wheels break loose.",
+          "rec"
+        ],
+        [
+          "loop",
+          "Then tune the speed loop like any other: the velocity gain, then static, then proportional, with the robot on the ground."
+        ],
+        [
+          "switch",
+          "Last, change one word, so the drive asks for a speed instead of a voltage.",
+          "rec"
+        ],
+        [
+          "deadband",
+          "And shrink the deadband until the robot twitches at rest, then back off one step."
+        ],
+        [
+          "close",
+          "Measure on the carpet you'll drive on. The file is only as good as the floor you took it from."
+        ]
+      ]
+    },
+    {
+      "id": "autonomous",
+      "workshop": "Workshop 5 · Swerve & Autonomous",
+      "title": "Fifteen Seconds, No Driver",
+      "page": "/autonomous",
+      "format": "mostly animated",
+      "opensFrom": "Raise And Shoot (Coroutines): an autonomous mode that ran the arm with nobody on the sticks.",
+      "handsTo": "Three end poses scattered by a timer; PathPlanner replaces the timer with a path.",
+      "gate": "Live Disable key: disable mid-wait and watch the canceled branch send the zero.",
+      "visuals": "Field drawable with a tape mark; class card (name, start, end) beside the routine's three coroutine lines with a playhead; two request chips (1 m/s forward, all zeros); three end-pose dots.",
+      "lines": [
+        [
+          "intro",
+          "You've written an autonomous mode once already. Raise and Shoot ran the arm with nobody on the sticks. This one drives the whole robot."
+        ],
+        [
+          "layers",
+          "Keep the mode itself thin. It starts the routine, and it ends it. Everything else lives in a command you can test."
+        ],
+        [
+          "build",
+          "The routine is three lines: drive forward at one meter per second, wait, then send a stop."
+        ],
+        [
+          "run",
+          "Pick Leave Start, and enable. The robot leaves its tape mark, and the last line stops it."
+        ],
+        [
+          "nostop",
+          "Delete that last line, and it never stops. Nothing replaces the request, and autonomous has no default command."
+        ],
+        [
+          "disable",
+          "Disable it halfway, and the routine is canceled in the middle of its wait. The last line never runs. That's why the canceled path sends the same stop."
+        ],
+        ["tryit", "Try it. Disable it whenever you like.", "gate"],
+        [
+          "heading",
+          "The direction comes from the robot's heading. Rotate it on the tape, and the same routine drives somewhere else."
+        ],
+        [
+          "test",
+          "Test it in layers: on blocks, then on the floor, three times. The three end spots should land within about ten centimeters."
+        ],
+        [
+          "close",
+          "Write down where it ended. Next, a drawn path that knows where it's going replaces the timer."
+        ]
+      ]
+    },
+    {
+      "id": "pathplanner",
+      "workshop": "Workshop 5 · Swerve & Autonomous",
+      "title": "A Path That Knows Where It Ends",
+      "page": "/pathplanner",
+      "format": "hybrid",
+      "opensFrom": "Leave Start's three scattered end dots.",
+      "handsTo": "A drawn path; Pathfinding draws one on the fly.",
+      "gate": "Shove the robot off the path; the correction pulls it back.",
+      "visuals": "Recorded: PathPlanner app (Open Robot Project, Robot Config, draw Leave Start 2 m at 45°, the auto with Reset Odometry, the Intake zone), vendordep install. Animated: ghost setpoint leading the robot, a correction arrow, the Intake event starting and stopping at the zone edges, a bumper clipping the hub.",
+      "lines": [
+        ["intro", "A wait doesn't know where it ends. A path does."],
+        [
+          "pathauto",
+          "A path is one curve on the field. An auto is a list of steps, and paths are some of them."
+        ],
+        [
+          "config",
+          "First, tell PathPlanner about your robot: its mass, its size, and how hard each wheel can push.",
+          "rec"
+        ],
+        [
+          "draw",
+          "Draw the path from the same tape mark: two meters out, turned forty five degrees. The preview shows the bumpers, so you can see what it'll hit.",
+          "rec"
+        ],
+        [
+          "auto",
+          "Wrap it in an auto, and turn on reset odometry, so the robot starts where the path does.",
+          "rec"
+        ],
+        [
+          "builder",
+          "In code, the drive mechanism tells the library four things: where the robot is, how to reset that, how fast it's moving, and how to drive it."
+        ],
+        [
+          "opmode",
+          "One autonomous mode registers the named commands, builds the drop down of autos, and reads the choice when the match starts."
+        ],
+        [
+          "follow",
+          "On the field, the plan moves ahead, and the robot follows it. When it drifts, a correction pulls it back."
+        ],
+        ["tryit", "Try it. Shove the robot off the path.", "gate"],
+        [
+          "events",
+          "Paths can carry events. In the intake zone, the intake runs, and it stops when the robot leaves."
+        ],
+        [
+          "close",
+          "Three runs of the path land closer together than three runs of the timer. That's the point."
+        ]
+      ]
+    },
+    {
+      "id": "vision-hardware",
+      "workshop": "Workshop 6 · Vision & Navigation",
+      "title": "Seeing the Field",
+      "page": "/vision-hardware",
+      "format": "hybrid",
+      "opensFrom": "Autos trust the pose, and the pose drifts (How Swerve Works).",
+      "handsTo": "The camera's name; the code that feeds sightings into the pose is next.",
+      "gate": "Drag the camera's mount angle until the cloud of solved poses is tight.",
+      "visuals": "Animated: odometry ghost peeling away vs a fixed-size cloud of tag sightings; a tag's ID and field spot, corners solved back to a pose; square-on vs angled tag and the error cloud. Recorded: Limelight web UI (field map, AprilTag pipeline, exposure, offsets, ChArUco, name), tag check at 1 m. Verify UI labels on the device.",
+      "lines": [
+        [
+          "intro",
+          "Your autos trust the robot's pose, and every skid goes into it and stays there."
+        ],
+        [
+          "drift",
+          "Odometry drifts further the longer you drive. A camera that sees a tag gives an answer that doesn't drift. It's noisy, but the error doesn't grow."
+        ],
+        [
+          "tag",
+          "An AprilTag has an ID and a known spot on the field. From its four corners, the camera works backwards to where the robot must be."
+        ],
+        [
+          "blend",
+          "Those sightings come now and then, and they're noisy, so they don't replace odometry. The next lesson blends the two."
+        ],
+        [
+          "mount",
+          "Mount the camera where it sees the scoring tags while you're scoring, and give it its own breaker."
+        ],
+        [
+          "angle",
+          "Never mount it level and square to a tag. Head on, small errors smear the answer. At an angle, the answer tightens up."
+        ],
+        [
+          "tryit",
+          "Try it. Move the camera until the cloud of answers is tight.",
+          "gate"
+        ],
+        [
+          "setup",
+          "In the camera's web page, load the field map, pick the AprilTag pipeline, and turn the exposure down.",
+          "rec"
+        ],
+        [
+          "offsets",
+          "Enter where the camera sits on the robot, calibrate it with the ChArUco board, and give it a name.",
+          "rec"
+        ],
+        [
+          "check",
+          "Hold a tag a meter away. You should see its ID, the right distance, and a pose that holds steady.",
+          "rec"
+        ],
+        [
+          "close",
+          "Write down the camera's name. Next, the code feeds these sightings into the pose."
+        ]
+      ]
+    },
+    {
+      "id": "vision-implementation",
+      "workshop": "Workshop 6 · Vision & Navigation",
+      "title": "Blending, Not Replacing",
+      "page": "/vision-implementation",
+      "format": "animated + short install clip",
+      "opensFrom": "The camera's name from last video.",
+      "handsTo": "A pose that stays honest, which Drive to Point drives to.",
+      "gate": "Cover the camera, push the robot, uncover: the estimate walks home. Sliders for distance and tag count.",
+      "visuals": "Field drawable with a ghost estimate pulled toward sightings; error circles sized by distance and tag count; rejected dots greying out; a two-clock strip (camera frames vs robot loops) for the frame queue; a rewind-fold-replay of the pose trail. Recorded: ~8 s vendordep install.",
+      "lines": [
+        [
+          "intro",
+          "The camera can see a tag and work out where the robot is. Now the robot has to listen."
+        ],
+        [
+          "install",
+          "Install the Limelight library from its vendor file. The address is pinned to the WPILib alpha, so copy it exactly.",
+          "rec"
+        ],
+        [
+          "solvers",
+          "There are two ways to solve a pose. One works out the heading from the tags. The other borrows the robot's own heading, and that's the one to trust with a single tag."
+        ],
+        [
+          "heading",
+          "So every loop, the robot sends its heading to the camera first."
+        ],
+        [
+          "queue",
+          "The camera and the robot run on different clocks. Reading the frame queue takes exactly the frames that arrived, no more and no fewer."
+        ],
+        [
+          "gates",
+          "Some sightings get thrown out: anything the library flags, and anything more than four meters away."
+        ],
+        [
+          "trust",
+          "The rest get weighed. Far away, the error circle grows. A second tag shrinks it to a quarter."
+        ],
+        [
+          "rewind",
+          "Each picture was taken a moment ago. The estimator rewinds to that moment, folds the sighting in, and replays forward to now."
+        ],
+        [
+          "tryit",
+          "Try it. Cover the camera, push the robot, then uncover it.",
+          "gate"
+        ],
+        [
+          "walk",
+          "It doesn't jump. The estimate walks back over about a second, and faster when the sighting is good."
+        ],
+        [
+          "close",
+          "Blend the camera into the pose. Don't replace the pose with the camera."
+        ]
+      ]
+    },
+    {
+      "id": "drive-to-point",
+      "workshop": "Workshop 6 · Vision & Navigation",
+      "title": "Speed From Distance",
+      "page": "/drive-to-point",
+      "format": "animated",
+      "opensFrom": "Every meter so far, a person drove; the pose is now honest (Vision).",
+      "handsTo": "Bolts, then creeps short: Profiled Drive to Point plans the trip instead.",
+      "gate": "Drag the goal pose and hold A.",
+      "visuals": "Field drawable; goal ghost at (3, 2, 180°); three error arrows (X, Y, heading); speed arrow pinned to the 4.54 m/s ring; heading dial showing the ±180° wrap; a module-bar strip comparing the zero stop with Idle.",
+      "lines": [
+        [
+          "intro",
+          "Hold a button, and the robot drives itself to a spot on the field."
+        ],
+        [
+          "connect",
+          "Every meter so far, a person drove. Now the robot uses its own pose."
+        ],
+        [
+          "goal",
+          "The goal is a pose too: three meters, two meters, facing the other way."
+        ],
+        [
+          "loop",
+          "The command is the same loop you already know. Start, run every loop, check if it's done, and stop on the way out."
+        ],
+        [
+          "three",
+          "Three controllers run at once: one for X, one for Y, and one for heading. Each one turns its error into a speed."
+        ],
+        [
+          "wrap",
+          "Heading needs one extra line. Otherwise, turning from a hundred seventy nine degrees to minus a hundred seventy nine goes the long way around."
+        ],
+        [
+          "math",
+          "Three meters out, with a gain of ten, it asks for thirty meters per second. The robot can't do that, so it runs flat out."
+        ],
+        [
+          "tryit",
+          "Try it. Drag the goal somewhere else, and hold the button.",
+          "gate"
+        ],
+        [
+          "creep",
+          "Close to the goal, the error is small, so the speed is small, and it creeps up short. That's the falls short shape from tuning."
+        ],
+        [
+          "stop",
+          "Let go, and the command ends with a zero speed request. Sending idle instead would leave every wheel on its last speed."
+        ],
+        [
+          "close",
+          "Speed from distance gets you there, badly. Next, plan the trip."
+        ]
+      ]
+    },
+    {
+      "id": "advanced-drive-to-point",
+      "workshop": "Workshop 6 · Vision & Navigation",
+      "title": "Plan the Trip",
+      "page": "/advanced-drive-to-point",
+      "format": "animated",
+      "opensFrom": "Last video's flat-out bolt and crawl.",
+      "handsTo": "A command with an ending: a step that can go in a sequence.",
+      "gate": "Shove the robot mid-trip; flip the correction gain between 10 and 3.",
+      "visuals": "Field drawable with a ghost robot on the plan; the Motion Magic velocity plot re-axised in meters (2.5 m/s cruise, 3.0 m/s² ramp), folding to a triangle under 2.1 m; a big feedforward arrow and a small correction arrow; the plan's clock.",
+      "lines": [
+        [
+          "intro",
+          "Plan the whole trip before the robot moves, then follow the plan."
+        ],
+        [
+          "connect",
+          "Last time, it asked for thirty meters per second, then crawled the last stretch."
+        ],
+        [
+          "shape",
+          "You've seen this shape on the arm: speed up, cruise, slow down. Now it's in meters."
+        ],
+        [
+          "triangle",
+          "On a trip under about two meters, there's no room to cruise, so the plan is a triangle."
+        ],
+        [
+          "snapshot",
+          "When you press the button, the plan starts from where the robot is, and how fast it's already moving."
+        ],
+        [
+          "loop",
+          "Every loop, the clock moves forward, and the plan says where the robot should be, and how fast it should go."
+        ],
+        [
+          "ff",
+          "The plan's speed does most of the driving. A small correction pulls the robot toward where it should be."
+        ],
+        [
+          "tryit",
+          "Try it. Shove the robot, and flip the correction gain between ten and three.",
+          "gate"
+        ],
+        [
+          "why",
+          "At ten, a few centimeters of drift turn into meters per second. That's the buzz shape. Three is calm."
+        ],
+        [
+          "clock",
+          "The command ends when the plan's clock runs out, even if the robot is a little short. That ending is what makes it a step."
+        ],
+        [
+          "close",
+          "A command with an ending can go in a list, after anything else."
+        ]
+      ]
+    },
+    {
+      "id": "dynamic-path-planning",
+      "workshop": "Workshop 6 · Vision & Navigation",
+      "title": "Starting From Anywhere",
+      "page": "/dynamic-path-planning",
+      "format": "hybrid",
+      "opensFrom": "PathPlanner's drawn path starts where you drew it.",
+      "handsTo": "The last few centimeters belong to a purpose-built command (Drive to Tag).",
+      "gate": "Widen the margin slider, or wall off the shortest route, and watch it re-plan.",
+      "visuals": "Animated: 0.3 m grid with blocked cells, the robot's centre dot threading open cells while the bumper clears, a route redrawing while driving and freezing at 2 m, the drive default lane taking over on release. Recorded: PathPlanner Navigation Grid page; AdvantageScope 2D field trail around the hub.",
+      "lines": [
+        [
+          "intro",
+          "A drawn path starts where you drew it. Pathfinding starts wherever the robot is."
+        ],
+        [
+          "grid",
+          "PathPlanner splits the field into squares about thirty centimeters across, and marks the ones you can't drive through.",
+          "rec"
+        ],
+        [
+          "margin",
+          "The margin is your bumper. The center of the robot threads through open squares, so the bumpers clear the walls."
+        ],
+        [
+          "search",
+          "It searches for a route, then keeps refining it while the robot drives, until it's close to the goal."
+        ],
+        [
+          "code",
+          "In code, it's two lines: set up the pathfinder once, then ask for a pose with speed limits."
+        ],
+        [
+          "hold",
+          "Hold the button, and the robot routes around the hub to its goal.",
+          "rec"
+        ],
+        [
+          "letgo",
+          "Let go halfway. A canceled path sends no stop, but the drive's default command takes over and sends zero."
+        ],
+        [
+          "tryit",
+          "Try it. Widen the margin, or wall off the shortest way.",
+          "gate"
+        ],
+        [
+          "shapes",
+          "If it clips the hub, the margin's too small, or the robot's size is wrong in the settings."
+        ],
+        [
+          "close",
+          "Pathfinding crosses the field. The last few centimeters belong to a command built for them."
+        ]
+      ]
+    },
+    {
+      "id": "drive-to-tag-inline",
+      "workshop": "Workshop 6 · Vision & Navigation",
+      "title": "Every Way Out Stops",
+      "page": "/drive-to-tag-inline",
+      "format": "animated",
+      "opensFrom": "Drive to Point needed a field pose; this needs only the tag.",
+      "handsTo": "End of the course's code.",
+      "gate": "Cover the camera mid-approach: it stops, waits up to a second, and gives up stopped.",
+      "visuals": "Field drawable with the tag's own axes; three profiled controllers as small trapezoids; the coroutine loop with read / drive / yield lit in turn; three exit doors (arrive, give up, canceled), each sending a stop. Page code is ground truth (7-InlineCommands is behind).",
+      "lines": [
+        [
+          "intro",
+          "Hold a button, and the robot drives to a meter in front of a tag, using nothing but the camera."
+        ],
+        [
+          "connect",
+          "Drive to point needed a pose on the field. This one only needs the tag."
+        ],
+        [
+          "frame",
+          "The camera reports the robot's position in the tag's own frame. We pick our tag's ID, and ignore the rest."
+        ],
+        [
+          "three",
+          "Three profiled controllers do the driving: one for distance, one for sideways, and one to square up."
+        ],
+        [
+          "face",
+          "Facing the tag means a half turn in its frame, because the tag faces out toward the robot."
+        ],
+        [
+          "loop",
+          "It's one loop: read the tag, drive, yield, and repeat. The same shape you wrote in Coroutines."
+        ],
+        [
+          "lost",
+          "If the tag disappears, it stops, waits up to a second for it to come back, and gives up stopped."
+        ],
+        ["tryit", "Try it. Cover the camera.", "gate"],
+        [
+          "reacquire",
+          "When the tag comes back, the profiles start fresh from where the robot is, so it doesn't lurch."
+        ],
+        [
+          "exits",
+          "Three ways out: it arrives, it gives up, or it's canceled. Every one sends a stop on the way out."
+        ],
+        ["close", "One loop, and a stop on every way out."]
+      ]
+    }
+  ],
+  "notOnTheList": [
+    [
+      "/project-setup",
+      "Tool walkthrough. Screen recording of the New Project Creator, not an animation."
+    ],
+    [
+      "/project-structure",
+      "File-tree tour. A 20 s VS Code recording; its one animated idea (Robot builds each mechanism once) lives at the end of Configs and Requests."
+    ],
+    ["/git-workflow", "Tool walkthrough. Screen recording."]
+  ]
+}

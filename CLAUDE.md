@@ -56,7 +56,7 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Latched requests are taught once.** `/running-program#latched` is the demo (delete a `whileFalse`, release, watch it keep going) and `/mechanisms#configs-and-requests` is the concept. Every other page links to one of them rather than re-explaining canceling-is-not-stopping.
 - **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
 - **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
-- **PathPlanner is the team's Commands v3 build of PathPlannerLib, `2027.0.0-alpha-7-commandsv3-1`.** Install from `https://raw.githubusercontent.com/JosephTLockwood/pathplanner/vendordep/PathplannerLib.json` (`wpilibYear: 2027_alpha7`), not the official `PathplannerLibSystemCoreAlpha.json`, whose commands are built on `org.wpilib.command2`. Source is JosephTLockwood/pathplanner `new-path-2027-commands-v3`; read API names off it, not the upstream docs. It adds `com.pathplanner.lib.command3` (`AutoBuilder`, `NamedCommands`, `PathPlannerAuto`, `FollowPathCommand`, `PathfindingCommand`, event markers) written as coroutines, and it fixes the alpha-4 `Alert already allocated` boot crash, so there is no WatchOut about it any more. Always import `AutoBuilder` and `NamedCommands` from `command3`; the `com.pathplanner.lib.auto` ones make v2 commands. Using a patched library is the owner's call, October 2026, until upstream ships Commands v3; then point the lessons at the official vendordep. The shape, from Workshop-Code: `DriveMechanism`'s constructor calls `AutoBuilder.configure(...)` with an `ApplyRobotVelocity` request and `RobotConfig.fromGUISettings()`; autos are drawn in the app's Auto editor as `.auto` files; one `@Autonomous(name = "Auto")` class, `AutoOpMode`, registers named commands first, then `AutoBuilder.buildAutoChooser("Leave Start")`, publishes it with `Tunables.publish("Auto", ...)`, reads `getSelected()` in `start()`, cancels in `end()` and `Tunables.remove`s in `close()`. `pathfindTo` returns `AutoBuilder.pathfindToPose(...)`, with `Pathfinding.ensureInitialized()` in the constructor. **A path command canceled midway sends no zero** (`PathFollower.stop(true)`); only a finished path with goal velocity under 0.1 m/s does. That is safe in teleop because the drive default command takes over, and in auto because disabling cuts output; say so where it matters. Branches: `swerve-autonomous` → `swerve-pathplanner` → `swerve-pathfinding`, off `1-Swerve`. The desktop app is v2026.1.2, which writes path version `2025.0`, and the 2027 library reads it.
+- **PathPlanner is the team's Commands v3 build of PathPlannerLib, `2027.0.0-alpha-7-commandsv3-1`.** Install from `https://raw.githubusercontent.com/JosephTLockwood/pathplanner/vendordep/PathplannerLib.json` (`wpilibYear: 2027_alpha7`), not the official `PathplannerLibSystemCoreAlpha.json`, whose commands are built on `org.wpilib.command2`. Source is JosephTLockwood/pathplanner `new-path-2027-commands-v3`; read API names off it, not the upstream docs. It adds `com.pathplanner.lib.command3` (`AutoBuilder`, `NamedCommands`, `PathPlannerAuto`, `FollowPathCommand`, `PathfindingCommand`, event markers) written as coroutines, and it fixes the alpha-4 `Alert already allocated` boot crash, so there is no WatchOut about it any more. Always import `AutoBuilder` and `NamedCommands` from `command3`; the `com.pathplanner.lib.auto` ones make v2 commands. Using a patched library is the owner's call, October 2026, until upstream ships Commands v3; then point the lessons at the official vendordep. The shape, from Workshop-Code: `DriveMechanism`'s constructor calls `AutoBuilder.configure(...)` with an `ApplyRobotVelocity` request and `RobotConfig.fromGUISettings()`; autos are drawn in the app's Auto editor as `.auto` files; one `@Autonomous(name = "Auto")` class, `AutoOpMode`, registers named commands first, then `AutoBuilder.buildAutoChooser("Leave Start")`, publishes it with `Tunables.publish("Auto", ...)`, reads `getSelected()` in `start()`, cancels in `end()` and `Tunables.remove`s in `close()`. `pathfindTo` returns `AutoBuilder.pathfindToPose(...)`, with `Pathfinding.ensureInitialized()` in the constructor. **A path command canceled midway sends no zero** (`PathFollower.stop(true)`); only a finished path with goal velocity under 0.1 m/s does. That is safe in teleop because the drive default command takes over, and in auto because disabling cuts output; say so where it matters. Branches: `swerve-autonomous` → `swerve-pathplanner` → `swerve-pathfinding`, off `1-Swerve`. The desktop app is v2026.1.2, which writes path version `2025.0`, and the 2027 library reads it. **The 2027 editor is a follow-up, not this stack yet.** The fork's dev builds draw paths as graphs saved at `2027.1`, measured from the field center; the fork's `path2-2027-1` loads them and converts to WPILib's blue-wall frame. Rewriting the PathPlanner lessons and branches for it is queued in `context/todo.md`.
 - **Vision is LimelightLib 2, installed as a vendordep, and the URL is pinned
   to the alpha.** The vendordep is published per WPILib alpha and the file is
   **not** called `LimelightLib.json`. A bare `LimelightLib.json` 404s, and so
@@ -89,8 +89,16 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
   match. Set it again when the swerve chain is rebuilt. The reference for the
   new API is 2026-Template on `limelightlib-2`, which is not in this repo and
   uses AdvantageKit, so read it for the API and not for the shape.
+- **Every pose is blue-wall origin, and stays that way until WPILib moves.**
+  PathPlanner's 2027 editor and AdvantageScope v27 draw from the field center,
+  but WPILib alpha-7 (and allwpilib `main`, October 2026) only offers
+  `Field.OriginPosition.BLUE_ALLIANCE_WALL_RIGHT_SIDE` / `RED_...`, and
+  LimelightLib 2 only estimates in `WPIBLUE` / `WPIRED`. Mixing frames pulls
+  odometry half a field on every vision update. Owner's call: keep the site's
+  field graphics, lessons and branches blue-wall, and switch everything
+  together once WPILib ships a center origin.
 - **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
-- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.0-swerve`. When changing an embed, verify the file path exists on that branch first.
+- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.1-swerve` (October 2026, 1-Swerve on alpha-7); cut a new tag when 1-Swerve moves. When changing an embed, verify the file path exists on that branch first.
 - **No GitHub embeds on the site at all, for now.** August 2026: every `<GitHubContent>` was removed from every lesson. A page that ends in someone else's 100-plus-line file is mostly scroll, and each of those pages already teaches the same code in `CodeBlock`s. The components survive (`GitHubContent`, `MechanismTabs`) and so does the `pr` prop that renders a "GitHub Changes" tab, but nothing calls them. A local `FileDiff` (unified diff, two gutters, parsed straight from `git diff` output) is built and also unused. The intended end state is a compare view in place of the whole-file dump, but not until the teaching chain's comments and prose settle: a diff of it today is a third Javadoc rewording, and that red and green buries the lines a student types. `pnpm check-embeds` now treats zero embeds as valid and only fails when a page uses the component and nothing parses.
 - **Branches are prefixed by chain, not numbered across the course.** There are two chains and they used to collide on every number. `mech-*` is the arm-and-flywheel bench project. The drivetrain chain keeps its old bare numbers (`1-Swerve`, `2-Logging`, `3-Limelight`, `4-DynamicFlywheel`, `5-DriveToPoint`, `6-ProfiledToPoint`, `7-InlineCommands`) and is due the matching `swerve-*` rename when it is rebuilt. The prefix carries the chain and the suffix carries the topic, so inserting a lesson renames nothing. The mechanism chain was rebuilt off the new bare `main` in August 2026 and is linear, one commit per lesson:
   `main → mech-1-Mechanisms → mech-2-Commands → mech-3-MotionMagic → mech-4-ReadingState → mech-5-Coroutines → mech-6-Testing`. One commit per lesson, so each PR into the branch before it shows exactly that lesson. `mech-6-StateBased` was deleted in October 2026 with the State Machines lesson.
@@ -116,11 +124,13 @@ against the code it embeds without leaving the project:
 ```
 reference/
   .git-store/            bare mirrors, one shared object store per repo
-  Workshop-Code/         14 detached worktrees: mech-1 … mech-6, the 7 swerve, main
+  Workshop-Code/         one detached worktree per branch: mech-*, the numbered
+                         swerve chain, swerve-autonomous/-pathplanner/-pathfinding,
+                         main, and the devcontainer branches
   2027-Template/2027-dev comparison only, stale on alpha-6
 ```
 
-Fifteen checkouts cost 4.2 MB, because the worktrees share the mirror's
+The checkouts cost a few megabytes, because the worktrees share the mirror's
 history. Cross-state diffs work, and they are the teaching artifact:
 
 ```bash
@@ -158,9 +168,56 @@ git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-3-Motion
   hand-writes its blocks and teaches the arm, so that branch is the wrong
   parent for it.
 
+## Lesson videos (`videos-next/`)
+
+One narrated video per lesson, 28 of them (Workshops 1 to 6, about 39
+minutes), drawn on a canvas rather than edited. Each lesson is a `scene.js`
+whose `draw(ctx, t)` is a pure function of time, cued off the narration's
+word timings, with an optional "your turn" gate a student drives live in the
+local player. The MP4s are assets on the `video-series` pre-release of this
+repo, and `/video` (noindex, not in the drawer) plays them from there.
+**No lesson page links or embeds them** until the owner says so. The old
+Remotion trailers (`videos/`, the `video-previews` release) were retired in
+October 2026; don't reinstate them.
+
+- **`series/series.json` is the single source** for every video's title,
+  hand-offs and narration lines. `series/BUILD.md` is the build contract
+  (accuracy rules, layout, the kit, real footage); read it before touching a
+  scene. `series/briefs/<id>.md` holds each lesson's research and shot list.
+  `context/narration-voice.md` is how the narration sounds.
+- **Layout**: `engine/` (`core.js` time, camera, captions; `kit.js` shared
+  visuals; `player.js` player and gates; `clip.js` real footage),
+  `lessons/<id>/` (`scene.js`, `script.json`, `voice.json`/`voice.js` timings,
+  `index.html`), `tools/`.
+- **The narration is the owner's own voice, cloned with Chatterbox Turbo**
+  (`tools/tts_chatterbox.py`, venv in `voice-bakeoff/`, reference in
+  `voices/joe/`). The reference, the venv and every generated clip
+  (`lessons/*/voice/`) are gitignored. **Never commit or upload them.**
+- **Changing a video**, in order:
+  1. Edit the line in `series.json`, then `node tools/series.mjs --emit <id>`
+     (rewrites `lessons/<id>/script.json`).
+  2. `node tools/render.mjs lessons/<id> --sheet out/<id>.png --every 6` and
+     look at it; a scene's `W(line, word)` cue throws if its word was edited out.
+  3. `node tools/voice.mjs lessons/<id>`: only changed lines regenerate.
+  4. `node tools/render.mjs lessons/<id> --mp4 out/<id>.mp4`, then
+     `node tools/gate-test.mjs lessons/<id> "<actions>" out/<id>-gate.png` for a
+     lesson with a gate.
+  5. `gh release upload video-series out/<id>.mp4 --clobber -R Hemlock5712/Workshop-Site`.
+- **Real tool footage for `"rec": true` lines** replaces a beat's drawn
+  schematic without editing the scene: record with `tools/record-window.ps1`,
+  drive the app with `tools/ui.ps1` logging to `$env:UI_LOG`, cut a beat with
+  `tools/capture-edit.mjs`, and the player draws `lessons/<id>/clips/` over
+  that line. Recipe in `BUILD.md`. `captures/` and `clips/` are gitignored,
+  because raw footage can show gains: mask every gain in the edit. At the
+  bench, never Factory Default, flash firmware or enable a motor without the
+  owner, and the CANivore stays named `canivore`.
+- `node tools/serve.mjs` serves the folder for the local player
+  (`http://localhost:5180/lessons/<id>/`). It is not a Next server and does
+  not touch `.next`.
+
 ## Development Commands
 
-Requires Node.js 20+ (Bun v1+ supported). Project uses pnpm by default, but npm/yarn/bun work interchangeably.
+Requires Node.js 22.18+: cspell and Vitest refuse older versions, and CI runs Node 22 (Bun v1+ supported). Project uses pnpm by default, but npm/yarn/bun work interchangeably.
 
 ### Essential Commands
 
@@ -394,8 +451,8 @@ The rules that matter, all enforced there:
   allowance, not a rail — nothing sits beside the prose.
 - **One accent hue.** If something must stand out and is not the primary
   action, use a mono micro-label (`.micro`), not a second colour.
-- **Asides are budgeted.** Roughly two per `LessonSection`, one
-  `alert-danger` per lesson. There were 297 of them and a warning stopped
+- **Asides are budgeted.** Two per lesson, three at most (`pnpm prose`
+  enforces three per page), and one `alert-danger` per lesson. There were 297 of them and a warning stopped
   meaning anything; the "why" belongs in a `<MarginNote>` under the paragraph.
 
 There is no `context/design-principles.md` or `context/style-guide.md` — both
@@ -447,20 +504,15 @@ unchanged. Do not reinstate it.
   where the tells hid. `quizProseFindings` now runs the banned list over every
   question, option, and explanation.
 
-`context/lesson-cleanup-prompt.md` is a temporary working doc: the pass that
-trims a lesson to budget, written down so it runs the same way on every page.
-Delete it when the cleanup pass is finished. `context/lesson-budget.md` is the
-authority it defers to and stays.
-
 **The `unslop` skill is not in this repository.** `.claude/` is gitignored, so
 the rules referenced above live only on whoever's machine created them. What is
 enforceable is in `pnpm prose`, whose `BANNED` list its own comments describe as
 "the mechanically checkable subset" of unslop. Treat the rest as judgement until
 the skill is committed somewhere tracked.
 
-`context/narration-voice.md` does still exist and is worth reading before
-writing prose. It measures cadence rather than asserting rules, and its
-findings apply to the website, not just the video scripts.
+`context/narration-voice.md` is the voice guide for the lesson videos and is
+worth reading before writing prose too. Its cadence findings apply to the
+website, not just the video scripts.
 
 ### Quick Visual Check
 
