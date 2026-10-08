@@ -40,7 +40,7 @@ export default function DynamicFlywheel() {
           commit off <code>3-Limelight</code>.
         </>,
         <>
-          Odometry you trust, from <strong>Swerve Calibration</strong>. A wrong
+          Odometry you trust, from <strong>Swerve Drive Tuning</strong>. A wrong
           pose gives a wrong speed.
         </>,
         <>

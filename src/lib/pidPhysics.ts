@@ -93,10 +93,11 @@ export const MOTOR_DEFAULT: MotorParams = {
   // speed (kV = 646.47 RPM/V).
   stallTorque: 4.11,
   freeSpeed: (7758 * 2 * Math.PI) / 60, // 812.4 rad/s at the motor shaft
-  // 25:1 reduction (typical FRC arm gearbox). Output stall ≈ 103 N·m,
-  // output free speed ≈ 310 RPM (5.2 rps). kG_ideal = mgL / (Kₜ·R) ≈ 0.92 V
-  // for this 2 kg · 0.4 m arm — matches what a team would type in.
-  gearRatio: 25,
+  // 28.125:1, the bench arm's two stages from armBOM.ts: 8t pinion to 60t,
+  // then 16t to 60t (7.5 × 3.75). Output stall ≈ 116 N·m, output free speed
+  // ≈ 276 RPM (4.6 rps). kG_ideal = mgL / (Kₜ·R) ≈ 0.81 V for this
+  // 2 kg · 0.4 m arm — matches what a team would type in.
+  gearRatio: 28.125,
 };
 
 const PHYSICS_BASE: Omit<PhysicsParams, "initialAngle" | "target"> = {

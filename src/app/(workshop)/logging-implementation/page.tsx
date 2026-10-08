@@ -14,6 +14,9 @@ import Quiz from "@/components/Quiz";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
 import { BookOpen } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/logging-implementation");
 
 /**
  * Rewritten for WPILib 2027 alpha-7, which added `org.wpilib.telemetry`. The
@@ -51,6 +54,17 @@ import { BookOpen } from "lucide-react";
  *
  * Both readings publish three signals under one group with the unit in the
  * name, which is the thing the lesson is actually for.
+ *
+ * October 2026: the step that makes `record` run had no code, only a choice
+ * between calling it from a command and from `addPeriodic`. It is now one
+ * line, `Scheduler.getDefault().addPeriodic(() -> record())`, as the last line
+ * of the mechanism constructor. `Robot` builds its mechanisms in field
+ * initializers, before any OpMode exists, so the callback lands in the global
+ * binding scope and runs for the life of the program
+ * (`BindingScope.createNarrowestScope`). The command option survives only as
+ * the "Flat line" failure. The page also stopped claiming the two logging
+ * calls run "ahead of the mechanisms": field initializers run before the
+ * constructor body, so they do not.
  */
 export default function LoggingImplementation() {
   return (
@@ -68,21 +82,17 @@ export default function LoggingImplementation() {
         </>,
         <>AdvantageScope installed from Prerequisites.</>,
       ]}
-      time="12 minutes"
+      time="13 minutes"
     >
       <MechanismSelector />
 
       <Split>
         <ProseBlock>
           <p>
-            A log is the only witness to a failure that lasted a tenth of a
-            second. The robot stops, ten people offer a theory, and the file on
-            disk is the one account anybody can check.
-          </p>
-          <p>
-            Two lines start the recorder. The rest of this lesson is about
-            giving it something worth recording, and then proving you can get
-            the file back and read it.
+            A failure that lasts a tenth of a second is gone before anyone sees
+            it. The file on disk is the only record. Two lines start the
+            recorder. The rest of the lesson gives it something to record and
+            then reads the file back.
           </p>
         </ProseBlock>
         <MarginNote label="File names">
@@ -95,9 +105,9 @@ export default function LoggingImplementation() {
 
       <LessonSection id="start-the-log" title="Start the log once">
         <p>
-          Both calls go at the top of the <code>Robot</code> constructor, ahead
-          of the mechanisms. Anything that happens during startup then lands in
-          the same file as the rest of the run.
+          Both calls go at the top of the <code>Robot</code> constructor, which
+          is empty on the branch. Logging then runs from the first loop to the
+          last.
         </p>
         <CodeBlock
           language="java"
@@ -110,7 +120,7 @@ public Robot() {
   DataLogManager.start();
   DriverStation.startDataLog(DataLogManager.getLog());
 
-  // Construct mechanisms and global bindings after logging is active.
+  // Always-on bindings, if you add any, go below.
 }`}
         />
         <p>
@@ -129,12 +139,10 @@ public Robot() {
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
-              That is the whole setup, and it is only for the file. Watching
-              numbers live needs nothing at all: <code>RobotBase</code>{" "}
-              registers a NetworkTables backend at <code>/Telemetry</code> in
-              its own constructor, before your <code>Robot</code> runs. Anything
-              you log is on the dashboard whether or not you ever call{" "}
-              <code>DataLogManager</code>.
+              Those two lines are only for the file. Watching numbers live needs
+              nothing: <code>RobotBase</code> registers a NetworkTables backend
+              at <code>/Telemetry</code> before your <code>Robot</code> runs, so
+              anything you log reaches the dashboard either way.
             </p>
           </div>
           <MarginNote label="Straight to file">
@@ -157,7 +165,7 @@ public Robot() {
           Three signals are enough for a first log, and they are read in pairs.
           Velocity against target says whether the wheel is up to speed. Voltage
           next to either one says what the spin-up cost, and what it takes to
-          hold that speed once a note goes through.
+          hold that speed once a game piece goes through.
         </Mech>
 
         <Mech for="arm">
@@ -234,20 +242,46 @@ private void record() {
         </Split>
 
         <p>
-          Call <code>record</code> from whatever already runs each loop: the{" "}
-          <code>runRepeatedly(...)</code> command that holds the target, or a
-          background task added with{" "}
-          <code>Scheduler.getDefault().addPeriodic(...)</code>. The command logs
-          only while it runs. The background task logs for as long as the robot
-          has power, and neither one is a new loop of yours.
+          Nothing calls <code>record</code> yet. Register it once, as the last
+          line of the <M k="name" /> constructor. The scheduler then runs it
+          every loop while the robot has power. Add{" "}
+          <code>import org.wpilib.command3.Scheduler;</code> with it.
+        </p>
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            filename="src/main/java/first/robot/mechanisms/Arm.java"
+            title="Arm.java: last line of the constructor"
+            code={`public Arm() {
+  // ... the pasted config, unchanged
+  motor.getConfigurator().apply(talonFXCfg);
+  Scheduler.getDefault().addPeriodic(() -> record());
+}`}
+          />
+        </Mech>
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            filename="src/main/java/first/robot/mechanisms/Flywheel.java"
+            title="Flywheel.java: last line of the constructor"
+            code={`public Flywheel() {
+  // ... the pasted config, unchanged
+  motor.getConfigurator().apply(talonFXCfg);
+  Scheduler.getDefault().addPeriodic(() -> record());
+}`}
+          />
+        </Mech>
+        <p>
+          Do not call <code>record</code> from inside a command instead. A
+          command logs only while it runs, so the trace stops the moment a
+          button comes up.
         </p>
       </LessonSection>
 
       <LessonSection id="logging-rules" title="Signal names">
         <p>
-          The name is the whole interface to a log. Six weeks from now, at an
-          event, someone who did not write this code will be reading it. The
-          name in the tree is all the documentation they get.
+          Whoever opens the log at an event may not have written the code. The
+          name in the tree is all they get.
         </p>
         <ul className="ml-5 list-disc space-y-2">
           <li>
@@ -280,9 +314,8 @@ private void record() {
 
       <LessonSection id="read-the-file" title="Read the file back">
         <p>
-          Do this once, here, on a run whose answer you already know. The first
-          log you ever open should not be one you need at eleven at night on an
-          event floor.
+          Do this once now, on a run whose answer you already know. Then the
+          first log you open is not one you need in a hurry.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <Mech for="arm" as="li">
@@ -353,8 +386,8 @@ private void record() {
                 body: (
                   <>
                     The file exists and holds no <code>Telemetry/Arm</code>{" "}
-                    table. Either the two constructor lines never ran, or{" "}
-                    <code>record</code> is never called from a loop.
+                    table. Either the two constructor lines never ran, or the{" "}
+                    <code>addPeriodic</code> line is missing.
                   </>
                 ),
               },
@@ -363,9 +396,9 @@ private void record() {
                 term: "Stale signal",
                 body: (
                   <>
-                    The trace freezes partway through and holds one value. The
-                    <code>record</code> call sits inside a command that
-                    finished, so nothing has logged since.
+                    The trace freezes partway through and holds one value.{" "}
+                    <code>record</code> is called from a command that finished,
+                    not from <code>addPeriodic</code>.
                   </>
                 ),
               },
@@ -393,8 +426,8 @@ private void record() {
                 body: (
                   <>
                     The file exists and holds no <code>Telemetry/Flywheel</code>{" "}
-                    table. Either the two constructor lines never ran, or{" "}
-                    <code>record</code> is never called from a loop.
+                    table. Either the two constructor lines never ran, or the{" "}
+                    <code>addPeriodic</code> line is missing.
                   </>
                 ),
               },
@@ -403,9 +436,9 @@ private void record() {
                 term: "Stale signal",
                 body: (
                   <>
-                    The trace freezes partway through and holds one value. The
-                    <code>record</code> call sits inside a command that
-                    finished, so nothing has logged since.
+                    The trace freezes partway through and holds one value.{" "}
+                    <code>record</code> is called from a command that finished,
+                    not from <code>addPeriodic</code>.
                   </>
                 ),
               },

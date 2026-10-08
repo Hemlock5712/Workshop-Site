@@ -10,6 +10,11 @@ import VideoEmbed from "@/components/VideoEmbed";
 import ImageBlock from "@/components/ImageBlock";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { Mech } from "@/components/lesson/Mechanism";
+import PairedLesson from "@/components/lesson/PairedLesson";
+import Link from "next/link";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/motion-magic");
 
 /**
  * Written once, read twice — see `src/data/mechanisms.ts`.
@@ -50,6 +55,7 @@ export default function MotionMagic() {
       time="7 minutes"
     >
       <MechanismSelector />
+      <PairedLesson kind="code" to="/motion-magic-code" />
 
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
@@ -128,6 +134,13 @@ export default function MotionMagic() {
             <Mech for="flywheel">
               <code>MotionMagicVelocityVoltage</code>
             </Mech>
+            , a control request you will meet again in{" "}
+            <Link
+              href="/mechanisms#configs-and-requests"
+              className="underline font-medium"
+            >
+              Mechanisms
+            </Link>
             .
           </li>
           <Mech for="arm" as="li">
@@ -140,9 +153,9 @@ export default function MotionMagic() {
           <Mech for="flywheel" as="li">
             Under the <strong>Motion Magic</strong> config section, enter an
             acceleration of <code>20</code> rotations per second squared. That
-            is the only profile number this mode reads, and it is in mechanism
-            rotations, not motor rotations. Tune it far more aggressively on a
-            competition robot.
+            is the only profile number this mode reads. The flywheel reads the
+            motor&apos;s own sensor with no ratio set, so it is in motor
+            rotations. Tune it far more aggressively on a competition robot.
           </Mech>
           <Mech for="flywheel" as="li">
             Ask for a speed of <code>100</code> rotations per second on the
@@ -225,6 +238,17 @@ export default function MotionMagic() {
             <p>Around 80% of the ceiling you found is a good starting point.</p>
           </div>
         </Split>
+        <p>
+          CTRE&apos;s profiled tuning procedure goes further and fits{" "}
+          <code>kV</code> and <code>kA</code> to the profile. The feedforward
+          then does most of the work, and <code>kP</code> corrects what is left.
+          Its gains are in amps, so take the order from it and not the numbers.
+        </p>
+        <DocumentationButton
+          href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html#profiled-tuning"
+          title="CTRE: Profiled tuning"
+          icon={<BookOpen className="h-5 w-5" />}
+        />
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">

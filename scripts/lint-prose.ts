@@ -726,6 +726,41 @@ const BANNED: ReadonlyArray<{ pattern: RegExp; note: string }> = [
 ];
 
 /**
+ * Lesson names that no longer exist. Each was a title in `lessons.ts` until a
+ * lesson was renamed, merged or deleted, and each kept turning up afterwards
+ * in a "see Chaining Commands" sentence or a quiz explanation that sent a
+ * student looking for a page that is not in the menu.
+ *
+ * Case-sensitive on purpose: these match the title-cased name, so "a state
+ * machine" or "the robot class" as ordinary nouns still pass. `now` is where
+ * the material lives today.
+ */
+const RETIRED_LESSONS: ReadonlyArray<{ pattern: RegExp; now: string }> = [
+  { pattern: /\bFinish Lines\b/g, now: "Finish Conditions" },
+  { pattern: /\bRunning Your Code\b/g, now: "Hardware Simulation" },
+  { pattern: /\bThe Java You Need\b/g, now: "Java Basics" },
+  { pattern: /\bSwerve Drive Prerequisites\b/g, now: "How Swerve Works" },
+  { pattern: /\bClassic Commands\b/g, now: "Writing Commands" },
+  { pattern: /\bChaining Commands\b/g, now: "Command Composition" },
+  { pattern: /\bBuilding Subsystems\b/g, now: "Mechanisms" },
+  { pattern: /\bRobot Class\b/g, now: "Mechanisms" },
+  { pattern: /\bState Machines\b/g, now: "retired; Coroutines is nearest" },
+];
+
+function retiredLessonFindings(text: string, where: string): Finding[] {
+  const out: Finding[] = [];
+  for (const { pattern, now } of RETIRED_LESSONS) {
+    const hits = [...text.matchAll(pattern)];
+    if (hits.length === 0) continue;
+    out.push({
+      rule: "retired",
+      detail: `${hits.length}× "${hits[0]![0]}" in ${where}: a retired lesson name (now ${now})`,
+    });
+  }
+  return out;
+}
+
+/**
  * Answer-key patterning.
  *
  * A verifier found `/swerve-calibration` shipping `correctAnswer: 1` on all
@@ -780,7 +815,7 @@ function quizAnswerFindings(source: string): Finding[] {
  * costs a flat `MINUTES_PER_QUIZ`, and counting its prose too would charge
  * for it twice.
  */
-function quizProseFindings(source: ts.SourceFile): Finding[] {
+function quizText(source: ts.SourceFile, minLength = 24): string {
   // Every string literal inside a `<Quiz>`, which is its questions, its
   // options and its explanations: all of it prose a student reads.
   //
@@ -798,7 +833,7 @@ function quizProseFindings(source: ts.SourceFile): Finding[] {
   const collect = (node: ts.Node): void => {
     if (ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
       // Short strings are ids, keys and one-word options, not prose.
-      if (node.text.length >= 24) parts.push(node.text);
+      if (node.text.length >= minLength) parts.push(node.text);
     }
     ts.forEachChild(node, collect);
   };
@@ -814,7 +849,11 @@ function quizProseFindings(source: ts.SourceFile): Finding[] {
   };
 
   findQuiz(source);
-  const text = parts.join("\n");
+  return parts.join("\n");
+}
+
+function quizProseFindings(source: ts.SourceFile): Finding[] {
+  const text = quizText(source);
   if (!text) return [];
 
   const out: Finding[] = [];
@@ -917,6 +956,10 @@ function checkPage(route: string, file: string): PageReport {
   const findings: Finding[] = [
     ...quizAnswerFindings(raw),
     ...quizProseFindings(source),
+    ...retiredLessonFindings(text, "prose"),
+    // Every quiz string, not just the long ones: an option that reads
+    // "Chaining Commands" is the shortest way to send a student nowhere.
+    ...retiredLessonFindings(quizText(source, 1), "the quiz"),
   ];
 
   if (minutes > MAX_MINUTES) {

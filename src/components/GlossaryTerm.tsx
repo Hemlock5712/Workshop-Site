@@ -81,6 +81,8 @@ const glossaryDefinitions: Record<string, string> = {
     "An upgrade to PID that makes movements smooth instead of jerky. Instead of rushing to the target, it accelerates smoothly, cruises, then slows down smoothly - like an elevator.",
   "closed-loop":
     "Control that uses sensor feedback - the motor checks where it actually is and adjusts automatically to reach the target.",
+  "control request":
+    "The instruction a TalonFX is following right now: what to output and what target to aim at. VoltageOut and MotionMagicVoltage are two. Code sends one every loop, and the motor keeps applying the last one it received until a different one replaces it.",
   "open-loop":
     "Direct voltage control with no sensor feedback - you tell the motor 'run at 6 volts' and hope it does what you want. Simple but imprecise.",
 

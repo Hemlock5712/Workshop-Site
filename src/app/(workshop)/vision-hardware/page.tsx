@@ -6,6 +6,9 @@ import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { BookOpen, Wrench } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/vision-hardware");
 
 /**
  * Restores the bench half of the old `/vision-options`, retired in August 2026
@@ -18,11 +21,16 @@ import { BookOpen, Wrench } from "lucide-react";
  * setup section for a while, and it was the only hardware procedure on the
  * site sitting inside a code lesson.
  *
- * What came back from the January 2026 page: the Limelight/PhotonVision
- * comparison, power and network, the mounting rule, the field map upload, and
+ * What came back from the January 2026 page: power and network, the mounting rule, the field map upload, and
  * the ChArUco calibration step. What did not: the three-card "why vision
  * matters" grid, the "what you'll learn" list, and the best-practices
  * do/don't columns, all of which were headings with no procedure under them.
+ *
+ * October 2026: the Limelight/PhotonVision comparison table went too. It was
+ * five rows of shopping advice with no procedure under them, on a page whose
+ * reader already has a Limelight in hand. One paragraph says why this course
+ * uses one. Quiz Q4 (PDH vs VRM) and Q6 (PhotonVision class names) were trivia
+ * and are now the two failure readings from "Check your work".
  */
 export default function VisionHardware() {
   return (
@@ -68,86 +76,20 @@ export default function VisionHardware() {
         </Split>
       </LessonSection>
 
-      <LessonSection
-        id="limelight-or-photonvision"
-        title="Limelight or PhotonVision"
-      >
+      <LessonSection id="limelight-or-photonvision" title="The camera">
         <p>
-          Two systems cover most of FRC. Both find AprilTags, both solve a field
-          pose from several tags at once, and both publish it to NetworkTables.
-          They differ in what arrives in the box.
+          This course uses a Limelight: camera and processor in one sealed unit,
+          set up through a web page it serves itself. PhotonVision is the other
+          common choice. It is free software on a coprocessor you buy and flash
+          yourself, which is setup that teaches nothing about pose estimation.
+          The ideas on the next page carry over to it with different class
+          names.
         </p>
-
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left"></th>
-                <th className="px-3 py-2 text-left">Limelight</th>
-                <th className="px-3 py-2 text-left">PhotonVision</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">What you buy</td>
-                <td className="px-3 py-2">
-                  Sealed camera and processor, one unit
-                </td>
-                <td className="px-3 py-2">
-                  Free software, your own coprocessor and USB camera
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Rough cost</td>
-                <td className="px-3 py-2">$400 to $500</td>
-                <td className="px-3 py-2">$100 to $150</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Setup</td>
-                <td className="px-3 py-2">Power, Ethernet, web interface</td>
-                <td className="px-3 py-2">
-                  Flash the coprocessor, pick a camera, then the same
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">Tuning</td>
-                <td className="px-3 py-2">Web interface only</td>
-                <td className="px-3 py-2">
-                  Web interface, or your own pipeline
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">Fails when</td>
-                <td className="px-3 py-2">
-                  The one unit dies, and it is one part
-                </td>
-                <td className="px-3 py-2">
-                  A camera, a cable or an SD card dies, and there are more
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p>
-          This workshop uses a Limelight. The reason is scope. A PhotonVision
-          build starts with flashing an image onto a coprocessor and picking a
-          lens, and none of that teaches pose estimation. Everything on the next
-          page maps onto PhotonVision with different class names.
-        </p>
-
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <DocumentationButton
-            href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary"
-            title="Limelight: getting started"
-            icon={<BookOpen className="h-5 w-5" />}
-          />
-          <DocumentationButton
-            href="https://docs.photonvision.org/"
-            title="PhotonVision documentation"
-            icon={<Wrench className="h-5 w-5" />}
-          />
-        </div>
+        <DocumentationButton
+          href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary"
+          title="Limelight: getting started"
+          icon={<BookOpen className="h-5 w-5" />}
+        />
       </LessonSection>
 
       <LessonSection id="mounting-and-wiring" title="Mounting and wiring">
@@ -360,16 +302,16 @@ export default function VisionHardware() {
           {
             id: 4,
             question:
-              "Why should the Limelight be powered from the PDH rather than the VRM?",
+              "The web interface shows tag 7 at 2.4 m. Your tape measure says 1.2 m. What do you check?",
             options: [
-              "The VRM supplies the wrong voltage for a Limelight",
-              "The PDH is closer to the radio on most robots",
-              "A Limelight draws enough that the VRM's budget, already carrying the radio, is the wrong place for it",
-              "Only the PDH can be switched off by the robot code",
+              "The exposure, which is too low to see the tag clearly",
+              "The camera offsets, which shift every pose the same way",
+              "The tag size in the pipeline, which does not match the tag you printed",
+              "The lens calibration, which only matters at the edges",
             ],
             correctAnswer: 2,
             explanation:
-              "The VRM has a small budget and the radio is already on it. Browning out a radio to save a breaker costs you the whole robot, not just vision. Give the camera its own breaker on the PDH.",
+              "The solver turns the tag's size in the image into a distance using the size you told it the tag is. Tell it the wrong size and every distance is out by the same factor, here two. Offsets shift the robot's pose, not the distance to the tag, and a calibration fault drifts as the tag nears the edge rather than doubling everywhere.",
           },
           {
             id: 5,
@@ -388,16 +330,16 @@ export default function VisionHardware() {
           {
             id: 6,
             question:
-              "What does choosing PhotonVision over a Limelight change for the code in the next lesson?",
+              "You hold a printed tag a meter in front of the camera and no ID appears on the image. What do you check first?",
             options: [
-              "Nothing about the ideas, only the class names you call",
-              "Nothing at all: the Java is identical",
-              "Everything: PhotonVision cannot produce a field pose",
-              "PhotonVision needs no camera calibration or offsets",
+              "That the active pipeline is the AprilTag type, and the exposure is not so low the tag is black",
+              "The camera offsets in the web interface",
+              "The camera's name, which the Java uses to find it",
+              "The ChArUco calibration",
             ],
             correctAnswer: 0,
             explanation:
-              "Both publish an AprilTag pose estimate with a timestamp and a tag count, and both want a standard deviation from you. The shape of the next lesson survives the swap. What changes is the library you install and the names of its methods, plus the coprocessor you had to set up first.",
+              "No ID at all means the camera is not detecting the tag, and detection depends on the pipeline and the picture. A color pipeline never looks for tags, and an exposure turned all the way down leaves nothing to see. Offsets, the name and the calibration all matter later, once there is a detection to work with.",
           },
         ]}
       />

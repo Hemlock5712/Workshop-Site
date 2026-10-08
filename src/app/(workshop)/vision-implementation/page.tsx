@@ -7,6 +7,9 @@ import DocumentationButton from "@/components/DocumentationButton";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
 import { BookOpen } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/vision-implementation");
 
 /**
  * Rewritten September 2026 for LimelightLib 2, and split: the bench half now
@@ -62,7 +65,7 @@ export default function VisionImplementation() {
           <strong>Vision Hardware</strong>, and its name written down.
         </>,
         <>
-          Odometry you trust, from <strong>Swerve Calibration</strong>. Vision
+          Odometry you trust, from <strong>Swerve Drive Tuning</strong>. Vision
           corrects drift, not a wrong wheel radius.
         </>,
         <>The swerve project, with logging.</>,

@@ -1,3 +1,4 @@
+import type { Route } from "next";
 import { Children, isValidElement, type ReactNode } from "react";
 import NavFooter, { type NavOverride } from "@/components/NavFooter";
 import LessonOutline from "@/components/lesson/LessonOutline";
@@ -79,6 +80,12 @@ interface PageTemplateProps {
    */
   title: string;
   /**
+   * This page's route. Only needed when `title` is not the lesson's title in
+   * `lessons.ts`, because that is how `LessonKicker` finds the lesson number
+   * otherwise. `/pathplanner` is the one page that needs it today.
+   */
+  slug?: Route;
+  /**
    * Two or three flat sentences directly under the title: what this lesson
    * does, what it leaves behind, and any hard prerequisite.
    */
@@ -125,6 +132,7 @@ interface PageTemplateProps {
  */
 export default function PageTemplate({
   title,
+  slug,
   lede,
   needs,
   branch,
@@ -171,7 +179,7 @@ export default function PageTemplate({
       >
         <header className="split mb-[52px]">
           <div>
-            <LessonKicker />
+            <LessonKicker title={title} slug={slug} />
             {/* The ceiling came down from 74px when the titles became names
                 rather than sentences. 74px was sized for "Tell the arm where
                 to go, not how hard to push", which fills three lines and reads

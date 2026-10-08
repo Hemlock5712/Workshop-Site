@@ -4,6 +4,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { SITE_NAME, SITE_URL } from "@/lib/lessonMetadata";
 
 /**
  * Three families, three jobs. The reasoning lives in `globals.css`, which is
@@ -41,10 +42,22 @@ const newsreader = Newsreader({
   display: "swap",
 });
 
+// `metadataBase` makes the relative canonical and Open Graph URLs that
+// `lessonMetadata()` returns absolute. The template only applies to pages
+// below this layout, so `default` is what the home page's tab reads.
 export const metadata: Metadata = {
-  title: "Gray Matter Coding Workshop",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
+  },
   description:
     "FRC Programming Workshop covering proven patterns, hardware setup, command-based programming, and PID tuning",
+  openGraph: {
+    siteName: SITE_NAME,
+    type: "website",
+    url: "/",
+  },
 };
 
 export default function RootLayout({

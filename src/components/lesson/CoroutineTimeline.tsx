@@ -1,27 +1,39 @@
 "use client";
 
+/* eslint-disable react-hooks/refs --
+ * The step-through simulation lives in `sim.current` and is read during render
+ * on purpose: a tick mutates it and bumps one counter in state, so every node
+ * re-reads the same snapshot instead of carrying a copy of the whole timeline
+ * in state. Moving it into state would re-render the diagram per field.
+ */
+
 /**
  * The parallel-flow diagram for `/coroutines`, with a step-through simulation.
  *
- * The verbs table above it defines fork, await, waitUntil, wait and yield.
+ * "The core five" above it defines waitUntil, fork, await, wait and yield.
  * This shows them running at once: the routine reads top to bottom down the
  * left, and every `fork` peels a second flow off to the right that keeps
  * running beside it.
  *
- * The two wait nodes carry the whole `if (...timedOut()) return;` rather than
- * a bare call. This is the autonomous routine, every wait in it is bounded,
- * and a picture showing the result thrown away would teach the one habit the
- * lesson exists to prevent. Three code lines is why those nodes are 84 high
- * and everything below them sits 20 and 40 lower than the fork nodes above.
+ * The node code is the page's code, line for line, and the page mirrors
+ * `RaiseAndShootOpMode.java` on `mech-5-Coroutines`. The two wait nodes carry
+ * the whole braced `if (...timedOut()) { ... }` rather than a bare call,
+ * because a picture showing the result thrown away would teach the habit the
+ * lesson exists to prevent. The flywheel's carries its `stop()` fork too, and
+ * the last node forks `stop()` before the body runs out, so the flywheel lane
+ * ends "stop sent" while the arm lane ends still holding. Those line counts
+ * are why the node heights vary.
  *
  * Press play and the routine walks itself. The point a static picture cannot
- * make is the one the simulation makes twice: when the main flow parks on an
- * `await`, the forked lanes keep moving. The chevrons in those lanes scroll
- * for the entire time the left column is frozen on a dashed box.
+ * make is the one the simulation makes twice: while the main flow is waiting
+ * on a condition, the forked lanes keep moving. The chevrons in those lanes
+ * scroll for the entire time the left column is frozen on a dashed box. The
+ * label is "waiting", never "parked": `park()` is a real call, and it never
+ * returns.
  *
  * The clock is the robot's, not the animation's. Each state dwells long enough
  * on screen to be read, which is why a `fork` that really takes one 20 ms loop
- * gets a full second of attention. The clock only advances during the parked
+ * gets a full second of attention. The clock only advances during the waiting
  * states, where the time actually goes, and 0.50 / 0.60 / 1.00 s are the bench
  * numbers off `mech-5-Coroutines`.
  *
@@ -37,7 +49,7 @@
  * node moves its arrows.
  *
  * Colour: one hue. A solid border means the flow is executing, a dashed border
- * means it is parked, and `--ok` marks only the instant a condition flips
+ * means it is waiting, and `--ok` marks only the instant a condition flips
  * true. `--err` appears once, in the deadlock panel.
  */
 
@@ -46,7 +58,7 @@ import { Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 
 // ── geometry ────────────────────────────────────────────────────────────
 const W = 880;
-const H = 704;
+const H = 822;
 
 const MAIN_X = 20;
 const MAIN_W = 330;
@@ -68,62 +80,70 @@ type NodeSpec = {
   h: number;
   lines: string[];
   tag: string;
-  parked?: boolean;
+  waiting?: boolean;
 };
 
 const NODES: NodeSpec[] = [
   {
     y: 20,
     h: 58,
-    lines: ["coroutine.fork(arm.vertical());"],
+    lines: ["coroutine.fork(robot.arm.vertical());"],
     tag: "runs · returns on the same loop",
   },
   {
     y: 122,
-    h: 84,
+    h: 124,
     lines: [
       "if (coroutine.waitUntil(",
-      "    () -> arm.isAtTarget(),",
-      "    Seconds.of(3.0)).timedOut()) return;",
+      "    () -> robot.arm.isAtTarget(),",
+      "    Seconds.of(3.0)).timedOut()) {",
+      "  return;",
+      "}",
     ],
-    tag: "parked · 0.50 s",
-    parked: true,
+    tag: "waiting · 0.50 s",
+    waiting: true,
   },
   {
-    y: 248,
+    y: 290,
     h: 58,
-    lines: ["coroutine.fork(flywheel.runFast());"],
+    lines: ["coroutine.fork(robot.flywheel.runFast());"],
     tag: "runs · returns on the same loop",
   },
   {
-    y: 350,
-    h: 84,
+    y: 392,
+    h: 144,
     lines: [
       "if (coroutine.waitUntil(",
-      "    () -> flywheel.isAtTarget(),",
-      "    Seconds.of(3.0)).timedOut()) return;",
+      "    () -> robot.flywheel.isAtTarget(),",
+      "    Seconds.of(3.0)).timedOut()) {",
+      "  coroutine.fork(robot.flywheel.stop());",
+      "  return;",
+      "}",
     ],
-    tag: "parked · 0.60 s",
-    parked: true,
+    tag: "waiting · 0.60 s",
+    waiting: true,
   },
   {
-    y: 476,
+    y: 580,
     h: 58,
     lines: ["coroutine.wait(Seconds.of(1.0));"],
-    tag: "parked · 1.00 s",
-    parked: true,
+    tag: "waiting · 1.00 s",
+    waiting: true,
   },
   {
-    y: 578,
-    h: 52,
-    lines: ["// the body runs out of lines"],
-    tag: "routine finishes",
+    y: 682,
+    h: 66,
+    lines: [
+      "coroutine.fork(robot.flywheel.stop());",
+      "// then the body runs out of lines",
+    ],
+    tag: "stop sent · routine finishes",
   },
 ];
 
 const midY = (n: NodeSpec) => n.y + n.h / 2;
 const BOTTOM = NODES[5].y + NODES[5].h;
-const CANCEL_Y = 660;
+const CANCEL_Y = 778;
 
 type Branch = {
   x: number;
@@ -134,7 +154,9 @@ type Branch = {
   forkFrom: number;
   wakeY: number;
   wakeLabel: string;
-  /** the step this lane is forked on, and the park step it later wakes */
+  /** what the lane heading says once the routine has ended */
+  endSub: string;
+  /** the step this lane is forked on, and the wait step it later wakes */
   bornAt: number;
   wakeStep: number;
   kind: "arm" | "flywheel";
@@ -145,7 +167,7 @@ type Branch = {
 function branch(
   x: number,
   forkNode: number,
-  parkNode: number,
+  wakeNode: number,
   rest: Omit<Branch, "x" | "cx" | "top" | "forkFrom" | "wakeY">
 ): Branch {
   const forkFrom = midY(NODES[forkNode]);
@@ -154,16 +176,17 @@ function branch(
     cx: x + LANE_W / 2,
     top: forkFrom + FORK_DROP,
     forkFrom,
-    wakeY: midY(NODES[parkNode]),
+    wakeY: midY(NODES[wakeNode]),
     ...rest,
   };
 }
 
 const BRANCHES: Branch[] = [
   branch(ARM_X, 0, 1, {
-    name: "arm.vertical()",
+    name: "robot.arm.vertical()",
     sub: "runRepeatedly · never finishes",
-    wakeLabel: "arm.isAtTarget()",
+    wakeLabel: "robot.arm.isAtTarget()",
+    endSub: "cancelled by the routine ending",
     bornAt: 0,
     wakeStep: 1,
     kind: "arm",
@@ -175,15 +198,16 @@ const BRANCHES: Branch[] = [
           : `${Math.round(level * 90)}° of 90°`,
   }),
   branch(FLY_X, 2, 3, {
-    name: "flywheel.runFast()",
+    name: "robot.flywheel.runFast()",
     sub: "runRepeatedly · never finishes",
-    wakeLabel: "flywheel.isAtTarget()",
+    wakeLabel: "robot.flywheel.isAtTarget()",
+    endSub: "replaced by stop(), then cancelled",
     bornAt: 2,
     wakeStep: 3,
     kind: "flywheel",
     readout: (level, cancelled) =>
       cancelled
-        ? "cancelled · still spinning"
+        ? "stop sent · coasting down"
         : level >= 1
           ? "holding 75 rps"
           : `${Math.round(level * 75)} of 75 rps`,
@@ -197,7 +221,7 @@ const GAUGE_H = 58;
 // ── the simulation ──────────────────────────────────────────────────────
 type Step = {
   node: number;
-  parked: boolean;
+  waiting: boolean;
   from: number;
   to: number;
   dwell: number;
@@ -207,7 +231,7 @@ type Step = {
 const STEPS: Step[] = [
   {
     node: 0,
-    parked: false,
+    waiting: false,
     from: 0,
     to: 0,
     dwell: 1100,
@@ -216,16 +240,16 @@ const STEPS: Step[] = [
   },
   {
     node: 1,
-    parked: true,
+    waiting: true,
     from: 0,
     to: 0.5,
     dwell: 2100,
     status:
-      "The routine is parked on await. The arm flow keeps running the whole time.",
+      "The routine waits in waitUntil. The arm flow keeps running the whole time.",
   },
   {
     node: 2,
-    parked: false,
+    waiting: false,
     from: 0.5,
     to: 0.5,
     dwell: 1100,
@@ -234,29 +258,29 @@ const STEPS: Step[] = [
   },
   {
     node: 3,
-    parked: true,
+    waiting: true,
     from: 0.5,
     to: 1.1,
     dwell: 2100,
-    status: "Parked again, and now both forks are running beside it.",
+    status: "Waiting again, and now both forks are running beside it.",
   },
   {
     node: 4,
-    parked: true,
+    waiting: true,
     from: 1.1,
     to: 2.1,
     dwell: 2100,
     status:
-      "wait parks for a fixed time instead of a condition. Both forks still run through it.",
+      "wait pauses for a fixed time instead of a condition. Both forks still run through it.",
   },
   {
     node: 5,
-    parked: false,
+    waiting: false,
     from: 2.1,
     to: 2.1,
     dwell: 1800,
     status:
-      "The body runs out of lines, so the routine finishes and both forks are cancelled.",
+      "Fork stop(), which replaces runFast() and sends the zero. Then the body runs out of lines and the routine cancels both forks.",
   },
 ];
 
@@ -788,7 +812,7 @@ export default function CoroutineTimeline() {
             {NODES.map((n, i) => {
               const st = nodeState(i);
               const active = st === "active";
-              const showBar = active && n.parked;
+              const showBar = active && n.waiting;
               return (
                 <div
                   key={n.y}
@@ -800,7 +824,7 @@ export default function CoroutineTimeline() {
                     height: n.h,
                     opacity: opacityFor(st),
                     background: active ? "var(--accent-soft)" : "var(--bg2)",
-                    border: `${active ? 2 : 1}px ${n.parked ? "dashed" : "solid"} var(--accent)`,
+                    border: `${active ? 2 : 1}px ${n.waiting ? "dashed" : "solid"} var(--accent)`,
                   }}
                 >
                   {n.lines.map((line) => (
@@ -863,9 +887,7 @@ export default function CoroutineTimeline() {
                     {b.name}
                   </code>
                   <span className="text-micro text-[var(--tx2)]">
-                    {st === "cancelled"
-                      ? "cancelled by the routine ending"
-                      : b.sub}
+                    {st === "cancelled" ? b.endSub : b.sub}
                   </span>
                 </div>
               );
@@ -1033,10 +1055,10 @@ function DeadlockPanel() {
             }}
           >
             <code className="font-mono text-meta text-[var(--tx)]">
-              coroutine.await(arm.vertical());
+              coroutine.await(robot.arm.vertical());
             </code>
             <span className="text-micro text-[var(--err)]">
-              parked · for the rest of the match
+              waiting · for the rest of the match
             </span>
           </div>
 
@@ -1059,7 +1081,7 @@ function DeadlockPanel() {
             style={{ left: DL_LANE_X, top: 26, width: DL_LANE_W }}
           >
             <code className="font-mono text-meta text-[var(--tx)]">
-              arm.vertical()
+              robot.arm.vertical()
             </code>
             <span className="text-micro text-[var(--tx2)]">
               holding 90° correctly, and never finishing
@@ -1070,16 +1092,16 @@ function DeadlockPanel() {
         <div className="mt-pad flex max-w-[var(--measure)] flex-col gap-chip">
           <p className="m-0 text-note text-[var(--tx2)]">
             <code>vertical()</code> is built with <code>runRepeatedly</code>, so
-            it never finishes on its own. <code>await</code> parks the body
-            until the command it was handed completes, and that one never will.
-            The arm holds 90° correctly and the rest of the routine is simply
-            never reached. No error, no log line, nothing on the dashboard
+            it never finishes on its own. <code>await</code> keeps the body on
+            that line until the command it was handed completes, and that one
+            never will. The arm holds 90° correctly and the rest of the routine
+            is never reached. No error, no log line, nothing on the dashboard
             except a routine that sits there.
           </p>
           <p className="m-0 text-note text-[var(--tx2)]">
-            <code>await</code> is safe on a command that finishes by itself,
-            which is why both waits in the diagram above await a{" "}
-            <code>Command.waitUntil(…)</code> rather than the hold.
+            <code>await</code> is safe on a command that finishes by itself. The
+            waits in the diagram above are <code>coroutine.waitUntil</code>,
+            which watches a condition, and the holds are forked.
           </p>
         </div>
       </div>

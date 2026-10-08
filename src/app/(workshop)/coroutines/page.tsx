@@ -5,63 +5,58 @@ import CoroutineTimeline from "@/components/lesson/CoroutineTimeline";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/coroutines");
 
 /**
- * Lesson 18, and the last of the mechanism chain a student meets before
- * swerve. It moved twice in 2026. Out of Workshop 6, because the routine it
- * writes is an autonomous routine and it was landing five lessons after
- * `/autonomous`. Then out of Workshop 4 with Command Composition and Finish
- * Conditions, because none of the three needs a drivetrain and a team with an
- * arm and no swerve module could not reach any of them.
+ * Lesson 18, the last of the mechanism chain before swerve, and the page for
+ * `mech-5-Coroutines`. It writes the Y-button routine from `/finish-conditions`
+ * again as an autonomous, where nobody can let go of a button, so every wait
+ * gets a time limit and somewhere to go when it runs out.
  *
- * Alpha-7 rewrote the middle of it. Waits used to be
- * `await(Command.waitUntil(cond).named(...).withTimeout(...))`, a v2 shape
- * built out of a command; `Coroutine` now has `waitUntil(condition, timeout)`
- * natively, and it returns a `WaitResult` that says which ending happened. So
- * the page no longer teaches builder-ordering as a gotcha, and it does teach
- * the branch: bail out when a wait times out rather than carrying on as if
- * the arm arrived.
+ * October 2026 rebuilt the ramp into it. The jump from `runRepeatedly` +
+ * `whileTrue` straight to a coroutine body was too steep, so the page now
+ * hands a student the same kind of standard kit buttons have:
  *
- * The framing follows the branch's own retitle. This is the autonomous
- * lesson. `/finish-conditions` already writes the same routine on the Y button
- * with no time limit anywhere in it, and the contrast is the whole point: a
- * driver can let go, and in autonomous nobody can.
+ * - "The core five" replaces the old verb table. It leads with
+ *   `waitUntil(condition, timeout)` and `.timedOut()`, because that is the
+ *   call an autonomous needs first, and it says where `WaitResult` lives and
+ *   that `ForkResult` exists. `park`, `awaitAll` and `awaitAny` get one line.
+ * - "House rules" is the coroutine equivalent of `runRepeatedly(...)` plus
+ *   `whileTrue`. Every rule in it is something the routine below obeys.
  *
- * It ran 27.8 minutes across seven sections, and the length was
- * never the procedure: every code step on the branch survived this rewrite.
- * What went was the commentary around them.
+ * Waits are native: `coroutine.waitUntil(...)`. Never
+ * `coroutine.await(Command.waitUntil(...).named(...).withTimeout(...))`,
+ * which was the shape before alpha-7 gave `Coroutine` its own timeout.
  *
- * Two sections are gone. "The same routine, both dialects" printed two whole
- * OpModes that were on no Workshop-Code branch at all, to make the point
- * section one makes in four lines. "What's next" was
- * a paragraph of pointers, which is one sentence at the end of the check
- * instead.
+ * The routine stops the flywheel before every return that comes after
+ * `runFast()`. Until October 2026 it did not: the page said to end with stop
+ * steps and the success box said both holds were released, while the code
+ * left the flywheel latched at 75 rps on a timeout and at the end. The fix is
+ * `coroutine.fork(robot.flywheel.stop())`, on the branch too. A forked command
+ * runs its first pass on the spot (`Scheduler.schedule` runs a child
+ * immediately), and it evicts `runFast()` because they share the flywheel, so
+ * the zero is sent before the `return` cancels everything. The arm gets no
+ * stop: a latched position request holds it where it is, which is the same
+ * thing `MyTeleop`'s left trigger relies on, and `Arm` has had no `stop()`
+ * since `mech-3-MotionMagic`.
  *
- * This page also owns two things `/java-basics` used to pre-teach fifteen
- * lessons early and no longer does: `coroutine.yield()`, and the fact that a
- * coroutine body can hold a real `while (true)` loop. Both are defined in
- * section two, where they first appear. It is also the only lesson that writes
- * an ordinary Java loop, so it is the one that sends a student to Codecademy's
- * Loops module. `/java-basics` tells them to skip that module and says this
- * page will ask for it. `/drive-to-tag-inline` names this page
- * as the prerequisite for exactly that.
+ * Cancel-is-not-stop is taught once, on `/running-program`. This page links
+ * to it rather than explaining it a seventh time.
  *
- * Nothing on this page cites 2027-Template any more. Section one used to
- * quote it on chaining being "as far as most routines ever need to go", and
- * the foot of the page linked its `DriveStowDrive` pair. Workshop-Code has no
- * equivalent pair, and the template is a lesson repo we do not teach from, so
- * both went and the house rule is stated on its own. `coroutine.wait` is
- * the fifth verb, in code the student types, and deleting the sentence that
- * glossed it left it in no table and no sentence. Step 6 lost that canceling a
- * fork is not stopping the mechanism, and with it the one instruction that
- * followed from it: a mid-match routine needs explicit stop steps. The quiz
- * answered b three times out of five.
+ * This page also owns `coroutine.yield()` and the first real `while` loop in
+ * the course, which is why it sends a student to Codecademy's Loops module.
+ * `/java-basics` tells them to skip that module until here, and
+ * `/drive-to-tag-inline` names this page as its prerequisite.
+ *
+ * Nothing on this page cites 2027-Template. The quiz used to quote it.
  */
 export default function Coroutines() {
   return (
     <PageTemplate
       title="Coroutines"
-      lede="Finish Conditions ran this routine off a held button, with nothing bounding its waits. Autonomous has no button and nobody to let go of one. So every wait gets a time limit, and somewhere to go when it runs out."
+      lede="Finish Conditions ran this routine off a held button, with nothing bounding its waits. Autonomous has no button and nobody to let go of one, so every wait here gets a time limit and a way out."
       needs={[
         <>
           An <code>Arm</code> and <code>Flywheel</code> with{" "}
@@ -82,10 +77,6 @@ export default function Coroutines() {
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            A list of steps runs one at a time, waiting for each to finish. It
-            covers most routines.
-          </p>
-          <p>
             Pick the arm and flywheel project back up, then check out{" "}
             <code>mech-5-Coroutines</code>.
           </p>
@@ -99,106 +90,67 @@ export default function Coroutines() {
 
       <LessonSection id="two-reasons" title="Two reasons for a coroutine">
         <p>
-          Chaining stays the default. Steps in order, on one mechanism, is what{" "}
-          <code>Command.sequence</code> is for, and most routines never need
-          anything else.
+          A sequence is already a small coroutine that awaits each member in
+          turn. It stays the default, and a chained routine that works should
+          stay chained.
         </p>
-
-        <Box variant="concept" title="When to use a coroutine">
-          <p>
-            <strong>A hold has to span several steps.</strong> In a list, a hold
-            needs a finish line before the next step can run. A coroutine starts
-            it once and it keeps running underneath.
-          </p>
-          <p className="mt-3">
-            <strong>The logic needs a real loop or a real branch.</strong> A
-            list is fixed. A coroutine body is ordinary Java, so{" "}
-            <code>while</code> and <code>if</code> work as usual.
-          </p>
-        </Box>
-
         <p>
-          Everything else belongs to <code>Command.sequence</code> and{" "}
-          <code>Command.race</code>. Do not rewrite a chained routine that
-          works.
+          Write the body yourself for one of two reasons. A hold has to span
+          several steps, which a list cannot do. Or the logic needs a real loop
+          or branch, and a coroutine body is ordinary Java, so{" "}
+          <code>while</code> and <code>if</code> work as usual.
         </p>
       </LessonSection>
 
-      <LessonSection id="four-verbs" title="Five verbs">
+      <LessonSection id="core-five" title="The core five">
         <p>
           A coroutine body takes one argument, an object called{" "}
-          <code>coroutine</code>. Five of its methods cover almost every
-          routine, and Finish Conditions used the first three.
+          <code>coroutine</code>. These five calls on it cover nearly every
+          routine, in the order you will reach for them.
         </p>
 
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">Verb</th>
-                <th className="px-3 py-2 text-left">What it does</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>fork(command)</code>
-                </td>
-                <td className="px-3 py-2">
-                  Starts a command and keeps going. It runs underneath until the
-                  routine ends.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>await(command)</code>
-                </td>
-                <td className="px-3 py-2">
-                  Runs a command and stops here until it finishes.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>waitUntil(condition)</code>
-                  <br />
-                  <code>waitUntil(condition, timeout)</code>
-                </td>
-                <td className="px-3 py-2">
-                  Stops here until the condition comes back true. Given a
-                  timeout, it also gives up after that long, and the{" "}
-                  <code>WaitResult</code> it returns says which of the two
-                  happened.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>wait(duration)</code>
-                </td>
-                <td className="px-3 py-2">
-                  Stops here for a fixed time. Forked commands keep running
-                  through it.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">
-                  <code>yield()</code>
-                </td>
-                <td className="px-3 py-2">
-                  Stops here for one scheduler loop, then carries on.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <CodeBlock
+          language="java"
+          title="The core five, one example each"
+          code={`// 1. Wait for a condition, with a limit. On a timeout, stop what you started and leave.
+if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+  return;
+}
+
+// 2. Start a hold and keep going. It runs underneath until the routine ends.
+coroutine.fork(robot.arm.vertical());
+
+// 3. Run a step that ends by itself, and wait here until it does.
+coroutine.await(raiseArm); // the .until(...) step from Finish Conditions
+
+// 4. Wait a fixed time. Forked holds keep running through it.
+coroutine.wait(Seconds.of(1.0));
+
+// 5. Inside a loop of your own: give up the rest of this robot loop.
+while (!robot.arm.isAtTarget()) {
+  coroutine.yield();
+}`}
+        />
 
         <p>
-          <code>yield</code> is the one you need when the body has a loop of its
-          own. A coroutine can hold a real <code>while (true)</code> loop with a{" "}
-          <code>yield</code> at the bottom. That yield keeps one pass through
-          the loop equal to one robot loop. Leave it out and nothing else on the
-          robot gets a turn. This routine has no loop in it. Drive to Tag is the
-          lesson that writes one. Do the <strong>Loops</strong> module of
-          Codecademy&apos;s{" "}
+          <code>waitUntil</code> returns a <code>WaitResult</code>. House style
+          calls <code>.timedOut()</code> on it in the same line, and stores it
+          only when it is read twice. It is declared inside{" "}
+          <code>Coroutine</code>, so the bare name needs{" "}
+          <code>import org.wpilib.command3.Coroutine.WaitResult;</code>.
+        </p>
+        <p>
+          <code>fork</code> and <code>await</code> return a{" "}
+          <code>ForkResult</code> for a command that could not start. The
+          routine cancels itself when that happens, so you can ignore it.{" "}
+          <code>park</code>, <code>awaitAll</code> and <code>awaitAny</code>{" "}
+          exist too. Nothing here needs them.
+        </p>
+        <p>
+          Example 5 is what <code>waitUntil</code> does inside. The{" "}
+          <code>yield</code> makes one pass one robot loop, and without it
+          nothing else on the robot gets a turn. If <code>while</code> is new,
+          do the <strong>Loops</strong> module of Codecademy&apos;s{" "}
           <a
             href="https://www.codecademy.com/learn/learn-java"
             target="_blank"
@@ -207,10 +159,67 @@ export default function Coroutines() {
           >
             Learn Java
           </a>{" "}
-          before then if <code>while</code> and <code>for</code> are new.
+          before Drive to Tag.
         </p>
 
         <CoroutineTimeline />
+      </LessonSection>
+
+      <LessonSection id="house-rules" title="House rules">
+        <Box variant="concept" title="House rules">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              <strong>A button</strong> binds a hold,{" "}
+              <code>runRepeatedly(...).named(&quot;x (hold)&quot;)</code>, with{" "}
+              <code>whileTrue</code>. A flywheel adds{" "}
+              <code>.whileFalse(robot.flywheel.stop())</code>.
+            </li>
+            <li>
+              <strong>A routine across mechanisms</strong> is{" "}
+              <code>
+                Command.noRequirements(coroutine -&gt; body(coroutine))
+              </code>{" "}
+              with <code>.named(...)</code>. The body is a private method, so a{" "}
+              <code>return</code> plainly leaves the routine.
+            </li>
+            <li>
+              <strong>A body that drives one mechanism</strong> is that
+              mechanism&apos;s <code>run(coroutine -&gt; ...)</code>, written
+              inside its class next to <code>runRepeatedly</code>.
+            </li>
+            <li>
+              <strong>Fork holds, await steps.</strong> A hold never finishes,
+              so <code>await</code> on one never returns. The Y button does that
+              on its last line on purpose, to run until release.
+            </li>
+            <li>
+              <strong>Waits are</strong> <code>coroutine.waitUntil(...)</code>.
+              Never build a wait out of a <code>Command</code> inside a body.
+            </li>
+            <li>
+              <strong>Every wait in an autonomous has a timeout</strong>, about
+              twice the time you measured.
+            </li>
+            <li>
+              <strong>Every exit stops what it started.</strong>{" "}
+              <a
+                href="/running-program#latched"
+                className="text-[var(--accent)] underline hover:text-[var(--accent)]"
+              >
+                Canceling is not stopping
+              </a>
+              , so fork the flywheel&apos;s <code>stop()</code> before each{" "}
+              <code>return</code>. The arm needs none, because its last position
+              request holds it.
+            </li>
+          </ul>
+        </Box>
+        <p>
+          Rules two and three differ in what they claim. <code>run(...)</code>{" "}
+          holds its mechanism for the whole body. <code>noRequirements</code>{" "}
+          claims nothing, and each fork claims its own mechanism only while it
+          runs.
+        </p>
       </LessonSection>
 
       <LessonSection id="build-the-routine" title="Build the routine">
@@ -263,27 +272,8 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
         />
 
         <p>
-          The body is a named method rather than a lambda with five statements
-          in it. That is what lets the steps below return early.{" "}
-          <code>Command.noRequirements</code> claims no mechanism of its own,
-          because the forked commands claim theirs. Nothing binds this routine,
-          so <code>start()</code> and <code>end()</code> schedule and cancel it
-          themselves.
-        </p>
-        <p>
-          Paste the whole shell rather than typing it. Nothing in it is yours to
-          invent, and the braces of <code>raiseAndShoot</code> are where every
-          step from here lands.
-        </p>
-
-        <p>
-          Your copy will move the first time you build. Every compile runs{" "}
-          <code>spotlessApply</code>, and the moment a line goes inside the
-          braces the formatter re-indents the whole block. Nothing is wrong when
-          that happens. It is what makes your file match the branch character
-          for character.
-        </p>
-        <p>
+          Paste the whole shell. No button binds this routine, so{" "}
+          <code>start()</code> and <code>end()</code> schedule and cancel it.
           Build now and <strong>Raise And Shoot</strong> appears in the
           autonomous list, doing nothing.
         </p>
@@ -307,8 +297,8 @@ coroutine.fork(robot.arm.vertical());`}
 
         <p>
           Add <code>import static org.wpilib.units.Units.Seconds;</code> first.
-          Every compile runs <code>spotlessApply</code>, which strips an import
-          no line uses yet, so add it again if it vanishes.
+          Every build runs Spotless, which strips an import no line uses yet, so
+          add it again if it vanishes.
         </p>
 
         <CodeBlock
@@ -316,31 +306,16 @@ coroutine.fork(robot.arm.vertical());`}
           title="Add below the fork"
           code={`// TODO: time your own arm.
 if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+  // The flywheel never started, so there is nothing to stop.
   return;
 }`}
         />
 
-        <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              This is the line the Y button wrote as{" "}
-              <code>coroutine.waitUntil(() -&gt; robot.arm.isAtTarget())</code>,
-              with two things added. The second argument is how long to wait
-              before giving up, and the <code>if</code> is what happens then.
-            </p>
-            <p>
-              <code>waitUntil</code> hands back a <code>WaitResult</code>, and{" "}
-              <code>timedOut()</code> asks it which of the two endings happened.
-              Three seconds is a placeholder. Use the number you wrote down at
-              the end of Finish Conditions, doubled.
-            </p>
-          </div>
-          <MarginNote label="Why bail out">
-            Without the <code>return</code>, the routine reads a timeout as an
-            arrival and shoots at whatever angle the arm reached. That looks
-            like working code.
-          </MarginNote>
-        </Split>
+        <p>
+          This is the Y button&apos;s wait with a limit added. Three seconds is
+          a placeholder: use the time you wrote down at the end of Finish
+          Conditions, doubled.
+        </p>
 
         <h3 className="display m-0 text-aside">
           Step 4: The flywheel, then the shot
@@ -353,35 +328,26 @@ if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut(
 coroutine.fork(robot.flywheel.runFast());
 
 if (coroutine.waitUntil(() -> robot.flywheel.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+  coroutine.fork(robot.flywheel.stop());
   return;
 }
 
 coroutine.wait(Seconds.of(1.0)); // shoot
 
-// Returning cancels both forked holds.`}
+// stop() replaces runFast() and sends its zero on this loop, before the routine ends.
+coroutine.fork(robot.flywheel.stop());`}
         />
 
         <p>
-          Two forks are live now. The arm still holds 90&deg; while the flywheel
-          climbs to 75 rotations per second. A list of steps would need a{" "}
-          <code>Command.race</code> around every later step.
+          Two forks are live now, the arm holding 90&deg; while the flywheel
+          climbs to 75 rotations per second. This branch has no feeder, so the
+          one-second wait stands in for the shot.
         </p>
         <p>
-          Nothing there fires a shot: this branch has an arm, a flywheel, and no
-          feeder, so the wait stands in for one. A <code>wait</code> pauses for
-          a fixed time, where <code>waitUntil</code> pauses for a condition, and
-          both forks keep running through it.
-        </p>
-        <p>
-          There is no cleanup step. The method runs out of lines, the routine
-          finishes, and both forks are canceled. Every <code>return</code> above
-          does the same thing.
-        </p>
-        <p>
-          Canceled is not stopped. Nothing commands the mechanism afterwards and
-          nothing sends a zero, so the last request stays latched in the motor
-          controller and the flywheel keeps spinning. End a mid-match routine
-          with explicit stop steps.
+          Every way out from here forks <code>stop()</code> first. It shares the
+          flywheel with <code>runFast()</code>, so it replaces it, and a forked
+          command runs its first pass on the spot. The zero goes out before the
+          routine ends.
         </p>
       </LessonSection>
 
@@ -390,10 +356,6 @@ coroutine.wait(Seconds.of(1.0)); // shoot
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Build, and check that <code>Seconds</code> survived. Spotless strips
-            the import until a line uses it.
-          </li>
-          <li>
             Start the program with{" "}
             <strong>WPILib: Hardware Sim Robot Code</strong> and pick{" "}
             <strong>Raise And Shoot</strong> in the Driver Station. That name is
@@ -401,15 +363,13 @@ coroutine.wait(Seconds.of(1.0)); // shoot
           </li>
           <li>
             Time the run. A healthy one is the arm, plus the flywheel, plus one
-            second.
+            second, and then the flywheel coasts down.
           </li>
           <li>
-            Now make a wait time out. Change the arm&apos;s tolerance to{" "}
-            <code>Degrees.of(0.001)</code> and run again. Three seconds in, the
-            routine gives up and ends, and the flywheel never starts. Then
-            delete the <code>if</code> and its <code>return</code> around that
-            same wait and run once more: now it shoots at an arm angle nobody
-            checked. Put both back.
+            Change the arm&apos;s tolerance to <code>Degrees.of(0.001)</code>{" "}
+            and run again. Then delete the <code>if</code> and its{" "}
+            <code>return</code> around the arm&apos;s wait and run once more.
+            Put both back.
           </li>
           <li>
             Last one. Change the first line to{" "}
@@ -425,10 +385,14 @@ coroutine.wait(Seconds.of(1.0)); // shoot
               The arm swinging to vertical, 0.25 rotations, and staying there
               while the flywheel reaches 75 rotations per second.
             </li>
-            <li>The routine ending a second later, both holds released.</li>
             <li>
-              With the tolerance broken, the routine ending after three seconds
-              with the flywheel never having started.
+              The routine ending a second later. The flywheel coasts to a stop
+              and the arm keeps holding vertical.
+            </li>
+            <li>
+              With the tolerance broken, the routine giving up after three
+              seconds and the flywheel never starting. Without the{" "}
+              <code>if</code>, it shoots anyway, at an angle nobody checked.
             </li>
           </ul>
         </Box>
@@ -467,12 +431,21 @@ coroutine.wait(Seconds.of(1.0)); // shoot
                   routine cannot tell a timeout from an arrival.
                 </td>
               </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="px-3 py-2">
+                  The routine ends and the flywheel keeps spinning
+                </td>
+                <td className="px-3 py-2">
+                  A <code>return</code>, or the last line, with no{" "}
+                  <code>stop()</code> forked before it.
+                </td>
+              </tr>
               <tr>
                 <td className="px-3 py-2">
                   <code>cannot find symbol: Seconds</code>
                 </td>
                 <td className="px-3 py-2">
-                  The import is missing, or spotless stripped it before a line
+                  The import is missing, or Spotless stripped it before a line
                   used it.
                 </td>
               </tr>
@@ -481,11 +454,8 @@ coroutine.wait(Seconds.of(1.0)); // shoot
         </div>
 
         <p>
-          That is the mechanism chain finished. Logging is next, and it is how
-          you read back a routine that ran without anybody watching it. Workshop
-          5 builds a swerve drive and writes an autonomous routine against it.
-          Drive to Tag comes back to coroutines with a body that is one{" "}
-          <code>while (true)</code> loop.
+          Logging is next. It is how you read back a routine that ran with
+          nobody watching.
         </p>
       </LessonSection>
 
@@ -503,7 +473,7 @@ coroutine.wait(Seconds.of(1.0)); // shoot
             ],
             correctAnswer: 3,
             explanation:
-              "robot.arm.vertical() is built with runRepeatedly and is named 'vertical (hold)'. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The branch comment on that line says so: 'fork, not await: vertical() is a hold and never finishes.'",
+              "robot.arm.vertical() is built with runRepeatedly and is named 'vertical (hold)'. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The house rule is fork holds, await steps.",
           },
           {
             id: 2,
@@ -517,7 +487,7 @@ coroutine.wait(Seconds.of(1.0)); // shoot
             ],
             correctAnswer: 1,
             explanation:
-              "In teleop the driver is the backstop: the wait is unbounded, but releasing Y cancels the whole routine. Autonomous has no button and nobody watching the arm, so a jammed mechanism or a tolerance that never comes true parks the routine for the entire period with nothing thrown and nothing logged. The time limit is what gives it an exit.",
+              "In teleop the driver is the backstop: the wait is unbounded, but releasing Y cancels the whole routine. Autonomous has no button and nobody watching the arm, so a jammed mechanism or a tolerance that never comes true stalls the routine for the entire period with nothing thrown and nothing logged. The time limit gives it an exit.",
           },
           {
             id: 3,
@@ -526,12 +496,12 @@ coroutine.wait(Seconds.of(1.0)); // shoot
             options: [
               "It carries on to the flywheel and the shot, three seconds later, as though the arm had arrived",
               "It throws, and the scheduler logs a timed-out wait",
-              "It parks on that line for the rest of the autonomous period",
+              "It sits on that line for the rest of the autonomous period",
               "It cancels itself, because a timed-out wait ends the routine",
             ],
             correctAnswer: 0,
             explanation:
-              "The timeout is what ends the wait; it is not what ends the routine. Execution falls to the next line either way. waitUntil returns a WaitResult so you can tell the two endings apart, and ignoring it means the routine treats giving up and arriving as the same thing. That is why the branch wraps each wait in if (...timedOut()) { return; }.",
+              "The timeout ends the wait, not the routine. Execution falls to the next line either way. waitUntil returns a WaitResult so you can tell the two endings apart, and ignoring it means the routine treats giving up and arriving as the same thing. That is why each wait sits inside if (...timedOut()) { return; }.",
           },
           {
             id: 4,
@@ -545,21 +515,35 @@ coroutine.wait(Seconds.of(1.0)); // shoot
             ],
             correctAnswer: 1,
             explanation:
-              "Ending the routine cancels everything it forked, and that is the bookkeeping a coroutine does for you, on an early return as much as on the last line. Note that canceled is not the same as stopped: nothing commands the mechanisms afterwards and nothing sends a zero, so the last request stays latched in the motor controller and Phoenix keeps applying it.",
+              "Ending the routine cancels everything it forked, on an early return as much as on the last line. Canceled is not stopped, though. Nothing sends a zero, so the last request stays latched in the motor controller. The routine forks the flywheel's stop() before it ends for that reason.",
           },
           {
             id: 5,
             question:
               "Your routine drives to a pose, then drives to a second pose, and nothing needs to be held across both legs. Which style should you use?",
             options: [
-              "A coroutine, because coroutines are the newer and more capable style",
+              "A coroutine, because coroutines are the newer style",
               "Either, but a coroutine will run faster",
-              "Chaining: Command.sequence handles it, and the template calls chaining 'as far as most routines ever need to go'",
+              "Chaining: Command.sequence runs two legs in order, and nothing has to be held across them",
               "A coroutine, because Command.sequence cannot hold two drive legs",
             ],
             correctAnswer: 2,
             explanation:
               "Chaining is the default and this routine gives you no reason to leave it. Coroutines are for two cases: a hold that must span several steps, and logic that needs real loops or branches. Two independent legs in order is neither.",
+          },
+          {
+            id: 6,
+            question:
+              "You delete the last line, coroutine.fork(robot.flywheel.stop()), and run the routine. What does the flywheel do after the routine ends?",
+            options: [
+              "It stops, because ending the routine cancels runFast()",
+              "It coasts down, because the motor's neutral mode is Coast",
+              "It drops to runSlow(), the flywheel's resting speed",
+              "It keeps spinning at 75 rotations per second, because canceling runFast() sends nothing",
+            ],
+            correctAnswer: 3,
+            explanation:
+              "Ending the routine does cancel runFast(), but canceling a command sends nothing to the motor. The last velocity request stays latched and Phoenix keeps holding 75 rotations per second. Coast only applies once something sends the motor to neutral, and forking stop() is what does that.",
           },
         ]}
       />

@@ -6,6 +6,9 @@ import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { BookOpen, GitBranch } from "lucide-react";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/java-basics");
 
 /**
  * An on-ramp and a gate, not a Java course. It ran 12 minutes across six
@@ -21,11 +24,11 @@ import { BookOpen, GitBranch } from "lucide-react";
  *
  * The page cannot simply be deleted: four lessons name it in `needs`.
  * `/command-framework` asks for "the vocabulary: class, field, method,
- * constructor, lambda, method reference", `/adding-commands` and
- * `/finish-conditions` for lambdas and method references, `/mechanisms`
- * for fields, constructors and methods. So what survives is exactly what those
- * four promises need and nothing downstream defines: the six words, and
- * `private` / `public` / `final` / `extends`.
+ * constructor, lambda", `/adding-commands` and `/finish-conditions` for
+ * lambdas, `/mechanisms` for fields, constructors and methods. So what
+ * survives is exactly what those four promises need and nothing downstream
+ * defines: the six words, and `private` / `public` / `final` / `implements`.
+ * There are no method references on this site, so none are taught here.
  *
  * Everything else is outsourced to Codecademy's free Learn Java, four modules
  * of it, named in section one. That is why nothing here teaches braces,
@@ -108,9 +111,10 @@ export default function JavaBasics() {
 
         <p>
           Stop after <strong>Conditionals and Control Flow</strong> and come
-          back. Arrays and string methods barely turn up here. Loops do, but not
-          until Workshop 6, where a coroutine body is written as a real{" "}
-          <code>while</code> loop. That lesson asks for the module by name.
+          back. Arrays and string methods barely turn up here. Loops do, in
+          Workshop 4, where <strong>Coroutines</strong> writes a{" "}
+          <code>while</code> loop by hand. Do the <strong>Loops</strong> module
+          before you get there.
         </p>
 
         <DocumentationButton
@@ -259,10 +263,10 @@ public Command runSlow() {
               question:
                 "Why is it () -> motor.stopMotor() and not motor.stopMotor() inside runRepeatedly(...)?",
               options: [
-                ":: hands the method over to be called later; () calls it right now and returns nothing",
-                ":: is required whenever the method takes no arguments",
-                "motor.stopMotor() would stop the motor twice",
-                ":: is a style preference: both compile",
+                "() -> hands the call over to run later; motor.stopMotor() on its own runs right now and hands back nothing",
+                "() -> is required whenever the method takes no arguments",
+                "motor.stopMotor() on its own would stop the motor twice",
+                "It is a style preference, and both compile",
               ],
               correctAnswer: 0,
               explanation:

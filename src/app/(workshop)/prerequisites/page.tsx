@@ -4,6 +4,9 @@ import LessonSection from "@/components/lesson/LessonSection";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import GlossaryTerm from "@/components/GlossaryTerm";
 import Box from "@/components/Box";
+import { lessonMetadata } from "@/lib/lessonMetadata";
+
+export const metadata = lessonMetadata("/prerequisites");
 
 const linkStyle = "text-[var(--accent)] underline hover:no-underline";
 
@@ -169,13 +172,13 @@ export default function Prerequisites() {
             Robot code shows up in Workshop 3, and it does not stay at the
             beginner end for long. Lambdas, method references, and class
             declarations all turn up there. There will be a few hard concepts,
-            but we'll explain them as we get there.
+            but we&rsquo;ll explain them as we get there.
           </p>
           <p>
             Only about twelve pieces of Java are used in this whole site. That
             lesson covers all twelve and then stops.
           </p>
-          <p>You don't need to take a Java course first.</p>
+          <p>You don&rsquo;t need to take a Java course first.</p>
         </ProseBlock>
       </LessonSection>
 
