@@ -22,6 +22,12 @@ export const metadata = lessonMetadata("/dynamic-path-planning");
  * point is set once, at start (`PathfindingFollower.start`/`update`). When the
  * 2027 release could not run it, this page planned once by hand.
  *
+ * With no route, PathfindingFollower sends nothing and never finishes, so the
+ * command holds the drivetrain on its last request until A is released. The
+ * branch has no fallback for that, so the page tells the student to let go
+ * rather than teaching code Workshop-Code does not have. A goal on a blocked
+ * cell is moved to the nearest open one (`LocalADStar.findClosestNonObstacle`).
+ *
  * A canceled pathfind sends no zero (`PathFollower.stop(true)`). The teleop
  * binding is safe because the joystick default command takes the drivetrain
  * back on release.
@@ -93,7 +99,9 @@ Pathfinding.ensureInitialized();`}
             The command plans from the robot&apos;s pose when it starts. AD*
             keeps refining that route while the robot drives. The command takes
             each better one until the robot is within 2 m of the goal. It
-            finishes at the goal with zero speed.
+            finishes at the goal with zero speed. Started within 0.5 m of the
+            goal, it sends zero and finishes without moving. That is one more
+            reason the last stretch belongs to <strong>Drive to Point</strong>.
           </p>
           <MarginNote label="Bumped off course">
             The search never moves its start point. A robot pushed off the route
@@ -138,12 +146,14 @@ driver.a().whileTrue(drivetrain.pathfindTo(new Pose2d(7.5, 4.0, Rotation2d.ZERO)
           cols={3}
           items={[
             {
-              label: "Nothing moves",
+              label: "Keeps rolling",
               term: "No route",
               body: (
                 <>
-                  The goal sits deep inside a blocked area, or the grid was
-                  painted solid by mistake. The search has nothing to offer.
+                  A goal on a blocked square is moved to the nearest open one,
+                  so that is not it. The open area around the goal is walled off
+                  from the robot. The command sends nothing and holds the
+                  drivetrain, so the last request stays on. Let go of A.
                 </>
               ),
             },
