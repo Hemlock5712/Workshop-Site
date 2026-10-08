@@ -195,8 +195,8 @@ export default function ProjectStructure() {
           </li>
           <li>
             <strong>A vendor library.</strong> <code>vendordeps/</code>, added
-            through <strong>WPILib: Manage Vendor Libraries</strong>, never by
-            copying a jar.
+            through the <strong>WPILib Vendor Dependencies</strong> view, never
+            by copying a jar.
           </li>
           <li>
             <strong>A file the robot reads while running.</strong>{" "}

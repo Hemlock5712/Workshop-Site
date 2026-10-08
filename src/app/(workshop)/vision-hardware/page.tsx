@@ -178,7 +178,9 @@ export default function VisionHardware() {
           <li>
             <strong>Switch the active pipeline to AprilTag.</strong> A
             color-blob pipeline never publishes a botpose, however well it is
-            tuned.
+            tuned. The AprilTag pipeline sets <strong>Marker Size</strong> for
+            you. Check that it reads 165.1, the edge of an FRC tag in
+            millimeters, and match it to your tag if you printed another size.
           </li>
           <li>
             <strong>Drop the exposure</strong> as low as it goes while the
@@ -248,10 +250,11 @@ export default function VisionHardware() {
         <p>
           Three things go wrong here. No ID at all means the pipeline is still
           on the wrong type, or the exposure went so low that the tag is black.
-          An ID with a distance that is out by a factor means the tag size in
-          the pipeline does not match the tag you printed. A distance that is
-          right up close and drifts as the tag nears the edge of the frame is
-          the lens calibration. Run the ChArUco board again, properly this time.
+          An ID with a distance that is out by a factor means{" "}
+          <strong>Marker Size</strong> does not match the tag you printed. A
+          distance that is right up close and drifts as the tag nears the edge
+          of the frame is the lens calibration. Run the ChArUco board again,
+          properly this time.
         </p>
       </LessonSection>
 

@@ -291,7 +291,17 @@ public static Trigger disabled() {
         />
 
         <p>
-          The drivetrain belongs to Workshop 4. What matters here is where the
+          The comment overstates it. <code>Idle</code> sends nothing to the
+          modules. Disabling the robot is what cuts output, so the binding is
+          harmless here. The{" "}
+          <a href="/running-program#latched" className="underline">
+            latched-request demo
+          </a>{" "}
+          shows why it would not stop a robot that is still enabled.
+        </p>
+
+        <p>
+          The drivetrain belongs to Workshop 5. What matters here is where the
           line sits: a binding that has to survive a mode switch cannot live
           inside a mode.{" "}
           <a href="/coroutines" className="underline">

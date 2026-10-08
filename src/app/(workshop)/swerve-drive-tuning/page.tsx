@@ -14,7 +14,9 @@ export const metadata = lessonMetadata("/swerve-drive-tuning");
  * The second half of the old `/swerve-calibration`, split in October 2026 when
  * that page ran 14.9 minutes across 18 steps. The seam is the floor: the first
  * half happens with the robot square on a bench and Tuner X reading sensors,
- * this half happens on six meters of carpet with a tape measure and a log.
+ * this half happens on six meters of carpet with a tape measure and a live
+ * AdvantageScope plot. 1-Swerve publishes Drivetrain/* through Telemetry but never
+ * starts DataLogManager, so there is no .wpilog to open.
  *
  * Moved here unchanged in substance: the three carpet measurements (wheel
  * radius, top speed, slip current), every number they carry (2.167 in, 4.54
@@ -39,8 +41,8 @@ export default function SwerveDriveTuning() {
           <strong>Swerve Calibration</strong>.
         </>,
         <>
-          Logging on. Two of the measurements come out of a <code>.wpilog</code>
-          .
+          AdvantageScope connected to the robot. Two of the measurements are
+          read off a live plot.
         </>,
         <>Phoenix Tuner X, and six meters of clear carpet.</>,
         <>A tape measure, and a wall you may push against.</>,
@@ -85,21 +87,21 @@ export default function SwerveDriveTuning() {
                 currentRadius
               </div>
               <div className="mt-2">
-                tape 5.00 m, log 4.80 m, file 2.167 in: (5.00 / 4.80) &times;
-                2.167 = 2.257 in
+                tape 4.80 m, odometry 5.00 m, file 2.167 in: (4.80 / 5.00)
+                &times; 2.167 = 2.080 in
               </div>
             </>
           }
         >
           <p className="m-0">
             Run it three times in each direction and average. Put the result in{" "}
-            <code>kWheelRadius</code>, redeploy, and repeat until tape and log
-            agree.
+            <code>kWheelRadius</code>, redeploy, and repeat until tape and
+            odometry agree.
           </p>
         </Box>
         <p>
-          If it got worse, you inverted the ratio: a robot that under-reports
-          needs a bigger radius.
+          If it got worse, you inverted the ratio: a robot that over-reports
+          needs a smaller radius.
         </p>
       </LessonSection>
 
@@ -256,9 +258,9 @@ export default function SwerveDriveTuning() {
         <Box variant="alert-success" title="You should see">
           <p>
             The robot back on the tape, and <code>Drivetrain/Pose</code> near
-            (0, 0) after twelve meters. In the log, measured module traces
-            sitting on the commanded ones through all four corners. Hands off
-            the sticks, the speed component of{" "}
+            (0, 0) after twelve meters. In AdvantageScope, measured module
+            traces sitting on the commanded ones through all four corners. Hands
+            off the sticks, the speed component of{" "}
             <code>Drivetrain/ModuleTargets</code> flat at zero.
           </p>
         </Box>
@@ -321,24 +323,24 @@ export default function SwerveDriveTuning() {
           {
             id: 2,
             question:
-              "Tape says 5.00 m, the log says 4.80 m, and kWheelRadius is 2.167 in. What goes in the file?",
+              "Tape says 4.80 m, odometry says 5.00 m, and kWheelRadius is 2.167 in. What goes in the file?",
             options: [
               "2.167 in, and lower kSlipCurrent, because the wheels must be slipping",
-              "2.080 in, from (4.80 / 5.00) × 2.167",
-              "2.167 in, and raise kP on driveGains until the log matches the tape",
               "2.257 in, from (5.00 / 4.80) × 2.167",
+              "2.167 in, and raise kP on driveGains until odometry matches the tape",
+              "2.080 in, from (4.80 / 5.00) × 2.167",
             ],
             correctAnswer: 3,
             explanation:
-              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went further than it reported, so the real wheel is bigger than the number in the file and the radius goes up. Option b is the same ratio inverted: it widens the gap instead of closing it, and that is how you spot the error. Slipping wheels fail the other way: a spinning wheel counts distance the robot never travels, so the log would read high.",
+              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went less far than it reported, so the squashed wheel is smaller than the number in the file and the radius goes down. Option b is the same ratio inverted: it widens the gap instead of closing it, and that is how you spot the error. Slip also makes odometry read high, because a spinning wheel counts distance the robot never travels. That is why the run is slow: drive gently and the gap is the radius, not slip.",
           },
           {
             id: 3,
             question:
               "Why does the wheel radius get measured before top speed?",
             options: [
-              "The speed in the log is wheel rotations times that radius, so a wrong radius gives a wrong speed",
-              "The log can only record one drivetrain signal per run",
+              "The plotted speed is wheel rotations times that radius, so a wrong radius gives a wrong speed",
+              "AdvantageScope can only plot one drivetrain signal per run",
               "Top speed has to be measured with the wheels off the ground",
               "Order does not matter, because the radius affects distance and not speed",
             ],

@@ -38,7 +38,7 @@ export default function SwerveCalibration() {
           A swerve robot you can drive, from{" "}
           <strong>Swerve Project Generator</strong>.
         </>,
-        <>Logging on, and AdvantageScope to plot it.</>,
+        <>AdvantageScope connected to the robot, for live plots.</>,
         <>Phoenix Tuner X, and a long straight edge.</>,
       ]}
       time="12 minutes"
