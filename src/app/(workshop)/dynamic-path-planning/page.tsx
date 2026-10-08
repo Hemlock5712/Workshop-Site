@@ -13,29 +13,39 @@ export const metadata = lessonMetadata("/dynamic-path-planning");
 
 /**
  * Written against Workshop-Code `swerve-pathfinding`, one commit on top of
- * `swerve-pathplanner`. It reuses `followPath` from /pathplanner and adds
- * `pathfindTo`, which drives PathPlannerLib's `Pathfinding` (LocalADStar) from
- * a Commands v3 coroutine.
+ * `swerve-pathplanner`. It adds `pathfindTo`, which returns
+ * `AutoBuilder.pathfindToPose` from the team's Commands v3 PathPlannerLib, and
+ * one teleop binding.
  *
- * The route is planned once. PathPlannerLib replans inside its own
- * PathfindingCommand, which is built on the other command framework, so this
- * page does not teach replanning. The replan-policy table that used to be
- * here described code nobody could run.
+ * That command is PathPlannerLib's own PathfindingCommand. It takes each
+ * refined AD* route until it is within 2 m of the goal, but the search's start
+ * point is set once, at start (`PathfindingFollower.start`/`update`). When the
+ * 2027 release could not run it, this page planned once by hand.
+ *
+ * With no route, PathfindingFollower sends nothing and never finishes, so the
+ * command holds the drivetrain on its last request until A is released. The
+ * branch has no fallback for that, so the page tells the student to let go
+ * rather than teaching code Workshop-Code does not have. A goal on a blocked
+ * cell is moved to the nearest open one (`LocalADStar.findClosestNonObstacle`).
+ *
+ * A canceled pathfind sends no zero (`PathFollower.stop(true)`). The teleop
+ * binding is safe because the joystick default command takes the drivetrain
+ * back on release.
  */
 export default function DynamicPathPlanning() {
   return (
     <PageTemplate
       title="Pathfinding"
-      lede="A drawn path starts where you drew it. Pathfinding starts wherever the robot is and searches a grid of the field for a way around the obstacles. The route goes to the same follower."
+      lede="A drawn path starts where you drew it. Pathfinding starts wherever the robot is and searches a grid of the field for a way around the obstacles, then drives the route it found."
       needs={[
         <>
-          <code>followPath</code> and the Follow Path auto from{" "}
+          <code>AutoBuilder.configure</code> and the Auto OpMode from{" "}
           <strong>PathPlanner</strong>, working in simulation.
         </>,
         <>A pose you trust, from odometry or from vision.</>,
       ]}
       branch="swerve-pathfinding"
-      time="15 minutes"
+      time="12 minutes"
     >
       <LessonSection id="navigation-grid" title="The navigation grid">
         <p>
@@ -53,62 +63,50 @@ export default function DynamicPathPlanning() {
         </p>
       </LessonSection>
 
-      <LessonSection id="find-a-route" title="Find a route, then follow it">
+      <LessonSection id="find-a-route" title="Find a route and drive it">
         <p>
-          The search, AD*, runs on its own thread from the moment the robot
-          program starts. A command hands it a start and a goal, waits for a
-          route, and drives it with <code>followPath</code>.
+          The search, AD*, runs on its own thread. Start it in the{" "}
+          <code>DriveMechanism</code> constructor, before{" "}
+          <code>AutoBuilder.configure</code>, so the first button press does not
+          pay to load the grid.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          title="pathfindTo: plan once, then follow"
+          title="First line of the constructor"
+          code={`// Load deploy/pathplanner/navgrid.json and start the route search on its own thread, now,
+// so the first request does not pay for it.
+Pathfinding.ensureInitialized();`}
+        />
+        <p>
+          Then one method asks <code>AutoBuilder</code> for a pathfinding
+          command. It uses the controller, config and alliance flip that{" "}
+          <code>configure</code> already gave it.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
+          title="pathfindTo"
           code={`public Command pathfindTo(Pose2d goal) {
-  return run(coroutine -> {
-        Pathfinding.setStartPosition(getPose().getTranslation());
-        Pathfinding.setGoalPosition(goal.getTranslation());
-
-        if (coroutine
-            .waitUntil(() -> Pathfinding.isNewPathAvailable(), Seconds.of(1.0))
-            .timedOut()) {
-          stopDriving();
-          return;
-        }
-
-        PathPlannerPath route =
-            Pathfinding.getCurrentPath(
-                pathfindConstraints, new GoalEndState(0.0, goal.getRotation()));
-        if (route == null) {
-          stopDriving(); // the search found no route
-          return;
-        }
-
-        coroutine.await(followPath(route));
-      })
-      .whenCanceled(() -> stopDriving())
-      .named("PathfindTo");
+  // Speed limits for routes the pathfinder makes up: 2 m/s, 2 m/s², and a turn rate of 3/4 of a
+  // turn per second. A drawn path carries its own limits; a found one gets these.
+  return AutoBuilder.pathfindToPose(
+      goal, new PathConstraints(2.0, 2.0, Math.toRadians(270), Math.toRadians(360), 12.0));
 }`}
         />
         <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              Every way out of this command sends zero speed first. A search
-              that never answers and a search that answers with nothing both end
-              the command. Stopping before the <code>return</code> means a robot
-              that was moving does not keep its last request.
-            </p>
-            <p>
-              <code>Pathfinding.ensureInitialized()</code> goes in the{" "}
-              <code>DriveMechanism</code> constructor. It loads the grid and
-              starts the search thread at boot, so the first button press does
-              not pay for it.
-            </p>
-          </div>
-          <MarginNote label="Planned once">
-            The route is fixed when the command starts. A robot pushed off it is
-            pulled back by the follower, not rerouted. Rerouting lives in
-            PathPlannerLib&apos;s own pathfinding command, which this project
-            cannot run.
+          <p className="measure prose-body m-0">
+            The command plans from the robot&apos;s pose when it starts. AD*
+            keeps refining that route while the robot drives. The command takes
+            each better one until the robot is within 2 m of the goal. It
+            finishes at the goal with zero speed. Started within 0.5 m of the
+            goal, it sends zero and finishes without moving. That is one more
+            reason the last stretch belongs to <strong>Drive to Point</strong>.
+          </p>
+          <MarginNote label="Bumped off course">
+            The search never moves its start point. A robot pushed off the route
+            is pulled back toward it by the follower, the same as on a drawn
+            path.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -116,21 +114,30 @@ export default function DynamicPathPlanning() {
       <LessonSection id="bind-it" title="Bind it to a button">
         <p>
           Hold A in teleop and the robot drives itself to the middle of the
-          neutral zone, around the hub. Let go and the command is canceled,{" "}
-          <code>whenCanceled</code> sends the zero, and the joystick default
-          takes the drivetrain back.
+          neutral zone, around the hub.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
           title="Hold A to pathfind"
-          code={`driver.a().whileTrue(drivetrain.pathfindTo(new Pose2d(7.5, 4.0, Rotation2d.ZERO)));`}
+          code={`// Hold A: find a way around the hub to the middle of the neutral zone, and drive it. Let go
+// and the sticks take over again. The goal is blue-origin, like every pose on this robot.
+driver.a().whileTrue(drivetrain.pathfindTo(new Pose2d(7.5, 4.0, Rotation2d.ZERO)));`}
         />
         <p>
-          The goal is blue-origin, like every pose on this robot. Pathfinding is
-          good at crossing the field and poor at the last few centimeters,
-          because it picks its own heading on the way in. Send it to a pose near
-          the target, then finish with <strong>Drive to Point</strong>.
+          Let go and the command is canceled. A canceled pathfind sends no zero.
+          What stops the robot is the joystick default command, which takes the
+          drivetrain back the same loop and sends whatever the sticks say. Bind
+          this anywhere without a drive default and the robot keeps its{" "}
+          <a href="/running-program#latched" className="underline">
+            last request
+          </a>
+          .
+        </p>
+        <p>
+          Pathfinding is good at crossing the field and poor at the last few
+          centimeters. Send it to a pose near the target, then finish with{" "}
+          <strong>Drive to Point</strong>.
         </p>
       </LessonSection>
 
@@ -139,12 +146,14 @@ export default function DynamicPathPlanning() {
           cols={3}
           items={[
             {
-              label: "Nothing moves",
+              label: "Keeps rolling",
               term: "No route",
               body: (
                 <>
-                  The wait timed out or the route came back empty. A goal deep
-                  inside a blocked area, or a grid painted solid by mistake.
+                  A goal on a blocked square is moved to the nearest open one,
+                  so that is not it. The open area around the goal is walled off
+                  from the robot. The command sends nothing and holds the
+                  drivetrain, so the last request stays on. Let go of A.
                 </>
               ),
             },
@@ -177,8 +186,8 @@ export default function DynamicPathPlanning() {
       <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            In simulation, run the <strong>Follow Path</strong> auto so the
-            robot ends where your path does, on the near side of the hub.
+            In simulation, run the <code>Leave Start</code> auto so the robot
+            ends on the near side of the hub.
           </li>
           <li>
             Switch to <strong>Teleop</strong>, enable, and hold A. Watch{" "}
@@ -194,8 +203,7 @@ export default function DynamicPathPlanning() {
             </li>
             <li>A stop at the goal that stays stopped while A is held.</li>
             <li>
-              Letting go halfway stops the robot at once, and the sticks drive
-              it again.
+              Letting go halfway hands the robot straight back to the sticks.
             </li>
           </ul>
         </Box>
@@ -224,30 +232,30 @@ export default function DynamicPathPlanning() {
           {
             id: 2,
             question:
-              "pathfindTo times out waiting for a route. Why does it call stopDriving() before return?",
+              "You let go of A halfway. What stops the robot from rolling on?",
             options: [
-              "The scheduler requires a request before a command can end",
-              "return cancels the command, which then sends its own zero",
-              "Pathfinding needs a stopped robot to search again",
-              "The robot may still be moving, and its last request stays latched after the command ends",
+              "The pathfinding command sends zero speed when it is canceled",
+              "The scheduler zeroes every motor a canceled command used",
+              "Pathfinding.ensureInitialized resets the drivetrain",
+              "The joystick default command takes the drivetrain back and sends the sticks",
             ],
             correctAnswer: 3,
             explanation:
-              "Ending a command sends nothing to the motors. If the drivetrain was moving when the command took it, that speed stays applied. Stopping first is the rule for every way out of a routine.",
+              "A canceled pathfind sends nothing, and the last request stays latched. In teleop the drive default command claims the drivetrain the moment the pathfind lets go, so the sticks are in charge again.",
           },
           {
             id: 3,
             question:
               "Someone bumps the robot halfway along a found route. What happens?",
             options: [
-              "The follower pulls it back toward the same route, because the route was planned once",
-              "AD* plans a new route from the new pose",
+              "The follower pulls it back toward the route",
+              "AD* starts a fresh search from the new pose",
               "The command cancels and the sticks take over",
               "The robot stops and waits for the button again",
             ],
             correctAnswer: 0,
             explanation:
-              "pathfindTo asks for one route when it starts and then hands it to followPath. The follower corrects toward that plan. Rerouting mid-drive is something this command does not do.",
+              "The search's start point is set once, when the command starts. Refined routes still begin there, so the follower pulls a bumped robot back, the same way it does on a drawn path.",
           },
           {
             id: 4,
@@ -261,7 +269,7 @@ export default function DynamicPathPlanning() {
             ],
             correctAnswer: 2,
             explanation:
-              "Pathfinding chooses its own heading on the way in, so it is weak at the final line-up. Use it to cross the field, then hand the last short move to a command built for precision.",
+              "Pathfinding is built to cross the field around obstacles, not to line up the last centimeters. Use it to get close, then hand the short move to a command built for precision.",
           },
         ]}
       />
