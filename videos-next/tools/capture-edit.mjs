@@ -61,7 +61,7 @@ if (!from) fail(`no mark "${fromLabel}" in ${logFile}`);
 const to = opt("--to") ? marks.find((m) => m.label === opt("--to")) : marks.find((m) => m.s > from.s);
 const s0 = Math.max(0, from.s);
 const s1 = Math.min(rawDur, to ? to.s : rawDur);
-const acts = ev.filter((e) => e.s >= s0 && e.s <= s1 && ["click", "type", "scroll"].includes(e.a));
+const acts = ev.filter((e) => e.s >= s0 && e.s <= s1 && ["click", "press", "type", "scroll"].includes(e.a));
 
 // ---- the narration line it sits under ---------------------------------------------------
 const voice = JSON.parse(fs.readFileSync(path.join(lessonDir, "voice.json"), "utf8"));

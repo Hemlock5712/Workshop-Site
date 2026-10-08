@@ -4,12 +4,13 @@
 #   ui.ps1 move  <x> <y>
 #   ui.ps1 type  "<text>"                SendKeys syntax; {ENTER}, ^a (ctrl+a), {TAB}
 #   ui.ps1 scroll <x> <y> <clicks>       negative = down
+#   ui.ps1 drag  <x1> <y1> <x2> <y2>     press, glide over ~0.6 s, release
 #   ui.ps1 focus [process]
 #   ui.ps1 mark  <label>                 a named point in the log (e.g. "beat:zero", "end")
 # With $env:UI_LOG set, every action appends one JSON line to that file:
 #   {"t": <unix ms>, "a": "click", "x": 1234, "y": 567, ...}   x/y are physical screen pixels
 # tools/capture-edit.mjs reads that log next to a record-window.ps1 recording.
-param([string]$Action, [string]$A1, [string]$A2, [string]$A3)
+param([string]$Action, [string]$A1, [string]$A2, [string]$A3, [string]$A4)
 
 Add-Type -AssemblyName System.Drawing, System.Windows.Forms
 Add-Type @"
@@ -72,5 +73,19 @@ switch ($Action) {
     [U]::mouse_event(0x0800, 0, 0, [int]$A3 * 120, 0); Log "scroll" $A1 $A2 @{ clicks = [int]$A3 }; "scroll $A3"
   }
   "focus" { if ($A1) { Focus $A1 } else { Focus }; "focused" }
+  "drag" {
+    Focus
+    [U]::SetCursorPos([int]$A1, [int]$A2) | Out-Null; Start-Sleep -Milliseconds 150
+    Log "press" $A1 $A2
+    [U]::mouse_event(0x02, 0, 0, 0, 0); Start-Sleep -Milliseconds 120
+    for ($i = 1; $i -le 30; $i++) {
+      $k = $i / 30; $e = $k * $k * (3 - 2 * $k)
+      [U]::SetCursorPos([int]([int]$A1 + ([int]$A3 - [int]$A1) * $e), [int]([int]$A2 + ([int]$A4 - [int]$A2) * $e)) | Out-Null
+      Start-Sleep -Milliseconds 20
+    }
+    Start-Sleep -Milliseconds 100; [U]::mouse_event(0x04, 0, 0, 0, 0)
+    Log "click" $A3 $A4 @{ drag = "$A1,$A2" }
+    "drag $A1,$A2 -> $A3,$A4"
+  }
   "mark" { $c = Cursor; Log "mark" $c[0] $c[1] @{ label = $A1 }; "mark $A1" }
 }
