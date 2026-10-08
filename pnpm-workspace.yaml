@@ -3,7 +3,6 @@
 # workspace member to satisfy the check without changing install behavior.
 packages:
   - "."
-  - "videos"
 
 # eslint-plugin-react 7.37.5 is the latest release and predates ESLint 10,
 # which removed `context.getFilename()` and `context.getSourceCode()`. It

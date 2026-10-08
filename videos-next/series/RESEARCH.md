@@ -8,7 +8,7 @@ You're writing a **brief** for one lesson page, so the parent can write the narr
 
 1. The lesson page: `src/app/(workshop)/<slug>/page.tsx`. Prose, code blocks, quizzes, WatchOuts, "You should see" steps.
 2. Teaching code: `reference/Workshop-Code/<branch>/` (local worktrees; `git -C reference/.git-store/Workshop-Code.git diff A B` shows what a lesson adds). The swerve chain is `1-Swerve`, `2-Logging`, `3-Limelight`, `4-DynamicFlywheel`, `5-DriveToPoint`, `6-ProfiledToPoint`, `7-InlineCommands`, and `swerve-autonomous` → `swerve-pathplanner` → `swerve-pathfinding`. It still uses `frc.robot.subsystems` / `frc.robot.opmodes`; show it as it is.
-3. `CLAUDE.md` at the repo root, section "Workshop Content Stack": PathPlanner (the team's Commands v3 PathPlannerLib build, `com.pathplanner.lib.command3`), LimelightLib 2 (vendordep URL pinned to the alpha; the class is `Vision`, not `Limelight`), swerve stop rules (`SwerveRequest.Idle` is not a stop), and the rest. **Don't trust** other markdown (README, context/*.md, MODERNIZATION_STATUS.md); it's stale.
+3. `CLAUDE.md` at the repo root, section "Workshop Content Stack": PathPlanner (the team's Commands v3 PathPlannerLib build, `com.pathplanner.lib.command3`), LimelightLib 2 (vendordep URL pinned to the alpha; the class is `Vision`, not `Limelight`), swerve stop rules (`SwerveRequest.Idle` is not a stop), and the rest. **Don't trust** other markdown (README, context/*.md) as of early October 2026; it was rewritten later that month.
 4. Installed WPILib / vendor sources under `C:\Users\Public\wpilib\2027_alpha7\maven\` if you need to confirm an API exists.
 
 Never invent an API. Never mention Commands v2 or "the old way". Lambdas `() -> foo()`. No enums. No AdvantageKit.

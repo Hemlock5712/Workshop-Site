@@ -2,11 +2,11 @@
 
 How long a lesson may run, what shape it has, and what it may never cut.
 
-**Voice is not here.** How a sentence sounds is
-`.claude/skills/unslop/SKILL.md`, which replaced the voice half of
-`context/writing-style.md` in August 2026. This file is the other half: the
-curriculum rules, which unslop has no opinion about. `pnpm prose` enforces the
-mechanical subset of both.
+**Voice is not here.** How a sentence sounds is the `unslop` skill, which
+replaced the voice half of `context/writing-style.md` in August 2026. That skill
+lives in `.claude/skills/`, which is gitignored, so it is not in this
+repository; `pnpm prose` enforces its mechanically checkable subset. This file
+is the other half: the curriculum rules, which unslop has no opinion about.
 
 ## Who is reading
 
@@ -52,13 +52,13 @@ An identifier inside `<code>` counts as one word, because that is how
 
 Which is why a page cannot be judged on word count alone:
 
-|                          | words | structure         | minutes |
-| ------------------------ | ----- | ----------------- | ------- |
-| `/pathplanner`           | 648   | 13 steps, no code | 9.3     |
-| `/vision-implementation` | 1,200 | 8 steps, 2 embeds | 12.2    |
+|                          | words | structure        | minutes |
+| ------------------------ | ----- | ---------------- | ------- |
+| `/pathplanner`           | 1,012 | 17 steps, 3 code | 14.9    |
+| `/vision-implementation` | 1,185 | 3 steps, 3 code  | 11.6    |
 
-The second carries nearly twice the prose for three more minutes, because the
-first spends a third of its budget on a procedure a student stops to perform.
+Measured October 2026: the first carries less prose and runs three minutes
+longer, because much of its budget is a procedure a student stops to perform.
 Run `pnpm prose` before deciding what to cut: on a step-heavy page, cutting
 words is the expensive way to buy a minute.
 
@@ -84,8 +84,8 @@ it is two lessons: say so instead of cutting the check.
 They are different numbers and both are honest. The budget above measures how
 much _content_ a page carries: words, steps, code, quizzes, simulations. The
 `time` prop states how long the lesson takes end to end, which on a hardware
-page includes work no prose can compress. `/autonomous` reads in six minutes
-and needs thirty at a bench, and it should say thirty.
+page includes work no prose can compress. `/autonomous` measures about twelve
+minutes and needs thirty at a bench, and it should say thirty.
 
 The one rule `pnpm prose` enforces is direction: **`time` may exceed the
 measured content, never come in under it.** A page that says "12 minutes"
@@ -130,7 +130,7 @@ Two per lesson, three at the absolute most. One `alert-danger` per lesson.
 
 The site once had 297 of them. A page with six warnings has no warnings on it.
 Before adding an aside, try deleting the sentence instead. The "why" belongs
-in a `<MarginNote>` in the gutter, where it costs the reader nothing.
+in a `<MarginNote>`, which stacks under the paragraph it annotates.
 
 ## Quizzes
 
