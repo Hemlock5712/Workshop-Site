@@ -1,0 +1,10 @@
+# Built output and captures: the MP4s live on the video-series release.
+out/
+captures/
+# Narration audio. voice.json / voice.js (timings) are committed; the audio is
+# regenerated with tools/voice.mjs.
+lessons/*/voice/
+# The owner's voice recording and the cloned-voice reference: never in a public repo.
+voices/
+# TTS bake-off: Python venvs, model caches and samples of the owner's cloned voice.
+voice-bakeoff/

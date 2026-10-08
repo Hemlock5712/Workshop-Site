@@ -1,0 +1,61 @@
+{
+  "title": "What Nobody Watched",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "cold",
+      "text": "Autonomous runs. The arm rises, stops short, and the flywheel never spins. Then it's over.",
+      "after": 0.6
+    },
+    {
+      "id": "intro",
+      "text": "Nobody saw why. A log is a recording of numbers over time, kept in a file you can open afterwards.",
+      "after": 0.6
+    },
+    {
+      "id": "start",
+      "text": "Two lines in the robot's constructor start the recorder. It notes when the robot is enabled, and which mode is running.",
+      "after": 0.6
+    },
+    {
+      "id": "record",
+      "text": "Then the arm records three numbers: where it is, where it's trying to be, and the voltage it's using. The units go in the names.",
+      "after": 0.6
+    },
+    {
+      "id": "always",
+      "text": "This line runs that recording every loop, for the whole program.",
+      "after": 0.6
+    },
+    {
+      "id": "wrong",
+      "text": "Put it inside a command instead, and it only records while that command runs. Let go of the trigger, and the line goes flat even though the arm keeps moving.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Now find the moment the routine gave up.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "found",
+      "text": "Three seconds after the target changed, the arm was still short. That's the timeout. And the voltage was working the whole time, so this is a tuning problem, not a wiring one.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Log from the start, all the time, and the file will tell you what nobody watched.",
+      "after": 0.6
+    }
+  ]
+}

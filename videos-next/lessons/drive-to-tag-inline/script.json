@@ -1,0 +1,71 @@
+{
+  "title": "Every Way Out Stops",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Hold a button, and the robot drives to a meter in front of a tag, using nothing but the camera.",
+      "after": 0.6
+    },
+    {
+      "id": "connect",
+      "text": "Drive to point needed a pose on the field. This one only needs the tag.",
+      "after": 0.6
+    },
+    {
+      "id": "frame",
+      "text": "The camera reports the robot's position in the tag's own frame. We pick our tag's ID, and ignore the rest.",
+      "after": 0.6
+    },
+    {
+      "id": "three",
+      "text": "Three profiled controllers do the driving: one for distance, one for sideways, and one to square up.",
+      "after": 0.6
+    },
+    {
+      "id": "face",
+      "text": "Facing the tag means a half turn in its frame, because the tag faces out toward the robot.",
+      "after": 0.6
+    },
+    {
+      "id": "loop",
+      "text": "It's one loop: read the tag, drive, yield, and repeat. The same shape you wrote in Coroutines.",
+      "after": 0.6
+    },
+    {
+      "id": "lost",
+      "text": "If the tag disappears, it stops, waits up to a second for it to come back, and gives up stopped.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Cover the camera.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "reacquire",
+      "text": "When the tag comes back, the profiles start fresh from where the robot is, so it doesn't lurch.",
+      "after": 0.6
+    },
+    {
+      "id": "exits",
+      "text": "Three ways out: it arrives, it gives up, or it's canceled. Every one sends a stop on the way out.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "One loop, and a stop on every way out.",
+      "after": 0.6
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "title": "Ask Every Loop",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A finish condition ends a step when the mechanism says it got there.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "Last time, the arm's step ended after one second. That number was a guess.",
+      "after": 0.6
+    },
+    {
+      "id": "question",
+      "text": "This method asks the sensor whether the arm is close enough to its target. Close enough, because a real arm is never exactly on the number.",
+      "after": 0.6
+    },
+    {
+      "id": "every",
+      "text": "The arrow matters again. It hands the question over, so it gets asked every loop, and the step ends on the loop the answer turns true.",
+      "after": 0.6
+    },
+    {
+      "id": "timeout",
+      "text": "Back it with a timeout. Now the step has two ways to end: the arm arrives, or the clock runs out.",
+      "after": 0.6
+    },
+    {
+      "id": "race",
+      "text": "On most runs, the sensor wins in about half a second.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Squeeze the tolerance down to almost nothing, and run it again.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "lose",
+      "text": "The arm gets close, but never close enough, so the clock wins at two seconds.",
+      "after": 0.6
+    },
+    {
+      "id": "proves",
+      "text": "And the next step starts anyway, with the arm short of its target. A timeout tells you the waiting is over. It doesn't tell you where the arm is.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "End on the sensor, back it with a timer, and never treat the timer running out as arriving.",
+      "after": 0.6
+    }
+  ]
+}

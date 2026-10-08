@@ -1,0 +1,66 @@
+{
+  "title": "Fifteen Seconds, No Driver",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "You've written an autonomous mode once already. Raise and Shoot ran the arm with nobody on the sticks. This one drives the whole robot.",
+      "after": 0.6
+    },
+    {
+      "id": "layers",
+      "text": "Keep the mode itself thin. It starts the routine, and it ends it. Everything else lives in a command you can test.",
+      "after": 0.6
+    },
+    {
+      "id": "build",
+      "text": "The routine is three lines: drive forward at one meter per second, wait, then send a stop.",
+      "after": 0.6
+    },
+    {
+      "id": "run",
+      "text": "Pick Leave Start, and enable. The robot leaves its tape mark, and the last line stops it.",
+      "after": 0.6
+    },
+    {
+      "id": "nostop",
+      "text": "Delete that last line, and it never stops. Nothing replaces the request, and autonomous has no default command.",
+      "after": 0.6
+    },
+    {
+      "id": "disable",
+      "text": "Disable it halfway, and the routine is canceled in the middle of its wait. The last line never runs. That's why the canceled path sends the same stop.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Disable it whenever you like.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "heading",
+      "text": "The direction comes from the robot's heading. Rotate it on the tape, and the same routine drives somewhere else.",
+      "after": 0.6
+    },
+    {
+      "id": "test",
+      "text": "Test it in layers: on blocks, then on the floor, three times. The three end spots should land within about ten centimeters.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Write down where it ended. Next, a drawn path that knows where it's going replaces the timer.",
+      "after": 0.6
+    }
+  ]
+}

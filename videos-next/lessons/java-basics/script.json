@@ -1,0 +1,61 @@
+{
+  "title": "Handing Over Code",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Most of the Java in this course is ordinary: classes, fields, methods. One piece works differently, and everything else is built on it.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "In Tuner X, the motor pushed the moment you enabled Voltage Out. Code doesn't have to work that way.",
+      "after": 0.6
+    },
+    {
+      "id": "show",
+      "text": "Here's a method on the arm. It builds a command that pushes the arm at three volts.",
+      "after": 0.6
+    },
+    {
+      "id": "parcel",
+      "text": "That little arrow makes a lambda. It turns the code after it into a package that's written down and handed over, but not run.",
+      "after": 0.6
+    },
+    {
+      "id": "call",
+      "text": "So when this method runs, the motor doesn't move. You get back a command with that package inside, and that's all.",
+      "after": 0.6
+    },
+    {
+      "id": "silent",
+      "text": "There's no error and no warning. The arm just sits there, because nothing has run the command yet.",
+      "after": 0.6
+    },
+    {
+      "id": "run",
+      "text": "When something does run it, the package opens, and it keeps opening every loop. Now the motor gets its three volts.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Call the method, then run the command, and watch which one moves the arm.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "close",
+      "text": "A lambda is code you hand to something else to run later. Next, you'll meet what runs it.",
+      "after": 0.6
+    }
+  ]
+}

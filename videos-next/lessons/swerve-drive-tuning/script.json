@@ -1,0 +1,70 @@
+{
+  "title": "What the Carpet Says",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "The generator guessed three numbers. The carpet tells you the real ones.",
+      "after": 0.6
+    },
+    {
+      "id": "order",
+      "text": "Tune them in order: the wheel radius, then top speed, then slip, and close the speed loop last.",
+      "after": 0.6
+    },
+    {
+      "id": "radius",
+      "text": "Drive a measured distance, and compare the tape with what odometry says. The ratio between them tells you how far off the radius is.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Change the radius until the two marks agree.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "speed",
+      "text": "For top speed, drive flat out, and read where the speed levels off. Use that plateau, not the spike before it.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "slip",
+      "text": "For slip, push the robot into a wall with Voltage Out, and watch the current climb. Read the top of the climb, right before the wheels break loose.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "loop",
+      "text": "Then tune the speed loop like any other: the velocity gain, then static, then proportional, with the robot on the ground.",
+      "after": 0.6
+    },
+    {
+      "id": "switch",
+      "text": "Last, change one word, so the drive asks for a speed instead of a voltage.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "deadband",
+      "text": "And shrink the deadband until the robot twitches at rest, then back off one step.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Measure on the carpet you'll drive on. The file is only as good as the floor you took it from.",
+      "after": 0.6
+    }
+  ]
+}

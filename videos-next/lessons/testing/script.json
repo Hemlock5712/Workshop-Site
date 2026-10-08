@@ -1,0 +1,71 @@
+{
+  "title": "One Tick by Hand",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "hook",
+      "text": "Three weeks before an event, a teammate changes one number. The robot's packed in a crate. Who notices?",
+      "after": 0.6
+    },
+    {
+      "id": "intro",
+      "text": "A test is a check the computer runs for you, every time the code changes.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "Hardware Simulation already ran your program with no robot. A test uses that same simulator, but nothing loops unless the test says so.",
+      "after": 0.6
+    },
+    {
+      "id": "schedule",
+      "text": "This test schedules the command that sends the arm straight up. Scheduling only puts it in line, so the motor still has no request.",
+      "after": 0.6
+    },
+    {
+      "id": "tick",
+      "text": "Then the test runs the scheduler once. One tick. Now the request names the target, and the check passes.",
+      "after": 0.6
+    },
+    {
+      "id": "skip",
+      "text": "Leave that tick out, and the check fails. It's the most common mistake in this lesson.",
+      "after": 0.6
+    },
+    {
+      "id": "fake",
+      "text": "The flywheel test fakes the sensor. It sets the speed just inside the tolerance and checks that it counts, then sets it well outside and checks that it doesn't.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Be the teammate. Widen the tolerance, and run the tests.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "caught",
+      "text": "The far-off speed slides inside the band, and the second check fails. That edit just got caught.",
+      "after": 0.6
+    },
+    {
+      "id": "limits",
+      "text": "A test checks the request, not the motion. The bench still has to show the arm really gets there.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Put decisions where a test can read them, and let the computer check them every time.",
+      "after": 0.6
+    }
+  ]
+}

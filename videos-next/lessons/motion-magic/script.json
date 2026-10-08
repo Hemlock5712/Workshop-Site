@@ -1,0 +1,80 @@
+{
+  "title": "Walking the Target",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Last time, the target jumped all at once. Motion Magic walks it there instead.",
+      "after": 0.6
+    },
+    {
+      "id": "route",
+      "text": "Two numbers describe the walk: how fast it may go, and how fast it may speed up.",
+      "after": 0.6
+    },
+    {
+      "id": "trapezoid",
+      "text": "So every move has three parts. It speeds up, it cruises, and it slows down, arriving with no speed left.",
+      "after": 0.6
+    },
+    {
+      "id": "same",
+      "text": "Your gains don't change. Motion Magic only moves the target they chase.",
+      "after": 0.6
+    },
+    {
+      "id": "set",
+      "text": "In the Motion Magic settings, start slow: half a rotation per second, and one rotation per second squared. Leave jerk at zero, and apply.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "run",
+      "text": "Pick Motion Magic from the control menu, ask for a quarter turn, and enable. The plot draws the shape.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Make the move shorter, and watch what happens to the cruise.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "triangle",
+      "text": "On a short move, there's no room to cruise. It starts slowing down before it reaches top speed, and that's correct.",
+      "after": 0.6
+    },
+    {
+      "id": "flywheel",
+      "text": "A flywheel isn't going anywhere, so it has no cruise. Only the acceleration shapes its ramp.",
+      "after": 0.6
+    },
+    {
+      "id": "raise",
+      "text": "Raise the limits one step at a time, until the arm starts to lag, then back off a little.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "generate",
+      "text": "Everything you set now lives on the motor. In the three dot menu, Generate Code copies it out, and that's where the code picks up in Workshop 3.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "close",
+      "text": "Name where it should end up, and the motor plans the way there.",
+      "after": 0.6
+    }
+  ]
+}

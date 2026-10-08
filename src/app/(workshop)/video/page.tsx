@@ -18,10 +18,16 @@ export const metadata: Metadata = {
 const RELEASE_BASE =
   "https://github.com/Hemlock5712/Workshop-Site/releases/download/video-previews";
 
+// The October 2026 series, built in videos-next/ and hosted on its own release
+// so the trailers above stay untouched until they are retired.
+const SERIES_BASE =
+  "https://github.com/Hemlock5712/Workshop-Site/releases/download/video-series";
+
 interface Trailer {
   file: string;
   title: string;
   blurb: string;
+  series?: boolean;
 }
 
 interface TrailerGroup {
@@ -29,7 +35,190 @@ interface TrailerGroup {
   trailers: Trailer[];
 }
 
+// One group per workshop, in course order: [id, title, blurb].
+const NEXT_SERIES: [string, [string, string, string][]][] = [
+  [
+    "Workshop 1 · Hardware & CTRE",
+    [
+      [
+        "hardware",
+        "Three Parts and a Bus",
+        "Hardware Setup: a motor, a sensor, and a bus to your laptop.",
+      ],
+      [
+        "mechanism-setup",
+        "Numbers and First Motion",
+        "Motor Setup: Voltage Out moves the moment you click.",
+      ],
+      [
+        "pid-control",
+        "One Motion, Then Silence",
+        "PID Tuning: feedforward holds, feedback fixes what's left.",
+      ],
+      [
+        "motion-magic",
+        "Walking the Target",
+        "Motion Magic: speed up, cruise, slow down.",
+      ],
+    ],
+  ],
+  [
+    "Workshop 2 · Code Foundations",
+    [
+      [
+        "java-basics",
+        "Handing Over Code",
+        "Java Basics: a lambda is code handed over to run later.",
+      ],
+      [
+        "command-framework",
+        "The Scheduler",
+        "The Command Framework: fifty times a second, one owner per mechanism.",
+      ],
+    ],
+  ],
+  [
+    "Workshop 3 · Robot Programming",
+    [
+      [
+        "mechanisms",
+        "Configs and Requests",
+        "Mechanisms: settings go in once, requests every loop.",
+      ],
+      [
+        "adding-commands",
+        "Every Command Is a Hold",
+        "Writing Commands: each one runs until something takes the arm.",
+      ],
+      [
+        "opmodes",
+        "Two Edges",
+        "OpModes: press and release, each with its own binding.",
+      ],
+      [
+        "latched",
+        "The Latched Request",
+        "Hardware Simulation: canceling a command is not stopping a motor.",
+      ],
+      [
+        "motion-magic-code",
+        "Naming a Target",
+        "Motion Magic in Code: a position request that stays holds the arm.",
+      ],
+    ],
+  ],
+  [
+    "Workshop 4 · Routines",
+    [
+      [
+        "chaining-commands",
+        "Steps",
+        "Command Composition: give every step an ending.",
+      ],
+      [
+        "finish-conditions",
+        "Ask Every Loop",
+        "Finish Conditions: end on the sensor, back it with a timer.",
+      ],
+      [
+        "coroutines",
+        "Fork and Wait",
+        "Coroutines: fork the holds, await the steps.",
+      ],
+      [
+        "logging-implementation",
+        "What Nobody Watched",
+        "Logging: the file shows what nobody saw.",
+      ],
+      [
+        "testing",
+        "One Tick by Hand",
+        "Testing: run the loop by hand and check both sides.",
+      ],
+    ],
+  ],
+  [
+    "Workshop 5 · Swerve & Autonomous",
+    [
+      [
+        "swerve-prerequisites",
+        "Facing One Way, Driving Another",
+        "How Swerve Works: field centric, and the blue-corner origin.",
+      ],
+      [
+        "swerve-drive-project",
+        "One File From Tuner X",
+        "Swerve Project Generator: measure it, generate it, drive it in sim.",
+      ],
+      [
+        "swerve-calibration",
+        "Straight Means Straight",
+        "Swerve Calibration: a steady curve is a zero.",
+      ],
+      [
+        "swerve-drive-tuning",
+        "What the Carpet Says",
+        "Swerve Drive Tuning: radius, top speed and slip, from the floor.",
+      ],
+      [
+        "autonomous",
+        "Fifteen Seconds, No Driver",
+        "Autonomous: every way out of the routine stops the robot.",
+      ],
+      [
+        "pathplanner",
+        "A Path That Knows Where It Ends",
+        "PathPlanner Paths: follow the plan, correct back onto it.",
+      ],
+    ],
+  ],
+  [
+    "Workshop 6 · Vision & Navigation",
+    [
+      [
+        "vision-hardware",
+        "Seeing the Field",
+        "Vision Hardware: tags don't drift; never mount square.",
+      ],
+      [
+        "vision-implementation",
+        "Blending, Not Replacing",
+        "Vision: weigh, rewind, replay.",
+      ],
+      [
+        "drive-to-point",
+        "Speed From Distance",
+        "Drive to Point: it bolts, then creeps up short.",
+      ],
+      [
+        "advanced-drive-to-point",
+        "Plan the Trip",
+        "Profiled Drive to Point: the plan drives, a correction trims.",
+      ],
+      [
+        "dynamic-path-planning",
+        "Starting From Anywhere",
+        "Pathfinding: the margin is your bumper.",
+      ],
+      [
+        "drive-to-tag-inline",
+        "Every Way Out Stops",
+        "Example: Drive to Tag: one loop, a stop on every exit.",
+      ],
+    ],
+  ],
+];
+
 const GROUPS: TrailerGroup[] = [
+  ...NEXT_SERIES.map(([heading, rows]) => ({
+    heading: `${heading} · new series`,
+    trailers: rows.map(([id, title, blurb]) => ({
+      file: `${id}.mp4`,
+      title,
+      blurb,
+      series: true,
+    })),
+  })),
   {
     heading: "Full lessons",
     trailers: [
@@ -230,19 +419,21 @@ export default function VideoPreviewPage() {
                     background: "var(--bg2)",
                   }}
                 >
-                  {/* `preload="metadata"` plus the `#t=0.1` media fragment is
+                  {/* `preload="metadata"` plus the `#t=` media fragment is
                       what makes these visible at all. With `preload="none"` and
                       no poster the page was 27 empty boxes; metadata alone
                       fetches the header but paints nothing, so the fragment
                       seeks a tenth of a second in and the browser renders that
-                      frame as its own poster. No poster files to keep in sync. */}
+                      frame as its own poster. No poster files to keep in sync.
+                      The new series fades its title card in, so it seeks to 2 s,
+                      where the title is up. */}
                   <video
                     controls
                     preload="metadata"
                     playsInline
                     aria-labelledby={titleId}
                     className="aspect-video w-full rounded-lg bg-[var(--bg3)]"
-                    src={`${RELEASE_BASE}/${trailer.file}#t=0.1`}
+                    src={`${trailer.series ? SERIES_BASE : RELEASE_BASE}/${trailer.file}#t=${trailer.series ? 2 : 0.1}`}
                   />
 
                   <figcaption className="mt-control">

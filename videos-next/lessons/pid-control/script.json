@@ -1,0 +1,75 @@
+{
+  "title": "One Motion, Then Silence",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "The motor runs its own control loop. Tuner X just sends it a target, and draws what happens.",
+      "after": 0.6
+    },
+    {
+      "id": "zero",
+      "text": "Start with every gain at zero, and enable. Nothing moves. That's correct: zero gains mean zero volts.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "gravity",
+      "text": "Gravity pulls hardest when the arm is level, and not at all when it's straight up.",
+      "after": 0.6
+    },
+    {
+      "id": "kg",
+      "text": "The gravity gain cancels exactly that pull, at every angle. Raise it until the arm holds level on its own.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "ks",
+      "text": "The static gain covers friction. Set it to half the gap between the smallest and largest gravity gains that hold.",
+      "after": 0.6
+    },
+    {
+      "id": "kp",
+      "text": "Now the feedback. Double the proportional gain until the arm overshoots, then cut it in half.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "kd",
+      "text": "The derivative gain takes out the overshoot. Too much of it, and the arm buzzes.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Pick a gain that's too low, then one that's too high, and watch the plot.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "shapes",
+      "text": "Three shapes tell you what's wrong. It runs away, it buzzes, or it falls short. Read the plot, not the mechanism.",
+      "after": 0.6
+    },
+    {
+      "id": "apply",
+      "text": "Apply the gains, and power cycle. They're saved on the motor.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "close",
+      "text": "Feedforward pays for holding. Feedback fixes what's left. A tuned arm makes one motion, and then it's silent.",
+      "after": 0.6
+    }
+  ]
+}

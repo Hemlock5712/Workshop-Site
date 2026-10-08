@@ -1,0 +1,71 @@
+{
+  "title": "Configs and Requests",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A mechanism is one part of the robot, written as one class. This one's the arm.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "In Tuner X, you set this motor up by hand. Generate Code copies those settings out. That copy goes right here, in the constructor.",
+      "after": 0.6
+    },
+    {
+      "id": "fields",
+      "text": "First, the hardware: the CAN bus, the motor on thirty one, and the CANcoder on thirty two.",
+      "after": 0.6
+    },
+    {
+      "id": "config",
+      "text": "When the arm gets built, the constructor sends that config to the motor once. The motor saves it and keeps it.",
+      "after": 0.6
+    },
+    {
+      "id": "request",
+      "text": "A request is different. It says what to do right now, and the code sends a new one every loop.",
+      "after": 0.6
+    },
+    {
+      "id": "sticks",
+      "text": "Whichever request arrives last is the one the motor keeps doing. Hold on to that. It comes back in a few lessons.",
+      "after": 0.6
+    },
+    {
+      "id": "count",
+      "text": "One setting matters more than it looks. The motor counts its own turns, but that count starts over at zero every time the robot powers on.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Move the arm, power cycle the robot, and compare the two readings.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "feedback",
+      "text": "The CANcoder remembers the real angle. These lines make it the motor's source, so every angle you ask for later is a real one.",
+      "after": 0.6
+    },
+    {
+      "id": "robot",
+      "text": "Last, the robot builds the arm once, as a field, and every mode you write uses that same arm.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Settings go in once. Requests go every loop, and the last one sticks.",
+      "after": 0.6
+    }
+  ]
+}

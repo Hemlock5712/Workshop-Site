@@ -1,0 +1,74 @@
+{
+  "title": "A Path That Knows Where It Ends",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A wait doesn't know where it ends. A path does.",
+      "after": 0.6
+    },
+    {
+      "id": "pathauto",
+      "text": "A path is one curve on the field. An auto is a list of steps, and paths are some of them.",
+      "after": 0.6
+    },
+    {
+      "id": "config",
+      "text": "First, tell PathPlanner about your robot: its mass, its size, and how hard each wheel can push.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "draw",
+      "text": "Draw the path from the same tape mark: two meters out, turned forty five degrees. The preview shows the bumpers, so you can see what it'll hit.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "auto",
+      "text": "Wrap it in an auto, and turn on reset odometry, so the robot starts where the path does.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "builder",
+      "text": "In code, the drive mechanism tells the library four things: where the robot is, how to reset that, how fast it's moving, and how to drive it.",
+      "after": 0.6
+    },
+    {
+      "id": "opmode",
+      "text": "One autonomous mode registers the named commands, builds the drop down of autos, and reads the choice when the match starts.",
+      "after": 0.6
+    },
+    {
+      "id": "follow",
+      "text": "On the field, the plan moves ahead, and the robot follows it. When it drifts, a correction pulls it back.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it. Shove the robot off the path.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "events",
+      "text": "Paths can carry events. In the intake zone, the intake runs, and it stops when the robot leaves.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Three runs of the path land closer together than three runs of the timer. That's the point.",
+      "after": 0.6
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "title": "One File From Tuner X",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Tuner X can measure your drivetrain, test every module, and write one file for you.",
+      "after": 0.6
+    },
+    {
+      "id": "devices",
+      "text": "Start with thirteen devices on one bus, each with its own ID, and no warnings.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "measure",
+      "text": "Make a new swerve project, and enter four numbers: front to back, side to side, the wheel's radius, and the drive ratio. The two distance labels are easy to swap, so read them twice.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "modules",
+      "text": "Then set up each corner. Pick its encoder and its two motors, and hold the wheel straight when it asks. That's the module's zero.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "verify",
+      "text": "Verify each one. If the wrong corner moves, two IDs are swapped.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "generate",
+      "text": "Generate only the constants file, and replace yours with it. Then set your team number, and deploy.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "sim",
+      "text": "You can drive it before the robot's even finished. Run the simulator, push the stick, and watch the pose move on the field.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "files",
+      "text": "Three files make the drivetrain. Two come from CTRE. The third, the drive mechanism, is the one your code talks to.",
+      "after": 0.6
+    },
+    {
+      "id": "default",
+      "text": "Here's what's different from the arm. A drivetrain's last request is a speed, and you know a request stays on the motor. So teleop gives it a default command that reads the sticks every loop. Let go, and it sends zero.",
+      "after": 0.6
+    },
+    {
+      "id": "check",
+      "text": "On blocks, pushing forward lines up all four wheels. On the floor, let go of the sticks, and it stops.",
+      "after": 0.6,
+      "rec": true
+    },
+    {
+      "id": "close",
+      "text": "Measure it, generate it, and drive it in simulation before it ever touches the floor.",
+      "after": 0.6
+    }
+  ]
+}

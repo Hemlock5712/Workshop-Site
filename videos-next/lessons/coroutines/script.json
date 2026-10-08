@@ -1,0 +1,71 @@
+{
+  "title": "Fork and Wait",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "A coroutine is a routine written as plain code, one line after another, that can pause on a line.",
+      "after": 0.6
+    },
+    {
+      "id": "callback",
+      "text": "In autonomous, nobody's holding a button. There's nobody to let go.",
+      "after": 0.6
+    },
+    {
+      "id": "why",
+      "text": "And the arm has to keep holding while everything after it happens. A list can't do that.",
+      "after": 0.6
+    },
+    {
+      "id": "fork",
+      "text": "Fork starts a command and moves straight on. The arm's lane keeps running on its own.",
+      "after": 0.6
+    },
+    {
+      "id": "wait",
+      "text": "Then the routine waits until the arm is in place, but never longer than three seconds.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Your turn. Fork the arm, or await it. Pick one, and run it.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 11
+      }
+    },
+    {
+      "id": "await",
+      "text": "Await waits for the command to finish. The arm holds forever, so the routine never gets past the first line.",
+      "after": 0.6
+    },
+    {
+      "id": "timeout",
+      "text": "If that wait runs out, the routine checks, and leaves. Without the check, it would shoot at an angle nobody looked at.",
+      "after": 0.6
+    },
+    {
+      "id": "shoot",
+      "text": "Then the flywheel spins up, the routine waits for it to reach speed, and the shot gets one second.",
+      "after": 0.6
+    },
+    {
+      "id": "stop",
+      "text": "Last, it forks a stop for the flywheel. Ending a routine cancels everything it started, and canceling doesn't stop a motor.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Fork the holds, await the steps, put a limit on every wait, and stop what you started before you leave.",
+      "after": 0.6
+    }
+  ]
+}
