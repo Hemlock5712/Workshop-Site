@@ -4,7 +4,9 @@ import type { Metadata } from "next";
 // built in videos-next/. Intentionally NOT linked from the curriculum drawer or
 // any lesson, and marked noindex: the videos stay here until the owner says
 // otherwise. MP4s are GitHub release assets on `video-series`, so the repo
-// stays free of large binaries.
+// stays free of large binaries. They play through `/api/video`, not from
+// GitHub directly: GitHub serves a release download as a file to save, and
+// iPhones will not play that. The route's header has the details.
 //
 // It lives under `(workshop)` so it renders inside the shell. Route groups
 // add no path segment, so the URL is still `/video`.
@@ -14,8 +16,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const SERIES_BASE =
-  "https://github.com/Hemlock5712/Workshop-Site/releases/download/video-series";
+const SERIES_BASE = "/api/video";
 
 interface Video {
   file: string;
