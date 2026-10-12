@@ -180,6 +180,16 @@ repo, and `/video` (noindex, not in the drawer) plays them from there.
 Remotion trailers (`videos/`, the `video-previews` release) were retired in
 October 2026; don't reinstate them.
 
+- **`/video` plays through `/api/video/[file]`, never from the release URL.**
+  GitHub serves a release download as `application/octet-stream` with
+  `Content-Disposition: attachment`, both pinned in the signed redirect, and
+  no iPhone browser will play that. Chrome sniffs past it, so the bug only
+  shows on iOS. The route fetches the asset itself, forwards `Range`, and
+  answers `video/mp4`. Every byte then goes through a Vercel Function, which
+  is fine for an unlinked preview. Before the videos go on lesson pages, move
+  them to a host that serves `video/mp4` itself, such as Vercel Blob, and
+  delete the route.
+
 - **`series/series.json` is the single source** for every video's title,
   hand-offs and narration lines. `series/BUILD.md` is the build contract
   (accuracy rules, layout, the kit, real footage); read it before touching a
