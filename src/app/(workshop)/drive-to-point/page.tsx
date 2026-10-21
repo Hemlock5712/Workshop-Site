@@ -96,7 +96,7 @@ export default function DriveToPoint() {
           alt="Field coordinates: X down the length of the field, Y across it to the left"
           width={1024}
           height={469}
-          caption="The origin is the blue alliance corner for both alliances. It never flips."
+          caption="The origin is the blue alliance corner for both alliances. It never flips. WPILib 2027 is moving it to the field center."
         />
 
         <Box
