@@ -364,7 +364,7 @@ export default function BillOfMaterials({
           </h3>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--bg2)] transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg transition-opacity hover:opacity-90"
           >
             {isExpanded ? "Hide Details" : "Show Details"}
             <svg
@@ -383,15 +383,6 @@ export default function BillOfMaterials({
               />
             </svg>
           </button>
-        </div>
-
-        {/* Cost-Saving Tip - Always Visible */}
-        <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-4 mb-4">
-          <p className="text-[var(--accent)] font-medium">
-            <strong>Cost-Saving Tip:</strong> Many parts listed below can likely
-            be built from scrap material or parts you already own from previous
-            projects, significantly reducing the actual cost of this mechanism.
-          </p>
         </div>
 
         {/* Cost Summary - Always Visible */}
@@ -505,7 +496,7 @@ export default function BillOfMaterials({
               </label>
               <button
                 onClick={printNeededItems}
-                className="inline-flex items-center px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg hover:bg-[var(--bg2)] transition-colors text-note font-medium"
+                className="inline-flex items-center px-4 py-2 bg-[var(--accent)] text-[var(--accent-ink)] rounded-lg transition-opacity hover:opacity-90 text-note font-medium"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -780,8 +771,7 @@ export default function BillOfMaterials({
             </p>
             <p>
               <strong>3D Printed Parts:</strong> Parts marked as 3D printed can
-              be manufactured with a standard FDM printer using PLA or PETG
-              material.
+              be printed on a standard FDM printer.
             </p>
           </div>
         </div>

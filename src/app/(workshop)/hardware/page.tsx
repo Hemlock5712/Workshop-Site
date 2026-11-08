@@ -9,7 +9,6 @@ import GlossaryTerm from "@/components/GlossaryTerm";
 import DocumentationButton from "@/components/DocumentationButton";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
-import PairedLesson from "@/components/lesson/PairedLesson";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/hardware");
@@ -31,28 +30,22 @@ export default function Hardware() {
       ]}
       time="9 minutes"
     >
-      <PairedLesson kind="code" to="/project-setup" />
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            Every mechanism here is three parts: a motor, a sensor that knows
-            what the mechanism is doing, and a bus to your laptop. Tuner X is
-            how you talk to all three.
-          </p>
-          <p>
             The most important part of FRC programming is getting the hardware
-            set up properly. If it&apos;s not set up properly, you&apos;ll be
-            fighting it every step of the way.
+            set up properly. If it isn&apos;t, your code ends up fighting
+            reality.
           </p>
         </div>
       </Split>
 
       <LessonSection id="hardware-components" title="The components">
         <p>
-          The arm uses all three. A flywheel has no CANcoder, because it is
-          tuned for speed rather than angle, and the encoder inside the motor
-          already measures speed. On a flywheel mechanism, read past the
-          CANcoder wherever it comes up.
+          Every mechanism has three parts: a motor, a sensor that knows what the
+          mechanism is doing, and a bus to your laptop. Our arm uses all three.
+          Our flywheel does not need all three, for a reason the cards below
+          explain.
         </p>
 
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
@@ -141,10 +134,7 @@ export default function Hardware() {
               </a>
             </h3>
             <p className="mb-3 text-[var(--tx2)]">
-              A USB adapter that gives your devices their own CAN FD bus. It
-              carries far more data per second than the bus built into the robot
-              controller. Swerve drivetrains fill that one up, so they get a
-              CANivore.
+              A USB adapter that gives your devices their own CAN FD bus.
             </p>
             <p className="text-[var(--tx2)]">
               It is also why Workshop 1 needs no robot. The laptop plugs into
@@ -152,6 +142,12 @@ export default function Hardware() {
             </p>
           </ContentCard>
         </div>
+
+        <p>
+          The flywheel has no CANcoder. It is tuned for speed rather than angle,
+          and the encoder inside the motor already measures speed. On a flywheel
+          mechanism, skip the CANcoder wherever it comes up.
+        </p>
       </LessonSection>
 
       <LessonSection id="connecting-to-your-device" title="Connect Tuner X">
@@ -174,22 +170,18 @@ export default function Hardware() {
             Set <strong>Team # or IP</strong> to <code>localhost</code>.
           </li>
           <li>
-            The CANivore should appear in the device list within a second.
+            Open the <strong>CANivores</strong> tab on the left. The CANivore
+            should be listed there.
           </li>
           <li>
             Rename it to <code>canivore</code>. Every later lesson and every
             code sample uses that name.
           </li>
           <li>
-            Open it and confirm the motor is listed under it, along with the
-            CANcoder if you built the arm.
+            Open the <strong>Devices</strong> tab on the left and confirm the
+            motor is listed, along with the CANcoder if you built the arm.
           </li>
         </ol>
-
-        <p>
-          A CANivore that never shows up is usually running firmware older than
-          the Tuner X you installed. Updating it is the next section.
-        </p>
 
         <VideoEmbed id="aktcCtcrEyY" title="Motor update process" />
       </LessonSection>
@@ -199,20 +191,15 @@ export default function Hardware() {
         title="Update the firmware"
       >
         <p>
-          Tuner X and device firmware are versioned together. A device on old
-          firmware still connects and still answers. It then refuses a
-          configuration, or reports a signal your Phoenix version cannot read.
+          Now update everything. A device on old firmware still connects and
+          still answers, so showing up in the list does not mean it is current.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
+          <li>Update the CANivore.</li>
           <li>
-            Select one device, then use the batch update icon to flash every
-            device of that model at once.
-          </li>
-          <li>Update the CANivore itself the same way.</li>
-          <li>
-            Put every device on the same version. Mixed versions on one bus give
-            you failures that come and go.
+            Update the motors and the other devices. Select one device, then use
+            the batch update icon to flash every device of that model at once.
           </li>
           <li>Check the card colours once the flashing finishes.</li>
         </ol>
@@ -296,7 +283,8 @@ export default function Hardware() {
               still pointed at <code>localhost</code>.
             </li>
             <li>
-              The motor is listed under it, and the CANcoder too on the arm.
+              The motor is listed on the <strong>Devices</strong> tab, and the
+              CANcoder too on the arm.
             </li>
             <li>Every device card is green.</li>
             <li>

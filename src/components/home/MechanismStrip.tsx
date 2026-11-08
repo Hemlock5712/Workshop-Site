@@ -64,7 +64,7 @@ const GROUPS: ReadonlyArray<MechanismGroup> = [
       },
       {
         src: "/images/mechanisms/flywheel.png",
-        alt: "The two-motor shooter flywheel",
+        alt: "The shooter flywheel",
         kicker: "Velocity control",
         title: "Shooter Flywheel",
         blurb: "Keep one speed under load, shot after shot.",
@@ -72,7 +72,7 @@ const GROUPS: ReadonlyArray<MechanismGroup> = [
     ],
   },
   {
-    num: "03–04",
+    num: "05–06",
     title: "Swerve & Vision",
     blurb: "The whole robot: calibrated motion, field pose, and perception.",
     mechanisms: [

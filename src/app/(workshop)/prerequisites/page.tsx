@@ -40,15 +40,13 @@ export default function Prerequisites() {
 
       <LessonSection id="what-to-install" title="What to install">
         <p>
-          Five programs, plus one you can skip until Workshop 4. Nothing here
-          depends on anything else being installed first. One rule: never
-          install Java on its own, because WPILib brings the version this
-          workshop runs on.
+          Install these five programs, in any order. Do not install Java on its
+          own, because WPILib brings the version this workshop runs on.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             <a
-              href="https://github.com/wpilibsuite/allwpilib/releases"
+              href="https://github.com/wpilibsuite/allwpilib/releases/tag/v2027.0.0-alpha-7"
               className={linkStyle}
               target="_blank"
               rel="noopener noreferrer"
@@ -57,10 +55,11 @@ export default function Prerequisites() {
                 <GlossaryTerm term="wpilib">WPILib</GlossaryTerm> 2027 alpha 7
               </strong>
             </a>
-            . Take <code>v2027.0.0-alpha-7</code> from the releases page, not
-            the install guide. The guide still points at last season, because
-            nothing about 2027 is official yet. The installer lays down a
-            separate copy of VS Code and a Java 25 runtime of its own.
+            . Take <code>v2027.0.0-alpha-7</code> from its release page, not the
+            install guide. The guide still points at last season, because
+            nothing about 2027 is official yet. Alpha 8 is also out, but stay on
+            alpha 7. The installer lays down a separate copy of VS Code and a
+            Java 25 runtime of its own.
           </li>
           <li>
             <a
@@ -97,9 +96,7 @@ export default function Prerequisites() {
             >
               <strong>AdvantageScope</strong>
             </a>
-            . A cut-down copy already came with WPILib. Install the full release
-            from GitHub as well. It reads robot logs, and Workshop 4 leans on
-            the plots.
+            . It reads robot logs, and Workshop 4 leans on the plots.
           </li>
           <li>
             <a
@@ -113,24 +110,6 @@ export default function Prerequisites() {
             . Any current version. Workshop 3 generates its own project rather
             than cloning one. The lesson repositories after it are clones, and
             every change you make is a commit.
-          </li>
-          <li>
-            <a
-              href="https://github.com/Gold872/elastic-dashboard"
-              className={linkStyle}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <strong>Elastic Dashboard</strong>
-            </a>{" "}
-            <span className="text-note text-[var(--tx3)]">(optional)</span>.
-            Skip it for now. A dashboard reads NetworkTables, WPILib&apos;s
-            shared table of live robot values, and Workshop 1 runs no robot
-            code. Install it when you reach{" "}
-            <Link href="/logging-implementation" className={linkStyle}>
-              Logging
-            </Link>{" "}
-            in Workshop 4.
           </li>
         </ol>
       </LessonSection>
@@ -152,16 +131,16 @@ export default function Prerequisites() {
                 Project Setup
               </Link>
               , out of the New Project Creator that comes with the installer
-              above. So there is nothing else to download yet. Workshops 4 and 5
-              hand you a prepared swerve project instead, because generated CTRE
-              constants are not something anyone types.
+              above. So there is nothing else to download yet. The swerve
+              lessons in Workshops 5 and 6 hand you a prepared project instead,
+              because generated CTRE constants are not something anyone types.
             </p>
           </ProseBlock>
           <MarginNote label="What alpha means">
             The APIs are still changing. A method that exists today can be
             renamed before kickoff, so every Java example on this site is
-            subject to change. We keep the site current with the latest alpha,
-            and some things will still read differently on your screen.
+            subject to change. WPILib alpha 8 is out, but the course stays on
+            alpha 7 until the vendor libraries it uses catch up.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -169,16 +148,22 @@ export default function Prerequisites() {
       <LessonSection id="java-nothing-to-install" title="Java comes later">
         <ProseBlock>
           <p>
-            Robot code shows up in Workshop 3, and it does not stay at the
-            beginner end for long. Lambdas, method references, and class
-            declarations all turn up there. There will be a few hard concepts,
-            but we&rsquo;ll explain them as we get there.
+            Java is taught later, in{" "}
+            <Link href="/java-basics" className={linkStyle}>
+              Java Basics
+            </Link>{" "}
+            in Workshop 2, and robot code starts in Workshop 3. If you have
+            never written Java, we recommend Codecademy&apos;s free{" "}
+            <a
+              href="https://www.codecademy.com/learn/learn-java"
+              className={linkStyle}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Learn Java
+            </a>{" "}
+            course. Either way, we explain the code as we go.
           </p>
-          <p>
-            Only about twelve pieces of Java are used in this whole site. That
-            lesson covers all twelve and then stops.
-          </p>
-          <p>You don&rsquo;t need to take a Java course first.</p>
         </ProseBlock>
       </LessonSection>
 
@@ -233,7 +218,8 @@ export default function Prerequisites() {
             <Link href="/mechanism-setup" className={linkStyle}>
               Motor Setup
             </Link>{" "}
-            run at 6 V, but the motor still needs a real battery behind it.
+            use only a volt or two, but the motor still needs a real battery
+            behind it.
           </li>
         </ul>
         <p>
@@ -245,11 +231,7 @@ export default function Prerequisites() {
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
-        <p>
-          Open all five programs once before you leave this page. An installer
-          that failed quietly is far easier to find now than later, with the arm
-          wired up and the meeting half over.
-        </p>
+        <p>Open all five programs once before you leave this page.</p>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[560px] border-collapse text-note">
             <thead>
@@ -297,7 +279,7 @@ export default function Prerequisites() {
         <Box variant="alert-success" title="Ready to start">
           <ul className="ml-5 list-disc space-y-2">
             <li>All five programs open, none of them with an error.</li>
-            <li>The mechanism is assembled and bolted to the bench.</li>
+            <li>The mechanism is assembled and on the bench.</li>
             <li>The battery is charged and its cable is on the table.</li>
           </ul>
         </Box>

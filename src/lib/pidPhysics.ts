@@ -148,12 +148,12 @@ export const DEFAULT_GAINS: ControllerGains = {
 };
 
 export const SLIDER_RANGES = {
-  kP: { min: 0, max: 200, step: 5, precision: 1, unit: "V/rot" },
-  kI: { min: 0, max: 50, step: 0.1, precision: 1, unit: "V/(rot·s)" },
-  kD: { min: 0, max: 25, step: 0.025, precision: 3, unit: "V·s/rot" },
-  kS: { min: 0, max: 5, step: 0.02, precision: 2, unit: "V" },
-  kV: { min: 0, max: 3, step: 0.05, precision: 2, unit: "V·s/rot" },
-  kG: { min: 0, max: 3, step: 0.02, precision: 2, unit: "V" },
+  kP: { min: 0, max: 500, step: 5, precision: 1, unit: "V/rot" },
+  kI: { min: 0, max: 100, step: 0.1, precision: 1, unit: "V/(rot·s)" },
+  kD: { min: 0, max: 50, step: 0.025, precision: 3, unit: "V·s/rot" },
+  kS: { min: 0, max: 6, step: 0.02, precision: 2, unit: "V" },
+  kV: { min: 0, max: 10, step: 0.05, precision: 2, unit: "V·s/rot" },
+  kG: { min: 0, max: 6, step: 0.02, precision: 2, unit: "V" },
 } as const;
 
 export const TARGET_RANGE_DEG = {

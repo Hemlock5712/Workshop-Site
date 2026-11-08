@@ -97,12 +97,12 @@ export const DEFAULT_ELEV_GAINS: ElevatorGains = {
 export const DEFAULT_ELEV_TARGET_M = 1.0;
 
 export const ELEV_SLIDER_RANGES = {
-  kP: { min: 0, max: 30, step: 0.5, precision: 1, unit: "V/m" },
-  kI: { min: 0, max: 20, step: 0.2, precision: 1, unit: "V/(m·s)" },
-  kD: { min: 0, max: 3, step: 0.025, precision: 3, unit: "V·s/m" },
-  kS: { min: 0, max: 2, step: 0.02, precision: 2, unit: "V" },
-  kV: { min: 0, max: 20, step: 0.1, precision: 1, unit: "V·s/m" },
-  kG: { min: 0, max: 1, step: 0.01, precision: 2, unit: "V" },
+  kP: { min: 0, max: 100, step: 0.5, precision: 1, unit: "V/m" },
+  kI: { min: 0, max: 50, step: 0.2, precision: 1, unit: "V/(m·s)" },
+  kD: { min: 0, max: 10, step: 0.025, precision: 3, unit: "V·s/m" },
+  kS: { min: 0, max: 4, step: 0.02, precision: 2, unit: "V" },
+  kV: { min: 0, max: 40, step: 0.1, precision: 1, unit: "V·s/m" },
+  kG: { min: 0, max: 3, step: 0.01, precision: 2, unit: "V" },
 } as const;
 
 export const ELEV_TARGET_RANGE_M = {

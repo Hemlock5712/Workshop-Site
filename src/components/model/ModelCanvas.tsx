@@ -17,10 +17,11 @@ import {
   useCallback,
   useEffect,
   useRef,
+  useState,
   type RefObject,
 } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Center, Html, OrbitControls, useGLTF } from "@react-three/drei";
+import { Center, OrbitControls, useGLTF } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 
 /** Camera positions the control bar can jump to. Reset is `home`. */
@@ -60,11 +61,18 @@ function Model({ url, onLoaded }: { url: string; onLoaded: () => void }) {
   );
 }
 
-/* The site has one loading vocabulary — a quiet mono micro-label — and this is
-   it inside the canvas. See the matching label in `GitHubContent`. */
-function LoadingFallback() {
+/* The site has one loading vocabulary, a quiet mono micro-label, and this is
+   it over the canvas. See the matching label in `GitHubContent`.
+
+   It is a plain DOM overlay, not drei's `<Html>` in the Suspense fallback.
+   `<Html>` mounts its own React root, and when the model resolved and the
+   fallback unmounted, that root was torn down mid-render: React logged
+   "Attempted to synchronously unmount a root while React was already
+   rendering" and then threw `removeChild ... not a child of this node` on
+   every load of /mechanism-cad. */
+function LoadingLabel() {
   return (
-    <Html center>
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
       <div
         className="mono whitespace-nowrap px-4 py-2.5"
         style={{
@@ -79,7 +87,7 @@ function LoadingFallback() {
       >
         loading 3D model…
       </div>
-    </Html>
+    </div>
   );
 }
 
@@ -129,6 +137,7 @@ export default function ModelCanvas({
   readout: RefObject<HTMLElement | null>;
 }) {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   const applyView = useCallback((name: ViewName) => {
     const controls = controlsRef.current;
@@ -148,26 +157,35 @@ export default function ModelCanvas({
   }, [applyView, view]);
 
   return (
-    <Canvas camera={{ position: [...VIEWS.home], fov: 45 }}>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 10]} intensity={1} />
-      <directionalLight position={[-10, -10, -5]} intensity={0.5} />
+    <div className="relative h-full w-full">
+      <Canvas camera={{ position: [...VIEWS.home], fov: 45 }}>
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[10, 10, 10]} intensity={1} />
+        <directionalLight position={[-10, -10, -5]} intensity={0.5} />
 
-      <Suspense fallback={<LoadingFallback />}>
-        <Model url={url} onLoaded={() => applyView(view.name)} />
-      </Suspense>
+        <Suspense fallback={null}>
+          <Model
+            url={url}
+            onLoaded={() => {
+              applyView(view.name);
+              setLoaded(true);
+            }}
+          />
+        </Suspense>
 
-      <OrbitControls
-        ref={controlsRef}
-        enablePan
-        enableZoom
-        enableRotate
-        makeDefault
-        minDistance={150}
-        maxDistance={1500}
-      />
+        <OrbitControls
+          ref={controlsRef}
+          enablePan
+          enableZoom
+          enableRotate
+          makeDefault
+          minDistance={150}
+          maxDistance={1500}
+        />
 
-      <CameraTracker readout={readout} />
-    </Canvas>
+        <CameraTracker readout={readout} />
+      </Canvas>
+      {loaded ? null : <LoadingLabel />}
+    </div>
   );
 }

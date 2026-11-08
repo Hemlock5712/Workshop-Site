@@ -9,7 +9,6 @@ import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
-import PairedLesson from "@/components/lesson/PairedLesson";
 import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -39,7 +38,7 @@ export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Motor Setup & CAN IDs"
-      lede="Every device gets its own CAN ID, and then the mechanism turns under power for the first time. You prove which way it moves under a volt or two, and on the arm which way its encoder counts first. Get any of that wrong and the next lesson tunes against the wrong sign."
+      lede="Now set up each device. Every device needs its own CAN ID and the correct configuration, so the software matches the hardware. You prove it by applying a volt or two and checking that the mechanism moves the correct direction. Get this wrong and tuning in the next lessons is impossible."
       needs={[
         <>The mechanism assembled and powered.</>,
         <>
@@ -47,20 +46,16 @@ export default function MechanismSetup() {
         </>,
         <>No robot program running. Tuner X owns the bus here.</>,
       ]}
-      time="12 minutes"
+      time="14 minutes"
     >
       <MechanismSelector />
-      <PairedLesson kind="code" to="/mechanisms" />
 
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
         <p>
-          Factory default each device before you number it. That clears whatever
-          last season left behind. It also resets the CAN ID and the inversions.
-        </p>
-        <p>
-          Then blink. The device that flashes is the one you are about to edit.
-          If two flash together they share an ID: take one off the bus, number
-          the other, then reconnect.
+          Factory Default resets inversion and every other setting, but it does
+          not reset the CAN ID. If two devices flash together on a blink, they
+          share an ID. Change one to any unused ID, give the other its number
+          from the table, then come back to the first.
         </p>
 
         <div className="overflow-x-auto">
@@ -108,8 +103,12 @@ export default function MechanismSetup() {
             <strong>Factory Default</strong>.
           </li>
           <li>
-            Click the <strong>Blink</strong> button on the left panel. This will
-            flash the lights on the device that you have selected.
+            Press <strong>Clear Faults</strong>. This clears whatever the last
+            session left behind.
+          </li>
+          <li>
+            Click the <strong>Blink</strong> button on the left panel. The
+            device that flashes is the one you are about to edit.
           </li>
           <li>
             Give it the ID from the table and a name that says which mechanism
@@ -123,20 +122,46 @@ export default function MechanismSetup() {
       </LessonSection>
 
       <Mech for="arm">
+        <LessonSection id="arm-motor-direction" title="Arm motor direction">
+          <p>
+            Get the motor right first, by hand, before the encoder or any power.
+            Factory Default reset its inversion, so you set it here.
+          </p>
+          <ol className="ml-5 list-decimal space-y-3">
+            <li>
+              Select the arm TalonFX on <code>31</code> and plot its position.
+            </li>
+            <li>
+              With the motor facing you, turn the arm counterclockwise by hand.
+            </li>
+            <li>
+              The motor&apos;s position must go up. If it goes down, change{" "}
+              <code>Inverted</code> in the <strong>Motor Output</strong> config,
+              press <strong>Apply</strong>, and repeat the hand test.
+            </li>
+          </ol>
+          <p>
+            A motor and an encoder linked while they count in opposite
+            directions break every lesson after this one. Do not move on until
+            both go up together.
+          </p>
+        </LessonSection>
+      </Mech>
+
+      <Mech for="arm">
         <LessonSection
           id="verify-the-arm-sensor"
           title="Arm encoder direction and zero"
         >
           <p>
-            The encoder is what everything downstream trusts. Test it by hand
-            before any request is sent.
+            With the motor right, check the encoder the same way. It is what
+            every downstream lesson uses.
           </p>
           <VideoEmbed id="mjGn3y19eUc" title="Calibrate and zero the encoder" />
           <ol className="ml-5 list-decimal space-y-3">
             <li>Open the CANcoder device in Tuner X and plot the position.</li>
             <li>
-              Facing the motor side of the arm, turn it counterclockwise by
-              hand.
+              With the motor facing you, turn the arm counterclockwise by hand.
             </li>
             <li>
               The CANcoder position must increase. If it decreases, flip the
@@ -175,9 +200,10 @@ export default function MechanismSetup() {
           </ol>
           <p>
             Positions are measured in <strong>rotations</strong>, not degrees.
-            One full turn is <code>1.0</code>. Counterclockwise with the device
+            One full turn is <code>1.0</code>. Counterclockwise with the motor
             facing you is positive, and every position target from here to
-            Motion Magic is written that way.
+            Motion Magic is written that way. Every photo on this site is taken
+            from that side, so your directions match ours.
           </p>
 
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
@@ -189,28 +215,30 @@ export default function MechanismSetup() {
             />
             <ImageBlock
               src="/images/setup/counter-clockwise.png"
-              alt="Arrow showing the counterclockwise rotation direction with the device facing you"
+              alt="Arrow showing the counterclockwise rotation direction with the motor facing you"
               width={340}
               height={255}
             />
           </div>
 
           <p>
-            Choose the reference with whoever built the arm, then mark it on the
-            metal. A replaced CANcoder comes back with no direction and no
-            offset, so somebody will run this procedure again in March.
+            Choose the reference with whoever builds the arm, and mark it if you
+            can. If a CANcoder is ever replaced, redo this section on the new
+            one.
           </p>
         </LessonSection>
+      </Mech>
 
+      <Mech for="arm">
         <LessonSection id="link-the-encoder" title="Link the Encoder">
           <p>
-            Now that you have verified the encoder direction and zero, you can
-            link it to the motor.
+            The motor and the encoder have each been checked on their own. Now
+            link them.
           </p>
           <ol className="ml-5 list-decimal space-y-3">
             <li>
-              Select the arm TalonFX and scroll down in the config section to
-              the <strong>Feedback</strong> section.
+              Select the arm motor and scroll down in the config section to the{" "}
+              <strong>Feedback</strong> section.
             </li>
             <li>
               Set the <code>Feedback Remote Sensor ID</code> to match your
@@ -218,9 +246,16 @@ export default function MechanismSetup() {
             </li>
             <li>
               Set the <code>Feedback Sensor Source</code> to{" "}
-              <code>RemoteCANcoder</code>
+              <code>RemoteCANcoder</code>.
+            </li>
+            <li>
+              Press <strong>Apply</strong>. You should hear it chime.
             </li>
           </ol>
+          <p>
+            Turn the arm counterclockwise by hand. The arm motor&apos;s position
+            should now go up along with the CANcoder.
+          </p>
           <ImageBlock
             src="/images/setup/link-the-encoder.png"
             alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
@@ -239,19 +274,16 @@ export default function MechanismSetup() {
         </LessonSection>
       </Mech>
 
-      <LessonSection
-        id="verify-motor-direction"
-        title="Run the motor, check the direction"
-      >
+      <LessonSection id="verify-motor-direction" title="Direction under power">
         <p>
           This is the first time anything moves under power. Voltage Out sends a
-          fixed voltage and nothing else: no target, no soft limits, no stopping
-          at the end of travel.
+          fixed voltage and nothing else: no target and no stopping at the end
+          of travel.
         </p>
         <Mech for="arm" as="p">
-          The hand test settled which way is positive. The motor has to agree
-          with the CANcoder, and the motor is the only thing allowed to change
-          from here.
+          You have checked the motor, the encoder and the link by hand. Now
+          prove it under power: positive voltage has to turn the arm
+          counterclockwise.
         </Mech>
         <Mech for="flywheel" as="div">
           <Split>
@@ -269,8 +301,8 @@ export default function MechanismSetup() {
               The wheel does not care which way you call positive, and the code
               would be just as correct with the sign flipped. What costs you is
               having no rule, because then every mechanism that touches a game
-              piece has its own sign to remember. An arm gets no such choice,
-              since its encoder already fixed the sign.
+              piece has its own sign to remember. An arm gets no such choice:
+              counterclockwise is positive.
             </MarginNote>
           </Split>
         </Mech>
@@ -280,8 +312,7 @@ export default function MechanismSetup() {
             Make sure the mechanism is clear of obstacles. Blink the device
             first: voltage goes to a CAN ID, not to the one you meant. Start at
             1 volt and enable for about a second at a time. A Voltage Out
-            request runs until you stop it. The bench arm keeps turning, and an
-            arm with hard stops drives into one.
+            request runs until you stop it.
           </p>
         </Box>
 
@@ -306,22 +337,27 @@ export default function MechanismSetup() {
           </li>
           <li>
             Enter <code>1 V</code>, click <strong>DISABLED</strong> to enable
-            the device, then disable after about a second. Watch the mechanism,
-            not the screen.
+            the device, then disable after about a second. Watch the mechanism.
           </li>
           <Mech for="arm" as="li">
-            The arm should move counterclockwise and CANcoder <code>32</code>{" "}
-            should count up.
+            With the motor facing you, the arm should move counterclockwise, and
+            the motor&apos;s position should go up.
           </Mech>
           <Mech for="flywheel" as="li">
             The wheel should spin the way it shoots, which is clockwise seen
             from the motor side.
           </Mech>
-          <li>
-            If it moves the other way, invert the motor output, apply, and run
-            the same test again.
-          </li>
         </ol>
+
+        <Mech for="arm" as="p">
+          If it turns clockwise, stop. Do not fix it here. One of the hand tests
+          above was skipped or not applied, so go back and redo them.
+        </Mech>
+        <Mech for="flywheel" as="p">
+          If positive voltage turns it the other way, the motor is configured
+          wrong. Fix <code>Inverted</code> in the motor&apos;s{" "}
+          <strong>Motor Output</strong> config, apply, and test again.
+        </Mech>
 
         <p>
           Once <code>1 V</code> is right, repeat at <code>3 V</code>. Only the
@@ -370,9 +406,9 @@ export default function MechanismSetup() {
               <code>0.25</code>.
             </Mech>
             <Mech for="arm" as="li">
-              Turning the arm counterclockwise by hand raises the CANcoder
-              reading, and positive voltage on TalonFX 31 drives it the same
-              way.
+              Turning the arm counterclockwise by hand raises both the motor and
+              the CANcoder readings, and positive voltage on TalonFX 31 drives
+              it the same way.
             </Mech>
             <Mech for="flywheel" as="li">
               Positive voltage on TalonFX 21 spins the wheel the way it shoots,
@@ -398,13 +434,13 @@ export default function MechanismSetup() {
             ],
             correctAnswer: 0,
             explanation:
-              "Blink goes out to a CAN ID, so two devices flashing means two devices hold that number. Take one of them off the bus, give the other its own ID, then reconnect and blink again. Tuner X marks a duplicate with a red device card.",
+              "Blink goes out to a CAN ID, so two devices flashing means two devices hold that number. Change one to an unused ID, give the other its number from the table, then come back to the first. Tuner X marks a duplicate with a red device card.",
           },
           {
             id: 2,
             only: "arm",
             question:
-              "Facing the device side of the arm, you turn it counterclockwise by hand. What should CANcoder do?",
+              "With the motor facing you, you turn the arm counterclockwise by hand. What should CANcoder do?",
             options: [
               "Hold its reading until the motor is powered",
               "Count down",
@@ -413,7 +449,7 @@ export default function MechanismSetup() {
             ],
             correctAnswer: 2,
             explanation:
-              "Counterclockwise is positive on this arm, so the position climbs. A falling reading means the sensor direction is backwards: flip it, apply, and run the hand test again. A reading that never moves is a different fault, usually a magnet out of range or the wrong device selected.",
+              "Counterclockwise is positive on this arm, so the position climbs. A falling reading means the sensor direction is backwards: flip it, apply, and run the hand test again.",
           },
           {
             id: 3,
@@ -433,7 +469,7 @@ export default function MechanismSetup() {
             id: 4,
             only: "arm",
             question:
-              "A CANcoder fails in March and somebody fits a new one. What has to happen?",
+              "A CANcoder fails and somebody fits a new one. What has to happen?",
             options: [
               "Nothing, because the direction and the zero travel with the mechanism rather than the device",
               "Set its CAN ID and its name, and the two sensor settings carry over",
@@ -443,6 +479,21 @@ export default function MechanismSetup() {
             correctAnswer: 2,
             explanation:
               "Sensor direction and the magnet offset are configs on the CANcoder itself, so a replacement arrives at a factory ID with both back at their defaults. Set the ID, run the hand test, and set the zero on the same reference mark. Put the arm back on that mark afterwards: it should read about 0 rotations again.",
+          },
+          {
+            id: 8,
+            only: "arm",
+            question:
+              "The motor and encoder are linked, and at 1 volt the arm turns clockwise. What do you do?",
+            options: [
+              "Change Inverted on the motor and run it again",
+              "Flip the CANcoder's sensor direction",
+              "Stop, and redo the motor and encoder hand tests before linking",
+              "Enter a negative voltage from here on",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Under power is the last check, not the place to fix direction. Flipping one setting after the link leaves the motor and the encoder counting against each other. Clockwise here means a hand test was skipped or not applied, so redo both and confirm they go up together.",
           },
           {
             id: 5,
