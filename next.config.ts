@@ -124,6 +124,13 @@ const nextConfig: NextConfig = {
   // trailing-slash normalisation; it does not affect these.
   async redirects() {
     return [
+      // Pathfinding was retired in November 2026, with PathPlanner. A target
+      // chosen at runtime is a field pose handed to Drive to Point.
+      {
+        source: "/dynamic-path-planning",
+        destination: "/drive-to-point",
+        permanent: true,
+      },
       // Drive to Tag was retired in November 2026. Driving to a tag is a field
       // pose from the tag layout handed to Drive to Point, not a camera-space
       // loop of its own.
