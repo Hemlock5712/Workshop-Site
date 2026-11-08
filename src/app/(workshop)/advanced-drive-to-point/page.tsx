@@ -353,9 +353,7 @@ export default function ProfiledDriveToPoint() {
 
         <p>
           A command with an ending is a step, and{" "}
-          <code>Command.sequence(...)</code> takes steps.{" "}
-          <strong>Pathfinding</strong> suggests it for the final approach, after
-          a planner handles the trip across open field.
+          <code>Command.sequence(...)</code> takes steps.
         </p>
 
         <DocumentationButton

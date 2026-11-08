@@ -29,15 +29,15 @@ Check items off as they land and delete this file when the list is empty.
 - [ ] **Pagefind for search.** Indexes the rendered HTML at build time with a
       small runtime stub, in place of the lazy MiniSearch. Sequence it with
       the MDX decision.
-- [ ] **PathPlanner 2027.1 editor.** The fork's `path2-2027-1` loads the new
-      graph files and converts their center origin to WPILib's blue-wall
-      frame. Follow-up PR after #121: rebuild `swerve-pathplanner` and
-      `swerve-pathfinding`, rewrite `/pathplanner`, `/dynamic-path-planning`
-      and `/autonomous`, and record the four PathPlanner video beats.
-- [ ] **Report the 2027 app's Navigation Grid upstream.** It draws the
-      unchanged `navgrid.json` from the opposite corner, so a grid edited in
-      the 2027 app loads rotated half a turn. Lessons say to leave the grid
-      as shipped until it is fixed.
+- [ ] **Replace PathPlanner with BLine.** November 2026, owner's call:
+      PathPlanner's 2027 editor has stalled upstream and the team does not
+      want to maintain its Commands v3 fork. BLine (FRC 2638) ships a native
+      Commands v3 2027 beta. Bench-test `swerve-bline` (off
+      `swerve-autonomous`), then rewrite `/pathplanner` around it: the
+      bline.run editor, event triggers, routines as coroutines that
+      `co.await(...)` each path, and a hand-filled `Selectable`. Retire
+      `swerve-pathplanner` and `swerve-pathfinding` afterwards, and the four
+      PathPlanner video beats with them.
 
 ## Still to do
 

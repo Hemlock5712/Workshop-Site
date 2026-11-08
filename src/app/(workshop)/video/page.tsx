@@ -189,11 +189,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
         "Plan the Trip",
         "Profiled Drive to Point: the plan drives, a correction trims.",
       ],
-      [
-        "dynamic-path-planning",
-        "Starting From Anywhere",
-        "Pathfinding: the margin is your bumper.",
-      ],
     ],
   ],
 ];

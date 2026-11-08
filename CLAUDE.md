@@ -376,7 +376,13 @@ on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-hardware`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
-`/finish-conditions`, `/drive-to-tag-inline` → `/drive-to-point`.
+`/finish-conditions`, `/drive-to-tag-inline` and `/dynamic-path-planning` →
+`/drive-to-point`.
+
+**There is no `/dynamic-path-planning`.** Pathfinding was retired in
+November 2026 along with the decision to move off PathPlanner: BLine, its
+replacement, has no obstacle pathfinding, and a target chosen at runtime is a
+field pose handed to Drive to Point. The slug 308s to `/drive-to-point`.
 
 **There is no `/drive-to-tag-inline`.** Example: Drive to Tag was retired in
 November 2026. It drove off the tag in LimelightLib target space, with

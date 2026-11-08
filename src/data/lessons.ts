@@ -297,11 +297,6 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     shortLabel: "Profiled Drive",
     section: "workshop6",
   },
-  {
-    slug: "/dynamic-path-planning",
-    title: "Pathfinding",
-    section: "workshop6",
-  },
 ];
 
 const SLUG_INDEX: ReadonlyMap<string, number> = new Map(
