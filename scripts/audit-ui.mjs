@@ -29,7 +29,6 @@ const PAGES = [
   "/vision-shooting",
   "/pid-control",
   "/java-basics",
-  "/drive-to-tag-inline",
   "/mechanism-cad",
   "/video",
   "/introduction",

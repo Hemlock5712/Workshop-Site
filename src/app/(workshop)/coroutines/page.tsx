@@ -48,7 +48,6 @@ export const metadata = lessonMetadata("/coroutines");
  * This page also owns `coroutine.yield()` and the first real `while` loop in
  * the course, which is why it sends a student to Codecademy's Loops module.
  * `/java-basics` tells them to skip that module until here, and
- * `/drive-to-tag-inline` names this page as its prerequisite.
  *
  * Nothing on this page cites 2027-Template. The quiz used to quote it.
  */
@@ -153,8 +152,8 @@ while (!robot.arm.isAtTarget()) {
             className="text-[var(--accent)] underline hover:text-[var(--accent)]"
           >
             Learn Java
-          </a>{" "}
-          before Drive to Tag.
+          </a>
+          .
         </p>
 
         <CoroutineTimeline />
