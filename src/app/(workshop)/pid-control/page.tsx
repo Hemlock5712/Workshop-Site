@@ -7,6 +7,7 @@ import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
+import ImageBlock from "@/components/ImageBlock";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { Mech } from "@/components/lesson/Mechanism";
 import { lessonMetadata } from "@/lib/lessonMetadata";
@@ -92,18 +93,40 @@ export default function PIDControl() {
           </li>
           <li>
             Plot the target and the measured position, or velocity for a
-            flywheel, in one group so you can read the gap between them.
+            flywheel. Drag both into <strong>Group 1</strong> under{" "}
+            <strong>Enabled Signals</strong> so they share an axis, and set{" "}
+            <strong>Timespan</strong> to about <code>0.25</code>. It is in
+            minutes, and the default of 10 squeezes a move into a sliver.
           </li>
           <li>
-            In the control panel, pick a voltage-based position or velocity
-            request and select Slot 0. Enter a small target: 0.1 rotations for
-            position, 10 rps for velocity.
+            On the <strong>Control</strong> tab, set{" "}
+            <strong>Control Mode</strong> to{" "}
+            <Mech for="arm">
+              <code>PositionVoltage</code>
+            </Mech>
+            <Mech for="flywheel">
+              <code>VelocityVoltage</code>
+            </Mech>{" "}
+            and select Slot 0. Enter a small target: 0.1 rotations for position,
+            10 rps for velocity. Changing Control Mode switches the device back
+            to <strong>DISABLED</strong>, so enable it again.
           </li>
         </ol>
+        <ImageBlock
+          src="/images/setup/plot-group.png"
+          alt="Screenshot of the Tuner X plot with the Timespan box and Group 1, holding the target and measured position, circled."
+          caption="Both signals in Group 1, with a short Timespan. The bottom axis is a timestamp in seconds; only the spacing matters."
+        />
+        <ImageBlock
+          src="/images/setup/control-mode.png"
+          maxWidth={420}
+          alt="Screenshot of the Control tab with the DISABLED button and the PositionVoltage control mode circled."
+          caption="Control Mode on the Control tab. Click DISABLED to enable the device."
+        />
         <p>
-          Run these steps on your actual mechanism. Press <strong>Apply</strong>{" "}
-          after every gain change. A gain that was never applied never reaches
-          the motor.
+          Run these steps on your actual mechanism. Press <strong>Apply</strong>
+          , the arrow icon above the config list, after every gain change. A
+          gain that was never applied never reaches the motor.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>

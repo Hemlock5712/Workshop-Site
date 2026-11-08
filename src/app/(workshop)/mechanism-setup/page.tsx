@@ -119,6 +119,22 @@ export default function MechanismSetup() {
             duplicates.
           </li>
         </ol>
+        <ImageBlock
+          src="/images/setup/clear-faults.png"
+          alt="Screenshot of the Self Test tab with the Clear Faults button circled."
+          caption="Clear Faults is on the Self Test tab, next to Refresh."
+        />
+        <p>
+          A config change does nothing until you press <strong>Apply</strong>,
+          the arrow icon above the config list. Its tooltip says &quot;Apply and
+          flash configs&quot;. That saves the configs onto the device. It does
+          not touch the firmware.
+        </p>
+        <ImageBlock
+          src="/images/setup/apply-configs.png"
+          alt="Screenshot of the config panel with the Apply arrow icon circled and its tooltip showing."
+          caption="Apply is the arrow icon above the config list."
+        />
       </LessonSection>
 
       <Mech for="arm">
@@ -325,8 +341,8 @@ export default function MechanismSetup() {
             <Mech for="flywheel">
               flywheel TalonFX on <code>21</code>
             </Mech>{" "}
-            and set the control drop-down to <strong>Voltage Out</strong>, the
-            same request your code sends in{" "}
+            and set <strong>Control Mode</strong> to <code>VoltageOut</code>,
+            the same request your code sends in{" "}
             <Link
               href="/mechanisms#configs-and-requests"
               className="underline font-medium"
@@ -336,8 +352,9 @@ export default function MechanismSetup() {
             .
           </li>
           <li>
-            Enter <code>1 V</code>, click <strong>DISABLED</strong> to enable
-            the device, then disable after about a second. Watch the mechanism.
+            Enter <code>1 V</code> under <strong>Output (Volts)</strong>, click{" "}
+            <strong>DISABLED</strong> to enable the device, then disable after
+            about a second. Watch the mechanism.
           </li>
           <Mech for="arm" as="li">
             With the motor facing you, the arm should move counterclockwise, and
@@ -349,6 +366,12 @@ export default function MechanismSetup() {
           </Mech>
         </ol>
 
+        <ImageBlock
+          src="/images/setup/voltage-out.png"
+          maxWidth={420}
+          alt="Screenshot of the Control tab with the DISABLED button, the VoltageOut control mode and the Output (Volts) field circled."
+          caption="Control tab: VoltageOut, the Output (Volts) field, and the DISABLED button that enables the device."
+        />
         <Mech for="arm" as="p">
           If it turns clockwise, stop. Do not fix it here. One of the hand tests
           above was skipped or not applied, so go back and redo them.

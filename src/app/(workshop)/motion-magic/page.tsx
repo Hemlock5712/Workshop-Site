@@ -121,7 +121,8 @@ export default function MotionMagic() {
         />
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Open <strong>Control</strong> and change the request type to{" "}
+            On the <strong>Control</strong> tab, set{" "}
+            <strong>Control Mode</strong> to{" "}
             <Mech for="arm">
               <code>MotionMagicVoltage</code>
             </Mech>
@@ -162,8 +163,19 @@ export default function MotionMagic() {
           <li>
             Press <strong>Apply</strong>.
           </li>
-          <li>Run a move and watch the plot.</li>
+          <li>
+            Enable the device again, since changing Control Mode disabled it,
+            then run a move and watch the plot.
+          </li>
         </ol>
+        <Mech for="arm">
+          <ImageBlock
+            src="/images/setup/motion-magic-control.png"
+            maxWidth={420}
+            alt="Screenshot of the Control tab with MotionMagicVoltage selected as the control mode and circled."
+            caption="Control Mode set to MotionMagicVoltage."
+          />
+        </Mech>
 
         <Mech for="flywheel">
           <Box
