@@ -23,7 +23,7 @@ const linkStyle =
  *
  * The old page walked seven numbered steps, each closing on a "Visible result"
  * that was usually "nothing yet, and the robot is worse for it". Gone with
- * them: the `5-DriveToPoint` `execute()` reprint (the student has that file
+ * them: the `5-DriveToPoint` loop reprint (the student has that file
  * open), the imports block, the rename before/after, the one-line feedforward
  * block, the unchanged `TeleopOpMode` bindings, the before/after gains table
  * (four sentences of prose), the `WheelForceCalculator` aside for a class the
@@ -31,11 +31,16 @@ const linkStyle =
  *
  * Kept, because they are the lesson: the two pairs of constraints, the
  * arithmetic that makes 2.1 m the threshold between a trapezoid and a triangle,
- * the `startState` snapshot, `execute()`, the clock finish line and what it
+ * the `startState` snapshot, the loop, the clock finish line and what it
  * costs, and why 10 / 10 / 7 had to become 3.0 / 3.0 / 4.0 once the plan
  * started supplying the speed.
  *
  * Every number and API name here was checked against `6-ProfiledToPoint`.
+ *
+ * November 2026: the branch dropped the team's `ClassicCommand` base class, so
+ * `DriveToPoint` implements `Command` directly. The old `initialize()` is the
+ * top of `run`, `execute()` is the loop body, `isFinished()` is the loop
+ * condition, and the stop sits after the loop and in `onCancel()`.
  */
 export default function ProfiledDriveToPoint() {
   return (
@@ -60,8 +65,8 @@ export default function ProfiledDriveToPoint() {
       <Split>
         <ProseBlock>
           <p>
-            One file changes: <code>commands/DriveToPoint.java</code>, 88 lines
-            to 121. A and B are already bound from the last lesson, and nothing
+            One file changes: <code>commands/DriveToPoint.java</code>, 95 lines
+            to 128. A and B are already bound from the last lesson, and nothing
             else on the branch moves.
           </p>
         </ProseBlock>
@@ -135,8 +140,9 @@ export default function ProfiledDriveToPoint() {
 
       <LessonSection id="make-the-change" title="Make the change">
         <p>
-          Three new fields and three rewritten methods, all in the one file.
-          Three imports come with them: <code>com.ctre.phoenix6.Utils</code>,{" "}
+          Three new fields and a rewritten <code>run</code>, all in the one
+          file. Three imports come with them:{" "}
+          <code>com.ctre.phoenix6.Utils</code>,{" "}
           <code>com.ctre.phoenix6.swerve.utility.LinearPath</code>, and{" "}
           <code>org.wpilib.math.trajectory.TrapezoidProfile</code>.
         </p>
@@ -144,13 +150,12 @@ export default function ProfiledDriveToPoint() {
         <CodeBlock
           language="java"
           title="DriveToPoint.java: a new field, next to the controllers"
-          code={`// The trip planner. First pair of limits: top speed (m/s) and acceleration (m/s²) for
-// driving. Second pair: the same for turning (rad/s, rad/s²).
-// TODO: tune to what your drivetrain can do.
-private final LinearPath path =
-    new LinearPath(
-        new TrapezoidProfile.Constraints(2.5, 3.0),
-        new TrapezoidProfile.Constraints(Math.PI, 2.0 * Math.PI));`}
+          code={`  // The trip planner. First pair of limits: top speed (m/s) and acceleration (m/s²) for driving.
+  // Second pair: the same for turning (rad/s, rad/s²). TODO: tune to what your drivetrain can do.
+  private final LinearPath path =
+      new LinearPath(
+          new TrapezoidProfile.Constraints(2.5, 3.0),
+          new TrapezoidProfile.Constraints(Math.PI, 2.0 * Math.PI));`}
         />
 
         <p>
@@ -166,57 +171,67 @@ private final LinearPath path =
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java: two new fields, and initialize()"
-          code={`// Where the robot was, and how fast it was moving, when the command started. The whole
-// trip is planned from this one snapshot.
-private LinearPath.State startState = new LinearPath.State();
-// When the command started. (now - startTime) says how far into the trip we are.
-private double startTime;
+          title="DriveToPoint.java: two new fields"
+          code={`  // Where the robot was, and how fast it was moving, when the command started. The whole trip is
+  // planned from this one snapshot.
+  private LinearPath.State startState = new LinearPath.State();
+  // When the command started. (now - startTime) says how far into the trip we are.
+  private double startTime;`}
+        />
+      </LessonSection>
 
-/** Takes the starting snapshot and starts the trip clock. */
-@Override
-protected void initialize() {
-  startState = new LinearPath.State(drivetrain.getPose(), drivetrain.getFieldVelocity());
-  startTime = Utils.getCurrentTimeSeconds();
-  xController.reset();
-  yController.reset();
-  headingController.reset();
-}`}
+      <LessonSection id="the-control-loop" title="The new control loop">
+        <p>
+          <code>run</code> keeps its shape: setup, a loop that yields, and now a
+          stop after the loop, because this loop ends.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java: run()"
+          code={`  @Override
+  public void run(Coroutine coroutine) {
+    // Take the starting snapshot and start the trip clock.
+    startState = new LinearPath.State(drivetrain.getPose(), drivetrain.getFieldVelocity());
+    startTime = Utils.getCurrentTimeSeconds();
+    xController.reset();
+    yController.reset();
+    headingController.reset();
+
+    // Done when the planned trip time is up. The plan knows how long the whole trip takes, so "am I
+    // done" is just a time check - no position tolerances needed.
+    while (!path.isFinished(Utils.getCurrentTimeSeconds() - startTime)) {
+      // Ask the plan where we should be, this many seconds into the trip.
+      double t = Utils.getCurrentTimeSeconds() - startTime;
+      LinearPath.State setpoint = path.calculate(t, startState, goal);
+
+      Pose2d measuredPose = drivetrain.getPose();
+
+      // The plan's velocity does the driving. Each PID call below adds a small correction that
+      // pulls the measured pose back onto the planned pose.
+      ChassisVelocities feedforward = setpoint.velocity;
+      double vx = feedforward.vx + xController.calculate(measuredPose.getX(), setpoint.pose.getX());
+      double vy = feedforward.vy + yController.calculate(measuredPose.getY(), setpoint.pose.getY());
+      double omega =
+          feedforward.omega
+              + headingController.calculate(
+                  measuredPose.getRotation().getRadians(),
+                  setpoint.pose.getRotation().getRadians());
+
+      drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+      coroutine.yield();
+    }
+
+    // Zero speed, not SwerveRequest.Idle: Idle leaves every module on its last request.
+    drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities()));
+  }`}
         />
 
         <p>
           A robot already rolling gets a plan that starts from the speed it has,
           not from a standstill. That is what <code>getFieldVelocity()</code> is
-          doing there.
+          doing in the snapshot.
         </p>
-      </LessonSection>
-
-      <LessonSection id="the-control-loop" title="The new control loop">
-        <CodeBlock
-          language="java"
-          title="DriveToPoint.java: execute()"
-          code={`/** Runs every robot loop while the command is active. */
-@Override
-protected void execute() {
-  // Ask the plan where we should be, this many seconds into the trip.
-  double t = Utils.getCurrentTimeSeconds() - startTime;
-  LinearPath.State setpoint = path.calculate(t, startState, goal);
-
-  Pose2d measuredPose = drivetrain.getPose();
-
-  // The plan's velocity does the driving. Each PID call below adds a small correction that
-  // pulls the measured pose back onto the planned pose.
-  ChassisVelocities feedforward = setpoint.velocity;
-  double vx = feedforward.vx + xController.calculate(measuredPose.getX(), setpoint.pose.getX());
-  double vy = feedforward.vy + yController.calculate(measuredPose.getY(), setpoint.pose.getY());
-  double omega =
-      feedforward.omega
-          + headingController.calculate(
-              measuredPose.getRotation().getRadians(), setpoint.pose.getRotation().getRadians());
-
-  drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
-}`}
-        />
 
         <p>
           The planned velocity goes out as it is. Each controller adds a small
@@ -226,10 +241,11 @@ protected void execute() {
         </p>
 
         <p>
-          The finish line is the plan&apos;s own clock.{" "}
-          <code>isFinished()</code> returns <code>path.isFinished(t)</code>,
-          with <em>t</em> the seconds since the command started. No position
-          tolerance anywhere.
+          The finish line is the plan&apos;s own clock. The loop runs until{" "}
+          <code>path.isFinished(t)</code> is true, with <em>t</em> the seconds
+          since the command started. No position tolerance anywhere. Then{" "}
+          <code>run</code> sends the zero-speed stop. <code>onCancel()</code> is
+          unchanged and sends the same stop when the driver lets go early.
         </p>
 
         <Box
@@ -324,8 +340,8 @@ protected void execute() {
 
         <p>
           <strong>It lunges off in the wrong direction.</strong> Check that the{" "}
-          <code>startState</code> line is in <code>initialize()</code>. Without
-          it, the plan is drawn from the empty{" "}
+          <code>startState</code> line is at the top of <code>run</code>.
+          Without it, the plan is drawn from the empty{" "}
           <code>new LinearPath.State()</code> the field was given at
           declaration.
         </p>
@@ -395,12 +411,12 @@ protected void execute() {
           },
           {
             id: 4,
-            question: "How does isFinished() decide the command is done?",
+            question: "How does run() decide the command is done?",
             options: [
               "It never finishes, so the driver releases the button",
               "It waits for all three PID controllers to report atSetpoint()",
               "It checks whether the measured pose is within a tolerance of the goal",
-              "It returns path.isFinished(elapsed): the planned trip time is up",
+              "Its loop runs until path.isFinished(elapsed) is true: the planned trip time is up",
             ],
             correctAnswer: 3,
             explanation:
@@ -412,8 +428,8 @@ protected void execute() {
               "Why can this version sit inside Command.sequence(...) when the 5-DriveToPoint version could not?",
             options: [
               "Because it requires the drivetrain and the old one did not",
-              "Because it extends ClassicCommand and the old one did not",
-              "Because it finishes on its own, and the old isFinished() returned false forever",
+              "Because it implements Command and the old one did not",
+              "Because it finishes on its own, and the old loop was while (true)",
               "Because Command.sequence only accepts commands that use feedforward",
             ],
             correctAnswer: 2,

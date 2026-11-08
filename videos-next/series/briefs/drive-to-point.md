@@ -1,12 +1,12 @@
 # Brief: /drive-to-point, "Drive to Point" (Workshop 6)
 
-Branch **`5-DriveToPoint`** (page sets `branch`). Swerve chain: `frc.robot.commands`, `frc.robot.subsystems`, `frc.robot.opmodes.TeleopOpMode`; show as is. Diff from `4-DynamicFlywheel` adds `commands/DriveToPoint.java` (88 lines), `utils/ClassicCommand.java` (123 lines), two bindings, and deletes the flywheel. 15 minutes. Opens the navigation half of Workshop 6, after the two vision lessons.
+Branch **`5-DriveToPoint`** (page sets `branch`). Swerve chain: `frc.robot.commands`, `frc.robot.subsystems`, `frc.robot.opmodes.TeleopOpMode`; show as is. Diff from `4-DynamicFlywheel` adds `commands/DriveToPoint.java` (95 lines), two bindings, and deletes the flywheel. 15 minutes. Opens the navigation half of Workshop 6, after the two vision lessons.
 
 ## 1. Teaches (page order)
 
 - **The target pose**: a `Pose2d` is X m, Y m, and a `Rotation2d` heading, measured from the blue corner for both alliances. `getPose()` is only what odometry counted; without Vision, A sends the robot "somewhere you did not intend."
-- **Four methods to fill in**: `ClassicCommand` (a workshop file, not WPILib) is a coroutine body that calls `initialize()` once, then `execute()` / `isFinished()` / `yield()` in a loop, then `end(false)`; `onCancel()` calls `end(true)`. `super("DriveToPoint", drivetrain)` gives name + requirement. First use of `super` and `this`.
-- **Build the command**: three `PIDController`s (X, Y kP 10; heading kP 7), one `ApplyFieldVelocity` with `BlueAlliance` perspective. Heading gets `enableContinuousInput(-Math.PI, Math.PI)`; meters do not wrap. `calculate(measurement, setpoint)` → kP × error → `ChassisVelocities(vx, vy, omega)`. `isFinished()` is `false`, so it cannot sit in a sequence. Stop in `end(...)` with a zero `ChassisVelocities`, not `SwerveRequest.Idle`.
+- **A command as a class**: `DriveToPoint implements Command` (WPILib's interface; the team's `ClassicCommand` base class was removed November 2026). Three required methods: `run(Coroutine)` is the whole command, the loop-and-yield body from /coroutines; `name()` returns `"DriveToPoint"`; `requirements()` returns `Set.of(drivetrain)`. Optional `onCancel()` runs only when canceled before `run` returns. First use of `this`.
+- **Build the command**: three `PIDController`s (X, Y kP 10; heading kP 7), one `ApplyFieldVelocity` with `BlueAlliance` perspective. Heading gets `enableContinuousInput(-Math.PI, Math.PI)`; meters do not wrap. `calculate(measurement, setpoint)` → kP × error → `ChassisVelocities(vx, vy, omega)`. The loop is `while (true)`, so it cannot sit in a sequence. Stop in `onCancel()` with a zero `ChassisVelocities`, not `SwerveRequest.Idle`; nothing after a `while (true)` would compile.
 - **The gains**: not Slot 0. kP 10 means 10 m/s per meter of error. Three meters out asks for **30 m/s** against **4.54 m/s**. "The robot lurches away at full power, then crawls in over the last half meter."
 - **Check**: drives and turns together; stick ignored while held; release mid-trip stops; B parks at (3, 2, 180°) making small corrections; speed graph is flat-out then a steep falloff.
 
@@ -25,48 +25,46 @@ Everything here is a picture of numbers on a field: a pose, an error vector, a v
 
 ## 5. Code on screen
 
-`5-DriveToPoint`, `utils/ClassicCommand.java` (the part that matters, page block):
+`5-DriveToPoint`, `commands/DriveToPoint.java`, trimmed:
 
 ```java
-public final void run(Coroutine coroutine) {
-  initialize();
-  while (true) {
-    execute();
-    if (isFinished()) {
-      break;
-    }
-    coroutine.yield();
-  }
-  end(false); // natural finish
-}
-
-public final void onCancel() {
-  end(true);
-}
-```
-
-`commands/DriveToPoint.java`, trimmed:
-
-```java
+public class DriveToPoint implements Command {
   private final PIDController xController = new PIDController(10, 0, 0);
   private final PIDController yController = new PIDController(10, 0, 0);
   private final PIDController headingController = new PIDController(7, 0, 0);
 
   @Override
-  protected void execute() {
-    Pose2d currentPose = drivetrain.getPose();
-    double vx = xController.calculate(currentPose.getX(), targetPose.getX());
-    double vy = yController.calculate(currentPose.getY(), targetPose.getY());
-    double omega =
-        headingController.calculate(
-            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-    drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+  public void run(Coroutine coroutine) {
+    xController.reset();
+    yController.reset();
+    headingController.reset();
+    while (true) {
+      Pose2d currentPose = drivetrain.getPose();
+      double vx = xController.calculate(currentPose.getX(), targetPose.getX());
+      double vy = yController.calculate(currentPose.getY(), targetPose.getY());
+      double omega =
+          headingController.calculate(
+              currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+      drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+      coroutine.yield();
+    }
   }
 
   @Override
-  protected void end(boolean interrupted) {
+  public void onCancel() {
     drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities()));
   }
+
+  @Override
+  public String name() {
+    return "DriveToPoint";
+  }
+
+  @Override
+  public Set<Mechanism> requirements() {
+    return Set.of(drivetrain);
+  }
+}
 ```
 
 `opmodes/TeleopOpMode.java`:
@@ -86,8 +84,8 @@ public final void onCancel() {
 - **Drives off confidently the wrong way**: "Suspect the pose, not the gains." Graph `Drivetrain/Pose` first; then check `ForwardPerspectiveValue.BlueAlliance`. (Visually the /pid-control _Runs away_ shape, different cause.)
 - **Creeps in, never arrives**: "One centimeter of error asks for 10 cm/s... there is no I term." The _Falls short_ shape.
 - `Idle` as a stop: "Idle does nothing to the modules, so each one keeps its last request." Teleop forgives a missing stop (joystick default); autonomous does not. Link /running-program#latched, don't re-teach.
-- `isFinished()` false: "A sequence handed a command that never ends sticks on that leg forever."
-- Compile errors: `ChassisSpeeds`, `.named(...)` on the new command, `super(...)` not first.
+- `while (true)` loop: "A sequence handed a command that never ends sticks on that leg forever."
+- Compile errors: `ChassisSpeeds`, `.named(...)` on the new command, a missing `name()` or `requirements()`.
 - Untuned on real hardware: "A gain this large turns a wrong pose into a fast wrong move."
 
 ## 7. Interactive moment idea
@@ -112,17 +110,17 @@ This is the first navigation video; the kit below serves all four.
 1. **Name it.** "Hold a button, and the robot drives itself to a spot on the field."
 2. **Connect.** Every meter so far a human drove; the pose from vision and odometry is the robot's idea of where it is.
 3. **The pose.** Field from the blue corner, a `Pose2d` chip, goal ghost at (3, 2, 180°).
-4. **Four methods.** `ClassicCommand` as a coroutine loop: initialize, execute, isFinished, yield; `onCancel` → `end(true)`. "It's the `while` and `yield` you already wrote, with four slots."
+4. **A command as a class.** `implements Command`: `run` (setup, `while`, `yield`), `name`, `requirements`; `onCancel` for the stop. "It's the `while` and `yield` you already wrote."
 5. **Three controllers.** X, Y, heading; error arrows on each axis; robot drives and turns together.
 6. **The wrap.** 179° to −179° spins the long way; `enableContinuousInput` takes the short way.
 7. **The arithmetic.** 3 m × 10 = 30 m/s; arrow pinned to the 4.54 ring; speed trace flat-out.
 8. **Your turn.** Drag the goal; hold A.
 9. **The creep.** Near the goal the arrow shrinks to nothing; it stalls short. Callback to _Falls short_.
-10. **The stop.** Release mid-trip: `end(true)` sends zero; the Idle version shown beside it keeps rolling (module bars stay lit). One line to /running-program.
+10. **The stop.** Release mid-trip: `onCancel()` sends zero; the Idle version shown beside it keeps rolling (module bars stay lit). One line to /running-program.
 11. **Takeaway.** "Speed proportional to distance gets you there, badly. Next, plan the trip."
 
 ## 10. Site/branch mismatches
 
-- **Page says the branch still sends Idle** (prose "which the branch's copy still sends" and the top comment "the branch still sends Idle and needs the same one-line edit"). `5-DriveToPoint`'s `end()` already sends `driveRequest.withVelocity(new ChassisVelocities())` with the comment "Zero speed, not SwerveRequest.Idle". The page sentence is stale; delete it.
+- **Page says the branch still sends Idle** (prose "which the branch's copy still sends" and the top comment "the branch still sends Idle and needs the same one-line edit"). `5-DriveToPoint`'s stop (now `onCancel()`) already sends `driveRequest.withVelocity(new ChassisVelocities())` with the comment "Zero speed, not SwerveRequest.Idle". The page sentence is stale; delete it.
 - Teleop binding on the branch uses a local alias `final DriveMechanism drivetrain = robot.drivetrain;`. The mech-chain rule (no aliases) does not apply to the unrebuilt swerve chain; show as is.
 - The branch also deletes `Flywheel.java` and `TalonFXUtil.java`; the page no longer mentions it. Fine, but the PR #11 diff will show it.
