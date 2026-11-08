@@ -134,8 +134,7 @@ export default function MechanismSetup() {
           <ol className="ml-5 list-decimal space-y-3">
             <li>Open the CANcoder device in Tuner X and plot the position.</li>
             <li>
-              Facing the motor side of the arm, turn it counterclockwise by
-              hand.
+              With the motor facing you, turn the arm counterclockwise by hand.
             </li>
             <li>
               The CANcoder position must increase. If it decreases, flip the
@@ -174,9 +173,10 @@ export default function MechanismSetup() {
           </ol>
           <p>
             Positions are measured in <strong>rotations</strong>, not degrees.
-            One full turn is <code>1.0</code>. Counterclockwise with the device
+            One full turn is <code>1.0</code>. Counterclockwise with the motor
             facing you is positive, and every position target from here to
-            Motion Magic is written that way.
+            Motion Magic is written that way. Every photo on this site is taken
+            from that side, so your directions match ours.
           </p>
 
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
@@ -188,7 +188,7 @@ export default function MechanismSetup() {
             />
             <ImageBlock
               src="/images/setup/counter-clockwise.png"
-              alt="Arrow showing the counterclockwise rotation direction with the device facing you"
+              alt="Arrow showing the counterclockwise rotation direction with the motor facing you"
               width={340}
               height={255}
             />
@@ -269,8 +269,8 @@ export default function MechanismSetup() {
             the device, then disable after about a second. Watch the mechanism.
           </li>
           <Mech for="arm" as="li">
-            The arm should move counterclockwise, and the motor&apos;s position
-            should go up.
+            With the motor facing you, the arm should move counterclockwise, and
+            the motor&apos;s position should go up.
           </Mech>
           <Mech for="flywheel" as="li">
             The wheel should spin the way it shoots, which is clockwise seen
@@ -410,7 +410,7 @@ export default function MechanismSetup() {
             id: 2,
             only: "arm",
             question:
-              "Facing the device side of the arm, you turn it counterclockwise by hand. What should CANcoder do?",
+              "With the motor facing you, you turn the arm counterclockwise by hand. What should CANcoder do?",
             options: [
               "Hold its reading until the motor is powered",
               "Count down",

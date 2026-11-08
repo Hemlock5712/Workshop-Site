@@ -385,15 +385,6 @@ export default function BillOfMaterials({
           </button>
         </div>
 
-        {/* Cost-Saving Tip - Always Visible */}
-        <div className="bg-[var(--bg2)] border border-[var(--accent)] rounded-lg p-4 mb-4">
-          <p className="text-[var(--accent)] font-medium">
-            <strong>Cost-Saving Tip:</strong> Many parts listed below can likely
-            be built from scrap material or parts you already own from previous
-            projects, significantly reducing the actual cost of this mechanism.
-          </p>
-        </div>
-
         {/* Cost Summary - Always Visible */}
         <div className="bg-[var(--bg2)] rounded-lg p-4 mb-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -780,7 +771,7 @@ export default function BillOfMaterials({
             </p>
             <p>
               <strong>3D Printed Parts:</strong> Parts marked as 3D printed can
-              be printed in PLA on a standard FDM printer.
+              be printed on a standard FDM printer.
             </p>
           </div>
         </div>

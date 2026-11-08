@@ -70,111 +70,21 @@ export default function PIDControl() {
         <MechanismPlayground />
       </LessonSection>
 
-      <LessonSection id="starting-values" title="Starting values">
+      <LessonSection id="units-and-sizes" title="Units and sizes">
         <p>
-          Every gain is output per unit of input. Because everything here is
-          standardized in rotations and volts, we can know good PID and
-          feedforward starting values ahead of time.
-        </p>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[360px] text-left text-note">
-            <caption className="py-2 text-left font-semibold">Arm</caption>
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="py-2 pr-4">Gain</th>
-                <th className="py-2">Starting value</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kP</code>
-                </td>
-                <td className="py-2">20</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kI</code>
-                </td>
-                <td className="py-2">0</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kD</code>
-                </td>
-                <td className="py-2">0</td>
-              </tr>
-              <tr>
-                <td className="py-2 pr-4">
-                  <code>kS, kG</code>
-                </td>
-                <td className="py-2">Tune on your arm</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[360px] text-left text-note">
-            <caption className="py-2 text-left font-semibold">Flywheel</caption>
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="py-2 pr-4">Gain</th>
-                <th className="py-2">Starting value</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kP</code>
-                </td>
-                <td className="py-2">0.11</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kI</code>
-                </td>
-                <td className="py-2">0</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kD</code>
-                </td>
-                <td className="py-2">0</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kS</code>
-                </td>
-                <td className="py-2">0.1</td>
-              </tr>
-              <tr>
-                <td className="py-2 pr-4">
-                  <code>kV</code>
-                </td>
-                <td className="py-2">0.12</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p>
-          The PID values generally work across mechanisms like these. The
-          feedforward values change heavily with the weight of the mechanism. We
-          strongly recommend tuning your own gains anyway.
+          Every gain is output per unit of input. Here the output is volts and
+          the input is rotations, so the numbers you tune can look nothing like
+          the ones in a guide written for another unit.
         </p>
         <p>
           Rotations are why an arm <code>kP</code> looks big. An error of 0.01
           rotations is 3.6 degrees, so a <code>kP</code> of 20 answers it with
           only 0.2 V. A Kraken X44 needs about 0.093 V per rps of its own speed,
-          so a flywheel <code>kV</code> in motor rotations lands a little above
-          that.
+          so a flywheel <code>kV</code> in motor rotations lands near that.
         </p>
       </LessonSection>
 
       <LessonSection id="feedforward-first" title="Tune the gains">
-        <p>
-          Before running this, fully power cycle the CANivore and mechanism to
-          prevent any old positions from being read.
-        </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Open <strong>Signal &amp; Control</strong> and add the Talon FX you

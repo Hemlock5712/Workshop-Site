@@ -8,8 +8,7 @@ export const shooterBOMData: BOMItem[] = [
     partNumber: "WCP-0921",
     pricePerUnit: 15.99,
     productLink: "https://wcproducts.com/products/aluminum-tubing",
-    notes:
-      'WCP sells 1" x 2" tube in 48" lengths. 1 piece will build an entire module.',
+    notes: 'WCP sells 1" x 2" tube in 48" lengths.',
     is3DPrinted: false,
   },
   {
@@ -208,7 +207,7 @@ export const shooterBOMData: BOMItem[] = [
     partNumber: "WCP-1522",
     pricePerUnit: 299.99,
     productLink: "https://wcproducts.com/products/ctre-sensors",
-    notes: "Make sure to select the flexible EPDM to make wiring easier.",
+    notes: "",
     is3DPrinted: false,
   },
   {

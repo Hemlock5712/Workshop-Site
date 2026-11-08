@@ -8,8 +8,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: "WCP-0921",
     pricePerUnit: 15.99,
     productLink: "https://wcproducts.com/products/aluminum-tubing",
-    notes:
-      'WCP sells 1" x 2" tube in 48" lengths. 1 piece will build an entire module.',
+    notes: 'WCP sells 1" x 2" tube in 48" lengths.',
     is3DPrinted: false,
   },
   {
@@ -118,8 +117,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: "WCP-1006",
     pricePerUnit: 8.99,
     productLink: "https://wcproducts.com/products/20dp-motor-gears",
-    notes:
-      "Make sure your spur gear matches whatever motor you choose to use, whether it is bought or 3D printed.",
+    notes: "",
     is3DPrinted: true,
   },
   {
@@ -229,7 +227,7 @@ export const armBOMData: BOMItem[] = [
     partNumber: "WCP-1522",
     pricePerUnit: 299.99,
     productLink: "https://wcproducts.com/products/ctre-sensors",
-    notes: "Make sure to select the flexible EPDM to make wiring easier.",
+    notes: "",
     is3DPrinted: false,
   },
   {

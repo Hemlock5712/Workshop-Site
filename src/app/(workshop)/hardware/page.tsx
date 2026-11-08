@@ -169,14 +169,17 @@ export default function Hardware() {
           <li>
             Set <strong>Team # or IP</strong> to <code>localhost</code>.
           </li>
-          <li>The CANivore should appear in the device list.</li>
+          <li>
+            Open the <strong>CANivores</strong> tab on the left. The CANivore
+            should be listed there.
+          </li>
           <li>
             Rename it to <code>canivore</code>. Every later lesson and every
             code sample uses that name.
           </li>
           <li>
-            Open it and confirm the motor is listed under it, along with the
-            CANcoder if you built the arm.
+            Open the <strong>Devices</strong> tab on the left and confirm the
+            motor is listed, along with the CANcoder if you built the arm.
           </li>
         </ol>
 
@@ -280,7 +283,8 @@ export default function Hardware() {
               still pointed at <code>localhost</code>.
             </li>
             <li>
-              The motor is listed under it, and the CANcoder too on the arm.
+              The motor is listed on the <strong>Devices</strong> tab, and the
+              CANcoder too on the arm.
             </li>
             <li>Every device card is green.</li>
             <li>

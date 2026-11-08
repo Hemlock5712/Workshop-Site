@@ -219,9 +219,9 @@ export default function MechanismCAD() {
       <LessonSection id="printing-the-parts" title="Printing the parts">
         <p>
           Seven rows on the arm list are marked printable, including the gearbox
-          and its gears. Print them in PLA. A printed gearbox also needs the
-          four flanged bearings and the long <code>#10-32</code> screws further
-          down the list, which the bought kit already includes.
+          and its gears. A printed gearbox also needs the four flanged bearings
+          and the long <code>#10-32</code> screws further down the list, which
+          the bought kit already includes.
         </p>
       </LessonSection>
 
