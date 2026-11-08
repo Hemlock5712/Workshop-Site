@@ -29,15 +29,16 @@ Check items off as they land and delete this file when the list is empty.
 - [ ] **Pagefind for search.** Indexes the rendered HTML at build time with a
       small runtime stub, in place of the lazy MiniSearch. Sequence it with
       the MDX decision.
-- [ ] **Replace PathPlanner with BLine.** November 2026, owner's call:
+- [x] **Replace PathPlanner with BLine.** November 2026, owner's call:
       PathPlanner's 2027 editor has stalled upstream and the team does not
-      want to maintain its Commands v3 fork. BLine (FRC 2638) ships a native
-      Commands v3 2027 beta. Bench-test `swerve-bline` (off
-      `swerve-autonomous`), then rewrite `/pathplanner` around it: the
-      bline.run editor, event triggers, routines as coroutines that
-      `co.await(...)` each path, and a hand-filled `Selectable`. Retire
-      `swerve-pathplanner` and `swerve-pathfinding` afterwards, and the four
-      PathPlanner video beats with them.
+      want to maintain its Commands v3 fork. `swerve-bline` (off
+      `swerve-autonomous`) is tested end to end in the editor and in
+      simulation, and `/bline` replaces `/pathplanner`, which 308s to it.
+- [ ] **BLine, what is left.** Run `swerve-bline` on the real robot (gains,
+      traction, the stop on disable). Delete the `swerve-pathplanner` and
+      `swerve-pathfinding` branches. Re-cut the four PathPlanner video beats
+      for BLine. Untested so far: the editor's folder-picker export and the
+      Windows desktop app.
 
 ## Still to do
 
