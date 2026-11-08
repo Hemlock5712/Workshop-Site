@@ -194,11 +194,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
         "Starting From Anywhere",
         "Pathfinding: the margin is your bumper.",
       ],
-      [
-        "drive-to-tag-inline",
-        "Every Way Out Stops",
-        "Example: Drive to Tag: one loop, a stop on every exit.",
-      ],
     ],
   ],
 ];

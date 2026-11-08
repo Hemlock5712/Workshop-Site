@@ -1,5 +1,4 @@
 import PageTemplate from "@/components/PageTemplate";
-import { Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
@@ -49,21 +48,11 @@ export default function JavaBasics() {
       ]}
       time="7 minutes"
     >
-      <Split>
-        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-          <p>
-            Six pieces cover nearly all of the Java in this workshop: the class,
-            the field, the constructor, the method, the lambda, and the dot. The
-            course below teaches five of them.
-          </p>
-        </div>
-      </Split>
-
       <LessonSection id="learn-the-language" title="Learn Java on Codecademy">
         <p>
           Codecademy&apos;s <strong>Learn Java</strong> is free and runs in the
-          browser, so there is nothing to install. Do not do all sixteen
-          modules. Four of them cover almost everything the code here uses.
+          browser, so there is nothing to install. Do not do the whole course.
+          Four modules cover almost everything the code here uses.
         </p>
 
         <div className="measure-wide overflow-x-auto">
@@ -77,10 +66,7 @@ export default function JavaBasics() {
             <tbody style={{ color: "var(--tx2)" }}>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">1. Hello World</td>
-                <td className="px-3 py-2">
-                  Braces, semicolons and comments. The punctuation you are about
-                  to stop noticing.
-                </td>
+                <td className="px-3 py-2">Braces, semicolons and comments.</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">2. Variables</td>
@@ -211,7 +197,7 @@ export default function JavaBasics() {
         <CodeBlock
           language="java"
           title="Arm.java, branch mech-2-Commands: the method, the lambda, and the dot"
-          code={`/** Push the arm with a gentle voltage and keep pushing. Never finishes. */
+          code={`/** Push the arm at 3 volts and keep pushing. Never finishes. */
 public Command runSlow() {
   return runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)");
 }`}
@@ -237,9 +223,8 @@ public Command runSlow() {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Six questions on the lines above. Miss more than one and the course is
-          worth another evening, because the next four lessons read code like
-          this on every page.
+          Six questions on the lines above. If you miss more than one, go back
+          to the course before the next lesson.
         </p>
 
         <Quiz

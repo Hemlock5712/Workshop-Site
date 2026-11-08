@@ -3,7 +3,7 @@
 What is left from the October 2026 review. The first pass merged to `master` as #119
 (4508e70): code and tooling, the Tuner-then-code links, control
 requests, the coroutine Core 5 and house rules, the Workshop 3 to 6 rewrites,
-LimelightLib 2 on `/drive-to-tag-inline`, PathPlanner 2027, and the Project
+LimelightLib 2, PathPlanner 2027, and the Project
 Structure, Git and Pull Requests, Testing and Swerve Drive Tuning lessons.
 Check items off as they land and delete this file when the list is empty.
 
@@ -41,19 +41,15 @@ Check items off as they land and delete this file when the list is empty.
 
 ## Still to do
 
-- [ ] Rebuild `7-InlineCommands` on LimelightLib 2 so `/drive-to-tag-inline`
-      can set its `branch` prop again (the page is ahead of the branch, like
-      `/vision-implementation` and `3-Limelight`).
 - [ ] Run `pnpm spell` on Node 22.18 or later (cspell refuses 22.15).
 - [ ] Wire `scripts/audit-ui.mjs` into CI against `next start`.
-- [ ] Unverified on hardware: the `/drive-to-tag-inline` axis signs (from
-      the LimelightLib 2 javadoc), the VS Code and GitHub button labels on
-      `/git-workflow`, and the 12.5 V threshold in `/testing`'s checklist.
+- [ ] Unverified on hardware: the VS Code and GitHub button labels on
+      `/git-workflow`.
 - [ ] Pages over the 12 minute target (all under the 15 cap, October 2026):
       `/pathplanner` 14.9, `/drive-to-point` 14.6, `/mechanisms` 14.0,
       `/coroutines` 13.9, `/pid-control` 13.9, `/swerve-drive-project` 13.8,
       `/git-workflow` 13.3, `/ai-coding-assistant` 13.1,
-      `/drive-to-tag-inline` 12.7, `/finish-conditions` 12.6,
+      `/finish-conditions` 12.6,
       `/logging-implementation` 12.2.
 - [ ] Inline `style={{}}` props (about 400) to utility classes; split the
       large explainer components alongside the new unit tests.

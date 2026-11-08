@@ -376,7 +376,15 @@ on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-hardware`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
-`/finish-conditions`.
+`/finish-conditions`, `/drive-to-tag-inline` → `/drive-to-point`.
+
+**There is no `/drive-to-tag-inline`.** Example: Drive to Tag was retired in
+November 2026. It drove off the tag in LimelightLib target space, with
+flipped axes and lost-tag handling, when the student already has a
+vision-fused pose and a drive-to-pose command. The owner's call: driving to a
+tag is a field pose, taken from the tag layout, handed to Drive to Point. The
+`7-InlineCommands` branch still exists on Workshop-Code and no page uses it.
+Don't reinstate the lesson.
 
 **Two slugs were renamed to their titles in September 2026.**
 `/building-subsystems` became `/mechanisms`, having said "subsystem" for a

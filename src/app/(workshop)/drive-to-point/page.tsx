@@ -24,7 +24,7 @@ const linkStyle =
  * yet". That is a diff, not a lesson. What survives is what a student cannot
  * get by reading the finished file: which frame the pose is measured in, why
  * the heading controller wraps and the other two do not, why the stop request
- * lives in `end()`, and what 30 m/s of commanded speed does on a 4.54 m/s
+ * lives in `onCancel()`, and what 30 m/s of commanded speed does on a 4.54 m/s
  * drivetrain.
  *
  * Deliberately gone: the optional speed clamp (not on the branch, and the next
@@ -44,17 +44,17 @@ const linkStyle =
  * taught on this page rather than on the branch, and the tolerance numbers
  * behind `atSetpoint()` came back with them.
  *
- * October 2026: there is no Classic Commands lesson, and there never was one
- * behind the `needs` line that named it. `ClassicCommand` is now explained
- * here, by its `run()` and `onCancel()`, which are the whole idea: a coroutine
- * body that calls your four methods. The student still copies the file from
- * the branch. The stop in `end()` is a zero `ChassisVelocities`, not
- * `SwerveRequest.Idle`, which leaves the modules on their last request. The
- * branch sends the same zero.
+ * November 2026: `ClassicCommand`, the team's own four-method base class, is
+ * gone from the branch and the page, on the owner's call. `DriveToPoint`
+ * implements WPILib's `Command` interface directly: `run`, `name`,
+ * `requirements`, and `onCancel` for the stop. The stop is a zero
+ * `ChassisVelocities`, not `SwerveRequest.Idle`, which leaves the modules on
+ * their last request. It lives only in `onCancel()` on this branch because the
+ * loop is `while (true)`, and a statement after it would not compile.
  *
- * This is the first page in the course to use Java `super` and `this`.
- * `/java-basics` used to pre-teach both, fifteen lessons early, and no longer
- * does. Both are defined here, where they first appear.
+ * This is the first page in the course to use Java `this`. `/java-basics`
+ * used to pre-teach it, fifteen lessons early, and no longer does. It is
+ * defined here, where it first appears. `super` went with `ClassicCommand`.
  */
 export default function DriveToPoint() {
   return (
@@ -78,9 +78,8 @@ export default function DriveToPoint() {
       time="15 minutes"
     >
       <p>
-        Every meter the drivetrain has covered so far, a human drove. Hold{" "}
-        <strong>A</strong> for the field origin. Hold <strong>B</strong> for (3
-        m, 2 m) facing 180°.
+        Hold <strong>A</strong> for the field origin. Hold <strong>B</strong>{" "}
+        for (3 m, 2 m) facing 180°.
       </p>
 
       <LessonSection id="the-pose-you-are-driving-to" title="The target pose">
@@ -115,92 +114,58 @@ export default function DriveToPoint() {
         </Box>
       </LessonSection>
 
-      <LessonSection
-        id="a-second-way-to-write-a"
-        title="Four methods to fill in"
-      >
+      <LessonSection id="a-second-way-to-write-a" title="A command as a class">
         <p>
           Every command so far came out of a factory:{" "}
           <code>mechanism.run(...)</code> or <code>Command.sequence(...)</code>,
-          one expression with <code>.named(...)</code> on the end. This one does
-          four things, and only one of them repeats.
+          one expression with <code>.named(...)</code> on the end. This one is a
+          class. <code>implements Command</code> promises the scheduler three
+          methods: <code>run</code>, <code>name</code> and{" "}
+          <code>requirements</code>.
         </p>
 
         <CodeBlock
           language="java"
-          title="The shape you are about to fill in"
-          code={`public class DriveToPoint extends ClassicCommand {
+          title="DriveToPoint.java: name and requirements"
+          code={`public class DriveToPoint implements Command {
+  // ... fields, constructor, run and onCancel ...
 
-  public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
-    super("DriveToPoint", drivetrain); // command name + required mechanisms
+  @Override
+  public String name() {
+    return "DriveToPoint";
   }
 
   @Override
-  protected void initialize() {}               // once, when the command starts
-
-  @Override
-  protected void execute() {}                  // every loop, while it is active
-
-  @Override
-  protected boolean isFinished() {             // every loop, right after execute
-    return false;                              // true = finish now
+  public Set<Mechanism> requirements() {
+    return Set.of(drivetrain);
   }
-
-  @Override
-  protected void end(boolean interrupted) {}   // once, when it ends either way
 }`}
         />
 
         <p>
-          <code>super(...)</code> calls the constructor of the class you
-          extended, here <code>ClassicCommand</code>. It takes the command name
-          first, then every mechanism this command owns while it runs. That is
-          where the telemetry name comes from. <code>.named(...)</code> belongs
-          to the builder <code>run(...)</code> returns, so calling it on a
-          finished <code>Command</code> will not compile.
+          <code>name()</code> is the name telemetry shows.{" "}
+          <code>requirements()</code> lists every mechanism the command owns
+          while it runs. <code>.named(...)</code> belongs to the builder{" "}
+          <code>run(...)</code> returns, so calling it on a finished{" "}
+          <code>Command</code> will not compile.
         </p>
 
         <p>
-          <code>ClassicCommand</code> is a workshop file, not a WPILib class. It
-          implements <code>Command</code>, and its coroutine body is the whole
-          trick:
+          <code>run(Coroutine coroutine)</code> is the whole command, written as
+          the loop-and-yield body from{" "}
+          <Link href="/coroutines" className={linkStyle}>
+            Coroutines
+          </Link>
+          : setup at the top, a <code>while</code> loop that calls{" "}
+          <code>coroutine.yield()</code> once per pass, and whatever comes after
+          the loop. When <code>run</code> returns, the command is finished.
         </p>
 
-        <CodeBlock
-          language="java"
-          title="ClassicCommand.java: the part that matters"
-          code={`@Override
-public final void run(Coroutine coroutine) {
-  initialize();
-  while (true) {
-    execute();
-    if (isFinished()) {
-      break;
-    }
-    coroutine.yield();
-  }
-  end(false); // natural finish
-}
-
-@Override
-public final void onCancel() {
-  end(true);
-}`}
-        />
-
         <p>
-          It is an ordinary coroutine body with your four methods dropped into
-          it. <code>onCancel()</code> is why <code>end(...)</code> runs on both
-          exits. Copy the{" "}
-          <a
-            href="https://github.com/Hemlock5712/Workshop-Code/blob/5-DriveToPoint/src/main/java/frc/robot/utils/ClassicCommand.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkStyle}
-          >
-            branch&apos;s file
-          </a>{" "}
-          into <code>src/main/java/frc/robot/utils/</code> and leave it alone.
+          The fourth method, <code>onCancel()</code>, is optional. The scheduler
+          calls it only when the command is canceled before <code>run</code>{" "}
+          returns, as when the driver releases the button. A canceled{" "}
+          <code>run</code> never reaches the lines after its loop.
         </p>
       </LessonSection>
 
@@ -211,7 +176,7 @@ public final void onCancel() {
           the target pose. Three are <code>PIDController</code> fields with kP
           of 10 on X and Y and 7 on heading. The sixth is one{" "}
           <code>SwerveRequest.ApplyFieldVelocity</code>, built once and reused
-          every loop. Copy them from{" "}
+          every loop. Copy them and the imports from{" "}
           <a
             href="https://github.com/Hemlock5712/Workshop-Code/blob/5-DriveToPoint/src/main/java/frc/robot/commands/DriveToPoint.java"
             target="_blank"
@@ -246,7 +211,6 @@ public final void onCancel() {
    * @param targetPose the field pose (blue-origin) to drive to, including the goal heading
    */
   public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
-    super("DriveToPoint", drivetrain); // command name + required mechanism
     this.drivetrain = drivetrain;
     this.targetPose = targetPose;
 
@@ -262,8 +226,8 @@ public final void onCancel() {
               nothing. It copies the parameter into the field of the same name.
               The <code>this.</code> prefix means the field on this object; the
               bare name means the parameter passed in. The parameter disappears
-              when the constructor ends, and the field is what{" "}
-              <code>execute()</code> reads.
+              when the constructor ends, and the field is what <code>run</code>{" "}
+              reads.
             </p>
             <p>
               <code>enableContinuousInput</code> tells the heading controller
@@ -280,25 +244,35 @@ public final void onCancel() {
         </Split>
 
         <p>
-          Then the loop. <code>initialize()</code> calls <code>reset()</code> on
-          all three controllers, because a <code>PIDController</code> is a field
-          here and remembers its error between runs.
+          Then <code>run</code>. It calls <code>reset()</code> on all three
+          controllers before the loop, because a <code>PIDController</code> is a
+          field here and remembers its error between runs.
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java: execute()"
+          title="DriveToPoint.java: run()"
           code={`  @Override
-  protected void execute() {
-    Pose2d currentPose = drivetrain.getPose();
+  public void run(Coroutine coroutine) {
+    xController.reset();
+    yController.reset();
+    headingController.reset();
 
-    double vx = xController.calculate(currentPose.getX(), targetPose.getX());
-    double vy = yController.calculate(currentPose.getY(), targetPose.getY());
-    double omega =
-        headingController.calculate(
-            currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+    // Runs until something cancels it (like letting go of the button). To make it stop at the
+    // goal instead, loop while this is false, and stop the drivetrain after the loop:
+    // xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint()
+    while (true) {
+      Pose2d currentPose = drivetrain.getPose();
 
-    drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+      double vx = xController.calculate(currentPose.getX(), targetPose.getX());
+      double vy = yController.calculate(currentPose.getY(), targetPose.getY());
+      double omega =
+          headingController.calculate(
+              currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
+
+      drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
+      coroutine.yield();
+    }
   }`}
         />
 
@@ -311,15 +285,15 @@ public final void onCancel() {
         </p>
 
         <p>
-          <code>isFinished()</code> returns <code>false</code>, so the command
-          runs until the driver lets go. That keeps it out of{" "}
+          The loop is <code>while (true)</code>, so the command runs until the
+          driver lets go. That keeps it out of{" "}
           <code>Command.sequence(...)</code>. A sequence handed a command that
           never ends sticks on that leg forever, so no autonomous routine can
           use it.
         </p>
 
         <p>
-          The branch leaves the other option in a comment on that line:{" "}
+          The comment above the loop names the other option:{" "}
           <code>
             xController.atSetpoint() &amp;&amp; yController.atSetpoint()
             &amp;&amp; headingController.atSetpoint()
@@ -331,24 +305,31 @@ public final void onCancel() {
         </p>
 
         <p>
-          <code>end(...)</code> runs whether the command finished or something
-          took the drivetrain away, so that is where the stop belongs:{" "}
-          <code>
-            drivetrain.setControl(driveRequest.withVelocity(new
-            ChassisVelocities()))
-          </code>
-          .{" "}
+          The stop goes in <code>onCancel()</code>. This loop never exits, so
+          nothing after it would run, and Java will not compile a statement
+          after a <code>while (true)</code> with no <code>break</code>.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="DriveToPoint.java: onCancel()"
+          code={`  /** Stops the drivetrain. Runs when the command is canceled before it finishes. */
+  @Override
+  public void onCancel() {
+    // Zero speed, not SwerveRequest.Idle: Idle leaves every module on its last request.
+    drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities()));
+  }`}
+        />
+
+        <p>
           <Link href="/running-program#latched" className={linkStyle}>
             Ending a command does not stop a motor
           </Link>
           . Teleop would forgive a missing stop, because the joystick default
           takes the drivetrain back and asks for zero. An autonomous OpMode has
-          no default, and the robot would keep its last velocity.
-        </p>
-
-        <p>
-          Send zero speed, not <code>new SwerveRequest.Idle()</code>. Idle does
-          nothing to the modules, so each one keeps its last request.
+          no default, and the robot would keep its last velocity. Send zero
+          speed, not <code>new SwerveRequest.Idle()</code>, which does nothing
+          to the modules.
         </p>
 
         <p>
@@ -386,15 +367,15 @@ import org.wpilib.math.geometry.Rotation2d;
           So <code>kP = 10</code> reads as ten meters per second of commanded
           speed for every meter of error. On heading, <code>kP = 7</code> reads
           as seven radians per second for every radian. Do the arithmetic. Three
-          meters out, <code>execute()</code> asks for <strong>30 m/s</strong>,
-          against the <strong>4.54 m/s</strong> in{" "}
+          meters out, the loop asks for <strong>30 m/s</strong>, against the{" "}
+          <strong>4.54 m/s</strong> in{" "}
           <code>TunerConstants.kSpeedAt12Volts</code>. Nothing in the file trims
           it.
         </p>
 
         <p>
           The robot lurches away at full power, then crawls in over the last
-          half meter as the error shrinks. It works, and it looks bad.
+          half meter as the error shrinks.
         </p>
 
         <Box
@@ -470,14 +451,15 @@ import org.wpilib.math.geometry.Rotation2d;
         <p>
           <strong>It will not compile.</strong> Look for an old{" "}
           <code>ChassisSpeeds</code>, a <code>.named(...)</code> call on the new
-          command, or a <code>super(...)</code> that is not the
-          constructor&apos;s first line.
+          command, or a missing <code>name()</code> or{" "}
+          <code>requirements()</code>. Leave one out and the error says the
+          class does not override that abstract method.
         </p>
 
         <p>
-          <strong>Profiled Drive to Point</strong> changes this one file and
-          both faults go away. It plans the whole trip before the robot moves,
-          so PID becomes a small correction and the command gets a finish line.
+          <strong>Profiled Drive to Point</strong> changes this one file. It
+          plans the whole trip before the robot moves, so PID becomes a small
+          correction and the command gets a finish line.
         </p>
 
         <DocumentationButton
@@ -508,33 +490,33 @@ import org.wpilib.math.geometry.Rotation2d;
             question:
               'Where does the name "DriveToPoint" that shows up in telemetry come from?',
             options: [
-              "The class name, which ClassicCommand reads by reflection",
+              "The class name, which the scheduler reads by reflection",
               'A .named("DriveToPoint") call on the finished command',
-              'The super("DriveToPoint", drivetrain) call, which also declares the mechanism the command owns',
+              'The name() method, which returns "DriveToPoint"',
               "The @Teleop annotation on the OpMode that binds it",
             ],
             correctAnswer: 2,
             explanation:
-              "super(...) calls the constructor of the class you extended. Its first argument is the command name; everything after it is a mechanism this command owns while it runs. .named(...) belongs to the builder that run(...) returns, so calling it on a finished Command does not compile, and that is one of the three usual compile errors here.",
+              "name() is one of the three methods Command asks for, and what it returns is the telemetry name. requirements() is the one that declares the drivetrain. .named(...) belongs to the builder that run(...) returns, so calling it on a finished Command does not compile.",
           },
           {
             id: 3,
             question:
-              "Why does the stop request go in end(boolean interrupted) rather than at the bottom of execute() or after isFinished() returns true?",
+              "Why does the stop request go in onCancel() on this branch rather than after the loop in run()?",
             options: [
-              "end() runs on a natural finish and on an interrupt, so no exit from the command skips the stop",
-              "end() is the only method permitted to call setControl",
+              "The loop never exits, so the only way the command ends is a cancel, and onCancel() is what runs then",
+              "onCancel() is the only method permitted to call setControl",
               "A zero-speed request only takes effect once the command is over",
               "The scheduler will not release a mechanism until the command sends one final request",
             ],
             correctAnswer: 0,
             explanation:
-              "Canceling ends the command, not the motion: the hardware carries on with the last request it was given. end() is the one method that runs on both exits, and the interrupted flag tells you which happened. Teleop happens to forgive a missing stop, because the joystick default takes the drivetrain back and asks for nothing, but that default belongs to one OpMode.",
+              "A canceled run() never reaches the lines after its loop, and Java will not compile a statement after a while (true) with no break. Canceling ends the command, not the motion: the hardware carries on with the last request it was given. Teleop happens to forgive a missing stop, because the joystick default takes the drivetrain back and asks for nothing, but that default belongs to one OpMode.",
           },
           {
             id: 4,
             question:
-              "isFinished() returns false on this branch. What follows from that?",
+              "The loop in run() is while (true) on this branch. What follows from that?",
             options: [
               "The command runs until the driver releases the button, and it cannot be a step inside Command.sequence(...)",
               "The command ends as soon as all three controllers are inside tolerance",
@@ -543,7 +525,7 @@ import org.wpilib.math.geometry.Rotation2d;
             ],
             correctAnswer: 0,
             explanation:
-              "A command that never finishes sticks any sequence it is placed in on that leg forever, and autonomous routines are sequences. The commented-out alternative on the branch is xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint(), whose default tolerance is 0.05: 5 cm on X and Y, 0.05 radians on heading. Profiled Drive to Point gives the command a real finish line instead.",
+              "A command that never finishes sticks any sequence it is placed in on that leg forever, and autonomous routines are sequences. The comment above the loop names the alternative, looping until xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint(), whose default tolerance is 0.05: 5 cm on X and Y, 0.05 radians on heading. Profiled Drive to Point gives the command a real finish line instead.",
           },
           {
             id: 5,
@@ -562,7 +544,7 @@ import org.wpilib.math.geometry.Rotation2d;
           {
             id: 6,
             question:
-              "kP is 10 on the X controller and the target is three meters away. What velocity does execute() ask for on that axis?",
+              "kP is 10 on the X controller and the target is three meters away. What velocity does the loop ask for on that axis?",
             options: [
               "3 m/s, because the controller caps its output at the error",
               "30 m/s, well past the 4.54 m/s in TunerConstants, and nothing in the file trims it",

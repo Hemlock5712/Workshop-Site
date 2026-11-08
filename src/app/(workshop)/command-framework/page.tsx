@@ -239,12 +239,6 @@ public class MyTeleop extends PeriodicOpMode {
           place.
         </p>
         <p>
-          The reason to write commands this way is visibility. A command that
-          keeps running stays the command on its mechanism, so a log always
-          names what has the arm right now.
-        </p>
-
-        <p>
           Here is a real one, from the arm you build in{" "}
           <strong>Writing Commands</strong>.
         </p>
@@ -260,10 +254,9 @@ public Command runFast() {
         />
 
         <p>
-          <code>runRepeatedly</code> re-runs <code>setVoltage</code> every loop,
-          so the six-volt request never goes stale. Every command built that way
-          ends with the <code>(hold)</code> suffix, which is a promise from
-          whoever wrote it: <em>this command has no ending</em>.
+          <code>runRepeatedly</code> re-runs <code>setVoltage</code> every loop.
+          The <code>(hold)</code> suffix on its name tells the reader{" "}
+          <em>this command has no ending</em>.
         </p>
 
         <p>

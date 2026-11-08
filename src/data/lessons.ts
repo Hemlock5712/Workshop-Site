@@ -302,16 +302,6 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     title: "Pathfinding",
     section: "workshop6",
   },
-  // Drive to Tag closes Vision & Navigation, which is the material it uses.
-  // It was the last lesson of Advanced Commands, a group away from the vision
-  // and pose-driving lessons its inline command is built out of.
-  {
-    slug: "/drive-to-tag-inline",
-    title: "Example: Drive to Tag",
-    shortLabel: "Drive to Tag",
-    section: "workshop6",
-    optional: true,
-  },
 ];
 
 const SLUG_INDEX: ReadonlyMap<string, number> = new Map(

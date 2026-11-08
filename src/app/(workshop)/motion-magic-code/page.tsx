@@ -87,8 +87,7 @@ export default function MotionMagicCode() {
         </Mech>
 
         <p>
-          Its import has been at the top of the file since{" "}
-          <strong>Mechanisms</strong>. Delete the{" "}
+          Your editor offers its import. Delete the{" "}
           <code>import com.ctre.phoenix6.controls.VoltageOut;</code> line, since
           nothing uses it any more.
         </p>
@@ -248,7 +247,7 @@ export default function MotionMagicCode() {
             title="MyTeleop.java: the arm binding"
             filename="src/main/java/first/robot/opmode/MyTeleop.java"
             code={`    // Hold the left trigger to drive the arm to its vertical position. Releasing cancels the
-    // command; the position request stays applied, so the arm holds where it is.
+    // command; the position request stays applied, so the arm finishes the move and holds there.
     driver.leftTrigger().whileTrue(robot.arm.vertical());`}
           />
           <p>
@@ -284,17 +283,15 @@ export default function MotionMagicCode() {
             </Mech>
             <Mech for="flywheel" as="li">
               The wheel come up to 75 rotations per second and hold it on the
-              right trigger, then settle at 25 when you release.
-            </Mech>
-            <Mech for="flywheel" as="li">
-              The same speeds every run, whatever the battery is doing.
+              right trigger, then settle at 25 when you release. Plot its
+              velocity in Tuner X to read the numbers.
             </Mech>
           </ul>
         </Box>
         <p>
-          A <M k="noun" /> that does not move at all still has <code>0.0</code>{" "}
-          gains, so repeat the paste. One that overshoots and hunts is a tuning
-          problem. Fix it in Tuner X with{" "}
+          A <M k="noun" /> that does not move at all may still have{" "}
+          <code>0.0</code> values in its config, so repeat the paste. One that
+          overshoots and hunts is a tuning problem. Fix it in Tuner X with{" "}
           <a href="/pid-control" className="underline">
             PID Tuning in Tuner X
           </a>
@@ -358,7 +355,7 @@ export default function MotionMagicCode() {
             ],
             correctAnswer: 1,
             explanation:
-              "Overshoot is the gains, and the gains belong in Tuner X, where you can plot the response. Fix them there with the PID tuning procedure, then paste the new config so the code carries the same numbers as the device.",
+              "Overshoot is a tuning problem, and tuning belongs in Tuner X, where you can plot the response. Fix them there with the PID tuning procedure, then paste the new config so the code carries the same numbers as the device.",
           },
         ]}
       />

@@ -51,8 +51,7 @@ export default function Testing() {
           <p>
             The two halves catch different mistakes. A person at the robot
             catches a motor wired backwards or a loose CANcoder. An automated
-            test catches a teammate&apos;s edit that quietly changed a setpoint
-            three weeks before an event.
+            test catches a teammate&apos;s edit that quietly changed a setpoint.
           </p>
         </ProseBlock>
       </Split>
@@ -60,13 +59,9 @@ export default function Testing() {
       <LessonSection id="on-the-robot" title="On the robot">
         <p>
           Run this list before the first enable after any change, and before
-          every match. It takes two minutes.
+          every match.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Battery above 12.5 volts on the driver station. A low battery makes
-            a tuned mechanism look untuned.
-          </li>
           <li>
             Every CAN device in Tuner X with the ID the code expects: 31 and 32
             for the arm, 21 for the flywheel.
@@ -75,8 +70,8 @@ export default function Testing() {
             The code on the robot came from main, built after the last pull.
           </li>
           <li>
-            Clear the mechanism&apos;s path. One person holds Disable and says
-            &quot;enabling&quot; out loud before clicking Enable.
+            Clear the mechanism&apos;s path and say &quot;enabling&quot; out
+            loud before clicking Enable.
           </li>
           <li>
             Press one binding at a time, briefly, and watch the mechanism, not
@@ -94,11 +89,6 @@ export default function Testing() {
             means Disable, now. Work out why with the robot disabled.
           </p>
         </Box>
-        <p>
-          Write what you pressed and what happened in the pull request
-          description. That line is how a reviewer knows the change ran on a
-          robot.
-        </p>
       </LessonSection>
 
       <LessonSection id="a-test-file" title="A test file">
@@ -202,8 +192,8 @@ assertFalse(flywheel.isAtTarget());`}
 
       <LessonSection id="testable-code" title="Testable code">
         <p>
-          These tests work because the mechanisms from Workshop 3 already answer
-          questions. <code>getTargetPosition()</code>,{" "}
+          These tests work because the mechanisms from Finish Conditions already
+          answer questions. <code>getTargetPosition()</code>,{" "}
           <code>getVelocity()</code> and <code>isAtTarget()</code> each return a
           value, and a test can only check a value it can read. A command that
           sets a motor and reports nothing can only be checked by watching it.

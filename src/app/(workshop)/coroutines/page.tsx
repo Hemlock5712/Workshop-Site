@@ -1,5 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
-import { MarginNote, Split } from "@/components/lesson/Prose";
+import { Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CoroutineTimeline from "@/components/lesson/CoroutineTimeline";
 import CodeBlock from "@/components/CodeBlock";
@@ -48,7 +48,6 @@ export const metadata = lessonMetadata("/coroutines");
  * This page also owns `coroutine.yield()` and the first real `while` loop in
  * the course, which is why it sends a student to Codecademy's Loops module.
  * `/java-basics` tells them to skip that module until here, and
- * `/drive-to-tag-inline` names this page as its prerequisite.
  *
  * Nothing on this page cites 2027-Template. The quiz used to quote it.
  */
@@ -81,11 +80,6 @@ export default function Coroutines() {
             <code>mech-5-Coroutines</code>.
           </p>
         </div>
-        <MarginNote label="What you'll build">
-          One new file, <code>RaiseAndShootOpMode.java</code>. It is the Y
-          button from the last lesson, moved into autonomous, with a time limit
-          on every wait.
-        </MarginNote>
       </Split>
 
       <LessonSection id="two-reasons" title="Two reasons for a coroutine">
@@ -105,8 +99,8 @@ export default function Coroutines() {
       <LessonSection id="core-five" title="The core five">
         <p>
           A coroutine body takes one argument, an object called{" "}
-          <code>coroutine</code>. These five calls on it cover nearly every
-          routine, in the order you will reach for them.
+          <code>coroutine</code>. These are the five calls on it, in the order
+          you will reach for them.
         </p>
 
         <CodeBlock
@@ -158,8 +152,8 @@ while (!robot.arm.isAtTarget()) {
             className="text-[var(--accent)] underline hover:text-[var(--accent)]"
           >
             Learn Java
-          </a>{" "}
-          before Drive to Tag.
+          </a>
+          .
         </p>
 
         <CoroutineTimeline />
@@ -287,12 +281,6 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
 coroutine.fork(robot.arm.vertical());`}
         />
 
-        <p>
-          Run it and the arm barely twitches. That is correct. The body has no
-          lines after the fork, so the routine ends on its first pass, and
-          ending a routine cancels everything it forked.
-        </p>
-
         <h3 className="display m-0 text-aside">Step 3: Wait, with a limit</h3>
 
         <p>
@@ -304,8 +292,7 @@ coroutine.fork(robot.arm.vertical());`}
         <CodeBlock
           language="java"
           title="Add below the fork"
-          code={`// TODO: time your own arm.
-if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+          code={`if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
   // The flywheel never started, so there is nothing to stop.
   return;
 }`}
@@ -313,8 +300,8 @@ if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut(
 
         <p>
           This is the Y button&apos;s wait with a limit added. Three seconds is
-          a placeholder: use the time you wrote down at the end of Finish
-          Conditions, doubled.
+          a generous backstop. A mechanism that reaches its target never hits
+          it.
         </p>
 
         <h3 className="display m-0 text-aside">
@@ -452,11 +439,6 @@ coroutine.fork(robot.flywheel.stop());`}
             </tbody>
           </table>
         </div>
-
-        <p>
-          Logging is next. It is how you read back a routine that ran with
-          nobody watching.
-        </p>
       </LessonSection>
 
       <Quiz

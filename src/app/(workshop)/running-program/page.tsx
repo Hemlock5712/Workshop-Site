@@ -35,7 +35,7 @@ export default function RunningProgram() {
         <>An Xbox-style controller plugged into the same laptop.</>,
       ]}
       branch="mech-2-Commands"
-      time="15 minutes"
+      time="11 minutes"
     >
       <MechanismSelector />
 
@@ -55,16 +55,13 @@ export default function RunningProgram() {
 
       <LessonSection id="canivore-usb-off" title="Hand over the CAN bus">
         <p>
-          Two programs cannot own the CAN bus at once. Leave{" "}
-          <strong>CANivore USB</strong> on and Tuner X keeps the bus, so your
-          code reaches nothing.
+          Leave <strong>CANivore USB</strong> on and Tuner X fights Hardware Sim
+          for the devices, so your code reaches nothing.
         </p>
         <p>
-          Open Tuner X, open the CANivore settings, and turn CANivore USB{" "}
-          <strong>off</strong>. Your devices drop off the Tuner X list, which is
-          correct. It is the switch you turned on for bench testing, covered on{" "}
-          <a href="/mechanism-setup" className="underline">
-            Motor Setup
+          It is the switch you turned on in{" "}
+          <a href="/hardware" className="underline">
+            Hardware Setup
           </a>
           .
         </p>
@@ -75,9 +72,8 @@ export default function RunningProgram() {
         >
           <p>
             Enable the robot, hold a trigger, and a geared arm swings under 6
-            volts. Clear the path it travels. Check that nothing is clamped in
-            the way, and keep a hand near Disable. If anything looks wrong,
-            disable first and ask afterwards.
+            volts. Clear the path it travels and keep a hand near Disable. If
+            anything looks wrong, disable first.
           </p>
         </Box>
       </LessonSection>
@@ -86,9 +82,10 @@ export default function RunningProgram() {
         <VideoEmbed id="xsR7m6ToUFE" title="Hardware Simulation" />
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            In Tuner X, turn <strong>CANivore USB off</strong> and close the
-            control window. <strong>You should see:</strong> your devices drop
-            out of the Tuner X list.
+            In Tuner X, turn <strong>CANivore USB off</strong>.{" "}
+            <strong>You should see:</strong> your devices drop out of the Tuner
+            X list. They come back once Hardware Sim is running, and Tuner X
+            plots them as usual.
           </li>
           <li>
             Plug the controller into the laptop. Check the mechanism is powered
@@ -131,7 +128,7 @@ export default function RunningProgram() {
           src="/images/running-program/add-controller.png"
           alt="The simulation window, with an arrow from Xbox Controller in System Joysticks to Joystick[0] in the Joysticks panel"
           title="Drop it on Joystick[0]"
-          caption="Once it lands, the axis rows twitch as you move the sticks. That is the fastest way to tell the GUI is reading the controller and not the keyboard."
+          caption="Once it lands, the axis rows change as you move the sticks."
           width={1540}
           height={1111}
         />
@@ -172,14 +169,12 @@ export default function RunningProgram() {
             Click <strong>Disable</strong>. Leave the program running for now.
           </li>
         </ol>
-        <p>Two things go wrong here more than anything else.</p>
+        <p>Two common failures:</p>
         <ul className="ml-5 list-disc space-y-2">
           <li>
             <strong>Teleop is selected and no motor turns.</strong>
             &nbsp;CANivore USB is still on, or the controller is not on
-            port&nbsp;0, or the driver station still says Disabled. A burst of{" "}
-            <code>CAN message is stale</code> at startup is normal; the same
-            line a few seconds later means the bus is unreachable.
+            port&nbsp;0, or the robot is still disabled.
           </li>
           <li>
             <strong>Nothing on the bench moves, and it all looks fine.</strong>
@@ -197,11 +192,6 @@ export default function RunningProgram() {
           <code>whileFalse</code> behind it. This step takes the{" "}
           <code>whileFalse</code> away for one run, so you see what it is for.
           Keep a hand on <strong>Disable</strong>.
-          <Mech for="arm">
-            {" "}
-            Run it only on an arm that turns a full circle. An arm with hard
-            stops drives into one at 6 V.
-          </Mech>
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -304,7 +294,7 @@ export default function RunningProgram() {
             ],
             correctAnswer: 1,
             explanation:
-              "Only one program can own the CAN bus over USB. With CANivore USB on, Tuner X holds the bus and the simulator cannot reach your motors. It is one switch with two positions: on for bench work in Tuner X, off when your code is driving.",
+              "With CANivore USB on, Tuner X fights Hardware Sim for the devices and the simulator cannot take them over. It is one switch with two positions: on for bench work in Tuner X, off when your code is driving.",
           },
           {
             id: 3,

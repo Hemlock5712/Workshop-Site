@@ -82,28 +82,18 @@ export default function VisionImplementation() {
       </Box>
 
       <LessonSection id="install-the-library" title="Install the library">
-        <Split>
-          <ProseBlock>
-            <p>
-              LimelightLib used to be a single file you copied into your project
-              and re-copied whenever it changed. It is a vendor dependency now,
-              the same kind of thing as Phoenix 6, so VS Code fetches it and
-              Gradle keeps it.
-            </p>
-            <p>
-              Open the <strong>WPILib Vendor Dependencies</strong> view from the
-              activity bar on the left. Expand <strong>INSTALL FROM URL</strong>
-              , paste the URL below into the box, and press{" "}
-              <strong>Install</strong>.
-            </p>
-          </ProseBlock>
-          <MarginNote label="Delete the old file">
-            If your project already holds a copied{" "}
-            <code>LimelightHelpers.java</code>, delete it. The vendordep does
-            not provide that class, nothing on this page calls it, and leaving
-            it behind gives you two readers of the same camera.
-          </MarginNote>
-        </Split>
+        <ProseBlock>
+          <p>
+            LimelightLib is a vendor dependency, the same kind of thing as
+            Phoenix 6.
+          </p>
+          <p>
+            Open the <strong>WPILib Vendor Dependencies</strong> view from the
+            activity bar on the left. Expand <strong>INSTALL FROM URL</strong>,
+            paste the URL below into the box, and press <strong>Install</strong>
+            .
+          </p>
+        </ProseBlock>
 
         <CodeBlock
           language="text"
@@ -115,7 +105,7 @@ export default function VisionImplementation() {
           src="/images/vision/install-from-url.png"
           alt="The WPILib Vendor Dependencies panel in VS Code, with the INSTALL FROM URL section expanded and the Install button circled"
           title="Install from URL"
-          caption="The panel lives behind the code icon at the bottom of the activity bar. Paste the URL, press Install, and it appears under INSTALLED DEPENDENCIES."
+          caption="Paste the URL, press Install, and it appears under INSTALLED DEPENDENCIES."
           width={499}
           height={412}
         />
@@ -134,29 +124,23 @@ export default function VisionImplementation() {
       </LessonSection>
 
       <LessonSection id="megatag1-and-megatag2" title="MegaTag1 and MegaTag2">
-        <Split>
-          <ProseBlock>
-            <p>
-              The camera solves the same frame two ways, and you pick which
-              answer to believe.
-            </p>
-            <p>
-              MegaTag1 solves position and heading from the geometry of the tags
-              in frame. Two or more tags spread across the image constrain that
-              geometry well. One tag does not. A small error in the measured
-              corners swings the solved heading, and the position follows it.
-            </p>
-            <p>
-              MegaTag2 takes your heading as given and solves only for position.
-              One tag is enough. The heading goes in uncorrected, so a gyro ten
-              degrees out returns a position that is wrong and looks fine.
-            </p>
-          </ProseBlock>
-          <MarginNote label="Heading first">
-            MegaTag2 cannot answer without a heading, so the class below sends
-            one every loop before it reads anything back.
-          </MarginNote>
-        </Split>
+        <ProseBlock>
+          <p>
+            The camera solves the same frame two ways, and you pick which answer
+            to believe.
+          </p>
+          <p>
+            MegaTag1 solves position and heading from the geometry of the tags
+            in frame. Two or more tags spread across the image constrain that
+            geometry well. One tag does not. A small error in the measured
+            corners swings the solved heading, and the position follows it.
+          </p>
+          <p>
+            MegaTag2 takes your heading as given and solves only for position.
+            One tag is enough. The heading goes in uncorrected, so a gyro ten
+            degrees out returns a position that is wrong and looks fine.
+          </p>
+        </ProseBlock>
       </LessonSection>
 
       <LessonSection id="one-frame-at-a-time" title="One frame at a time">
@@ -211,15 +195,13 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
             </p>
             <p>
               Now the read. <code>readResultsQueue()</code> hands back every
-              frame that arrived since the last call, which is usually one and
-              is sometimes none or two. Working the queue rather than asking for
-              the latest value means no frame is skipped. It also means one
-              frame never goes into the estimator twice.
+              frame that arrived since the last call. Working the queue rather
+              than asking for the latest value means no frame is skipped. It
+              also means one frame never goes into the estimator twice.
             </p>
             <p>
               Ask MegaTag1 first, then read <code>fieldedTagCount</code> off the
-              answer. Under two tags, ask the same frame again as MegaTag2. The
-              second solve is cheap because the frame is already in hand.
+              answer. Under two tags, ask the same frame again as MegaTag2.
             </p>
           </ProseBlock>
           <MarginNote label="Flat package">
@@ -288,8 +270,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
               Distance hurts gently and tag count helps hard. Doubling the
               distance multiplies the error bar by about 2.3, while a second tag
               divides it by four. One tag at two meters gives about 0.77 m. Two
-              tags at the same distance give about 0.19 m. That ratio is the
-              argument for the mounting rule on the last page.
+              tags at the same distance give about 0.19 m.
             </p>
           </ProseBlock>
           <MarginNote label="The library will do this">
@@ -340,7 +321,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           </li>
           <li>
             Uncover the camera. The pose settles toward where the tag says the
-            robot is, over a second rather than in one frame.
+            robot is.
           </li>
           <li>
             Back away past four meters, then close in again. Line up on two
@@ -358,16 +339,16 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
         </Box>
 
         <p>
-          Three things go wrong here. A pose that never moves is almost always
-          the name: the string in <code>registerAll</code> has to match the
-          camera&apos;s NetworkTables table exactly. A pose that jumps somewhere
-          impossible means the offsets are wrong. If it lands on the far side of
-          the field, a red-origin pose is going into a blue-origin estimator.
-          That is why the code asks for <code>MT1_WPIBLUE</code>. Position that
-          corrects on two tags and goes strange on one is the MegaTag2 path, so
-          seed the gyro. Not with <code>seedFieldCentric()</code>, which only
-          changes which way the sticks call forward:{" "}
-          <strong>Swerve Calibration</strong> has the three kinds of zeroing.
+          If the pose never moves, check the name first: the string in{" "}
+          <code>registerAll</code> has to match the camera&apos;s NetworkTables
+          table exactly. If the pose jumps somewhere impossible, check the
+          offsets. If it lands on the far side of the field, a red-origin pose
+          is going into a blue-origin estimator. That is why the code asks for{" "}
+          <code>MT1_WPIBLUE</code>. Position that corrects on two tags and goes
+          strange on one is the MegaTag2 path, so seed the gyro. Not with{" "}
+          <code>seedFieldCentric()</code>, which only changes which way the
+          sticks call forward: <strong>Swerve Calibration</strong> has the three
+          kinds of zeroing.
         </p>
       </LessonSection>
 
@@ -427,7 +408,7 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
             ],
             correctAnswer: 3,
             explanation:
-              "The divisor is fieldedTagCount squared, so two tags divide by 4 and three divide by 9. One tag at 2 m gives about 0.77 m; two tags at the same distance give about 0.19 m. This is the whole argument for aiming a camera at where two tags will be.",
+              "The divisor is fieldedTagCount squared, so two tags divide by 4 and three divide by 9. One tag at 2 m gives about 0.77 m; two tags at the same distance give about 0.19 m.",
           },
           {
             id: 5,

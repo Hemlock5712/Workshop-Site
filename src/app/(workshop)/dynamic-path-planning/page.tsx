@@ -199,7 +199,7 @@ driver.a().whileTrue(drivetrain.pathfindTo(new Pose2d(7.5, 4.0, Rotation2d.ZERO)
           <ul className="ml-5 list-disc space-y-2">
             <li>
               A route that passes beside the hub, never through it, and ends
-              within a few centimeters of (7.5, 4.0), facing down the field.
+              near (7.5, 4.0), facing down the field.
             </li>
             <li>A stop at the goal that stays stopped while A is held.</li>
             <li>

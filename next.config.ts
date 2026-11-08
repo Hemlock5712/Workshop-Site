@@ -124,6 +124,14 @@ const nextConfig: NextConfig = {
   // trailing-slash normalisation; it does not affect these.
   async redirects() {
     return [
+      // Drive to Tag was retired in November 2026. Driving to a tag is a field
+      // pose from the tag layout handed to Drive to Point, not a camera-space
+      // loop of its own.
+      {
+        source: "/drive-to-tag-inline",
+        destination: "/drive-to-point",
+        permanent: true,
+      },
       {
         source: "/logging-options",
         destination: "/logging-implementation",

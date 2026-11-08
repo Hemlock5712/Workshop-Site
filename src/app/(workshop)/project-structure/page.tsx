@@ -3,7 +3,7 @@ import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
-import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
+import { MarginNote, Split } from "@/components/lesson/Prose";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/project-structure");
@@ -37,16 +37,6 @@ export default function ProjectStructure() {
       ]}
       time="9 minutes"
     >
-      <Split>
-        <ProseBlock>
-          <p>
-            This page is a map, and nothing on it gets typed. By the end of
-            Workshop 3 your project looks like the tree below. Every lesson
-            after this one adds a file to a folder named here.
-          </p>
-        </ProseBlock>
-      </Split>
-
       <LessonSection id="the-tree" title="The tree">
         <CodeBlock
           language="text"
@@ -75,9 +65,9 @@ export default function ProjectStructure() {
   build/                       made by every build. Never edited`}
         />
         <p>
-          The <code>mechanisms</code> folder does not exist yet. You make it in
-          the next lesson. Everything else is already there from the New Project
-          Creator.
+          Nothing on this page gets typed. The <code>mechanisms</code> folder
+          does not exist yet. You make it in the next lesson. Everything else is
+          already there from the New Project Creator.
         </p>
         <p>
           Three things you leave alone. <code>Main.java</code> holds one line
@@ -143,9 +133,9 @@ export default function ProjectStructure() {
 
       <LessonSection id="where-numbers-live" title="Where numbers live">
         <p>
-          There is no <code>Constants</code> file on any branch of this course.
-          A number sits in the class that uses it, next to the line that uses
-          it.
+          There is no <code>Constants</code> file on any mechanism branch of
+          this course. A number sits in the class that uses it, next to the line
+          that uses it.
         </p>
         <ul className="ml-5 list-disc space-y-2">
           <li>

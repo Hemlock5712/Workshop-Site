@@ -36,9 +36,9 @@ export default function VisionHardware() {
   return (
     <PageTemplate
       title="Vision Hardware"
-      lede="A camera that sees an AprilTag can tell the robot where it is standing. Everything on this page happens before any Java, and none of it can be fixed in code afterwards."
+      lede="A camera that sees an AprilTag can tell the robot where it is standing. Everything on this page happens before any Java."
       needs={[
-        <>A robot on its wheels, with a PDH and a radio or network switch.</>,
+        <>A swerve robot on its wheels, with a SystemCore.</>,
         <>A Limelight, its mount, and an Ethernet cable.</>,
         <>A printed AprilTag from the current field map.</>,
         <>A laptop on the robot network, for the camera web interface.</>,
@@ -46,34 +46,25 @@ export default function VisionHardware() {
       time="12 minutes"
     >
       <LessonSection id="tags-against-drift" title="Tags against drift">
-        <Split>
-          <ProseBlock>
-            <p>
-              Odometry adds up wheel turns. Every skid, every scrubbed wheel and
-              every millimeter of error in the wheel radius goes into the total
-              and stays there. By the end of a match, the robot&apos;s idea of
-              where it stands can be a meter from the truth. Nothing on the
-              robot notices.
-            </p>
-            <p>
-              An AprilTag is a printed marker with an ID number. The field
-              drawing lists where each ID sits, how high, and which way it
-              faces. A camera measures the corners of the tag in the image and
-              solves for the transform between camera and tag. From there it
-              works backwards to a position on the field.
-            </p>
-            <p>
-              That answer owes nothing to how long the robot has been driving.
-              It is also occasional and noisy, so it does not replace odometry.
-              The next lesson blends the two.
-            </p>
-          </ProseBlock>
-          <MarginNote label="The map is a file">
-            The camera holds its own copy of the field map, so uploading it is
-            one of the steps below. A camera on last season&apos;s map reports
-            confident nonsense.
-          </MarginNote>
-        </Split>
+        <ProseBlock>
+          <p>
+            Odometry adds up wheel turns. Every skid, every scrubbed wheel and
+            every millimeter of error in the wheel radius goes into the total
+            and stays there.
+          </p>
+          <p>
+            An AprilTag is a printed marker with an ID number. The field drawing
+            lists where each ID sits, how high, and which way it faces. A camera
+            measures the corners of the tag in the image and solves for the
+            transform between camera and tag. From there it works backwards to a
+            position on the field.
+          </p>
+          <p>
+            That answer owes nothing to how long the robot has been driving. It
+            is also occasional and noisy, so it does not replace odometry. The
+            next lesson blends the two.
+          </p>
+        </ProseBlock>
       </LessonSection>
 
       <LessonSection id="limelight-or-photonvision" title="The camera">
@@ -81,9 +72,8 @@ export default function VisionHardware() {
           This course uses a Limelight: camera and processor in one sealed unit,
           set up through a web page it serves itself. PhotonVision is the other
           common choice. It is free software on a coprocessor you buy and flash
-          yourself, which is setup that teaches nothing about pose estimation.
-          The ideas on the next page carry over to it with different class
-          names.
+          yourself. The ideas on the next page carry over to it with different
+          class names.
         </p>
         <DocumentationButton
           href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary"
@@ -94,10 +84,8 @@ export default function VisionHardware() {
 
       <LessonSection id="mounting-and-wiring" title="Mounting and wiring">
         <p>
-          Mounting decides whether any of the next lesson works, and it is the
-          part teams get wrong. Bolt the camera where it can see the scoring
-          tags at the moment you are scoring, not where there happened to be
-          room.
+          Bolt the camera where it can see the scoring tags at the moment you
+          are scoring, not where there happened to be room.
         </p>
 
         <FigureGrid
@@ -105,23 +93,13 @@ export default function VisionHardware() {
           items={[
             {
               label: "Power",
-              term: "PDH, 12 V",
-              body: (
-                <>
-                  A dedicated breaker on the PDH. Not the VRM, whose budget is
-                  already spoken for by the radio.
-                </>
-              ),
+              term: "12 V",
+              body: <>Straight from the power distribution panel.</>,
             },
             {
               label: "Network",
               term: "Ethernet",
-              body: (
-                <>
-                  Straight to the radio, or to a network switch once you have
-                  more than one device. The camera needs a real link, not Wi-Fi.
-                </>
-              ),
+              body: <>Plugged straight into the SystemCore.</>,
             },
             {
               label: "Angle",
@@ -139,11 +117,14 @@ export default function VisionHardware() {
         <Split>
           <ProseBlock>
             <p>
-              The angle rule surprises people. A tag viewed square-on and at its
-              own height is a plain rectangle. A small error in the measured
-              corners then swings the solved angle a long way. View the same tag
-              from off to one side and the shape in the image carries much more
-              information about where you stand.
+              A tag viewed square-on and at its own height is a plain rectangle.
+              A small error in the measured corners then swings the solved angle
+              a long way. View the same tag from off to one side and the shape
+              in the image carries much more information about where you stand.
+            </p>
+            <p>
+              We have found Limelight 3 and Limelight 4 lenses do not come
+              glued, so you may want to glue yours. Loctite works well.
             </p>
           </ProseBlock>
           <MarginNote label="Two cameras">
@@ -157,8 +138,7 @@ export default function VisionHardware() {
       <LessonSection id="set-the-camera-up" title="Set the camera up">
         <p>
           Do these in order, with the robot powered and the laptop on the robot
-          network. None of the Java on the next page fixes a camera that skipped
-          a step here.
+          network.
         </p>
 
         <ol className="ml-5 list-decimal space-y-4">
@@ -177,10 +157,10 @@ export default function VisionHardware() {
           </li>
           <li>
             <strong>Switch the active pipeline to AprilTag.</strong> A
-            color-blob pipeline never publishes a botpose, however well it is
-            tuned. The AprilTag pipeline sets <strong>Marker Size</strong> for
-            you. Check that it reads 165.1, the edge of an FRC tag in
-            millimeters, and match it to your tag if you printed another size.
+            color-blob pipeline never publishes a botpose. The AprilTag pipeline
+            sets <strong>Marker Size</strong> for you. Check that it reads
+            165.1, the edge of an FRC tag in millimeters, and match it to your
+            tag if you printed another size.
           </li>
           <li>
             <strong>Drop the exposure</strong> as low as it goes while the
@@ -204,7 +184,7 @@ export default function VisionHardware() {
           <li>
             <strong>Calibrate the lens</strong> with a printed ChArUco board.
             This corrects lens distortion, which is worst at the edges of the
-            image. Tags sit at the edges whenever you are lined up on something.
+            image.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
@@ -220,16 +200,6 @@ export default function VisionHardware() {
             <code>limelight</code>.
           </li>
         </ol>
-
-        <Box variant="alert-warning" title="Glue the lens">
-          <p>
-            Limelight lenses are threaded and they walk under vibration. Once
-            the focus is right for the distance you care about, put a drop of
-            glue on the thread. A lens that shifts halfway through a competition
-            takes the calibration with it and nothing on the driver station says
-            so.
-          </p>
-        </Box>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -241,9 +211,9 @@ export default function VisionHardware() {
         <Box variant="alert-success" title="You should see">
           <p>
             The tag&apos;s ID, drawn on the image and reported in the numbers
-            below it. A distance that matches a tape measure within a few
-            centimeters. A botpose that changes smoothly as you move the tag,
-            rather than flickering between two answers.
+            below it. A distance that matches a tape measure. A botpose that
+            changes smoothly as you move the tag, rather than flickering between
+            two answers.
           </p>
         </Box>
 
@@ -253,8 +223,7 @@ export default function VisionHardware() {
           An ID with a distance that is out by a factor means{" "}
           <strong>Marker Size</strong> does not match the tag you printed. A
           distance that is right up close and drifts as the tag nears the edge
-          of the frame is the lens calibration. Run the ChArUco board again,
-          properly this time.
+          of the frame is the lens calibration. Run the ChArUco board again.
         </p>
       </LessonSection>
 
@@ -328,7 +297,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 3,
             explanation:
-              "Every lens bends the image, and the bend is worst away from the center. Calibration measures that bend so the solver can undo it. It matters most exactly when you are lined up on something, because the tag has then moved to the edge of the frame.",
+              "Every lens bends the image, and the bend is worst away from the center. Calibration measures that bend so the solver can undo it.",
           },
           {
             id: 6,

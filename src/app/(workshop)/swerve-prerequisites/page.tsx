@@ -1,6 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
 import FigureGrid from "@/components/lesson/FigureGrid";
-import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
@@ -33,18 +32,12 @@ export default function SwervePrerequisites() {
       ]}
       time="12 minutes"
     >
-      <Split>
-        <KeyConceptSection
-          description={[
-            "What you do have to understand is how a swerve robot answers two questions, which way is forward, and where am I on the field. Four ideas cover that, and every page after this one leans on all four.",
-          ]}
-          concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
-        />
-        <MarginNote label="WHAT YOU'LL GET">
-          The vocabulary the rest of the course assumes: field-centric driving,{" "}
-          <code>Pose2d</code>, the field&apos;s coordinate frame, and odometry.
-        </MarginNote>
-      </Split>
+      <KeyConceptSection
+        description={[
+          "What you do have to understand is how a swerve robot answers two questions: which way is forward, and where am I on the field.",
+        ]}
+        concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
+      />
 
       {/* ── 1. WHAT SWERVE IS ────────────────────────────────────────── */}
       <LessonSection
@@ -62,7 +55,7 @@ export default function SwervePrerequisites() {
           Because every wheel can point wherever it likes, the robot can travel
           one way while facing another. The two are independent. It can drive
           straight down the field while slowly spinning. The word for that is{" "}
-          <strong>holonomic</strong> motion, and it is the whole appeal.
+          <strong>holonomic</strong> motion.
         </p>
 
         <Box variant="concept" title="You never write the swerve math">
@@ -128,9 +121,8 @@ export default function SwervePrerequisites() {
                   Forward means down the field, away from your driver station,
                   no matter which way the robot is facing. Push the stick away
                   from you and the robot moves away from you, even if it has to
-                  drive backwards to do it. This is what makes a swerve robot
-                  drivable by a human. It needs the gyro, because the code has
-                  to subtract the robot&apos;s heading out of your request.
+                  drive backwards to do it. It needs the gyro, because the code
+                  has to subtract the robot&apos;s heading out of your request.
                 </>
               ),
             },
@@ -138,11 +130,9 @@ export default function SwervePrerequisites() {
         />
 
         <p>
-          The workshop code only ever drives field-centric. The teleop OpMode
-          you get on the next page builds one{" "}
-          <code>SwerveRequest.FieldCentric</code> and hands it to the
-          drivetrain&apos;s default command. No file in the workshop code builds
-          a robot-centric request.
+          The teleop OpMode you get on the next page drives field-centric. It
+          builds one <code>SwerveRequest.FieldCentric</code> and hands it to the
+          drivetrain&apos;s default command.
         </p>
 
         <Box
@@ -159,11 +149,8 @@ export default function SwervePrerequisites() {
             Red sees forward as 180 degrees, toward the blue wall.
           </p>
           <p className="mt-3">
-            Hold on to this, because the next section is the other half of it:{" "}
-            <strong>
-              only the driver&apos;s forward flips. The field&apos;s coordinates
-              never do.
-            </strong>
+            Only the driver&apos;s forward flips. The field&apos;s coordinates
+            never do.
           </p>
         </Box>
       </LessonSection>
@@ -210,12 +197,6 @@ export default function SwervePrerequisites() {
           </li>
         </ul>
 
-        <p>
-          They travel together for a reason. A position with no heading does not
-          say which way the robot points when it arrives. A heading with no
-          position does not say where it is.
-        </p>
-
         <Box
           variant="alert-warning"
           tag="WATCH OUT · ORIGIN"
@@ -223,13 +204,12 @@ export default function SwervePrerequisites() {
         >
           <p>
             <code>drivetrain.getPose()</code> measures from the blue alliance
-            corner on both alliances. This is the one that catches people,
-            because the section above said forward <em>{"does "}</em> flip. Both
-            are true, and they are about different things. The driver&apos;s
-            forward flips so driving feels the same from either end of the
-            field. The coordinate frame stays put so that two poses can be
-            compared at all. A red robot parked against its own wall reports a
-            large X, not zero.
+            corner on both alliances. The section above said forward{" "}
+            <em>{"does "}</em> flip. Both are true, and they are about different
+            things. The driver&apos;s forward flips so driving feels the same
+            from either end of the field. The coordinate frame stays put so that
+            two poses can be compared at all. A red robot parked against its own
+            wall reports a large X, not zero.
           </p>
           <p className="mt-3">
             Every pose in Workshops 5 and 6 is measured from that same blue
@@ -260,8 +240,8 @@ export default function SwervePrerequisites() {
         </p>
 
         <p>
-          It starts out excellent and gets worse all match, because it is
-          addition and it never subtracts. Three things it cannot see:
+          It gets worse over a match, because it only adds and never checks.
+          Three things it cannot see:
         </p>
 
         <ul className="ml-5 list-disc space-y-2">
@@ -327,8 +307,8 @@ export default function SwervePrerequisites() {
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
-            Name the four corners out loud: front left, front right, back left,
-            back right. Put a strip of tape with the name on each module.
+            Name the four corners: front left, front right, back left, back
+            right. Put a strip of tape with the name on each module.
           </li>
           <li>
             On one module, find the motor that spins the wheel, the motor that
@@ -343,7 +323,7 @@ export default function SwervePrerequisites() {
             Thirteen devices: eight motors, four CANcoders, and one Pigeon 2,
             all on the CANivore. Four taped corners, named from behind the
             robot, so the IDs you write down on the next page land on the right
-            wheel. Fewer than thirteen is a wiring fault to fix first.
+            wheel.
           </p>
         </Box>
         <DocumentationButton
