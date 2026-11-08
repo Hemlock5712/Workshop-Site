@@ -17,10 +17,12 @@ Check items off as they land and delete this file when the list is empty.
       `new-path-2027-commands-v3`, and `/pathplanner` installs it from that
       fork's `vendordep` branch. Propose it upstream, and point the lesson
       back at the official vendordep once a release ships it.
-- [ ] **Re-record the Tuner X videos** (2026 moved configs to a nested menu):
-      `pid-control` `Pt7SBFfl3oM`, `motion-magic` `7I7r9p1RBZI`,
-      `mechanism-setup` `cDWF3bj1Juk` and `mjGn3y19eUc`; lower priority
-      `hardware` `aktcCtcrEyY` and `TkScJADvD-Y`.
+- [ ] **Re-record the Tuner X videos** on the real bench (the owner is
+      recording them; simulation cannot show kG or the hand tests):
+      `pid-control` `Pt7SBFfl3oM` (plus a flywheel one), `motion-magic`
+      `7I7r9p1RBZI`, `mechanism-setup` `cDWF3bj1Juk` and `mjGn3y19eUc`,
+      `hardware` `aktcCtcrEyY` and `TkScJADvD-Y`. The circled 2026.4
+      screenshots landed in #128.
 - [ ] **Control-system plate** for the bench mechanism (mentor request):
       needs Onshape CAD.
 - [ ] **Analytics.** Vercel Analytics plus Speed Insights and PostHog all
@@ -35,8 +37,7 @@ Check items off as they land and delete this file when the list is empty.
       `swerve-autonomous`) is tested end to end in the editor and in
       simulation, and `/bline` replaces `/pathplanner`, which 308s to it.
 - [ ] **BLine, what is left.** Run `swerve-bline` on the real robot (gains,
-      traction, the stop on disable). Delete the `swerve-pathplanner` and
-      `swerve-pathfinding` branches. Re-cut the four PathPlanner video beats
+      traction, the stop on disable). Re-cut the four PathPlanner video beats
       for BLine. Untested so far: the editor's folder-picker export and the
       Windows desktop app.
 
