@@ -4,7 +4,6 @@ import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { MarginNote, Split } from "@/components/lesson/Prose";
 import Link from "next/link";
 import { Book, Download } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
@@ -82,7 +81,7 @@ export default function SwerveDriveProject() {
           className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)] px-6 py-3 font-medium text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           <Download className="h-5 w-5" />
-          Download Swerve Project (v3.0, Commands v3)
+          Download Swerve Project (v3.1, Commands v3)
         </a>
       </Box>
 
@@ -105,31 +104,24 @@ export default function SwerveDriveProject() {
           <code>kSpeedAt12Volts</code> are estimates you replace over the next
           two lessons.
         </p>
-        <Split>
-          <p className="measure m-0 prose-body">
-            The copy checked into the workshop project belongs to somebody
-            else&apos;s robot. It is square, with modules 10 inches out, 7.36:1
-            on the drive, and fake IDs. Deploy it unchanged and the code looks
-            for motors that are not on your bus.
-          </p>
-          <MarginNote label="No screenshots">
-            Tuner X moves its controls between releases. Each step says what the
-            screen shows once you have it right instead.
-          </MarginNote>
-        </Split>
+        <p>
+          The copy checked into the workshop project is an example. It is
+          square, with modules 10 inches out, 7.36:1 on the drive, and fake IDs.
+          Deploy it unchanged and the code looks for motors that are not on your
+          bus.
+        </p>
       </LessonSection>
 
       <LessonSection id="six-steps-in-this-order" title="Six steps, in order">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Put every device on one CAN bus with a unique ID, and write the IDs
-            down corner by corner. You want thirteen listed, no duplicate-ID
-            warning, no red firmware badge. A missing device is a wiring fault.
+            down corner by corner. You want thirteen listed and no duplicate-ID
+            warning.
           </li>
           <li>
             Open the swerve project generator, under <strong>Mechanisms</strong>
-            , behind a <strong>New Project</strong> button. It opens by asking
-            for dimensions rather than for code.
+            , behind a <strong>New Project</strong> button.
           </li>
           <li>
             Measure the robot and enter four numbers.
@@ -143,27 +135,23 @@ export default function SwerveDriveProject() {
                 distance between module centers.
               </li>
               <li>
-                <strong>Wheel radius</strong>: half the wheel&apos;s diameter,
-                measured on a wheel already driven on. The field asks for
-                radius, not diameter.
+                <strong>Wheel radius</strong>: half the wheel&apos;s diameter.
+                The field asks for radius, not diameter.
               </li>
               <li>
                 <strong>Drive gear ratio</strong>: motor rotations per wheel
                 rotation, off the module&apos;s spec sheet.
               </li>
             </ul>
-            <p className="mt-2">
-              Take them off the real robot, not the CAD you meant to build.
-              Wheelbase and trackwidth are the pair people swap, and on a square
-              robot that stays hidden until it turns.
-            </p>
+            <p className="mt-2">Take them off the real robot, not the CAD.</p>
           </li>
           <li>
-            With the robot on blocks, the wizard drives the modules one at a
-            time. Hold each wheel straight when it asks: that measurement
-            becomes the corner&apos;s CANcoder offset. Half a degree of error
-            per module walks the robot sideways over a long drive. If the corner
-            moving is not the one the wizard named, two CAN IDs are swapped.
+            For each module, pick its CANcoder and two motors. Then run{" "}
+            <strong>Encoder Calibration</strong> with the wheel straight and the
+            bevel gear facing the center of the robot. That becomes the
+            corner&apos;s CANcoder offset. With the robot on blocks, run the
+            steer and drive checks. If the corner moving is not the one the
+            wizard named, its devices are assigned to the wrong module.
           </li>
           <li>
             Generate the constants and replace{" "}
@@ -179,8 +167,7 @@ export default function SwerveDriveProject() {
               deploy to SystemCore
             </Link>
             . The driver station lists <strong>Teleop</strong> as a selectable
-            mode. Modules point straight when you enable, and nothing spins on
-            its own.
+            mode, and nothing spins on its own when you enable.
           </li>
         </ol>
         <DocumentationButton
@@ -243,8 +230,8 @@ export default function SwerveDriveProject() {
           hand. It implements <code>Mechanism</code>, owns a{" "}
           <code>CommandSwerveDrivetrain</code> as a private field, and is what
           an OpMode talks to. That keeps the code you write out of the files
-          Tuner X writes. It also narrows the drivetrain&apos;s hundreds of
-          methods down to the few the rest of the robot needs.
+          Tuner X writes, and it exposes only the methods the rest of the robot
+          needs.
         </p>
         <p>
           Both <code>applyRequest(...)</code> and{" "}
@@ -332,14 +319,11 @@ export default function SwerveDriveProject() {
           <li>
             Select <strong>Teleop</strong> and enable, hands off the controller.
             All four wheels stay still and each module holds the angle it had.
-            Creeping means an off-center stick or a wrong deadband.
           </li>
           <li>
             Push the left stick forward: four modules pointing the same way,
-            four wheels turning the same direction. A wheel turning backwards is
-            an inversion; a module facing sideways is a CANcoder offset. Push
-            the right stick sideways and the modules splay into a rotation
-            pattern.
+            four wheels turning the same direction. Push the right stick
+            sideways and the modules splay into a rotation pattern.
           </li>
           <li>
             On the floor, point the robot away from you and push forward. It
@@ -366,16 +350,15 @@ export default function SwerveDriveProject() {
               <code>kCANBus</code> name has to match your CANivore.
             </li>
             <li>
-              <strong>One module fighting the other three.</strong> Its
-              inversion or its offset is wrong. Re-run the module test for that
-              corner rather than editing the file: the two are measured
-              together.
+              <strong>One module fighting the other three.</strong> Re-run
+              encoder calibration for that corner, bevel gear facing the center
+              of the robot, rather than editing the file.
             </li>
             <li>
               <strong>Nothing moves and no error appears.</strong> Check that{" "}
               <strong>Teleop</strong> is selected and the robot enabled. If both
-              are right, the <code>setDefaultCommand</code> line is missing, and
-              a drivetrain nobody commands looks exactly like broken wiring.
+              are right, check that the <code>setDefaultCommand</code> line is
+              still there.
             </li>
           </ul>
         </Box>
@@ -416,11 +399,11 @@ export default function SwerveDriveProject() {
               "The wheelbase and trackwidth were entered in the wrong order",
               "That corner's steer motor is inverted",
               "The CANcoder offset for that corner is wrong",
-              "Two CAN IDs are swapped, so fix the IDs before going on",
+              "The devices assigned to front left belong to another corner, so fix that before going on",
             ],
             correctAnswer: 3,
             explanation:
-              "An offset or an inversion changes how a module moves, not which module answers. A different corner moving means the IDs you typed do not match the devices on the bus, and every measurement taken after that gets filed under the wrong wheel.",
+              "An offset or an inversion changes how a module moves, not which module answers. A different corner moving means the devices picked for that module are not the ones on that corner, and every measurement taken after that gets filed under the wrong wheel.",
           },
           {
             id: 3,
@@ -470,13 +453,13 @@ export default function SwerveDriveProject() {
               "One module drives the wrong way while the other three go straight. What do you do?",
             options: [
               "Flip that module's inversion in TunerConstants.java and leave its offset alone",
-              "Re-run the generator's module test for that corner",
+              "Re-run encoder calibration for that corner, with the bevel gear facing the center of the robot",
               "Regenerate the file from the start with the dimensions re-entered",
               "Raise driveGains until that module keeps up with the others",
             ],
             correctAnswer: 1,
             explanation:
-              "A corner's inversion and its CANcoder offset are measured in the same test, so an inversion flipped by hand disagrees with the offset that was measured beside it. Re-run that module's test and take both numbers from one run.",
+              "CTRE's fix for one module driving the wrong way is to redo its encoder calibration with the bevel gear facing the center of the robot. A module calibrated with the gear facing out is half a turn off, which reads as driving backwards. The drive inversions in TunerConstants.java are per side, not per module, so flipping one by hand reverses two wheels.",
           },
         ]}
       />

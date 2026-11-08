@@ -323,31 +323,23 @@ protected void execute() {
         </ol>
 
         <p>
-          <strong>It lunges off in the wrong direction.</strong> The{" "}
-          <code>startState</code> line is missing from <code>initialize()</code>
-          , so the plan is drawn from the empty{" "}
+          <strong>It lunges off in the wrong direction.</strong> Check that the{" "}
+          <code>startState</code> line is in <code>initialize()</code>. Without
+          it, the plan is drawn from the empty{" "}
           <code>new LinearPath.State()</code> the field was given at
           declaration.
         </p>
 
         <p>
-          <strong>It weaves along the path.</strong> The gains are still 10 / 10
-          / 7. If they are already at 3.0 and 4.0, lower kP further or add a
-          little kD.
-        </p>
-
-        <p>
-          <strong>It stops short of the goal.</strong> Graph the speed again. A
-          trace that never reaches the flat top means the limits are past what
-          the drivetrain can do, so lower 2.5 and 3.0. A trace that does reach
-          it means the gains are too small.
+          <strong>It weaves along the path.</strong> Check the gains came down
+          from 10 / 10 / 7.
         </p>
 
         <p>
           A command with an ending is a step, and{" "}
           <code>Command.sequence(...)</code> takes steps.{" "}
-          <strong>Dynamic Path Planning</strong> uses this one as the final
-          approach, after a planner handles the trip across open field.
+          <strong>Pathfinding</strong> suggests it for the final approach, after
+          a planner handles the trip across open field.
         </p>
 
         <DocumentationButton

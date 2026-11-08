@@ -43,7 +43,7 @@ export default function GitWorkflow() {
         </>,
         <>A GitHub account, and a teammate with one, for the review step.</>,
       ]}
-      time="14 minutes"
+      time="13 minutes"
     >
       <Split>
         <ProseBlock>
@@ -237,19 +237,12 @@ tasks.withType(JavaCompile).configureEach {
           <li>One change per pull request, on a branch named for it.</li>
           <li>Nobody commits to main directly, including mentors.</li>
         </ul>
-        <Split>
-          <p>
-            GitHub can enforce the last rule. In the repository, open{" "}
-            <strong>Settings</strong>, then <strong>Branches</strong>, add a
-            rule for <code>main</code>, and tick{" "}
-            <strong>Require a pull request before merging</strong>.
-          </p>
-          <MarginNote label="Why main stays clean">
-            At an event, the code that goes on the robot is whatever main holds.
-            A half-finished commit on main is a half-finished robot in the next
-            match.
-          </MarginNote>
-        </Split>
+        <p>
+          GitHub can enforce the last rule. In the repository, open{" "}
+          <strong>Settings</strong>, then <strong>Branches</strong>, add a rule
+          for <code>main</code>, and tick{" "}
+          <strong>Require a pull request before merging</strong>.
+        </p>
       </LessonSection>
 
       <LessonSection id="when-it-goes-wrong" title="When it goes wrong">
@@ -263,8 +256,9 @@ tasks.withType(JavaCompile).configureEach {
             shows both versions between{" "}
             <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> and{" "}
             <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> markers. Pick{" "}
-            <strong>Accept Current</strong>, <strong>Accept Incoming</strong>,
-            or edit by hand, then build, commit and sync.
+            <strong>Accept Current Change</strong>,{" "}
+            <strong>Accept Incoming Change</strong>, or edit by hand, then
+            build, commit and sync.
           </li>
           <li>
             <strong>Build output in the commit.</strong> Files under{" "}
@@ -277,8 +271,7 @@ tasks.withType(JavaCompile).configureEach {
           <li>
             <strong>Forgot to pull.</strong> The push is rejected and VS Code
             says to pull first, because the remote branch has commits you do
-            not. Pull, build, then push again. A branch made from a stale main
-            shows up later as a conflict, so the branch step starts with a pull.
+            not. Pull, build, then push again.
           </li>
         </ul>
       </LessonSection>
@@ -319,7 +312,7 @@ tasks.withType(JavaCompile).configureEach {
             ],
             correctAnswer: 1,
             explanation:
-              "Pull first so the branch starts from what the team has now, then branch so the change stays off main until someone has reviewed it. Branching from a stale main is how a conflict shows up later.",
+              "Pull first so the branch starts from what the team has now, then branch so the change stays off main until someone has reviewed it.",
           },
           {
             id: 2,

@@ -346,7 +346,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
             </p>
           </div>
           <MarginNote label="No timeout here">
-            Every wait on this page is unbounded, which is safe only because a
+            The wait in this routine is unbounded, which is safe only because a
             driver is holding Y and can let go. Coroutines runs the same routine
             in autonomous, where nobody can.
           </MarginNote>
@@ -359,8 +359,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
       >
         <p>
           A condition that cannot go true is as bad as a bare hold. The step
-          never ends, nothing throws, nothing logs, and the <M k="noun" /> keeps
-          pushing. Fifteen seconds of autonomous go on step one.
+          never ends, nothing throws, and nothing logs.
         </p>
         <Mech for="arm">
           <FigureGrid
@@ -371,8 +370,8 @@ private void spinUpWhenReady(Coroutine coroutine) {
                 term: "Tolerance too tight",
                 body: (
                   <>
-                    The arm settles half a degree outside the band and stops
-                    there. The plot looks fine. The routine does not move.
+                    The arm settles just outside the band and stays there. The
+                    routine does not move.
                   </>
                 ),
               },
@@ -409,8 +408,8 @@ private void spinUpWhenReady(Coroutine coroutine) {
                 term: "Tolerance too tight",
                 body: (
                   <>
-                    The wheel settles at 74.3 rotations a second, outside the
-                    band, and stays there. The routine does not move.
+                    The wheel settles just outside the band and stays there. The
+                    routine does not move.
                   </>
                 ),
               },

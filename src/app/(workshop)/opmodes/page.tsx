@@ -51,8 +51,7 @@ export default function OpModes() {
           New Project Creator wrote it with <code>@Teleop</code> on the class,
           and that annotation is the whole registration. The framework finds
           every annotated class on its own, and the driver station lists each
-          one by name. There is no <code>RobotContainer</code> in this project
-          and nothing else to edit.
+          one by name.
         </p>
         <p>
           The generated file holds five empty methods with comments in them:{" "}

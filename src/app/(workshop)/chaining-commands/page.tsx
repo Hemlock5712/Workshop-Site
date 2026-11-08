@@ -60,7 +60,7 @@ export default function ChainingCommands() {
   return (
     <PageTemplate
       title="Command Composition"
-      lede="You have written commands that do one thing while a button is held. An autonomous routine is a list of those commands, run in order. This lesson builds the list."
+      lede="You have written commands that do one thing while a button is held. A routine is a list of those commands, run in order. This lesson builds the list."
       needs={[
         <>
           An <code>Arm</code> with <code>vertical()</code> and{" "}
@@ -90,11 +90,6 @@ export default function ChainingCommands() {
             the endings together in order.
           </p>
         </div>
-        <MarginNote label="Where this goes">
-          Every autonomous routine you write is one of these. The one in
-          Workshop 5 is drive off the line, then stop, and both steps need the
-          ending you are about to add.
-        </MarginNote>
       </Split>
 
       <LessonSection id="holds-and-steps" title="Holds and steps">
@@ -143,8 +138,7 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
       <LessonSection id="steps-in-order" title="Steps in order">
         <p>
           <code>Command.sequence(a, b, c)</code> runs <code>a</code> until it
-          finishes, then <code>b</code>, then <code>c</code>. You write
-          autonomous routines in exactly this shape.
+          finishes, then <code>b</code>, then <code>c</code>.
         </p>
 
         <CodeBlock
@@ -176,19 +170,6 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           <code>robot.arm.vertical()</code> is already finished, so{" "}
           <code>.named(...)</code> on it is a compile error.
         </p>
-
-        <Box
-          variant="alert-danger"
-          tag="DON'T"
-          title="A bare hold in the middle"
-        >
-          <p>
-            Swap the first member for a plain <code>robot.arm.vertical()</code>{" "}
-            and the sequence sticks there for the rest of the match. When a
-            routine looks frozen, a member with no ending is the first thing to
-            check.
-          </p>
-        </Box>
       </LessonSection>
 
       <LessonSection id="two-at-once" title="Two things at once">
@@ -211,9 +192,6 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
         <p>
           The flywheel member has an ending and the arm hold does not, so the
           flywheel decides when the group ends. A hold can never win a race.
-          Other teams call this pattern a deadline. Commands v3 spells it{" "}
-          <code>Command.race(...)</code>, and there is no{" "}
-          <code>Command.deadline(...)</code>.
         </p>
       </LessonSection>
 
@@ -288,8 +266,6 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           </ul>
         </Box>
 
-        <p>These three failures look nothing alike.</p>
-
         <div className="overflow-x-auto">
           <table className="w-full min-w-[520px] border-collapse text-note">
             <thead>
@@ -324,12 +300,6 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
             </tbody>
           </table>
         </div>
-
-        <p>
-          Get this binding working in the simulator. Finish Conditions is next
-          and replaces the stopwatch on the arm member with the arm&apos;s own
-          report that it arrived.
-        </p>
       </LessonSection>
 
       <Quiz
@@ -381,7 +351,7 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
             question:
               "Your group's last member is a hold. You bind it with whileTrue and nothing else, then release the button. What does the flywheel do?",
             options: [
-              "It coasts down over about a second",
+              "It coasts to a stop",
               "It throws an error, because a canceled hold has no stop",
               "It stops, because canceling a command stops its motors",
               "It keeps spinning, because nothing zeroes the last request and the motor controller still has it",

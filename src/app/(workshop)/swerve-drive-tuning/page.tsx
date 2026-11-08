@@ -58,8 +58,7 @@ export default function SwerveDriveTuning() {
         <p>
           Odometry counts wheel rotations and multiplies by a radius. You want
           the effective one: the wheel squashed under the robot&apos;s weight
-          and sunk into carpet. It shrinks as the tread wears, so repeat this
-          late in the season.
+          and sunk into carpet.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -124,16 +123,14 @@ export default function SwerveDriveTuning() {
         <p>
           That number goes in <code>kSpeedAt12Volts</code>. It measures the
           robot. The driver cap is <code>maxSpeed</code> in{" "}
-          <code>TeleopOpMode</code>, which reads it straight back. Expect a
-          plateau near the 4.54 the file shipped with. Wildly off means the
-          file: check the radius, then check <code>kDriveGearRatio</code>{" "}
-          against your modules.
+          <code>TeleopOpMode</code>, which reads it straight back. If the
+          plateau is far from the generator&apos;s estimate, check the radius,
+          then check <code>kDriveGearRatio</code> against your modules.
         </p>
 
         <p>
           Stator current is proportional to torque, so a stator limit caps how
-          hard a wheel twists. Set it where the tire loses grip. Torque above
-          that point polishes carpet.
+          hard a wheel twists. Set it where the tire loses grip.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -154,9 +151,8 @@ export default function SwerveDriveTuning() {
         <Box variant="alert-danger" title="Stalled motors get hot fast">
           <p>
             A drive motor pushing a wall it cannot move is a stalled motor. Keep
-            each ramp to a couple of seconds, back off to zero between attempts,
-            and give the motor a minute. One person on the disable, somebody
-            else on the laptop.
+            each ramp short and back off to zero between attempts. One person on
+            the disable, somebody else on the laptop.
           </p>
         </Box>
         <Split>
@@ -166,9 +162,7 @@ export default function SwerveDriveTuning() {
               measuring the limit, not the tire. The shipped 120 A is itself a
               stator limit, and <code>driveInitialConfigs</code> sets 70 A on
               the supply. If the trace flattens at 120 A and the wheel never
-              breaks loose, raise the constant temporarily and ramp again. Then
-              redeploy and floor it from a dead stop. The robot should launch
-              without the squeal and sideways hop of wheel spin.
+              breaks loose, raise the constant temporarily and ramp again.
             </p>
           </ProseBlock>
           <MarginNote label="Too low costs acceleration">
@@ -201,8 +195,7 @@ export default function SwerveDriveTuning() {
           Tune it on the ground, not on blocks. A wheel in the air carries no
           load, and gains found there will not hold a speed under a robot. Plot
           the same two signals as the steer gains, speed this time. A constant
-          gap is kV. A gap only at low speed is kS. A slow recovery after a
-          change of direction is kP.
+          gap points at kV. A gap only at low speed points at kS.
         </p>
 
         <h4 className="display m-0 text-ui">Switch the drive request</h4>
@@ -225,11 +218,10 @@ export default function SwerveDriveTuning() {
           The same request line sets <code>withDeadband(maxSpeed * 0.1)</code>{" "}
           and <code>withRotationalDeadband(maxAngularRate * 0.1)</code>,
           throwing away the bottom 10% of both sticks. At 4.54 m/s that is
-          everything under about 0.45 m/s, which open-loop driving could not
-          hold anyway. A tuned velocity loop can, so the deadband now discards
-          control you paid for. Shrink it rather than deleting it: the deadband
-          keeps a worn stick&apos;s drift from creeping the robot across the
-          field.
+          everything under about 0.45 m/s. A tuned velocity loop can hold those
+          speeds, so the deadband now discards control you paid for. Shrink it
+          rather than deleting it: the deadband keeps a worn stick&apos;s drift
+          from creeping the robot across the field.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -284,8 +276,7 @@ export default function SwerveDriveTuning() {
               body: (
                 <>
                   <code>Velocity</code> with untuned gains chases a speed the
-                  motor cannot hold. Sluggish or surging is kV. A hum at
-                  constant speed is kP too high.
+                  motor cannot hold. Go back to the drive gains.
                 </>
               ),
             },

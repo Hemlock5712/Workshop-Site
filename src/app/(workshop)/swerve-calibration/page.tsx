@@ -3,7 +3,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import Link from "next/link";
 import { Book } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
@@ -32,7 +31,7 @@ export default function SwerveCalibration() {
   return (
     <PageTemplate
       title="Swerve Calibration"
-      lede="The project you generated holds offsets from wheels you held straight by eye. This lesson zeroes the four modules against a straight edge and tunes the motors that steer them. No Java."
+      lede="This lesson zeroes the four modules against a straight edge and tunes the motors that steer them. No Java."
       needs={[
         <>
           A swerve robot you can drive, from{" "}
@@ -51,8 +50,7 @@ export default function SwerveCalibration() {
       >
         <p>
           Three operations in the swerve code all get called resetting or
-          seeding. Mix them up and you get a robot that drives beautifully and
-          has no idea where it is.
+          seeding.
         </p>
         <p>
           <code>seedFieldCentric()</code>, on the left bumper, changes which way
@@ -64,9 +62,8 @@ export default function SwerveCalibration() {
         <p>
           <code>resetPose(Pose2d)</code> moves the pose itself: x, y and heading
           in meters from the blue corner. It exists on the Phoenix 6 drivetrain,
-          but <code>DriveMechanism</code> does not expose it and nothing calls
-          it. Until <strong>Vision</strong> in Workshop 6, read{" "}
-          <code>Drivetrain/Pose</code> as distance traveled since boot.
+          but <code>DriveMechanism</code> does not expose it yet. Until then,
+          read <code>Drivetrain/Pose</code> as distance traveled since boot.
         </p>
       </LessonSection>
 
@@ -75,8 +72,8 @@ export default function SwerveCalibration() {
           Each module has a CANcoder reading which way its wheel points, and an
           offset saying which reading counts as straight ahead. The four{" "}
           <code>k*EncoderOffset</code> constants in your file came from the
-          wheels you held straight by eye in the generator. A straight edge does
-          better.
+          generator&apos;s encoder calibration. A straight edge sets them
+          precisely.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -85,35 +82,25 @@ export default function SwerveCalibration() {
           </li>
           <li>
             Press a straight edge flat along one side so both wheels on that
-            side sit against it, then do the other side. By eye is not close
-            enough: half a degree of steering error walks the robot 5 cm
-            sideways over six meters.
+            side sit against it, then do the other side. Half a degree of
+            steering error walks the robot 5 cm sideways over six meters.
           </li>
           <li>
             Check which way each module faces. CTRE marks this one important:
             every module&apos;s bevel gear has to face the vertical center of
             the robot. A module that is straight but flipped zeroes 180&deg;
-            off, and the drive verification tests fail later without saying why.
+            off, and the drive verification tests can fail.
           </li>
           <li>
-            Holding the wheels straight, run the calibration step in the Tuner X
-            swerve generator. It reads all four CANcoders where they sit and
-            writes the offset constants for you.
+            Holding the wheels straight, run{" "}
+            <strong>Encoder Calibration</strong> for each module in the Tuner X
+            swerve generator.
           </li>
         </ol>
-        <Split>
-          <ProseBlock>
-            <p>
-              Generate <code>TunerConstants.java</code> again and replace your
-              copy, the way you did on the last page, then redeploy.
-            </p>
-          </ProseBlock>
-          <MarginNote label="Glue them down">
-            These zeros are stored against a physical sensor position. A
-            CANcoder that shifts two degrees in a collision makes all four
-            wrong, and it looks like bad odometry.
-          </MarginNote>
-        </Split>
+        <p>
+          Generate <code>TunerConstants.java</code> again and replace your copy,
+          the way you did on the last page, then redeploy.
+        </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
           title="CTRE: Tuner X Swerve Project Generator"
@@ -125,8 +112,8 @@ export default function SwerveCalibration() {
         <p>
           A steering motor holds an angle. That is a position loop with no
           gravity to fight, so skip kG and start at kS. The generator gave you
-          real numbers, kP 100, kD 0.5, kS 0.1 and kV 1.91, and they are often
-          close. Adjust them rather than starting from zero.
+          real numbers, kP 100, kD 0.5, kS 0.1 and kV 1.91. Adjust them rather
+          than starting from zero.
         </p>
         <p>
           Follow{" "}
@@ -177,9 +164,9 @@ export default function SwerveCalibration() {
           </p>
         </Box>
         <p>
-          A consistent curve to one side means a module is zeroed wrong, so put
-          the straight edge back on and re-save. A wander that comes and goes is
-          the steer gains. With both clean, go on to{" "}
+          A consistent curve to one side points at a module zero first, so put
+          the straight edge back on and re-save. A wander that comes and goes
+          points at the steer gains. With both clean, go on to{" "}
           <Link
             href="/swerve-drive-tuning"
             className="font-semibold underline decoration-1 underline-offset-2"
@@ -205,7 +192,7 @@ export default function SwerveCalibration() {
             ],
             correctAnswer: 1,
             explanation:
-              "A curve that is the same every time is a module that thinks straight is a degree or so off straight. That is an offset, and only re-zeroing against the straight edge fixes it. A wander that comes and goes is the steer gains. The bumper changes which way the sticks call forward, not how a module points.",
+              "A curve that is the same every time is a module that thinks straight is a degree or so off straight. That points at an offset, and re-zeroing against the straight edge is the first thing to try. A wander that comes and goes points at the steer gains. The bumper changes which way the sticks call forward, not how a module points.",
           },
           {
             id: 2,
@@ -215,11 +202,11 @@ export default function SwerveCalibration() {
               "Nothing: the CANcoder reads the same either way",
               "Tuner X refuses to save the offset",
               "That module drives backwards at full speed",
-              "It zeroes 180 degrees off, and the drive tests fail later without saying why",
+              "It zeroes 180 degrees off, and the drive verification tests can fail",
             ],
             correctAnswer: 3,
             explanation:
-              "CTRE requires every bevel gear to face the vertical center of the robot. A module flipped the other way is still straight, so the offset looks reasonable, but it describes the wheel half a turn from where the code expects. Nothing flags it until the drive checks go wrong.",
+              "CTRE requires every bevel gear to face the vertical center of the robot. A module flipped the other way is still straight, so the offset looks reasonable, but it describes the wheel half a turn from where the code expects.",
           },
           {
             id: 3,
@@ -242,12 +229,12 @@ export default function SwerveCalibration() {
             options: [
               "seedFieldCentric(), on the left bumper",
               "applyOperatorPerspective(), every loop",
-              "resetPose(Pose2d), which DriveMechanism does not expose",
+              "resetPose(Pose2d), which DriveMechanism does not expose yet",
               "Re-saving the module zeros in Tuner X",
             ],
             correctAnswer: 2,
             explanation:
-              "seedFieldCentric() and applyOperatorPerspective() both decide which way the sticks call forward and never supply an x or a y. resetPose(Pose2d) is the one that places the robot on the field, and nothing in the workshop code calls it. Until vision corrects it, the pose is distance traveled since the code started.",
+              "seedFieldCentric() and applyOperatorPerspective() both decide which way the sticks call forward and never supply an x or a y. resetPose(Pose2d) is the one that places the robot on the field. On this branch nothing calls it, so the pose is distance traveled since the code started.",
           },
           {
             id: 5,

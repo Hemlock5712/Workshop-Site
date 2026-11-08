@@ -89,16 +89,13 @@ export default function LoggingImplementation() {
         <ProseBlock>
           <p>
             A failure that lasts a tenth of a second is gone before anyone sees
-            it. The file on disk is the only record. Two lines start the
-            recorder. The rest of the lesson gives it something to record and
-            then reads the file back.
+            it. The file on disk is the only record.
           </p>
         </ProseBlock>
         <MarginNote label="File names">
           A controller with no Driver Station attached has no clock. The file
           opens as <code>WPILIB_TBD_*.wpilog</code> and gets renamed with the
-          date once a Driver Station supplies one. A logs folder full of TBD
-          files at an event means nothing ever connected.
+          date once a Driver Station supplies one.
         </MarginNote>
       </Split>
 
@@ -144,11 +141,6 @@ public Robot() {
               anything you log reaches the dashboard either way.
             </p>
           </div>
-          <MarginNote label="Straight to file">
-            There is a backend that writes to the log without going through
-            NetworkTables, for signals too fast or too many to put on the wire.
-            You do not need it here, and nothing in this course uses it.
-          </MarginNote>
         </Split>
       </LessonSection>
 
@@ -213,7 +205,7 @@ private void record() {
               <code>Telemetry.getTable(...)</code> hands back the table for a
               name, making it on the first call and returning the same one after
               that. So there is nothing to build in the constructor and nothing
-              to keep in a field. Calling it every loop is the intended use.
+              to keep in a field.
             </p>
             <p>
               <code>getName()</code> is the <M k="noun" />
@@ -299,15 +291,11 @@ private void record() {
             the same table give you a trace that flickers between them, and no
             way to tell which is which.
           </li>
-          <li>
-            Add a signal when you can name the question it answers. A hundred
-            signals nobody plots is slower to search than twelve that get used.
-          </li>
+          <li>Add a signal when you can name the question it answers.</li>
         </ul>
         <p>
           Rename a signal later and the code still compiles. Every saved layout
-          and every script that read the old name stops working. Spend the extra
-          minute now.
+          and every script that read the old name stops working.
         </p>
       </LessonSection>
 
@@ -370,14 +358,12 @@ private void record() {
         </p>
         <WatchOut>
           Entries reach disk in batches, not one at a time. Kill the program
-          while it is still enabled and the last second or two never gets
-          written, which is usually the part you wanted. Disable, stop the
-          program, and only then cut power.
+          while it is still enabled and the last entries never get written.
+          Disable, stop the program, and only then cut power.
         </WatchOut>
-        <p>Three things go wrong the first time, and they look like this.</p>
         <Mech for="arm">
           <FigureGrid
-            cols={3}
+            cols={2}
             items={[
               {
                 label: "Empty tree",
@@ -401,23 +387,12 @@ private void record() {
                   </>
                 ),
               },
-              {
-                label: "Wrong scale",
-                term: "Bad units",
-                body: (
-                  <>
-                    The shape looks right and the numbers are off by the gear
-                    ratio. Fix <code>SensorToMechanismRatio</code> on the motor,
-                    then log the run again.
-                  </>
-                ),
-              },
             ]}
           />
         </Mech>
         <Mech for="flywheel">
           <FigureGrid
-            cols={3}
+            cols={2}
             items={[
               {
                 label: "Empty tree",
@@ -438,17 +413,6 @@ private void record() {
                     The trace freezes partway through and holds one value.{" "}
                     <code>record</code> is called from a command that finished,
                     not from <code>addPeriodic</code>.
-                  </>
-                ),
-              },
-              {
-                label: "Wrong scale",
-                term: "Bad units",
-                body: (
-                  <>
-                    The shape looks right and the numbers are off by the gear
-                    ratio. Fix <code>SensorToMechanismRatio</code> on the motor,
-                    then log the run again.
                   </>
                 ),
               },
@@ -512,7 +476,7 @@ private void record() {
             ],
             correctAnswer: 2,
             explanation:
-              "start() captures NetworkTables values and console output. The second call adds what NetworkTables never sees: the control word (enabled, e-stopped, robot mode, Driver Station and FMS attached), the name of the OpMode that is running, and every joystick axis, button, and POV. It records no alliance and no match time, so anything you want from the match itself you publish yourself.",
+              "start() captures NetworkTables values and console output. The second call adds what NetworkTables never sees: the control word, the name of the OpMode that is running, and every joystick axis, button, and POV.",
           },
           {
             id: 2,
@@ -571,7 +535,7 @@ private void record() {
             ],
             correctAnswer: 1,
             explanation:
-              "A command logs only while it runs, so the last value it wrote is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the record call to a background task added with Scheduler.getDefault().addPeriodic(...), which logs for as long as the robot has power. Missing constructor lines would leave no Arm table at all, and a wrong ratio gives the right shape at the wrong scale.",
+              "A command logs only while it runs, so the last value it wrote is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the record call to a background task added with Scheduler.getDefault().addPeriodic(...), which logs for as long as the robot has power. Missing constructor lines would leave no Arm table at all.",
           },
           {
             id: 6,
@@ -586,7 +550,7 @@ private void record() {
             ],
             correctAnswer: 1,
             explanation:
-              "A command logs only while it runs, so the last value it wrote is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the record call to a background task added with Scheduler.getDefault().addPeriodic(...), which logs for as long as the robot has power. Missing constructor lines would leave no Flywheel table at all, and a wrong ratio gives the right shape at the wrong scale.",
+              "A command logs only while it runs, so the last value it wrote is the last value in the file, and the trace flattens there. For a signal that has to cover the whole run, move the record call to a background task added with Scheduler.getDefault().addPeriodic(...), which logs for as long as the robot has power. Missing constructor lines would leave no Flywheel table at all.",
           },
         ]}
       />

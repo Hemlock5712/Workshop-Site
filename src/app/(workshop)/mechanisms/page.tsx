@@ -130,7 +130,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -171,7 +170,6 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -192,9 +190,9 @@ public class Flywheel implements Mechanism {
 
         <p>
           Your editor greys out an import until something uses it. That is
-          expected. Most go quiet as you fill the class in, and a few wait for{" "}
-          <strong>Motion Magic in Code</strong>. The class compiles at every
-          step from here. The fields come first.
+          expected. Most go quiet as you fill the class in, and the build
+          deletes any that are still unused. The class compiles at every step
+          from here. The fields come first.
         </p>
 
         <Mech for="arm">
@@ -348,17 +346,6 @@ public class Flywheel implements Mechanism {
             <code>Coast</code> lets the shaft spin freely, and{" "}
             <code>Brake</code> resists being turned. The lesson <M k="noun" />{" "}
             picks <code>Coast</code> because you will <M k="byHand" /> all day.
-            <Mech for="arm">
-              {" "}
-              A competition arm carrying weight usually wants <code>Brake</code>
-              , or it drops the instant you disable.
-            </Mech>
-            <Mech for="flywheel">
-              {" "}
-              A competition flywheel usually keeps <code>Coast</code>. A wheel
-              with that much stored energy braked to a stop punishes the gearbox
-              every cycle.
-            </Mech>
           </p>
         </Box>
 
@@ -481,8 +468,8 @@ public class Flywheel implements Mechanism {
           <strong>Control</strong> drop-down on <strong>Motor Setup</strong>{" "}
           picks a request. Voltage Out in that drop-down is{" "}
           <code>VoltageOut</code> here. Motion Magic Voltage is{" "}
-          <code>MotionMagicVoltage</code>, which replaces it two lessons from
-          now.
+          <code>MotionMagicVoltage</code>, which replaces it in{" "}
+          <strong>Motion Magic in Code</strong>.
         </p>
         <p>
           Every request name is made of the same parts. The column is what the
@@ -709,7 +696,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 1,
             explanation:
-              "Neutral mode is what the motor does when nothing is commanding it. Coast lets the shaft spin freely; Brake makes it resist motion and hold roughly still. The branch chooses Coast and explains itself on that line: `// easy to move by hand`. A competition arm carrying weight usually wants Brake, or it drops the moment you disable.",
+              "Neutral mode is what the motor does when nothing is commanding it. Coast lets the shaft spin freely; Brake makes it resist motion and hold roughly still. The branch chooses Coast and explains itself on that line: `// easy to move by hand`.",
           },
           {
             id: 3,

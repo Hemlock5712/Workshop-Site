@@ -64,30 +64,24 @@ export default function DriveToTagInline() {
       ]}
       time="13 minutes"
     >
-      <Split>
-        <ProseBlock>
-          <p>
-            One new file, <code>commands/DriveToTagInline.java</code>, and one
-            line in <code>TeleopOpMode</code>:{" "}
-            <code>
-              driver.x().whileTrue(DriveToTagInline.create(robot.drivetrain,
-              &quot;limelight&quot;, 1, 1.0))
-            </code>
-            . The arguments are the drivetrain, the camera&apos;s name, the tag
-            ID, and the standoff in meters. Tag 1 is a placeholder.
-          </p>
-          <p>
-            The file imports <code>com.limelightvision.Limelight</code> and{" "}
-            <code>FiducialTarget</code> from the same package, plus a static
-            import of <code>org.wpilib.units.Units.Seconds</code>. VS Code
-            offers the rest as you type.
-          </p>
-        </ProseBlock>
-        <MarginNote label="One block">
-          The whole command is one coroutine body: a loop that reads, drives and
-          yields, and a stop on every way out of it.
-        </MarginNote>
-      </Split>
+      <ProseBlock>
+        <p>
+          One new file, <code>commands/DriveToTagInline.java</code>, and one
+          line in <code>TeleopOpMode</code>:{" "}
+          <code>
+            driver.x().whileTrue(DriveToTagInline.create(robot.drivetrain,
+            &quot;limelight&quot;, 1, 1.0))
+          </code>
+          . The arguments are the drivetrain, the camera&apos;s name, the tag
+          ID, and the standoff in meters. Tag 1 is a placeholder.
+        </p>
+        <p>
+          The file imports <code>com.limelightvision.Limelight</code> and{" "}
+          <code>FiducialTarget</code> from the same package, plus a static
+          import of <code>org.wpilib.units.Units.Seconds</code>. VS Code offers
+          the rest as you type.
+        </p>
+      </ProseBlock>
 
       <LessonSection id="read-where-the-robot-is" title="The tag's frame">
         <p>
@@ -119,8 +113,8 @@ private static Pose3d readRobotInTag(Limelight camera, int targetTagId) {
         <p>
           A frame lists every tag in view, each with its own robot pose. The
           loop picks ours by ID and ignores the rest, so a second tag drifting
-          into frame cannot pull the robot toward it. Leave the ID check in.
-          Without it the robot drives at whichever tag comes first in the list.
+          into frame cannot pull the robot toward it. Without the ID check the
+          robot drives at whichever tag comes first in the list.
         </p>
         <p>
           <code>hasTarget()</code> matters because the getters never go blank.
@@ -291,8 +285,8 @@ private static Pose3d readRobotInTag(Limelight camera, int targetTagId) {
             All three controllers start with kP, kI and kD at <code>0.0</code>,
             so <code>calculate(...)</code> returns zero and the profile does the
             whole job. That is a safer first run than an untuned gain. Nothing
-            corrects error, though: when the profile runs out, 20 cm short stays
-            20 cm short.
+            corrects error, though: whatever error is left when the profile runs
+            out stays.
           </p>
         </Box>
       </LessonSection>
@@ -329,8 +323,8 @@ private static void stop(DriveMechanism drivetrain, SwerveRequest.ApplyRobotVelo
           </ProseBlock>
           <MarginNote label="Idle is not a stop">
             <code>SwerveRequest.Idle</code> leaves every module on its last
-            request. It is the right thing to send while disabled, and the wrong
-            thing to send to stop.
+            request. It is harmless while disabled, and the wrong thing to send
+            to stop.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -360,9 +354,9 @@ private static void stop(DriveMechanism drivetrain, SwerveRequest.ApplyRobotVelo
           </li>
           <li>
             Cover the camera with your hand.{" "}
-            <strong>{"You should see: "}</strong> the wheels stop within a few
-            loops. Uncover it inside a second and they start again. Leave it
-            covered and the command ends.
+            <strong>{"You should see: "}</strong> the wheels stop. Uncover it
+            inside a second and they start again. Leave it covered and the
+            command ends.
           </li>
           <li>
             Signs right? On the floor, area clear, hold X.{" "}

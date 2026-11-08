@@ -147,8 +147,7 @@ import org.wpilib.command3.Mechanism;`}
           </li>
           <li>
             <code>.named(...)</code> gives the command a name. Names show up in
-            logs and on the dashboard, which is what makes one findable when it
-            misbehaves later.
+            logs and on the dashboard.
           </li>
         </ul>
 
@@ -170,13 +169,8 @@ import org.wpilib.command3.Mechanism;`}
             So never make anything wait for one. A hold inside{" "}
             <code>Command.sequence</code> sticks there forever and the sequence
             never reaches its next step. When a step needs an ending, add it
-            where you use the command rather than writing a new method here:{" "}
-            <code>
-              <M k="noun" />
-              .runSlow().until(someCondition)
-            </code>
-            . The <code>(hold)</code> in every name is there so a stuck sequence
-            names its own bug in the log.
+            where you use the command rather than writing a new method here.{" "}
+            <strong>Finish Conditions</strong> shows how.
           </p>
         </Box>
       </LessonSection>
@@ -184,8 +178,8 @@ import org.wpilib.command3.Mechanism;`}
       <LessonSection id="did-it-work" title="Check your work">
         <p>
           Run <em>WPILib: Build Robot Code</em>. You should see{" "}
-          <code>BUILD SUCCESSFUL</code>. If it does not, the error is almost
-          always one of these three.
+          <code>BUILD SUCCESSFUL</code>. If it does not, check for these two
+          errors.
         </p>
 
         <div className="overflow-x-auto">
@@ -207,21 +201,7 @@ import org.wpilib.command3.Mechanism;`}
                 <td className="px-3 py-2">
                   A <code>.named(...)</code> is missing from that method.
                 </td>
-                <td className="px-3 py-2">
-                  Name the command. javac prints both types package-qualified.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  <code>cannot find symbol: method withPriority(int)</code>
-                </td>
-                <td className="px-3 py-2">
-                  A builder method landed after <code>.named(...)</code>.
-                </td>
-                <td className="px-3 py-2">
-                  Move it in front of the name. Same for{" "}
-                  <code>whenCanceled</code>.
-                </td>
+                <td className="px-3 py-2">Name the command.</td>
               </tr>
               <tr>
                 <td className="px-3 py-2">
@@ -271,7 +251,7 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 3,
             question:
-              "A routine is written Command.sequence(robot.arm.runSlow(), robot.flywheel.runFast()). What happens when it runs?",
+              'A routine is written Command.sequence(robot.arm.runSlow(), robot.flywheel.runFast()).named("routine"). What happens when it runs?',
             options: [
               "Both commands run at once, because they need different mechanisms",
               "The sequence skips runSlow, because a hold has no ending to wait for",
@@ -280,7 +260,7 @@ import org.wpilib.command3.Mechanism;`}
             ],
             correctAnswer: 3,
             explanation:
-              "A sequence starts each step when the one before it finishes, and a runRepeatedly command never does. The fix goes where the command is used, such as robot.arm.runSlow().until(someCondition). The (hold) in the name is there so the log points at the step that stuck.",
+              "A sequence starts each step when the one before it finishes, and a runRepeatedly command never does. The fix goes where the command is used, not in a new method on the mechanism.",
           },
         ]}
       />

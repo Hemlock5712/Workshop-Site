@@ -3,7 +3,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import { MarginNote, Split } from "@/components/lesson/Prose";
 import Quiz from "@/components/Quiz";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -34,28 +33,18 @@ export default function Autonomous() {
       branch="swerve-autonomous"
       time="30 minutes"
     >
-      <Split>
-        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-          <p>
-            You have written an <code>@Autonomous</code> class once already:
-            Raise And Shoot, on <strong>Coroutines</strong>, ran the arm and
-            flywheel with no one holding a button. This one has the same shape
-            and drives the whole robot.
-          </p>
-          <p>
-            The routine is a timed drive, and it is crude on purpose. A timed
-            step tells you whether the mode list, the scheduler, and the
-            drivetrain agree with each other. It tells you very little about
-            where the robot ended up.
-          </p>
-        </div>
-        <MarginNote label="One class each">
-          The driver station lists every <code>@Autonomous</code> class it finds
-          and builds the one you pick. Four routines, four classes, and nothing
-          in <code>Robot.java</code> chooses between them. PathPlanner folds its
-          autos into one class with a drop-down of its own.
-        </MarginNote>
-      </Split>
+      <p>
+        You have written an <code>@Autonomous</code> class once already: Raise
+        And Shoot, on <strong>Coroutines</strong>, ran the arm and flywheel with
+        no one holding a button. This one has the same shape and drives the
+        whole robot.
+      </p>
+      <p>
+        The routine is a timed drive, and it is crude on purpose. A timed step
+        tells you whether the mode list, the scheduler, and the drivetrain agree
+        with each other. It tells you very little about where the robot ended
+        up.
+      </p>
 
       <LessonSection id="two-layers" title="Two layers">
         <p>
@@ -162,29 +151,24 @@ public class LeaveStartAuto extends PeriodicOpMode {
           reads under pressure. The one in <code>.named(...)</code> is what the
           command is called in the scheduler and on the dashboard.
         </p>
-        <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              The <code>stopped</code> request is the line people leave out.{" "}
-              <code>setControl</code> latches a request: the drivetrain keeps
-              applying it until something sends a different one. When a routine
-              ends, nothing does. This OpMode sets no default command, so the
-              wheels carry on at the last speed they were given.
-            </p>
-            <p>
-              It is sent twice for that reason. The last line of the coroutine
-              covers a routine that runs to the end. A cancel stops the
-              coroutine where it is and skips that line, so{" "}
-              <code>whenCanceled</code> sends the same zero.
-            </p>
-          </div>
-          <MarginNote label="Do the arithmetic">
-            One meter per second for a second and a half is about a meter and a
-            half, less whatever the ramp-up costs. Battery voltage and carpet
-            move that number on every run. The third pass below measures it
-            instead of trusting it.
-          </MarginNote>
-        </Split>
+        <p>
+          The <code>stopped</code> request is the line people leave out.{" "}
+          <code>setControl</code> latches a request: the drivetrain keeps
+          applying it until something sends a different one. When a routine
+          ends, nothing does. This OpMode sets no default command, so the wheels
+          carry on at the last speed they were given.
+        </p>
+        <p>
+          It is sent twice for that reason. The last line of the coroutine
+          covers a routine that runs to the end. A cancel stops the coroutine
+          where it is and skips that line, so <code>whenCanceled</code> sends
+          the same zero.
+        </p>
+        <p>
+          One meter per second for a second and a half is about a meter and a
+          half, less whatever the ramp-up costs. The third pass below measures
+          it instead of trusting it.
+        </p>
         <p>
           The robot&apos;s field position is never set in this routine.{" "}
           <code>Drivetrain/Pose</code> starts wherever odometry left off.
@@ -225,28 +209,22 @@ public class LeaveStartAuto extends PeriodicOpMode {
             <strong>Measured, three times.</strong> Tape the floor at the front
             edge before and after each run, starting from the same mark every
             time. The taped distance and the last <code>Drivetrain/Pose</code>{" "}
-            in AdvantageScope should agree within a few centimeters. The three
-            runs should land inside about ten.
+            in AdvantageScope should agree, and the three runs should land close
+            together.
           </li>
           <li>
             <strong>Disabled partway.</strong> Hit disable about a second into
-            the drive. The wheels stop at once. Re-select the mode from the list
-            before running again: picking a mode builds the OpMode fresh, and a
-            fresh routine with it.
+            the drive. The wheels stop. Re-select the mode from the list before
+            running again: picking a mode builds the OpMode fresh, and a fresh
+            routine with it.
           </li>
         </ol>
-        <p>
-          A second and a half is a small slice of an autonomous period. A robot
-          that sits still for the rest of it has not failed. That is the stop
-          doing its job.
-        </p>
       </LessonSection>
 
       <LessonSection id="failure-shapes" title="Three failure shapes">
         <p>
           A routine fails quietly. Nothing throws, nothing logs a complaint, and
-          the robot does something you did not ask for. Almost all of it looks
-          like one of these three.
+          the robot does something you did not ask for.
         </p>
         <FigureGrid
           cols={3}
@@ -280,8 +258,8 @@ public class LeaveStartAuto extends PeriodicOpMode {
               body: (
                 <>
                   It moves, and not where you aimed it. Robot-centric X follows
-                  the starting heading, and a tired battery shortens a timed
-                  step by a surprising amount.
+                  the starting heading, and battery and carpet change how far a
+                  timed step goes.
                 </>
               ),
             },
@@ -290,8 +268,8 @@ public class LeaveStartAuto extends PeriodicOpMode {
         <p>
           A mode missing from the driver station list is a different problem.
           Take it back to <strong>OpModes</strong>: a class that is not{" "}
-          <code>public</code>, an annotation with no name, or a constructor that
-          does not take <code>Robot</code>.
+          <code>public</code>, or a constructor that does not take{" "}
+          <code>Robot</code>.
         </p>
         <p>
           Read <code>Drivetrain/Pose</code> before guessing. Its value at the
@@ -319,8 +297,8 @@ public class LeaveStartAuto extends PeriodicOpMode {
               A full stop that stays stopped, with no creep after the wait.
             </li>
             <li>
-              Three end poses in <code>Drivetrain/Pose</code> within about ten
-              centimeters of each other.
+              Three end poses in <code>Drivetrain/Pose</code> close to each
+              other.
             </li>
           </ul>
         </Box>

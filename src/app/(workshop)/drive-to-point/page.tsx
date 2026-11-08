@@ -78,9 +78,8 @@ export default function DriveToPoint() {
       time="15 minutes"
     >
       <p>
-        Every meter the drivetrain has covered so far, a human drove. Hold{" "}
-        <strong>A</strong> for the field origin. Hold <strong>B</strong> for (3
-        m, 2 m) facing 180°.
+        Hold <strong>A</strong> for the field origin. Hold <strong>B</strong>{" "}
+        for (3 m, 2 m) facing 180°.
       </p>
 
       <LessonSection id="the-pose-you-are-driving-to" title="The target pose">
@@ -123,7 +122,7 @@ export default function DriveToPoint() {
           Every command so far came out of a factory:{" "}
           <code>mechanism.run(...)</code> or <code>Command.sequence(...)</code>,
           one expression with <code>.named(...)</code> on the end. This one does
-          four things, and only one of them repeats.
+          four things.
         </p>
 
         <CodeBlock
@@ -189,8 +188,7 @@ public final void onCancel() {
         />
 
         <p>
-          It is an ordinary coroutine body with your four methods dropped into
-          it. <code>onCancel()</code> is why <code>end(...)</code> runs on both
+          <code>onCancel()</code> is why <code>end(...)</code> runs on both
           exits. Copy the{" "}
           <a
             href="https://github.com/Hemlock5712/Workshop-Code/blob/5-DriveToPoint/src/main/java/frc/robot/utils/ClassicCommand.java"
@@ -394,7 +392,7 @@ import org.wpilib.math.geometry.Rotation2d;
 
         <p>
           The robot lurches away at full power, then crawls in over the last
-          half meter as the error shrinks. It works, and it looks bad.
+          half meter as the error shrinks.
         </p>
 
         <Box
@@ -475,9 +473,9 @@ import org.wpilib.math.geometry.Rotation2d;
         </p>
 
         <p>
-          <strong>Profiled Drive to Point</strong> changes this one file and
-          both faults go away. It plans the whole trip before the robot moves,
-          so PID becomes a small correction and the command gets a finish line.
+          <strong>Profiled Drive to Point</strong> changes this one file. It
+          plans the whole trip before the robot moves, so PID becomes a small
+          correction and the command gets a finish line.
         </p>
 
         <DocumentationButton
@@ -515,7 +513,7 @@ import org.wpilib.math.geometry.Rotation2d;
             ],
             correctAnswer: 2,
             explanation:
-              "super(...) calls the constructor of the class you extended. Its first argument is the command name; everything after it is a mechanism this command owns while it runs. .named(...) belongs to the builder that run(...) returns, so calling it on a finished Command does not compile, and that is one of the three usual compile errors here.",
+              "super(...) calls the constructor of the class you extended. Its first argument is the command name; everything after it is a mechanism this command owns while it runs. .named(...) belongs to the builder that run(...) returns, so calling it on a finished Command does not compile.",
           },
           {
             id: 3,

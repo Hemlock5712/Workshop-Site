@@ -50,21 +50,16 @@ export default function PathPlannerLesson() {
       branch="swerve-pathplanner"
       time="30 minutes"
     >
-      <Split>
-        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-          <p>
-            A <strong>path</strong> is one drive from a start pose to an end
-            pose. Waypoints shape the curve. The rotation is set apart from
-            them, so a swerve robot can travel one way while it faces another.
-          </p>
-          <p>
-            An <strong>auto</strong> is a list: drive this path, run this
-            action, drive the next path. The app saves both as files in the
-            robot project, and the robot builds each auto into a single command
-            at boot.
-          </p>
-        </div>
-      </Split>
+      <p>
+        A <strong>path</strong> is one drive from a start pose to an end pose.
+        Waypoints shape the curve. The rotation is set apart from them, so a
+        swerve robot can travel one way while it faces another.
+      </p>
+      <p>
+        An <strong>auto</strong> is a list: drive this path, run this action,
+        drive the next path. The app saves both as files in the robot project,
+        and the robot builds each auto into a single command.
+      </p>
 
       <LessonSection id="install" title="Install and configure">
         <ol className="ml-5 list-decimal space-y-3">
@@ -115,15 +110,16 @@ export default function PathPlannerLesson() {
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">Robot Mass</td>
                 <td className="px-3 py-2">
-                  A scale, with battery and bumpers on, in kilograms. 68 kg is
-                  the usual stand-in until you weigh it.
+                  A scale, with battery and bumpers on, in kilograms. The branch
+                  ships 68 kg.
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">Robot MOI</td>
                 <td className="px-3 py-2">
-                  Mass &times; (length&sup2; + width&sup2;) &divide; 12, in
-                  meters. A 68 kg robot, 0.84 m square, comes to about 8.0.
+                  Mass &times; (length&sup2; + width&sup2;) &divide; 12, with
+                  lengths in meters. A 68 kg robot, 0.84 m square, comes to
+                  about 8.0.
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
@@ -149,8 +145,9 @@ export default function PathPlannerLesson() {
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="px-3 py-2">Drive Motor, Current Limit</td>
                 <td className="px-3 py-2">
-                  Kraken X60, and <code>kSlipCurrent</code>. Leave Wheel COF at
-                  1.2 unless your wheel vendor lists one.
+                  The motor on your modules, Kraken X60 on the branch, and{" "}
+                  <code>kSlipCurrent</code>. Leave Wheel COF at 1.2 unless your
+                  wheel vendor lists one.
                 </td>
               </tr>
               <tr>
@@ -425,8 +422,8 @@ public class AutoOpMode extends PeriodicOpMode {
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              In sim, the robot ending within a few centimeters of the last
-              waypoint, turned to 45 degrees, and staying stopped.
+              In sim, the robot ending at the last waypoint, turned to 45
+              degrees, and staying stopped.
             </li>
             <li>
               <code>Intake</code> running only through the marked zone, and{" "}

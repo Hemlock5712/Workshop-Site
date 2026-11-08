@@ -3,7 +3,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import ImageBlock from "@/components/ImageBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
-import { ProseBlock, Split } from "@/components/lesson/Prose";
 import PairedLesson from "@/components/lesson/PairedLesson";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -17,7 +16,7 @@ export const metadata = lessonMetadata("/project-setup");
  * This page used to clone the team's 2027-Template. It no longer does. Nothing
  * about the 2027 season is official yet, so the offseason course builds its own
  * project from the WPILib New Project Creator and adds the two vendordeps by
- * hand. Workshops 4 and 5 go back to a prepared download, because a swerve
+ * hand. Workshop 5 goes back to a prepared download, because a swerve
  * drivetrain with CTRE generated constants is not something a student types.
  *
  * Two facts drive the vendordep section, and both are read out of the alpha-7
@@ -39,23 +38,9 @@ export default function ProjectSetup() {
         <>An internet connection. The first build downloads a lot.</>,
         <>A local folder to work in, not one synced to the cloud.</>,
       ]}
-      time="11 minutes"
+      time="10 minutes"
     >
       <PairedLesson kind="tuner" to="/hardware" />
-
-      <Split>
-        <ProseBlock>
-          <p>
-            The New Project Creator ships inside the WPILib copy of VS Code. It
-            writes a working robot project in about four clicks, and you never
-            create a file by hand.
-          </p>
-          <p>
-            What it writes is not quite what this course teaches, and the second
-            half of this page is the one step that fixes it.
-          </p>
-        </ProseBlock>
-      </Split>
 
       <LessonSection id="make-the-project" title="Make the project">
         <p>
@@ -87,7 +72,7 @@ export default function ProjectSetup() {
         <p>
           The creator runs as four numbered pages. On the first, choose{" "}
           <strong>Template</strong>. An example is somebody else&apos;s finished
-          robot, and you would spend the rest of Workshop 3 deleting it.
+          robot.
         </p>
         <ImageBlock
           src="/images/project-setup/step-3.png"
@@ -122,8 +107,8 @@ export default function ProjectSetup() {
             lessons name that folder when they tell you where to look.
           </li>
           <li>
-            <strong>Team Number.</strong> Yours. A deploy has no address to look
-            for without it, and the screenshot below shows 5712.
+            <strong>Team Number.</strong> Yours. The screenshot below shows
+            5712.
           </li>
           <li>
             <strong>Enable Desktop Support.</strong> Tick it. Workshop 3 runs
@@ -143,9 +128,9 @@ export default function ProjectSetup() {
           <p>
             OneDrive, Google Drive and Dropbox rewrite files underneath Gradle
             while it is working. The build then fails in ways that look like
-            broken code, and teams lose whole meetings to it. On a school laptop{" "}
-            <code>Documents</code> and <code>Desktop</code> are often synced
-            without anyone saying so. <code>Downloads</code> usually is not.
+            broken code. On a school laptop <code>Documents</code> and{" "}
+            <code>Desktop</code> are often synced without anyone saying so.{" "}
+            <code>Downloads</code> usually is not.
           </p>
         </Box>
         <p>
@@ -163,8 +148,8 @@ export default function ProjectSetup() {
         />
         <p>
           A dialog asks whether to open the folder. Choose{" "}
-          <strong>Yes (Current Window)</strong>. A new window works too, and
-          leaves you with two VS Code windows and no way to tell them apart.
+          <strong>Yes (Current Window)</strong>. A new window works too, but
+          leaves two VS Code windows open.
         </p>
         <ImageBlock
           src="/images/project-setup/step-7.png"
@@ -218,16 +203,13 @@ export default function ProjectSetup() {
         />
         <p>
           Changing a dependency starts a build on its own. Leave it alone. The
-          first one fetches Gradle, the Java 25 toolchain and the vendor
-          libraries. That runs for several minutes at home, longer on school
-          Wi-Fi. Later builds take seconds, because Gradle caches all of it in
-          your home folder rather than in the project.
+          first one downloads Gradle and the vendor libraries, so it is slow.
+          Gradle caches them in your home folder, so later builds are faster.
         </p>
         <p>
-          One thing goes wrong here, and it is the network. A build that stops
-          on <code>Could not resolve</code> could not reach a library it needed.
-          Reconnect first. Click the same WPILib icon you used to create the
-          project, type <code>build</code>, and pick{" "}
+          A build that stops on <code>Could not resolve</code> could not reach a
+          library it needed. Reconnect, then click the same WPILib icon you used
+          to create the project, type <code>build</code>, and pick{" "}
           <strong>WPILib: Build Robot Code</strong>.
         </p>
       </LessonSection>
@@ -278,7 +260,7 @@ export default function ProjectSetup() {
             question:
               "A fresh OpMode Robot project ships Commands v2. Why swap it?",
             options: [
-              "Every Java example here is Commands v3, and WPILib holds only one version",
+              "Every Java example here is Commands v3, and a project can hold only one of the two",
               "Commands v2 runs slower on SystemCore",
               "Commands v2 does not compile under Java 25",
               "It is optional, and both work fine",
