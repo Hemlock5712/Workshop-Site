@@ -301,7 +301,8 @@ protected void execute() {
             </Link>{" "}
             and hold <strong>B</strong>. The robot eases away, holds a steady
             speed, and eases off at the end. From the origin that goal is 3.6 m
-            out, past the 2.1 m needed for cruise.
+            out, past the 2.1 m needed for cruise. The origin is the blue corner
+            for now, and WPILib 2027 moves it to the field center.
           </li>
           <li>
             Keep holding <strong>B</strong> after it arrives. The robot stays

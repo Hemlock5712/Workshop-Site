@@ -236,6 +236,12 @@ export default function SwervePrerequisites() {
             corner. That covers what odometry reports, what the camera
             estimates, and the target you hand a drive command.
           </p>
+          <p className="mt-3">
+            This is changing. WPILib 2027 is moving (0, 0) to the center of the
+            field, and LimelightLib will follow. Until both ship, the code and
+            these pages stay on the blue corner. Mixing the two frames pulls
+            odometry half a field on every vision update.
+          </p>
         </Box>
       </LessonSection>
 
