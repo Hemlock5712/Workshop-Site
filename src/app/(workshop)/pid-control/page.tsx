@@ -5,13 +5,10 @@ import MechanismPlayground from "@/components/MechanismPlayground";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
-import { MarginNote, Split } from "@/components/lesson/Prose";
 import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
-import PairedLesson from "@/components/lesson/PairedLesson";
 import { Mech } from "@/components/lesson/Mechanism";
-import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/pid-control");
@@ -21,8 +18,7 @@ export const metadata = lessonMetadata("/pid-control");
  *
  * Six sections. A numbered procedure in each section that is a procedure, a
  * table where the content is a table, a three-column figure for the three
- * failure modes, and a closing check a student can actually perform. Two
- * asides on the whole page, both of them safety.
+ * failure modes, and a closing check a student can actually perform.
  *
  * The shape to copy: prose says why, and says what "good" looks like. The
  * numbered list says what to do. Neither repeats the other, and neither one
@@ -32,7 +28,7 @@ export default function PIDControl() {
   return (
     <PageTemplate
       title="PID Tuning in Tuner X"
-      lede="The TalonFX runs the control loop itself. Tuner X sends the setpoint, plots the response, and saves the gains onto the motor."
+      lede="The Talon FX runs the control loop itself. We can send it a setpoint from Tuner X, plot the response, and save the gains onto the motor."
       needs={[
         <>
           Motor, encoder direction, and mechanism zero verified in{" "}
@@ -44,19 +40,14 @@ export default function PIDControl() {
         </>,
         <>The mechanism, with a clear path to swing, and no obstacles.</>,
       ]}
-      time="14 minutes"
+      time="13 minutes"
     >
       <MechanismSelector />
-      <PairedLesson kind="code" to="/motion-magic-code" />
 
       <LessonSection id="how-to-tune" title="How to tune">
         <p>
-          CTRE has an excellent guide already that explains how to properly tune
-          a PID loop. We strongly suggest following the steps in the guide.
-        </p>
-        <p>
-          After you follow this guide, come back here and we&apos;ll explain how
-          to implement it.
+          CTRE has an excellent guide that explains how to tune a PID loop. We
+          strongly suggest following it.
         </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html"
@@ -64,24 +55,10 @@ export default function PIDControl() {
           icon={<BookOpen className="h-5 w-5" />}
         />
         <p>
-          CTRE tunes with a <code>TorqueCurrentFOC</code> request, so its gains
-          are in amps. This course tunes with a voltage request, so the
-          procedure carries over and their numbers do not.
+          If that site is blocked, the steps on this page recreate the guide.
+          CTRE tunes in torque current with FOC, and we rewrote it in volts. It
+          is based on CTRE&apos;s dyno testing, so it should be fairly accurate.
         </p>
-        <Mech for="arm" as="div">
-          <DocumentationButton
-            href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html#arm-tuning-with-torquecurrentfoc"
-            title="CTRE: Arm tuning"
-            icon={<BookOpen className="h-5 w-5" />}
-          />
-        </Mech>
-        <Mech for="flywheel" as="div">
-          <DocumentationButton
-            href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html#flywheel-tuning-with-torquecurrentfoc"
-            title="CTRE: Flywheel tuning"
-            icon={<BookOpen className="h-5 w-5" />}
-          />
-        </Mech>
       </LessonSection>
 
       <LessonSection id="play-with-the-gains-first" title="Play with the gains">
@@ -90,124 +67,106 @@ export default function PIDControl() {
           <code>kP</code> looks like here, where it costs nothing, rather than
           on a real gearbox.
         </p>
-        <p>
-          Switch between the three. The arm holds an angle, and gravity pulls on
-          it everywhere except straight up and down. This arm is competition
-          size, so it needs a real <code>kG</code> to hold. The 9 inch bench arm
-          is light enough to need very little, so its feedforward is mostly{" "}
-          <code>kS</code>. The flywheel holds a speed. Nothing drags it off
-          target, but holding that speed costs output, and a game piece steals
-          it at once. The elevator is the other gravity case, a constant pull.
-        </p>
         <MechanismPlayground />
       </LessonSection>
 
-      <LessonSection id="units-and-sizes" title="Units and sizes">
+      <LessonSection id="starting-values" title="Starting values">
         <p>
-          Every gain is output per unit of input. The request decides the
-          output. A request ending in <code>Voltage</code> outputs volts, and
-          one ending in <code>TorqueCurrentFOC</code> outputs amps.{" "}
-          <code>DutyCycle</code> outputs a fraction of full power. CTRE&apos;s
-          own examples put a position <code>kP</code> at 2.4 in volts and in the
-          thousands in amps. A gain copied from a guide written for another
-          request means nothing.
-        </p>
-        <p>
-          The input is mechanism rotations, never degrees. On the arm that is
-          the arm shaft, because the CANcoder reads it there. The flywheel reads
-          the motor&apos;s own sensor with no ratio set, so its input is
-          rotations of the motor.
+          Every gain is output per unit of input. Because everything here is
+          standardized in rotations and volts, we can know good PID and
+          feedforward starting values ahead of time.
         </p>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] text-left text-note">
+          <table className="w-full min-w-[360px] text-left text-note">
+            <caption className="py-2 text-left font-semibold">Arm</caption>
             <thead>
               <tr style={{ borderBottom: "1px solid var(--rule)" }}>
                 <th className="py-2 pr-4">Gain</th>
-                <th className="py-2 pr-4">Volts per</th>
-                <th className="py-2">CTRE example</th>
+                <th className="py-2">Starting value</th>
               </tr>
             </thead>
             <tbody style={{ color: "var(--tx2)" }}>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="py-2 pr-4">
-                  <code>kP</code>, position
+                  <code>kP</code>
                 </td>
-                <td className="py-2 pr-4">rotation of error</td>
-                <td className="py-2">2.4</td>
+                <td className="py-2">20</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="py-2 pr-4">
-                  <code>kP</code>, velocity
+                  <code>kI</code>
                 </td>
-                <td className="py-2 pr-4">rps of error</td>
+                <td className="py-2">0</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="py-2 pr-4">
+                  <code>kD</code>
+                </td>
+                <td className="py-2">0</td>
+              </tr>
+              <tr>
+                <td className="py-2 pr-4">
+                  <code>kS, kG</code>
+                </td>
+                <td className="py-2">Tune on your arm</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[360px] text-left text-note">
+            <caption className="py-2 text-left font-semibold">Flywheel</caption>
+            <thead>
+              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
+                <th className="py-2 pr-4">Gain</th>
+                <th className="py-2">Starting value</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: "var(--tx2)" }}>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="py-2 pr-4">
+                  <code>kP</code>
+                </td>
                 <td className="py-2">0.11</td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
                 <td className="py-2 pr-4">
-                  <code>kD</code>, position
+                  <code>kI</code>
                 </td>
-                <td className="py-2 pr-4">rps the error changes by</td>
+                <td className="py-2">0</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="py-2 pr-4">
+                  <code>kD</code>
+                </td>
+                <td className="py-2">0</td>
+              </tr>
+              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
+                <td className="py-2 pr-4">
+                  <code>kS</code>
+                </td>
                 <td className="py-2">0.1</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kS</code>, <code>kG</code>
-                </td>
-                <td className="py-2 pr-4">nothing, a flat output</td>
-                <td className="py-2">0.1, for kS</td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="py-2 pr-4">
-                  <code>kV</code>
-                </td>
-                <td className="py-2 pr-4">rps of target velocity</td>
-                <td className="py-2">0.12</td>
               </tr>
               <tr>
                 <td className="py-2 pr-4">
-                  <code>kA</code>
+                  <code>kV</code>
                 </td>
-                <td className="py-2 pr-4">rps² of target acceleration</td>
-                <td className="py-2">0.01</td>
+                <td className="py-2">0.12</td>
               </tr>
             </tbody>
           </table>
         </div>
         <p>
-          Rotations are why an arm <code>kP</code> looks big. An error of 0.01
-          rotations is 3.6 degrees, so a <code>kP</code> of 20 answers it with
-          only 0.2 V. A geared arm in volts can land anywhere from about 1 to
-          100. A Kraken X44 needs about 0.093 V per rps of its own speed, so a
-          flywheel <code>kV</code> in motor rotations lands a little above that.
+          The PID values generally work across mechanisms like these. The
+          feedforward values change heavily with the weight of the mechanism. We
+          strongly recommend tuning your own gains anyway.
         </p>
         <p>
-          <code>SensorToMechanismRatio</code> moves all of this. Set it to a
-          gearbox&apos;s reduction and one rotation of input becomes one turn of
-          the output. That multiplies <code>kP</code> and <code>kV</code> by
-          roughly the reduction. Both bench builds leave it at 1, and{" "}
-          <Mech for="arm">
-            <Link
-              href="/mechanism-setup#link-the-encoder"
-              className="underline font-medium"
-            >
-              Motor Setup &amp; CAN IDs
-            </Link>
-          </Mech>
-          <Mech for="flywheel">
-            <Link
-              href="/mechanism-setup#verify-motor-direction"
-              className="underline font-medium"
-            >
-              Motor Setup &amp; CAN IDs
-            </Link>
-          </Mech>{" "}
-          says when to change it.
-          <Mech for="arm">
-            {" "}
-            Arm <code>kG</code> also needs the gravity type set to{" "}
-            <code>Arm_Cosine</code>, which scales it by the cosine of the angle
-            and expects 0 to be horizontal.
-          </Mech>
+          Rotations are why an arm <code>kP</code> looks big. An error of 0.01
+          rotations is 3.6 degrees, so a <code>kP</code> of 20 answers it with
+          only 0.2 V. A Kraken X44 needs about 0.093 V per rps of its own speed,
+          so a flywheel <code>kV</code> in motor rotations lands a little above
+          that.
         </p>
       </LessonSection>
 
@@ -218,40 +177,28 @@ export default function PIDControl() {
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Open <strong>Signal &amp; Control</strong> and add the TalonFX you
+            Open <strong>Signal &amp; Control</strong> and add the Talon FX you
             are tuning.
           </li>
           <li>
-            Plot two signals: the target and the measured position (or velocity
-            for flywheels). Put target and measurement in one group so you can
-            read the gap between them.
+            Plot the target and the measured position, or velocity for a
+            flywheel, in one group so you can read the gap between them.
           </li>
-        </ol>
-        <Box variant="alert-info" title="Before you tune">
-          <p>
+          <li>
             In the control panel, pick a voltage-based position or velocity
             request and select Slot 0. Enter a small target: 0.1 rotations for
-            position, 10 rps for velocity. The same requests come back in code
-            in{" "}
-            <Link
-              href="/mechanisms#configs-and-requests"
-              className="underline font-medium"
-            >
-              Mechanisms
-            </Link>
-            .
-          </p>
-        </Box>
-
+            position, 10 rps for velocity.
+          </li>
+        </ol>
         <p>
-          Run these steps on your actual mechanism. They are the CTRE procedure,
-          in volts.
+          Run these steps on your actual mechanism. Press <strong>Apply</strong>{" "}
+          after every gain change. A gain that was never applied never reaches
+          the motor.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Set every gain in Slot 0 to zero.
+            Set every gain in Slot 0 to zero and press <strong>Apply</strong>.{" "}
             <Mech for="arm">
-              {" "}
               Set <strong>Gravity Type</strong> to <code>Arm_Cosine</code>.
             </Mech>
           </li>
@@ -278,16 +225,15 @@ export default function PIDControl() {
             <code>kP</code> first, and you will rarely need it.
           </li>
           <li>
-            Try other targets in both directions, then apply the gains with the
-            download button. A gain that was never applied never reaches the
-            motor.
+            Once short moves work, try longer ones. You may find the mechanism
+            starts to overshoot. If it does, go back to the feedback steps
+            above.
+          </li>
+          <li>
+            Try other targets in both directions, then press{" "}
+            <strong>Apply</strong> one last time.
           </li>
         </ol>
-        <p>
-          A tuned arm sounds like one motion and then silence. If the motor is
-          still working after the mechanism stopped, <code>kP</code> is too
-          high.
-        </p>
 
         <VideoEmbed
           id="Pt7SBFfl3oM"

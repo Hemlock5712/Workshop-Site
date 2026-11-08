@@ -2,15 +2,12 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { MarginNote, Split } from "@/components/lesson/Prose";
-import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import ImageBlock from "@/components/ImageBlock";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { Mech } from "@/components/lesson/Mechanism";
-import PairedLesson from "@/components/lesson/PairedLesson";
 import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -52,23 +49,21 @@ export default function MotionMagic() {
           target and measurement.
         </>,
       ]}
-      time="7 minutes"
+      time="6 minutes"
     >
       <MechanismSelector />
-      <PairedLesson kind="code" to="/motion-magic-code" />
 
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
-            The feedback loop from the last lesson does not change. Motion Magic
-            sits in front of it and moves the target for it. It walks that
-            target from where the mechanism is to where you asked it to go, one
-            small step at a time.
+            Motion Magic calculates a target that moves from where the mechanism
+            is to where you asked it to go, one small step at a time.
           </p>
           <p>
-            Two numbers describe the route. Cruise velocity caps the speed.
-            Acceleration caps how fast the speed may change. A third number,
-            jerk, rounds the corner between them, and it stays at zero for now.
+            It needs two values. A cruise velocity caps the speed, and an
+            acceleration limits how fast the speed changes. There is a third
+            value, jerk, which we don&apos;t recommend tuning unless the
+            mechanism is very heavy.
           </p>
         </div>
       </Split>
@@ -105,9 +100,8 @@ export default function MotionMagic() {
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
-              Start slow enough to watch. A two-second move across the range is
-              easy to read on the plot, and easy to stop by hand. You can always
-              speed it up later.
+              Start with extremely small values to see what effect the profile
+              has. You can always speed it up later.
             </p>
           </div>
           <MarginNote label="Units">
@@ -147,18 +141,17 @@ export default function MotionMagic() {
             Under the <strong>Motion Magic</strong> config section, enter a
             cruise velocity of <code>0.5</code> rotations per second and an
             acceleration of <code>1</code> rotation per second squared. Both are
-            in mechanism rotations, not motor rotations. Tune them far more
-            aggressively on a competition robot.
+            in mechanism rotations, not motor rotations.
           </Mech>
           <Mech for="flywheel" as="li">
             Under the <strong>Motion Magic</strong> config section, enter an
             acceleration of <code>20</code> rotations per second squared. That
             is the only profile number this mode reads. The flywheel reads the
             motor&apos;s own sensor with no ratio set, so it is in motor
-            rotations. Tune it far more aggressively on a competition robot.
+            rotations.
           </Mech>
           <Mech for="flywheel" as="li">
-            Ask for a speed of <code>100</code> rotations per second on the
+            Ask for a speed of <code>20</code> rotations per second on the
             request itself. A flywheel&apos;s speed is the target you send, not
             a config you save.
           </Mech>
@@ -166,8 +159,10 @@ export default function MotionMagic() {
             Leave jerk at zero. Zero means no jerk limit, and the profile stays
             a plain trapezoid.
           </li>
-          <li>Apply the configuration with the download button.</li>
-          <li>Run it and see the magic!</li>
+          <li>
+            Press <strong>Apply</strong>.
+          </li>
+          <li>Run a move and watch the plot.</li>
         </ol>
 
         <Mech for="flywheel">
@@ -177,17 +172,10 @@ export default function MotionMagic() {
             title="Cruise velocity does nothing here"
           >
             <p>
-              Tuner X shows a cruise velocity box for every mechanism and lets
-              you set it. Motion Magic Velocity never reads it. Phoenix says so
-              in its own source, in two places. The control mode does not use
-              the <code>CruiseVelocity</code> config, and that config is
-              documented as unused by Motion Magic Velocity modes.
-            </p>
-            <p className="mt-3">
-              Cruise velocity is a speed ceiling for a mechanism travelling to a
-              position. The arm sets one. A flywheel is not going anywhere, so
-              the speed you request is the speed, and acceleration is the only
-              thing shaping how it gets there.
+              Tuner X shows a cruise velocity box for every mechanism. Motion
+              Magic Velocity never reads it, so the speed you request is the
+              speed, and acceleration is the only thing shaping how it gets
+              there.
             </p>
           </Box>
         </Mech>
@@ -196,8 +184,8 @@ export default function MotionMagic() {
 
       <LessonSection id="tune-the-limits" title="Raise the limits">
         <p>
-          By now the conservative profile should track cleanly on every run. Now
-          find out how much the mechanism will take before it stops behaving.
+          The motor should now track the profile cleanly on every run, so you
+          can start raising the limits.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -227,28 +215,11 @@ export default function MotionMagic() {
             arrive almost at once, and the wheel should settle without hunting.
           </Mech>
         </ol>
-        <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              Then back off from the ceiling you found. A profile tuned to the
-              last volt on a fresh battery falls behind on a tired one. A loaded
-              mechanism is slower than an empty one, and a match gives you both
-              at once.
-            </p>
-            <p>Around 80% of the ceiling you found is a good starting point.</p>
-          </div>
-        </Split>
         <p>
-          CTRE&apos;s profiled tuning procedure goes further and fits{" "}
-          <code>kV</code> and <code>kA</code> to the profile. The feedforward
-          then does most of the work, and <code>kP</code> corrects what is left.
-          Its gains are in amps, so take the order from it and not the numbers.
+          Don&apos;t tune to the very maximum. As the battery drains over a
+          match, the mechanism can fall behind the profile and track worse. We
+          typically leave the limits around 80% of the maximum we found.
         </p>
-        <DocumentationButton
-          href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/manual-pid-tuning.html#profiled-tuning"
-          title="CTRE: Profiled tuning"
-          icon={<BookOpen className="h-5 w-5" />}
-        />
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -334,7 +305,7 @@ export default function MotionMagic() {
             ],
             correctAnswer: 2,
             explanation:
-              "Both numbers are in mechanism rotations, and SensorToMechanismRatio is what makes one rotation mean one turn of the mechanism rather than one turn of the rotor. Get that ratio wrong on a 60:1 arm and the reported speed is off by a factor of sixty, which puts every profile number you enter off by the same factor.",
+              "Both numbers are in mechanism rotations. The arm's CANcoder sits on the arm shaft, so one rotation it reports is one turn of the arm, not one turn of the rotor.",
           },
           {
             id: 7,
@@ -349,7 +320,7 @@ export default function MotionMagic() {
             ],
             correctAnswer: 2,
             explanation:
-              "Acceleration is in mechanism rotations, and so is the speed you put on the request. SensorToMechanismRatio is what makes one rotation mean one turn of the wheel rather than one turn of the rotor. Get it wrong and every profile number you enter is off by the same factor.",
+              "Acceleration is in mechanism rotations, and so is the speed you put on the request. The flywheel reads the motor's own sensor with no ratio set, so one mechanism rotation is one turn of the motor.",
           },
           {
             id: 4,

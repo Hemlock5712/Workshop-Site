@@ -88,7 +88,7 @@ export const armBOMData: BOMItem[] = [
     productLink:
       "https://wcproducts.com/collections/gearboxes/products/wcp-rotation-ss-gearbox",
     notes:
-      "This gearbox can be built as a kit, but for the highest ratio you should pick the gears listed here. They will work.",
+      "This gearbox can be built as a kit, but for the highest ratio you should pick the gears listed here. They will work. Gear ratio: 8:60 then 16:60, about 28.1:1.",
     is3DPrinted: true,
   },
   {

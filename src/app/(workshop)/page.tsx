@@ -123,7 +123,6 @@ export default function Home() {
         >
           {LESSON_COUNT} lessons on programming an FRC robot, from spinning a
           motor in Tuner X to a swerve drive that finds itself with a camera.
-          Every lesson runs on real hardware.
         </p>
 
         <div className="mt-[34px] flex flex-wrap items-center gap-[22px] pb-16">
@@ -191,8 +190,7 @@ export default function Home() {
               color: "var(--tx3)",
             }}
           >
-            Read it in order. Each lesson leaves the code in a state the next
-            one starts from.
+            Read it in order. Each workshop builds on the one before it.
           </p>
         </div>
 

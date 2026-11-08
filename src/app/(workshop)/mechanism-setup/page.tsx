@@ -9,7 +9,6 @@ import { BookOpen } from "lucide-react";
 import VideoEmbed from "@/components/VideoEmbed";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
-import PairedLesson from "@/components/lesson/PairedLesson";
 import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -39,7 +38,7 @@ export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Motor Setup & CAN IDs"
-      lede="Every device gets its own CAN ID, and then the mechanism turns under power for the first time. You prove which way it moves under a volt or two, and on the arm which way its encoder counts first. Get any of that wrong and the next lesson tunes against the wrong sign."
+      lede="Now set up each device. Every device needs its own CAN ID and the correct configuration, so the software matches the hardware. You prove it by applying a volt or two and checking that the mechanism moves the correct direction. Get this wrong and tuning in the next lessons is impossible."
       needs={[
         <>The mechanism assembled and powered.</>,
         <>
@@ -50,17 +49,13 @@ export default function MechanismSetup() {
       time="12 minutes"
     >
       <MechanismSelector />
-      <PairedLesson kind="code" to="/mechanisms" />
 
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
         <p>
-          Factory default each device before you number it. That clears whatever
-          last season left behind. It also resets the CAN ID and the inversions.
-        </p>
-        <p>
-          Then blink. The device that flashes is the one you are about to edit.
-          If two flash together they share an ID: take one off the bus, number
-          the other, then reconnect.
+          Factory Default resets inversion and every other setting, but it does
+          not reset the CAN ID. If two devices flash together on a blink, they
+          share an ID. Change one to any unused ID, give the other its number
+          from the table, then come back to the first.
         </p>
 
         <div className="overflow-x-auto">
@@ -108,8 +103,12 @@ export default function MechanismSetup() {
             <strong>Factory Default</strong>.
           </li>
           <li>
-            Click the <strong>Blink</strong> button on the left panel. This will
-            flash the lights on the device that you have selected.
+            Press <strong>Clear Faults</strong>. This clears whatever the last
+            session left behind.
+          </li>
+          <li>
+            Click the <strong>Blink</strong> button on the left panel. The
+            device that flashes is the one you are about to edit.
           </li>
           <li>
             Give it the ID from the table and a name that says which mechanism
@@ -128,7 +127,7 @@ export default function MechanismSetup() {
           title="Arm encoder direction and zero"
         >
           <p>
-            The encoder is what everything downstream trusts. Test it by hand
+            The encoder is what every downstream lesson uses. Test it by hand
             before any request is sent.
           </p>
           <VideoEmbed id="mjGn3y19eUc" title="Calibrate and zero the encoder" />
@@ -196,62 +195,23 @@ export default function MechanismSetup() {
           </div>
 
           <p>
-            Choose the reference with whoever built the arm, then mark it on the
-            metal. A replaced CANcoder comes back with no direction and no
-            offset, so somebody will run this procedure again in March.
-          </p>
-        </LessonSection>
-
-        <LessonSection id="link-the-encoder" title="Link the Encoder">
-          <p>
-            Now that you have verified the encoder direction and zero, you can
-            link it to the motor.
-          </p>
-          <ol className="ml-5 list-decimal space-y-3">
-            <li>
-              Select the arm TalonFX and scroll down in the config section to
-              the <strong>Feedback</strong> section.
-            </li>
-            <li>
-              Set the <code>Feedback Remote Sensor ID</code> to match your
-              CANcoder ID.
-            </li>
-            <li>
-              Set the <code>Feedback Sensor Source</code> to{" "}
-              <code>RemoteCANcoder</code>
-            </li>
-          </ol>
-          <ImageBlock
-            src="/images/setup/link-the-encoder.png"
-            alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
-            caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
-          />
-          <p>
-            Leave <code>Sensor To Mechanism Ratio</code> at 1. The CANcoder sits
-            on the output shaft, so it already reads the arm. With a Pro license
-            you could pick <code>FusedCANcoder</code> or{" "}
-            <code>SyncCANcoder</code> instead, and then{" "}
-            <code>Rotor To Sensor Ratio</code> must be the gear reduction. If
-            you ever change a ratio, do it before you tune, because it changes
-            what every gain means. It is saved on the device, so Generate Code
-            includes it.
+            Choose the reference with whoever builds the arm, and mark it if you
+            can. If a CANcoder is ever replaced, redo this section on the new
+            one.
           </p>
         </LessonSection>
       </Mech>
 
-      <LessonSection
-        id="verify-motor-direction"
-        title="Run the motor, check the direction"
-      >
+      <LessonSection id="verify-motor-direction" title="Motor direction">
         <p>
           This is the first time anything moves under power. Voltage Out sends a
-          fixed voltage and nothing else: no target, no soft limits, no stopping
-          at the end of travel.
+          fixed voltage and nothing else: no target and no stopping at the end
+          of travel.
         </p>
         <Mech for="arm" as="p">
-          The hand test settled which way is positive. The motor has to agree
-          with the CANcoder, and the motor is the only thing allowed to change
-          from here.
+          The hand test settled which way is positive. Now check the motor on
+          its own, before it is linked to the CANcoder. Positive voltage has to
+          turn the arm counterclockwise too.
         </Mech>
         <Mech for="flywheel" as="div">
           <Split>
@@ -306,22 +266,23 @@ export default function MechanismSetup() {
           </li>
           <li>
             Enter <code>1 V</code>, click <strong>DISABLED</strong> to enable
-            the device, then disable after about a second. Watch the mechanism,
-            not the screen.
+            the device, then disable after about a second. Watch the mechanism.
           </li>
           <Mech for="arm" as="li">
-            The arm should move counterclockwise and CANcoder <code>32</code>{" "}
-            should count up.
+            The arm should move counterclockwise, and the motor&apos;s position
+            should go up.
           </Mech>
           <Mech for="flywheel" as="li">
             The wheel should spin the way it shoots, which is clockwise seen
             from the motor side.
           </Mech>
-          <li>
-            If it moves the other way, invert the motor output, apply, and run
-            the same test again.
-          </li>
         </ol>
+
+        <p>
+          If positive voltage turns it the other way, the motor is configured
+          wrong. Fix <code>Inverted</code> in the motor&apos;s{" "}
+          <strong>Motor Output</strong> config, apply, and test again.
+        </p>
 
         <p>
           Once <code>1 V</code> is right, repeat at <code>3 V</code>. Only the
@@ -351,6 +312,51 @@ export default function MechanismSetup() {
 
         <VideoEmbed id="cDWF3bj1Juk" title="Motor test" />
       </LessonSection>
+
+      <Mech for="arm">
+        <LessonSection id="link-the-encoder" title="Link the Encoder">
+          <p>
+            The encoder and the motor have each been checked on their own. Now
+            link them.
+          </p>
+          <ol className="ml-5 list-decimal space-y-3">
+            <li>
+              Select the arm motor and scroll down in the config section to the{" "}
+              <strong>Feedback</strong> section.
+            </li>
+            <li>
+              Set the <code>Feedback Remote Sensor ID</code> to match your
+              CANcoder ID.
+            </li>
+            <li>
+              Set the <code>Feedback Sensor Source</code> to{" "}
+              <code>RemoteCANcoder</code>.
+            </li>
+            <li>
+              Press <strong>Apply</strong>. You should hear it chime.
+            </li>
+          </ol>
+          <p>
+            Turn the arm counterclockwise by hand. The arm motor&apos;s position
+            should now go up along with the CANcoder.
+          </p>
+          <ImageBlock
+            src="/images/setup/link-the-encoder.png"
+            alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
+            caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
+          />
+          <p>
+            Leave <code>Sensor To Mechanism Ratio</code> at 1. The CANcoder sits
+            on the output shaft, so it already reads the arm. With a Pro license
+            you could pick <code>FusedCANcoder</code> or{" "}
+            <code>SyncCANcoder</code> instead, and then{" "}
+            <code>Rotor To Sensor Ratio</code> must be the gear reduction. If
+            you ever change a ratio, do it before you tune, because it changes
+            what every gain means. It is saved on the device, so Generate Code
+            includes it.
+          </p>
+        </LessonSection>
+      </Mech>
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
@@ -398,7 +404,7 @@ export default function MechanismSetup() {
             ],
             correctAnswer: 0,
             explanation:
-              "Blink goes out to a CAN ID, so two devices flashing means two devices hold that number. Take one of them off the bus, give the other its own ID, then reconnect and blink again. Tuner X marks a duplicate with a red device card.",
+              "Blink goes out to a CAN ID, so two devices flashing means two devices hold that number. Change one to an unused ID, give the other its number from the table, then come back to the first. Tuner X marks a duplicate with a red device card.",
           },
           {
             id: 2,
@@ -433,7 +439,7 @@ export default function MechanismSetup() {
             id: 4,
             only: "arm",
             question:
-              "A CANcoder fails in March and somebody fits a new one. What has to happen?",
+              "A CANcoder fails and somebody fits a new one. What has to happen?",
             options: [
               "Nothing, because the direction and the zero travel with the mechanism rather than the device",
               "Set its CAN ID and its name, and the two sensor settings carry over",

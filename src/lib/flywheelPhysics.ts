@@ -82,16 +82,16 @@ export const DEFAULT_FLY_GAINS: FlywheelGains = {
 export const DEFAULT_FLY_TARGET_RPM = 1800; // 30 rps
 
 export const FLY_SLIDER_RANGES = {
-  kP: { min: 0, max: 1, step: 0.005, precision: 3, unit: "V·s/rot" },
-  kI: { min: 0, max: 0.5, step: 0.005, precision: 3, unit: "V/rot" },
-  kD: { min: 0, max: 0.05, step: 0.001, precision: 3, unit: "V·s²/rot" },
-  kS: { min: 0, max: 2, step: 0.05, precision: 2, unit: "V" },
-  kV: { min: 0, max: 0.3, step: 0.005, precision: 3, unit: "V·s/rot" },
+  kP: { min: 0, max: 5, step: 0.005, precision: 3, unit: "V·s/rot" },
+  kI: { min: 0, max: 2, step: 0.005, precision: 3, unit: "V/rot" },
+  kD: { min: 0, max: 0.2, step: 0.001, precision: 3, unit: "V·s²/rot" },
+  kS: { min: 0, max: 4, step: 0.05, precision: 2, unit: "V" },
+  kV: { min: 0, max: 0.5, step: 0.005, precision: 3, unit: "V·s/rot" },
 } as const;
 
 export const FLY_TARGET_RANGE_RPM = {
   min: 0,
-  max: 4500,
+  max: 6000,
   step: 25,
 } as const;
 

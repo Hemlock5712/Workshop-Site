@@ -36,7 +36,7 @@ export default function Introduction() {
   return (
     <PageTemplate
       title="Workshop Overview"
-      lede="This site is the written version of Team 5712's programming workshop. It starts with one motor on a bench and ends with a swerve drive that finds its own way to a target. Every lesson runs on real CTRE hardware."
+      lede="This site is a written version of Team 5712's programming workshops. It starts with a simple mechanism, a flywheel or an arm, and works up to a swerve drive. To keep things simple, it covers CTRE mechanisms and swerve drives only."
       needs={[
         <>
           Every download on{" "}
@@ -58,9 +58,8 @@ export default function Introduction() {
       <Split>
         <ProseBlock>
           <p>
-            Nothing here assumes you have written code before. It does assume a
-            mechanism is sitting in front of you, and that someone nearby can
-            cut power to it.
+            Nothing here assumes you have written code before. It does assume
+            you have a mechanism to run.
           </p>
           <p>
             Team 5712, Hemlock&apos;s Gray Matter, wrote this workshop and still
@@ -81,13 +80,10 @@ export default function Introduction() {
         </p>
 
         <p>
-          Each lesson clearly states which hardware it uses: Kraken, TalonFX,
-          CANcoder, CANivore, and Phoenix 6. This workshop is written for those
-          exact devices, and there are no alternative instructions for other
-          motor controllers. Everyone works with the same hardware, building the
-          same mechanism. If you have different hardware in your shop, you can
-          still learn the concepts, but the code examples will not work out of
-          the box.
+          This workshop is written for those exact devices, and there are no
+          alternative instructions for other motor controllers. If you have
+          different hardware in your shop, you can still learn the concepts, but
+          the code examples will not work out of the box.
         </p>
       </LessonSection>
 
@@ -98,7 +94,9 @@ export default function Introduction() {
             <p>
               For the 2027 season, WPILib introduced Commands v3, a new
               programming style which changes how you write code. We&rsquo;re
-              going over Commands v3 in this workshop, not the old system.
+              going over Commands v3 in this workshop, not the old system. When
+              you move to a robot, use a SystemCore. A roboRIO cannot run
+              Commands v3.
             </p>
           </ProseBlock>
           <MarginNote label="Alpha">
@@ -149,30 +147,25 @@ export default function Introduction() {
               term: "Phoenix 6 alpha",
               body: (
                 <>
-                  CTRE&apos;s library, and the only vendor library in the
-                  course. It drives every motor and sensor you touch.
+                  CTRE&apos;s library. It drives every motor and sensor you
+                  touch.
                 </>
               ),
             },
           ]}
         />
 
-        <Box variant="alert-warning" title="Old tutorials won't work">
-          Almost every FRC tutorial you find by searching was written for
-          Commands v2. Those pages open a file called{" "}
-          <code>RobotContainer</code>, import <code>edu.wpi.first</code>{" "}
-          packages, and pick autonomous routines from a dashboard dropdown. None
-          of that exists here. When an answer from the internet does not match
-          your screen, that is usually the reason.
+        <Box variant="alert-warning" title="v2 and v3 don't mix">
+          Many FRC tutorials are written for Commands v2. Commands v2 and
+          Commands v3 cannot be mixed in one project.
         </Box>
       </LessonSection>
 
       {/* ── the road ─────────────────────────────────────────────────── */}
       <LessonSection id="the-road-ahead" title="The road ahead">
         <p>
-          Read the pages in order. Each workshop assumes the hardware or the
-          code from the one before it. The arrows at the bottom of every page
-          walk that list for you.
+          Read the pages in order. The workshops build on each other, and each
+          one assumes the hardware or the code from the one before it.
         </p>
       </LessonSection>
 
@@ -181,23 +174,18 @@ export default function Introduction() {
         <p>
           You won&apos;t be running any code on this page, but you will need to
           gather a few things before moving forward. Make sure you have
-          everything in the list below. Missing even one causes trouble later in
-          the workshop.
+          everything in the list below.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
-          <li>A mechanism on a bench, powered, with a clear path to swing.</li>
-          <li>
-            A laptop you are allowed to install software on, and a mentor who
-            can approve it if you are not.
-          </li>
+          <li>A mechanism on a bench, powered, with plenty of room to run.</li>
+          <li>A laptop you are allowed to install software on.</li>
         </ol>
 
         <Box variant="alert-success" title="You are ready when">
           <p>
             Both lines above are true, and the hardware is in front of you
-            rather than on a purchase order. Nothing on that list gets easier to
-            find later in the course.
+            rather than on a purchase order.
           </p>
         </Box>
 
