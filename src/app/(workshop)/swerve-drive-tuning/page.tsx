@@ -257,19 +257,8 @@ export default function SwerveDriveTuning() {
           </p>
         </Box>
         <FigureGrid
-          cols={3}
+          cols={2}
           items={[
-            {
-              label: "Square comes out rotated",
-              term: "Module zeros",
-              body: (
-                <>
-                  A module a degree off steers the robot sideways the whole way,
-                  and no radius correction fixes a heading error. Go back to{" "}
-                  <strong>Swerve Calibration</strong> and re-save the zeros.
-                </>
-              ),
-            },
             {
               label: "Worse right after the switch",
               term: "Drive gains",

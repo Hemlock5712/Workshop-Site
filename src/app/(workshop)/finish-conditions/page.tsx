@@ -438,10 +438,8 @@ private void spinUpWhenReady(Coroutine coroutine) {
           />
         </Mech>
         <p>
-          The timeout covers the first two and cannot help with the third. For a{" "}
-          <M k="noun" /> that overshoots, require the reading to stay inside
-          tolerance for several loops in a row. Keep that behind the same{" "}
-          <code>isAtTarget()</code>, so no call site changes.
+          The timeout covers the first two. The third is a tuning problem: fix
+          the overshoot.
         </p>
       </LessonSection>
 
@@ -463,7 +461,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
             to a button with <code>onTrue</code> in your <code>MyTeleop</code>.
             It is a step now, so it ends itself.
           </li>
-          <li>Press it once and time how long the step takes to end.</li>
+          <li>Press it once.</li>
           <li>
             Change the <M k="noun" />
             &apos;s <code>tolerance</code> to{" "}
@@ -487,8 +485,8 @@ private void spinUpWhenReady(Coroutine coroutine) {
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              The <M k="noun" /> reaching its target and the step ending well
-              under two seconds.
+              The <M k="noun" /> reaching its target and the step ending as soon
+              as it arrives.
             </li>
             <li>
               At <code>0.001</code>, the step running the full two seconds every
@@ -504,11 +502,6 @@ private void spinUpWhenReady(Coroutine coroutine) {
             </li>
           </ul>
         </Box>
-        <p>
-          Write down the tolerance you settled on and how long the step took.
-          Double that time for a backstop that will not fire on a good run.
-          Coroutines asks for that number.
-        </p>
       </LessonSection>
 
       <Quiz

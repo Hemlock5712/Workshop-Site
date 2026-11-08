@@ -214,9 +214,8 @@ public class LeaveStartAuto extends PeriodicOpMode {
           </li>
           <li>
             <strong>Disabled partway.</strong> Hit disable about a second into
-            the drive. The wheels stop. Re-select the mode from the list before
-            running again: picking a mode builds the OpMode fresh, and a fresh
-            routine with it.
+            the drive. The wheels stop. Enable again and the routine starts over
+            from the first line.
           </li>
         </ol>
       </LessonSection>
@@ -367,11 +366,11 @@ public class LeaveStartAuto extends PeriodicOpMode {
               "start() runs again on disable, so just enable to resume",
               "Nothing stops it; the routine finishes on its own after re-enable",
               "The constructor runs again on disable, so nothing else is needed",
-              "end() cancels the routine, and you pick the mode off the list again so a fresh OpMode builds a fresh routine",
+              "end() cancels the routine, and enabling again starts it fresh",
             ],
             correctAnswer: 3,
             explanation:
-              "end() runs when the mode stops for any reason, and it cancels the routine. The cancel runs whenCanceled, which sends the zero. Picking the mode builds the OpMode fresh, so the next run starts from the first line.",
+              "end() runs when the mode stops for any reason, and it cancels the routine. The cancel runs whenCanceled, which sends the zero. Enable again and the next run starts from the first line, with no need to pick the mode again.",
           },
         ]}
       />

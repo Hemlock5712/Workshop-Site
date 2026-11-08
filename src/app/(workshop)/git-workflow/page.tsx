@@ -111,11 +111,12 @@ export default function GitWorkflow() {
           <li>
             Click the branch name again, choose{" "}
             <strong>Create new branch</strong>, and name it for the change:{" "}
-            <code>arm-intake-angle</code>, not <code>my-branch</code>.
+            <code>arm-horizontal-target</code>, not <code>my-branch</code>.
           </li>
           <li>
             Make the change and build it. Then commit with a message that says
-            what the code now does: <code>Lower the intake angle to 0.48</code>.
+            what the code now does:{" "}
+            <code>Set the arm&apos;s horizontal target</code>.
           </li>
           <li>
             Click <strong>Publish Branch</strong>. Later commits on the same
@@ -133,10 +134,10 @@ export default function GitWorkflow() {
           showLineNumbers={false}
           code={`git switch main
 git pull
-git switch -c arm-intake-angle
+git switch -c arm-horizontal-target
 git add -A
-git commit -m "Lower the intake angle to 0.48"
-git push -u origin arm-intake-angle`}
+git commit -m "Set the arm's horizontal target"
+git push -u origin arm-horizontal-target`}
         />
       </LessonSection>
 

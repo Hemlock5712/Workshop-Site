@@ -283,7 +283,8 @@ export default function MotionMagicCode() {
             </Mech>
             <Mech for="flywheel" as="li">
               The wheel come up to 75 rotations per second and hold it on the
-              right trigger, then settle at 25 when you release.
+              right trigger, then settle at 25 when you release. Plot its
+              velocity in Tuner X to read the numbers.
             </Mech>
           </ul>
         </Box>

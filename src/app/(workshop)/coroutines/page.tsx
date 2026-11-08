@@ -293,8 +293,7 @@ coroutine.fork(robot.arm.vertical());`}
         <CodeBlock
           language="java"
           title="Add below the fork"
-          code={`// TODO: time your own arm.
-if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+          code={`if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
   // The flywheel never started, so there is nothing to stop.
   return;
 }`}
@@ -302,8 +301,8 @@ if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut(
 
         <p>
           This is the Y button&apos;s wait with a limit added. Three seconds is
-          a placeholder: use the time you wrote down at the end of Finish
-          Conditions, doubled.
+          a generous backstop. A mechanism that reaches its target never hits
+          it.
         </p>
 
         <h3 className="display m-0 text-aside">

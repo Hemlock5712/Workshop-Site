@@ -63,10 +63,6 @@ export default function Testing() {
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            Battery above 12.5 volts on the driver station. A low battery makes
-            a tuned mechanism look untuned.
-          </li>
-          <li>
             Every CAN device in Tuner X with the ID the code expects: 31 and 32
             for the arm, 21 for the flywheel.
           </li>
@@ -93,11 +89,6 @@ export default function Testing() {
             means Disable, now. Work out why with the robot disabled.
           </p>
         </Box>
-        <p>
-          Write what you pressed and what happened in the pull request
-          description. That line is how a reviewer knows the change ran on a
-          robot.
-        </p>
       </LessonSection>
 
       <LessonSection id="a-test-file" title="A test file">

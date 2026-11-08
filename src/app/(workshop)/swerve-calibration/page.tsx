@@ -71,9 +71,9 @@ export default function SwerveCalibration() {
         <p>
           Each module has a CANcoder reading which way its wheel points, and an
           offset saying which reading counts as straight ahead. The four{" "}
-          <code>k*EncoderOffset</code> constants in your file came from the
-          generator&apos;s encoder calibration. A straight edge sets them
-          precisely.
+          <code>k*EncoderOffset</code> constants in your file come from the
+          generator&apos;s encoder calibration. Hold the wheels against a
+          straight edge while you run it.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>

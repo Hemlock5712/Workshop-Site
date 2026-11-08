@@ -38,7 +38,7 @@ export default function VisionHardware() {
       title="Vision Hardware"
       lede="A camera that sees an AprilTag can tell the robot where it is standing. Everything on this page happens before any Java."
       needs={[
-        <>A robot on its wheels, with a PDH and a radio or network switch.</>,
+        <>A swerve robot on its wheels, with a SystemCore.</>,
         <>A Limelight, its mount, and an Ethernet cable.</>,
         <>A printed AprilTag from the current field map.</>,
         <>A laptop on the robot network, for the camera web interface.</>,
@@ -93,18 +93,13 @@ export default function VisionHardware() {
           items={[
             {
               label: "Power",
-              term: "PDH, 12 V",
-              body: <>A dedicated breaker on the PDH.</>,
+              term: "12 V",
+              body: <>Straight from the power distribution panel.</>,
             },
             {
               label: "Network",
               term: "Ethernet",
-              body: (
-                <>
-                  Straight to the radio, or to a network switch once you have
-                  more than one device.
-                </>
-              ),
+              body: <>Plugged straight into the SystemCore.</>,
             },
             {
               label: "Angle",
@@ -126,6 +121,10 @@ export default function VisionHardware() {
               A small error in the measured corners then swings the solved angle
               a long way. View the same tag from off to one side and the shape
               in the image carries much more information about where you stand.
+            </p>
+            <p>
+              We have found Limelight 3 and Limelight 4 lenses do not come
+              glued, so you may want to glue yours. Loctite works well.
             </p>
           </ProseBlock>
           <MarginNote label="Two cameras">

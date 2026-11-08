@@ -55,9 +55,8 @@ export default function RunningProgram() {
 
       <LessonSection id="canivore-usb-off" title="Hand over the CAN bus">
         <p>
-          Two programs cannot own the CAN bus at once. Leave{" "}
-          <strong>CANivore USB</strong> on and Tuner X keeps the bus, so your
-          code reaches nothing.
+          Leave <strong>CANivore USB</strong> on and Tuner X fights Hardware Sim
+          for the devices, so your code reaches nothing.
         </p>
         <p>
           It is the switch you turned on in{" "}
@@ -85,7 +84,8 @@ export default function RunningProgram() {
           <li>
             In Tuner X, turn <strong>CANivore USB off</strong>.{" "}
             <strong>You should see:</strong> your devices drop out of the Tuner
-            X list.
+            X list. They come back once Hardware Sim is running, and Tuner X
+            plots them as usual.
           </li>
           <li>
             Plug the controller into the laptop. Check the mechanism is powered
@@ -294,7 +294,7 @@ export default function RunningProgram() {
             ],
             correctAnswer: 1,
             explanation:
-              "Only one program can own the CAN bus over USB. With CANivore USB on, Tuner X holds the bus and the simulator cannot reach your motors. It is one switch with two positions: on for bench work in Tuner X, off when your code is driving.",
+              "With CANivore USB on, Tuner X fights Hardware Sim for the devices and the simulator cannot take them over. It is one switch with two positions: on for bench work in Tuner X, off when your code is driving.",
           },
           {
             id: 3,
