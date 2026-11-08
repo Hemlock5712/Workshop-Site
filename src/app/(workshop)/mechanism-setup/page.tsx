@@ -240,8 +240,7 @@ export default function MechanismSetup() {
             Make sure the mechanism is clear of obstacles. Blink the device
             first: voltage goes to a CAN ID, not to the one you meant. Start at
             1 volt and enable for about a second at a time. A Voltage Out
-            request runs until you stop it. The bench arm keeps turning, and an
-            arm with hard stops drives into one.
+            request runs until you stop it.
           </p>
         </Box>
 
