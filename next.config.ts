@@ -124,6 +124,12 @@ const nextConfig: NextConfig = {
   // trailing-slash normalisation; it does not affect these.
   async redirects() {
     return [
+      // PathPlanner was replaced by BLine in November 2026.
+      {
+        source: "/pathplanner",
+        destination: "/bline",
+        permanent: true,
+      },
       // Pathfinding was retired in November 2026, with PathPlanner. A target
       // chosen at runtime is a field pose handed to Drive to Point.
       {

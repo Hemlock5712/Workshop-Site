@@ -10,8 +10,8 @@ export const metadata = lessonMetadata("/autonomous");
 
 /**
  * Written against Workshop-Code `swerve-autonomous`, one commit on top of
- * `1-Swerve` that adds LeaveStartAuto. `/pathplanner` follows this lesson on
- * `swerve-pathplanner` and replaces the timer with a drawn path, holding it
+ * `1-Swerve` that adds LeaveStartAuto. `/bline` follows this lesson on
+ * `swerve-bline` and replaces the timer with a drawn path, holding it
  * against the three numbers measured here.
  */
 export default function Autonomous() {
@@ -142,7 +142,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
           <code>DriveMechanism</code> reports its pose, but nothing on it
           answers <em>am I there yet</em> the way{" "}
           <code>robot.arm.isAtTarget()</code> did on Finish Conditions.{" "}
-          <strong>PathPlanner</strong>, the next lesson, replaces the wait with
+          <strong>BLine Paths</strong>, the next lesson, replaces the wait with
           a drawn path that knows where it ends.
         </p>
         <p>
@@ -303,7 +303,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
         </Box>
         <p>
           Write down the distance the tape measured, the end pose, and the wait
-          that produced them. PathPlanner replaces that wait with a path drawn
+          that produced them. BLine Paths replaces that wait with a path drawn
           from the same tape mark. These three numbers are what you will hold
           the path against.
         </p>

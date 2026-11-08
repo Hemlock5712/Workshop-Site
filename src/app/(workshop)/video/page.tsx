@@ -159,11 +159,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
         "Fifteen Seconds, No Driver",
         "Autonomous: every way out of the routine stops the robot.",
       ],
-      [
-        "pathplanner",
-        "A Path That Knows Where It Ends",
-        "PathPlanner Paths: follow the plan, correct back onto it.",
-      ],
     ],
   ],
   [

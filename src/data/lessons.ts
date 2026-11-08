@@ -263,18 +263,14 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop5",
   },
   // Autonomous comes first: it drives a timed routine with no library, so a
-  // student has a working auto before PathPlanner adds paths on top of it.
+  // student has a working auto before BLine adds paths on top of it.
   {
     slug: "/autonomous",
     title: "Autonomous",
     section: "workshop5",
   },
-  {
-    slug: "/pathplanner",
-    title: "PathPlanner Paths",
-    shortLabel: "PathPlanner",
-    section: "workshop5",
-  },
+  // Replaced PathPlanner in November 2026; /pathplanner redirects here.
+  { slug: "/bline", title: "BLine Paths", section: "workshop5" },
 
   // Workshop 6: Vision & Navigation. Vision is two lessons again, as it was
   // until August 2026: the bench work has no Java in it and the code lesson

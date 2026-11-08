@@ -82,7 +82,7 @@ interface PageTemplateProps {
   /**
    * This page's route. Only needed when `title` is not the lesson's title in
    * `lessons.ts`, because that is how `LessonKicker` finds the lesson number
-   * otherwise. `/pathplanner` is the one page that needs it today.
+   * otherwise. No page needs it today.
    */
   slug?: Route;
   /**
