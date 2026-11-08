@@ -73,8 +73,8 @@ export default function PIDControl() {
       <LessonSection id="units-and-sizes" title="Units and sizes">
         <p>
           Every gain is output per unit of input. Here the output is volts and
-          the input is rotations, so the numbers you tune can look nothing like
-          the ones in a guide written for another unit.
+          the input is rotations. The numbers you tune can look nothing like a
+          guide written for another unit.
         </p>
         <p>
           Rotations are why an arm <code>kP</code> looks big. An error of 0.01
