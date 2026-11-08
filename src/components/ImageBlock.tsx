@@ -17,6 +17,11 @@ interface ImageBlockProps {
   height?: number;
   className?: string;
   priority?: boolean;
+  /**
+   * Caps the figure's width, in px. For a tall, narrow screenshot such as
+   * the Tuner X control panel: at the full figure width it fills the screen.
+   */
+  maxWidth?: number;
 }
 
 export default function ImageBlock({
@@ -28,9 +33,13 @@ export default function ImageBlock({
   height = 600,
   className = "",
   priority = false,
+  maxWidth,
 }: ImageBlockProps) {
   return (
-    <figure className={`measure-wide m-0 ${className}`.trim()}>
+    <figure
+      className={`measure-wide m-0 ${className}`.trim()}
+      style={maxWidth ? { maxWidth } : undefined}
+    >
       {title && <div className="micro mb-3">{title}</div>}
 
       <div
