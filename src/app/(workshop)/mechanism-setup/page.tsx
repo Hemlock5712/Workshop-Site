@@ -46,7 +46,7 @@ export default function MechanismSetup() {
         </>,
         <>No robot program running. Tuner X owns the bus here.</>,
       ]}
-      time="12 minutes"
+      time="14 minutes"
     >
       <MechanismSelector />
 
@@ -122,13 +122,40 @@ export default function MechanismSetup() {
       </LessonSection>
 
       <Mech for="arm">
+        <LessonSection id="arm-motor-direction" title="Arm motor direction">
+          <p>
+            Get the motor right first, by hand, before the encoder or any power.
+            Factory Default reset its inversion, so you set it here.
+          </p>
+          <ol className="ml-5 list-decimal space-y-3">
+            <li>
+              Select the arm TalonFX on <code>31</code> and plot its position.
+            </li>
+            <li>
+              With the motor facing you, turn the arm counterclockwise by hand.
+            </li>
+            <li>
+              The motor&apos;s position must go up. If it goes down, change{" "}
+              <code>Inverted</code> in the <strong>Motor Output</strong> config,
+              press <strong>Apply</strong>, and repeat the hand test.
+            </li>
+          </ol>
+          <p>
+            A motor and an encoder linked while they count in opposite
+            directions break every lesson after this one. Do not move on until
+            both go up together.
+          </p>
+        </LessonSection>
+      </Mech>
+
+      <Mech for="arm">
         <LessonSection
           id="verify-the-arm-sensor"
           title="Arm encoder direction and zero"
         >
           <p>
-            The encoder is what every downstream lesson uses. Test it by hand
-            before any request is sent.
+            With the motor right, check the encoder the same way. It is what
+            every downstream lesson uses.
           </p>
           <VideoEmbed id="mjGn3y19eUc" title="Calibrate and zero the encoder" />
           <ol className="ml-5 list-decimal space-y-3">
@@ -202,16 +229,61 @@ export default function MechanismSetup() {
         </LessonSection>
       </Mech>
 
-      <LessonSection id="verify-motor-direction" title="Motor direction">
+      <Mech for="arm">
+        <LessonSection id="link-the-encoder" title="Link the Encoder">
+          <p>
+            The motor and the encoder have each been checked on their own. Now
+            link them.
+          </p>
+          <ol className="ml-5 list-decimal space-y-3">
+            <li>
+              Select the arm motor and scroll down in the config section to the{" "}
+              <strong>Feedback</strong> section.
+            </li>
+            <li>
+              Set the <code>Feedback Remote Sensor ID</code> to match your
+              CANcoder ID.
+            </li>
+            <li>
+              Set the <code>Feedback Sensor Source</code> to{" "}
+              <code>RemoteCANcoder</code>.
+            </li>
+            <li>
+              Press <strong>Apply</strong>. You should hear it chime.
+            </li>
+          </ol>
+          <p>
+            Turn the arm counterclockwise by hand. The arm motor&apos;s position
+            should now go up along with the CANcoder.
+          </p>
+          <ImageBlock
+            src="/images/setup/link-the-encoder.png"
+            alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
+            caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
+          />
+          <p>
+            Leave <code>Sensor To Mechanism Ratio</code> at 1. The CANcoder sits
+            on the output shaft, so it already reads the arm. With a Pro license
+            you could pick <code>FusedCANcoder</code> or{" "}
+            <code>SyncCANcoder</code> instead, and then{" "}
+            <code>Rotor To Sensor Ratio</code> must be the gear reduction. If
+            you ever change a ratio, do it before you tune, because it changes
+            what every gain means. It is saved on the device, so Generate Code
+            includes it.
+          </p>
+        </LessonSection>
+      </Mech>
+
+      <LessonSection id="verify-motor-direction" title="Direction under power">
         <p>
           This is the first time anything moves under power. Voltage Out sends a
           fixed voltage and nothing else: no target and no stopping at the end
           of travel.
         </p>
         <Mech for="arm" as="p">
-          The hand test settled which way is positive. Now check the motor on
-          its own, before it is linked to the CANcoder. Positive voltage has to
-          turn the arm counterclockwise too.
+          You have checked the motor, the encoder and the link by hand. Now
+          prove it under power: positive voltage has to turn the arm
+          counterclockwise.
         </Mech>
         <Mech for="flywheel" as="div">
           <Split>
@@ -229,8 +301,8 @@ export default function MechanismSetup() {
               The wheel does not care which way you call positive, and the code
               would be just as correct with the sign flipped. What costs you is
               having no rule, because then every mechanism that touches a game
-              piece has its own sign to remember. An arm gets no such choice,
-              since its encoder already fixed the sign.
+              piece has its own sign to remember. An arm gets no such choice:
+              counterclockwise is positive.
             </MarginNote>
           </Split>
         </Mech>
@@ -277,11 +349,15 @@ export default function MechanismSetup() {
           </Mech>
         </ol>
 
-        <p>
+        <Mech for="arm" as="p">
+          If it turns clockwise, stop. Do not fix it here. One of the hand tests
+          above was skipped or not applied, so go back and redo them.
+        </Mech>
+        <Mech for="flywheel" as="p">
           If positive voltage turns it the other way, the motor is configured
           wrong. Fix <code>Inverted</code> in the motor&apos;s{" "}
           <strong>Motor Output</strong> config, apply, and test again.
-        </p>
+        </Mech>
 
         <p>
           Once <code>1 V</code> is right, repeat at <code>3 V</code>. Only the
@@ -312,51 +388,6 @@ export default function MechanismSetup() {
         <VideoEmbed id="cDWF3bj1Juk" title="Motor test" />
       </LessonSection>
 
-      <Mech for="arm">
-        <LessonSection id="link-the-encoder" title="Link the Encoder">
-          <p>
-            The encoder and the motor have each been checked on their own. Now
-            link them.
-          </p>
-          <ol className="ml-5 list-decimal space-y-3">
-            <li>
-              Select the arm motor and scroll down in the config section to the{" "}
-              <strong>Feedback</strong> section.
-            </li>
-            <li>
-              Set the <code>Feedback Remote Sensor ID</code> to match your
-              CANcoder ID.
-            </li>
-            <li>
-              Set the <code>Feedback Sensor Source</code> to{" "}
-              <code>RemoteCANcoder</code>.
-            </li>
-            <li>
-              Press <strong>Apply</strong>. You should hear it chime.
-            </li>
-          </ol>
-          <p>
-            Turn the arm counterclockwise by hand. The arm motor&apos;s position
-            should now go up along with the CANcoder.
-          </p>
-          <ImageBlock
-            src="/images/setup/link-the-encoder.png"
-            alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
-            caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
-          />
-          <p>
-            Leave <code>Sensor To Mechanism Ratio</code> at 1. The CANcoder sits
-            on the output shaft, so it already reads the arm. With a Pro license
-            you could pick <code>FusedCANcoder</code> or{" "}
-            <code>SyncCANcoder</code> instead, and then{" "}
-            <code>Rotor To Sensor Ratio</code> must be the gear reduction. If
-            you ever change a ratio, do it before you tune, because it changes
-            what every gain means. It is saved on the device, so Generate Code
-            includes it.
-          </p>
-        </LessonSection>
-      </Mech>
-
       <LessonSection id="check-your-work" title="Check your work">
         <p>
           Power the bench down, bring it back up, and walk these checks in
@@ -375,9 +406,9 @@ export default function MechanismSetup() {
               <code>0.25</code>.
             </Mech>
             <Mech for="arm" as="li">
-              Turning the arm counterclockwise by hand raises the CANcoder
-              reading, and positive voltage on TalonFX 31 drives it the same
-              way.
+              Turning the arm counterclockwise by hand raises both the motor and
+              the CANcoder readings, and positive voltage on TalonFX 31 drives
+              it the same way.
             </Mech>
             <Mech for="flywheel" as="li">
               Positive voltage on TalonFX 21 spins the wheel the way it shoots,
@@ -418,7 +449,7 @@ export default function MechanismSetup() {
             ],
             correctAnswer: 2,
             explanation:
-              "Counterclockwise is positive on this arm, so the position climbs. A falling reading means the sensor direction is backwards: flip it, apply, and run the hand test again. A reading that never moves is a different fault, usually a magnet out of range or the wrong device selected.",
+              "Counterclockwise is positive on this arm, so the position climbs. A falling reading means the sensor direction is backwards: flip it, apply, and run the hand test again.",
           },
           {
             id: 3,
@@ -448,6 +479,21 @@ export default function MechanismSetup() {
             correctAnswer: 2,
             explanation:
               "Sensor direction and the magnet offset are configs on the CANcoder itself, so a replacement arrives at a factory ID with both back at their defaults. Set the ID, run the hand test, and set the zero on the same reference mark. Put the arm back on that mark afterwards: it should read about 0 rotations again.",
+          },
+          {
+            id: 8,
+            only: "arm",
+            question:
+              "The motor and encoder are linked, and at 1 volt the arm turns clockwise. What do you do?",
+            options: [
+              "Change Inverted on the motor and run it again",
+              "Flip the CANcoder's sensor direction",
+              "Stop, and redo the motor and encoder hand tests before linking",
+              "Enter a negative voltage from here on",
+            ],
+            correctAnswer: 2,
+            explanation:
+              "Under power is the last check, not the place to fix direction. Flipping one setting after the link leaves the motor and the encoder counting against each other. Clockwise here means a hand test was skipped or not applied, so redo both and confirm they go up together.",
           },
           {
             id: 5,
