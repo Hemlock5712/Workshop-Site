@@ -37,7 +37,9 @@ export default function OpModes() {
         </>,
         <>
           The <code>robot.arm</code> and <code>robot.flywheel</code> fields from{" "}
-          <strong>Mechanisms</strong>.
+          <strong>Mechanisms</strong>. This lesson binds both. Built only one?
+          Go back through <strong>Mechanisms</strong> with the other one
+          selected, and add its field beside the first.
         </>,
       ]}
       branch="mech-2-Commands"

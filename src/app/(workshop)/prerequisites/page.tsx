@@ -108,8 +108,7 @@ export default function Prerequisites() {
               <strong>Git</strong>
             </a>
             . Any current version. Workshop 3 generates its own project rather
-            than cloning one. The lesson repositories after it are clones, and
-            every change you make is a commit.
+            than cloning one.
           </li>
         </ol>
       </LessonSection>

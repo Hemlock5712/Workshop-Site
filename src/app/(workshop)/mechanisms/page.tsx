@@ -630,7 +630,7 @@ public class Robot extends OpModeRobot {
             <code>
               <M k="file" />
             </code>{" "}
-            is in it, beside <code>Robot.java</code>.
+            is in it.
           </li>
           <li>
             In Tuner X, confirm every device answers on the{" "}
