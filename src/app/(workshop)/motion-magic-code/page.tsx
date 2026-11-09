@@ -45,7 +45,7 @@ export default function MotionMagicCode() {
         </>,
       ]}
       branch="mech-3-MotionMagic"
-      time="10 minutes"
+      time="6 minutes"
     >
       <MechanismSelector />
 
@@ -84,16 +84,18 @@ export default function MotionMagicCode() {
   private final MotionMagicVelocityVoltage velocityOut = new MotionMagicVelocityVoltage(0);`}
           />
         </Mech>
+
+        <p>Your editor offers its import.</p>
       </LessonSection>
 
       <LessonSection id="the-commands" title="Name targets, not volts">
         <Mech for="arm" as="div" className="flex flex-col gap-pad">
           <p>
             Replace <code>setVoltage</code> with <code>setPosition</code>, and
-            replace <code>runSlow</code> and <code>runFast</code> with{" "}
-            <code>vertical</code> and <code>horizontal</code>. Keep{" "}
-            <code>stop</code> and <code>stopMotor</code>: you may still want to
-            stop the arm while it is moving to a target.
+            replace <code>runSlow</code> and <code>runFast</code> with two
+            position commands, <code>vertical</code> and <code>horizontal</code>
+            . Keep <code>stop</code> and <code>stopMotor</code>: you may still
+            want to stop the arm while it is moving to a target.
           </p>
           <CodeBlock
             language="java"
@@ -202,8 +204,12 @@ export default function MotionMagicCode() {
         </Box>
         <p>
           A <M k="noun" /> that does not move at all may still have{" "}
-          <code>0.0</code> values in its config, so repeat the paste. One that
-          overshoots and hunts is a tuning problem. Fix it in Tuner X with{" "}
+          <code>0.0</code> values in its config, so repeat the paste from{" "}
+          <a href="/mechanisms#configure-once" className="underline">
+            Mechanisms
+          </a>
+          . One that overshoots and hunts is a tuning problem. Fix it in Tuner X
+          with{" "}
           <a href="/pid-control" className="underline">
             PID Tuning in Tuner X
           </a>
@@ -239,7 +245,7 @@ export default function MotionMagicCode() {
             ],
             correctAnswer: 0,
             explanation:
-              "With no whileFalse, the last position request stays applied, so the arm finishes its move and holds there against gravity. stop() would send NeutralOut on the release, and the arm would fall.",
+              "With no whileFalse, the last position request stays applied, so the arm finishes its move and holds there against gravity. stop() would send NeutralOut on the release, and the arm would go limp in coast and stop holding its target.",
           },
           {
             id: 3,

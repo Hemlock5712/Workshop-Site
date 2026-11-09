@@ -148,7 +148,7 @@ export default function CommandFramework() {
             <a href="/running-program#latched" className="underline">
               Hardware Simulation
             </a>{" "}
-            shows it on the bench.
+            shows it.
           </p>
         </Box>
       </LessonSection>

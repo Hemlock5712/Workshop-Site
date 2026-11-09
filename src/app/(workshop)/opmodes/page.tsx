@@ -48,7 +48,7 @@ export default function OpModes() {
         </>,
       ]}
       branch="mech-2-Commands"
-      time="7 minutes"
+      time="5 minutes"
     >
       <MechanismSelector />
 

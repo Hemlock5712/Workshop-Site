@@ -28,7 +28,9 @@
 import { useEffect, useRef, useState } from "react";
 import { RotateCcw } from "lucide-react";
 
-type Phase = "idle" | "held" | "released";
+/** The binding is read at the moment of release, like the real one: changing
+ *  the checkbox afterwards only changes what the next release does. */
+type Phase = "idle" | "held" | "latched" | "stopped";
 
 const PACKET_MS = 900;
 const PACKETS = 3;
@@ -45,7 +47,7 @@ function usePrefersReducedMotion() {
   return reduced;
 }
 
-/** One wire between two boxes. Horizontal from `sm` up, vertical below. */
+/** One wire between two boxes. Horizontal from `lg` up, vertical below. */
 function Wire({
   sending,
   label,
@@ -64,16 +66,16 @@ function Wire({
     : [];
   const line = sending ? "var(--accent)" : "var(--rule)";
   return (
-    <div className="relative flex shrink-0 items-center justify-center self-stretch sm:w-14 h-10 sm:h-auto">
+    <div className="relative flex shrink-0 items-center justify-center self-stretch lg:w-14 h-10 lg:h-auto">
       {/* the wire */}
       <div
-        className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 sm:left-0 sm:top-1/2 sm:h-[2px] sm:w-full sm:translate-x-0 sm:-translate-y-1/2"
+        className="absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 lg:left-0 lg:top-1/2 lg:h-[2px] lg:w-full lg:translate-x-0 lg:-translate-y-1/2"
         style={{ background: line }}
       />
       {dots.map((p, i) => (
         <span key={i} aria-hidden="true">
           <span
-            className="absolute hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full sm:block"
+            className="absolute hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full lg:block"
             style={{
               left: `${p * 100}%`,
               top: "50%",
@@ -81,7 +83,7 @@ function Wire({
             }}
           />
           <span
-            className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full sm:hidden"
+            className="absolute h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full lg:hidden"
             style={{
               top: `${p * 100}%`,
               left: "50%",
@@ -131,11 +133,10 @@ export default function LatchedRequestDiagram() {
   const last = useRef<number | null>(null);
 
   const held = phase === "held";
-  const released = phase === "released";
-  const stopRunning = released && whileFalse;
+  const stopRunning = phase === "stopped";
+  const latched = phase === "latched";
   const sending = held || stopRunning;
-  const spinning = held || (released && !whileFalse);
-  const latched = released && !whileFalse;
+  const spinning = held || latched;
 
   const command = held ? "runFast()" : stopRunning ? "stop()" : "nothing";
   const request = held ? "VoltageOut · 6 V" : "NeutralOut";
@@ -166,7 +167,8 @@ export default function LatchedRequestDiagram() {
   }, [reduced, sending, spinning]);
 
   const press = () => setPhase("held");
-  const release = () => setPhase((p) => (p === "held" ? "released" : p));
+  const release = () =>
+    setPhase((p) => (p === "held" ? (whileFalse ? "stopped" : "latched") : p));
 
   const status =
     phase === "idle"
@@ -182,7 +184,7 @@ export default function LatchedRequestDiagram() {
       <span className="module-tag">What a release sends</span>
 
       <div className="flex flex-col gap-pad px-panel pt-step pb-panel">
-        <div className="flex flex-col sm:flex-row">
+        <div className="flex flex-col lg:flex-row">
           <Node tag="Controller" title="Driver" live={held}>
             <button
               type="button"
