@@ -179,11 +179,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
         "Speed From Distance",
         "Drive to Point: it bolts, then creeps up short.",
       ],
-      [
-        "advanced-drive-to-point",
-        "Plan the Trip",
-        "Profiled Drive to Point: the plan drives, a correction trims.",
-      ],
     ],
   ],
 ];

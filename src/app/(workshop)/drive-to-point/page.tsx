@@ -14,66 +14,43 @@ const linkStyle =
   "text-[var(--accent)] underline hover:no-underline font-medium";
 
 /**
- * Five sections against the old eight, four excerpts and one embed against
- * thirteen code blocks.
+ * Rewritten November 2026, when the course moved all on-the-fly driving to
+ * BLine. Written against Workshop-Code `swerve-drive-to-point` (8acefaf),
+ * whose parent is `swerve-vision`, whose parent is `swerve-bline`.
  *
- * The old page built `DriveToPoint.java` field by field across nine numbered
- * steps, each closing on a "Visible result" that was usually "nothing changes
- * yet". That is a diff, not a lesson. What survives is what a student cannot
- * get by reading the finished file: which frame the pose is measured in, why
- * the heading controller wraps and the other two do not, why the stop request
- * lives in `onCancel()`, and what 30 m/s of commanded speed does on a 4.54 m/s
- * drivetrain.
+ * The old page built `DriveToPoint.java`, three hand-tuned PID controllers in
+ * a `while (true)` loop, and `/advanced-drive-to-point` then replaced its
+ * kP-times-error speed with a LinearPath profile. Both are gone. A one-waypoint
+ * BLine path built in code gets the same controllers, speed limits, end
+ * tolerances and stop-on-finish as every drawn path, so the method is one
+ * expression and the lesson is about what a field pose means and why this one
+ * must not flip. `/advanced-drive-to-point` 308s here.
  *
- * Deliberately gone: the optional speed clamp (not on the branch, and the next
- * lesson replaces it properly), the `ClassicCommand.java` embed (123 lines the
- * page tells you not to read, and the PR diff still reaches them), the
- * PID-versus-Slot-0 comparison table (three sentences of prose), and the
- * per-step compile-error commentary.
- *
- * The "where the flywheel went" margin note went the same way in August 2026,
- * when the prose linter started joining sentences across an inline `<code>`
- * and the page had to come back under the 15-minute cap. It was branch
- * housekeeping about another lesson's file, and a margin note is the one thing
- * on a page that is never load-bearing.
- *
- * "Check yourself" is not payable. It was cut once to buy back two minutes and
- * has been put back: the original eight questions are six, every answer is
- * taught on this page rather than on the branch, and the tolerance numbers
- * behind `atSetpoint()` came back with them.
- *
- * November 2026: `ClassicCommand`, the team's own four-method base class, is
- * gone from the branch and the page, on the owner's call. `DriveToPoint`
- * implements WPILib's `Command` interface directly: `run`, `name`,
- * `requirements`, and `onCancel` for the stop. The stop is a zero
- * `ChassisVelocities`, not `SwerveRequest.Idle`, which leaves the modules on
- * their last request. It lives only in `onCancel()` on this branch because the
- * loop is `while (true)`, and a statement after it would not compile.
- *
- * This is the first page in the course to use Java `this`. `/java-basics`
- * used to pre-teach it, fifteen lessons early, and no longer does. It is
- * defined here, where it first appears. `super` went with `ClassicCommand`.
+ * Verified in simulation, November 2026: from (0, 0, 0) to (3, 2, 180) in
+ * 3.8 s, finished at (2.98, 2.00, 178.0), zero velocity one second later. A
+ * code-built path needs no extra setup: it picks up BLine's defaults without
+ * `config.json` being loaded first. Not verified on hardware.
  */
 export default function DriveToPoint() {
   return (
     <PageTemplate
       title="Drive to Point"
-      lede="Hold a button and the robot drives itself to one spot on the field, position and heading together. Three PID controllers turn the gap between the current pose and the target pose into a chassis velocity. Accuracy comes from odometry."
+      lede="Hold a button and the robot drives itself to one spot on the field, position and heading together. It is a BLine path with one waypoint, built in code at the moment you ask for it instead of drawn in the editor beforehand."
       needs={[
         <>
-          <strong>Swerve Calibration</strong>. The command is only as accurate
-          as the pose it subtracts from.
+          <strong>BLine Paths</strong>, for the builder in{" "}
+          <code>DriveMechanism</code>.
         </>,
         <>
-          <strong>Coroutines</strong>, for a command body that loops and yields,
-          and <code>whileTrue</code> from <strong>Writing Commands</strong>.
+          <strong>Vision</strong>. The robot drives to where its pose says the
+          spot is, so the pose has to be right.
         </>,
         <>
-          <strong>Logging</strong>. The last check below is a graph.
+          <code>whileTrue</code> from <strong>Writing Commands</strong>.
         </>,
       ]}
-      branch="5-DriveToPoint"
-      time="15 minutes"
+      branch="swerve-drive-to-point"
+      time="8 minutes"
     >
       <p>
         Hold <strong>A</strong> for the field origin. Hold <strong>B</strong>{" "}
@@ -93,306 +70,104 @@ export default function DriveToPoint() {
           alt="Field coordinates: X down the length of the field, Y across it to the left"
           width={1024}
           height={469}
-          caption="The origin is the blue alliance corner for both alliances. It never flips. WPILib 2027 is moving it to the field center."
+          caption="The origin is the blue alliance corner for both alliances. It never flips."
         />
 
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT · POSE"
-          title="Nothing has told the robot where it is"
-        >
-          <p>
-            <code>getPose()</code> returns whatever odometry has counted since
-            the code started, and the left bumper re-zeroes the driver&apos;s
-            forward, not odometry. In the simulator, holding <strong>A</strong>{" "}
-            returns the robot to wherever it started. On a real field, without{" "}
-            <strong>Vision</strong> correcting the pose, it sends the robot
-            somewhere you did not intend.
-          </p>
-        </Box>
+        <p>
+          The target is a field coordinate, so the robot only arrives where you
+          meant if <code>getPose()</code> agrees with the field. Odometry alone
+          drifts and starts wherever the code started. Vision pulls it back, so
+          this lesson comes after Vision.
+        </p>
       </LessonSection>
 
-      <LessonSection id="a-second-way-to-write-a" title="A command as a class">
+      <LessonSection id="one-waypoint" title="One waypoint, built in code">
         <p>
-          Every command so far came out of a factory:{" "}
-          <code>mechanism.run(...)</code> or <code>Command.sequence(...)</code>,
-          one expression with <code>.named(...)</code> on the end. This one is a
-          class. <code>implements Command</code> promises the scheduler three
-          methods: <code>run</code>, <code>name</code> and{" "}
-          <code>requirements</code>.
+          A drawn path is a list of elements read from a file. The same list can
+          be built in Java. One <code>Path.Waypoint</code> is the whole path:
+          BLine starts from wherever the robot is when the command starts, and
+          drives to the waypoint.
         </p>
 
         <CodeBlock
           language="java"
-          title="DriveToPoint.java: name and requirements"
-          code={`public class DriveToPoint implements Command {
-  // ... fields, constructor, run and onCancel ...
-
-  @Override
-  public String name() {
-    return "DriveToPoint";
-  }
-
-  @Override
-  public Set<Mechanism> requirements() {
-    return Set.of(drivetrain);
-  }
+          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
+          title="driveToPoint, under followPath"
+          code={`/**
+ * Returns a command that drives straight to a spot on the field, from wherever the robot is when
+ * it starts. It is a BLine path with one waypoint, built in code instead of drawn in the editor,
+ * so it gets the same controllers, speed limits and end tolerances as every drawn path.
+ *
+ * @param goal where to drive, in field coordinates from the blue alliance corner
+ */
+public FollowPath driveToPoint(Pose2d goal) {
+  return pathBuilder
+      .build(new Path(new Path.Waypoint(goal)))
+      // A field coordinate is the same spot on either alliance, so never turn it around.
+      .withShouldFlip(() -> false);
 }`}
-        />
-
-        <p>
-          <code>name()</code> is the name telemetry shows.{" "}
-          <code>requirements()</code> lists every mechanism the command owns
-          while it runs. <code>.named(...)</code> belongs to the builder{" "}
-          <code>run(...)</code> returns, so calling it on a finished{" "}
-          <code>Command</code> will not compile.
-        </p>
-
-        <p>
-          <code>run(Coroutine coroutine)</code> is the whole command, written as
-          the loop-and-yield body from{" "}
-          <Link href="/coroutines" className={linkStyle}>
-            Coroutines
-          </Link>
-          : setup at the top, a <code>while</code> loop that calls{" "}
-          <code>coroutine.yield()</code> once per pass, and whatever comes after
-          the loop. When <code>run</code> returns, the command is finished.
-        </p>
-
-        <p>
-          The fourth method, <code>onCancel()</code>, is optional. The scheduler
-          calls it only when the command is canceled before <code>run</code>{" "}
-          returns, as when the driver releases the button. A canceled{" "}
-          <code>run</code> never reaches the lines after its loop.
-        </p>
-      </LessonSection>
-
-      <LessonSection id="build-it" title="Build the command">
-        <p>
-          One new file, <code>commands/DriveToPoint.java</code>. Six field
-          declarations go in at the top, two of them plain: the drivetrain and
-          the target pose. Three are <code>PIDController</code> fields with kP
-          of 10 on X and Y and 7 on heading. The sixth is one{" "}
-          <code>SwerveRequest.ApplyFieldVelocity</code>, built once and reused
-          every loop. Copy them and the imports from{" "}
-          <a
-            href="https://github.com/Hemlock5712/Workshop-Code/blob/5-DriveToPoint/src/main/java/frc/robot/commands/DriveToPoint.java"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkStyle}
-          >
-            the branch&apos;s file
-          </a>
-          .
-        </p>
-
-        <p>
-          Three controllers, because a swerve drivetrain moves in three
-          directions at once. Heading gets its own, so the robot turns to face
-          the right way while still driving.
-        </p>
-
-        <p>
-          The request is blue-relative because the pose is. The joystick request
-          uses the operator perspective, which flips on red so forward matches
-          what the driver sees. Your controllers already work in field
-          coordinates, and re-rotating their output would drive the robot the
-          wrong way on one alliance. <code>OpenLoopVoltage</code> means no wheel
-          PID underneath yours.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="DriveToPoint.java: the constructor"
-          code={`  /**
-   * @param drivetrain the swerve drive to command
-   * @param targetPose the field pose (blue-origin) to drive to, including the goal heading
-   */
-  public DriveToPoint(DriveMechanism drivetrain, Pose2d targetPose) {
-    this.drivetrain = drivetrain;
-    this.targetPose = targetPose;
-
-    // Wrap heading error to [-pi, pi] so the robot turns the short way around.
-    headingController.enableContinuousInput(-Math.PI, Math.PI);
-  }`}
         />
 
         <Split>
           <ProseBlock>
             <p>
-              <code>this.drivetrain = drivetrain;</code> looks like it does
-              nothing. It copies the parameter into the field of the same name.
-              The <code>this.</code> prefix means the field on this object; the
-              bare name means the parameter passed in. The parameter disappears
-              when the constructor ends, and the field is what <code>run</code>{" "}
-              reads.
+              Everything the <code>pathBuilder</code> was given in{" "}
+              <Link href="/bline#builder" className={linkStyle}>
+                BLine Paths
+              </Link>{" "}
+              comes along: the three controllers, the speed limits in{" "}
+              <code>config.json</code>, and the end tolerances. The command
+              finishes once the robot is within 3 cm and 2° of the goal. It
+              sends a zero velocity on the way out, finished or canceled.
             </p>
             <p>
-              <code>enableContinuousInput</code> tells the heading controller
-              that its two ends are the same place, so the robot turns the short
-              way. That controller works in radians, not degrees. X and Y get no
-              such call. Meters do not wrap.
+              <code>withShouldFlip(() -&gt; false)</code> overrides the
+              builder&apos;s default. Paths are drawn from the blue side. On
+              red, BLine turns them around the field center so the same routine
+              runs from the other end. A field coordinate is a fixed spot.
+              Flipping (3, 2) on red would send the robot to the far end of the
+              field.
             </p>
           </ProseBlock>
-          <MarginNote label="What goes wrong without it">
-            A robot at 179° asked to reach −179° has a real error of 2°. But{" "}
-            <code>−179 − 179</code> is −358, so an untreated controller spins
-            the long way around.
+          <MarginNote label="It finishes">
+            Because it ends on arrival, the command can go inside an autonomous
+            routine as one more <code>coroutine.await(...)</code> line, the same
+            as a drawn path.
           </MarginNote>
         </Split>
+      </LessonSection>
 
-        <p>
-          Then <code>run</code>. It calls <code>reset()</code> on all three
-          controllers before the loop, because a <code>PIDController</code> is a
-          field here and remembers its error between runs.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="DriveToPoint.java: run()"
-          code={`  @Override
-  public void run(Coroutine coroutine) {
-    xController.reset();
-    yController.reset();
-    headingController.reset();
-
-    // Runs until something cancels it (like letting go of the button). To make it stop at the
-    // goal instead, loop while this is false, and stop the drivetrain after the loop:
-    // xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint()
-    while (true) {
-      Pose2d currentPose = drivetrain.getPose();
-
-      double vx = xController.calculate(currentPose.getX(), targetPose.getX());
-      double vy = yController.calculate(currentPose.getY(), targetPose.getY());
-      double omega =
-          headingController.calculate(
-              currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
-
-      drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities(vx, vy, omega)));
-      coroutine.yield();
-    }
-  }`}
-        />
-
-        <p>
-          <code>calculate(measurement, setpoint)</code> takes where you are,
-          then where you want to be. With kI and kD at zero, out comes kP times
-          the error. <code>ChassisVelocities</code> holds the three results:{" "}
-          <code>vx</code> and <code>vy</code> in meters per second,{" "}
-          <code>omega</code> in radians per second.
-        </p>
-
-        <p>
-          The loop is <code>while (true)</code>, so the command runs until the
-          driver lets go. That keeps it out of{" "}
-          <code>Command.sequence(...)</code>. A sequence handed a command that
-          never ends sticks on that leg forever, so no autonomous routine can
-          use it.
-        </p>
-
-        <p>
-          The comment above the loop names the other option:{" "}
-          <code>
-            xController.atSetpoint() &amp;&amp; yController.atSetpoint()
-            &amp;&amp; headingController.atSetpoint()
-          </code>
-          . <code>atSetpoint()</code> asks whether the latest error is inside a
-          tolerance. The default is <strong>0.05</strong>, in whatever unit that
-          controller works in: 5 cm on X and Y, 0.05 radians on heading, about
-          2.9°. <code>setTolerance(...)</code> changes it.
-        </p>
-
-        <p>
-          The stop goes in <code>onCancel()</code>. This loop never exits, so
-          nothing after it would run, and Java will not compile a statement
-          after a <code>while (true)</code> with no <code>break</code>.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="DriveToPoint.java: onCancel()"
-          code={`  /** Stops the drivetrain. Runs when the command is canceled before it finishes. */
-  @Override
-  public void onCancel() {
-    // Zero speed, not SwerveRequest.Idle: Idle leaves every module on its last request.
-    drivetrain.setControl(driveRequest.withVelocity(new ChassisVelocities()));
-  }`}
-        />
-
-        <p>
-          <Link href="/running-program#latched" className={linkStyle}>
-            Ending a command does not stop a motor
-          </Link>
-          . Send zero speed, not <code>new SwerveRequest.Idle()</code>, which
-          does nothing to the modules.
-        </p>
-
+      <LessonSection id="bind-it" title="Bind it">
         <p>
           Two bindings go in the <code>TeleopOpMode</code> constructor, under
-          the left-bumper binding already there. <code>whileTrue</code>, because
-          the command never finishes on its own: release and it is canceled.
+          the left-bumper binding already there.
         </p>
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java: three imports and two bindings"
-          code={`import frc.robot.commands.DriveToPoint;
-import org.wpilib.math.geometry.Pose2d;
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          title="Two imports and two bindings"
+          code={`import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 
 // ... inside the constructor, after the seedFieldCentric binding:
 
     // Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
-    driver.a().whileTrue(new DriveToPoint(drivetrain, Pose2d.ZERO));
-    driver
-        .b()
-        .whileTrue(new DriveToPoint(drivetrain, new Pose2d(3, 2, Rotation2d.fromDegrees(180))));`}
+    driver.a().whileTrue(drivetrain.driveToPoint(Pose2d.ZERO));
+    driver.b().whileTrue(drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));`}
         />
-      </LessonSection>
-
-      <LessonSection id="the-gains" title="The gains">
-        <p>
-          These three controllers are not the Slot 0 gains you tuned in Tuner X.
-          Those run on the TalonFX itself, in rotations of one mechanism, and
-          put out volts for one motor. These run in your code once a loop, in
-          meters and radians, and command a velocity for the whole chassis.
-        </p>
 
         <p>
-          So <code>kP = 10</code> reads as ten meters per second of commanded
-          speed for every meter of error. On heading, <code>kP = 7</code> reads
-          as seven radians per second for every radian. Do the arithmetic. Three
-          meters out, the loop asks for <strong>30 m/s</strong>, against the{" "}
-          <strong>4.54 m/s</strong> in{" "}
-          <code>TunerConstants.kSpeedAt12Volts</code>. Nothing in the file trims
-          it.
+          <code>whileTrue</code> cancels the command when the button is
+          released, and BLine sends the zero on the way out. While it runs, the
+          path command owns the drivetrain, so the joystick default waits. Once
+          the robot arrives the command ends, and the sticks have the drivetrain
+          back even if the button is still down.
         </p>
-
-        <p>
-          The robot lurches away at full power, then crawls in over the last
-          half meter as the error shrinks.
-        </p>
-
-        <Box
-          variant="alert-danger"
-          tag="DANGER · UNTUNED"
-          title="10 / 10 / 7 are marked TODO"
-        >
-          <p>
-            The comment in the file ends{" "}
-            <code>TODO: tune these for your drivetrain</code>. Nobody measured
-            them for your robot. On real hardware, test in a clear space and
-            keep a hand on the disable. A gain this large turns a wrong pose
-            into a fast wrong move.
-          </p>
-        </Box>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
-        <ol
-          className="ml-5 list-decimal space-y-3"
-          style={{ color: "var(--tx2)" }}
-        >
+        <ol className="ml-5 list-decimal space-y-3">
           <li>
             Enable Teleop in{" "}
             <Link
@@ -401,53 +176,53 @@ import org.wpilib.math.geometry.Rotation2d;
             >
               full simulation
             </Link>
-            , drive a few meters from where the robot started, and turn it. Now
-            hold <strong>A</strong>: it should drive back and rotate to 0°
-            together, not spin first and drive second.
-          </li>
-          <li>
-            Keep holding <strong>A</strong> and push the left stick. Nothing
-            should happen: <code>DriveToPoint</code> requires the drivetrain, so
-            it outranks the joystick default until you release.
+            , drive a few meters from where the robot started, and turn it. Hold{" "}
+            <strong>A</strong>.
           </li>
           <li>
             Release <strong>A</strong> halfway through the trip with the sticks
-            centered. The robot should stop, not coast on at its last speed.
+            centered.
           </li>
           <li>
-            Hold <strong>B</strong>. The robot drives to (3, 2), turns to 180°,
-            then sits on the target making small corrections for as long as you
-            hold.
-          </li>
-          <li>
-            Graph <code>Drivetrain/Pose</code> and{" "}
-            <code>Drivetrain/TranslationSpeedMps</code> for that run. X settles
-            near 3, Y near 2, heading near 180°. Speed jumps to whatever the
-            drivetrain can do, holds, then falls off steeply.
+            Hold <strong>B</strong> until the robot stops, then switch to red
+            and hold <strong>B</strong> again.
           </li>
         </ol>
+
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              The robot drive back and turn to 0° at the same time, then stop on
+              its own.
+            </li>
+            <li>
+              A release stop it where it is, not coast on at its last speed.
+            </li>
+            <li>
+              <code>Drivetrain/Pose</code> settle within 3 cm of (3, 2) and 2°
+              of 180°, on both alliances.
+            </li>
+          </ul>
+        </Box>
 
         <p>
           <strong>It drives off confidently in the wrong direction.</strong>{" "}
           Suspect the pose, not the gains. The robot is driving correctly toward
           where it believes the target is, so graph <code>Drivetrain/Pose</code>{" "}
-          before touching a number. If the pose is right and it still slides
-          sideways, check the request has{" "}
-          <code>ForwardPerspectiveValue.BlueAlliance</code>.
+          before touching a number.
         </p>
 
         <p>
-          <strong>It gets close, creeps in, and never arrives.</strong>{" "}
-          Expected. One centimeter of error asks for 10 cm/s, and at some point
-          the request cannot overcome friction. There is no I term to grind out
-          the last bit.
+          <strong>On red it heads for the other end of the field.</strong> The{" "}
+          <code>withShouldFlip(() -&gt; false)</code> line is missing, so the
+          builder&apos;s default flipped the goal.
         </p>
 
         <p>
-          <strong>It will not compile.</strong> Look for a{" "}
-          <code>.named(...)</code> call on the new command, or a missing{" "}
-          <code>name()</code> or <code>requirements()</code>. Leave one out and
-          the error says the class does not override that abstract method.
+          <strong>It stops short and the command never ends.</strong> The
+          controllers cannot push the last few centimeters past friction. Raise
+          the translation and heading gains in the builder, the same fix as a
+          drawn path that stalls.
         </p>
       </LessonSection>
 
@@ -456,86 +231,58 @@ import org.wpilib.math.geometry.Rotation2d;
           {
             id: 1,
             question:
-              "Which of the three PID controllers gets enableContinuousInput(-Math.PI, Math.PI), and why?",
+              "How many waypoints does the path inside driveToPoint have, and where does the robot start from?",
             options: [
-              "All three, so each one takes the shortest route to its setpoint",
-              "Only the heading controller, because angles wrap and meters do not",
-              "Only the X and Y controllers, because the field walls bound them",
-              "None of them: the call belongs on the SwerveRequest instead",
+              "Two: the robot's pose at build time and the goal",
+              "One, the goal. BLine starts from wherever the robot is when the command starts",
+              "One, the goal, and the robot's pose is reset to the field origin first",
+              "None. The goal is passed to the controllers directly",
             ],
             correctAnswer: 1,
             explanation:
-              "Heading is the one axis whose two ends are the same place. Without the call, a robot at 179 degrees asked to reach -179 degrees computes an error of -358 and spins the long way around. X and Y are meters: 3 meters is never the same place as -3 meters, so wrapping them would be wrong. The bounds are -pi and pi because that controller works in radians.",
+              "The path is new Path(new Path.Waypoint(goal)). BLine drives from the robot's current pose to that waypoint. Nothing resets the pose: withPoseReset is never called, which is right, since the robot is not starting from a known spot.",
           },
           {
             id: 2,
             question:
-              'Where does the name "DriveToPoint" that shows up in telemetry come from?',
+              "Why does driveToPoint call withShouldFlip(() -> false) when followPath does not?",
             options: [
-              "The class name, which the scheduler reads by reflection",
-              'A .named("DriveToPoint") call on the finished command',
-              'The name() method, which returns "DriveToPoint"',
-              "The @Teleop annotation on the OpMode that binds it",
+              "Flipping only works on paths read from a file",
+              "A code-built path has no alliance, so flipping would throw",
+              "Flipping costs a loop of latency that a short path cannot spare",
+              "The goal is a fixed spot on the field, and flipping would mirror it to the other end on red",
             ],
-            correctAnswer: 2,
+            correctAnswer: 3,
             explanation:
-              "name() is one of the three methods Command asks for, and what it returns is the telemetry name. requirements() is the one that declares the drivetrain. .named(...) belongs to the builder that run(...) returns, so calling it on a finished Command does not compile.",
+              "The builder was made with withDefaultShouldFlip, which turns a path around the field center on red. That is right for a routine drawn from the blue side and wrong for a field coordinate, which names the same spot on both alliances.",
           },
           {
             id: 3,
             question:
-              "Why does the stop request go in onCancel() rather than after the loop in run()?",
+              "The driver holds B. The robot arrives and the button is still down. Who has the drivetrain?",
             options: [
-              "The loop never exits, so the only way the command ends is a cancel, and onCancel() is what runs then",
-              "onCancel() is the only method permitted to call setControl",
-              "A zero-speed request only takes effect once the command is over",
-              "The scheduler will not release a mechanism until the command sends one final request",
+              "The path command, until the button is released",
+              "Nobody, until the button is released",
+              "The joystick default command, because the path command finished on arrival",
+              "The path command, which restarts every loop while the button is held",
             ],
-            correctAnswer: 0,
+            correctAnswer: 2,
             explanation:
-              "A canceled run() never reaches the lines after its loop, and Java will not compile a statement after a while (true) with no break. Canceling ends the command, not the motion: the hardware carries on with the last request it was given.",
+              "The command ends once the robot is inside the end tolerances. whileTrue does not restart a command that finished, so the default command gets the drivetrain back.",
           },
           {
             id: 4,
             question:
-              "The loop in run() is while (true). What follows from that?",
+              "In simulation the robot stops 5 cm short of the goal and the command never ends. What is the first fix?",
             options: [
-              "The command runs until the driver releases the button, and it cannot be a step inside Command.sequence(...)",
-              "The command ends as soon as all three controllers are inside tolerance",
-              "The command will not compile until you give it a real condition",
-              "The command runs for exactly one scheduler loop and then ends",
+              "Raise the translation and heading gains in the path builder",
+              "Add a second waypoint 5 cm past the goal",
+              "Switch the request to OpenLoopVoltage",
+              "Loosen the end tolerances until it finishes",
             ],
             correctAnswer: 0,
             explanation:
-              "A command that never finishes sticks any sequence it is placed in on that leg forever, and autonomous routines are sequences. The comment above the loop names the alternative, looping until xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint(), whose default tolerance is 0.05: 5 cm on X and Y, 0.05 radians on heading.",
-          },
-          {
-            id: 5,
-            question:
-              "The drive request is built with ForwardPerspectiveValue.BlueAlliance rather than the operator perspective the joystick request uses. Why?",
-            options: [
-              "The operator perspective costs an extra rotation on every loop",
-              "The pose from odometry is always blue-origin, so velocities computed from it have to be sent in that same frame",
-              "Robots on the red alliance need a different set of gains",
-              "The operator perspective only applies while a human is holding a stick",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "getPose() is measured from the blue alliance corner for both alliances and never flips, and the three controller outputs are computed from that pose. The operator perspective exists for a driver, whose idea of forward changes with the alliance. Re-rotating a field-frame velocity through it would send the robot the wrong way on one alliance.",
-          },
-          {
-            id: 6,
-            question:
-              "kP is 10 on the X controller and the target is three meters away. What velocity does the loop ask for on that axis?",
-            options: [
-              "3 m/s, because the controller caps its output at the error",
-              "30 m/s, well past the 4.54 m/s in TunerConstants, and nothing in the file trims it",
-              "4.54 m/s, the drivetrain's top speed, because the request is clamped there",
-              "0.3 m/s, because kP divides the error",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "With kI and kD at zero the output is kP times the error, so 10 times 3 is 30 m/s against a top speed of 4.54 m/s. That is the speed trace in the last check: flat out for most of the trip, then a steep falloff. The gains are marked TODO: tune these for your drivetrain, so treat them as somebody else's starting point rather than an answer.",
+              "The controllers ask for a speed proportional to the error, and near the goal that speed is too small to move the wheels. Raising the gains is the same fix BLine Paths gives for a drawn path that stalls. Loosening the tolerance hides the miss instead of fixing it.",
           },
         ]}
       />

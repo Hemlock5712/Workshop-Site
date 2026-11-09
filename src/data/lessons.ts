@@ -272,13 +272,12 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     title: "Vision",
     section: "workshop6",
   },
+  // November 2026: every on-the-fly drive is a one-waypoint BLine path.
+  // Drive to Point aims it at a field pose; Align to Tag aims it at a spot
+  // measured from one tag. Profiled Drive to Point is gone: BLine already
+  // profiles, so it had nothing left to teach.
   { slug: "/drive-to-point", title: "Drive to Point", section: "workshop6" },
-  {
-    slug: "/advanced-drive-to-point",
-    title: "Profiled Drive to Point",
-    shortLabel: "Profiled Drive",
-    section: "workshop6",
-  },
+  { slug: "/align-to-tag", title: "Align to Tag", section: "workshop6" },
 ];
 
 const SLUG_INDEX: ReadonlyMap<string, number> = new Map(
