@@ -80,19 +80,16 @@ export default function LoggingImplementation() {
     >
       <MechanismSelector />
 
-      <Split>
-        <MarginNote label="File names">
-          A controller with no Driver Station attached has no clock. The file
-          opens as <code>WPILIB_TBD_*.wpilog</code> and gets renamed with the
-          date once a Driver Station supplies one.
-        </MarginNote>
-      </Split>
-
       <LessonSection id="start-the-log" title="Start the log once">
         <p>
           Both calls go at the top of the <code>Robot</code> constructor.
           Logging then runs from the first loop to the last.
         </p>
+        <MarginNote label="File names">
+          A controller with no Driver Station attached has no clock. The file
+          opens as <code>WPILIB_TBD_*.wpilog</code> and gets renamed with the
+          date once a Driver Station supplies one.
+        </MarginNote>
         <CodeBlock
           language="java"
           filename="src/main/java/first/robot/Robot.java"
@@ -471,7 +468,7 @@ private void record() {
               "Telemetry.getTable(getName()).log(...) sends the value to whatever backends are registered, and RobotBase registers a NetworkTables one at /Telemetry before your Robot runs. DataLogManager records every NetworkTables change, so the value lands in the file as NT:/Telemetry/Arm/... with no extra wiring. There is nothing to build in the constructor.",
           },
           {
-            id: 5,
+            id: 3,
             only: "flywheel",
             question:
               "The flywheel knows its speed. How does that number reach the .wpilog?",
@@ -486,7 +483,7 @@ private void record() {
               "Telemetry.getTable(getName()).log(...) sends the value to whatever backends are registered, and RobotBase registers a NetworkTables one at /Telemetry before your Robot runs. DataLogManager records every NetworkTables change, so the value lands in the file as NT:/Telemetry/Flywheel/... with no extra wiring. There is nothing to build in the constructor.",
           },
           {
-            id: 3,
+            id: 4,
             question:
               "You ran the program with WPILib: Hardware Sim Robot Code. Where is the .wpilog?",
             options: [
@@ -500,7 +497,7 @@ private void record() {
               "The program writes the file wherever it runs, and a hardware sim runs on your laptop, so take the newest .wpilog out of the project's logs folder. A run with no Driver Station does write a file. It has no clock to date itself with, so it opens as WPILIB_TBD_*.wpilog and gets renamed once a Driver Station supplies one.",
           },
           {
-            id: 4,
+            id: 5,
             only: "arm",
             question:
               "Arm/PositionRot climbs, then freezes partway through the run and holds one value. What happened?",

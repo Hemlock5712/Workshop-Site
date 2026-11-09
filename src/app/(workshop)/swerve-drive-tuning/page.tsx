@@ -294,7 +294,7 @@ export default function SwerveDriveTuning() {
             ],
             correctAnswer: 1,
             explanation:
-              "The project ships DriveRequestType.OpenLoopVoltage. You make the change yourself, and you make it after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
+              "The downloaded project and the one the Tuner X generator writes both ship DriveRequestType.OpenLoopVoltage. You make the change yourself, and you make it after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
           },
           {
             id: 2,

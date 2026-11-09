@@ -67,6 +67,9 @@ export default function Testing() {
             for the arm, 21 for the flywheel.
           </li>
           <li>
+            The code on the robot was built and deployed after your last change.
+          </li>
+          <li>
             Clear the mechanism&apos;s path and say &quot;enabling&quot; out
             loud before clicking Enable.
           </li>

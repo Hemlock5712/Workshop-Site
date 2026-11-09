@@ -20,8 +20,7 @@ export const metadata = lessonMetadata("/coroutines");
  *
  * - "The core five" replaces the old verb table. It leads with
  *   `waitUntil(condition, timeout)` and `.timedOut()`, because that is the
- *   call an autonomous needs first, and it says where `WaitResult` lives and
- *   that `ForkResult` exists. `park`, `awaitAll` and `awaitAny` get one line.
+ *   call an autonomous needs first, and it says where `WaitResult` lives.
  * - "House rules" is the coroutine equivalent of `runRepeatedly(...)` plus
  *   `whileTrue`. Every rule in it is something the routine below obeys.
  *

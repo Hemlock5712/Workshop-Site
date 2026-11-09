@@ -46,10 +46,8 @@ export const metadata = lessonMetadata("/chaining-commands");
  *
  * October 2026 cut that explanation to a link. Cancel-is-not-stop is taught
  * once, on `/running-program`, and this page only says what to do about it.
- * The same pass added the line that a sequence is a coroutine awaiting each
- * member (`SequentialGroup.run()` is that loop), so `await` is not new on
- * `/coroutines`, and swapped a quiz question on unit types for one on what
- * the last member does to a group.
+ * The same pass swapped a quiz question on unit types for one on what the
+ * last member does to a group.
  *
  * The group is called `spinUpWhenReady` because `/finish-conditions` builds
  * that same routine as a coroutine, under that name, on `mech-4-ReadingState`.
