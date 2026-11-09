@@ -269,11 +269,11 @@ public class MyTeleop extends PeriodicOpMode {
           <ul className="ml-5 list-disc space-y-2">
             <li>Before the press: nothing. The arm is unclaimed.</li>
             <li>
-              While held: <code>runFast (hold)</code>, started by{" "}
+              While held: <code>runFast</code>, started by{" "}
               <code>whileTrue</code>.
             </li>
             <li>
-              After the release: <code>stop (hold)</code>, started by{" "}
+              After the release: <code>stop</code>, started by{" "}
               <code>whileFalse</code> as <code>runFast</code> is canceled.
             </li>
           </ul>
@@ -314,16 +314,16 @@ public class MyTeleop extends PeriodicOpMode {
           {
             id: 3,
             question:
-              'A routine has been stuck for eight seconds, and the command it is sitting on is named "runFast (hold)". What does that name tell you?',
+              "A routine has been stuck for eight seconds on runFast, which is built with runRepeatedly. Why?",
             options: [
               "The command crashed and the scheduler is retrying it",
-              "It is a hold, which never finishes on its own, so whatever is waiting on it will wait forever",
+              "runRepeatedly never finishes on its own, so whatever is waiting on it will wait forever",
               "The mechanism is busy and the command has not started yet",
-              "Nothing useful; command names are decorative",
+              "The arm hit a limit and the command is waiting for it to move",
             ],
             correctAnswer: 1,
             explanation:
-              "That is what the (hold) suffix is for. A hold has no ending by design, so anything waiting on one waits forever. Command Composition and Finish Conditions give a hold an ending two ways: .withTimeout(...) and .until(...).",
+              "A command built with runRepeatedly has no ending by design, so anything waiting on one waits forever. Command Composition and Finish Conditions give a hold an ending two ways: .withTimeout(...) and .until(...).",
           },
           {
             id: 4,

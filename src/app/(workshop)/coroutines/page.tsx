@@ -164,7 +164,7 @@ while (!robot.arm.isAtTarget()) {
           <ul className="ml-5 list-disc space-y-2">
             <li>
               <strong>A button</strong> binds a hold,{" "}
-              <code>runRepeatedly(...).named(&quot;x (hold)&quot;)</code>, with{" "}
+              <code>runRepeatedly(...).named(&quot;x&quot;)</code>, with{" "}
               <code>whileTrue</code>. A flywheel adds{" "}
               <code>.whileFalse(robot.flywheel.stop())</code>.
             </li>
@@ -455,7 +455,7 @@ coroutine.fork(robot.flywheel.stop());`}
             ],
             correctAnswer: 3,
             explanation:
-              "robot.arm.vertical() is built with runRepeatedly and is named 'vertical (hold)'. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The house rule is fork holds, await steps.",
+              "robot.arm.vertical() is built with runRepeatedly. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The house rule is fork holds, await steps.",
           },
           {
             id: 2,

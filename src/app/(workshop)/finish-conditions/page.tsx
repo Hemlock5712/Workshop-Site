@@ -314,7 +314,7 @@ driver
     .y()
     .whileTrue(
         Command.noRequirements(coroutine -> spinUpWhenReady(coroutine))
-            .named("Spin Up When Ready (hold)"))
+            .named("Spin Up When Ready"))
     .whileFalse(robot.flywheel.stop());
 
 // ... and, further down the class:

@@ -190,7 +190,7 @@ export default function MotionMagicCode() {
    * position for transport. Never finishes.
    */
   public Command vertical() {
-    return runRepeatedly(() -> setPosition(0.25)).named("vertical (hold)");
+    return runRepeatedly(() -> setPosition(0.25)).named("vertical");
   }
 
   /**
@@ -198,7 +198,7 @@ export default function MotionMagicCode() {
    * intake position. Never finishes.
    */
   public Command horizontal() {
-    return runRepeatedly(() -> setPosition(0.5)).named("horizontal (hold)");
+    return runRepeatedly(() -> setPosition(0.5)).named("horizontal");
   }
 
   private void setPosition(double rotations) {
@@ -221,12 +221,12 @@ export default function MotionMagicCode() {
             title="Flywheel.java: what changes"
             code={`  /** Spin the flywheel at 25 rotations per second and hold it. Never finishes. */
   public Command runSlow() {
-    return runRepeatedly(() -> setVelocity(25.0)).named("runSlow (hold)");
+    return runRepeatedly(() -> setVelocity(25.0)).named("runSlow");
   }
 
   /** Spin the flywheel at 75 rotations per second and hold it. Never finishes. */
   public Command runFast() {
-    return runRepeatedly(() -> setVelocity(75.0)).named("runFast (hold)");
+    return runRepeatedly(() -> setVelocity(75.0)).named("runFast");
   }
 
   private void setVelocity(double rps) {
