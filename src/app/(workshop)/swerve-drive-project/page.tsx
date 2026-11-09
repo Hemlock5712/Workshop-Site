@@ -362,10 +362,6 @@ export default function SwerveDriveProject() {
             </li>
           </ul>
         </Box>
-        <p>
-          <strong>Swerve Calibration</strong> is next. It replaces the
-          generator&apos;s estimates with numbers measured off your robot.
-        </p>
       </LessonSection>
 
       {/* The "Check yourself" the rewrite deleted to reach 12 minutes, which is

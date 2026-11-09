@@ -58,7 +58,7 @@ export default function VisionImplementation() {
   return (
     <PageTemplate
       title="Vision"
-      lede="Wheel odometry adds up wheel turns, and it drifts. An AprilTag sighting is absolute, occasional, and noisy. This lesson feeds sightings into the pose estimator so the camera pulls odometry back toward the truth."
+      lede="This lesson feeds AprilTag sightings into the pose estimator so the camera pulls odometry back toward the truth."
       needs={[
         <>
           A camera mounted, wired and calibrated in{" "}
@@ -191,7 +191,6 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
               <code>setUseSharedOrientation(true)</code> tells a camera to read
               the shared topic, and the static{" "}
               <code>setSharedRobotOrientation</code> writes it once per loop.
-              Two cameras cost one write, not two.
             </p>
             <p>
               Now the read. <code>readResultsQueue()</code> hands back every
@@ -342,10 +341,8 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           If the pose never moves, check the name first: the string in{" "}
           <code>registerAll</code> has to match the camera&apos;s NetworkTables
           table exactly. If the pose jumps somewhere impossible, check the
-          offsets. If it lands on the far side of the field, a red-origin pose
-          is going into a blue-origin estimator. That is why the code asks for{" "}
-          <code>MT1_WPIBLUE</code>. Position that corrects on two tags and goes
-          strange on one is the MegaTag2 path, so seed the gyro. Not with{" "}
+          offsets. Position that corrects on two tags and goes strange on one is
+          the MegaTag2 path, so seed the gyro. Not with{" "}
           <code>seedFieldCentric()</code>, which only changes which way the
           sticks call forward: <strong>Swerve Calibration</strong> has the three
           kinds of zeroing.

@@ -46,10 +46,8 @@ export const metadata = lessonMetadata("/chaining-commands");
  *
  * October 2026 cut that explanation to a link. Cancel-is-not-stop is taught
  * once, on `/running-program`, and this page only says what to do about it.
- * The same pass added the line that a sequence is a coroutine awaiting each
- * member (`SequentialGroup.run()` is that loop), so `await` is not new on
- * `/coroutines`, and swapped a quiz question on unit types for one on what
- * the last member does to a group.
+ * The same pass swapped a quiz question on unit types for one on what the
+ * last member does to a group.
  *
  * The group is called `spinUpWhenReady` because `/finish-conditions` builds
  * that same routine as a coroutine, under that name, on `mech-4-ReadingState`.
@@ -97,8 +95,7 @@ export default function ChainingCommands() {
       <LessonSection id="holds-and-steps" title="Holds and steps">
         <p>
           A hold never reports that it is finished, so a list containing one
-          stops there for good. Step two never runs. Nothing errors and nothing
-          logs, so the routine looks frozen.
+          stops there for good. Step two never runs.
         </p>
         <p>
           <code>.withTimeout(...)</code> wraps a command and ends it after a
@@ -131,8 +128,8 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           </div>
           <MarginNote label="Blunt ending">
             A timeout ends the step after a fixed time, not when the arm
-            arrives. Finish Conditions is next and replaces it with a condition
-            that watches the real position. The timeout stays on as a backstop.
+            arrives. Finish Conditions replaces it with a condition that watches
+            the real position, and keeps the timeout as a backstop.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -155,11 +152,6 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
         .named("Spin Up When Ready");`}
         />
 
-        <p>
-          A sequence is itself a small coroutine. Its body is one loop that
-          calls <code>coroutine.await(member)</code> on each member in turn, and
-          Coroutines writes that call by hand.
-        </p>
         <p>
           <code>Command.sequence(...)</code> returns a builder rather than a{" "}
           <code>Command</code>. <code>.named(&quot;...&quot;)</code> is what
@@ -317,7 +309,7 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
             ],
             correctAnswer: 0,
             explanation:
-              "A hold never finishes, so the sequence waits on it for the rest of the match. Nothing errors and nothing logs, so the routine looks frozen. Give the member an ending with .withTimeout(...), or later with .until(...).",
+              "A hold never finishes, so the sequence waits on it for the rest of the match. Give the member an ending with .withTimeout(...), or later with .until(...).",
           },
           {
             id: 2,

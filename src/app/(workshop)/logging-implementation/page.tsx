@@ -4,12 +4,7 @@ import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
-import {
-  MarginNote,
-  ProseBlock,
-  Split,
-  WatchOut,
-} from "@/components/lesson/Prose";
+import { MarginNote, Split, WatchOut } from "@/components/lesson/Prose";
 import Quiz from "@/components/Quiz";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
@@ -85,26 +80,16 @@ export default function LoggingImplementation() {
     >
       <MechanismSelector />
 
-      <Split>
-        <ProseBlock>
-          <p>
-            A failure that lasts a tenth of a second is gone before anyone sees
-            it. The file on disk is the only record.
-          </p>
-        </ProseBlock>
+      <LessonSection id="start-the-log" title="Start the log once">
+        <p>
+          Both calls go at the top of the <code>Robot</code> constructor.
+          Logging then runs from the first loop to the last.
+        </p>
         <MarginNote label="File names">
           A controller with no Driver Station attached has no clock. The file
           opens as <code>WPILIB_TBD_*.wpilog</code> and gets renamed with the
           date once a Driver Station supplies one.
         </MarginNote>
-      </Split>
-
-      <LessonSection id="start-the-log" title="Start the log once">
-        <p>
-          Both calls go at the top of the <code>Robot</code> constructor, which
-          is empty on the branch. Logging then runs from the first loop to the
-          last.
-        </p>
         <CodeBlock
           language="java"
           filename="src/main/java/first/robot/Robot.java"
@@ -127,11 +112,7 @@ public Robot() {
           positions. Skip the second call and you get numbers with no way to
           tell whether the robot was enabled when they happened.
         </p>
-        <p>
-          Leave logging on in every mode and every build. A special logging
-          build, deployed after the match that went wrong, records the next
-          failure instead of the one you are trying to explain.
-        </p>
+        <p>Leave logging on in every mode and every build.</p>
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
@@ -300,10 +281,7 @@ private void record() {
       </LessonSection>
 
       <LessonSection id="read-the-file" title="Read the file back">
-        <p>
-          Do this once now, on a run whose answer you already know. Then the
-          first log you open is not one you need in a hurry.
-        </p>
+        <p>Do this once now, on a run whose answer you already know.</p>
         <ol className="ml-5 list-decimal space-y-3">
           <Mech for="arm" as="li">
             Start the program with{" "}
@@ -422,10 +400,6 @@ private void record() {
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
-        <p>
-          You are finished when a file on your own laptop can tell you what the{" "}
-          <M k="noun" /> did, with nobody in the room narrating it.
-        </p>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
@@ -494,7 +468,7 @@ private void record() {
               "Telemetry.getTable(getName()).log(...) sends the value to whatever backends are registered, and RobotBase registers a NetworkTables one at /Telemetry before your Robot runs. DataLogManager records every NetworkTables change, so the value lands in the file as NT:/Telemetry/Arm/... with no extra wiring. There is nothing to build in the constructor.",
           },
           {
-            id: 5,
+            id: 3,
             only: "flywheel",
             question:
               "The flywheel knows its speed. How does that number reach the .wpilog?",
@@ -509,7 +483,7 @@ private void record() {
               "Telemetry.getTable(getName()).log(...) sends the value to whatever backends are registered, and RobotBase registers a NetworkTables one at /Telemetry before your Robot runs. DataLogManager records every NetworkTables change, so the value lands in the file as NT:/Telemetry/Flywheel/... with no extra wiring. There is nothing to build in the constructor.",
           },
           {
-            id: 3,
+            id: 4,
             question:
               "You ran the program with WPILib: Hardware Sim Robot Code. Where is the .wpilog?",
             options: [
@@ -523,7 +497,7 @@ private void record() {
               "The program writes the file wherever it runs, and a hardware sim runs on your laptop, so take the newest .wpilog out of the project's logs folder. A run with no Driver Station does write a file. It has no clock to date itself with, so it opens as WPILIB_TBD_*.wpilog and gets renamed once a Driver Station supplies one.",
           },
           {
-            id: 4,
+            id: 5,
             only: "arm",
             question:
               "Arm/PositionRot climbs, then freezes partway through the run and holds one value. What happened?",

@@ -74,8 +74,7 @@ export default function Autonomous() {
         <p>
           A command built on the drivetrain requires the drivetrain, so a second
           drivetrain command cannot run beside it. Arm and flywheel commands
-          can. That is the same resource rule the scheduler has enforced since
-          Workshop 2.
+          can.
         </p>
       </LessonSection>
 
@@ -141,9 +140,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
           A wait is the only finish line available here.{" "}
           <code>DriveMechanism</code> reports its pose, but nothing on it
           answers <em>am I there yet</em> the way{" "}
-          <code>robot.arm.isAtTarget()</code> did on Finish Conditions.{" "}
-          <strong>BLine Paths</strong>, the next lesson, replaces the wait with
-          a drawn path that knows where it ends.
+          <code>robot.arm.isAtTarget()</code> did on Finish Conditions.
         </p>
         <p>
           Two names go into this file and they do different jobs. The one in the
@@ -152,11 +149,13 @@ public class LeaveStartAuto extends PeriodicOpMode {
           command is called in the scheduler and on the dashboard.
         </p>
         <p>
-          The <code>stopped</code> request is the line people leave out.{" "}
-          <code>setControl</code> latches a request: the drivetrain keeps
-          applying it until something sends a different one. When a routine
-          ends, nothing does. This OpMode sets no default command, so the wheels
-          carry on at the last speed they were given.
+          The <code>stopped</code> request is the line people leave out. This
+          OpMode sets no default command. When the routine ends, the wheels
+          carry on at the last speed they were given, because{" "}
+          <a href="/running-program#latched" className="underline">
+            requests stay latched
+          </a>
+          .
         </p>
         <p>
           It is sent twice for that reason. The last line of the coroutine
@@ -178,11 +177,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
       </LessonSection>
 
       <LessonSection id="test-in-layers" title="Four test passes">
-        <p>
-          Each pass answers one question, and each one can fail on its own. Run
-          them in order. A routine that fails the second pass has nothing to
-          prove in the third.
-        </p>
+        <p>Each pass answers one question. Run them in order.</p>
         <Box variant="alert-danger" title="Nobody in front of the robot">
           <p>
             An autonomous routine drives with nobody holding a stick. Give one
@@ -221,10 +216,6 @@ public class LeaveStartAuto extends PeriodicOpMode {
       </LessonSection>
 
       <LessonSection id="failure-shapes" title="Three failure shapes">
-        <p>
-          A routine fails quietly. Nothing throws, nothing logs a complaint, and
-          the robot does something you did not ask for.
-        </p>
         <FigureGrid
           cols={3}
           items={[

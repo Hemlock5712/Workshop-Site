@@ -207,10 +207,8 @@ export default function SwerveDriveTuning() {
           so the import already covers it.
         </p>
         <p>
-          No branch makes this edit for you. <code>1-Swerve</code>,{" "}
-          <code>2-Logging</code> and the project the Tuner X generator writes
-          all ship open loop. Make it last. If the robot drives worse than it
-          did on volts, go back to the gains.
+          Make it last. If the robot drives worse than it did on volts, go back
+          to the gains.
         </p>
 
         <h4 className="display m-0 text-ui">The deadband</h4>
@@ -242,8 +240,7 @@ export default function SwerveDriveTuning() {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          One run tells you whether the page landed, on the surface you compete
-          on. Tape a start mark, restart the code so{" "}
+          Use the surface you compete on. Tape a start mark, restart the code so{" "}
           <code>Drivetrain/Pose</code> reads (0, 0), and drive a square: three
           meters forward, three left, three back, three right.
         </p>
@@ -275,8 +272,7 @@ export default function SwerveDriveTuning() {
               body: (
                 <>
                   Odometry measures from where the code started, not from a
-                  point on the field. Nothing here sets one. Vision fixes it in
-                  Workshop 6.
+                  point on the field. Nothing here sets one.
                 </>
               ),
             },
@@ -289,7 +285,7 @@ export default function SwerveDriveTuning() {
           {
             id: 1,
             question:
-              "TeleopOpMode.java on 1-Swerve: what does the drive request read before you edit it?",
+              "What does the drive request in TeleopOpMode.java read before you edit it?",
             options: [
               "DriveRequestType.Velocity, because the branch closed the loop for you",
               "DriveRequestType.OpenLoopVoltage, and switching it is the last edit on this page",
@@ -298,7 +294,7 @@ export default function SwerveDriveTuning() {
             ],
             correctAnswer: 1,
             explanation:
-              "1-Swerve, 2-Logging and the project the Tuner X generator writes all ship DriveRequestType.OpenLoopVoltage. You make the change yourself, and you make it after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
+              "The downloaded project and the one the Tuner X generator writes both ship DriveRequestType.OpenLoopVoltage. You make the change yourself, and you make it after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
           },
           {
             id: 2,

@@ -288,14 +288,6 @@ public class AutoOpMode extends PeriodicOpMode {
             command can keep running after its path ends.
           </MarginNote>
         </Split>
-        <p>
-          A path drawn ahead of time suits a fixed route. A target chosen at
-          runtime is a field pose, handed to{" "}
-          <a href="/drive-to-point" className="underline">
-            Drive to Point
-          </a>
-          .
-        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">

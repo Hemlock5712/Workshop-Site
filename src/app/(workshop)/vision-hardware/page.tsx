@@ -62,7 +62,7 @@ export default function VisionHardware() {
           <p>
             That answer owes nothing to how long the robot has been driving. It
             is also occasional and noisy, so it does not replace odometry. The
-            next lesson blends the two.
+            robot blends the two.
           </p>
         </ProseBlock>
       </LessonSection>
@@ -85,7 +85,7 @@ export default function VisionHardware() {
       <LessonSection id="mounting-and-wiring" title="Mounting and wiring">
         <p>
           Bolt the camera where it can see the scoring tags at the moment you
-          are scoring, not where there happened to be room.
+          are scoring.
         </p>
 
         <FigureGrid
@@ -129,8 +129,8 @@ export default function VisionHardware() {
           </ProseBlock>
           <MarginNote label="Two cameras">
             Many teams run two or three, angled so that something always has a
-            tag in frame. The next lesson takes a list of camera names for
-            exactly this reason.
+            tag in frame. The Vision code takes a list of camera names for this
+            reason.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -164,8 +164,7 @@ export default function VisionHardware() {
           </li>
           <li>
             <strong>Drop the exposure</strong> as low as it goes while the
-            camera still finds tags. A short shutter cuts motion blur, and a
-            blurred tag gives a wrong answer rather than no answer.
+            camera still finds tags. A short shutter cuts motion blur.
           </li>
           <li>
             <strong>Enter the camera offsets.</strong> Measure where the camera
@@ -218,12 +217,10 @@ export default function VisionHardware() {
         </Box>
 
         <p>
-          Three things go wrong here. No ID at all means the pipeline is still
-          on the wrong type, or the exposure went so low that the tag is black.
-          An ID with a distance that is out by a factor means{" "}
-          <strong>Marker Size</strong> does not match the tag you printed. A
-          distance that is right up close and drifts as the tag nears the edge
-          of the frame is the lens calibration. Run the ChArUco board again.
+          No ID at all means the pipeline is still on the wrong type, or the
+          exposure went so low that the tag is black. An ID with a distance that
+          is out by a factor means <strong>Marker Size</strong> does not match
+          the tag you printed.
         </p>
       </LessonSection>
 
@@ -241,7 +238,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 2,
             explanation:
-              "Odometry accumulates: every skid and every millimeter of wheel-radius error stays in the total. A tag sighting is measured against a known field position, so its error is whatever that one reading is worth and nothing more. It is often noisier than odometry frame to frame, so the next lesson blends the two instead of choosing.",
+              "Odometry accumulates: every skid and every millimeter of wheel-radius error stays in the total. A tag sighting is measured against a known field position, so its error is whatever that one reading is worth and nothing more. It is often noisier than odometry frame to frame, so the robot blends the two instead of choosing.",
           },
           {
             id: 2,
@@ -283,7 +280,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 2,
             explanation:
-              "The solver turns the tag's size in the image into a distance using the size you told it the tag is. Tell it the wrong size and every distance is out by the same factor, here two. Offsets shift the robot's pose, not the distance to the tag, and a calibration fault drifts as the tag nears the edge rather than doubling everywhere.",
+              "The solver turns the tag's size in the image into a distance using the size you told it the tag is. Tell it the wrong size and every distance is out by the same factor, here two. Offsets shift the robot's pose, not the distance to the tag.",
           },
           {
             id: 5,

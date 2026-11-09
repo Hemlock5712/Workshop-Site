@@ -1,5 +1,4 @@
 import PageTemplate from "@/components/PageTemplate";
-import { Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import CoroutineTimeline from "@/components/lesson/CoroutineTimeline";
 import CodeBlock from "@/components/CodeBlock";
@@ -21,8 +20,7 @@ export const metadata = lessonMetadata("/coroutines");
  *
  * - "The core five" replaces the old verb table. It leads with
  *   `waitUntil(condition, timeout)` and `.timedOut()`, because that is the
- *   call an autonomous needs first, and it says where `WaitResult` lives and
- *   that `ForkResult` exists. `park`, `awaitAll` and `awaitAny` get one line.
+ *   call an autonomous needs first, and it says where `WaitResult` lives.
  * - "House rules" is the coroutine equivalent of `runRepeatedly(...)` plus
  *   `whileTrue`. Every rule in it is something the routine below obeys.
  *
@@ -55,7 +53,7 @@ export default function Coroutines() {
   return (
     <PageTemplate
       title="Coroutines"
-      lede="Finish Conditions ran this routine off a held button, with nothing bounding its waits. Autonomous has no button and nobody to let go of one, so every wait here gets a time limit and a way out."
+      lede="Autonomous has no button and nobody to let go of one. This lesson writes a routine where every wait gets a time limit and a way out."
       needs={[
         <>
           An <code>Arm</code> and <code>Flywheel</code> with{" "}
@@ -63,8 +61,7 @@ export default function Coroutines() {
           <strong>Finish Conditions</strong>.
         </>,
         <>
-          Tuned arm gains from <strong>PID Tuning in Tuner X</strong>. The
-          branch ships zeros.
+          Tuned arm gains from <strong>PID Tuning in Tuner X</strong>.
         </>,
         <>
           The simulator running, from <strong>Hardware Simulation</strong>.
@@ -73,15 +70,6 @@ export default function Coroutines() {
       branch="mech-5-Coroutines"
       time="15 minutes"
     >
-      <Split>
-        <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-          <p>
-            Pick the arm and flywheel project back up, then check out{" "}
-            <code>mech-5-Coroutines</code>.
-          </p>
-        </div>
-      </Split>
-
       <LessonSection id="two-reasons" title="Two reasons for a coroutine">
         <p>
           A sequence is already a small coroutine that awaits each member in
@@ -134,13 +122,6 @@ while (!robot.arm.isAtTarget()) {
           <code>import org.wpilib.command3.Coroutine.WaitResult;</code>.
         </p>
         <p>
-          <code>fork</code> and <code>await</code> return a{" "}
-          <code>ForkResult</code> for a command that could not start. The
-          routine cancels itself when that happens, so you can ignore it.{" "}
-          <code>park</code>, <code>awaitAll</code> and <code>awaitAny</code>{" "}
-          exist too. Nothing here needs them.
-        </p>
-        <p>
           Example 5 is what <code>waitUntil</code> does inside. The{" "}
           <code>yield</code> makes one pass one robot loop, and without it
           nothing else on the robot gets a turn. If <code>while</code> is new,
@@ -191,8 +172,7 @@ while (!robot.arm.isAtTarget()) {
               Never build a wait out of a <code>Command</code> inside a body.
             </li>
             <li>
-              <strong>Every wait in an autonomous has a timeout</strong>, about
-              twice the time you measured.
+              <strong>Every wait in an autonomous has a timeout.</strong>
             </li>
             <li>
               <strong>Every exit stops what it started.</strong>{" "}
@@ -327,7 +307,7 @@ coroutine.fork(robot.flywheel.stop());`}
 
         <p>
           Two forks are live now, the arm holding 90&deg; while the flywheel
-          climbs to 75 rotations per second. This branch has no feeder, so the
+          climbs to 75 rotations per second. There is no feeder, so the
           one-second wait stands in for the shot.
         </p>
         <p>
@@ -455,7 +435,7 @@ coroutine.fork(robot.flywheel.stop());`}
             ],
             correctAnswer: 3,
             explanation:
-              "robot.arm.vertical() is built with runRepeatedly. A hold never finishes on its own, so await would sit on that line for the rest of the match with no error and no log. fork starts it and returns at once. The house rule is fork holds, await steps.",
+              "robot.arm.vertical() is built with runRepeatedly. A hold never finishes on its own, so await would sit on that line for the rest of the match. fork starts it and returns at once. The house rule is fork holds, await steps.",
           },
           {
             id: 2,
@@ -469,7 +449,7 @@ coroutine.fork(robot.flywheel.stop());`}
             ],
             correctAnswer: 1,
             explanation:
-              "In teleop the driver is the backstop: the wait is unbounded, but releasing Y cancels the whole routine. Autonomous has no button and nobody watching the arm, so a jammed mechanism or a tolerance that never comes true stalls the routine for the entire period with nothing thrown and nothing logged. The time limit gives it an exit.",
+              "In teleop the driver is the backstop: the wait is unbounded, but releasing Y cancels the whole routine. Autonomous has no button and nobody watching the arm, so a jammed mechanism or a tolerance that never comes true stalls the routine for the entire period. The time limit gives it an exit.",
           },
           {
             id: 3,
