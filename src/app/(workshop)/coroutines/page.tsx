@@ -10,7 +10,7 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/coroutines");
 
 /**
- * Lesson 18, the last of the mechanism chain before swerve, and the page for
+ * The last of the mechanism chain before swerve, and the page for
  * `mech-5-Coroutines`. It writes the Y-button routine from `/finish-conditions`
  * again as an autonomous, where nobody can let go of a button, so every wait
  * gets a time limit and somewhere to go when it runs out.

@@ -377,7 +377,12 @@ on old slides: `/logging-options` → `/logging-implementation`,
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
 `/finish-conditions`, `/drive-to-tag-inline` and `/dynamic-path-planning` →
-`/drive-to-point`, `/pathplanner` → `/bline`.
+`/drive-to-point`, `/pathplanner` → `/bline`, `/project-structure` and
+`/git-workflow` → `/project-setup`.
+
+**There is no `/project-structure` or `/git-workflow`.** Both were cut in the
+owner's November 2026 review: Workshop 3 goes from Project Setup straight to
+Mechanisms. Don't reinstate them.
 
 **There is no `/dynamic-path-planning`.** Pathfinding was retired in
 November 2026 along with the decision to move off PathPlanner: BLine, its

@@ -12,7 +12,7 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/finish-conditions");
 
 /**
- * Lesson 17, and the page for `mech-4-ReadingState`. It left Workshop 6
+ * The page for `mech-4-ReadingState`. It left Workshop 6
  * alongside Command Composition because `/autonomous` ends every step in its
  * routine on a `.withTimeout(...)`, and in September 2026 both moved again
  * into the end of Workshop 3: an arm reporting its own angle needs no swerve

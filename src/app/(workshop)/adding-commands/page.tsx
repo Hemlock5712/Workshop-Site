@@ -26,7 +26,7 @@ export default function AddingCommands() {
   return (
     <PageTemplate
       title="Writing Commands"
-      lede="The voltage setter is private and nothing can reach it. On branch mech-2-Commands three commands become the way in: one slow, one fast, one that holds the mechanism still."
+      lede="Right now the mechanism has two private void methods, and nothing can reach them. This lesson converts them into commands that control the mechanism."
       needs={[
         <>
           Branch <code>mech-1-Mechanisms</code> building clean, with a private{" "}
@@ -71,17 +71,13 @@ import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;`}
           highlightLines={[2]}
         />
-
-        <p>
-          That is the only edit to what is already in the file.{" "}
-          <code>setVoltage</code> is already <code>private</code>, and the stop
-          helper is already called <code>stopMotor</code>, so the command below
-          can take the name <code>stop</code> without displacing anything.
-        </p>
       </LessonSection>
 
       <LessonSection id="your-first-command" title="Three commands">
-        <p>Three methods, and they all look alike.</p>
+        <p>
+          Now convert the void methods into commands. There are three, and all
+          of them use the two methods you already made.
+        </p>
 
         <Mech for="arm">
           <CodeBlock
@@ -155,9 +151,10 @@ import org.wpilib.command3.Mechanism;`}
           <code>() -&gt; stopMotor()</code> in <code>stop()</code> works the
           same way, calling the private helper from last lesson. Every name ends
           in <code>(hold)</code> because <code>runRepeatedly</code> has no exit:
-          these run until something else claims the mechanism. Even{" "}
-          <code>stop()</code> holds, sending zero every loop rather than once.
-          It exists because{" "}
+          these run until something else claims the mechanism. When commands run
+          in a row, the suffix makes it easy to see why the robot is held up on
+          one of them. Even <code>stop()</code> holds, sending zero every loop
+          rather than once. It exists because{" "}
           <a href="/running-program#latched" className="underline">
             canceling a command does not stop the motor
           </a>

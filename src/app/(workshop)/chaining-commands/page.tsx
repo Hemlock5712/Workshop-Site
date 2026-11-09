@@ -9,7 +9,7 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/chaining-commands");
 
 /**
- * Lesson 16, and no longer "advanced". It left Workshop 6 because
+ * No longer "advanced". It left Workshop 6 because
  * `/autonomous` builds its whole routine out of `Command.sequence` and
  * `.withTimeout`: composition is a prerequisite for that page, not a victory
  * lap after it. In September 2026 it moved again, out of Workshop 4 and into
@@ -66,7 +66,9 @@ export default function ChainingCommands() {
           An <code>Arm</code> with <code>vertical()</code> and{" "}
           <code>horizontal()</code>, and a <code>Flywheel</code> with{" "}
           <code>runSlow()</code>, <code>runFast()</code> and <code>stop()</code>
-          , from <strong>Motion Magic in Code</strong>.
+          , from <strong>Motion Magic in Code</strong>. Built only one? Go back
+          through <strong>Mechanisms</strong> with the other one selected, and
+          add its field to <code>Robot.java</code> beside the first.
         </>,
         <>
           A <code>MyTeleop</code> with working button bindings, from{" "}

@@ -10,7 +10,8 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/command-framework");
 
 /**
- * The conceptual spine of Workshop 2: trigger, mechanism, command, scheduler.
+ * The conceptual spine of Workshop 2: trigger, coroutine, command, mechanism,
+ * ordered small to large, then the scheduler that runs them.
  *
  * Five sections, three code blocks, one warning. Two sections went away in the
  * August 2026 prose pass. The architecture diagram was a second copy of the
@@ -24,13 +25,7 @@ export default function CommandFramework() {
   return (
     <PageTemplate
       title="The Command Framework"
-      lede="Robot code here is made of triggers, mechanisms and commands. Underneath them a scheduler runs fifty times a second and settles which command owns which motor."
-      needs={[
-        <>
-          The vocabulary from <strong>Java Basics</strong>: class, field,
-          method, constructor, lambda.
-        </>,
-      ]}
+      lede="Robot code is made up of four main parts: triggers, coroutines, commands and mechanisms."
       time="10 minutes"
     >
       {/* ── the triad ────────────────────────────────────────────────── */}
@@ -42,8 +37,28 @@ export default function CommandFramework() {
             body: (
               <>
                 A controller button, a sensor reading, a comparison you wrote
-                yourself. Attach a command to a trigger and the scheduler
-                watches it for you.
+                yourself. Attach a command to a trigger, and when the trigger
+                becomes true or false the command runs automatically.
+              </>
+            ),
+          },
+          {
+            label: "Steps",
+            term: "Coroutines",
+            body: (
+              <>
+                The body of a command. It runs a step each loop and can wait for
+                the next loop before carrying on.
+              </>
+            ),
+          },
+          {
+            label: "How",
+            term: "Commands",
+            body: (
+              <>
+                Named actions. A command can require a mechanism, which means it
+                owns it while it runs, or require none.
               </>
             ),
           },
@@ -56,17 +71,6 @@ export default function CommandFramework() {
                 <code>implements Mechanism</code>, with its motors and sensors
                 as private fields and its configuration done once, in the
                 constructor.
-              </>
-            ),
-          },
-          {
-            label: "How",
-            term: "Commands",
-            body: (
-              <>
-                Named actions on a mechanism. Almost every command in Workshop 3
-                is a <em>hold</em>: it re-sends the same request and never ends
-                by itself.
               </>
             ),
           },
@@ -107,20 +111,25 @@ export default function CommandFramework() {
       {/* ── ownership ────────────────────────────────────────────────── */}
       <LessonSection
         id="one-mechanism-one-command-at-a"
-        title="One command per mechanism"
+        title="Commands in a mechanism"
       >
         <p>
-          A command declares which mechanisms it needs. The command from{" "}
-          <code>arm.runFast()</code> needs the arm, and while it runs, it{" "}
-          <strong>owns</strong> the arm. No other command touches that motor at
-          the same time.
+          We build most commands inside a mechanism. We will also build commands
+          outside one that require no mechanism, such as a command that runs
+          other commands together.
         </p>
 
         <p>
-          Every command has a priority. A second command takes a mechanism only
-          if its priority is the same or higher than the command already holding
-          it. Every command in this workshop uses the same priority, so a new
-          one always gets to run.
+          Take <code>runFast()</code>, a command inside <code>Arm</code>. While{" "}
+          <code>runFast</code> runs, it <strong>owns</strong> the arm. This
+          prevents multiple commands from running on the same motor at one time.
+        </p>
+
+        <p>
+          Every command has a priority. By default, a new command takes a
+          mechanism only if its priority is the same or higher than the command
+          already holding it. Every command in this workshop uses the same
+          priority, so the new one always gets to run.
         </p>
 
         <Box variant="concept" title="Canceling is not stopping">
@@ -152,14 +161,14 @@ export default function CommandFramework() {
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
-              A mechanism owns hardware. An <strong>OpMode</strong> decides what
-              the robot does during one part of the match. That means which
-              buttons do what while a driver is in control, or which routine
-              runs in autonomous.
+              A mechanism owns hardware: the motors and encoders for that
+              mechanism. We create our mechanisms in <code>Robot.java</code>,
+              the same file as the scheduler call, so every OpMode can use them.
             </p>
             <p>
-              The mechanisms sit on the same <code>Robot.java</code> as that
-              scheduler call.
+              An <strong>OpMode</strong> decides what the robot does during one
+              part of the match. That means which buttons do what while a driver
+              is in control, or which routine runs in autonomous.
             </p>
           </div>
         </Split>
@@ -181,7 +190,8 @@ export default function CommandFramework() {
         />
 
         <p>
-          Each mode is a separate class marked <code>@Teleop</code>,{" "}
+          There are three types of OpMode: Teleop, Autonomous and Utility. Each
+          mode is a separate class marked <code>@Teleop</code>,{" "}
           <code>@Autonomous</code> or <code>@Utility</code>. That marking is how
           it shows up in the list on the driver station. Every mode is handed
           the <code>Robot</code>, so it can reach the arm and the flywheel.
@@ -228,40 +238,24 @@ public class MyTeleop extends PeriodicOpMode {
             {"run(coroutine -> { while (true) { body; coroutine.yield(); } })"}
           </code>
           . The <code>coroutine</code> is the command&apos;s own handle, and{" "}
-          <code>yield()</code> is where it waits for the next loop. Workshop 4
-          writes bodies like that by hand.
+          <code>yield()</code> is where it waits for the next loop.
         </MarginNote>
         <p>
           Nothing inside it decides when to stop, so ending it is somebody
-          else&apos;s job. Releasing the trigger is what does it above:{" "}
-          <code>whileTrue</code> cancels the command on the way down, and{" "}
-          <code>whileFalse</code> schedules <code>arm.stop()</code> in its
-          place.
-        </p>
-        <p>
-          Here is a real one, from the arm you build in{" "}
-          <strong>Writing Commands</strong>.
+          else&apos;s job. A trigger can do it. When the button is released,{" "}
+          <code>whileTrue</code> cancels the command. To have something happen
+          on the release, add it with <code>whileFalse</code>.
         </p>
 
         <CodeBlock
           language="java"
-          title="Arm.java: one command, from the arm you build later"
-          filename="Workshop-Code, branch mech-2-Commands · mechanisms/Arm.java"
-          code={`/** Push the arm at 6 volts and keep pushing. Never finishes. */
-public Command runFast() {
-  return runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)");
-}`}
+          title="MyTeleop.java: run while held, stop on release"
+          code={`driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());`}
         />
 
         <p>
-          <code>runRepeatedly</code> re-runs <code>setVoltage</code> every loop.
-          The <code>(hold)</code> suffix on its name tells the reader{" "}
-          <em>this command has no ending</em>.
-        </p>
-
-        <p>
-          Six volts is a push, not a position. The arm ends up wherever gravity
-          and friction let it.
+          Another common pattern is a default command, which runs whenever
+          nothing else has claimed the mechanism.
         </p>
       </LessonSection>
 
@@ -315,7 +309,7 @@ public Command runFast() {
             ],
             correctAnswer: 2,
             explanation:
-              "A newcomer only loses if its priority is strictly lower than the running command's. Every command you write has the same priority, so ties go to the newcomer. Bind two commands that both need the arm to two buttons and you can watch it happen.",
+              "A newcomer only loses if its priority is strictly lower than the running command's. Every command you write has the same priority, so ties go to the newcomer.",
           },
           {
             id: 3,
