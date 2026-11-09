@@ -67,9 +67,6 @@ export default function Testing() {
             for the arm, 21 for the flywheel.
           </li>
           <li>
-            The code on the robot came from main, built after the last pull.
-          </li>
-          <li>
             Clear the mechanism&apos;s path and say &quot;enabling&quot; out
             loud before clicking Enable.
           </li>
@@ -138,9 +135,9 @@ export default function Testing() {
           rotations, give or take <code>1e-9</code>.
         </p>
         <p>
-          The second test on the branch schedules <code>vertical()</code>, then{" "}
-          <code>horizontal()</code>, and checks that the newer command took the
-          arm and the older one stopped running.
+          A second test in <code>ArmTest</code> schedules{" "}
+          <code>vertical()</code>, then <code>horizontal()</code>, and checks
+          that the newer command took the arm and the older one stopped running.
         </p>
       </LessonSection>
 
@@ -183,9 +180,8 @@ assertFalse(flywheel.isAtTarget());`}
             default. Match the orientation to the mechanism every time.
           </p>
           <MarginNote label="What these tests are not">
-            Every gain on the branch is <code>0.0</code>, and nothing here
-            models a gearbox. These tests check what the code asks for. Whether
-            the arm gets there is still the bench&apos;s job.
+            Nothing here models a gearbox. These tests check what the code asks
+            for. Whether the arm gets there is still the bench&apos;s job.
           </MarginNote>
         </Split>
       </LessonSection>

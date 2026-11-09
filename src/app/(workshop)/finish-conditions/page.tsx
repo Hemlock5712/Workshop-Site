@@ -70,7 +70,7 @@ export default function FinishConditions() {
   return (
     <PageTemplate
       title="Finish Conditions"
-      lede="Command Composition ended every step with a stopwatch, and that number was a guess. This lesson ends a step when a sensor reports the mechanism arrived. The stopwatch stays on as a backstop."
+      lede="A timeout ends a step after a guessed time. This lesson ends a step when a sensor reports the mechanism arrived, and keeps the timeout as a backstop."
       needs={[
         <>
           <code>Command.sequence</code> and <code>.withTimeout(...)</code>, from{" "}
@@ -283,7 +283,7 @@ Command spinUp =
         <p>
           The shape for it is a <strong>coroutine</strong>. Its body is ordinary
           Java, read top to bottom, and it can pause on a line and carry on from
-          there. This is a first look; Coroutines, next, takes it apart.
+          there.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -347,8 +347,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
           </div>
           <MarginNote label="No timeout here">
             The wait in this routine is unbounded, which is safe only because a
-            driver is holding Y and can let go. Coroutines runs the same routine
-            in autonomous, where nobody can.
+            driver is holding Y and can let go.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -359,7 +358,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
       >
         <p>
           A condition that cannot go true is as bad as a bare hold. The step
-          never ends, nothing throws, and nothing logs.
+          never ends.
         </p>
         <Mech for="arm">
           <FigureGrid
@@ -507,7 +506,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
       <Quiz
         questions={[
           {
-            id: 7,
+            id: 1,
             question:
               "Why is the Y button a coroutine instead of Command.sequence(robot.arm.vertical().until(...), robot.flywheel.runFast())?",
             options: [
@@ -521,7 +520,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
               "The two mechanisms have to overlap: the arm holds vertical while the flywheel spins up. A sequence runs one member at a time, so the arm's step has to end before the flywheel's can start, and the group holds both mechanisms throughout either way. In the coroutine, fork starts the arm hold and leaves it running, and each forked command claims only its own mechanism for only as long as it runs.",
           },
           {
-            id: 1,
+            id: 2,
             question:
               "Why does isAtTarget() compare against a tolerance instead of checking whether the position equals the target?",
             options: [
@@ -535,7 +534,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
               "The encoder measures a real arm and the reading jitters. Ask for 0.25 rotations and you read 0.2497, then 0.2503. An exact comparison would almost never be true, so a step waiting on it would sit there for the rest of the match. You choose how close is close enough, in the same units as the target.",
           },
           {
-            id: 2,
+            id: 3,
             question:
               "What does () -> robot.arm.isAtTarget() hand to .until(...), and why does a bare robot.arm.isAtTarget() not work in the same place?",
             options: [
@@ -549,7 +548,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
               "() -> robot.arm.isAtTarget() hands over the question itself, not an answer, so the scheduler can ask it about fifty times a second. A bare robot.arm.isAtTarget() runs the method right there and produces one boolean, frozen at the moment the binding was built. .until takes a BooleanSupplier, so javac rejects it: boolean cannot be converted to BooleanSupplier.",
           },
           {
-            id: 3,
+            id: 4,
             question:
               "robot.arm.vertical().until(() -> robot.arm.isAtTarget()) on its own will not compile. What is missing?",
             options: [
@@ -563,7 +562,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
               'Same rule as Command.sequence from Command Composition: these builders are not Commands until they are named. The compiler reports a builder type where a Command was wanted. Write .until(() -> robot.arm.isAtTarget()).named("vertical until at target").',
           },
           {
-            id: 4,
+            id: 5,
             question:
               "A step ends after exactly the 2.0 seconds its .withTimeout(...) allowed. What do you know about the arm?",
             options: [
@@ -577,7 +576,7 @@ private void spinUpWhenReady(Coroutine coroutine) {
               "Ending on the timeout means the condition was still false when time ran out. The arm may be a degree short, jammed, or reading from a dead encoder. If the next step assumes arrival, ask isAtTarget() again before running it, and log the answer so a post-match file can tell the two endings apart.",
           },
           {
-            id: 5,
+            id: 6,
             question:
               "The arm settles a fraction outside tolerance, so the routine sits on that step for the rest of the match. What keeps one bad step from costing the whole autonomous period?",
             options: [

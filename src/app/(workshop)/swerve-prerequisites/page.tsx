@@ -18,7 +18,7 @@ export default function SwervePrerequisites() {
   return (
     <PageTemplate
       title="How Swerve Works"
-      lede="Workshop 5 builds a swerve drive: a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
+      lede="A swerve drive is a robot that can slide sideways, drive diagonally and spin, all at the same time. Almost none of the hard part is code you write. Phoenix Tuner X generates the drivetrain and the math behind it."
       needs={[
         <>Nothing installed, nothing typed. There is no code on this page.</>,
         <>
@@ -63,14 +63,14 @@ export default function SwervePrerequisites() {
             Turning &quot;move 2 meters per second to the left while turning
             slowly&quot; into eight motor commands is called{" "}
             <strong>kinematics</strong>. Tuner X&apos;s swerve generator writes
-            it for you, in two files you will meet on the next page.{" "}
-            <code>TunerConstants.java</code> holds every device ID, gear ratio,
-            wheel radius and gain. <code>CommandSwerveDrivetrain.java</code> is
-            the drivetrain itself: the motors, the sensors, and odometry.
+            it for you, in two files. <code>TunerConstants.java</code> holds
+            every device ID, gear ratio, wheel radius and gain.{" "}
+            <code>CommandSwerveDrivetrain.java</code> is the drivetrain itself:
+            the motors, the sensors, and odometry.
           </p>
           <p className="mt-3">
             You ask for a chassis speed. Those two files decide what all eight
-            motors do. Nothing in Workshop 5 asks you to compute a wheel angle.
+            motors do.
           </p>
         </Box>
 
@@ -268,7 +268,7 @@ export default function SwervePrerequisites() {
           here: not noise, but an error that only accumulates.
         </p>
 
-        <Box variant="concept" title="Two fixes, and they are the next pages">
+        <Box variant="concept" title="Two fixes">
           <ul className="ml-4 list-disc space-y-2">
             <li>
               <strong>Measure the numbers it is built on.</strong> Wheel radius,
@@ -293,8 +293,7 @@ export default function SwervePrerequisites() {
           </ul>
           <p className="mt-3">
             Until one of those happens, treat the pose as{" "}
-            <em>distance and direction traveled since the code started</em>,
-            which is honest and still useful.
+            <em>distance and direction traveled since the code started</em>.
           </p>
         </Box>
       </LessonSection>

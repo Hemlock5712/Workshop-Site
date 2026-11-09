@@ -98,8 +98,8 @@ export default function SwerveCalibration() {
           </li>
         </ol>
         <p>
-          Generate <code>TunerConstants.java</code> again and replace your copy,
-          the way you did on the last page, then redeploy.
+          Generate <code>TunerConstants.java</code> again, replace your copy,
+          and redeploy.
         </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/tuner-swerve/index.html"
@@ -166,15 +166,7 @@ export default function SwerveCalibration() {
         <p>
           A consistent curve to one side points at a module zero first, so put
           the straight edge back on and re-save. A wander that comes and goes
-          points at the steer gains. With both clean, go on to{" "}
-          <Link
-            href="/swerve-drive-tuning"
-            className="font-semibold underline decoration-1 underline-offset-2"
-            style={{ color: "var(--accent)" }}
-          >
-            Swerve Drive Tuning
-          </Link>{" "}
-          for the measurements that need the carpet.
+          points at the steer gains.
         </p>
       </LessonSection>
 

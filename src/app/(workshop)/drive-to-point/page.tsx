@@ -2,11 +2,9 @@ import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
 import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
-import { GitBranch } from "lucide-react";
 import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -325,11 +323,8 @@ export default function DriveToPoint() {
           <Link href="/running-program#latched" className={linkStyle}>
             Ending a command does not stop a motor
           </Link>
-          . Teleop would forgive a missing stop, because the joystick default
-          takes the drivetrain back and asks for zero. An autonomous OpMode has
-          no default, and the robot would keep its last velocity. Send zero
-          speed, not <code>new SwerveRequest.Idle()</code>, which does nothing
-          to the modules.
+          . Send zero speed, not <code>new SwerveRequest.Idle()</code>, which
+          does nothing to the modules.
         </p>
 
         <p>
@@ -442,31 +437,18 @@ import org.wpilib.math.geometry.Rotation2d;
         </p>
 
         <p>
-          <strong>It gets close, creeps in, and never arrives.</strong> Expected
-          on this branch. One centimeter of error asks for 10 cm/s, and at some
-          point the request cannot overcome friction. There is no I term to
-          grind out the last bit.
+          <strong>It gets close, creeps in, and never arrives.</strong>{" "}
+          Expected. One centimeter of error asks for 10 cm/s, and at some point
+          the request cannot overcome friction. There is no I term to grind out
+          the last bit.
         </p>
 
         <p>
-          <strong>It will not compile.</strong> Look for an old{" "}
-          <code>ChassisSpeeds</code>, a <code>.named(...)</code> call on the new
-          command, or a missing <code>name()</code> or{" "}
-          <code>requirements()</code>. Leave one out and the error says the
-          class does not override that abstract method.
+          <strong>It will not compile.</strong> Look for a{" "}
+          <code>.named(...)</code> call on the new command, or a missing{" "}
+          <code>name()</code> or <code>requirements()</code>. Leave one out and
+          the error says the class does not override that abstract method.
         </p>
-
-        <p>
-          <strong>Profiled Drive to Point</strong> changes this one file. It
-          plans the whole trip before the robot moves, so PID becomes a small
-          correction and the command gets a finish line.
-        </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/pull/11"
-          title="PR #11: 5 drive to point"
-          icon={<GitBranch className="w-5 h-5" />}
-        />
       </LessonSection>
 
       <Quiz
@@ -502,7 +484,7 @@ import org.wpilib.math.geometry.Rotation2d;
           {
             id: 3,
             question:
-              "Why does the stop request go in onCancel() on this branch rather than after the loop in run()?",
+              "Why does the stop request go in onCancel() rather than after the loop in run()?",
             options: [
               "The loop never exits, so the only way the command ends is a cancel, and onCancel() is what runs then",
               "onCancel() is the only method permitted to call setControl",
@@ -511,12 +493,12 @@ import org.wpilib.math.geometry.Rotation2d;
             ],
             correctAnswer: 0,
             explanation:
-              "A canceled run() never reaches the lines after its loop, and Java will not compile a statement after a while (true) with no break. Canceling ends the command, not the motion: the hardware carries on with the last request it was given. Teleop happens to forgive a missing stop, because the joystick default takes the drivetrain back and asks for nothing, but that default belongs to one OpMode.",
+              "A canceled run() never reaches the lines after its loop, and Java will not compile a statement after a while (true) with no break. Canceling ends the command, not the motion: the hardware carries on with the last request it was given.",
           },
           {
             id: 4,
             question:
-              "The loop in run() is while (true) on this branch. What follows from that?",
+              "The loop in run() is while (true). What follows from that?",
             options: [
               "The command runs until the driver releases the button, and it cannot be a step inside Command.sequence(...)",
               "The command ends as soon as all three controllers are inside tolerance",
@@ -525,7 +507,7 @@ import org.wpilib.math.geometry.Rotation2d;
             ],
             correctAnswer: 0,
             explanation:
-              "A command that never finishes sticks any sequence it is placed in on that leg forever, and autonomous routines are sequences. The comment above the loop names the alternative, looping until xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint(), whose default tolerance is 0.05: 5 cm on X and Y, 0.05 radians on heading. Profiled Drive to Point gives the command a real finish line instead.",
+              "A command that never finishes sticks any sequence it is placed in on that leg forever, and autonomous routines are sequences. The comment above the loop names the alternative, looping until xController.atSetpoint() && yController.atSetpoint() && headingController.atSetpoint(), whose default tolerance is 0.05: 5 cm on X and Y, 0.05 radians on heading.",
           },
           {
             id: 5,

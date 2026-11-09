@@ -3,10 +3,8 @@ import LessonSection from "@/components/lesson/LessonSection";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
-import { GitBranch } from "lucide-react";
 import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -65,9 +63,8 @@ export default function ProfiledDriveToPoint() {
       <Split>
         <ProseBlock>
           <p>
-            One file changes: <code>commands/DriveToPoint.java</code>, 95 lines
-            to 128. A and B are already bound from the last lesson, and nothing
-            else on the branch moves.
+            One file changes: <code>commands/DriveToPoint.java</code>. A and B
+            are already bound.
           </p>
         </ProseBlock>
         <MarginNote label="One rename">
@@ -101,7 +98,7 @@ export default function ProfiledDriveToPoint() {
             Motion Magic in Tuner X
           </Link>
           , a cruise velocity and an acceleration, planned here for the whole
-          chassis. The branch drives at 2.5 m/s with 3.0 m/s² of acceleration.
+          chassis. This plan drives at 2.5 m/s with 3.0 m/s² of acceleration.
         </p>
 
         <FigureGrid
@@ -236,8 +233,7 @@ export default function ProfiledDriveToPoint() {
         <p>
           The planned velocity goes out as it is. Each controller adds a small
           correction on top, pulling the measured pose back onto the planned
-          pose. On a perfect floor every correction would be zero and the plan
-          would drive the trip alone.
+          pose.
         </p>
 
         <p>
@@ -264,7 +260,7 @@ export default function ProfiledDriveToPoint() {
 
       <LessonSection id="the-gains" title="Lower the gains">
         <p>
-          On <code>5-DriveToPoint</code>, PID output was the whole commanded
+          In <strong>Drive to Point</strong>, PID output was the whole commanded
           velocity, and the error it measured was the distance to the goal.
           Meters of error, for most of the trip. A kP of 10 paid for that.
         </p>
@@ -287,11 +283,7 @@ export default function ProfiledDriveToPoint() {
           tag="NOTE · UNTUNED"
           title="Starting points, not answers"
         >
-          <p>
-            Nobody measured these gains or these limits for your robot. Raise kP
-            if the robot lags the plan or stops short of the goal. Lower it, or
-            add a little kD, if the robot wobbles.
-          </p>
+          <p>Nobody measured these gains or these limits for your robot.</p>
           <p className="mt-3">
             The 2.5 m/s cruise is a little over half the{" "}
             <code>kSpeedAt12Volts = 4.54</code> m/s in{" "}
@@ -317,18 +309,15 @@ export default function ProfiledDriveToPoint() {
             </Link>{" "}
             and hold <strong>B</strong>. The robot eases away, holds a steady
             speed, and eases off at the end. From the origin that goal is 3.6 m
-            out, past the 2.1 m needed for cruise. The origin is the blue corner
-            for now, and WPILib 2027 moves it to the field center.
+            out, past the 2.1 m needed for cruise.
           </li>
           <li>
             Keep holding <strong>B</strong> after it arrives. The robot stays
-            stopped, because the command finished on its own. On{" "}
-            <code>5-DriveToPoint</code> it would still be pushing.
+            stopped, because the command finished on its own.
           </li>
           <li>
             Graph <code>Drivetrain/TranslationSpeedMps</code> for that run. A
-            ramp up, a flat top near 2.5, a ramp down to zero. The flat top is
-            the proof the plan is in charge.
+            ramp up, a flat top near 2.5, a ramp down to zero.
           </li>
           <li>
             Hold <strong>A</strong> until the robot stops, sending it back to{" "}
@@ -355,12 +344,6 @@ export default function ProfiledDriveToPoint() {
           A command with an ending is a step, and{" "}
           <code>Command.sequence(...)</code> takes steps.
         </p>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/pull/12"
-          title="PR #12: Update Drive to point to use profiled PID"
-          icon={<GitBranch className="w-5 h-5" />}
-        />
       </LessonSection>
 
       <Quiz
@@ -368,7 +351,7 @@ export default function ProfiledDriveToPoint() {
           {
             id: 1,
             question:
-              "6-ProfiledToPoint drops the PID gains from 10 / 10 / 7 to 3.0 / 3.0 / 4.0. Why?",
+              "This version drops the PID gains from 10 / 10 / 7 to 3.0 / 3.0 / 4.0. Why?",
             options: [
               "PID no longer produces the driving velocity: it corrects the small gap between the plan and the measured pose",
               "LinearPath requires gains below 5.0",
@@ -377,7 +360,7 @@ export default function ProfiledDriveToPoint() {
             ],
             correctAnswer: 0,
             explanation:
-              "On 5-DriveToPoint, PID output was the commanded velocity, so it needed a big gain to move the robot at all. Now setpoint.velocity does the driving and PID trims centimeters of drift. Leaving the gains at 10 stacks a large correction on a plan that was already correct, and the robot hunts.",
+              "In Drive to Point, PID output was the commanded velocity, so it needed a big gain to move the robot at all. Now setpoint.velocity does the driving and PID trims centimeters of drift. Leaving the gains at 10 stacks a large correction on a plan that was already correct, and the robot hunts.",
           },
           {
             id: 2,
@@ -405,7 +388,7 @@ export default function ProfiledDriveToPoint() {
             ],
             correctAnswer: 1,
             explanation:
-              "The first pair sets cruise speed to 2.5 m/s and acceleration to 3.0 m/s². The second pair sets the turning limits to Math.PI rad/s and 2.0 * Math.PI rad/s². The branch marks all four TODO: tune.",
+              "The first pair sets cruise speed to 2.5 m/s and acceleration to 3.0 m/s². The second pair sets the turning limits to Math.PI rad/s and 2.0 * Math.PI rad/s². The code marks all four TODO: tune.",
           },
           {
             id: 4,
@@ -423,7 +406,7 @@ export default function ProfiledDriveToPoint() {
           {
             id: 5,
             question:
-              "Why can this version sit inside Command.sequence(...) when the 5-DriveToPoint version could not?",
+              "Why can this version sit inside Command.sequence(...) when the Drive to Point version could not?",
             options: [
               "Because it requires the drivetrain and the old one did not",
               "Because it implements Command and the old one did not",
