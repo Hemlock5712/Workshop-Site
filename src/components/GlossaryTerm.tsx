@@ -51,7 +51,7 @@ const glossaryDefinitions: Record<string, string> = {
     "The Commands v3 name for a subsystem - one physical part of the robot (arm, flywheel, drivetrain). An interface you implement on a class that owns the hardware and hands out commands.",
   opmode:
     "A 'mode' the robot can be in - driver teleop, an autonomous routine, or a calibration task. Each one is its own class; the driver station lists them by name.",
-  hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. Bind holds with whileTrue so releasing the button cancels them. A hold never finishes, so nothing may ever wait on one - every hold's name ends in '(hold)' so a stuck routine is easy to spot.",
+  hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. Bind holds with whileTrue so releasing the button cancels them. A hold never finishes, so nothing may ever wait on one.",
   chaining:
     "Building a routine by snapping commands together: Command.sequence for self-finishing steps, .until(...) to give a hold a finish line, Command.race for 'do this while holding', and .withTimeout as the seatbelt.",
   "state machine":

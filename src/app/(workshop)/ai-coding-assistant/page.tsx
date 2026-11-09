@@ -269,7 +269,7 @@ I have finished the Commands lesson. Do not change any files.`}
           </li>
           <li>
             Grade the answer against the file. <strong>You should see</strong>{" "}
-            four things:
+            three things:
             <ul className="mt-2 ml-5 list-disc space-y-1">
               <li>
                 <code>runRepeatedly</code> re-runs its action every scheduler

@@ -83,7 +83,7 @@ export default function CommandFramework() {
         title="The scheduler loop"
       >
         <p>
-          None of the three does anything on its own.{" "}
+          None of the four does anything on its own.{" "}
           <code>robotPeriodic()</code> is called for you for as long as the
           robot has power. The gap between calls is 20 milliseconds, so it runs{" "}
           <strong>50 times a second</strong>.
@@ -252,11 +252,6 @@ public class MyTeleop extends PeriodicOpMode {
           title="MyTeleop.java: run while held, stop on release"
           code={`driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());`}
         />
-
-        <p>
-          Another common pattern is a default command, which runs whenever
-          nothing else has claimed the mechanism.
-        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -323,7 +318,7 @@ public class MyTeleop extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "A command built with runRepeatedly has no ending by design, so anything waiting on one waits forever. Command Composition and Finish Conditions give a hold an ending two ways: .withTimeout(...) and .until(...).",
+              "A command built with runRepeatedly has no ending by design, so anything waiting on one waits forever. Command Composition and Finish Conditions give a runRepeatedly command an ending two ways: .withTimeout(...) and .until(...).",
           },
           {
             id: 4,
