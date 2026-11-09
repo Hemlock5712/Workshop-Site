@@ -149,12 +149,19 @@ const nextConfig: NextConfig = {
         destination: "/drive-to-point",
         permanent: true,
       },
-      // Drive to Tag was retired in November 2026. Driving to a tag is a field
-      // pose from the tag layout handed to Drive to Point, not a camera-space
+      // Profiled Drive to Point was retired in November 2026: Drive to Point is
+      // a BLine path now, and BLine profiles every path itself.
+      {
+        source: "/advanced-drive-to-point",
+        destination: "/drive-to-point",
+        permanent: true,
+      },
+      // Drive to Tag was retired in November 2026. Its successor, Align to
+      // Tag, drives a BLine path in the tag's frame instead of a camera-space
       // loop of its own.
       {
         source: "/drive-to-tag-inline",
-        destination: "/drive-to-point",
+        destination: "/align-to-tag",
         permanent: true,
       },
       {

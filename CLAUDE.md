@@ -58,6 +58,7 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **Command names carry no `(hold)` suffix.** `runRepeatedly(...).named("runFast")`, not `"runFast (hold)"`. Owner's call, November 2026: the suffix added nothing. Mechanism commands stay on `runRepeatedly`, and "hold" stays as the prose word for a command that never finishes. Coroutines teaches the consequence, fork holds and await steps, because awaiting a hold blocks everything after it. The swerve chain and `/vision-shooting` still carry the suffix until that chain is rebuilt.
 - **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
 - **Paths are BLine (FRC 2638), `BLine-Lib 2027.0.0-beta.3`, not PathPlanner.** Owner's call, November 2026: PathPlanner's 2027 editor stalled upstream and the team will not maintain its Commands v3 fork, while BLine ships a native Commands v3 2027 beta. Install from `https://raw.githubusercontent.com/edanliahovetsky/BLine-Lib/wpilib-2027/BLine-Lib-2027.json` (`wpilibYear: 2027_alpha7`, Maven artifact `com.github.edanliahovetsky:BLine-Lib:v2027.0.0-beta.3` from JitPack). The editor is BLine Web v1.0.0 at bline.run, the one that pairs with beta.3; a Windows desktop build of the same version exists and is untested here. Files live in `src/main/deploy/autos/`: `config.json` (kinematic defaults and end tolerances, required, the library will not load paths without it), `project.json` (editor state), and `paths/<name>.json`. Students import that folder, draw, delete stray empty paths (an empty one throws `Path has no destination` at load), and **File → Import / Export → Export Autos Folder...** back into `deploy`. The shape, from Workshop-Code `swerve-bline`: `DriveMechanism` builds one `FollowPath.Builder(DriveType.SWERVE, this, pose, resetPose, robot-relative velocity, driveRobotRelative, translation PID, rotation PID, cross-track PID).withDefaultShouldFlip()` and exposes `followPath(name)`, which reads the file at call time; the path request is `ApplyRobotVelocity` with `DriveRequestType.Velocity`, and heading kP is 3.0 because 1.0 stalled short in sim. `AutoOpMode` (`@Autonomous(name = "Auto")`) calls `FollowPath.registerEventTrigger(key, action)` first, builds each path with `.withPoseReset()`, wraps each routine as `Command.noRequirements(coroutine -> { coroutine.await(path); }).named(...)` (a second path is one more `await` line), fills a `Selectable<Command>` by hand with `addDefault`/`add` plus a "None", publishes it with `Tunables.publish("Auto", ...)`, reads `getSelected()` in `start()`, cancels and calls `FollowPath.clearPendingEventTriggers()` in `end()`, and `Tunables.remove`s in `close()`. Events: the editor's **Lib Key** must match the registered key exactly; reached events run in path order through the scheduler one loop later, canceling drops unreached ones, and an event command can outlive its path. **A finished or canceled `FollowPath` sends a zero velocity**, but on disable `Robot`'s disabled `Idle` binding overwrites it the same loop, so credit the stop in auto to disabling, never to the cancel. Red alliance flips the path around the field center using BLine's own 16.54 × 8.07 m field, not a 2027 one. Verified in simulation only (pose reset, 0.03 m / 2° finish, one event per run, None, red flip, re-enable); nothing is verified on hardware. Risk: one maintainer and JitPack builds; re-check the vendordep when the WPILib alpha moves. Branches: `swerve-autonomous` → `swerve-bline`, off `1-Swerve`. `swerve-pathplanner` and `swerve-pathfinding` were deleted in November 2026. Lesson: `/bline`.
+- **Every on-the-fly drive is a one-waypoint BLine path, built in code.** Owner's call, November 2026: Auto, Drive to Point and Align to Tag all run on BLine, and the hand-written `DriveToPoint` PID class and the LinearPath profiled version are gone. `driveToPoint(goal)` is `pathBuilder.build(new Path(new Path.Waypoint(goal))).withShouldFlip(() -> false)`: a field coordinate is the same spot on both alliances, so it must not take the builder's default flip. A code-built path needs no extra setup; it picks up BLine's defaults and finished within 0.03 m / 2° in sim. `alignToTag(vision, tagId, spotInTag)` builds its own `FollowPath.Builder` whose pose supplier is `vision.robotInTag(tagId)`, with a no-op pose reset and no flip, and ends at once without moving if the tag was never seen. The tag frame is WPILib's (X out of the face, Y to the tag's left, 180° facing it). `Vision.rememberTags` places each seen tag in the drivetrain's pose frame per frame via `samplePoseAt(estimate.timestampSeconds)` + `toTagFrame(getRobotPose_TargetSpace())`, before the trust gates, so the wheels carry the robot between frames and after the tag leaves view. The spot is recorded off `Vision/RobotInTag<id>` with the robot parked by hand on that field, never taped. **`toTagFrame`'s signs are unverified on hardware**: the jar copies Limelight's raw target space (X right, Y down, Z along the normal) into the `Pose3d` with no axis change, and the code assumes Z points into the wall. The sim check cannot catch a wrong sign because it synthesizes the sighting with the inverse of the same function. Swerve branches: `swerve-bline` → `swerve-vision` → `swerve-drive-to-point` → `swerve-align-to-tag`, one commit each. `5-DriveToPoint` and `6-ProfiledToPoint` are taught by no page.
 - **Vision is LimelightLib 2, installed as a vendordep, and the URL is pinned
   to the alpha.** The vendordep is published per WPILib alpha and the file is
   **not** called `LimelightLib.json`. A bare `LimelightLib.json` 404s, and so
@@ -84,12 +85,14 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
   `avgTagDistanceMeters` and `rejectionFlags`.
   `PoseEstimateConfig.describeRejection` names a rejection. **The lesson class
   is `Vision`, not `Limelight`**, because the library owns that name now.
-- **`/vision-implementation` is ahead of `3-Limelight`, on purpose.** That
-  branch still carries the copied helper and a subsystem called `Limelight`,
-  so the page sets no `branch` prop rather than claiming a branch it does not
-  match. Set it again when the swerve chain is rebuilt. The reference for the
-  new API is 2026-Template on `limelightlib-2`, which is not in this repo and
-  uses AdvantageKit, so read it for the API and not for the shape.
+- **`/vision-implementation` is on `swerve-vision`, not `3-Limelight`.**
+  November 2026: `swerve-vision` is one commit on `swerve-bline` with the
+  LimelightLib 2 vendordep and the page's `Vision` class. `Vision` is a field
+  on `Robot` (`public final Vision vision = new Vision(drivetrain, "limelight")`),
+  not a static `registerAll`, because Align to Tag asks it where a tag is.
+  `3-Limelight` still carries the copied helper and a subsystem called
+  `Limelight`, and only `/vision-shooting`'s `4-DynamicFlywheel` still builds
+  on it.
 - **Every pose is blue-wall origin, and stays that way until WPILib moves.**
   PathPlanner's 2027 editor and AdvantageScope v27 draw from the field center,
   but WPILib alpha-7 (and allwpilib `main`, October 2026) only offers
@@ -378,8 +381,8 @@ on old slides: `/logging-options` → `/logging-implementation`,
 `/vision-options` → `/vision-hardware`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
-`/finish-conditions`, `/drive-to-tag-inline` and `/dynamic-path-planning` →
-`/drive-to-point`, `/pathplanner` → `/bline`, `/project-structure` and
+`/finish-conditions`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
+`/drive-to-tag-inline` → `/align-to-tag`, `/pathplanner` → `/bline`, `/project-structure` and
 `/git-workflow` → `/project-setup`.
 
 **There is no `/project-structure` or `/git-workflow`.** Both were cut in the
@@ -391,13 +394,20 @@ November 2026 along with the decision to move off PathPlanner: BLine, its
 replacement, has no obstacle pathfinding, and a target chosen at runtime is a
 field pose handed to Drive to Point. The slug 308s to `/drive-to-point`.
 
-**There is no `/drive-to-tag-inline`.** Example: Drive to Tag was retired in
-November 2026. It drove off the tag in LimelightLib target space, with
-flipped axes and lost-tag handling, when the student already has a
-vision-fused pose and a drive-to-pose command. The owner's call: driving to a
-tag is a field pose, taken from the tag layout, handed to Drive to Point. The
-`7-InlineCommands` branch was deleted from Workshop-Code with it. Don't
-reinstate the lesson.
+**`/align-to-tag` replaced `/drive-to-tag-inline`, and is not the same
+lesson.** The old page drove its own loop straight off LimelightLib target
+space, with flipped axes and no plan for losing the tag, and was retired in
+November 2026 in favour of handing a tag-layout field pose to Drive to Point.
+The owner reversed half of that the same month: a spot measured from one tag
+does not depend on the field pose being right, and recording it on each
+event's field absorbs that field's tag mounting. So Align to Tag is the Drive
+to Point call with a tag-frame pose supplier, anchored to odometry between
+frames. `7-InlineCommands` stays deleted. Don't bring back a camera-space
+control loop.
+
+**There is no `/advanced-drive-to-point`.** Profiled Drive to Point was
+retired in November 2026 when Drive to Point moved onto BLine, which already
+profiles every path. The slug 308s to `/drive-to-point`.
 
 **Two slugs were renamed to their titles in September 2026.**
 `/building-subsystems` became `/mechanisms`, having said "subsystem" for a

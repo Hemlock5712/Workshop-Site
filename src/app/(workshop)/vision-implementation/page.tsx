@@ -48,11 +48,12 @@ export const metadata = lessonMetadata("/vision-implementation");
  * `fieldedTagCount` instead) and `PoseEstimate.isMegaTag2()` (now `isMT2()`).
  * `defaultMT1()` still gates a lone tag at 3.0 m and 0.7 ambiguity.
  *
- * WATCH OUT: Workshop-Code `3-Limelight` still carries the copied
- * `LimelightHelpers.java` and a subsystem named `Limelight`. This page is
- * ahead of it deliberately, so `branch` is not set. Set it again once the
- * swerve chain is rebuilt. The class here is `Vision` rather than `Limelight`
- * because the library now owns that name.
+ * November 2026: the page has a branch again, `swerve-vision`, one commit on
+ * `swerve-bline`. `3-Limelight` still carries the copied `LimelightHelpers.java`
+ * and is no longer the parent of anything taught. `Vision` is a field on
+ * `Robot` rather than a static `registerAll`, because `/align-to-tag` asks it
+ * where a tag is. The class is `Vision` rather than `Limelight` because the
+ * library now owns that name.
  */
 export default function VisionImplementation() {
   return (
@@ -71,6 +72,7 @@ export default function VisionImplementation() {
         <>The swerve project.</>,
         <>An AprilTag. A printed one on a wall works.</>,
       ]}
+      branch="swerve-vision"
       time="14 minutes"
     >
       <Box variant="alert-warning" title="No camera in simulation">
@@ -159,25 +161,29 @@ private static final double MAX_TAG_DISTANCE_METERS = 4.0;
 private static final double IGNORE_VISION_HEADING = 9_999_999;
 private static final int MIN_TAGS_FOR_MEGATAG1 = 2;
 
-private final Limelight camera;
 private final DriveMechanism drivetrain;
+private final List<Limelight> cameras = new ArrayList<>();
 
-private Vision(String name, DriveMechanism drivetrain) {
-  this.camera = new Limelight(name);
+public Vision(DriveMechanism drivetrain, String... cameraNames) {
   this.drivetrain = drivetrain;
-  camera.setUseSharedOrientation(true);
+  for (String name : cameraNames) {
+    Limelight camera = new Limelight(name);
+    // Read the heading that update() shares, for MegaTag2.
+    camera.setUseSharedOrientation(true);
+    cameras.add(camera);
+  }
+  Scheduler.getDefault().addPeriodic(() -> update());
 }
 
-public static void registerAll(DriveMechanism drivetrain, String... cameraNames) {
-  Scheduler.getDefault()
-      .addPeriodic(
-          () ->
-              Limelight.setSharedRobotOrientation(
-                  drivetrain.getPose().getRotation().getDegrees()));
+private void update() {
+  // One write reaches every camera that reads the shared heading.
+  Limelight.setSharedRobotOrientation(drivetrain.getPose().getRotation().getDegrees());
 
-  for (String name : cameraNames) {
-    Vision vision = new Vision(name, drivetrain);
-    Scheduler.getDefault().addPeriodic(() -> vision.update());
+  for (Limelight camera : cameras) {
+    // Every frame since the last loop, so none is skipped and none is used twice.
+    for (LimelightResults frame : camera.readResultsQueue()) {
+      addFrame(camera, frame);
+    }
   }
 }`}
         />
@@ -186,8 +192,9 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           <ProseBlock>
             <p>
               A camera drives nothing, so there is nothing for the scheduler to
-              hand out. <code>addPeriodic</code> runs the update every loop
-              instead. One heading write serves every camera on the robot.{" "}
+              hand out, and <code>Vision</code> is not a mechanism.{" "}
+              <code>addPeriodic</code> runs the update every loop instead. One
+              heading write serves every camera on the robot.{" "}
               <code>setUseSharedOrientation(true)</code> tells a camera to read
               the shared topic, and the static{" "}
               <code>setSharedRobotOrientation</code> writes it once per loop.
@@ -214,32 +221,29 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
 
         <CodeBlock
           language="java"
-          title="Vision.java: update"
-          code={`private void update() {
-  for (LimelightResults frame : camera.readResultsQueue()) {
-    PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
-    if (estimate.fieldedTagCount < MIN_TAGS_FOR_MEGATAG1) {
-      estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
-    }
-
-    if (estimate.rejectionFlags != 0
-        || estimate.avgTagDistanceMeters > MAX_TAG_DISTANCE_METERS) {
-      continue;
-    }
-
-    double distanceFactor = Math.pow(estimate.avgTagDistanceMeters, 1.2);
-    double tagFactor = estimate.fieldedTagCount * estimate.fieldedTagCount;
-    double xyStdDev = XY_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
-    double headingStdDev =
-        estimate.isMT2()
-            ? IGNORE_VISION_HEADING
-            : ROTATION_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
-
-    drivetrain.addVisionMeasurement(
-        estimate.pose,
-        estimate.timestampSeconds,
-        VecBuilder.fill(xyStdDev, xyStdDev, headingStdDev));
+          title="Vision.java: addFrame"
+          code={`private void addFrame(Limelight camera, LimelightResults frame) {
+  PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
+  if (estimate.fieldedTagCount < MIN_TAGS_FOR_MEGATAG1) {
+    estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
   }
+
+  if (estimate.rejectionFlags != 0 || estimate.avgTagDistanceMeters > MAX_TAG_DISTANCE_METERS) {
+    return;
+  }
+
+  double distanceFactor = Math.pow(estimate.avgTagDistanceMeters, 1.2);
+  double tagFactor = estimate.fieldedTagCount * estimate.fieldedTagCount;
+  double xyStdDev = XY_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
+  double headingStdDev =
+      estimate.isMT2()
+          ? IGNORE_VISION_HEADING
+          : ROTATION_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
+
+  drivetrain.addVisionMeasurement(
+      estimate.pose,
+      estimate.timestampSeconds,
+      VecBuilder.fill(xyStdDev, xyStdDev, headingStdDev));
 }`}
         />
 
@@ -299,11 +303,15 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
         </p>
 
         <p>
-          One line in <code>Robot</code>&apos;s constructor starts it:{" "}
-          <code>Vision.registerAll(drivetrain, &quot;limelight&quot;)</code>,
-          plus <code>import frc.robot.subsystems.Vision;</code>. Not in an
-          OpMode. Those bindings are torn down on a mode switch, and vision has
-          to keep correcting in every mode. A second camera is a second string.
+          One field in <code>Robot</code> starts it, under the drivetrain:{" "}
+          <code>
+            public final Vision vision = new Vision(drivetrain,
+            &quot;limelight&quot;);
+          </code>
+          , plus <code>import frc.robot.subsystems.Vision;</code>. Not in an
+          OpMode. An OpMode is built and thrown away on every mode switch, and
+          vision has to keep correcting in every mode. A second camera is a
+          second string.
         </p>
       </LessonSection>
 
@@ -339,10 +347,10 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
 
         <p>
           If the pose never moves, check the name first: the string in{" "}
-          <code>registerAll</code> has to match the camera&apos;s NetworkTables
-          table exactly. If the pose jumps somewhere impossible, check the
-          offsets. Position that corrects on two tags and goes strange on one is
-          the MegaTag2 path, so seed the gyro. Not with{" "}
+          <code>new Vision(...)</code> has to match the camera&apos;s
+          NetworkTables table exactly. If the pose jumps somewhere impossible,
+          check the offsets. Position that corrects on two tags and goes strange
+          on one is the MegaTag2 path, so seed the gyro. Not with{" "}
           <code>seedFieldCentric()</code>, which only changes which way the
           sticks call forward: <strong>Swerve Calibration</strong> has the three
           kinds of zeroing.
@@ -424,16 +432,16 @@ public static void registerAll(DriveMechanism drivetrain, String... cameraNames)
           {
             id: 6,
             question:
-              "Why does registerAll get called from Robot's constructor rather than from an OpMode?",
+              "Why is Vision a field on Robot rather than something an OpMode creates?",
             options: [
               "OpMode constructors run before the drivetrain exists",
-              "Bindings made in an OpMode are torn down on a mode switch, and odometry has to keep being corrected in every mode",
-              "The scheduler refuses addPeriodic calls made from an OpMode",
+              "An OpMode is thrown away on a mode switch, and odometry has to keep being corrected in every mode",
+              "Only Robot is allowed to construct a Limelight",
               "Vision only matters during autonomous, which Robot owns",
             ],
             correctAnswer: 1,
             explanation:
-              "Each OpMode sets up its own bindings and loses them when the mode changes. Vision is not a mode-specific behaviour: the pose estimator drifts in teleop, autonomous and disabled alike, so the update has to live where it survives all three.",
+              "Each OpMode is built when its mode is picked and loses everything it set up when the mode changes. Vision is not a mode-specific behaviour: the pose estimator drifts in teleop, autonomous and disabled alike, so the update has to live where it survives all three.",
           },
         ]}
       />

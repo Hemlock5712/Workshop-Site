@@ -65,9 +65,9 @@ export default function DynamicFlywheel() {
         <p>
           <code>4-DynamicFlywheel</code> is one commit on top of{" "}
           <code>3-Limelight</code>, and nothing later builds on it.{" "}
-          <strong>Drive to Point</strong> runs on <code>5-DriveToPoint</code>,
-          which has never held a <code>Flywheel.java</code>, so checking it out
-          deletes your new file.
+          <strong>Drive to Point</strong> runs on{" "}
+          <code>swerve-drive-to-point</code>, which has never held a{" "}
+          <code>Flywheel.java</code>, so checking it out deletes your new file.
         </p>
         <p className="mt-3">
           Commit to a branch of your own first: <code>git switch -c</code>, then{" "}
