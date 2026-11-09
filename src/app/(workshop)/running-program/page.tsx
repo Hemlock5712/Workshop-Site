@@ -6,8 +6,8 @@ import ImageBlock from "@/components/ImageBlock";
 import Quiz from "@/components/Quiz";
 import { ProseBlock, Split } from "@/components/lesson/Prose";
 import VideoEmbed from "@/components/VideoEmbed";
+import LatchedRequestDiagram from "@/components/lesson/LatchedRequestDiagram";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
-import { M, Mech } from "@/components/lesson/Mechanism";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/running-program");
@@ -44,19 +44,16 @@ export default function RunningProgram() {
           <p>
             Hardware simulation stands in for the robot controller and nothing
             else. Every motor request leaves the laptop over USB, crosses the
-            CANivore onto the CAN bus, and lands in the Kraken on your bench.
-          </p>
-          <p>
-            No part of this project models the arm, and nothing here works
-            without powered motors.
+            CANivore onto the CAN bus, and lands in the Kraken motor controller.
           </p>
         </ProseBlock>
       </Split>
 
       <LessonSection id="canivore-usb-off" title="Hand over the CAN bus">
         <p>
-          Leave <strong>CANivore USB</strong> on and Tuner X fights Hardware Sim
-          for the devices, so your code reaches nothing.
+          Make sure to turn off <strong>CANivore USB</strong> in Tuner X. If you
+          leave it on, Tuner X fights Hardware Sim for the devices, and your
+          code will never be able to control them.
         </p>
         <p>
           It is the switch you turned on in{" "}
@@ -188,47 +185,18 @@ export default function RunningProgram() {
 
       <LessonSection id="latched" title="The latched request">
         <p>
-          Every hold here is bound <code>whileTrue</code> with a{" "}
-          <code>whileFalse</code> behind it. This step takes the{" "}
-          <code>whileFalse</code> away for one run, so you see what it is for.
-          Keep a hand on <strong>Disable</strong>.
+          One common issue is a binding with no <code>whileFalse</code>, and a
+          motor that keeps running after its command has stopped. Hold the
+          button below, then let go.
         </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Stop the program. In <code>MyTeleop.java</code>, delete{" "}
-            <Mech for="arm">
-              <code>.whileFalse(robot.arm.stop())</code> from the left-trigger
-              line.
-            </Mech>
-            <Mech for="flywheel">
-              <code>.whileFalse(robot.flywheel.stop())</code> from the{" "}
-              <code>a()</code> line.
-            </Mech>
-          </li>
-          <li>
-            Start <strong>Hardware Sim Robot Code</strong> again, pick
-            Teleoperated and your OpMode, and enable.
-          </li>
-          <li>
-            Hold the button for a second, then let go.{" "}
-            <strong>You should see:</strong> the <M k="noun" /> carry on at 6 V
-            after the release. Click <strong>Disable</strong>.
-          </li>
-          <li>
-            Put the <code>whileFalse</code> back, and run once more to see the
-            release stop it.
-          </li>
-        </ol>
+
+        <LatchedRequestDiagram />
+
         <p>
-          Releasing the button did cancel the command. Canceling ends the code
-          that was sending the request, and sends nothing to the motor. The
-          TalonFX keeps applying the last request it received, because{" "}
-          <a href="/mechanisms#configs-and-requests" className="underline">
-            requests stay latched
-          </a>
-          . Something has to send a new one, and that is the job of{" "}
-          <code>whileFalse(stop())</code>. Disable works because it cuts every
-          output, which is no use as a plan in the middle of a match.
+          Releasing the button cancels the command, and canceling sends nothing
+          to the motor. The TalonFX keeps applying the last request it received
+          until a new one arrives. <code>whileFalse(stop())</code> sends that
+          new one.
         </p>
       </LessonSection>
 
@@ -299,7 +267,7 @@ export default function RunningProgram() {
           {
             id: 3,
             question:
-              "With the whileFalse deleted, you release the button and the mechanism keeps going at 6 V. Which fix makes the release stop it?",
+              "A binding has no whileFalse. You release the button and the mechanism keeps going at 6 V. Which fix makes the release stop it?",
             options: [
               "Call cancel() on the command when the button is released",
               "Lower the voltage in runFast() so the motor coasts down",

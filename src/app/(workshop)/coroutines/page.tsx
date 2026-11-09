@@ -39,8 +39,8 @@ export const metadata = lessonMetadata("/coroutines");
  * immediately), and it evicts `runFast()` because they share the flywheel, so
  * the zero is sent before the `return` cancels everything. The arm gets no
  * stop: a latched position request holds it where it is, which is the same
- * thing `MyTeleop`'s left trigger relies on, and `Arm` has had no `stop()`
- * since `mech-3-MotionMagic`.
+ * thing `MyTeleop`'s left trigger relies on. `Arm.stop()` exists, and this
+ * routine has no reason to call it.
  *
  * Cancel-is-not-stop is taught once, on `/running-program`. This page links
  * to it rather than explaining it a seventh time.

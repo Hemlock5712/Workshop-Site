@@ -4,7 +4,7 @@ import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
-import { M } from "@/components/lesson/Mechanism";
+import { M, Mech } from "@/components/lesson/Mechanism";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/opmodes");
@@ -22,62 +22,67 @@ export const metadata = lessonMetadata("/opmodes");
  * `@Autonomous` in Workshop 4.
  *
  * Why a release needs a `whileFalse` is shown, not told, on
- * `/running-program#latched`. This page links there rather than
- * carrying its own warning box about it.
+ * `/running-program#latched`.
+ *
+ * The code block is forked by mechanism: a student reads and pastes only the
+ * bindings for the mechanism they built. After the block, one line per piece,
+ * at the level an 11-to-18-year-old needs (owner's November 2026 review).
  */
 export default function OpModes() {
   return (
     <PageTemplate
       title="OpModes"
-      lede="Each way the robot can run is its own class, marked with an annotation. Project Setup generated one marked @Teleop. On branch mech-2-Commands you edit it so the controller's buttons run the commands you just wrote."
+      lede="Each way the robot can run is its own class, marked with an annotation. Project Setup generated one marked @Teleop. You edit it so the controller's buttons run the commands you just wrote."
       needs={[
         <>
           The three commands on each mechanism from{" "}
           <strong>Writing Commands</strong>, building clean.
         </>,
         <>
-          The <code>robot.arm</code> and <code>robot.flywheel</code> fields from{" "}
-          <strong>Mechanisms</strong>. This lesson binds both. Built only one?
-          Go back through <strong>Mechanisms</strong> with the other one
-          selected, and add its field beside the first.
+          The{" "}
+          <code>
+            robot.
+            <M k="noun" />
+          </code>{" "}
+          field from <strong>Mechanisms</strong>.
         </>,
       ]}
       branch="mech-2-Commands"
-      time="7 minutes"
+      time="5 minutes"
     >
       <MechanismSelector />
 
       <LessonSection id="the-generated-file" title="The generated MyTeleop">
         <p>
           Open <code>src/main/java/first/robot/opmode/MyTeleop.java</code>. The
-          New Project Creator wrote it with <code>@Teleop</code> on the class,
-          and that annotation is the whole registration. The framework finds
-          every annotated class on its own, and the driver station lists each
-          one by name.
+          New Project Creator created this teleop file for you. The{" "}
+          <code>@Teleop</code> on the class is what puts it on the driver
+          station. If you leave it off, it no longer shows up as an OpMode you
+          can choose.
         </p>
         <p>
           The generated file holds five empty methods with comments in them:{" "}
           <code>disabledPeriodic</code>, <code>start</code>,{" "}
-          <code>periodic</code>, <code>end</code> and <code>close</code>. A
-          teleop built from commands needs none of them, and you replace the
-          whole class below. Edit this file rather than making a new one. A
-          second <code>@Teleop</code> class puts two teleops on the driver
-          station.
+          <code>periodic</code>, <code>end</code> and <code>close</code>. We do
+          not need them in this project, so you replace the whole class below.
+          They are useful to know for future projects, such as autonomous
+          routines. Edit this file rather than making a new one: a second{" "}
+          <code>@Teleop</code> class puts two teleops on the driver station.
         </p>
         <p>
           <code>MyAuto.java</code> beside it is marked <code>@Autonomous</code>{" "}
-          and stays empty for now. Autonomous routines arrive in Workshop 4,
-          where <strong>Coroutines</strong> writes the first one.
+          and stays empty for now. We will work on autonomous routines later.
         </p>
       </LessonSection>
 
       <LessonSection id="bind-the-buttons" title="Bind the buttons">
         <p>Replace everything below the copyright header with this.</p>
 
-        <CodeBlock
-          language="java"
-          filename="src/main/java/first/robot/opmode/MyTeleop.java"
-          code={`package first.robot.opmode;
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            filename="src/main/java/first/robot/opmode/MyTeleop.java"
+            code={`package first.robot.opmode;
 
 import first.robot.Robot;
 import org.wpilib.command3.button.CommandNiDsXboxController;
@@ -91,7 +96,27 @@ public class MyTeleop extends PeriodicOpMode {
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
     driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
+  }
+}`}
+          />
+        </Mech>
 
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            filename="src/main/java/first/robot/opmode/MyTeleop.java"
+            code={`package first.robot.opmode;
+
+import first.robot.Robot;
+import org.wpilib.command3.button.CommandNiDsXboxController;
+import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.Teleop;
+
+@Teleop(name = "Teleop")
+public class MyTeleop extends PeriodicOpMode {
+  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+
+  public MyTeleop(Robot robot) {
     // Right trigger: spin fast while held, drop back to the slow voltage when released.
     driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow());
 
@@ -99,42 +124,30 @@ public class MyTeleop extends PeriodicOpMode {
     driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
   }
 }`}
-        />
+          />
+        </Mech>
 
-        <p>
-          <code>name = &quot;Teleop&quot;</code> is the label in the driver
-          station&apos;s list. Leave it off and the list shows the class name.
-          The <code>0</code> is the controller&apos;s port on the driver
-          station. The constructor is handed the one <code>Robot</code>, so
-          every binding reaches a mechanism as <code>robot.arm</code> or{" "}
-          <code>robot.flywheel</code>.
-        </p>
-        <p>
-          <code>whileTrue</code> schedules its command when the button goes down
-          and cancels it when the button comes up. <code>whileFalse</code>{" "}
-          schedules its command on the way up. So the left trigger runs{" "}
-          <code>runFast</code> while held and <code>stop</code> after, and the
-          right trigger drops the flywheel to <code>runSlow</code> rather than
-          to zero. Every hold here has a <code>whileFalse</code> behind it, and{" "}
-          <a href="/running-program#latched" className="underline">
-            Hardware Simulation
-          </a>{" "}
-          shows what a release does without one.
-        </p>
-        <p>
-          Building only the <M k="noun" />? Delete the{" "}
-          <code>
-            robot.
-            <M k="otherNoun" />
-          </code>{" "}
-          bindings. They call commands on a class your project does not have.
-        </p>
-        <p>
-          Bindings made in the constructor belong to this OpMode. The framework
-          removes them when the mode changes, so there is no cleanup to write.
-          Bind in the constructor, but never drive a motor from it, because the
-          robot can still be disabled when that code runs.
-        </p>
+        <ul className="ml-5 list-disc space-y-2">
+          <li>
+            <code>@Teleop(name = &quot;Teleop&quot;)</code> is the name in the
+            driver station&apos;s list.
+          </li>
+          <li>
+            <code>new CommandNiDsXboxController(0)</code> creates an Xbox
+            controller. The <code>0</code> is its port on the driver station.
+          </li>
+          <li>
+            <code>MyTeleop(Robot robot)</code> hands this OpMode the robot, so
+            it can reach your mechanism.
+          </li>
+          <li>
+            <code>whileTrue</code> runs a command while the button is held, and
+            cancels it on release.
+          </li>
+          <li>
+            <code>whileFalse</code> runs a command once the button is released.
+          </li>
+        </ul>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -153,15 +166,10 @@ public class MyTeleop extends PeriodicOpMode {
               <code>@Teleop</code>.
             </li>
             <li>
-              A <code>whileFalse</code> on every binding line you kept.
+              A <code>whileFalse</code> on every binding line.
             </li>
           </ul>
         </Box>
-        <p>
-          <code>cannot find symbol: variable flywheel</code>, or{" "}
-          <code>arm</code>, means a binding names a mechanism your{" "}
-          <code>Robot</code> does not build. Delete that line.
-        </p>
       </LessonSection>
 
       <Quiz
@@ -169,16 +177,16 @@ public class MyTeleop extends PeriodicOpMode {
           {
             id: 1,
             question:
-              "You release the right trigger. What is the flywheel doing a moment later?",
+              "A binding reads driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow()). You release the trigger. What is running a moment later?",
             options: [
-              "Stopped, because whileTrue cancels runFast on the release",
-              "Running runSlow, because whileFalse schedules it as the trigger comes up",
-              "Still running runFast, because a trigger has no release event",
-              "Coasting, because no command owns the flywheel",
+              "Nothing, because whileTrue cancels runFast on the release",
+              "runSlow, because whileFalse runs it once the trigger is released",
+              "runFast, because a trigger has no release event",
+              "Both runFast and runSlow, one after the other",
             ],
             correctAnswer: 1,
             explanation:
-              "whileTrue cancels runFast on the way up, and whileFalse schedules runSlow at the same moment. The wheel drops to the slow voltage, not to zero. The A button is the binding that sends stop().",
+              "whileTrue cancels runFast when the trigger comes up, and whileFalse starts runSlow at the same moment.",
           },
           {
             id: 2,
@@ -193,34 +201,6 @@ public class MyTeleop extends PeriodicOpMode {
             correctAnswer: 3,
             explanation:
               "Every annotated class is registered, so both appear in the list. Picking the generated MyTeleop runs a teleop with no bindings, and nothing moves. Edit the generated file rather than adding a second one.",
-          },
-          {
-            id: 3,
-            question:
-              "You built only the arm, and the build stops on cannot find symbol: variable flywheel. What do you change?",
-            options: [
-              "Delete the two bindings that name robot.flywheel",
-              "Add an empty Flywheel field to Robot",
-              "Rename robot.flywheel to robot.arm in both lines",
-              "Mark the flywheel bindings @Utility",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "Those lines call commands on a field your Robot does not have. Deleting them is the fix. Renaming them would bind the arm to two more buttons, which compiles and does something you did not ask for.",
-          },
-          {
-            id: 4,
-            question:
-              "The driver switches from Teleop to Autonomous. What happens to the bindings made in MyTeleop's constructor?",
-            options: [
-              "They keep firing until MyTeleop calls end()",
-              "They keep firing until the robot reboots",
-              "The framework removes them, and there is no cleanup code to write",
-              "MyAuto has to cancel them in its constructor",
-            ],
-            correctAnswer: 2,
-            explanation:
-              "Bindings belong to the OpMode that made them. The framework builds the class when the mode is picked and takes its bindings away on a mode switch. This teleop needs no start() or end().",
           },
         ]}
       />

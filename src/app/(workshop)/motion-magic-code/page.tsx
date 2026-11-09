@@ -16,15 +16,14 @@ export const metadata = lessonMetadata("/motion-magic-code");
  *
  *   git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-3-MotionMagic
  *
- * One request field swapped, the config re-pasted from Tuner X, the arm's
- * three voltage commands replaced by two position holds, the flywheel's two
- * numbers changed, and one binding losing its `whileFalse`.
+ * One request field swapped, the arm's two voltage commands replaced by two
+ * position holds with `stop()` kept, the flywheel's two numbers changed, and
+ * one binding losing its `whileFalse`.
  *
- * The config is re-pasted on purpose, not assumed. A student who pasted on
- * `/mechanisms` before tuning, or who copied the branch, has `0.0` gains in
- * the file, and the branch ships them that way so a fresh clone holds still.
- * Telling everyone to paste again makes the lede and the failure check agree.
- * The code blocks show the shape with `0.0` placeholders, never our gains.
+ * There is no paste step. The student pasted their tuned config on
+ * `/mechanisms`, after tuning in Workshop 1 (owner's November 2026 review).
+ * The branch ships `0.0` gains so a fresh clone holds still, which is why the
+ * check below still says to repeat the paste if nothing moves.
  *
  * Control requests themselves are defined on `/mechanisms#configs-and-requests`.
  * This page only says that the request picked in Tuner X's Control drop-down
@@ -34,7 +33,7 @@ export default function MotionMagicCode() {
   return (
     <PageTemplate
       title="Motion Magic in Code"
-      lede="You have already run Motion Magic from the Control drop-down in Tuner X. This lesson sends the same request from code. It takes one new field, a fresh paste of your tuned config, and commands that name a target."
+      lede="You have already run Motion Magic from the Control drop-down in Tuner X. This lesson sends the same request from code."
       needs={[
         <>
           Buttons moving your mechanism, from{" "}
@@ -46,7 +45,7 @@ export default function MotionMagicCode() {
         </>,
       ]}
       branch="mech-3-MotionMagic"
-      time="10 minutes"
+      time="6 minutes"
     >
       <MechanismSelector />
 
@@ -86,101 +85,17 @@ export default function MotionMagicCode() {
           />
         </Mech>
 
-        <p>
-          Your editor offers its import. Delete the{" "}
-          <code>import com.ctre.phoenix6.controls.VoltageOut;</code> line, since
-          nothing uses it any more.
-        </p>
-      </LessonSection>
-
-      <LessonSection id="the-config" title="Paste your tuned config">
-        <p>
-          The request names a target. The gains decide how hard the motor works
-          to reach it, and they live in the config. The config in your file may
-          hold <code>0.0</code> gains. The branch ships them so a fresh clone
-          holds still, and a paste made before you tuned carries zeros too. So
-          paste again.
-        </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            In Tuner X, open the <M k="noun" />
-            &apos;s config panel, press the three dots, and choose{" "}
-            <strong>Generate Code</strong>.
-          </li>
-          <li>
-            Select the whole{" "}
-            <code>final TalonFXConfiguration talonFXCfg = ...;</code> statement
-            in the constructor and paste over it. Leave{" "}
-            <code>motor.getConfigurator().apply(talonFXCfg);</code> under it.
-          </li>
-          <li>
-            Check that <code>withSlot0</code> and the Motion Magic values hold
-            the numbers from your bench, not zeros.
-          </li>
-        </ol>
-
-        <Mech for="arm">
-          <CodeBlock
-            language="java"
-            title="Arm.java: the shape of the paste, with your numbers in place of 0.0"
-            code={`    final TalonFXConfiguration talonFXCfg =
-        new TalonFXConfiguration()
-            .withMotorOutput(
-                new MotorOutputConfigs()
-                    .withNeutralMode(NeutralModeValue.Coast)
-                    .withInverted(InvertedValue.CounterClockwise_Positive))
-            .withSlot0(
-                new Slot0Configs()
-                    .withKG(0.0)
-                    .withKS(0.0)
-                    .withKP(0.0)
-                    .withKD(0.0)
-                    .withGravityType(GravityTypeValue.Arm_Cosine))
-            .withMotionMagic(
-                new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(RotationsPerSecond.of(0.0))
-                    .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(0.0))
-                    .withMotionMagicExpo_kV(
-                        Volts.per(RotationsPerSecond).ofNative(0.119999997317791))
-                    .withMotionMagicExpo_kA(
-                        Volts.per(RotationsPerSecondPerSecond).ofNative(0.10000000149011612)))
-            .withFeedback(
-                new FeedbackConfigs()
-                    .withFeedbackRemoteSensorID(32)
-                    .withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder));`}
-          />
-        </Mech>
-
-        <Mech for="flywheel">
-          <CodeBlock
-            language="java"
-            title="Flywheel.java: the shape of the paste, with your numbers in place of 0.0"
-            code={`    final TalonFXConfiguration talonFXCfg =
-        new TalonFXConfiguration()
-            .withMotorOutput(
-                new MotorOutputConfigs()
-                    .withNeutralMode(NeutralModeValue.Coast)
-                    .withInverted(InvertedValue.Clockwise_Positive))
-            .withSlot0(new Slot0Configs().withKS(0.0).withKV(0.0).withKP(0.0))
-            .withMotionMagic(
-                new MotionMagicConfigs()
-                    .withMotionMagicCruiseVelocity(RotationsPerSecond.of(0.0))
-                    .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(0.0))
-                    .withMotionMagicExpo_kV(
-                        Volts.per(RotationsPerSecond).ofNative(0.119999997317791))
-                    .withMotionMagicExpo_kA(
-                        Volts.per(RotationsPerSecondPerSecond).ofNative(0.10000000149011612)));`}
-          />
-        </Mech>
+        <p>Your editor offers its import.</p>
       </LessonSection>
 
       <LessonSection id="the-commands" title="Name targets, not volts">
         <Mech for="arm" as="div" className="flex flex-col gap-pad">
           <p>
-            An arm that holds an angle does not need a slow push, a fast push
-            and a stop. Delete <code>runSlow</code>, <code>runFast</code>,{" "}
-            <code>stop</code>, <code>setVoltage</code> and{" "}
-            <code>stopMotor</code>, and put these in their place.
+            Replace <code>setVoltage</code> with <code>setPosition</code>, and
+            replace <code>runSlow</code> and <code>runFast</code> with two
+            position commands, <code>vertical</code> and <code>horizontal</code>
+            . Keep <code>stop</code> and <code>stopMotor</code>: you may still
+            want to stop the arm while it is moving to a target.
           </p>
           <CodeBlock
             language="java"
@@ -205,9 +120,6 @@ export default function MotionMagicCode() {
     motor.setControl(positionOut.withPosition(rotations));
   }`}
           />
-          <p>
-            Nothing binds <code>horizontal</code> yet. Workshop 4 uses it.
-          </p>
         </Mech>
 
         <Mech for="flywheel" as="div" className="flex flex-col gap-pad">
@@ -239,8 +151,10 @@ export default function MotionMagicCode() {
       <LessonSection id="the-opmode" title="Update the bindings">
         <Mech for="arm" as="div" className="flex flex-col gap-pad">
           <p>
-            <code>robot.arm.stop()</code> is gone, so the left-trigger line in{" "}
-            <code>MyTeleop.java</code> loses its <code>whileFalse</code>.
+            With closed-loop control, we often want the motor to keep holding
+            its position. In <code>MyTeleop.java</code>, switch{" "}
+            <code>runFast</code> to <code>vertical</code> and delete the{" "}
+            <code>whileFalse(robot.arm.stop())</code>.
           </p>
           <CodeBlock
             language="java"
@@ -252,10 +166,10 @@ export default function MotionMagicCode() {
           />
           <p>
             Releasing the trigger cancels the command, and the motor keeps
-            applying the last request it received. On a voltage request that was
-            the hazard in <strong>Hardware Simulation</strong>. On a position
-            request it is what you want: the arm holds the target against
-            gravity.
+            applying the last request it received. On a voltage request that
+            would have caused problems, because the motor would never have
+            stopped turning. On a position request it is what you want: the arm
+            holds the target against gravity.
           </p>
         </Mech>
         <Mech for="flywheel" as="div" className="flex flex-col gap-pad">
@@ -290,8 +204,12 @@ export default function MotionMagicCode() {
         </Box>
         <p>
           A <M k="noun" /> that does not move at all may still have{" "}
-          <code>0.0</code> values in its config, so repeat the paste. One that
-          overshoots and hunts is a tuning problem. Fix it in Tuner X with{" "}
+          <code>0.0</code> values in its config, so repeat the paste from{" "}
+          <a href="/mechanisms#configure-once" className="underline">
+            Mechanisms
+          </a>
+          . One that overshoots and hunts is a tuning problem. Fix it in Tuner X
+          with{" "}
           <a href="/pid-control" className="underline">
             PID Tuning in Tuner X
           </a>
@@ -318,16 +236,16 @@ export default function MotionMagicCode() {
           {
             id: 2,
             question:
-              "After deleting the arm's old commands, the build fails in MyTeleop.java on robot.arm.stop(). What is the fix?",
+              "Arm still has stop(). Why does the left-trigger binding no longer end in whileFalse(robot.arm.stop())?",
             options: [
-              "Delete .whileFalse(robot.arm.stop()) from the left-trigger line",
-              "Put stop() back on Arm so the binding compiles",
-              "Change it to whileFalse(robot.arm.horizontal())",
-              "Change whileTrue to onTrue so no whileFalse is needed",
+              "A position request keeps holding its target after the command is canceled, and holding is what you want",
+              "whileFalse does not work with Motion Magic requests",
+              "whileTrue already sends a stop when the trigger is released",
+              "stop() only works on voltage requests",
             ],
             correctAnswer: 0,
             explanation:
-              "A position request holds its target after the command is canceled, so the arm binding needs nothing on the release. Binding horizontal there would compile, but the arm would swing to horizontal every time you let go.",
+              "With no whileFalse, the last position request stays applied, so the arm finishes its move and holds there against gravity. stop() would send NeutralOut on the release, and the arm would go limp in coast and stop holding its target.",
           },
           {
             id: 3,

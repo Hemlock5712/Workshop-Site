@@ -31,18 +31,18 @@ export const metadata = lessonMetadata("/chaining-commands");
  * static imports. One line of prose introduces it where it appears.
  *
  * The September move into Workshop 3 put `mech-3-MotionMagic` in front of this
- * page and nothing re-checked the vocabulary. `mech-3` deletes the Arm's
- * `runSlow()`, `runFast()` and `stop()` and replaces them with `vertical()`
- * and `horizontal()`, so every arm line here named a method the student no
- * longer has. The Flywheel kept its three names, which is why only the arm
+ * page and nothing re-checked the vocabulary. `mech-3` replaces the Arm's
+ * `runSlow()` and `runFast()` with `vertical()` and `horizontal()`, so every
+ * arm line here named a method the student no longer has. `stop()` stays, by
+ * the owner's November 2026 review, for stopping the arm mid-move. The Flywheel kept its three names, which is why only the arm
  * changed: `runSlow` and `runFast` still describe a speed, now 25 and 75 RPS
  * instead of 3 V and 6 V.
  *
  * That correction moved the "cancelling is not stopping" material onto the
  * flywheel. A latched `MotionMagicVoltage` just holds the arm at 90 degrees,
  * which is not a failure a student can see; a latched 75 RPS keeps the
- * flywheel spinning, and `Flywheel.stop()` still exists to be the fix. There
- * is no `Arm.stop()` to point at any more and the page does not invent one.
+ * flywheel spinning, and `Flywheel.stop()` is the fix. The arm wants its
+ * latched position, so this page never binds `Arm.stop()`.
  *
  * October 2026 cut that explanation to a link. Cancel-is-not-stop is taught
  * once, on `/running-program`, and this page only says what to do about it.
