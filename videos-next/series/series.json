@@ -1585,11 +1585,6 @@
     [
       "/project-setup",
       "Tool walkthrough. Screen recording of the New Project Creator, not an animation."
-    ],
-    [
-      "/project-structure",
-      "File-tree tour. A 20 s VS Code recording; its one animated idea (Robot builds each mechanism once) lives at the end of Configs and Requests."
-    ],
-    ["/git-workflow", "Tool walkthrough. Screen recording."]
+    ]
   ]
 }

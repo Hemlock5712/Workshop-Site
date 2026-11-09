@@ -3,14 +3,11 @@ import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import ImageBlock from "@/components/ImageBlock";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import { Split } from "@/components/lesson/Prose";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import PairedLesson from "@/components/lesson/PairedLesson";
-import GlossaryTerm from "@/components/GlossaryTerm";
 import { M, Mech } from "@/components/lesson/Mechanism";
-import { GitBranch } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/mechanisms");
@@ -46,7 +43,7 @@ export default function Mechanisms() {
   return (
     <PageTemplate
       title="Mechanisms"
-      lede="A mechanism is one physical part of the robot, written as one Java class. On branch mech-1-Mechanisms you write Arm.java and Flywheel.java: hardware fields, one constructor, two methods."
+      lede="A mechanism is one physical part of the robot, written as a Java class. Here we will build an arm or a flywheel."
       needs={[
         <>
           A clean build, from <strong>Project Setup</strong>.
@@ -67,13 +64,17 @@ export default function Mechanisms() {
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
             Work in the project you generated in <strong>Project Setup</strong>.
-            There is nothing to clone, and the file is new.
           </p>
           <p>
-            Both classes live in a <code>mechanisms</code> folder beside{" "}
-            <code>Robot.java</code>, at{" "}
-            <code>src/main/java/first/robot/mechanisms/</code>. Make the folder,
-            then make the file in it.
+            First, create the mechanisms folder. Right-click the{" "}
+            <code>robot</code> folder, choose <strong>New Folder</strong>, and
+            type <code>mechanisms</code>. Then right-click the{" "}
+            <code>mechanisms</code> folder, choose <strong>New File</strong>,
+            and type{" "}
+            <code>
+              <M k="file" />
+            </code>
+            .
           </p>
         </div>
       </Split>
@@ -100,14 +101,13 @@ export default function Mechanisms() {
 
       <LessonSection id="hardware-fields" title="The hardware fields">
         <p>
-          Name the file{" "}
+          Now that you have a file named{" "}
           <code>
             <M k="file" />
-          </code>{" "}
-          and paste this into it. The package line and the imports are the part
-          you cannot work out from a lesson, so they are here in full. The class
-          is empty and it compiles. The three comments mark the three places the
-          rest of this lesson goes.
+          </code>
+          , paste this into it. It is a template: it has all the imports, and it
+          already <code>implements Mechanism</code>. The three comments mark
+          where the rest of this lesson goes.
         </p>
 
         <Mech for="arm">
@@ -190,9 +190,12 @@ public class Flywheel implements Mechanism {
 
         <p>
           Your editor greys out an import until something uses it. That is
-          expected. Most go quiet as you fill the class in, and the build
-          deletes any that are still unused. The class compiles at every step
-          from here. The fields come first.
+          expected. Most go quiet as you fill the class in. After each section
+          of code you should have no errors, only warnings.
+        </p>
+        <p>
+          The first step is to create the hardware you used in Tuner X, along
+          with the request you used there.
         </p>
 
         <Mech for="arm">
@@ -256,17 +259,15 @@ public class Flywheel implements Mechanism {
 
       <LessonSection id="configure-once" title="Configure the motor once">
         <p>
-          The constructor runs one time, the moment{" "}
-          <code>
-            new <M k="name" />
-            ()
-          </code>{" "}
-          is evaluated. <code>NeutralMode</code> is the one setting here you
-          choose. <code>Inverted</code> is not a choice: it is the direction you
-          proved on <strong>Motor Setup</strong>, and the mechanism decided it
-          long before any code ran. Ignore the two <code>Expo</code> values.
-          They are defaults built into every config Tuner X generates, and no
-          workshop uses them.
+          You already have the mechanism working in Tuner X, so CTRE makes this
+          step easy. In the config panel, click the three dots, click{" "}
+          <strong>Generate Code</strong>, and paste the result into the
+          constructor. A few values arrive that you did not set in Tuner X. They
+          are defaults, and you can ignore them.
+        </p>
+        <p>
+          Generate Code is for the motor only. The encoder keeps its settings in
+          Tuner X, so if an encoder misbehaves, fix it there.
         </p>
 
         <ImageBlock
@@ -280,11 +281,9 @@ public class Flywheel implements Mechanism {
 
         <Box variant="alert-warning" title="These are our numbers, not yours">
           <p>
-            The block below is the shape, not a config to copy. Open the config
-            panel in Tuner X, press the three dots, choose{" "}
-            <strong>Generate Code</strong>, and paste the result over the whole
-            statement. If the device holds your gains from Workshop 1, they come
-            along. Leave them in. Nothing reads them until{" "}
+            The block below is the shape, not a config to copy. Paste your own
+            over the whole statement. If the device holds your gains from
+            Workshop 1, they come along. Leave them in. Nothing reads them until{" "}
             <strong>Motion Magic in Code</strong>.
           </p>
         </Box>
@@ -358,9 +357,7 @@ public class Flywheel implements Mechanism {
             <p>
               A TalonFX counts its own rotor turns from zero at every power-on.
               The CANcoder is absolute, and <code>withFeedback</code> makes it
-              the motor&apos;s position source. Nothing reads a position on this
-              branch. Leave the block out and every angle you ask for later is
-              measured from wherever the arm sat at power-on.
+              the motor&apos;s position source.
             </p>
           </Box>
         </Mech>
@@ -390,6 +387,12 @@ public class Flywheel implements Mechanism {
       </LessonSection>
 
       <LessonSection id="two-methods" title="Two methods">
+        <p>
+          Now that the motor and the request exist, the request has to be sent
+          to the motor. Two methods do it: one sets the voltage, and one stops
+          the motor.
+        </p>
+
         <Mech for="arm">
           <CodeBlock
             language="java"
@@ -442,39 +445,26 @@ public class Flywheel implements Mechanism {
           sends it.
         </p>
         <p>
-          Nothing here reads a sensor. Ask for 6 V and you get 6 V, whatever the{" "}
-          <M k="noun" /> does with it.
+          <code>stopMotor()</code> replaces whatever request the motor last had,
+          so it stops driving and the neutral mode from the config, Coast, takes
+          over.
         </p>
 
         <p>
-          Both are <code>private</code>, and nothing calls them yet. The next
-          lesson wraps them in commands, and one of those commands takes the
-          name <code>stop</code>, so the helper is <code>stopMotor</code>.
+          As you will notice, both methods are <code>void</code>. The next
+          lesson converts them into commands.
         </p>
       </LessonSection>
 
       <LessonSection id="configs-and-requests" title="Configs and requests">
         <p>
-          This file sends the motor two kinds of message. A{" "}
-          <strong>config</strong> is settings: inversion, neutral mode, gains,
-          the feedback sensor. The TalonFX saves it, so the constructor applies
-          it once. A{" "}
-          <GlossaryTerm term="control request">control request</GlossaryTerm> is
-          what to do right now, and it carries the target. The target changes
-          while the robot runs, so code sends a request every loop.
-        </p>
-        <p>
-          You have used both in Tuner X. The config panel is the config, and the{" "}
-          <strong>Control</strong> drop-down on <strong>Motor Setup</strong>{" "}
-          picks a request. Voltage Out in that drop-down is{" "}
-          <code>VoltageOut</code> here. Motion Magic Voltage is{" "}
-          <code>MotionMagicVoltage</code>, which replaces it in{" "}
-          <strong>Motion Magic in Code</strong>.
-        </p>
-        <p>
-          Every request name is made of the same parts. The column is what the
-          motor outputs. The row is what it aims at, and a{" "}
-          <code>MotionMagic</code> prefix means a profile shapes the move.
+          In the code above we chose <code>VoltageOut</code>. Just like in Tuner
+          X, you can change the request as you go, and the common ones are in
+          the table below. <code>VoltageOut</code> is a simple test. By the end
+          of Workshop 1 you were using Motion Magic Voltage in Tuner X.{" "}
+          <code>MotionMagicVoltage</code> drops in just as easily in{" "}
+          <strong>Motion Magic in Code</strong>. For now, we start by applying
+          voltage.
         </p>
 
         <div className="measure-wide overflow-x-auto">
@@ -553,11 +543,10 @@ public class Flywheel implements Mechanism {
         </div>
 
         <p>
-          This course stays in the volts column, so the gains you tuned are in
-          volts. A request also stays latched. The motor keeps applying the last
-          one it received until a different one arrives, even after the code
-          that sent it has stopped running. That is what{" "}
-          <code>stopMotor()</code> is for, and{" "}
+          A request stays latched. The motor keeps applying the last one it
+          received until a different one arrives, even after the code that sent
+          it has stopped running. That is what <code>stopMotor()</code> is for,
+          and{" "}
           <a href="/running-program#latched" className="underline">
             Hardware Simulation
           </a>{" "}
@@ -567,25 +556,48 @@ public class Flywheel implements Mechanism {
 
       <LessonSection id="register-on-robot" title="Hand it to Robot">
         <p>
-          Nothing has built the class yet. <code>Robot</code> is where it
-          becomes a real object: built once at startup, outliving every mode,
-          and handed to every OpMode. Add the two fields.
+          Now that the mechanism is built, declare it inside{" "}
+          <code>Robot.java</code>.
         </p>
 
-        <CodeBlock
-          language="java"
-          title="Robot.java: the mechanisms it owns"
-          filename="src/main/java/first/robot/Robot.java"
-          code={`package first.robot;
+        <Mech for="arm">
+          <CodeBlock
+            language="java"
+            title="Robot.java: the mechanism it owns"
+            filename="src/main/java/first/robot/Robot.java"
+            code={`package first.robot;
 
 import first.robot.mechanisms.Arm;
-import first.robot.mechanisms.Flywheel;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.framework.OpModeRobot;
 
 public class Robot extends OpModeRobot {
   // The robot's mechanisms. Public so OpModes can use them.
   public final Arm arm = new Arm();
+
+  public Robot() {}
+
+  @Override
+  public void robotPeriodic() {
+    Scheduler.getDefault().run();
+  }
+}`}
+          />
+        </Mech>
+
+        <Mech for="flywheel">
+          <CodeBlock
+            language="java"
+            title="Robot.java: the mechanism it owns"
+            filename="src/main/java/first/robot/Robot.java"
+            code={`package first.robot;
+
+import first.robot.mechanisms.Flywheel;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.framework.OpModeRobot;
+
+public class Robot extends OpModeRobot {
+  // The robot's mechanisms. Public so OpModes can use them.
   public final Flywheel flywheel = new Flywheel();
 
   public Robot() {}
@@ -595,20 +607,12 @@ public class Robot extends OpModeRobot {
     Scheduler.getDefault().run();
   }
 }`}
-        />
+          />
+        </Mech>
 
         <p>
-          <code>public</code> so every OpMode can reach them, and{" "}
-          <code>final</code> so nothing swaps them out.
-        </p>
-
-        <p>
-          Building only the <M k="noun" />? Delete the{" "}
-          <code>
-            <M k="other" />
-          </code>{" "}
-          field and its import. A field that builds a class you never wrote does
-          not compile.
+          The field is <code>public</code> so every OpMode can reach it, and{" "}
+          <code>final</code> so nothing can change it.
         </p>
       </LessonSection>
 
@@ -651,22 +655,6 @@ public class Robot extends OpModeRobot {
             </li>
           </ul>
         </Box>
-
-        <Mech for="arm">
-          <DocumentationButton
-            href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-1-Mechanisms/src/main/java/first/robot/mechanisms/Arm.java"
-            title="Arm.java on branch mech-1-Mechanisms"
-            icon={<GitBranch className="w-5 h-5" />}
-          />
-        </Mech>
-
-        <Mech for="flywheel">
-          <DocumentationButton
-            href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-1-Mechanisms/src/main/java/first/robot/mechanisms/Flywheel.java"
-            title="Flywheel.java on branch mech-1-Mechanisms"
-            icon={<GitBranch className="w-5 h-5" />}
-          />
-        </Mech>
       </LessonSection>
 
       <Quiz

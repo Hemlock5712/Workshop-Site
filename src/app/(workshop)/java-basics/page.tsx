@@ -4,7 +4,7 @@ import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { BookOpen, GitBranch } from "lucide-react";
+import { BookOpen } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/java-basics");
@@ -26,7 +26,7 @@ export const metadata = lessonMetadata("/java-basics");
  * constructor, lambda", `/adding-commands` and `/finish-conditions` for
  * lambdas, `/mechanisms` for fields, constructors and methods. So what
  * survives is exactly what those four promises need and nothing downstream
- * defines: the six words, and `private` / `public` / `final` / `implements`.
+ * defines: the six words, and `private` / `public` / `implements`.
  * There are no method references on this site, so none are taught here.
  *
  * Everything else is outsourced to Codecademy's free Learn Java, four modules
@@ -41,7 +41,7 @@ export default function JavaBasics() {
   return (
     <PageTemplate
       title="Java Basics"
-      lede="This page does not teach Java. It sends you to a free course, then names the few words that course leaves unconnected to robot code. The quiz at the end checks that you can read the next four lessons."
+      lede="We will not be teaching you full Java. If you have no Java experience, we recommend a few free lessons below. Even without them, we will cover things as we go."
       needs={[
         <>Nothing installed. No project, no robot, no build.</>,
         <>A free Codecademy account, which the course below needs.</>,
@@ -51,8 +51,8 @@ export default function JavaBasics() {
       <LessonSection id="learn-the-language" title="Learn Java on Codecademy">
         <p>
           Codecademy&apos;s <strong>Learn Java</strong> is free and runs in the
-          browser, so there is nothing to install. Do not do the whole course.
-          Four modules cover almost everything the code here uses.
+          browser, so there is nothing to install. Four modules cover almost
+          everything the code here uses.
         </p>
 
         <div className="measure-wide overflow-x-auto">
@@ -96,11 +96,9 @@ export default function JavaBasics() {
         </div>
 
         <p>
-          Stop after <strong>Conditionals and Control Flow</strong> and come
-          back. Arrays and string methods barely turn up here. Loops do, in
-          Workshop 4, where <strong>Coroutines</strong> writes a{" "}
-          <code>while</code> loop by hand. Do the <strong>Loops</strong> module
-          before you get there.
+          Stop after <strong>Conditionals and Control Flow</strong>. We will not
+          use arrays or string methods. Loops turn up once, in Workshop 4, where
+          you write a <code>while</code> loop by hand inside a coroutine.
         </p>
 
         <DocumentationButton
@@ -112,9 +110,8 @@ export default function JavaBasics() {
 
       <LessonSection id="the-six-pieces" title="The six pieces">
         <p>
-          The course covers all of these except the lambda. This is what they
-          look like in robot code, and it is the vocabulary the next four
-          lessons assume you have.
+          There are six main pieces to the code you will be writing. The course
+          above covers all of them except the lambda.
         </p>
 
         <div className="measure-wide overflow-x-auto">
@@ -178,15 +175,13 @@ export default function JavaBasics() {
         </div>
 
         <p>
-          A field has two more words in front of its type. Marking it{" "}
-          <code>private</code> means only code inside <code>Arm.java</code> may
-          touch it, and <code>public</code> is the opposite. A{" "}
-          <code>final</code> field points at one object for good. It locks the
-          box and not the contents, so <code>motor.setControl(...)</code> still
-          works while <code>motor = new TalonFX(...)</code> does not.
+          Marking a field <code>private</code> means only code inside{" "}
+          <code>Arm.java</code> may touch it, and <code>public</code> is the
+          opposite.
         </p>
         <p>
-          Writing <code>public class Arm implements Mechanism</code> gives{" "}
+          Another word you will see is <code>implements</code>. Writing{" "}
+          <code>public class Arm implements Mechanism</code> gives{" "}
           <code>Arm</code> everything <code>Mechanism</code> can do.{" "}
           <code>Mechanism</code> has a method called{" "}
           <code>runRepeatedly(...)</code>, for instance. Look through{" "}
@@ -223,7 +218,7 @@ public Command runSlow() {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Six questions on the lines above. If you miss more than one, go back
+          Five questions on the lines above. If you miss more than one, go back
           to the course before the next lesson.
         </p>
 
@@ -260,20 +255,6 @@ public Command runSlow() {
             {
               id: 3,
               question:
-                "In private final TalonFX motor = new TalonFX(31, canivore), what does final stop you doing?",
-              options: [
-                "Calling any method that changes what the motor outputs",
-                "Pointing motor at a different TalonFX later on",
-                "Reading the motor's position",
-                "Building a second TalonFX anywhere in the file",
-              ],
-              correctAnswer: 1,
-              explanation:
-                "final locks the box, not the contents. motor.setControl(...) still works, and the flywheel still builds a TalonFX of its own. What it forbids is motor = new TalonFX(...) somewhere further down the file.",
-            },
-            {
-              id: 4,
-              question:
                 "Arm.java never contains the word runRepeatedly, and runSlow() calls it. Why does that compile?",
               options: [
                 "The compiler pulls in any method it finds in an imported package",
@@ -286,7 +267,7 @@ public Command runSlow() {
                 "implements is the whole answer. Mechanism is an interface whose methods already have bodies, so Arm gets every one of them without repeating any. idle() and run(...) arrive the same way. Search the file for those and you will not find them either.",
             },
             {
-              id: 5,
+              id: 4,
               question: "When does the code inside public Arm() run?",
               options: [
                 "Every scheduler loop, the way a command does",
@@ -299,7 +280,7 @@ public Command runSlow() {
                 "A constructor has the class's name and no return type, and it runs once, automatically, when the object is built. Nothing calls it by name. That is why one-time motor configuration belongs in it.",
             },
             {
-              id: 6,
+              id: 5,
               question:
                 'runRepeatedly(...).named("runSlow (hold)") compiles, but arm.runSlow().named("lift") does not. Why?',
               options: [
@@ -313,12 +294,6 @@ public Command runSlow() {
                 "The type in front of a dot decides what you can type after it. named(String) is a method on the half-finished command that runRepeatedly(...) returns. runSlow() already called it, so it gives you a finished Command with nothing left to name.",
             },
           ]}
-        />
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/blob/mech-2-Commands/src/main/java/first/robot/mechanisms/Arm.java"
-          title="Arm.java on mech-2-Commands: the file these four lines come from"
-          icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>
     </PageTemplate>

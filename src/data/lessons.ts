@@ -152,20 +152,6 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   // Workshop 2: making the project is the first thing you do to write code,
   // not the last idea you learn before writing it.
   { slug: "/project-setup", title: "Project Setup", section: "workshop3" },
-  // Where each kind of code goes, then how a team shares it, before the first
-  // class is written. Both answer questions a student hits on day one of a
-  // shared repo, and neither needs a mechanism to move.
-  {
-    slug: "/project-structure",
-    title: "Project Structure",
-    section: "workshop3",
-  },
-  {
-    slug: "/git-workflow",
-    title: "Git and Pull Requests",
-    shortLabel: "Git & PRs",
-    section: "workshop3",
-  },
   {
     slug: "/mechanisms",
     title: "Mechanisms",

@@ -25,12 +25,10 @@ delete this file when the list is empty.
 ## Still to do
 
 - [ ] Wire `scripts/audit-ui.mjs` into CI against `next start`.
-- [ ] Unverified on hardware: the VS Code and GitHub button labels on
-      `/git-workflow`.
 - [ ] Pages over the 12 minute target (all under the 15 cap, November 2026):
       `/drive-to-point` 14.7, `/mechanism-setup` 14.2, `/mechanisms` 14.0,
       `/coroutines` 13.5, `/swerve-drive-project` 13.2,
-      `/ai-coding-assistant` 13.1, `/git-workflow` 13.0, `/bline` 12.7,
+      `/ai-coding-assistant` 13.1, `/bline` 12.7,
       `/pid-control` 12.7, `/finish-conditions` 12.1.
 - [ ] Inline `style={{}}` props (about 400) to utility classes; split the
       large explainer components alongside the new unit tests.

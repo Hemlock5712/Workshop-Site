@@ -124,6 +124,18 @@ const nextConfig: NextConfig = {
   // trailing-slash normalisation; it does not affect these.
   async redirects() {
     return [
+      // Project Structure and Git and Pull Requests were cut in the owner's
+      // November 2026 review: neither was needed before the first mechanism.
+      {
+        source: "/project-structure",
+        destination: "/project-setup",
+        permanent: true,
+      },
+      {
+        source: "/git-workflow",
+        destination: "/project-setup",
+        permanent: true,
+      },
       // PathPlanner was replaced by BLine in November 2026.
       {
         source: "/pathplanner",
