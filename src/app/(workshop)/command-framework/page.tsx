@@ -309,7 +309,7 @@ public class MyTeleop extends PeriodicOpMode {
             ],
             correctAnswer: 2,
             explanation:
-              "A newcomer only loses if its priority is strictly lower than the running command's. Every command you write has the same priority, so ties go to the newcomer. Bind two commands that both need the arm to two buttons and you can watch it happen.",
+              "A newcomer only loses if its priority is strictly lower than the running command's. Every command you write has the same priority, so ties go to the newcomer.",
           },
           {
             id: 3,

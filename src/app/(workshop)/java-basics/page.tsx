@@ -209,10 +209,6 @@ public Command runSlow() {
             it back with the lambda parked inside, and something else runs that
             command later.
           </p>
-          <p className="mt-3">
-            This failure has no error message. The arm does not move, nothing
-            logs, and nobody ever scheduled the command.
-          </p>
         </Box>
       </LessonSection>
 

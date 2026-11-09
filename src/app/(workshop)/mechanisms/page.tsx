@@ -241,7 +241,7 @@ public class Flywheel implements Mechanism {
           <li>
             The CAN IDs come from <strong>Motor Setup</strong>: <M k="ids" />.
             If your bench came out with different numbers, change the code to
-            match. Do not leave the two disagreeing.
+            match.
           </li>
           <Mech for="flywheel" as="li">
             One wheel, one motor, and no CANcoder. A flywheel is tuned for
@@ -274,7 +274,7 @@ public class Flywheel implements Mechanism {
           src="/images/setup/generate-code.png"
           alt="Phoenix Tuner X with the config panel's three-dot menu open and Generate Code circled in red, above the Motion Magic fields"
           title="Where the config comes from"
-          caption="Behind the menu, cruise velocity, acceleration and jerk sit at 0 while Expo_kV and Expo_kA already hold values. That is why those two lines arrive in every generated config, tuned or not."
+          caption="Generate Code is in the config panel's three-dot menu."
           width={2559}
           height={1525}
         />
