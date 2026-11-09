@@ -88,17 +88,17 @@ import org.wpilib.command3.Mechanism;`}
 
   /** Push the arm at 3 volts and keep pushing. Never finishes. */
   public Command runSlow() {
-    return runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)");
+    return runRepeatedly(() -> setVoltage(3.0)).named("runSlow");
   }
 
   /** Push the arm at 6 volts and keep pushing. Never finishes. */
   public Command runFast() {
-    return runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)");
+    return runRepeatedly(() -> setVoltage(6.0)).named("runFast");
   }
 
   /** Stop the arm motor and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(() -> stopMotor()).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop");
   }`}
           />
         </Mech>
@@ -112,17 +112,17 @@ import org.wpilib.command3.Mechanism;`}
 
   /** Spin the flywheel at 3 volts and hold it there. Never finishes. */
   public Command runSlow() {
-    return runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)");
+    return runRepeatedly(() -> setVoltage(3.0)).named("runSlow");
   }
 
   /** Spin the flywheel at 6 volts and hold it there. Never finishes. */
   public Command runFast() {
-    return runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)");
+    return runRepeatedly(() -> setVoltage(6.0)).named("runFast");
   }
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(() -> stopMotor()).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop");
   }`}
           />
         </Mech>
@@ -149,12 +149,10 @@ import org.wpilib.command3.Mechanism;`}
 
         <p>
           <code>() -&gt; stopMotor()</code> in <code>stop()</code> works the
-          same way, calling the private helper from last lesson. Every name ends
-          in <code>(hold)</code> because <code>runRepeatedly</code> has no exit:
-          these run until something else claims the mechanism. When commands run
-          in a row, the suffix makes it easy to see why the robot is held up on
-          one of them. Even <code>stop()</code> holds, sending zero every loop
-          rather than once. It exists because{" "}
+          same way, calling the private helper from last lesson.{" "}
+          <code>runRepeatedly</code> has no exit, so these run until something
+          else claims the mechanism. Even <code>stop()</code> holds, sending
+          zero every loop rather than once. It exists because{" "}
           <a href="/running-program#latched" className="underline">
             canceling a command does not stop the motor
           </a>
@@ -234,7 +232,7 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 2,
             question:
-              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)"), what does runRepeatedly(...) return before .named(...) runs?',
+              'In runRepeatedly(() -> setVoltage(3.0)).named("runSlow"), what does runRepeatedly(...) return before .named(...) runs?',
             options: [
               "A Runnable that the scheduler wraps later",
               "A finished Command, ready to schedule",

@@ -194,7 +194,7 @@ export default function JavaBasics() {
           title="Arm.java, branch mech-2-Commands: the method, the lambda, and the dot"
           code={`/** Push the arm at 3 volts and keep pushing. Never finishes. */
 public Command runSlow() {
-  return runRepeatedly(() -> setVoltage(3.0)).named("runSlow (hold)");
+  return runRepeatedly(() -> setVoltage(3.0)).named("runSlow");
 }`}
         />
 
@@ -278,7 +278,7 @@ public Command runSlow() {
             {
               id: 5,
               question:
-                'runRepeatedly(...).named("runSlow (hold)") compiles, but arm.runSlow().named("lift") does not. Why?',
+                'runRepeatedly(...).named("runSlow") compiles, but arm.runSlow().named("lift") does not. Why?',
               options: [
                 ".named(...) may only be called inside a mechanism class",
                 "runSlow() returns void, so there is nothing to call a method on",

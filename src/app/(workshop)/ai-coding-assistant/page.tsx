@@ -88,7 +88,7 @@ import org.wpilib.command3.Mechanism;
 
 public class Arm implements Mechanism {
   public Command runReverse() {
-    return runRepeatedly(() -> setVoltage(-3.0)).named("runReverse (hold)");
+    return runRepeatedly(() -> setVoltage(-3.0)).named("runReverse");
   }
 }`}
         />
@@ -261,7 +261,7 @@ public class Arm implements Mechanism {
                 code={`Read src/main/java/first/robot/mechanisms/Arm.java and explain this line
 one piece at a time:
 
-    runRepeatedly(() -> setVoltage(6.0)).named("runFast (hold)")
+    runRepeatedly(() -> setVoltage(6.0)).named("runFast")
 
 I have finished the Commands lesson. Do not change any files.`}
               />
@@ -281,9 +281,6 @@ I have finished the Commands lesson. Do not change any files.`}
               <li>
                 <code>.named(...)</code> is what makes it a <code>Command</code>
                 .
-              </li>
-              <li>
-                <code>(hold)</code> marks a command that never finishes.
               </li>
             </ul>
           </li>
@@ -472,20 +469,6 @@ Show me the diff before you write anything.`}
           {
             id: 4,
             question:
-              'The assistant\'s runReverse() compiles and the arm moves, but it named the command "runReverse" instead of "runReverse (hold)". Why does that matter?',
-            options: [
-              "The command will run only once without it",
-              "The name shows up in logs, and (hold) is how this project marks a command that never finishes",
-              "WPILib rejects names without a suffix",
-              "It doesn't: the suffix is decoration",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "runRepeatedly never finishes on its own, so nothing may ever wait on it. Every hold on the branch ends with the (hold) suffix, which makes a routine stuck on a hold obvious the moment you read the name in a log.",
-          },
-          {
-            id: 5,
-            question:
               "The diff for runReverse() touches Arm.java, MyTeleop.java and Robot.java. What do you do?",
             options: [
               "Accept it: the build will fail if the third file is wrong",
@@ -498,7 +481,7 @@ Show me the diff before you write anything.`}
               "The request named two files, so a third means the assistant went further than you asked. A build success proves nothing here: the extra edit compiles fine and nobody remembers making it. Counting files in a diff catches most of what goes wrong.",
           },
           {
-            id: 6,
+            id: 5,
             question:
               "The assistant makes a change that works, and you do not understand it. What is the right next move?",
             options: [

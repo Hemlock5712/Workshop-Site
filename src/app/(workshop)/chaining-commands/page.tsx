@@ -152,7 +152,7 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
             robot.arm.vertical().withTimeout(Seconds.of(1.0)),
             // A hold: the last member, so the group is a hold too.
             robot.flywheel.runFast())
-        .named("Spin Up When Ready (hold)");`}
+        .named("Spin Up When Ready");`}
         />
 
         <p>
@@ -164,8 +164,7 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
           <code>Command.sequence(...)</code> returns a builder rather than a{" "}
           <code>Command</code>. <code>.named(&quot;...&quot;)</code> is what
           finishes it, and leaving it off will not compile. Name the group after
-          what it does. If the group is a hold, end the name with{" "}
-          <code>(hold)</code>, the way the mechanism commands do.
+          what it does.
         </p>
         <p>
           Do not re-name a command that already has one.{" "}
@@ -232,7 +231,7 @@ robot.arm.vertical().withTimeout(Seconds.of(1.0))`}
         >
           <li>
             Add the <code>Seconds</code> import and the{" "}
-            <code>Spin Up When Ready (hold)</code> binding to your{" "}
+            <code>Spin Up When Ready</code> binding to your{" "}
             <code>MyTeleop</code> constructor.
           </li>
           <li>Start the simulator and click Enable.</li>
