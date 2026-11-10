@@ -18,9 +18,9 @@
  * Editing the mechanism chain means rebasing it, because it is linear, one
  * commit per lesson:
  *
- *     git checkout mech-5-Coroutines   # make the change, commit
- *     git checkout mech-6-Testing && git rebase mech-5-Coroutines
- *     git push --force-with-lease origin mech-5-Coroutines mech-6-Testing
+ *     git checkout mech-4-ReadingState   # make the change, commit
+ *     git checkout mech-5-Coroutines && git rebase mech-4-ReadingState
+ *     git push --force-with-lease origin mech-4-ReadingState mech-5-Coroutines
  *
  * Push only after `./gradlew build` passes on every branch you moved, then
  * run `pnpm reference:refresh` so the reference copies follow.
