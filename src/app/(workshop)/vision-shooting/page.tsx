@@ -1,94 +1,82 @@
 import PageTemplate from "@/components/PageTemplate";
 import { MarginNote, Split } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
-import AlphaStatusNote from "@/components/AlphaStatusNote";
 import Box from "@/components/Box";
 import CodeBlock from "@/components/CodeBlock";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { GitBranch } from "lucide-react";
 
 /**
- * Rewritten against `context/lesson-budget.md`.
+ * An optional side page, deliberately not in `lessons.ts`. Owner's call,
+ * November 2026: rebuild it, keep it unlisted.
  *
- * The old page ran 32.9 minutes across ten sections with ten asides. Six
- * sections now, two asides, four code embeds. Three things were named
- * load-bearing and all three survive: the interpolation table, the warning that
- * the four shipped numbers are placeholders every team has to measure on its
- * own robot, and the split between `Robot` owning the mechanism and
- * `TeleopOpMode` binding it.
+ * Rebuilt that month on Workshop-Code `swerve-vision-shooting` (a7b6e49), one
+ * commit on `swerve-vision`. It replaced `4-DynamicFlywheel`, which sat on
+ * `3-Limelight` with the copied `LimelightHelpers`, a `TalonFXUtil` retry
+ * helper, imperative `config.Slot0.kV = ...` gains, `(hold)` command names, a
+ * comment recommending `.until(...)`, and no `whileFalse(stop())` on the
+ * binding. The new branch matches the rest of the course: the Tuner X
+ * Generate Code paste with every gain at 0.0, one direct `apply`, names with
+ * no suffix, and the stop bound on release.
  *
- * Deleted embeds, and why: the `TalonFXUtil` file view and the import block
- * were reference material, and the `Robot.java` and `TeleopOpMode` edits are
- * one line each, so they read as inline code instead.
+ * Kept from the old page because they are the lesson: the interpolation
+ * table, the warning that the four shipped rows are placeholders every team
+ * measures on its own robot, and the measuring procedure.
  *
- * The field declarations ride in the same block as the constructor rather than
- * in a fifth embed. They are not optional reading: the constructor names `kS`,
- * `kV`, `kP` and both `MOTION_MAGIC_*` limits, and `TARGET`, the CANivore bus
- * name and CAN 21/22 are numbers a student types. A review pass restored them
- * after they were cut to the PR diff, along with the `.named(...)` build
- * failure, the Coast spin-down, and the "add a row between them" step.
+ * The hardware is the old page's, two Krakens on CAN 21 and 22 with the
+ * follower opposed and `CounterClockwise_Positive` on the leader. That
+ * differs from the mech chain's one-motor `Clockwise_Positive` flywheel and is
+ * carried over, not re-verified.
+ *
+ * Verified in headless simulation, November 2026, with a throwaway OpMode
+ * that reset the pose to known distances from `TARGET` and read the leader's
+ * closed-loop reference: 2.0 m gave 30, 1.5 m gave 20, 1.0 m gave 10, and
+ * 3, 4 and 9 m all gave 60. The leader ran MotionMagicVelocityVoltage, the
+ * follower reported Follower, and `stop()` left the leader in NeutralOut.
+ * With the shipped 0.0 Motion Magic acceleration the reference stays at 0,
+ * which is the "zero until you paste" behaviour; the check gave the probe a
+ * test-only ramp rate. Nothing is verified on hardware.
  */
 export default function DynamicFlywheel() {
   return (
     <PageTemplate
       title="Vision Shooting"
-      lede="One fixed flywheel speed scores from one spot on the field. Here the flywheel takes the distance to the goal from the drivetrain's pose and looks up a speed for it. Four measured shots cover everything in between."
+      lede="One fixed flywheel speed scores from one spot on the field. Here the flywheel takes the distance to the goal from the drivetrain's pose and looks up a speed for it. A few measured shots cover everything in between."
       needs={[
         <>
-          The Limelight setup from <strong>Vision</strong>. This branch is one
-          commit off <code>3-Limelight</code>.
+          <strong>Vision</strong>. This branch is one commit on{" "}
+          <code>swerve-vision</code>, and a wrong pose gives a wrong speed.
         </>,
         <>
-          Odometry you trust, from <strong>Swerve Drive Tuning</strong>. A wrong
-          pose gives a wrong speed.
+          The Tuner X config paste from <strong>Mechanisms</strong>.
         </>,
         <>
-          A flywheel on the bench: two Krakens, CAN IDs <strong>21</strong> and{" "}
+          A flywheel: two Krakens, CAN IDs <strong>21</strong> and{" "}
           <strong>22</strong>, on the CANivore.
         </>,
       ]}
-      branch="4-DynamicFlywheel"
-      time="12 minutes"
+      branch="swerve-vision-shooting"
+      time="10 minutes"
     >
       <p>
-        This branch adds <code>subsystems/Flywheel.java</code> and a helper,{" "}
-        <code>utils/TalonFXUtil.java</code>, plus one edited line in{" "}
-        <code>Robot</code> and one in <code>TeleopOpMode</code>.
+        This page is optional. The branch adds{" "}
+        <code>subsystems/Flywheel.java</code>, one line in <code>Robot</code>{" "}
+        and one binding in <code>TeleopOpMode</code>. Drive to Point does not
+        build on it, so commit your work to a branch of your own before you
+        check that one out.
       </p>
-
-      <Box
-        variant="alert-warning"
-        tag="OPTIONAL · DEAD-END BRANCH"
-        title="Save your work before you switch"
-      >
-        <p>
-          <code>4-DynamicFlywheel</code> is one commit on top of{" "}
-          <code>3-Limelight</code>, and nothing later builds on it.{" "}
-          <strong>Drive to Point</strong> runs on{" "}
-          <code>swerve-drive-to-point</code>, which has never held a{" "}
-          <code>Flywheel.java</code>, so checking it out deletes your new file.
-        </p>
-        <p className="mt-3">
-          Commit to a branch of your own first: <code>git switch -c</code>, then{" "}
-          <code>git add -A</code> and <code>git commit</code>. Skipping this
-          page breaks nothing later.
-        </p>
-      </Box>
 
       <LessonSection
         id="four-measurements-every-distance-in-between"
         title="The lookup table"
       >
         <p>
-          You cannot measure the right speed at every distance. There are
-          infinitely many distances and one afternoon of practice time. So
-          measure a few and let the code fill the gaps.
+          You cannot measure the right speed at every distance. So measure a few
+          and let the code fill the gaps.
         </p>
 
         <p>
           <code>InterpolatingDoubleTreeMap</code> does the filling in. Hand it
-          pairs of distance and speed; between two rows it draws a straight line
+          pairs of distance and speed. Between two rows it draws a straight line
           and reads the answer off.
         </p>
 
@@ -139,8 +127,7 @@ export default function DynamicFlywheel() {
         <p>
           Past your last row the map returns that row&apos;s value and stops
           climbing. With this table, 3.5, 4 and 9 meters all return{" "}
-          <code>60.0</code>. It is still a miss, with nothing on the dashboard
-          to explain it, so measure out as far as you plan to shoot.
+          <code>60.0</code>, so measure out as far as you plan to shoot.
         </p>
       </LessonSection>
 
@@ -149,10 +136,8 @@ export default function DynamicFlywheel() {
         title="The constructor"
       >
         <p>
-          The constructor runs once, when <code>Robot</code> builds the
-          flywheel. It fills the table, tells the second motor to copy the
-          first, and pushes the gains down through <code>TalonFXUtil</code>.
-          That helper retries five times, then reports to the driver station.
+          The constructor fills the table, applies the config pasted from Tuner
+          X to the leader, and tells the second motor to copy the first.
         </p>
 
         <CodeBlock
@@ -160,17 +145,8 @@ export default function DynamicFlywheel() {
           title="Flywheel.java: fields and constructor"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
           code={`public class Flywheel implements Mechanism {
-  // Field point we are shooting at, blue-alliance origin (meters). TODO: set the real goal.
+  // The point we are shooting at, from the blue alliance corner, in meters. Set the real goal.
   private static final Translation2d TARGET = new Translation2d(3, 5);
-
-  // PID + feedforward gains.
-  private static final double kS = 0.0; // overcomes friction
-  private static final double kV = 0.125; // volts per rotation-per-second
-  private static final double kP = 0.0; // correction strength
-
-  // Motion Magic limits: how fast the wheel may spin and how quickly it may speed up.
-  private static final double MOTION_MAGIC_CRUISE_VELOCITY = 100.0; // top speed (rot/s)
-  private static final double MOTION_MAGIC_ACCELERATION = 1000.0; // ramp rate (rot/s²)
 
   private final CANBus canivore = new CANBus("canivore");
   private final TalonFX leader = new TalonFX(21, canivore);
@@ -181,173 +157,126 @@ export default function DynamicFlywheel() {
 
   private final DriveMechanism drivetrain;
 
-  // distance (meters) -> flywheel speed (rotations/second). Gaps are filled in automatically.
+  // Distance in meters -> flywheel speed in rotations per second. Gaps are filled in for you.
   private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
 
-  // Publish live numbers to NetworkTables. DataLogManager also records them to the log file.
-  private final NetworkTable telemetry = NetworkTableInstance.getDefault().getTable("Flywheel");
-  private final DoublePublisher distancePublisher =
-      telemetry.getDoubleTopic("DistanceToTargetMeters").publish();
-  private final DoublePublisher targetVelocityPublisher =
-      telemetry.getDoubleTopic("TargetVelocityRps").publish();
+  // Everything logged here lands under Flywheel/, live on the dashboard and in the log file.
+  private final TelemetryTable telemetry = Telemetry.getTable(getName());
 
   public Flywheel(DriveMechanism drivetrain) {
     this.drivetrain = drivetrain;
 
-    // Build the distance -> speed table. Tune these points with real test shots.
+    // Placeholders. Replace every row with speeds you measured on your own robot.
     table.put(0.0, 0.0);
     table.put(1.0, 10.0);
     table.put(2.0, 30.0);
     table.put(3.0, 60.0);
 
+    // Pasted from Tuner X. Every gain is 0.0 until you paste yours over it.
+    final TalonFXConfiguration talonFXCfg = new TalonFXConfiguration() /* ... */;
+
+    leader.getConfigurator().apply(talonFXCfg);
+
     // The follower copies the leader, spinning the opposite direction.
     follower.setControl(new Follower(leader.getDeviceID(), MotorAlignmentValue.Opposed));
-
-    TalonFXConfiguration config = new TalonFXConfiguration();
-    config.MotorOutput.NeutralMode = NeutralModeValue.Coast; // easy to spin by hand
-    config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    config.Slot0.kS = kS;
-    config.Slot0.kV = kV;
-    config.Slot0.kP = kP;
-    config.MotionMagic.MotionMagicCruiseVelocity = MOTION_MAGIC_CRUISE_VELOCITY;
-    config.MotionMagic.MotionMagicAcceleration = MOTION_MAGIC_ACCELERATION;
-
-    TalonFXUtil.applyConfigWithRetries(leader, config);
   }`}
         />
 
         <Split>
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
+              Generate the config from the leader in Tuner X and paste it whole,
+              as in <strong>Mechanisms</strong>.
+            </p>
+            <p>
               <code>MotorAlignmentValue.Opposed</code> makes the follower spin
               backward relative to the leader. Set it the other way and the two
               motors shove against each other.
             </p>
           </div>
-          <MarginNote label="TWO GAINS SHIP AT ZERO">
-            <code>kV = 0.125</code> does the work: 60 rot/s asks for about 7.5
-            volts. <code>kS</code> and <code>kP</code> are zero, so nothing
-            corrects a wheel that sags under a game piece.
+          <MarginNote label="Zero until you paste">
+            The branch ships every gain at <code>0.0</code>, so the wheel does
+            not move until your own config replaces it.
           </MarginNote>
         </Split>
       </LessonSection>
 
       <LessonSection id="measure-the-distance" title="Measure, look up, send">
-        <p>
-          Two short private methods: one measures to the target, the other sends
-          a speed to the motor. Both publish their number on the way past.
-        </p>
-
         <CodeBlock
           language="java"
-          title="Flywheel.java: the two private helpers"
+          title="Flywheel.java: commands and helpers"
           filename="src/main/java/frc/robot/subsystems/Flywheel.java"
-          code={`  /** Distance (meters) from where the robot thinks it is to the target. */
-  private double distanceToTarget() {
-    double distance = drivetrain.getPose().getTranslation().getDistance(TARGET);
-    distancePublisher.set(distance);
-    return distance;
-  }
-
-  private void setVelocity(double rps) {
-    targetVelocityPublisher.set(rps);
-    leader.setControl(velocityOut.withVelocity(RotationsPerSecond.of(rps)));
-  }`}
-        />
-
-        <p>
-          Read that first line right to left: <code>getTranslation()</code>
-          drops the heading off the pose, and <code>
-            getDistance(TARGET)
-          </code>{" "}
-          is the distance you would measure with a tape.
-        </p>
-
-        <p>
-          The comment says <em>where the robot thinks it is</em> on purpose. The
-          pose is odometry corrected by AprilTag sightings, so this number has
-          that error in it.
-        </p>
-
-        <CodeBlock
-          language="java"
-          title="Flywheel.java: the two commands"
-          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
-          code={`  // Both commands below are HOLDS: runRepeatedly runs the action every loop and never finishes.
-  // Never make a sequence wait on a hold. Need an ending? Add it where you use the command:
-  // flywheel.distanceShoot().until(someCondition). The "(hold)" in each name shows up on the
-  // dashboard and in logs - if a stuck routine is sitting on a "(hold)", you found the bug.
-
-  /**
-   * Keep setting the flywheel speed from the live distance to the target. A hold - it never
-   * finishes on its own. Bind it with {@code whileTrue} so it stops when the button is released.
-   */
+          code={`  /** Keep setting the speed from the live distance to the goal. A hold: it never finishes. */
   public Command distanceShoot() {
-    return runRepeatedly(() -> setVelocity(table.get(distanceToTarget())))
-        .named("distanceShoot (hold)");
+    return runRepeatedly(() -> setVelocity(table.get(distanceToTarget()))).named("distanceShoot");
   }
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
   public Command stop() {
-    return runRepeatedly(() -> leader.stopMotor()).named("stop (hold)");
+    return runRepeatedly(() -> stopMotor()).named("stop");
+  }
+
+  /** Distance in meters from where the robot thinks it is to the goal. */
+  private double distanceToTarget() {
+    double distance = drivetrain.getPose().getTranslation().getDistance(TARGET);
+    telemetry.log("DistanceToTargetMeters", distance);
+    return distance;
+  }
+
+  private void setVelocity(double rps) {
+    telemetry.log("TargetVelocityRps", rps);
+    leader.setControl(velocityOut.withVelocity(RotationsPerSecond.of(rps)));
+  }
+
+  private void stopMotor() {
+    leader.stopMotor();
   }`}
         />
 
         <p>
-          <code>runRepeatedly(...)</code> runs its body every scheduler loop,
-          about fifty times a second. Measure, look up, send, again, while the
-          robot is still driving. Work the distance out once in the constructor
-          instead and you get the speed that suited the moment the robot booted.
+          Read the distance line right to left. <code>getTranslation()</code>{" "}
+          drops the heading off the pose, and <code>getDistance(TARGET)</code>{" "}
+          is the distance you would measure with a tape. The pose is odometry
+          corrected by AprilTag sightings, so this number carries that error.
         </p>
 
         <p>
-          Neither command ends on its own. Drop a hold into{" "}
-          <code>Command.sequence(...)</code> and the sequence stops there
-          forever, because step one never finishes.
+          <code>runRepeatedly(...)</code> runs its body every scheduler loop.
+          Measure, look up and send all happen again while the robot is still
+          driving, so the speed follows the distance.
         </p>
       </LessonSection>
 
       <LessonSection id="own-it-in-robot" title="Own it, bind it">
         <p>
-          Mechanisms are <code>public final</code> fields on <code>Robot</code>.
-          Add the flywheel one line below the drivetrain:{" "}
+          Add the flywheel to <code>Robot</code>, one line below the vision
+          field:{" "}
           <code>
             public final Flywheel flywheel = new Flywheel(drivetrain);
           </code>
+          . Java will not let a field read one declared after it, so above the
+          drivetrain the build stops with <code>illegal forward reference</code>
+          .
         </p>
 
-        <p>
-          Java will not let a field read one declared after it. Put that line
-          above the drivetrain and the build stops with{" "}
-          <code>illegal forward reference</code>.
-        </p>
-
-        <p>
-          Bindings for a driving mode go in that OpMode&apos;s constructor, and
-          the framework drops them when the mode switches. The branch writes one
-          line in <code>TeleopOpMode</code>:{" "}
-          <code>driver.a().whileTrue(robot.flywheel.distanceShoot());</code>
-        </p>
-
-        <Box
-          variant="alert-danger"
-          tag="THE BRANCH LEAVES THIS OUT"
-          title="Releasing A does not stop the wheel"
-        >
-          <p>
-            <code>whileTrue</code> cancels the command when you let go, and
-            canceling is not stopping. The mechanism falls back to nothing at
-            all, and nothing zeroes the last request, so Phoenix keeps applying
-            the speed it was given. Chain <code>stop()</code> on yourself:{" "}
-            <code>.whileFalse(robot.flywheel.stop())</code>.
-          </p>
-        </Box>
-
-        <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/tree/4-DynamicFlywheel"
-          title="Branch 4-DynamicFlywheel on GitHub"
-          icon={<GitBranch className="w-5 h-5" />}
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java: under the left-bumper binding"
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          code={`    // Right trigger: spin up for the distance to the goal while held, stop when released.
+    driver
+        .rightTrigger()
+        .whileTrue(robot.flywheel.distanceShoot())
+        .whileFalse(robot.flywheel.stop());`}
         />
+
+        <p>
+          The <code>whileFalse</code> is not optional.{" "}
+          <a href="/running-program#latched" className="underline">
+            Canceling is not stopping
+          </a>
+          , so without it the wheel keeps its last speed after you let go.
+        </p>
       </LessonSection>
 
       <LessonSection
@@ -355,74 +284,59 @@ export default function DynamicFlywheel() {
         title="Your own numbers"
       >
         <p>
-          0, 10, 30 and 60 are placeholders. Nothing computes them for you: the
-          answer depends on how much the game piece squashes, how much it slips,
-          and how worn the wheel is. <code>TARGET</code> is a placeholder too,
-          so get the real goal coordinates from the game manual first.
+          0, 10, 30 and 60 are placeholders. The right speed depends on the game
+          piece and the wheel, so only shooting tells you. <code>TARGET</code>{" "}
+          is a placeholder too: take the real goal coordinates from the game
+          manual.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
           <li>
-            <strong>Park at one distance and stay there.</strong> Tape a mark on
-            the carpet, then check <code>Flywheel/DistanceToTargetMeters</code>{" "}
-            against a tape measure. If they disagree, your odometry is the
-            problem.
+            <strong>Park at one distance and stay there.</strong> Check{" "}
+            <code>Flywheel/DistanceToTargetMeters</code> against a tape measure.
+            If they disagree, fix the pose before the table.
           </li>
           <li>
-            <strong>Hunt for the speed, five shots at a time.</strong> Change
-            the number in <code>table.put(...)</code>, redeploy, shoot. Big
-            steps first, then smaller ones. Four of five scoring is a number
-            worth keeping; two of five is the edge of the range, not the middle.
+            <strong>Find the speed that scores.</strong> Change the number in{" "}
+            <code>table.put(...)</code>, redeploy, and shoot several times. Big
+            steps first, then smaller ones.
           </li>
           <li>
-            <strong>Move a meter and do it again.</strong> Three or four
-            distances, including the furthest you will shoot from. Then stand
-            between two and shoot: that is the interpolation working. If that
-            shot misses, add a row between them.
+            <strong>Move and do it again.</strong> Three or four distances,
+            including the furthest you will shoot from. Then shoot from between
+            two rows. If that shot misses, add a row between them.
           </li>
         </ol>
-
-        <p>
-          Expect a practice session, with someone feeding game pieces. Write the
-          numbers down with the date, so nobody redoes the work in March.
-        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          No game piece needed. Build, deploy, and open your dashboard: a{" "}
-          <code>Flywheel</code> table appears with{" "}
-          <code>DistanceToTargetMeters</code> and <code>TargetVelocityRps</code>{" "}
-          under it before you press anything. Enable and drive, and the distance
-          falls as you head toward <code>TARGET</code>. Now hold A and drive
-          from 2 meters in to 1 meter. The speed slides from about 30 down to
-          about 10, the wheel slows to match, and parking at 1.5 meters sits
-          near <code>20.0</code>. Past 3 meters it stops climbing at{" "}
-          <code>60.0</code>.
+          Enable Teleop, drive toward <code>TARGET</code> and hold the right
+          trigger.
         </p>
 
-        <p>
-          Release A and, as the branch is written, the wheel keeps spinning at
-          the last speed. Add the <code>whileFalse</code> line and it coasts
-          down over a few seconds instead, because neutral mode is{" "}
-          <code>Coast</code>.
-        </p>
+        <Box variant="alert-success" title="You should see">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              <code>Flywheel/DistanceToTargetMeters</code> fall as you close in.
+            </li>
+            <li>
+              <code>Flywheel/TargetVelocityRps</code> slide from about 30 at 2
+              meters to about 10 at 1 meter, and sit near 20 at 1.5.
+            </li>
+            <li>
+              With your config pasted, the wheel follow that speed and coast
+              down when you release.
+            </li>
+          </ul>
+        </Box>
 
         <p>
-          Four things go wrong most often. A <code>NullPointerException</code>{" "}
-          the instant you press A means the table is empty, and an empty map
-          returns <code>null</code> on its way into{" "}
-          <code>setVelocity(double)</code>. A build error at{" "}
-          <code>.named(...)</code> means an unnamed command:{" "}
-          <code>runRepeatedly</code> returns a builder, and the name finishes
-          it. A distance that never changes while you drive is a frozen pose, so
-          go back to <strong>Swerve Calibration</strong> before touching this
-          file. One motor screaming, or the wheels shoving at each other, is a
+          A distance that never changes while you drive is a frozen pose. Fix
+          odometry before touching this file. One motor fighting the other is a
           follower aligned the wrong way, or CAN 21 and 22 swapped.
         </p>
       </LessonSection>
-
-      <AlphaStatusNote />
 
       <Quiz
         questions={[
@@ -447,12 +361,12 @@ export default function DynamicFlywheel() {
             ],
             correctAnswer: 0,
             explanation:
-              "Past the last row the map returns the value at that row, every time. Extrapolating would be a guess with no measurement behind it. It does mean a shot from beyond your furthest measured distance is quietly wrong, so measure out as far as you plan to shoot.",
+              "Past the last row the map returns the value at that row, every time. A shot from beyond your furthest measured distance is quietly wrong, so measure out as far as you plan to shoot.",
           },
           {
             id: 3,
             question:
-              "Why does distanceShoot() use runRepeatedly(...) instead of measuring the distance once when the button is pressed?",
+              "Why does distanceShoot() use runRepeatedly(...) instead of measuring the distance once when the trigger is pressed?",
             options: [
               "The lookup table can only be read from inside runRepeatedly",
               "It is the only way to give a command a name",
@@ -461,49 +375,21 @@ export default function DynamicFlywheel() {
             ],
             correctAnswer: 3,
             explanation:
-              "A distance measured once is the distance you were at when you pressed the button. Drive two meters and the speed is wrong, with nothing to tell you. runRepeatedly re-runs its body every scheduler loop, about fifty times a second, so measure, look up and send all happen again while the robot is still moving.",
+              "A distance measured once is the distance you were at when you pressed the trigger. runRepeatedly re-runs its body every scheduler loop, so measure, look up and send all happen again while the robot is still moving.",
           },
           {
             id: 4,
             question:
-              'The command is named "distanceShoot (hold)". What is the (hold) suffix telling you?',
+              "Where does the flywheel get the distance to the goal from?",
             options: [
-              "The command holds the mechanism at a fixed position",
-              "The command never finishes on its own, so nothing may wait on it",
-              "The command only runs while the robot is stationary",
-              "The command has the highest scheduler priority",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "runRepeatedly never ends by itself. Put a hold inside Command.sequence(...) and the sequence stops there forever, because step one never finishes. The suffix warns the next reader, and it shows up in the log, so a frozen routine tells you which hold it froze on.",
-          },
-          {
-            id: 5,
-            question:
-              "Where does the flywheel get the distance to the target from?",
-            options: [
+              "The Limelight reports the distance directly",
               "drivetrain.getPose() measured against a fixed Translation2d field point",
               "The driver types it into the dashboard before each shot",
               "A rangefinder mounted next to the shooter",
-              "The Limelight reports the distance directly",
             ],
-            correctAnswer: 0,
+            correctAnswer: 1,
             explanation:
-              "distanceToTarget() calls drivetrain.getPose().getTranslation().getDistance(TARGET). The pose is wheel odometry corrected by AprilTag sightings, so this number inherits every bit of error in your calibration and vision setup. Check it against a tape measure before you trust it.",
-          },
-          {
-            id: 6,
-            question:
-              "The branch binds driver.a().whileTrue(robot.flywheel.distanceShoot()) and nothing else. You release A. What happens to the wheel?",
-            options: [
-              "The robot code throws an error because no command owns the mechanism",
-              "It stops, because canceling a command stops its motors",
-              "It keeps spinning: nothing commands the flywheel afterwards and nothing zeroes the last request, so Phoenix keeps applying it",
-              "It coasts to a stop within one scheduler loop",
-            ],
-            correctAnswer: 2,
-            explanation:
-              "Canceling leaves the mechanism with nothing commanding it, and nothing clears the last control request on the way out. Phoenix carries on applying the speed it was last given. That is why stop() exists as its own command, and why you pair the binding with whileFalse(robot.flywheel.stop()).",
+              "distanceToTarget() calls drivetrain.getPose().getTranslation().getDistance(TARGET). The pose is wheel odometry corrected by AprilTag sightings, so this number inherits its error. Check it against a tape measure before you trust it.",
           },
         ]}
       />

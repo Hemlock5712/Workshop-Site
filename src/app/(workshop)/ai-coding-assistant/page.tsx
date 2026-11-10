@@ -134,7 +134,9 @@ public class Arm implements Mechanism {
                   <code>InstantCommand</code>
                 </td>
                 <td className="px-3 py-2">
-                  <code>Command.sequence(...)</code> and the mechanism factories
+                  A coroutine,{" "}
+                  <code>Command.noRequirements(coroutine -&gt; ...)</code>, and
+                  the mechanism factories
                 </td>
               </tr>
               <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>

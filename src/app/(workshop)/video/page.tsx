@@ -105,14 +105,9 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
     "Workshop 4 · Routines",
     [
       [
-        "chaining-commands",
-        "Steps",
-        "Command Composition: give every step an ending.",
-      ],
-      [
         "finish-conditions",
         "Ask Every Loop",
-        "Finish Conditions: end on the sensor, back it with a timer.",
+        "Finish Conditions: ask the mechanism whether it has arrived.",
       ],
       [
         "coroutines",
@@ -123,11 +118,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
         "logging-implementation",
         "What Nobody Watched",
         "Logging: the file shows what nobody saw.",
-      ],
-      [
-        "testing",
-        "One Tick by Hand",
-        "Testing: run the loop by hand and check both sides.",
       ],
     ],
   ],

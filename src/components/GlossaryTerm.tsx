@@ -52,12 +52,10 @@ const glossaryDefinitions: Record<string, string> = {
   opmode:
     "A 'mode' the robot can be in - driver teleop, an autonomous routine, or a calibration task. Each one is its own class; the driver station lists them by name.",
   hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. Bind holds with whileTrue so releasing the button cancels them. A hold never finishes, so nothing may ever wait on one.",
-  chaining:
-    "Building a routine by snapping commands together: Command.sequence for self-finishing steps, .until(...) to give a hold a finish line, Command.race for 'do this while holding', and .withTimeout as the seatbelt.",
   "state machine":
     "An optional, advanced pattern where the robot is always in exactly one named state and buttons/sensors move it between states. Illegal jumps can't happen because no transition was declared for them.",
   coroutine:
-    "A command whose body is ordinary Java, read top to bottom, that can pause and resume on the same line (fork, await, waitUntil, wait, yield). Reach for one when two mechanisms have to overlap; a single mechanism's steps are a job for chaining.",
+    "A command whose body is ordinary Java, read top to bottom, that can pause and resume on the same line (fork, await, waitUntil, wait, yield). Every routine in this course is one: fork the holds, await the steps, waitUntil a condition.",
 
   // Control Theory
   pid: "A smart way to automatically control motors to reach exact positions or speeds. Like cruise control in a car - you set a target, and PID does the adjusting automatically.",

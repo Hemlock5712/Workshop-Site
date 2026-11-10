@@ -741,7 +741,11 @@ const RETIRED_LESSONS: ReadonlyArray<{ pattern: RegExp; now: string }> = [
   { pattern: /\bThe Java You Need\b/g, now: "Java Basics" },
   { pattern: /\bSwerve Drive Prerequisites\b/g, now: "How Swerve Works" },
   { pattern: /\bClassic Commands\b/g, now: "Writing Commands" },
-  { pattern: /\bChaining Commands\b/g, now: "Command Composition" },
+  { pattern: /\bChaining Commands\b/g, now: "retired; Coroutines is nearest" },
+  {
+    pattern: /\bCommand Composition\b/g,
+    now: "retired; Coroutines is nearest",
+  },
   { pattern: /\bBuilding Subsystems\b/g, now: "Mechanisms" },
   { pattern: /\bRobot Class\b/g, now: "Mechanisms" },
   { pattern: /\bState Machines\b/g, now: "retired; Coroutines is nearest" },

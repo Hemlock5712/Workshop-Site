@@ -318,7 +318,7 @@ public class MyTeleop extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "A command built with runRepeatedly has no ending by design, so anything waiting on one waits forever. Command Composition and Finish Conditions give a runRepeatedly command an ending two ways: .withTimeout(...) and .until(...).",
+              "A command built with runRepeatedly has no ending by design, so anything waiting on one waits forever. A routine never waits on the hold itself. It waits on a question about the mechanism, such as isAtTarget(), and Coroutines does that with coroutine.waitUntil(...).",
           },
           {
             id: 4,
