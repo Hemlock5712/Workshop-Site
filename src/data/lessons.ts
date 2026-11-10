@@ -178,7 +178,7 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     shortLabel: "Motion Magic Code",
     section: "workshop3",
   },
-  // Workshop 4: Routines. Composition, arrival checks and coroutines are
+  // Workshop 4: Routines. Arrival checks and coroutines are
   // arm-and-flywheel lessons that need nothing but the bench project, and they
   // carry the chain from `mech-3-MotionMagic` through `mech-4-ReadingState` to
   // `mech-5-Coroutines`. They spent a while filed under Swerve, where they sat
@@ -191,19 +191,15 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   // Advanced Commands when it held State Machines; two of the four are not
   // commands at all, so it is named for what a student builds instead.
   {
-    slug: "/chaining-commands",
-    title: "Command Composition",
-    section: "workshop4",
-  },
-  {
     slug: "/finish-conditions",
     title: "Finish Conditions",
     section: "workshop4",
   },
   // Coroutines follows Finish Conditions because its waits are built out of
-  // `isAtTarget()`, and because `mech-4-ReadingState` now writes the first
-  // coroutine itself on the Y button. `mech-5-Coroutines` is the same routine
-  // in autonomous, where every wait is bounded: nobody can let go of a button.
+  // `isAtTarget()`. It is the only place the course builds a routine:
+  // Command Composition was cut in November 2026, because Commands v3
+  // composes with coroutines. `mech-5-Coroutines` writes the Y button, then
+  // the same routine in autonomous, where every wait is bounded.
   {
     slug: "/coroutines",
     title: "Coroutines",

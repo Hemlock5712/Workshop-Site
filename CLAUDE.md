@@ -345,6 +345,22 @@ runs unattended is the first thing a student cannot debug by watching. The
 group was called Advanced Commands when it held State Machines. Two of its four
 lessons are not commands, so it is named for what a student builds.
 
+**There is no `/chaining-commands`, and routines are coroutines only.**
+Owner's call, November 2026: Commands v3 composes with coroutines, so Command
+Composition (`Command.sequence`, `Command.race`, `.withTimeout`) was cut, and
+Finish Conditions lost `.until(...)` and the builder-versus-`Command` `.named`
+ordering. No mech branch ever used any of them. Finish Conditions is now only
+the arrival question (`isAtTarget()` and its tolerance), checked on a Tuner X
+plot because nothing calls it yet. Coroutines owns every routine: the core
+calls (`fork`, `waitUntil`, `await`, `wait`; `yield` and the hand-written
+`while` loop were cut), the Y button in `MyTeleop` with an unbounded wait,
+then `RaiseAndShootOpMode` with a time limit on every wait. To match,
+`mech-4-ReadingState` was rebuilt to add only the read side and the Y button
+moved to `mech-5-Coroutines`. Don't teach a routine as a command group or a
+decorated hold. `/vision-shooting` and `/ai-coding-assistant` still mention
+`Command.sequence` and wait for the swerve rebuild. The slug 308s to
+`/coroutines`.
+
 **There is no `/state-based`.** State Machines was retired in September 2026 and
 the page is deleted: `StateMachine` shipped in alpha-6, but there is no
 documentation worth sending a student to and no Workshop-Code branch behind the
@@ -383,7 +399,7 @@ on old slides: `/logging-options` → `/logging-implementation`,
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
 `/finish-conditions`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
 `/drive-to-tag-inline` → `/align-to-tag`, `/pathplanner` → `/bline`, `/project-structure` and
-`/git-workflow` → `/project-setup`.
+`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`.
 
 **There is no `/project-structure` or `/git-workflow`.** Both were cut in the
 owner's November 2026 review: Workshop 3 goes from Project Setup straight to

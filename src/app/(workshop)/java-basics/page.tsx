@@ -97,8 +97,7 @@ export default function JavaBasics() {
 
         <p>
           Stop after <strong>Conditionals and Control Flow</strong>. We will not
-          use arrays or string methods. Loops turn up once, in Workshop 4, where
-          you write a <code>while</code> loop by hand inside a coroutine.
+          use arrays, string methods or loops.
         </p>
 
         <DocumentationButton

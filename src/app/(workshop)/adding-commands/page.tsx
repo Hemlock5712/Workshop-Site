@@ -161,11 +161,9 @@ import org.wpilib.command3.Mechanism;`}
 
         <Box variant="alert-warning" title="A hold never finishes">
           <p>
-            So never make anything wait for one. A hold inside{" "}
-            <code>Command.sequence</code> sticks there forever and the sequence
-            never reaches its next step. When a step needs an ending, add it
-            where you use the command rather than writing a new method here.{" "}
-            <strong>Finish Conditions</strong> shows how.
+            So never make anything wait for one to end. A routine waits on a
+            question about the mechanism instead, such as whether it has
+            arrived. <strong>Finish Conditions</strong> writes that question.
           </p>
         </Box>
       </LessonSection>
@@ -246,16 +244,16 @@ import org.wpilib.command3.Mechanism;`}
           {
             id: 3,
             question:
-              'A routine is written Command.sequence(robot.arm.runSlow(), robot.flywheel.runFast()).named("routine"). What happens when it runs?',
+              "runSlow() is built with runRepeatedly. When does it end on its own?",
             options: [
-              "Both commands run at once, because they need different mechanisms",
-              "The sequence skips runSlow, because a hold has no ending to wait for",
-              "The arm runs for one loop, then the flywheel takes over",
-              "The arm pushes at 3 V forever and the flywheel never starts, because runSlow is a hold and never finishes",
+              "After one scheduler loop",
+              "When the arm reaches 3 V",
+              "After a default timeout of a few seconds",
+              "Never. It re-sends its request every loop until something cancels it",
             ],
             correctAnswer: 3,
             explanation:
-              "A sequence starts each step when the one before it finishes, and a runRepeatedly command never does. The fix goes where the command is used, not in a new method on the mechanism.",
+              "runRepeatedly has no exit, so the command is a hold. A button binding cancels it on release. A routine that needs to move on waits on a question about the mechanism instead of waiting for the hold to end.",
           },
         ]}
       />

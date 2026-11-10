@@ -105,11 +105,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
     "Workshop 4 · Routines",
     [
       [
-        "chaining-commands",
-        "Steps",
-        "Command Composition: give every step an ending.",
-      ],
-      [
         "finish-conditions",
         "Ask Every Loop",
         "Finish Conditions: end on the sensor, back it with a timer.",

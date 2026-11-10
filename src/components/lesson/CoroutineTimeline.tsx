@@ -10,7 +10,7 @@
 /**
  * The parallel-flow diagram for `/coroutines`, with a step-through simulation.
  *
- * "The core five" above it defines waitUntil, fork, await, wait and yield.
+ * "The core calls" above it defines fork, waitUntil, await and wait.
  * This shows them running at once: the routine reads top to bottom down the
  * left, and every `fork` peels a second flow off to the right that keeps
  * running beside it.

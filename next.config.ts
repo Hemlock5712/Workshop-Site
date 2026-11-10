@@ -227,6 +227,14 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // Command Composition was cut in the owner's November 2026 review.
+        // Commands v3 composes with coroutines, and no Workshop-Code branch
+        // used `Command.sequence`, `Command.race` or `.withTimeout`.
+        source: "/chaining-commands",
+        destination: "/coroutines",
+        permanent: true,
+      },
+      {
         source: "/glossary",
         destination: "/introduction",
         permanent: true,
