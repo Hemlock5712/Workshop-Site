@@ -27,9 +27,14 @@ import Quiz from "@/components/Quiz";
  * differs from the mech chain's one-motor `Clockwise_Positive` flywheel and is
  * carried over, not re-verified.
  *
- * Verified: the branch builds and Teleop starts in headless simulation with
- * the flywheel constructed. The lookup and telemetry were not exercised in
- * simulation, and nothing is verified on hardware.
+ * Verified in headless simulation, November 2026, with a throwaway OpMode
+ * that reset the pose to known distances from `TARGET` and read the leader's
+ * closed-loop reference: 2.0 m gave 30, 1.5 m gave 20, 1.0 m gave 10, and
+ * 3, 4 and 9 m all gave 60. The leader ran MotionMagicVelocityVoltage, the
+ * follower reported Follower, and `stop()` left the leader in NeutralOut.
+ * With the shipped 0.0 Motion Magic acceleration the reference stays at 0,
+ * which is the "zero until you paste" behaviour; the check gave the probe a
+ * test-only ramp rate. Nothing is verified on hardware.
  */
 export default function DynamicFlywheel() {
   return (
