@@ -119,11 +119,6 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
         "What Nobody Watched",
         "Logging: the file shows what nobody saw.",
       ],
-      [
-        "testing",
-        "One Tick by Hand",
-        "Testing: run the loop by hand and check both sides.",
-      ],
     ],
   ],
   [

@@ -235,6 +235,14 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // Testing was cut in the owner's November 2026 review: no entry-level
+        // team will write JUnit tests. Logging is the lesson before it and
+        // now closes Workshop 4.
+        source: "/testing",
+        destination: "/logging-implementation",
+        permanent: true,
+      },
+      {
         source: "/glossary",
         destination: "/introduction",
         permanent: true,

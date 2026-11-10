@@ -361,6 +361,11 @@ decorated hold. `/vision-shooting` and `/ai-coding-assistant` still mention
 `Command.sequence` and wait for the swerve rebuild. The slug 308s to
 `/coroutines`.
 
+**There is no `/testing`.** Cut in the owner's November 2026 review: no
+entry-level team will write JUnit tests. Logging now closes Workshop 4. The
+`mech-6-Testing` branch still exists on Workshop-Code and no page teaches it.
+The slug 308s to `/logging-implementation`.
+
 **There is no `/state-based`.** State Machines was retired in September 2026 and
 the page is deleted: `StateMachine` shipped in alpha-6, but there is no
 documentation worth sending a student to and no Workshop-Code branch behind the
@@ -399,7 +404,8 @@ on old slides: `/logging-options` → `/logging-implementation`,
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
 `/finish-conditions`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
 `/drive-to-tag-inline` → `/align-to-tag`, `/pathplanner` → `/bline`, `/project-structure` and
-`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`.
+`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`, `/testing` →
+`/logging-implementation`.
 
 **There is no `/project-structure` or `/git-workflow`.** Both were cut in the
 owner's November 2026 review: Workshop 3 goes from Project Setup straight to
