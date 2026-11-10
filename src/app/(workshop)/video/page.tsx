@@ -107,7 +107,7 @@ const NEXT_SERIES: [string, [string, string, string][]][] = [
       [
         "finish-conditions",
         "Ask Every Loop",
-        "Finish Conditions: end on the sensor, back it with a timer.",
+        "Finish Conditions: ask the mechanism whether it has arrived.",
       ],
       [
         "coroutines",

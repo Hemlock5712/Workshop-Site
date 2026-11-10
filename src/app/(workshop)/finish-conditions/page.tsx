@@ -294,21 +294,21 @@ public boolean isAtTarget() {
           {
             id: 1,
             question:
-              "Why does isAtTarget() compare against a tolerance instead of checking whether the position equals the target?",
+              "Why does isAtTarget() compare against a tolerance instead of checking whether the reading equals the target?",
             options: [
               "Tolerance is only needed on hardware; in simulation equality works",
-              "A measured angle almost never lands exactly on the target, so an exact check would be false forever",
+              "A measured value almost never lands exactly on the target, so an exact check would be false forever",
               "Equality is slower to compute than a subtraction",
               "The double type has no equality operator in Java",
             ],
             correctAnswer: 1,
             explanation:
-              "The encoder measures a real arm and the reading jitters. Ask for 0.25 rotations and you read 0.2497, then 0.2503. An exact comparison would almost never be true, so anything waiting on it would wait for the rest of the match. You choose how close is close enough, in the same units as the target.",
+              "The sensor measures a real mechanism and the reading jitters. An arm asked for 0.25 rotations reads 0.2497, then 0.2503. An exact comparison would almost never be true, so anything waiting on it would wait for the rest of the match. You choose how close is close enough, in the same units as the target.",
           },
           {
             id: 2,
             question:
-              "Why does isAtTarget() live in Arm.java instead of being written out wherever a routine needs it?",
+              "Why does isAtTarget() live in the mechanism's own class instead of being written out wherever a routine needs it?",
             options: [
               "Only a mechanism class is allowed to read a sensor",
               "The scheduler only checks conditions declared on a mechanism",
@@ -317,7 +317,7 @@ public boolean isAtTarget() {
             ],
             correctAnswer: 3,
             explanation:
-              "The arm knows its own target, its own units and how close counts. Every routine that waits on it calls robot.arm.isAtTarget() and gets the same answer, and changing the tolerance is one edit in one file.",
+              "The mechanism knows its own target, its own units and how close counts. Every routine that waits on it calls isAtTarget() and gets the same answer, and changing the tolerance is one edit in one file.",
           },
           {
             id: 3,
@@ -332,6 +332,22 @@ public boolean isAtTarget() {
             correctAnswer: 0,
             explanation:
               "A tolerance describes how much jitter is acceptable once the arm has arrived. An arm that settles 2 degrees short has not arrived. Widening the band makes the routine move on with the arm in the wrong place.",
+            only: "arm",
+          },
+          {
+            id: 5,
+            question:
+              "The Tuner X plot shows the flywheel settling at 73 rotations per second against a target of 75, with a 0.5 tolerance. What do you change?",
+            options: [
+              "The tolerance, to 2.5 rotations per second, so isAtTarget() comes true",
+              "The gains, in Tuner X. The wheel is not reaching its target, and a wider band would only hide that",
+              "Nothing. isAtTarget() only matters on hardware",
+              "The target, to 77, so the wheel lands on 75",
+            ],
+            correctAnswer: 1,
+            explanation:
+              "A tolerance describes how much jitter is acceptable once the wheel is up to speed. A wheel that settles 2 rotations per second slow has not arrived. Widening the band makes the routine shoot with the wheel at the wrong speed.",
+            only: "flywheel",
           },
           {
             id: 4,
@@ -343,9 +359,25 @@ public boolean isAtTarget() {
               "It keeps giving the same answer every loop, whatever the arm does, because the reading stops changing",
               "It returns true, because the last request is still applied",
             ],
+            only: "arm",
             correctAnswer: 2,
             explanation:
               "A sensor off the bus keeps reporting its last value. isAtTarget() compares that frozen value with the target and gets the same answer every loop. A routine waiting on it either never moves on or moves on for the wrong reason. Every wait in an autonomous gets a time limit for this reason.",
+          },
+          {
+            id: 6,
+            question:
+              "The flywheel motor drops off the CAN bus. What does isAtTarget() do?",
+            options: [
+              "It keeps giving the same answer every loop, whatever the wheel does, because the reading stops changing",
+              "It throws, and the routine stops",
+              "It returns true, because the last request is still applied",
+              "It returns false until the motor reconnects",
+            ],
+            correctAnswer: 0,
+            explanation:
+              "A motor off the bus keeps reporting its last speed. isAtTarget() compares that frozen value with the target and gets the same answer every loop. A routine waiting on it either never moves on or moves on for the wrong reason. Every wait in an autonomous gets a time limit for this reason.",
+            only: "flywheel",
           },
         ]}
       />
