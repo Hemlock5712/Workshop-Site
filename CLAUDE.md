@@ -345,7 +345,7 @@ field-centric, `Pose2d` and odometry, kept short; it replaced How Swerve
 Works), `/swerve-drive-project` (generate only `TunerConstants.java` into the
 prepared project and set the team number) and `/swerve-drive-tuning` (steer
 gains first, then wheel radius, top speed and the drive loop, with
-`OpenLoopVoltage` switched to `Velocity`; Swerve Calibration folded in and its
+every drive request on `DriveRequestType.Velocity`, owner's call: the generator's `OpenLoopVoltage` is changed in `Robot.java` on all seven swerve branches; Swerve Calibration folded in and its
 module-zeroing material was cut). Drive to Point sits in Navigation, before
 Vision; Align to Tag stays after Vision because it needs it.
 

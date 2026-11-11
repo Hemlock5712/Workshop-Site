@@ -19,10 +19,10 @@ export const metadata = lessonMetadata("/swerve-drive-tuning");
  *
  * Order: steer gains, then wheel radius (low priority, only if the wheels
  * differ from what the generator was told), then top speed and slip current,
- * then the drive gains and the switch from `OpenLoopVoltage` to `Velocity`.
- * The owner wanted the voltage default stated plainly: CTRE's generated teleop
- * request is open loop, and nothing on the drive motors is a velocity loop
- * until you change it.
+ * then the drive gains. Owner's call, November 2026: every drive request is
+ * `DriveRequestType.Velocity`. CTRE's generator emits `OpenLoopVoltage` for
+ * the teleop request; every swerve branch changes it in `Robot.java`, so the
+ * page says so once and the student tunes the gains that loop uses.
  *
  * Every `TunerConstants` snippet matches `1-Swerve`'s generated file. The
  * gains shown are the generator's defaults, not ours. 1-Swerve publishes
@@ -140,9 +140,9 @@ export default function SwerveDriveTuning() {
 
       <LessonSection id="top-speed-and-slip" title="Top speed and slip current">
         <p>
-          Measure these while the drive request is still open-loop voltage:{" "}
-          <code>kSpeedAt12Volts</code> means the speed at 12 volts applied. Use
-          six meters of clear floor on the surface you compete on.
+          <code>kSpeedAt12Volts</code> is the speed at 12 volts applied, and
+          full stick asks the velocity loop for exactly that speed. Use six
+          meters of clear floor on the surface you compete on.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -151,7 +151,10 @@ export default function SwerveDriveTuning() {
           </li>
           <li>
             Plot <code>Drivetrain/TranslationSpeedMps</code> and read the
-            plateau, not the spike.
+            plateau, not the spike. If it sits right on{" "}
+            <code>kSpeedAt12Volts</code>, the loop is holding your number, not
+            the robot&apos;s limit. Raise the number and run again until the
+            plateau falls short of it.
           </li>
         </ol>
         <p>
@@ -202,14 +205,26 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
 
       <LessonSection id="close-the-drive-loop" title="Close the drive loop">
         <p>
-          CTRE&apos;s generated teleop request drives with{" "}
-          <code>DriveRequestType.OpenLoopVoltage</code>, not velocity. The stick
-          position goes straight to volts, and the drive gains below do nothing
-          until you switch it.
+          Every drive request in this course is{" "}
+          <code>DriveRequestType.Velocity</code>: the drive motors hold a wheel
+          speed with the drive gains below. CTRE&apos;s generator writes{" "}
+          <code>OpenLoopVoltage</code> for the joystick request, which sends the
+          stick straight to volts and ignores those gains. The workshop project
+          already changes it in <code>Robot.java</code>.
         </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/Robot.java"
+          code={`private final SwerveRequest.FieldCentric drive =
+    new SwerveRequest.FieldCentric()
+        .withDeadband(maxSpeed * 0.1)
+        .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
+        .withDriveRequestType(DriveRequestType.Velocity); // closed loop, uses the drive gains`}
+          highlightLines={[5]}
+        />
         <p>
-          Tune the drive gains first. A drive motor holds a speed, and on a
-          velocity loop the feedforward does nearly all of the work.{" "}
+          A drive motor holds a speed, and on a velocity loop the feedforward
+          does nearly all of the work.{" "}
           <a
             href="/pid-control#feedforward-first"
             className="font-semibold underline decoration-1 underline-offset-2"
@@ -225,22 +240,6 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           filename="src/main/java/frc/robot/generated/TunerConstants.java"
           code={`private static final Slot0Configs driveGains =
     new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKS(0).withKV(0.124);`}
-        />
-        <p>
-          Then switch the request. Find the{" "}
-          <code>SwerveRequest.FieldCentric</code> that the joystick drive
-          default command uses, and change its last line. If the robot drives
-          worse than it did on volts, go back to the gains.
-        </p>
-        <CodeBlock
-          language="java"
-          title="The joystick drive request"
-          code={`private final SwerveRequest.FieldCentric drive =
-    new SwerveRequest.FieldCentric()
-        .withDeadband(maxSpeed * 0.1)
-        .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
-        .withDriveRequestType(DriveRequestType.Velocity); // was OpenLoopVoltage`}
-          highlightLines={[5]}
         />
         <p>
           The same request throws away the bottom 10% of both sticks. At 4.54
@@ -274,16 +273,16 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           {
             id: 1,
             question:
-              "What drive request type does CTRE's generated teleop request use before you edit it?",
+              "The joystick request uses DriveRequestType.Velocity. What does that change compared with CTRE's generated OpenLoopVoltage?",
             options: [
-              "DriveRequestType.Velocity, so the drive gains are active from the start",
-              "DriveRequestType.OpenLoopVoltage, and switching it is the last edit on this page",
               "Nothing. Phoenix picks the closed-loop version once the gains are non-zero.",
-              "It depends whether you generated the project in Tuner X or downloaded it",
+              "The drive motors hold a wheel speed using the drive gains, instead of sending the stick straight to volts",
+              "Only the steer motors change; the drive motors still run on volts",
+              "It turns off the deadband",
             ],
             correctAnswer: 1,
             explanation:
-              "The generated request is open-loop voltage: the stick goes straight to volts and driveGains does nothing. You switch it to Velocity yourself, after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
+              "OpenLoopVoltage turns the stick into volts and never reads driveGains. Velocity asks each drive motor for a wheel speed and closes the loop with driveGains. That is why those gains are worth tuning.",
           },
           {
             id: 2,
