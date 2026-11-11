@@ -163,7 +163,8 @@ import org.wpilib.command3.Mechanism;`}
           <p>
             So never make anything wait for one to end. A routine waits on a
             question about the mechanism instead, such as whether it has
-            arrived. <strong>Finish Conditions</strong> writes that question.
+            arrived. <strong>Conditions and Logging</strong> writes that
+            question.
           </p>
         </Box>
       </LessonSection>

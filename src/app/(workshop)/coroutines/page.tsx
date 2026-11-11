@@ -52,7 +52,8 @@ export default function Coroutines() {
       needs={[
         <>
           An <code>Arm</code> and <code>Flywheel</code> with{" "}
-          <code>isAtTarget()</code>, from <strong>Finish Conditions</strong>.
+          <code>isAtTarget()</code>, from{" "}
+          <strong>Conditions and Logging</strong>.
         </>,
         <>
           Tuned arm gains from <strong>PID Tuning in Tuner X</strong>.

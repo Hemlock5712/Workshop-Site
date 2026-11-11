@@ -23,7 +23,7 @@ export const metadata = lessonMetadata("/java-basics");
  *
  * The page cannot simply be deleted: four lessons name it in `needs`.
  * `/command-framework` asks for "the vocabulary: class, field, method,
- * constructor, lambda", `/adding-commands` and `/finish-conditions` for
+ * constructor, lambda", `/adding-commands` and `/conditions-and-logging` for
  * lambdas, `/mechanisms` for fields, constructors and methods. So what
  * survives is exactly what those four promises need and nothing downstream
  * defines: the six words, and `private` / `public` / `implements`.

@@ -6,6 +6,7 @@
   "ignoreRegExpList": ["/<VideoEmbed[^>]*?\\bid=\"[A-Za-z0-9_-]{11}\"/g"],
   "words": [
     "bline",
+    "Loggable",
     "edanliahovetsky",
     "Timespan",
     "Tunables",
