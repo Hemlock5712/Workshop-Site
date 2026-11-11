@@ -100,8 +100,8 @@ export default function Triggers() {
         </p>
         <p>
           The condition can be more than a switch.{" "}
-          <code>driver.leftTrigger()</code> reads an analog axis and answers
-          true past 0.5. A third of a pull fires nothing.
+          <code>robot.driver.leftTrigger()</code> reads an analog axis and
+          answers true past 0.5. A third of a pull fires nothing.
         </p>
 
         <div className="overflow-x-auto">
@@ -175,12 +175,12 @@ export default function Triggers() {
           title="The same button, two ways to write it"
           code={`// onTrue/onFalse: the press schedules one command, the release schedules
 // another, and the second displaces the first by arriving later.
-driver.a().onTrue(robot.flywheel.runFast()).onFalse(robot.flywheel.stop());
+robot.driver.a().onTrue(robot.flywheel.runFast()).onFalse(robot.flywheel.stop());
 
 // whileTrue/whileFalse: the press schedules, the release cancels. This is what
 // the branch writes. The whileFalse is still needed, because canceling leaves
 // the motor at its last request.
-driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());`}
+robot.driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());`}
         />
 
         <p>
@@ -229,8 +229,9 @@ public static Trigger disabled() {
         <p>
           <code>and</code>, <code>or</code> and <code>negate</code> each return
           a new Trigger built from the old one. The Trigger{" "}
-          <code>driver.b().and(driver.leftBumper())</code> is true only while
-          both are held, and letting go of either one is the falling edge.
+          <code>robot.driver.b().and(robot.driver.leftBumper())</code> is true
+          only while both are held, and letting go of either one is the falling
+          edge.
         </p>
         <p>
           <code>debounce</code> takes a duration and waits for the condition to
@@ -329,7 +330,7 @@ public static Trigger disabled() {
             Inside <code>public MyTeleop(Robot robot)</code>, below the A
             binding, add{" "}
             <code>
-              driver.b().whileTrue(robot.arm.runSlow()).whileFalse(robot.arm.stop());
+              robot.driver.b().whileTrue(robot.arm.runSlow()).whileFalse(robot.arm.stop());
             </code>{" "}
             Build it: <code>BUILD SUCCESSFUL</code>.
           </li>
@@ -339,10 +340,10 @@ public static Trigger disabled() {
             leaves the arm pushing until the match ends. Put it back.
           </li>
           <li>
-            Move the B line above the constructor, next to the{" "}
-            <code>driver</code> field, and build. It fails, because a binding is
-            a statement and <code>robot</code> is a parameter of the
-            constructor. Neither one exists out there.
+            Move the B line above the constructor, outside any method, and
+            build. It fails, because a binding is a statement and{" "}
+            <code>robot</code> is a parameter of the constructor. Neither one
+            exists out there.
           </li>
           <li>Put the line back inside the constructor and build once more.</li>
         </ol>
@@ -406,7 +407,7 @@ public static Trigger disabled() {
           {
             id: 4,
             question:
-              "driver.b().and(driver.leftBumper()) is bound with onTrue. You hold the bumper, then press B. What fires?",
+              "robot.driver.b().and(robot.driver.leftBumper()) is bound with onTrue. You hold the bumper, then press B. What fires?",
             options: [
               "Nothing: and only reads the first button",
               "The command fires twice, once per button",

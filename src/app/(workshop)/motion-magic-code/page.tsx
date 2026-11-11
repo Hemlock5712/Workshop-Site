@@ -162,7 +162,7 @@ export default function MotionMagicCode() {
             filename="src/main/java/first/robot/opmode/MyTeleop.java"
             code={`    // Hold the left trigger to drive the arm to its vertical position. Releasing cancels the
     // command; the position request stays applied, so the arm finishes the move and holds there.
-    driver.leftTrigger().whileTrue(robot.arm.vertical());`}
+    robot.driver.leftTrigger().whileTrue(robot.arm.vertical());`}
           />
           <p>
             Releasing the trigger cancels the command, and the motor keeps

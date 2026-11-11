@@ -5,10 +5,8 @@ import FieldAxes from "@/components/lesson/FieldAxes";
 import ContentCard from "@/components/ContentCard";
 import ImageBlock from "@/components/ImageBlock";
 import Box from "@/components/Box";
-import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
 import Link from "next/link";
-import { Book } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
 export const metadata = lessonMetadata("/swerve-basics");
@@ -22,9 +20,8 @@ const linkClass = "underline hover:no-underline font-medium";
  * `applyOperatorPerspective` and `addVisionMeasurement` were cut because the
  * pages that use them explain them.
  *
- * The components section copies `/hardware`'s cards. There is no photo of a
- * swerve module in `public/images` yet; the module card has no image until the
- * owner supplies one.
+ * The components section copies `/hardware`'s cards. The module and Pigeon
+ * photos are the owner's, in `public/images/hardware/`.
  *
  * The field figure is `FieldAxes`, blue-corner origin by the owner's call,
  * matching `getPose()`.
@@ -33,7 +30,7 @@ export default function SwerveBasics() {
   return (
     <PageTemplate
       title="Swerve Basics"
-      lede="A swerve drive can slide sideways, drive diagonally and spin, all at the same time. This page names its parts and the four words the next pages use."
+      lede="A swerve drive can slide sideways, drive diagonally and spin, all at the same time. This page names its parts and the terms the next pages use."
       needs={[
         <>
           The words CAN bus, CANcoder and CANivore, from{" "}
@@ -56,19 +53,30 @@ export default function SwerveBasics() {
 
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           <ContentCard>
-            <span className="micro mb-1 block">Four of these</span>
+            <ImageBlock
+              src="/images/hardware/SwerveModule.png"
+              alt="A swerve module with its two motors on top"
+              width={160}
+              height={160}
+              className="mb-4"
+            />
+            <span className="micro mb-1 block">Four</span>
             <h3 className="display m-0 mb-3 text-lede">Swerve module</h3>
-            <p className="mb-3 text-[var(--tx2)]">
-              Two Kraken motors and a CANcoder. The drive motor spins the wheel.
-              The steer motor points it.
-            </p>
             <p className="text-[var(--tx2)]">
-              The CANcoder on top reads the angle the wheel is pointing, and
-              still knows it after the power has been off.
+              Two Kraken motors and a CANcoder. The drive motor spins the wheel,
+              the steer motor points it, and the CANcoder reads which way it
+              points.
             </p>
           </ContentCard>
 
           <ContentCard>
+            <ImageBlock
+              src="/images/hardware/Pigeon2.png"
+              alt="CTRE Pigeon 2.0 IMU"
+              width={276}
+              height={256}
+              className="mb-4"
+            />
             <span className="micro mb-1 block">One</span>
             <h3 className="display m-0 mb-3 text-lede">
               <a
@@ -81,8 +89,8 @@ export default function SwerveBasics() {
               </a>
             </h3>
             <p className="text-[var(--tx2)]">
-              A gyro. It reports which way the robot is facing. The arm never
-              needed one; field-centric driving does.
+              A gyro. It reports which way the robot is facing, which
+              field-centric driving needs.
             </p>
           </ContentCard>
 
@@ -144,11 +152,35 @@ export default function SwerveBasics() {
               ),
             },
             {
+              term: "Translation2d",
+              body: (
+                <>
+                  A spot on the field: X and Y in meters.{" "}
+                  <code>new Translation2d(2.0, 6.5)</code> is 2 m down the field
+                  and 6.5 m across it.
+                </>
+              ),
+            },
+            {
+              term: "Rotation2d",
+              body: (
+                <>
+                  A heading, the way the robot&apos;s front points.{" "}
+                  <code>Rotation2d.fromDegrees(90)</code> faces +Y.
+                </>
+              ),
+            },
+            {
               term: "Pose2d",
               body: (
                 <>
-                  Where the robot is and which way it faces, in one object: X
-                  and Y in meters, plus a <code>Rotation2d</code> heading.
+                  A <code>Translation2d</code> and a <code>Rotation2d</code>{" "}
+                  together: where the robot is and which way it faces.{" "}
+                  <code>
+                    new Pose2d(new Translation2d(2.0, 6.5),
+                    Rotation2d.fromDegrees(90))
+                  </code>{" "}
+                  is that spot, facing +Y.
                 </>
               ),
             },
@@ -198,11 +230,6 @@ export default function SwerveBasics() {
             Thirteen devices: eight motors, four CANcoders and one Pigeon 2.
           </p>
         </Box>
-        <DocumentationButton
-          href="https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html"
-          title="CTRE: Tuner X Swerve Project Generator"
-          icon={<Book className="w-5 h-5" />}
-        />
       </LessonSection>
 
       <Quiz

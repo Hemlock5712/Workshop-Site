@@ -333,11 +333,8 @@ export default function SwerveDriveProject() {
           code={`@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
-    final DriveMechanism drivetrain = robot.drivetrain;
-    final CommandNiDsXboxController driver = robot.driver;
-
     // Left bumper: make the robot's current facing the new "forward".
-    driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
+    robot.driver.leftBumper().onTrue(robot.drivetrain.seedFieldCentric());
   }
 }`}
         />
