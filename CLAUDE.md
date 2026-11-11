@@ -133,7 +133,7 @@ reference/
   .git-store/            bare mirrors, one shared object store per repo
   Workshop-Code/         one detached worktree per branch: mech-*, the numbered
                          swerve chain, swerve-autonomous, swerve-bline,
-                         main, and the devcontainer branches
+                         main
   2027-Template/2027-dev comparison only, stale on alpha-6
 ```
 
