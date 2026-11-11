@@ -1,7 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import Quiz from "@/components/Quiz";
 import LessonSection from "@/components/lesson/LessonSection";
-import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import ImageBlock from "@/components/ImageBlock";
 import Box from "@/components/Box";
@@ -73,7 +72,7 @@ export default function BLineLesson() {
         />
         <p>
           The editor at <strong>bline.run</strong> is version 1.0.0, the one
-          that pairs with this library. Its home page links a Windows build.
+          that pairs with this library.
         </p>
       </LessonSection>
 
@@ -158,66 +157,104 @@ export default function BLineLesson() {
 
       <LessonSection id="builder" title="The builder in DriveMechanism">
         <p>
-          <code>FollowPath.Builder</code> is built once, in the{" "}
-          <code>DriveMechanism</code> constructor, and turns every path file
-          into a command.
+          You will add three things to <code>DriveMechanism</code>: a request
+          field, the builder in the constructor, and two methods that use them.
+          The builder is made once and turns every path file into a command.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          title="The request field, and the builder in the constructor"
-          code={`// BLine hands back speeds relative to the robot, so the request is robot-relative too.
-// Velocity asks each wheel for an exact speed, so the small corrections at the end of a path
-// still turn the wheels instead of stalling against friction.
-private final SwerveRequest.ApplyRobotVelocity pathRequest =
-    new SwerveRequest.ApplyRobotVelocity().withDriveRequestType(DriveRequestType.Velocity);
+          title="DriveMechanism.java: the path request, the builder, and followPath"
+          code={`public class DriveMechanism implements Mechanism {
+  // ... drivetrain field, unchanged
 
-  // Teaches BLine how to drive this robot. After this, followPath can turn any path drawn in
-  // the BLine editor into a command.
-  pathBuilder =
-      new FollowPath.Builder(
-              DriveType.SWERVE,
-              this, // path commands require this mechanism
-              () -> getPose(), // where the robot is
-              pose -> resetPose(pose), // used when a path says where the robot starts
-              () -> getRobotVelocity(), // how fast it is moving, in its own directions
-              velocities -> driveRobotRelative(velocities), // drive like this
-              // Each controller pulls the robot back toward the path. TODO: tune on your robot.
-              new PIDController(2.0, 0.0, 0.0), // distance to the target: m/s per meter
-              // At 1.0 the turn lagged and stalled short of the end tolerance in simulation.
-              new PIDController(3.0, 0.0, 0.0), // heading error: rad/s per radian
-              new PIDController(0.2, 0.0, 0.0)) // drift off the line: m/s per meter
-          // Paths are drawn from the blue side. On red, BLine turns them around the field center.
-          .withDefaultShouldFlip();`}
+  // BLine hands back speeds relative to the robot, so the request is robot-relative too.
+  // Velocity asks each wheel for an exact speed, so the small corrections at the end of a path
+  // still turn the wheels instead of stalling against friction.
+  private final SwerveRequest.ApplyRobotVelocity pathRequest =
+      new SwerveRequest.ApplyRobotVelocity().withDriveRequestType(DriveRequestType.Velocity);
+
+  // Turns a path file into a command that drives it. Built once, used for every path.
+  private final FollowPath.Builder pathBuilder;
+
+  public DriveMechanism() {
+    // ... applyOperatorPerspective and registerTelemetry, unchanged
+
+    // Teaches BLine how to drive this robot. After this, followPath can turn any path drawn in
+    // the BLine editor into a command.
+    pathBuilder =
+        new FollowPath.Builder(
+                DriveType.SWERVE,
+                this, // path commands require this mechanism
+                () -> getPose(), // where the robot is
+                pose -> resetPose(pose), // used when a path says where the robot starts
+                () -> getRobotVelocity(), // how fast it is moving, in its own directions
+                velocities -> driveRobotRelative(velocities), // drive like this
+                // Each controller pulls the robot back toward the path. TODO: tune on your robot.
+                new PIDController(2.0, 0.0, 0.0), // distance to the target: m/s per meter
+                // At 1.0 the turn lagged and stalled short of the end tolerance in simulation.
+                new PIDController(3.0, 0.0, 0.0), // heading error: rad/s per radian
+                new PIDController(0.2, 0.0, 0.0)) // drift off the line: m/s per meter
+            // Paths are drawn from the blue side. On red, BLine turns them around the field center.
+            .withDefaultShouldFlip();
+  }
+
+  // ... getName, getPose and the other methods, unchanged
+
+  public FollowPath followPath(String name) {
+    return pathBuilder.build(new Path(name));
+  }
+
+  public void driveRobotRelative(ChassisVelocities velocities) {
+    drivetrain.setControl(pathRequest.withVelocity(velocities));
+  }
+}`}
         />
-        <p>
-          BLine reads and writes <code>ChassisVelocities</code> in the
-          robot&apos;s own directions, with X as its forward, so{" "}
-          <code>driveRobotRelative</code> feeds them to an{" "}
-          <code>ApplyRobotVelocity</code> request. Velocity mode matters at the
-          end of a path, where a small voltage can leave a wheel stuck against
-          friction.
-        </p>
-        <p>
-          <code>followPath(name)</code> calls{" "}
-          <code>pathBuilder.build(new Path(name))</code>, which reads{" "}
-          <code>deploy/autos/paths/&lt;name&gt;.json</code> right there. The
-          three gains are a starting point tuned in simulation only. If the
-          robot stalls short of the end, raise them.
-        </p>
+        <ul className="ml-5 list-disc space-y-3">
+          <li>
+            <code>pathRequest</code> is an <code>ApplyRobotVelocity</code>{" "}
+            request, because BLine works in the robot&apos;s own directions,
+            with X as its forward.
+          </li>
+          <li>
+            The first six arguments say which mechanism a path claims and how to
+            read the pose and speed. They also say how to reset the pose and how
+            to drive.
+          </li>
+          <li>
+            The three <code>PIDController</code>s pull the robot back onto the
+            path. They are a starting point tuned in simulation only.
+          </li>
+          <li>
+            <code>followPath(name)</code> reads{" "}
+            <code>deploy/autos/paths/&lt;name&gt;.json</code> when it is called.
+          </li>
+        </ul>
       </LessonSection>
 
       <LessonSection id="auto-opmode" title="The Auto OpMode">
         <p>
-          Delete <code>LeaveStartAuto.java</code>. One <code>@Autonomous</code>{" "}
+          Delete <code>LeaveStartAuto.java</code> and create{" "}
+          <code>AutoOpMode.java</code> beside it. One <code>@Autonomous</code>{" "}
           class now runs every routine, and a drop-down on the dashboard picks
           which one.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
-          title="AutoOpMode, without imports and Javadoc"
-          code={`@Autonomous(name = "Auto")
+          code={`package frc.robot.opmodes;
+
+import bline.commands.FollowPath;
+import frc.robot.Robot;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.opmode.Autonomous;
+import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.system.DataLogManager;
+import org.wpilib.tunable.Selectable;
+import org.wpilib.tunable.Tunables;
+
+@Autonomous(name = "Auto")
 public class AutoOpMode extends PeriodicOpMode {
   private final Selectable<Command> autoChooser = new Selectable<>();
   private Command routine;
@@ -307,60 +344,20 @@ public class AutoOpMode extends PeriodicOpMode {
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              The pose jump to 1.0, 2.0 at enable, then the robot drive to
-              within 3 cm of 3.5, 2.0, facing 45 degrees within 2. Positive
-              angles turn counterclockwise.
+              The pose jump to 1.0, 2.0 at enable, then the robot drive to 3.5,
+              2.0, facing 45 degrees.
             </li>
             <li>
               <code>Leave Start: reached the midpoint</code> once per run in the
-              console, a moment after the robot passes the marker.
+              console.
             </li>
             <li>
-              A re-enable running the path again from the start, and a disable
-              stopping the robot. <code>None</code> holding still, and on red
-              the path turned around the field center.
+              A re-enable running the path again from the start.{" "}
+              <code>None</code> holding still, and on red the path turned around
+              the field center.
             </li>
           </ul>
         </Box>
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "Fails when picked",
-              term: "A missing file",
-              body: (
-                <>
-                  The name in <code>followPath</code> does not match a file in{" "}
-                  <code>autos/paths</code>, <code>autos/config.json</code> is
-                  missing, or an empty path threw{" "}
-                  <code>Path has no destination</code>.
-                </>
-              ),
-            },
-            {
-              label: "No console line",
-              term: "A key mismatch",
-              body: (
-                <>
-                  <strong>Lib Key</strong> in the editor and the string in{" "}
-                  <code>registerEventTrigger</code> differ. They must match
-                  letter for letter, capitals included.
-                </>
-              ),
-            },
-            {
-              label: "Wrong place",
-              term: "No pose reset",
-              body: (
-                <>
-                  Without <code>withPoseReset()</code>, odometry keeps whatever
-                  it read before, and the robot and the path disagree about
-                  where the path begins.
-                </>
-              ),
-            },
-          ]}
-        />
         <DocumentationButton
           href="https://docs.bline.run"
           title="BLine documentation"

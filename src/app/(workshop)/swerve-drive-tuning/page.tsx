@@ -1,10 +1,8 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
-import FigureGrid from "@/components/lesson/FigureGrid";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
-import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { Book } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -22,9 +20,12 @@ export const metadata = lessonMetadata("/swerve-drive-tuning");
  * radius, top speed, slip current), every number they carry (2.167 in, 4.54
  * m/s, 120 A stator, 70 A supply, driveGains kP 0.2 / kV 0.124, the 10%
  * deadband and the 0.45 m/s it costs), the stall-heat safety on the wall push,
- * the CTRE wheel-slip reference, closing the drive loop, the square check and
- * its three failure shapes, and five of the six old quiz questions. The sixth,
+ * the CTRE wheel-slip reference, closing the drive loop, the square check, and five of the six old quiz questions. The sixth,
  * on `seedFieldCentric()`, duplicated `/swerve-drive-project` Q5 and is gone.
+ *
+ * Owner-style pass, November 2026: cut the inverted-ratio and gear-ratio
+ * diagnostics, the kV/kS gap reading, the "too low costs acceleration" note,
+ * and the two symptom cards under the square check.
  *
  * "The robot template" is not cited here: 2027-Template is not a source for
  * this site. What ships open loop is `1-Swerve`, `2-Logging`, and the project
@@ -47,7 +48,7 @@ export default function SwerveDriveTuning() {
         <>Phoenix Tuner X, and six meters of clear carpet.</>,
         <>A tape measure, and a wall you may push against.</>,
       ]}
-      time="15 minutes"
+      time="10 minutes"
     >
       <LessonSection id="measure-the-drivetrain" title="Wheel radius">
         <p>
@@ -98,10 +99,6 @@ export default function SwerveDriveTuning() {
             odometry agree.
           </p>
         </Box>
-        <p>
-          If it got worse, you inverted the ratio: a robot that over-reports
-          needs a smaller radius.
-        </p>
       </LessonSection>
 
       <LessonSection id="top-speed-and-slip" title="Top speed and slip current">
@@ -123,9 +120,7 @@ export default function SwerveDriveTuning() {
         <p>
           That number goes in <code>kSpeedAt12Volts</code>. It measures the
           robot. The driver cap is <code>maxSpeed</code> in{" "}
-          <code>TeleopOpMode</code>, which reads it straight back. If the
-          plateau is far from the generator&apos;s estimate, check the radius,
-          then check <code>kDriveGearRatio</code> against your modules.
+          <code>TeleopOpMode</code>, which reads it straight back.
         </p>
 
         <p>
@@ -155,22 +150,13 @@ export default function SwerveDriveTuning() {
             the disable, somebody else on the laptop.
           </p>
         </Box>
-        <Split>
-          <ProseBlock>
-            <p>
-              That number goes in <code>kSlipCurrent</code>. You may be
-              measuring the limit, not the tire. The shipped 120 A is itself a
-              stator limit, and <code>driveInitialConfigs</code> sets 70 A on
-              the supply. If the trace flattens at 120 A and the wheel never
-              breaks loose, raise the constant temporarily and ramp again.
-            </p>
-          </ProseBlock>
-          <MarginNote label="Too low costs acceleration">
-            This limit caps torque, and torque is acceleration. Set it well
-            under the slip point and the robot is predictable and slow off the
-            line.
-          </MarginNote>
-        </Split>
+        <p>
+          That number goes in <code>kSlipCurrent</code>. You may be measuring
+          the limit, not the tire. The shipped 120 A is itself a stator limit,
+          and <code>driveInitialConfigs</code> sets 70 A on the supply. If the
+          trace flattens at 120 A and the wheel never breaks loose, raise the
+          constant temporarily and ramp again.
+        </p>
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
           title="CTRE: Preventing Wheel Slip with Current Limits"
@@ -193,9 +179,7 @@ export default function SwerveDriveTuning() {
         </p>
         <p>
           Tune it on the ground, not on blocks. A wheel in the air carries no
-          load, and gains found there will not hold a speed under a robot. Plot
-          the same two signals as the steer gains, speed this time. A constant
-          gap points at kV. A gap only at low speed points at kS.
+          load, and gains found there will not hold a speed under a robot.
         </p>
 
         <h4 className="display m-0 text-ui">Switch the drive request</h4>
@@ -253,31 +237,6 @@ export default function SwerveDriveTuning() {
             <code>Drivetrain/ModuleTargets</code> flat at zero.
           </p>
         </Box>
-        <FigureGrid
-          cols={2}
-          items={[
-            {
-              label: "Worse right after the switch",
-              term: "Drive gains",
-              body: (
-                <>
-                  <code>Velocity</code> with untuned gains chases a speed the
-                  motor cannot hold. Go back to the drive gains.
-                </>
-              ),
-            },
-            {
-              label: "Pose numbers look odd",
-              term: "Nothing is broken",
-              body: (
-                <>
-                  Odometry measures from where the code started, not from a
-                  point on the field. Nothing here sets one.
-                </>
-              ),
-            },
-          ]}
-        />
       </LessonSection>
 
       <Quiz

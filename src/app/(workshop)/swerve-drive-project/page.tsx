@@ -48,6 +48,12 @@ const linkStyle =
  * accounts for them and the downloaded project contains them. What survives is
  * the TeleopOpMode constructor, because the default command is the one piece of
  * code this lesson teaches.
+ *
+ * November 2026, pre-review pass in the owner's style: cut the "Three ways
+ * this goes wrong" box and its quiz question, the default-command
+ * IllegalArgumentException paragraph, and the list of DriveMechanism methods
+ * no page step uses yet. The TeleopOpMode block now shows the class around
+ * the constructor.
  */
 export default function SwerveDriveProject() {
   return (
@@ -233,14 +239,6 @@ export default function SwerveDriveProject() {
           Tuner X writes, and it exposes only the methods the rest of the robot
           needs.
         </p>
-        <p>
-          Both <code>applyRequest(...)</code> and{" "}
-          <code>seedFieldCentric()</code> return commands, and{" "}
-          <code>setControl(...)</code> sends one request straight through. Two
-          more read the drivetrain back: <code>getPose()</code> and{" "}
-          <code>getFieldVelocity()</code>. The camera comes in later, through{" "}
-          <code>addVisionMeasurement(...)</code>.
-        </p>
       </LessonSection>
 
       <LessonSection
@@ -266,7 +264,11 @@ export default function SwerveDriveProject() {
           language="java"
           title="TeleopOpMode.java: the joystick drive, set as the default"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          code={`public TeleopOpMode(Robot robot) {
+          code={`@Teleop(name = "Teleop")
+public class TeleopOpMode extends PeriodicOpMode {
+  // ... maxSpeed, maxAngularRate, the FieldCentric drive request and the driver controller
+
+  public TeleopOpMode(Robot robot) {
     final DriveMechanism drivetrain = robot.drivetrain;
 
     // In WPILib, X points forward and Y points left. The sticks read the other way around, so
@@ -282,7 +284,8 @@ export default function SwerveDriveProject() {
 
     // Left bumper: make the robot's current facing the new "forward".
     driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
-  }`}
+  }
+}`}
         />
         <p>
           <code>applyRequest(...)</code> is built on <code>runRepeatedly</code>,
@@ -290,11 +293,6 @@ export default function SwerveDriveProject() {
           and the command is still running, asking for zero. Full stick asks for{" "}
           <code>maxSpeed</code>, which comes straight out of{" "}
           <code>TunerConstants.kSpeedAt12Volts</code>.
-        </p>
-        <p>
-          A default command has to require its own mechanism and no other. Break
-          that and the scheduler throws an <code>IllegalArgumentException</code>{" "}
-          at runtime, not a compile error.
         </p>
         <p>
           The left bumper runs <code>seedFieldCentric()</code>: whatever way the
@@ -337,31 +335,6 @@ export default function SwerveDriveProject() {
             default command is asking for zero.
           </li>
         </ol>
-        <Box
-          variant="alert-info"
-          tag="IF IT DIDN'T WORK"
-          title="Three ways this goes wrong"
-        >
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              <strong>A device the driver station cannot find.</strong> You
-              deployed with the example file, or yours landed outside{" "}
-              <code>src/main/java/frc/robot/generated/</code>. The{" "}
-              <code>kCANBus</code> name has to match your CANivore.
-            </li>
-            <li>
-              <strong>One module fighting the other three.</strong> Re-run
-              encoder calibration for that corner, bevel gear facing the center
-              of the robot, rather than editing the file.
-            </li>
-            <li>
-              <strong>Nothing moves and no error appears.</strong> Check that{" "}
-              <strong>Teleop</strong> is selected and the robot enabled. If both
-              are right, check that the <code>setDefaultCommand</code> line is
-              still there.
-            </li>
-          </ul>
-        </Box>
       </LessonSection>
 
       {/* The "Check yourself" the rewrite deleted to reach 12 minutes, which is
@@ -442,20 +415,6 @@ export default function SwerveDriveProject() {
             correctAnswer: 2,
             explanation:
               "seedFieldCentric() sets a heading reference. It never supplies an x or a y, so odometry reports what it reported before. resetPose(Pose2d) is the call that places the robot on the field, and Swerve Calibration lines both up next to applyOperatorPerspective().",
-          },
-          {
-            id: 6,
-            question:
-              "One module drives the wrong way while the other three go straight. What do you do?",
-            options: [
-              "Flip that module's inversion in TunerConstants.java and leave its offset alone",
-              "Re-run encoder calibration for that corner, with the bevel gear facing the center of the robot",
-              "Regenerate the file from the start with the dimensions re-entered",
-              "Raise driveGains until that module keeps up with the others",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "CTRE's fix for one module driving the wrong way is to redo its encoder calibration with the bevel gear facing the center of the robot. A module calibrated with the gear facing out is half a turn off, which reads as driving backwards. The drive inversions in TunerConstants.java are per side, not per module, so flipping one by hand reverses two wheels.",
           },
         ]}
       />

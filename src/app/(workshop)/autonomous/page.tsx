@@ -1,6 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
-import FigureGrid from "@/components/lesson/FigureGrid";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
@@ -13,6 +12,10 @@ export const metadata = lessonMetadata("/autonomous");
  * `1-Swerve` that adds LeaveStartAuto. `/bline` follows this lesson on
  * `swerve-bline` and replaces the timer with a drawn path, holding it
  * against the three numbers measured here.
+ *
+ * Owner-style pass, November 2026: cut the "Two layers" lifecycle/behavior
+ * cards and the "Three failure shapes" cards (one described a waitUntil this
+ * routine does not have), folded the two stopped-request paragraphs into one.
  */
 export default function Autonomous() {
   return (
@@ -31,7 +34,7 @@ export default function Autonomous() {
         <>Three meters of clear floor and one person on the disable switch.</>,
       ]}
       branch="swerve-autonomous"
-      time="30 minutes"
+      time="8 minutes"
     >
       <p>
         You have written an <code>@Autonomous</code> class once already: Raise
@@ -46,47 +49,13 @@ export default function Autonomous() {
         up.
       </p>
 
-      <LessonSection id="two-layers" title="Two layers">
-        <p>
-          The class is the part you cannot test without a driver station. Keep
-          everything else out of it. A command that reads a controller, checks
-          the match clock, or names a mode has taken on the class&apos;s job.
-        </p>
-        <FigureGrid
-          cols={2}
-          items={[
-            {
-              label: "Lifecycle",
-              term: (
-                <>
-                  The <code>@Autonomous</code> class
-                </>
-              ),
-              body: "The name on the driver station, the Robot handed to its constructor, and the schedule and cancel calls at the mode boundary.",
-            },
-            {
-              label: "Behavior",
-              term: "The routine command",
-              body: "Which way to drive, for how long, and how it stops. The same command can run from a button or from another routine unchanged.",
-            },
-          ]}
-        />
-        <p>
-          A command built on the drivetrain requires the drivetrain, so a second
-          drivetrain command cannot run beside it. Arm and flywheel commands
-          can.
-        </p>
-      </LessonSection>
-
       <LessonSection id="build-the-routine" title="Build the routine">
         <p>
-          Everything gets built in the constructor, which runs the moment
-          somebody picks the mode. The routine lives in a field because{" "}
-          <code>end()</code> needs a reference to the command it cancels.
-          Building a command sends no output, so the constructor is safe to run
-          while the robot is still disabled. <code>start()</code> runs when the
-          mode is enabled, and <code>end()</code> runs when it stops for any
-          reason, a disable included.
+          Create <code>LeaveStartAuto.java</code> in the <code>opmodes</code>{" "}
+          folder, beside <code>TeleopOpMode.java</code>. The constructor builds
+          the routine when somebody picks the mode. <code>start()</code>{" "}
+          schedules it on enable. <code>end()</code> cancels it when the mode
+          stops for any reason, a disable included.
         </p>
         <CodeBlock
           language="java"
@@ -149,24 +118,14 @@ public class LeaveStartAuto extends PeriodicOpMode {
           command is called in the scheduler and on the dashboard.
         </p>
         <p>
-          The <code>stopped</code> request is the line people leave out. This
-          OpMode sets no default command. When the routine ends, the wheels
+          This OpMode sets no default command. When the routine ends, the wheels
           carry on at the last speed they were given, because{" "}
           <a href="/running-program#latched" className="underline">
             requests stay latched
           </a>
-          .
-        </p>
-        <p>
-          It is sent twice for that reason. The last line of the coroutine
-          covers a routine that runs to the end. A cancel stops the coroutine
-          where it is and skips that line, so <code>whenCanceled</code> sends
-          the same zero.
-        </p>
-        <p>
-          One meter per second for a second and a half is about a meter and a
-          half, less whatever the ramp-up costs. The third pass below measures
-          it instead of trusting it.
+          . That is why <code>stopped</code> is sent twice. The last line of the
+          coroutine covers a routine that runs to the end. A cancel skips that
+          line, so <code>whenCanceled</code> sends the same zero.
         </p>
         <p>
           The robot&apos;s field position is never set in this routine.{" "}
@@ -215,59 +174,6 @@ public class LeaveStartAuto extends PeriodicOpMode {
         </ol>
       </LessonSection>
 
-      <LessonSection id="failure-shapes" title="Three failure shapes">
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "Nothing moves",
-              term: "Stuck on a wait",
-              body: (
-                <>
-                  Selected, enabled, sitting still. A wait with no time limit
-                  holds the routine there forever. Every{" "}
-                  <code>coroutine.waitUntil(...)</code> in a routine takes a
-                  timeout.
-                </>
-              ),
-            },
-            {
-              label: "Never stops",
-              term: "A latched request",
-              body: (
-                <>
-                  The wait ends and the robot keeps rolling. Nothing zeroes the
-                  drivetrain, so the last request stays applied. Send{" "}
-                  <code>stopped</code> on every way out.
-                </>
-              ),
-            },
-            {
-              label: "Wrong place",
-              term: "Heading or voltage",
-              body: (
-                <>
-                  It moves, and not where you aimed it. Robot-centric X follows
-                  the starting heading, and battery and carpet change how far a
-                  timed step goes.
-                </>
-              ),
-            },
-          ]}
-        />
-        <p>
-          A mode missing from the driver station list is a different problem.
-          Take it back to <strong>OpModes</strong>: a class that is not{" "}
-          <code>public</code>, or a constructor that does not take{" "}
-          <code>Robot</code>.
-        </p>
-        <p>
-          Read <code>Drivetrain/Pose</code> before guessing. Its value at the
-          end of a run separates a robot that went the wrong way from one that
-          never went anywhere.
-        </p>
-      </LessonSection>
-
       <LessonSection id="check-your-work" title="Check your work">
         <p>
           Run the routine three times from the same tape mark, on the floor,
@@ -275,22 +181,11 @@ public class LeaveStartAuto extends PeriodicOpMode {
           on top of each other.
         </p>
         <Box variant="alert-success" title="You should see">
-          <ul className="ml-5 list-disc space-y-2">
-            <li>
-              <strong>Leave Start</strong> on the mode list, and the drive
-              beginning the moment you enable.
-            </li>
-            <li>
-              The robot leaving in the direction its front bumper was pointing.
-            </li>
-            <li>
-              A full stop that stays stopped, with no creep after the wait.
-            </li>
-            <li>
-              Three end poses in <code>Drivetrain/Pose</code> close to each
-              other.
-            </li>
-          </ul>
+          <p>
+            The robot leaving in the direction its front bumper points, stopping
+            and staying stopped, and three end poses in{" "}
+            <code>Drivetrain/Pose</code> close to each other.
+          </p>
         </Box>
         <p>
           Write down the distance the tape measured, the end pose, and the wait

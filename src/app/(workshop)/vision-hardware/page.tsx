@@ -1,6 +1,5 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
-import FigureGrid from "@/components/lesson/FigureGrid";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
@@ -29,8 +28,11 @@ export const metadata = lessonMetadata("/vision-hardware");
  * October 2026: the Limelight/PhotonVision comparison table went too. It was
  * five rows of shopping advice with no procedure under them, on a page whose
  * reader already has a Limelight in hand. One paragraph says why this course
- * uses one. Quiz Q4 (PDH vs VRM) and Q6 (PhotonVision class names) were trivia
- * and are now the two failure readings from "Check your work".
+ * uses one.
+ *
+ * November 2026, before the owner's review: the failure readings under
+ * "Check your work" and their two quiz questions were cut, and the
+ * power/network/angle cards folded into one paragraph.
  */
 export default function VisionHardware() {
   return (
@@ -48,11 +50,6 @@ export default function VisionHardware() {
       <LessonSection id="tags-against-drift" title="Tags against drift">
         <ProseBlock>
           <p>
-            Odometry adds up wheel turns. Every skid, every scrubbed wheel and
-            every millimeter of error in the wheel radius goes into the total
-            and stays there.
-          </p>
-          <p>
             An AprilTag is a printed marker with an ID number. The field drawing
             lists where each ID sits, how high, and which way it faces. A camera
             measures the corners of the tag in the image and solves for the
@@ -60,9 +57,9 @@ export default function VisionHardware() {
             position on the field.
           </p>
           <p>
-            That answer owes nothing to how long the robot has been driving. It
-            is also occasional and noisy, so it does not replace odometry. The
-            robot blends the two.
+            Unlike odometry, that answer does not drift the longer the robot
+            drives. It is also occasional and noisy, so it does not replace
+            odometry. The robot blends the two.
           </p>
         </ProseBlock>
       </LessonSection>
@@ -88,31 +85,11 @@ export default function VisionHardware() {
           are scoring.
         </p>
 
-        <FigureGrid
-          cols={3}
-          items={[
-            {
-              label: "Power",
-              term: "12 V",
-              body: <>Straight from the power distribution panel.</>,
-            },
-            {
-              label: "Network",
-              term: "Ethernet",
-              body: <>Plugged straight into the SystemCore.</>,
-            },
-            {
-              label: "Angle",
-              term: "Never level",
-              body: (
-                <>
-                  Off to one side, and above or below the tag. Dead-on and level
-                  gives the worst pose a tag can produce.
-                </>
-              ),
-            },
-          ]}
-        />
+        <p>
+          Power it with 12 V from the power distribution panel and plug its
+          Ethernet straight into the SystemCore. Mount it off to one side, and
+          above or below the tags, never level and square-on.
+        </p>
 
         <Split>
           <ProseBlock>
@@ -128,9 +105,9 @@ export default function VisionHardware() {
             </p>
           </ProseBlock>
           <MarginNote label="Two cameras">
-            Many teams run two or three, angled so that something always has a
-            tag in frame. The Vision code takes a list of camera names for this
-            reason.
+            You can run more than one camera, angled so one always has a tag in
+            frame. The <code>Vision</code> class takes any number of camera
+            names.
           </MarginNote>
         </Split>
       </LessonSection>
@@ -210,18 +187,9 @@ export default function VisionHardware() {
         <Box variant="alert-success" title="You should see">
           <p>
             The tag&apos;s ID, drawn on the image and reported in the numbers
-            below it. A distance that matches a tape measure. A botpose that
-            changes smoothly as you move the tag, rather than flickering between
-            two answers.
+            below it, and a distance that matches a tape measure.
           </p>
         </Box>
-
-        <p>
-          No ID at all means the pipeline is still on the wrong type, or the
-          exposure went so low that the tag is black. An ID with a distance that
-          is out by a factor means <strong>Marker Size</strong> does not match
-          the tag you printed.
-        </p>
       </LessonSection>
 
       <Quiz
@@ -269,20 +237,6 @@ export default function VisionHardware() {
               "Solving a tag gives the camera's pose. The offsets are what turn that into the robot's pose, so an error in them shifts every measurement the same way, in the same direction, by the same amount. A stale field map moves individual tags rather than shifting everything uniformly.",
           },
           {
-            id: 4,
-            question:
-              "The web interface shows tag 7 at 2.4 m. Your tape measure says 1.2 m. What do you check?",
-            options: [
-              "The exposure, which is too low to see the tag clearly",
-              "The camera offsets, which shift every pose the same way",
-              "The tag size in the pipeline, which does not match the tag you printed",
-              "The lens calibration, which only matters at the edges",
-            ],
-            correctAnswer: 2,
-            explanation:
-              "The solver turns the tag's size in the image into a distance using the size you told it the tag is. Tell it the wrong size and every distance is out by the same factor, here two. Offsets shift the robot's pose, not the distance to the tag.",
-          },
-          {
             id: 5,
             question:
               "What does calibrating the lens with a ChArUco board correct?",
@@ -295,20 +249,6 @@ export default function VisionHardware() {
             correctAnswer: 3,
             explanation:
               "Every lens bends the image, and the bend is worst away from the center. Calibration measures that bend so the solver can undo it.",
-          },
-          {
-            id: 6,
-            question:
-              "You hold a printed tag a meter in front of the camera and no ID appears on the image. What do you check first?",
-            options: [
-              "That the active pipeline is the AprilTag type, and the exposure is not so low the tag is black",
-              "The camera offsets in the web interface",
-              "The camera's name, which the Java uses to find it",
-              "The ChArUco calibration",
-            ],
-            correctAnswer: 0,
-            explanation:
-              "No ID at all means the camera is not detecting the tag, and detection depends on the pipeline and the picture. A color pipeline never looks for tags, and an exposure turned all the way down leaves nothing to see. Offsets, the name and the calibration all matter later, once there is a detection to work with.",
           },
         ]}
       />

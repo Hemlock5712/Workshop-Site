@@ -1,7 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import FigureGrid from "@/components/lesson/FigureGrid";
 import LessonSection from "@/components/lesson/LessonSection";
-import KeyConceptSection from "@/components/KeyConceptSection";
 import Box from "@/components/Box";
 import ImageBlock from "@/components/ImageBlock";
 import DocumentationButton from "@/components/DocumentationButton";
@@ -32,13 +31,6 @@ export default function SwervePrerequisites() {
       ]}
       time="12 minutes"
     >
-      <KeyConceptSection
-        description={[
-          "What you do have to understand is how a swerve robot answers two questions: which way is forward, and where am I on the field.",
-        ]}
-        concept="A swerve robot tracks a position on the field, and the driver's forward is not the field's forward."
-      />
-
       {/* ── 1. WHAT SWERVE IS ────────────────────────────────────────── */}
       <LessonSection
         id="what-makes-a-drive-quot-swerve"
@@ -135,24 +127,14 @@ export default function SwervePrerequisites() {
           drivetrain&apos;s default command.
         </p>
 
-        <Box
-          variant="alert-warning"
-          tag="WATCH OUT · ALLIANCE"
-          title="The driver's forward flips with alliance color. The field frame does not."
-        >
-          <p>
-            Two drivers stand at opposite ends of the field. Both should be able
-            to push the stick away and watch the robot go away. So the code
-            flips what &quot;forward&quot; means depending on which side you are
-            on. Every loop, <code>applyOperatorPerspective</code> checks the
-            alliance color. Blue sees forward as 0 degrees, toward the red wall.
-            Red sees forward as 180 degrees, toward the blue wall.
-          </p>
-          <p className="mt-3">
-            Only the driver&apos;s forward flips. The field&apos;s coordinates
-            never do.
-          </p>
-        </Box>
+        <p>
+          Forward also flips with alliance color, so a driver at either end can
+          push the stick away and watch the robot go away. Every loop,{" "}
+          <code>applyOperatorPerspective</code> checks the alliance. Blue sees
+          forward as 0 degrees, toward the red wall. Red sees forward as 180
+          degrees, toward the blue wall. Only the driver&apos;s forward flips.
+          The field&apos;s coordinates never do.
+        </p>
       </LessonSection>
 
       {/* ── 3. POSE2D AND THE FIELD FRAME ────────────────────────────── */}
@@ -204,23 +186,14 @@ export default function SwervePrerequisites() {
         >
           <p>
             <code>drivetrain.getPose()</code> measures from the blue alliance
-            corner on both alliances. The section above said forward{" "}
-            <em>{"does "}</em> flip. Both are true, and they are about different
-            things. The driver&apos;s forward flips so driving feels the same
-            from either end of the field. The coordinate frame stays put so that
-            two poses can be compared at all. A red robot parked against its own
-            wall reports a large X, not zero.
+            corner on both alliances, so a red robot parked against its own wall
+            reports a large X, not zero. The frame stays put so that two poses
+            can always be compared.
           </p>
           <p className="mt-3">
             Every pose in Workshops 5 and 6 is measured from that same blue
             corner. That covers what odometry reports, what the camera
             estimates, and the target you hand a drive command.
-          </p>
-          <p className="mt-3">
-            This is changing. WPILib 2027 is moving (0, 0) to the center of the
-            field, and LimelightLib will follow. Until both ship, the code and
-            these pages stay on the blue corner. Mixing the two frames pulls
-            odometry half a field on every vision update.
           </p>
         </Box>
       </LessonSection>
@@ -240,62 +213,25 @@ export default function SwervePrerequisites() {
         </p>
 
         <p>
-          It gets worse over a match, because it only adds and never checks.
-          Three things it cannot see:
+          It gets worse over a match, because it only adds and never checks. A
+          wheel slipping on carpet still reports distance. A wheel radius in{" "}
+          <code>TunerConstants.java</code> that is 1 percent off makes every
+          distance 1 percent off. A robot that gets shoved moves without turning
+          a wheel. Nothing in odometry looks at the field, so the error only
+          builds up.
         </p>
-
-        <ul className="ml-5 list-disc space-y-2">
-          <li>
-            <strong>Slip:</strong> A wheel spinning on carpet without moving the
-            robot still reports distance. Odometry counts it as travel.
-          </li>
-          <li>
-            <strong>A wheel radius that is slightly wrong:</strong> Distance per
-            rotation comes from a number in <code>TunerConstants.java</code>. If
-            that number is off by 1 percent, every distance is off by 1 percent.
-            That is 10 centimeters for every 10 meters, always the same way.
-          </li>
-          <li>
-            <strong>Being moved without driving:</strong> Get shoved, get
-            pinned, get lifted: the wheels do not turn, so as far as odometry is
-            concerned nothing happened.
-          </li>
-        </ul>
-
         <p>
-          Nothing in odometry ever looks at the field, so there is no moment
-          where it notices it is wrong. That is what &quot;drift&quot; means
-          here: not noise, but an error that only accumulates.
+          Two things slow it down. Measured numbers in{" "}
+          <Link href="/swerve-calibration" className={linkClass}>
+            Swerve Calibration
+          </Link>{" "}
+          make it drift less, and a camera in{" "}
+          <Link href="/vision-implementation" className={linkClass}>
+            Vision
+          </Link>{" "}
+          corrects it against AprilTags through{" "}
+          <code>addVisionMeasurement(...)</code>.
         </p>
-
-        <Box variant="concept" title="Two fixes">
-          <ul className="ml-4 list-disc space-y-2">
-            <li>
-              <strong>Measure the numbers it is built on.</strong> Wheel radius,
-              top speed, steering offsets: that is{" "}
-              <Link href="/swerve-calibration" className={linkClass}>
-                Swerve Calibration
-              </Link>
-              . Better inputs mean slower drift.
-            </li>
-            <li>
-              <strong>Give it something that does look at the field.</strong> A
-              camera reading AprilTags knows where it is in absolute terms.{" "}
-              <code>DriveMechanism</code> already has the door for it,{" "}
-              <code>addVisionMeasurement(...)</code>, which hands a
-              camera&apos;s estimate to the drivetrain to correct odometry. That
-              is{" "}
-              <Link href="/vision-implementation" className={linkClass}>
-                Vision
-              </Link>
-              .
-            </li>
-          </ul>
-          <p className="mt-3">
-            Until one of those happens, treat the pose as{" "}
-            <em>distance and direction traveled since the code started</em>.
-          </p>
-        </Box>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -306,8 +242,8 @@ export default function SwervePrerequisites() {
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
-            Name the four corners: front left, front right, back left, back
-            right. Put a strip of tape with the name on each module.
+            Name the four corners from behind the robot: front left, front
+            right, back left, back right.
           </li>
           <li>
             On one module, find the motor that spins the wheel, the motor that
@@ -320,9 +256,7 @@ export default function SwervePrerequisites() {
         <Box variant="alert-success" title="You should see">
           <p>
             Thirteen devices: eight motors, four CANcoders, and one Pigeon 2,
-            all on the CANivore. Four taped corners, named from behind the
-            robot, so the IDs you write down on the next page land on the right
-            wheel.
+            all on the CANivore.
           </p>
         </Box>
         <DocumentationButton
