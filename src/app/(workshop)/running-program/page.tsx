@@ -115,7 +115,8 @@ export default function RunningProgram() {
           </li>
           <li>
             Drag your controller out of <strong>System Joysticks</strong>{" "}
-            and&nbsp;drop it on <strong>Joystick[0]</strong>. Your code reads{" "}
+            and&nbsp;drop it on <strong>Joystick[0]</strong>. Your{" "}
+            <code>Robot.java</code> reads{" "}
             <code>new CommandNiDsXboxController(0)</code>, so port 0 is the one
             it hears. Leave <strong>Map gamepad</strong> ticked.
           </li>

@@ -162,8 +162,9 @@ export default function CommandFramework() {
           <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
             <p>
               A mechanism owns hardware: the motors and encoders for that
-              mechanism. We create our mechanisms in <code>Robot.java</code>,
-              the same file as the scheduler call, so every OpMode can use them.
+              mechanism. We create our mechanisms and the driver&apos;s
+              controller in <code>Robot.java</code>, the same file as the
+              scheduler call, so every OpMode can use them.
             </p>
             <p>
               An <strong>OpMode</strong> decides what the robot does during one
@@ -175,12 +176,15 @@ export default function CommandFramework() {
 
         <CodeBlock
           language="java"
-          title="Robot.java: the same file, with the mechanisms added"
+          title="Robot.java: the same file, with the mechanisms and controller added"
           filename="src/main/java/first/robot/Robot.java"
           code={`public class Robot extends OpModeRobot {
   // The robot's mechanisms. Public so OpModes can use them.
   public final Arm arm = new Arm();
   public final Flywheel flywheel = new Flywheel();
+
+  // The driver's controller on port 0. OpModes bind its buttons through robot.driver.
+  public final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
 
   @Override
   public void robotPeriodic() {
@@ -194,7 +198,8 @@ export default function CommandFramework() {
           mode is a separate class marked <code>@Teleop</code>,{" "}
           <code>@Autonomous</code> or <code>@Utility</code>. That marking is how
           it shows up in the list on the driver station. Every mode is handed
-          the <code>Robot</code>, so it can reach the arm and the flywheel.
+          the <code>Robot</code>, so it can reach the arm, the flywheel and the
+          controller.
         </p>
 
         <CodeBlock
@@ -203,11 +208,9 @@ export default function CommandFramework() {
           filename="src/main/java/first/robot/opmode/MyTeleop.java"
           code={`@Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
-
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
-    driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
+    robot.driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
   }
 }`}
         />
@@ -250,7 +253,7 @@ public class MyTeleop extends PeriodicOpMode {
         <CodeBlock
           language="java"
           title="MyTeleop.java: run while held, stop on release"
-          code={`driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());`}
+          code={`robot.driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());`}
         />
       </LessonSection>
 

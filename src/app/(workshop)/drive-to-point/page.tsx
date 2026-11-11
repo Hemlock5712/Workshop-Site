@@ -133,21 +133,19 @@ export default function DriveToPoint() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          highlightLines={[1, 2, 12, 13, 14]}
+          highlightLines={[1, 2, 10, 11, 12]}
           code={`import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 // ... the other imports, unchanged
 
 public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
-    final DriveMechanism drivetrain = robot.drivetrain;
-    final CommandNiDsXboxController driver = robot.driver;
-
-    driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
+    // Left bumper: make the robot's current facing the new "forward".
+    robot.driver.leftBumper().onTrue(robot.drivetrain.seedFieldCentric());
 
     // Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
-    driver.a().whileTrue(drivetrain.driveToPoint(Pose2d.ZERO));
-    driver.b().whileTrue(drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));
+    robot.driver.a().whileTrue(robot.drivetrain.driveToPoint(Pose2d.ZERO));
+    robot.driver.b().whileTrue(robot.drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));
   }
 }`}
         />

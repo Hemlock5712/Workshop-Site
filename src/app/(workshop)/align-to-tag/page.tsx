@@ -254,17 +254,19 @@ export default function AlignToTag() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          highlightLines={[6, 7, 8, 9, 10]}
+          highlightLines={[6, 7, 8, 9, 10, 11, 12]}
           code={`  public TeleopOpMode(Robot robot) {
     // ... everything up to the Drive to Point bindings, unchanged
-    driver.a().whileTrue(drivetrain.driveToPoint(Pose2d.ZERO));
-    driver.b().whileTrue(drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));
+    robot.driver.a().whileTrue(robot.drivetrain.driveToPoint(Pose2d.ZERO));
+    robot.driver.b().whileTrue(robot.drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));
 
     // Hold X to line up 1 m straight out from tag 7, facing it. The spot is measured from the
     // tag, so the field pose can be wrong and the robot still stops in the same place.
-    driver
+    robot
+        .driver
         .x()
-        .whileTrue(drivetrain.alignToTag(robot.vision, 7, new Pose2d(1.0, 0.0, Rotation2d.PI)));
+        .whileTrue(
+            robot.drivetrain.alignToTag(robot.vision, 7, new Pose2d(1.0, 0.0, Rotation2d.PI)));
   }`}
         />
       </LessonSection>

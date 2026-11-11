@@ -124,23 +124,26 @@ coroutine.wait(Seconds.of(1.0));`}
 import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Coroutine;
-import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
   private final Robot robot;
 
   public MyTeleop(Robot robot) {
     this.robot = robot;
-    driver.leftTrigger().whileTrue(robot.arm.vertical());
-    driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow());
-    driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
+    robot.driver.leftTrigger().whileTrue(robot.arm.vertical());
+    robot
+        .driver
+        .rightTrigger()
+        .whileTrue(robot.flywheel.runFast())
+        .whileFalse(robot.flywheel.runSlow());
+    robot.driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
 
     // Y: raise the arm, wait for it, lower it, wait again.
-    driver
+    robot
+        .driver
         .y()
         .whileTrue(
             Command.noRequirements(coroutine -> raiseAndLower(coroutine)).named("Raise And Lower"));
@@ -157,7 +160,8 @@ public class MyTeleop extends PeriodicOpMode {
   }
 }`}
               highlightLines={[
-                4, 5, 13, 16, 21, 22, 23, 24, 25, 28, 29, 30, 32, 33, 35, 36,
+                4, 5, 11, 14, 23, 24, 25, 26, 27, 28, 31, 32, 33, 35, 36, 38,
+                39,
               ]}
             />
           }
@@ -216,8 +220,8 @@ public class MyTeleop extends PeriodicOpMode {
             <code>robot</code> parameter does not reach it.
           </li>
           <li>
-            <code>driver.y().whileTrue(...)</code> runs the routine while Y is
-            held. Letting go cancels it, and everything it forked.
+            <code>robot.driver.y().whileTrue(...)</code> runs the routine while
+            Y is held. Letting go cancels it, and everything it forked.
           </li>
           <li>
             <code>Command.noRequirements(...)</code> turns a coroutine into a
@@ -269,7 +273,8 @@ public class MyTeleop extends PeriodicOpMode {
     // ... everything up to Y, unchanged
 
     // X: spin up, keep the speed for one second, stop.
-    driver
+    robot
+        .driver
         .x()
         .whileTrue(
             Command.noRequirements(coroutine -> spinUpAndStop(coroutine)).named("Spin Up And Stop"))
@@ -290,7 +295,7 @@ public class MyTeleop extends PeriodicOpMode {
   }
 }`}
               highlightLines={[
-                1, 12, 13, 14, 15, 16, 17, 22, 23, 24, 26, 28, 29, 30, 31,
+                1, 12, 13, 14, 15, 16, 17, 18, 23, 24, 25, 27, 29, 30, 31, 32,
               ]}
             />
           }
@@ -373,7 +378,7 @@ public class MyTeleop extends PeriodicOpMode {
     // ... everything up to X, unchanged
 
     // B: raise and lower the arm three times.
-    driver.b().whileTrue(Command.noRequirements(coroutine -> wave(coroutine)).named("Wave"));
+    robot.driver.b().whileTrue(Command.noRequirements(coroutine -> wave(coroutine)).named("Wave"));
   }
 
   // ... raiseAndLower and spinUpAndStop, unchanged

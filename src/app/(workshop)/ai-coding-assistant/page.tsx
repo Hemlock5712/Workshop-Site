@@ -293,8 +293,8 @@ I have finished the Commands lesson. Do not change any files.`}
         <p>
           Now let it write something. Ask for the smallest change you can check
           line by line: a <code>runReverse()</code> on the arm, bound to B. On{" "}
-          <code>mech-2-Commands</code> only <code>driver.a()</code> is taken, so{" "}
-          <code>b()</code> is free.
+          <code>mech-2-Commands</code> only <code>robot.driver.a()</code> is
+          taken, so <code>b()</code> is free.
         </p>
 
         <CodeBlock
@@ -304,7 +304,7 @@ I have finished the Commands lesson. Do not change any files.`}
 that pushes -3.0, matching the style of runSlow(). Then bind it in
 src/main/java/first/robot/opmode/MyTeleop.java as:
 
-    driver.b().whileTrue(robot.arm.runReverse()).whileFalse(robot.arm.stop());
+    robot.driver.b().whileTrue(robot.arm.runReverse()).whileFalse(robot.arm.stop());
 
 Show me the diff before you write anything.`}
         />

@@ -48,7 +48,7 @@ export default function OpModes() {
         </>,
       ]}
       branch="mech-2-Commands"
-      time="5 minutes"
+      time="7 minutes"
     >
       <MechanismSelector />
 
@@ -75,6 +75,43 @@ export default function OpModes() {
         </p>
       </LessonSection>
 
+      <LessonSection id="add-the-controller" title="Add the controller">
+        <p>
+          The controller lives in <code>Robot.java</code>, beside the
+          mechanisms, so every OpMode reaches it the same way:{" "}
+          <code>robot.driver</code>. Add the import and the field.
+        </p>
+
+        <CodeBlock
+          language="java"
+          filename="src/main/java/first/robot/Robot.java"
+          code={`package first.robot;
+
+import first.robot.mechanisms.Arm;
+import first.robot.mechanisms.Flywheel;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.command3.button.CommandNiDsXboxController;
+import org.wpilib.framework.OpModeRobot;
+
+public class Robot extends OpModeRobot {
+  // The robot's mechanisms. Public so OpModes can use them.
+  public final Arm arm = new Arm();
+  public final Flywheel flywheel = new Flywheel();
+
+  // The driver's controller on port 0. OpModes bind its buttons through robot.driver.
+  public final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+
+  // ... the constructor and robotPeriodic, unchanged
+}`}
+          highlightLines={[6, 14, 15]}
+        />
+
+        <p>
+          <code>new CommandNiDsXboxController(0)</code> creates an Xbox
+          controller. The <code>0</code> is its port on the driver station.
+        </p>
+      </LessonSection>
+
       <LessonSection id="bind-the-buttons" title="Bind the buttons">
         <p>Replace everything below the copyright header with this.</p>
 
@@ -85,17 +122,14 @@ export default function OpModes() {
             code={`package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
-
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
-    driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
+    robot.driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
   }
 }`}
           />
@@ -108,20 +142,21 @@ public class MyTeleop extends PeriodicOpMode {
             code={`package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.command3.button.CommandNiDsXboxController;
 import org.wpilib.opmode.PeriodicOpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
-
   public MyTeleop(Robot robot) {
     // Right trigger: spin fast while held, drop back to the slow voltage when released.
-    driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow());
+    robot
+        .driver
+        .rightTrigger()
+        .whileTrue(robot.flywheel.runFast())
+        .whileFalse(robot.flywheel.runSlow());
 
     // A: spin fast while held, stop when released.
-    driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
+    robot.driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
   }
 }`}
           />
@@ -133,12 +168,12 @@ public class MyTeleop extends PeriodicOpMode {
             driver station&apos;s list.
           </li>
           <li>
-            <code>new CommandNiDsXboxController(0)</code> creates an Xbox
-            controller. The <code>0</code> is its port on the driver station.
+            <code>MyTeleop(Robot robot)</code> hands this OpMode the robot, so
+            it can reach your mechanism and the controller.
           </li>
           <li>
-            <code>MyTeleop(Robot robot)</code> hands this OpMode the robot, so
-            it can reach your mechanism.
+            <code>robot.driver.leftTrigger()</code> is a button on the
+            controller you added to <code>Robot</code>.
           </li>
           <li>
             <code>whileTrue</code> runs a command while the button is held, and
@@ -177,7 +212,7 @@ public class MyTeleop extends PeriodicOpMode {
           {
             id: 1,
             question:
-              "A binding reads driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow()). You release the trigger. What is running a moment later?",
+              "A binding reads robot.driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow()). You release the trigger. What is running a moment later?",
             options: [
               "Nothing, because whileTrue cancels runFast on the release",
               "runSlow, because whileFalse runs it once the trigger is released",
