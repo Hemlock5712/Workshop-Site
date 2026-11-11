@@ -1,6 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
-import CoroutineTimeline from "@/components/lesson/CoroutineTimeline";
+import RoutineView from "@/components/lesson/RoutineView";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
@@ -10,45 +10,47 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/coroutines");
 
 /**
- * The page for `mech-5-Coroutines`, and since November 2026 the only place
- * the course builds a routine. Owner's call in that month's review: Commands
- * v3 composes with coroutines, so Command Composition (`Command.sequence`,
- * `Command.race`, `.withTimeout`) was cut and Finish Conditions lost
- * `.until(...)`. A routine waits on `isAtTarget()` with
- * `coroutine.waitUntil(...)`, never by decorating a hold.
+ * The page for `mech-5-Coroutines`, and the only place the course builds a
+ * routine. Commands v3 composes with coroutines, so there is no
+ * `Command.sequence`, `Command.race` or `.until(...)` anywhere on the site.
  *
- * Two routines, one branch. The Y button in `MyTeleop` moved here from
- * `mech-4-ReadingState` when that branch was rebuilt: it waits with no time
- * limit, because the driver can let go. `RaiseAndShootOpMode` is the same
- * routine as an autonomous, where every wait gets a limit and somewhere to
- * go when it runs out. The page used to open by arguing that a sequence stays
- * the default; that framing went with the lesson that taught sequences.
+ * Owner's review, November 2026, restructured it around three teleop routines
+ * and one autonomous, each shown as a Code / Timeline toggle (`RoutineView`)
+ * so the picture costs no page length:
  *
- * "The core calls" lost `coroutine.yield()` and its hand-written `while`
- * loop in the same pass. `waitUntil` is that loop, and no routine in the
- * course writes one by hand, so `/java-basics` no longer sends anyone to the
- * Loops module.
+ * - Y, `raiseAndLower`: the arm alone. Shown as the whole `MyTeleop.java`,
+ *   because a student who already has the file needs to see where it goes,
+ *   then explained line by line.
+ * - X, `spinUpAndStop`: the flywheel alone, with `wait` and a forked `stop()`.
+ * - B, `wave`: the arm routine in a `for` loop, to show a routine is plain
+ *   Java.
+ * - `RaiseAndShootOpMode`: both mechanisms, every wait limited, each
+ *   `WaitResult` stored in a variable before the `if`, because the one-line
+ *   `if (coroutine.waitUntil(...).timedOut())` was too long to read.
  *
- * The lambda explanation (`() -> robot.arm.isAtTarget()` versus a bare call,
- * and the `boolean cannot be converted to BooleanSupplier` error) moved here
- * from Finish Conditions with `.until(...)`, because `waitUntil` takes the
- * same `BooleanSupplier`.
+ * The word "hold" is gone from this page. Owner's call: say `runRepeatedly`,
+ * the thing the student typed. The rule is "fork what never ends, await what
+ * can end", stated once in the core calls and not repeated in House rules.
  *
- * The routine stops the flywheel before every return that comes after
- * `runFast()`. A forked command runs its first pass on the spot
- * (`Scheduler.schedule` runs a child immediately), and `stop()` evicts
+ * The lambda paragraph no longer quotes the `BooleanSupplier` compile error;
+ * the owner cut it. A routine prints with `System.out.println`: `Coroutine`
+ * has no print or log call of its own.
+ *
+ * The flywheel gets a forked `stop()` before every exit after `runFast()`. A
+ * forked command runs its first pass on the spot, and `stop()` evicts
  * `runFast()` because they share the flywheel, so the zero is sent before the
- * `return` cancels everything. The arm gets no stop: a latched position
- * request holds it where it is.
+ * routine ends. The arm gets no stop: a latched position request holds it.
+ * Cancel-is-not-stop is taught on `/running-program`.
  *
- * Cancel-is-not-stop is taught once, on `/running-program`. This page links
- * to it.
+ * Timeline times are illustrative: 0.5 s per 90 degrees of arm travel, 0.6 s
+ * to reach 75 rps. The routines themselves build on the branch; with the
+ * branch's 0.0 gains nothing arrives, so the timing is not measured.
  */
 export default function Coroutines() {
   return (
     <PageTemplate
       title="Coroutines"
-      lede="A coroutine is a routine written as ordinary Java, read top to bottom, that can pause on a line and carry on from there. This lesson writes one for a button, then the same one for autonomous."
+      lede="A coroutine is a routine written as ordinary Java, read top to bottom, that can pause on a line and carry on from there. This lesson writes three for buttons, then one for autonomous."
       needs={[
         <>
           An <code>Arm</code> and <code>Flywheel</code> with{" "}
@@ -56,7 +58,7 @@ export default function Coroutines() {
           <strong>Conditions and Logging</strong>.
         </>,
         <>
-          Tuned arm gains from <strong>PID Tuning in Tuner X</strong>.
+          Tuned gains from <strong>PID Tuning in Tuner X</strong>.
         </>,
         <>
           The simulator running, from <strong>Hardware Simulation</strong>.
@@ -75,7 +77,7 @@ export default function Coroutines() {
         <CodeBlock
           language="java"
           title="The core calls, one example each"
-          code={`// Start a hold and keep going. It runs underneath until the routine ends.
+          code={`// Start a command and keep going. It runs in the background until the routine ends.
 coroutine.fork(robot.arm.vertical());
 
 // Pause here until a condition comes true.
@@ -84,137 +86,383 @@ coroutine.waitUntil(() -> robot.arm.isAtTarget());
 // Run a command and pause here until it finishes.
 coroutine.await(someStep);
 
-// Pause for a fixed time. Forked holds keep running through it.
+// Pause for a fixed time. Forked commands keep running through it.
 coroutine.wait(Seconds.of(1.0));`}
         />
 
         <p>
-          <code>vertical()</code> is a hold, so it gets <code>fork</code>.{" "}
-          <code>await</code> on a hold never returns, because a hold never
-          finishes. The house rule is <strong>fork holds, await steps</strong>.
+          <code>vertical()</code> is a <code>runRepeatedly</code> command, so it
+          never finishes. If we used <code>await</code> on it, the routine would
+          never get past that line. With <code>fork</code>, it runs in the
+          background while the routine goes on to the next line. So{" "}
+          <strong>fork</strong> anything that never ends, and{" "}
+          <strong>await</strong> anything that can end.
         </p>
         <p>
-          <code>waitUntil</code> takes a lambda.{" "}
-          <code>() -&gt; robot.arm.isAtTarget()</code> is a question the
-          coroutine asks again on every loop. Drop the <code>() -&gt;</code> and
-          the method runs once on the spot, handing over one frozen answer. The
-          build stops on{" "}
-          <code>boolean cannot be converted to BooleanSupplier</code>.
+          <code>waitUntil</code> takes a lambda,{" "}
+          <code>() -&gt; robot.arm.isAtTarget()</code>, and calls it again on
+          every loop to get a fresh answer. Without the <code>() -&gt;</code>,
+          the method would be called once, and that one answer would never
+          change.
         </p>
       </LessonSection>
 
-      <LessonSection id="y-button" title="The Y button">
+      <LessonSection id="arm-routine" title="An arm routine">
         <p>
-          Raise the arm, wait for it to arrive, then spin the flywheel while the
-          arm keeps holding.
+          Hold Y and the arm goes up, waits until it gets there, comes back
+          down, waits again, and prints that it is done. Here is the whole{" "}
+          <code>MyTeleop.java</code> with it added. The marked lines are new.
         </p>
 
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Give <code>MyTeleop</code> a <code>robot</code> field. The routine
-            body is a method of its own, and the constructor&apos;s{" "}
-            <code>robot</code> parameter does not reach it. Add{" "}
-            <code>private final Robot robot;</code> beside <code>driver</code>,
-            and make <code>this.robot = robot;</code> the first line of the
-            constructor.
-          </li>
-          <li>
-            Import <code>org.wpilib.command3.Command</code> and{" "}
-            <code>org.wpilib.command3.Coroutine</code>.
-          </li>
-          <li>
-            Add the Y binding to the constructor and the method below it to the
-            class.
-          </li>
-        </ol>
+        <RoutineView
+          code={
+            <CodeBlock
+              language="java"
+              filename="src/main/java/first/robot/opmode/MyTeleop.java"
+              code={`package first.robot.opmode;
 
-        <CodeBlock
-          language="java"
-          filename="src/main/java/first/robot/opmode/MyTeleop.java"
-          title="MyTeleop.java: the binding, and the body it calls"
-          code={`// Y: raise the arm, then spin the flywheel once it is really there.
-driver
-    .y()
-    .whileTrue(
-        Command.noRequirements(coroutine -> spinUpWhenReady(coroutine))
-            .named("Spin Up When Ready"))
-    .whileFalse(robot.flywheel.stop());
+import first.robot.Robot;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Coroutine;
+import org.wpilib.command3.button.CommandNiDsXboxController;
+import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.Teleop;
 
-// ... and, further down the class:
+@Teleop(name = "Teleop")
+public class MyTeleop extends PeriodicOpMode {
+  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  private final Robot robot;
 
-private void spinUpWhenReady(Coroutine coroutine) {
-  // fork, not await: vertical() is a hold and never finishes.
-  coroutine.fork(robot.arm.vertical());
+  public MyTeleop(Robot robot) {
+    this.robot = robot;
+    driver.leftTrigger().whileTrue(robot.arm.vertical());
+    driver.rightTrigger().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.runSlow());
+    driver.a().whileTrue(robot.flywheel.runFast()).whileFalse(robot.flywheel.stop());
 
-  coroutine.waitUntil(() -> robot.arm.isAtTarget());
+    // Y: raise the arm, wait for it, lower it, wait again.
+    driver
+        .y()
+        .whileTrue(
+            Command.noRequirements(coroutine -> raiseAndLower(coroutine)).named("Raise And Lower"));
+  }
 
-  // runFast is a hold too, so this never returns: releasing Y cancels the whole routine.
-  coroutine.await(robot.flywheel.runFast());
+  private void raiseAndLower(Coroutine coroutine) {
+    coroutine.fork(robot.arm.vertical());
+    coroutine.waitUntil(() -> robot.arm.isAtTarget());
+
+    coroutine.fork(robot.arm.horizontal());
+    coroutine.waitUntil(() -> robot.arm.isAtTarget());
+
+    System.out.println("Raise And Lower: done");
+  }
 }`}
+              highlightLines={[
+                4, 5, 13, 16, 21, 22, 23, 24, 25, 28, 29, 30, 32, 33, 35, 36,
+              ]}
+            />
+          }
+          steps={[
+            {
+              line: "fork(arm.vertical())",
+              at: [[0, 0]],
+              note: "fork starts vertical() and moves to the next line on the same loop.",
+            },
+            {
+              line: "waitUntil(arm at target)",
+              at: [[0, 0.5]],
+              note: "The routine waits here. vertical() keeps running underneath and moves the arm.",
+            },
+            {
+              line: "fork(arm.horizontal())",
+              at: [[0.5, 0.5]],
+              note: "horizontal() needs the arm too, so it replaces vertical().",
+            },
+            {
+              line: "waitUntil(arm at target)",
+              at: [[0.5, 1.0]],
+              note: "Waiting again. isAtTarget() now compares against the new target.",
+            },
+            {
+              line: 'println("Raise And Lower: done")',
+              at: [[1.0, 1.0]],
+              note: "The message prints to the console. That was the last line.",
+            },
+          ]}
+          lanes={[
+            {
+              name: "Arm",
+              segments: [
+                { from: 0, to: 0.5, label: "vertical()" },
+                { from: 0.5, to: 1.0, label: "horizontal()" },
+                {
+                  from: 1.0,
+                  to: 1.6,
+                  label: "request latched · holds",
+                  kind: "after",
+                },
+              ],
+            },
+          ]}
+          end={1.0}
+          total={1.6}
+          endNote="The routine ends and cancels horizontal(). Canceling sends nothing, so the last position request stays latched and the arm holds."
         />
 
-        <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              <code>Command.noRequirements</code> claims no mechanism itself.
-              Each forked command claims its own, for only as long as it runs,
-              so the arm can keep holding while the flywheel spins.
-            </p>
-            <p>
-              The last line awaits a hold on purpose, so the routine runs until
-              you let go. Releasing Y cancels the routine and everything it
-              forked, and <code>whileFalse</code> stops the flywheel.
-            </p>
-          </div>
-          <MarginNote label="No time limit here">
-            The wait is unbounded, which is safe only because a driver is
-            holding Y and can let go.
-          </MarginNote>
-        </Split>
+        <ul className="ml-5 list-disc space-y-3">
+          <li>
+            <code>private final Robot robot;</code> and{" "}
+            <code>this.robot = robot;</code> keep the robot in a field. The
+            routine is a method of its own, and the constructor&apos;s{" "}
+            <code>robot</code> parameter does not reach it.
+          </li>
+          <li>
+            <code>driver.y().whileTrue(...)</code> runs the routine while Y is
+            held. Letting go cancels it, and everything it forked.
+          </li>
+          <li>
+            <code>Command.noRequirements(...)</code> turns a coroutine into a
+            command. Inside a mechanism you build commands with{" "}
+            <code>runRepeatedly</code>, which claims that mechanism. Outside a
+            mechanism you use <code>Command.noRequirements</code>. The routine
+            claims nothing itself, and each command it forks claims its own
+            mechanism for as long as it runs.
+          </li>
+          <li>
+            <code>.named(&quot;Raise And Lower&quot;)</code> is required.{" "}
+            <code>noRequirements</code> hands back a builder, and it only
+            becomes a <code>Command</code> once it has a name. The name is what
+            the scheduler shows while it runs.
+          </li>
+          <li>
+            <code>raiseAndLower</code> is the routine itself. The scheduler
+            hands it the <code>coroutine</code> to call <code>fork</code> and{" "}
+            <code>waitUntil</code> on.
+          </li>
+          <li>
+            <code>System.out.println</code> prints to the console: the VS Code
+            terminal in simulation, the Driver Station console on the robot.
+          </li>
+        </ul>
       </LessonSection>
 
-      <LessonSection id="house-rules" title="House rules">
-        <Box variant="concept" title="House rules">
-          <ul className="ml-5 list-disc space-y-2">
-            <li>
-              <strong>A routine</strong> is{" "}
-              <code>
-                Command.noRequirements(coroutine -&gt; body(coroutine))
-              </code>{" "}
-              with <code>.named(...)</code>. The body is a private method, so a{" "}
-              <code>return</code> plainly leaves the routine.
-            </li>
-            <li>
-              <strong>Fork holds, await steps.</strong>
-            </li>
-            <li>
-              <strong>Wait on a condition</strong> with{" "}
-              <code>coroutine.waitUntil(...)</code>.
-            </li>
-            <li>
-              <strong>Every wait in an autonomous has a time limit.</strong>
-            </li>
-            <li>
-              <strong>Every exit stops what it started.</strong>{" "}
-              <a
-                href="/running-program#latched"
-                className="text-[var(--accent)] underline hover:text-[var(--accent)]"
-              >
-                Canceling is not stopping
-              </a>
-              , so fork the flywheel&apos;s <code>stop()</code> before each{" "}
-              <code>return</code>. The arm needs none, because its last position
-              request holds it.
-            </li>
-          </ul>
-        </Box>
+      <LessonSection id="flywheel-routine" title="A flywheel routine">
+        <p>
+          X spins the flywheel up, keeps it at speed for one second, then stops
+          it. Add the binding under Y and the method under{" "}
+          <code>raiseAndLower</code>.
+        </p>
+
+        <RoutineView
+          code={
+            <CodeBlock
+              language="java"
+              filename="src/main/java/first/robot/opmode/MyTeleop.java"
+              code={`import static org.wpilib.units.Units.Seconds;
+
+import first.robot.Robot;
+// ... the other imports, unchanged
+
+public class MyTeleop extends PeriodicOpMode {
+  // ... fields, unchanged
+
+  public MyTeleop(Robot robot) {
+    // ... everything up to Y, unchanged
+
+    // X: spin up, keep the speed for one second, stop.
+    driver
+        .x()
+        .whileTrue(
+            Command.noRequirements(coroutine -> spinUpAndStop(coroutine)).named("Spin Up And Stop"))
+        .whileFalse(robot.flywheel.stop());
+  }
+
+  // ... raiseAndLower, unchanged
+
+  private void spinUpAndStop(Coroutine coroutine) {
+    coroutine.fork(robot.flywheel.runFast());
+    coroutine.waitUntil(() -> robot.flywheel.isAtTarget());
+
+    coroutine.wait(Seconds.of(1.0));
+
+    // stop() replaces runFast() and sends its zero before the routine ends.
+    coroutine.fork(robot.flywheel.stop());
+    System.out.println("Spin Up And Stop: done");
+  }
+}`}
+              highlightLines={[
+                1, 12, 13, 14, 15, 16, 17, 22, 23, 24, 26, 28, 29, 30, 31,
+              ]}
+            />
+          }
+          steps={[
+            {
+              line: "fork(flywheel.runFast())",
+              at: [[0, 0]],
+              note: "fork starts runFast() and moves on.",
+            },
+            {
+              line: "waitUntil(flywheel at target)",
+              at: [[0, 0.6]],
+              note: "Waiting for the wheel to reach its target speed.",
+            },
+            {
+              line: "wait(1 s)",
+              at: [[0.6, 1.6]],
+              note: "A fixed one-second wait. runFast() keeps the wheel at speed.",
+            },
+            {
+              line: "fork(flywheel.stop())",
+              at: [[1.6, 1.6]],
+              note: "stop() needs the flywheel, so it replaces runFast() and sends a zero on this loop.",
+            },
+            {
+              line: 'println("Spin Up And Stop: done")',
+              at: [[1.6, 1.6]],
+              note: "The message prints. That was the last line.",
+            },
+          ]}
+          lanes={[
+            {
+              name: "Flywheel",
+              segments: [
+                { from: 0, to: 1.6, label: "runFast()" },
+                {
+                  from: 1.6,
+                  to: 2.2,
+                  label: "stop sent · coasting down",
+                  kind: "after",
+                },
+              ],
+            },
+          ]}
+          end={1.6}
+          total={2.2}
+          endNote="The routine ends. The zero from stop() already went out, so the wheel coasts down instead of spinning on."
+        />
+
+        <p>
+          Unlike the arm, the flywheel needs <code>stop()</code> at the end.
+          Ending a routine cancels what it forked, and{" "}
+          <a
+            href="/running-program#latched"
+            className="text-[var(--accent)] underline hover:text-[var(--accent)]"
+          >
+            canceling is not stopping
+          </a>
+          : the wheel would keep spinning. <code>whileFalse</code> covers the
+          other way out, letting go of X early.
+        </p>
+      </LessonSection>
+
+      <LessonSection id="loop-routine" title="A routine in a loop">
+        <p>
+          A routine is ordinary Java, so anything Java can do, it can do. B puts
+          the arm routine inside a <code>for</code> loop and runs it three
+          times.
+        </p>
+
+        <RoutineView
+          code={
+            <CodeBlock
+              language="java"
+              filename="src/main/java/first/robot/opmode/MyTeleop.java"
+              code={`public class MyTeleop extends PeriodicOpMode {
+  // ... fields, unchanged
+
+  public MyTeleop(Robot robot) {
+    // ... everything up to X, unchanged
+
+    // B: raise and lower the arm three times.
+    driver.b().whileTrue(Command.noRequirements(coroutine -> wave(coroutine)).named("Wave"));
+  }
+
+  // ... raiseAndLower and spinUpAndStop, unchanged
+
+  private void wave(Coroutine coroutine) {
+    for (int i = 0; i < 3; i++) {
+      coroutine.fork(robot.arm.vertical());
+      coroutine.waitUntil(() -> robot.arm.isAtTarget());
+
+      coroutine.fork(robot.arm.horizontal());
+      coroutine.waitUntil(() -> robot.arm.isAtTarget());
+    }
+    System.out.println("Wave: done");
+  }
+}`}
+              highlightLines={[7, 8, 13, 14, 15, 16, 18, 19, 20, 21, 22]}
+            />
+          }
+          steps={[
+            { line: "for (3 times) {" },
+            {
+              line: "  fork(arm.vertical())",
+              at: [
+                [0, 0],
+                [1, 1],
+                [2, 2],
+              ],
+              note: "Up.",
+            },
+            {
+              line: "  waitUntil(arm at target)",
+              at: [
+                [0, 0.5],
+                [1, 1.5],
+                [2, 2.5],
+              ],
+              note: "Waiting for the arm to reach vertical.",
+            },
+            {
+              line: "  fork(arm.horizontal())",
+              at: [
+                [0.5, 0.5],
+                [1.5, 1.5],
+                [2.5, 2.5],
+              ],
+              note: "Down.",
+            },
+            {
+              line: "  waitUntil(arm at target)",
+              at: [
+                [0.5, 1],
+                [1.5, 2],
+                [2.5, 3],
+              ],
+              note: "Waiting for the arm to reach horizontal. Then the loop goes around.",
+            },
+            { line: "}" },
+            {
+              line: 'println("Wave: done")',
+              at: [[3, 3]],
+              note: "Three times round, then the message prints.",
+            },
+          ]}
+          lanes={[
+            {
+              name: "Arm",
+              segments: [
+                { from: 0, to: 0.5, label: "vertical()" },
+                { from: 0.5, to: 1, label: "horizontal()" },
+                { from: 1, to: 1.5, label: "vertical()" },
+                { from: 1.5, to: 2, label: "horizontal()" },
+                { from: 2, to: 2.5, label: "vertical()" },
+                { from: 2.5, to: 3, label: "horizontal()" },
+                { from: 3, to: 3.5, label: "latched · holds", kind: "after" },
+              ],
+            },
+          ]}
+          end={3}
+          total={3.5}
+          endNote="The loop ran three times. The routine ends and the arm holds its last position."
+        />
       </LessonSection>
 
       <LessonSection id="build-the-routine" title="The autonomous version">
         <p>
           Autonomous has no button and nobody to let go of one. A wait that
           never comes true would eat the whole period. So every wait gets a time
-          limit and somewhere to go when it runs out.
+          limit and somewhere to go when it runs out. This routine uses both
+          mechanisms: raise the arm, spin up, shoot.
         </p>
         <p>
           The diff adds one file:{" "}
@@ -269,12 +517,12 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
           <code>start()</code> and <code>end()</code> schedule and cancel it.
         </p>
 
-        <h3 className="display m-0 text-aside">Step 2: Fork the arm hold</h3>
+        <h3 className="display m-0 text-aside">Step 2: Fork the arm</h3>
 
         <CodeBlock
           language="java"
           title="First line of the body"
-          code={`// fork, not await: vertical() is a hold and never finishes.
+          code={`// fork, not await: vertical() uses runRepeatedly and never finishes.
 coroutine.fork(robot.arm.vertical());`}
         />
 
@@ -289,17 +537,20 @@ coroutine.fork(robot.arm.vertical());`}
         <CodeBlock
           language="java"
           title="Add below the fork"
-          code={`if (coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+          code={`Coroutine.WaitResult armResult =
+    coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0));
+if (armResult.timedOut()) {
   // The flywheel never started, so there is nothing to stop.
   return;
 }`}
         />
 
         <p>
-          This is the Y button&apos;s wait with a limit added.{" "}
-          <code>waitUntil</code> returns a <code>WaitResult</code>, and{" "}
-          <code>.timedOut()</code> tells you which ending you got. Ignore it and
-          the routine carries on as if the arm had arrived.
+          This is the arm routine&apos;s wait with a limit added.{" "}
+          <code>waitUntil</code> returns a <code>WaitResult</code>, kept here in{" "}
+          <code>armResult</code>, and <code>.timedOut()</code> tells you which
+          ending you got. Ignore it and the routine carries on as if the arm had
+          arrived.
         </p>
 
         <h3 className="display m-0 text-aside">
@@ -309,10 +560,12 @@ coroutine.fork(robot.arm.vertical());`}
         <CodeBlock
           language="java"
           title="The rest of the body"
-          code={`// The arm hold is still running. That is the point of fork.
+          code={`// vertical() is still running. That is the point of fork.
 coroutine.fork(robot.flywheel.runFast());
 
-if (coroutine.waitUntil(() -> robot.flywheel.isAtTarget(), Seconds.of(3.0)).timedOut()) {
+Coroutine.WaitResult flywheelResult =
+    coroutine.waitUntil(() -> robot.flywheel.isAtTarget(), Seconds.of(3.0));
+if (flywheelResult.timedOut()) {
   coroutine.fork(robot.flywheel.stop());
   return;
 }
@@ -323,21 +576,153 @@ coroutine.wait(Seconds.of(1.0)); // shoot
 coroutine.fork(robot.flywheel.stop());`}
         />
 
-        <p>
-          There is no feeder, so the one-second wait stands in for the shot.
-          Every way out from here forks <code>stop()</code> first. It shares the
-          flywheel with <code>runFast()</code>, so it replaces it, and the zero
-          goes out before the routine ends.
-        </p>
+        <Split>
+          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
+            <p>
+              There is no feeder, so the one-second wait stands in for the shot.
+              Every way out from here forks <code>stop()</code> first, for the
+              same reason as the X button.
+            </p>
+          </div>
+          <MarginNote label="No limit on the buttons">
+            The teleop waits have no limit, which is safe only because a driver
+            is holding the button and can let go.
+          </MarginNote>
+        </Split>
 
-        <CoroutineTimeline />
+        <p>The finished body, and what it does over time:</p>
+
+        <RoutineView
+          code={
+            <CodeBlock
+              language="java"
+              filename="src/main/java/first/robot/opmode/RaiseAndShootOpMode.java"
+              code={`private void raiseAndShoot(Coroutine coroutine) {
+  // fork, not await: vertical() uses runRepeatedly and never finishes.
+  coroutine.fork(robot.arm.vertical());
+
+  Coroutine.WaitResult armResult =
+      coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0));
+  if (armResult.timedOut()) {
+    // The flywheel never started, so there is nothing to stop.
+    return;
+  }
+
+  // vertical() is still running. That is the point of fork.
+  coroutine.fork(robot.flywheel.runFast());
+
+  Coroutine.WaitResult flywheelResult =
+      coroutine.waitUntil(() -> robot.flywheel.isAtTarget(), Seconds.of(3.0));
+  if (flywheelResult.timedOut()) {
+    coroutine.fork(robot.flywheel.stop());
+    return;
+  }
+
+  coroutine.wait(Seconds.of(1.0)); // shoot
+
+  // stop() replaces runFast() and sends its zero on this loop, before the routine ends.
+  coroutine.fork(robot.flywheel.stop());
+}`}
+            />
+          }
+          steps={[
+            {
+              line: "fork(arm.vertical())",
+              at: [[0, 0]],
+              note: "fork starts vertical() and moves on.",
+            },
+            {
+              line: "armResult = waitUntil(..., 3 s)",
+              at: [[0, 0.5]],
+              note: "Waiting on the arm, for three seconds at most.",
+            },
+            {
+              line: "if (armResult.timedOut()) return",
+              at: [[0.5, 0.5]],
+              note: "The arm arrived in time, so the routine goes on.",
+            },
+            {
+              line: "fork(flywheel.runFast())",
+              at: [[0.5, 0.5]],
+              note: "A second fork. vertical() is still running beside it.",
+            },
+            {
+              line: "flywheelResult = waitUntil(..., 3 s)",
+              at: [[0.5, 1.1]],
+              note: "Waiting on the flywheel. Both mechanisms are running underneath.",
+            },
+            {
+              line: "if (flywheelResult.timedOut())",
+              at: [[1.1, 1.1]],
+              note: "Up to speed in time, so no early stop.",
+            },
+            {
+              line: "wait(1 s)  // shoot",
+              at: [[1.1, 2.1]],
+              note: "The shot. Both forked commands keep running.",
+            },
+            {
+              line: "fork(flywheel.stop())",
+              at: [[2.1, 2.1]],
+              note: "stop() replaces runFast() and sends the zero.",
+            },
+          ]}
+          lanes={[
+            {
+              name: "Arm",
+              segments: [
+                { from: 0, to: 2.1, label: "vertical()" },
+                { from: 2.1, to: 2.8, label: "latched · holds", kind: "after" },
+              ],
+            },
+            {
+              name: "Flywheel",
+              segments: [
+                { from: 0.5, to: 2.1, label: "runFast()" },
+                {
+                  from: 2.1,
+                  to: 2.8,
+                  label: "stop sent · coasting",
+                  kind: "after",
+                },
+              ],
+            },
+          ]}
+          end={2.1}
+          total={2.8}
+          endNote="The routine ends. The arm holds on its latched request, and the flywheel coasts down from the zero stop() sent."
+        />
+        <Box variant="concept" title="House rules">
+          <ul className="ml-5 list-disc space-y-2">
+            <li>
+              <strong>A routine</strong> is{" "}
+              <code>
+                Command.noRequirements(coroutine -&gt; body(coroutine))
+              </code>{" "}
+              with <code>.named(...)</code>. The body is a private method, so a{" "}
+              <code>return</code> plainly leaves the routine.
+            </li>
+            <li>
+              <strong>Wait on a condition</strong> with{" "}
+              <code>coroutine.waitUntil(...)</code> and a lambda.
+            </li>
+            <li>
+              <strong>Every wait in an autonomous has a time limit.</strong>
+            </li>
+            <li>
+              <strong>Every exit stops the flywheel</strong> once it has
+              started. The arm needs no stop, because its last position request
+              holds it.
+            </li>
+          </ul>
+        </Box>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Start <strong>WPILib: Hardware Sim Robot Code</strong>, enable
-            Teleoperated, and hold Y.
+            Teleoperated, and hold Y until it prints. Then X, then B.
           </li>
           <li>
             Switch to Autonomous and pick <strong>Raise And Shoot</strong>. That
@@ -348,7 +733,7 @@ coroutine.fork(robot.flywheel.stop());`}
             and run the autonomous again. Put it back.
           </li>
           <li>
-            Change the first line to{" "}
+            Change the first line of <code>raiseAndShoot</code> to{" "}
             <code>coroutine.await(robot.arm.vertical())</code> and run again.
             Put the <code>fork</code> back.
           </li>
@@ -357,12 +742,15 @@ coroutine.fork(robot.flywheel.stop());`}
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>
-              On Y, the flywheel waiting out the arm&apos;s travel, then
-              spinning up with the arm still holding. Release, and it stops.
+              On Y, the arm going up, then down, then{" "}
+              <code>Raise And Lower: done</code> in the console. On X, the
+              flywheel spinning up, holding a second, and stopping. On B, three
+              waves.
             </li>
             <li>
-              In autonomous, the same, then the routine ending a second later.
-              The flywheel coasts down and the arm keeps holding vertical.
+              In autonomous, the arm rising, the flywheel spinning up, and the
+              routine ending a second later. The flywheel coasts down and the
+              arm keeps holding vertical.
             </li>
             <li>
               With the tolerance broken, the routine giving up after three
@@ -371,52 +759,6 @@ coroutine.fork(robot.flywheel.stop());`}
             <li>With the arm awaited, the arm moving and nothing else.</li>
           </ul>
         </Box>
-
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-note">
-            <thead>
-              <tr style={{ borderBottom: "1px solid var(--rule)" }}>
-                <th className="px-3 py-2 text-left">What you see</th>
-                <th className="px-3 py-2 text-left">Cause</th>
-              </tr>
-            </thead>
-            <tbody style={{ color: "var(--tx2)" }}>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  Three seconds, then the routine ends. The arm never gets there
-                </td>
-                <td className="px-3 py-2">
-                  The first wait timed out. The branch ships the arm gains at{" "}
-                  <code>0.0</code>. Tune it first.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">One thing happens, then nothing</td>
-                <td className="px-3 py-2">
-                  A hold inside <code>await</code>.
-                </td>
-              </tr>
-              <tr style={{ borderBottom: "1px solid var(--rule-soft)" }}>
-                <td className="px-3 py-2">
-                  The routine ends and the flywheel keeps spinning
-                </td>
-                <td className="px-3 py-2">
-                  A <code>return</code>, or the last line, with no{" "}
-                  <code>stop()</code> forked before it.
-                </td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2">
-                  <code>cannot find symbol: Seconds</code>
-                </td>
-                <td className="px-3 py-2">
-                  The import is missing, or Spotless stripped it before a line
-                  used it.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </LessonSection>
 
       <Quiz
@@ -426,14 +768,14 @@ coroutine.fork(robot.flywheel.stop());`}
             question:
               "Why does the routine call coroutine.fork(robot.arm.vertical()) instead of coroutine.await(robot.arm.vertical())?",
             options: [
-              "fork is faster than await",
               "fork automatically applies a three-second timeout",
               "await only works on commands that require no mechanisms",
-              "vertical() is a hold and never finishes, so await would stop the routine there permanently",
+              "vertical() uses runRepeatedly and never finishes, so await would never get past that line",
+              "fork is faster than await",
             ],
-            correctAnswer: 3,
+            correctAnswer: 2,
             explanation:
-              "robot.arm.vertical() is built with runRepeatedly. A hold never finishes on its own, so await would sit on that line for the rest of the match. fork starts it and returns at once. The house rule is fork holds, await steps.",
+              "robot.arm.vertical() is built with runRepeatedly, so it never finishes on its own. await would sit on that line for the rest of the match. fork starts it in the background and moves to the next line. Fork what never ends, await what can end.",
           },
           {
             id: 2,
@@ -447,47 +789,47 @@ coroutine.fork(robot.flywheel.stop());`}
             ],
             correctAnswer: 1,
             explanation:
-              "In teleop the driver is the backstop: releasing Y cancels the whole routine. Autonomous has no button and nobody watching the arm, so a jammed mechanism or a tolerance that never comes true stalls the routine for the entire period. The time limit gives it an exit.",
+              "In teleop the driver is the backstop: letting go of Y cancels the whole routine. Autonomous has no button and nobody watching the arm, so a jammed mechanism or a tolerance that never comes true stalls the routine for the entire period. The time limit gives it an exit.",
           },
           {
             id: 3,
             question:
               "You write coroutine.waitUntil(() -> robot.arm.isAtTarget(), Seconds.of(3.0)); and ignore what it returns. The arm jams. What does the routine do?",
             options: [
-              "It carries on to the flywheel and the shot, three seconds later, as though the arm had arrived",
               "It throws, and the scheduler logs a timed-out wait",
               "It sits on that line for the rest of the autonomous period",
               "It cancels itself, because a timed-out wait ends the routine",
+              "It carries on to the flywheel and the shot, three seconds later, as though the arm had arrived",
             ],
-            correctAnswer: 0,
+            correctAnswer: 3,
             explanation:
-              "The time limit ends the wait, not the routine. Execution falls to the next line either way. waitUntil returns a WaitResult so you can tell the two endings apart, so each wait sits inside if (...timedOut()) { return; }.",
+              "The time limit ends the wait, not the routine. Execution falls to the next line either way. waitUntil returns a WaitResult so you can tell the two endings apart, so the routine keeps it in armResult and checks armResult.timedOut().",
           },
           {
             id: 4,
             question:
-              "You write coroutine.waitUntil(robot.arm.isAtTarget()) without the () ->. What happens?",
+              "Why does waitUntil take () -> robot.arm.isAtTarget() instead of robot.arm.isAtTarget()?",
             options: [
-              "It works the same; the () -> is optional",
-              "It waits forever, because the answer is checked only once",
-              "The build fails: boolean cannot be converted to BooleanSupplier",
-              "It skips the wait, because the arm is not at target yet",
+              "The lambda adds a default time limit to the wait",
+              "The lambda makes the check run faster",
+              "The lambda is called again on every loop, so the routine sees the arm arrive. A bare call would give one answer that never changes",
+              "Lambdas are required for any method that returns a boolean",
             ],
             correctAnswer: 2,
             explanation:
-              "Without the lambda, isAtTarget() runs right there and produces one frozen boolean. waitUntil takes a BooleanSupplier, a question it can ask again every loop, so javac rejects the bare boolean.",
+              "waitUntil asks its question again on every loop. Without the () ->, isAtTarget() would run once, right there, and hand over one answer that never changes.",
           },
           {
             id: 5,
             question:
-              "You delete the last line, coroutine.fork(robot.flywheel.stop()), and run the routine. What does the flywheel do after the routine ends?",
+              "You delete the line coroutine.fork(robot.flywheel.stop()) from the X routine. What does the flywheel do after the routine ends?",
             options: [
-              "It stops, because ending the routine cancels runFast()",
               "It keeps spinning at 75 rotations per second, because canceling runFast() sends nothing",
               "It coasts down, because the motor's neutral mode is Coast",
               "It drops to runSlow(), the flywheel's resting speed",
+              "It stops, because ending the routine cancels runFast()",
             ],
-            correctAnswer: 1,
+            correctAnswer: 0,
             explanation:
               "Ending the routine does cancel runFast(), but canceling a command sends nothing to the motor. The last velocity request stays latched and Phoenix keeps holding 75 rotations per second. Forking stop() is what sends the zero.",
           },

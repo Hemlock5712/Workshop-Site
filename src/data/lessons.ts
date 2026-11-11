@@ -71,8 +71,7 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     title: "Routines",
     num: "04",
     blurb:
-      "Put commands in order, end a step when the mechanism arrives, write a routine that holds two things at once, and record what it did.",
-    unfinished: "Still being written. Rough draft based on current code.",
+      "Know when a mechanism has arrived, log it, and write routines that wait on it, for a button and for autonomous.",
   },
   {
     id: "workshop5",
