@@ -11,7 +11,7 @@
  * the code.
  *
  * The timeline replaced `CoroutineTimeline`, an 1100-line node diagram drawn
- * for the autonomous only. This one is data-driven and reads like a Gantt
+ * for the autonomous only. This one is data-driven and reads like a schedule
  * chart: a row per line of the routine, with a bar where the routine sits on
  * that line, and below them a lane per mechanism showing which command owns
  * it. A `fork` is a dot, because it returns on the same loop. A wait is a bar.
@@ -27,8 +27,15 @@
  * keeps doing after the routine has ended (a latched request, or a coast).
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import type { KeyboardEvent, ReactNode } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
 
 export type RoutineStep = {
@@ -77,6 +84,15 @@ export default function RoutineView({
   endNote,
 }: RoutineViewProps) {
   const [tab, setTab] = useState<"code" | "timeline">("code");
+  const id = useId();
+  const tabs = ["code", "timeline"] as const;
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const next = tab === "code" ? "timeline" : "code";
+    setTab(next);
+    document.getElementById(`${id}-tab-${next}`)?.focus();
+  };
 
   return (
     <div
@@ -92,13 +108,17 @@ export default function RoutineView({
           background: "var(--bg2)",
         }}
       >
-        {(["code", "timeline"] as const).map((t) => (
+        {tabs.map((t) => (
           <button
             key={t}
+            id={`${id}-tab-${t}`}
             role="tab"
             type="button"
             aria-selected={tab === t}
+            aria-controls={`${id}-panel-${t}`}
+            tabIndex={tab === t ? 0 : -1}
             onClick={() => setTab(t)}
+            onKeyDown={onKey}
             className="micro px-4 py-2"
             style={{
               color: tab === t ? "var(--accent)" : "var(--tx3)",
@@ -112,12 +132,19 @@ export default function RoutineView({
       </div>
       <div
         role="tabpanel"
+        id={`${id}-panel-code`}
+        aria-labelledby={`${id}-tab-code`}
         hidden={tab !== "code"}
         className="[&>.code-card]:border-0"
       >
         {code}
       </div>
-      <div role="tabpanel" hidden={tab !== "timeline"}>
+      <div
+        role="tabpanel"
+        id={`${id}-panel-timeline`}
+        aria-labelledby={`${id}-tab-timeline`}
+        hidden={tab !== "timeline"}
+      >
         {tab === "timeline" && (
           <Timeline
             steps={steps}
@@ -252,7 +279,7 @@ function Timeline({
   for (let x = 0; x <= total + 1e-6; x += 0.5)
     ticks.push(Math.round(x * 10) / 10);
 
-  // Every track draws its own tick lines, end line and playhead. They line up
+  // Every track draws its own tick lines, end line and time marker. They line up
   // because every track has the same width, and on a phone, where each label
   // sits above its track, nothing has to span rows of a different shape.
   const track = (children: ReactNode, key: string) => (
