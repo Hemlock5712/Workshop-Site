@@ -52,6 +52,7 @@ All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpM
 - **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
 - **Key v3 APIs**: `Mechanism` is an **interface**, so subsystems `implement Mechanism` and get a default `getName()` from the class name; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`; geometry constants are `ZERO`, not `kZero`.
 - **There is no implicit default command.** Alpha-7 stopped registering `idle()` as a mechanism's default, and `Scheduler` only ever populates a default from `setDefaultCommand`. The `Mechanism` javadoc still claims otherwise and is stale. So an unclaimed mechanism has nothing running on it, nothing sends a zero on the way out, and the last request stays latched in the motor controller. Never write that a mechanism "falls back to `idle()`".
+- **The swerve joystick drive default lives in `Robot.java`, not `TeleopOpMode`.** Owner's call, November 2026, matching last year's v2 RobotContainer: `Robot` owns `public final CommandNiDsXboxController driver` and the `FieldCentric` request, and sets the drivetrain default in its constructor, so it applies in every mode. A default set inside an OpMode only lasts while that OpMode runs. `TeleopOpMode` keeps per-mode buttons (`seedFieldCentric` on the left bumper) through `robot.driver`. `seedFieldCentric()` resets only the pose's rotation to the operator's forward (0° blue, 180° red) and leaves X and Y alone. Rebuilt on all seven swerve branches.
 - **`SwerveRequest.Idle` is not a stop.** It does nothing to the module state, so a drive command that ends on Idle leaves every module on its last request and the robot keeps rolling. Stop with a zero-velocity request on the command's own request object, `driveRequest.withVelocity(new ChassisVelocities())`. Idle in a `disabled()` binding is harmless, because disabling cuts output anyway.
 - **Latched requests are taught once.** `/running-program#latched` is the demo, an interactive `LatchedRequestDiagram` (controller, laptop, CANivore, TalonFX: hold, release with and without `whileFalse(stop())`) that replaced the delete-a-`whileFalse` bench step in November 2026, because that step's instructions were wrong. `/mechanisms#configs-and-requests` is the concept. Every other page links to one of them rather than re-explaining canceling-is-not-stopping.
 - **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
@@ -329,11 +330,23 @@ gap between a paragraph and its note. Don't reintroduce the rail.
 
 Lesson order, drawer grouping, the syllabus, and prev/next all come from
 `src/data/lessons.ts` — the single source of truth. The course is organized as
-six workshops with a strict prerequisite boundary: Workshop 1 is entirely in
+seven workshops with a strict prerequisite boundary: Workshop 1 is entirely in
 Tuner X, Java starts at Workshop 2, the first file is written in Workshop 3,
-routines are built in Workshop 4, and autonomous in Workshop 5 does not depend
-on the pose-driving material taught in Workshop 6. Historical side routes can
-remain reachable without appearing in `LESSONS`.
+routines are built in Workshop 4, the swerve drive is generated and tuned in
+Workshop 5, Workshop 6 drives it (autonomous, BLine, Drive to Point), and
+Workshop 7 adds vision (Vision Hardware, Vision, Align to Tag). Historical side
+routes can remain reachable without appearing in `LESSONS`.
+
+**Swerve, Navigation and Vision are three workshops.** Owner's review,
+November 2026, split the old Swerve & Autonomous and Vision & Navigation.
+Workshop 5 is `/swerve-basics` (the components, then robot-centric,
+field-centric, `Pose2d` and odometry, kept short; it replaced How Swerve
+Works), `/swerve-drive-project` (generate only `TunerConstants.java` into the
+prepared project and set the team number) and `/swerve-drive-tuning` (steer
+gains first, then wheel radius, top speed and the drive loop, with
+`OpenLoopVoltage` switched to `Velocity`; Swerve Calibration folded in and its
+module-zeroing material was cut). Drive to Point sits in Navigation, before
+Vision; Align to Tag stays after Vision because it needs it.
 
 **Workshop 4 is Routines, and it renumbered everything after it.** September
 2026: Command Composition, Finish Conditions and Coroutines left the tail of
@@ -428,7 +441,9 @@ on old slides: `/logging-options`, `/logging-implementation`,
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
 `/mechanisms`, `/building-subsystems` → `/mechanisms`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
 `/drive-to-tag-inline` → `/align-to-tag`, `/pathplanner` → `/bline`, `/project-structure` and
-`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`.
+`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`,
+`/swerve-prerequisites` → `/swerve-basics`, `/swerve-calibration` →
+`/swerve-drive-tuning`.
 
 **There is no `/project-structure` or `/git-workflow`.** Both were cut in the
 owner's November 2026 review: Workshop 3 goes from Project Setup straight to
@@ -464,7 +479,7 @@ never that, and merged into `/conditions-and-logging` in November 2026. Both old
 slugs redirect.
 
 **Vision is two lessons, and was one for a month.** September 2026:
-`/vision-hardware` opens Workshop 6 and `/vision-implementation` follows it.
+`/vision-hardware` opens Workshop 7 and `/vision-implementation` follows it.
 The split restores the January 2026 shape that an August 2026 pass collapsed.
 Collapsing them kept the code and dropped the bench work, which left the only
 hardware procedure on the site sitting inside a code lesson, and putting the

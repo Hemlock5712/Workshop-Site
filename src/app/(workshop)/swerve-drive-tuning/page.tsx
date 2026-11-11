@@ -1,5 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
 import LessonSection from "@/components/lesson/LessonSection";
+import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import DocumentationButton from "@/components/DocumentationButton";
 import Quiz from "@/components/Quiz";
@@ -9,58 +10,94 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/swerve-drive-tuning");
 
 /**
- * The second half of the old `/swerve-calibration`, split in October 2026 when
- * that page ran 14.9 minutes across 18 steps. The seam is the floor: the first
- * half happens with the robot square on a bench and Tuner X reading sensors,
- * this half happens on six meters of carpet with a tape measure and a live
- * AdvantageScope plot. 1-Swerve publishes Drivetrain/* through Telemetry but never
- * starts DataLogManager, so there is no .wpilog to open.
+ * Everything you tune in the generated `TunerConstants.java` after exporting
+ * it. Owner's review, November 2026 (Recording 11): `/swerve-calibration` was
+ * deleted and its steer-gain section moved here as the first step. Its module
+ * zeroing and "three kinds of zeroing" went with it: the generator's own
+ * encoder calibration sets the offsets, and seedFieldCentric is explained on
+ * `/swerve-drive-project`. `/swerve-calibration` 308s here.
  *
- * Moved here unchanged in substance: the three carpet measurements (wheel
- * radius, top speed, slip current), every number they carry (2.167 in, 4.54
- * m/s, 120 A stator, 70 A supply, driveGains kP 0.2 / kV 0.124, the 10%
- * deadband and the 0.45 m/s it costs), the stall-heat safety on the wall push,
- * the CTRE wheel-slip reference, closing the drive loop, the square check, and five of the six old quiz questions. The sixth,
- * on `seedFieldCentric()`, duplicated `/swerve-drive-project` Q5 and is gone.
+ * Order: steer gains, then wheel radius (low priority, only if the wheels
+ * differ from what the generator was told), then top speed and slip current,
+ * then the drive gains and the switch from `OpenLoopVoltage` to `Velocity`.
+ * The owner wanted the voltage default stated plainly: CTRE's generated teleop
+ * request is open loop, and nothing on the drive motors is a velocity loop
+ * until you change it.
  *
- * Owner-style pass, November 2026: cut the inverted-ratio and gear-ratio
- * diagnostics, the kV/kS gap reading, the "too low costs acceleration" note,
- * and the two symptom cards under the square check.
- *
- * "The robot template" is not cited here: 2027-Template is not a source for
- * this site. What ships open loop is `1-Swerve`, `2-Logging`, and the project
- * the Tuner X generator writes.
+ * Every `TunerConstants` snippet matches `1-Swerve`'s generated file. The
+ * gains shown are the generator's defaults, not ours. 1-Swerve publishes
+ * Drivetrain/* through Telemetry but never starts DataLogManager, so every
+ * measurement here is read off a live AdvantageScope plot.
  */
 export default function SwerveDriveTuning() {
   return (
     <PageTemplate
       title="Swerve Drive Tuning"
-      lede="Three measurements on carpet replace the drive numbers the generator guessed: wheel radius, top speed, and the current where a tire lets go. Then the drive motors get a real velocity loop."
+      lede="The generator gave you a TunerConstants.java with guessed gains and measurements. This lesson tunes the steer motors, checks the wheel radius, measures top speed and slip current, then closes the drive loop."
       needs={[
         <>
-          Modules zeroed and steer gains tuned, from{" "}
-          <strong>Swerve Calibration</strong>.
+          A swerve robot you can drive, from{" "}
+          <strong>Swerve Project Generator</strong>.
         </>,
-        <>
-          AdvantageScope connected to the robot. Two of the measurements are
-          read off a live plot.
-        </>,
+        <>AdvantageScope connected to the robot, for live plots.</>,
         <>Phoenix Tuner X, and six meters of clear carpet.</>,
         <>A tape measure, and a wall you may push against.</>,
       ]}
-      time="10 minutes"
+      time="12 minutes"
     >
+      <LessonSection id="steer-gains" title="Tune the steer gains">
+        <p>
+          A steering motor holds an angle. That is a position loop with no
+          gravity to fight, so skip kG and start at kS. The generator gave you
+          real numbers. Adjust them rather than starting from zero.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          code={`private static final Slot0Configs steerGains =
+    new Slot0Configs()
+        .withKP(100)
+        .withKI(0)
+        .withKD(0.5)
+        .withKS(0.1)
+        .withKV(1.91)
+        .withKA(0)
+        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);`}
+        />
+        <p>
+          Follow{" "}
+          <a
+            href="/pid-control#feedforward-first"
+            className="font-semibold underline decoration-1 underline-offset-2"
+            style={{ color: "var(--accent)" }}
+          >
+            the order from the PID page
+          </a>
+          . kS is the smallest output that breaks the module loose. Raise kP
+          until it oscillates, then back off. Add kD, as much as you can get
+          without jitter. Change one number per test, and redeploy after each.
+        </p>
+        <p>
+          <code>DriveMechanism</code> publishes{" "}
+          <code>Drivetrain/ModuleStates</code> and{" "}
+          <code>Drivetrain/ModuleTargets</code>. Put the angle from both on one
+          AdvantageScope plot and flick the right stick. Tuned looks like two
+          traces on top of each other. Untuned lags, overshoots, or buzzes.
+        </p>
+      </LessonSection>
+
       <LessonSection id="measure-the-drivetrain" title="Wheel radius">
         <p>
-          Measure the radius and the top speed while the drive request is still
-          open-loop voltage: <code>kSpeedAt12Volts</code> means the speed at 12
-          volts applied.
+          The generator asked for your wheel size, so if your modules use the
+          wheels you told it about, <code>kWheelRadius</code> is already close
+          enough. Measure it only if you changed wheels, or if odometry reads
+          long or short against a tape measure.
         </p>
-        <p>
-          Odometry counts wheel rotations and multiplies by a radius. You want
-          the effective one: the wheel squashed under the robot&apos;s weight
-          and sunk into carpet.
-        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          code={`private static final Distance kWheelRadius = Inches.of(2.167);`}
+        />
         <ol className="ml-5 list-decimal space-y-2">
           <li>
             Tape the floor at the robot&apos;s front edge. Restart the code so{" "}
@@ -103,9 +140,9 @@ export default function SwerveDriveTuning() {
 
       <LessonSection id="top-speed-and-slip" title="Top speed and slip current">
         <p>
-          Do the radius first, because this speed is wheel rotations times that
-          radius. Find six meters of clear floor on the surface you compete on.
-          Carpet and a shop floor give different answers.
+          Measure these while the drive request is still open-loop voltage:{" "}
+          <code>kSpeedAt12Volts</code> means the speed at 12 volts applied. Use
+          six meters of clear floor on the surface you compete on.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -117,12 +154,6 @@ export default function SwerveDriveTuning() {
             plateau, not the spike.
           </li>
         </ol>
-        <p>
-          That number goes in <code>kSpeedAt12Volts</code>. It measures the
-          robot. The driver cap is <code>maxSpeed</code> in{" "}
-          <code>TeleopOpMode</code>, which reads it straight back.
-        </p>
-
         <p>
           Stator current is proportional to torque, so a stator limit caps how
           hard a wheel twists. Set it where the tire loses grip.
@@ -141,7 +172,9 @@ export default function SwerveDriveTuning() {
         <p>
           Current climbs while velocity sits at zero. Then velocity jumps and
           current drops in the same instant. That is the tire letting go. Read
-          the current at the top of the climb, just before the drop.
+          the current at the top of the climb, just before the drop. The shipped
+          120 A is itself a stator limit. If the trace flattens there and the
+          wheel never breaks loose, raise the constant for now and ramp again.
         </p>
         <Box variant="alert-danger" title="Stalled motors get hot fast">
           <p>
@@ -150,13 +183,16 @@ export default function SwerveDriveTuning() {
             the disable, somebody else on the laptop.
           </p>
         </Box>
-        <p>
-          That number goes in <code>kSlipCurrent</code>. You may be measuring
-          the limit, not the tire. The shipped 120 A is itself a stator limit,
-          and <code>driveInitialConfigs</code> sets 70 A on the supply. If the
-          trace flattens at 120 A and the wheel never breaks loose, raise the
-          constant temporarily and ramp again.
-        </p>
+        <p>Both numbers go in the same file:</p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          code={`private static final Current kSlipCurrent = Amps.of(120);
+
+// ...
+
+public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
+        />
         <DocumentationButton
           href="https://v6.docs.ctr-electronics.com/en/stable/docs/hardware-reference/talonfx/improving-performance-with-current-limits.html#preventing-wheel-slip"
           title="CTRE: Preventing Wheel Slip with Current Limits"
@@ -166,8 +202,14 @@ export default function SwerveDriveTuning() {
 
       <LessonSection id="close-the-drive-loop" title="Close the drive loop">
         <p>
-          A drive motor holds a speed. On a velocity loop the feedforward does
-          nearly all of the work.{" "}
+          CTRE&apos;s generated teleop request drives with{" "}
+          <code>DriveRequestType.OpenLoopVoltage</code>, not velocity. The stick
+          position goes straight to volts, and the drive gains below do nothing
+          until you switch it.
+        </p>
+        <p>
+          Tune the drive gains first. A drive motor holds a speed, and on a
+          velocity loop the feedforward does nearly all of the work.{" "}
           <a
             href="/pid-control#feedforward-first"
             className="font-semibold underline decoration-1 underline-offset-2"
@@ -175,51 +217,41 @@ export default function SwerveDriveTuning() {
           >
             The order
           </a>{" "}
-          is kV, then kS, then kP. The file starts you at kP 0.2 and kV 0.124.
+          is kV, then kS, then kP. Tune on the ground, not on blocks: a wheel in
+          the air carries no load.
         </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          code={`private static final Slot0Configs driveGains =
+    new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKS(0).withKV(0.124);`}
+        />
         <p>
-          Tune it on the ground, not on blocks. A wheel in the air carries no
-          load, and gains found there will not hold a speed under a robot.
+          Then switch the request. Find the{" "}
+          <code>SwerveRequest.FieldCentric</code> that the joystick drive
+          default command uses, and change its last line. If the robot drives
+          worse than it did on volts, go back to the gains.
         </p>
-
-        <h4 className="display m-0 text-ui">Switch the drive request</h4>
+        <CodeBlock
+          language="java"
+          title="The joystick drive request"
+          code={`private final SwerveRequest.FieldCentric drive =
+    new SwerveRequest.FieldCentric()
+        .withDeadband(maxSpeed * 0.1)
+        .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
+        .withDriveRequestType(DriveRequestType.Velocity); // was OpenLoopVoltage`}
+          highlightLines={[5]}
+        />
         <p>
-          Up to here the stick position went straight to volts. In{" "}
-          <code>TeleopOpMode.java</code>, change{" "}
-          <code>DriveRequestType.OpenLoopVoltage</code> to{" "}
-          <code>DriveRequestType.Velocity</code>. It comes from the same class,
-          so the import already covers it.
+          The same request throws away the bottom 10% of both sticks. At 4.54
+          m/s that is everything under about 0.45 m/s, which a tuned velocity
+          loop can hold. Shrink the deadband rather than deleting it, because it
+          keeps a worn stick&apos;s drift from creeping the robot across the
+          field. Put the robot on blocks, take your hands off the controller,
+          and watch the speed component of <code>Drivetrain/ModuleTargets</code>
+          . Halve the deadband and redeploy until those targets start twitching,
+          then go back one value.
         </p>
-        <p>
-          Make it last. If the robot drives worse than it did on volts, go back
-          to the gains.
-        </p>
-
-        <h4 className="display m-0 text-ui">The deadband</h4>
-        <p>
-          The same request line sets <code>withDeadband(maxSpeed * 0.1)</code>{" "}
-          and <code>withRotationalDeadband(maxAngularRate * 0.1)</code>,
-          throwing away the bottom 10% of both sticks. At 4.54 m/s that is
-          everything under about 0.45 m/s. A tuned velocity loop can hold those
-          speeds, so the deadband now discards control you paid for. Shrink it
-          rather than deleting it: the deadband keeps a worn stick&apos;s drift
-          from creeping the robot across the field.
-        </p>
-        <ol className="ml-5 list-decimal space-y-2">
-          <li>
-            Put the robot on blocks. Enable, and take your hands off the
-            controller.
-          </li>
-          <li>
-            Watch the speed component of <code>Drivetrain/ModuleTargets</code>.
-            It should be flat zero.
-          </li>
-          <li>
-            Halve the deadband, redeploy, repeat. When the targets start
-            twitching, go back one value.
-          </li>
-        </ol>
-        <p>Set it per controller, for the worst one you will compete with.</p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -231,10 +263,8 @@ export default function SwerveDriveTuning() {
         <Box variant="alert-success" title="You should see">
           <p>
             The robot back on the tape, and <code>Drivetrain/Pose</code> near
-            (0, 0) after twelve meters. In AdvantageScope, measured module
-            traces sitting on the commanded ones through all four corners. Hands
-            off the sticks, the speed component of{" "}
-            <code>Drivetrain/ModuleTargets</code> flat at zero.
+            (0, 0). Commanded and measured module angles on top of each other
+            through all four corners.
           </p>
         </Box>
       </LessonSection>
@@ -244,16 +274,16 @@ export default function SwerveDriveTuning() {
           {
             id: 1,
             question:
-              "What does the drive request in TeleopOpMode.java read before you edit it?",
+              "What drive request type does CTRE's generated teleop request use before you edit it?",
             options: [
-              "DriveRequestType.Velocity, because the branch closed the loop for you",
+              "DriveRequestType.Velocity, so the drive gains are active from the start",
               "DriveRequestType.OpenLoopVoltage, and switching it is the last edit on this page",
               "Nothing. Phoenix picks the closed-loop version once the gains are non-zero.",
               "It depends whether you generated the project in Tuner X or downloaded it",
             ],
             correctAnswer: 1,
             explanation:
-              "The downloaded project and the one the Tuner X generator writes both ship DriveRequestType.OpenLoopVoltage. You make the change yourself, and you make it after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
+              "The generated request is open-loop voltage: the stick goes straight to volts and driveGains does nothing. You switch it to Velocity yourself, after the drive gains are tuned. Velocity with untuned gains chases a speed the motor cannot hold, which drives worse than plain voltage.",
           },
           {
             id: 2,
@@ -267,21 +297,21 @@ export default function SwerveDriveTuning() {
             ],
             correctAnswer: 3,
             explanation:
-              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went less far than it reported, so the squashed wheel is smaller than the number in the file and the radius goes down. Option b is the same ratio inverted: it widens the gap instead of closing it, and that is how you spot the error. Slip also makes odometry read high, because a spinning wheel counts distance the robot never travels. That is why the run is slow: drive gently and the gap is the radius, not slip.",
+              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went less far than it reported, so the radius in the file is too big and goes down. The run is slow so the gap is the radius, not wheel slip.",
           },
           {
             id: 3,
             question:
-              "Why does the wheel radius get measured before top speed?",
+              "You flick the right stick and plot commanded against measured module angle. What does a tuned steer loop look like?",
             options: [
-              "The plotted speed is wheel rotations times that radius, so a wrong radius gives a wrong speed",
-              "AdvantageScope can only plot one drivetrain signal per run",
-              "Top speed has to be measured with the wheels off the ground",
-              "Order does not matter, because the radius affects distance and not speed",
+              "Two traces on top of each other",
+              "The measured trace a steady few degrees behind the command",
+              "The measured trace overshooting and settling within a second",
+              "A flat measured trace, since the module should resist the command",
             ],
             correctAnswer: 0,
             explanation:
-              "Drivetrain/TranslationSpeedMps comes from the same wheel rotations and the same radius odometry uses for distance. Read the plateau first and you have measured it through a radius you are about to change. Both measurements also have to happen before the drive request becomes Velocity, because kSpeedAt12Volts means the speed at 12 volts applied.",
+              "The steer loop's job is to put the wheel where the drivetrain asked, immediately. Lag, overshoot and buzz are the three ways it falls short. Raise kP until it oscillates and back off, then add kD until just before it jitters.",
           },
           {
             id: 4,
@@ -295,7 +325,7 @@ export default function SwerveDriveTuning() {
             ],
             correctAnswer: 2,
             explanation:
-              "While the tire grips, the wheel cannot turn: velocity stays at zero and current keeps climbing with torque. The jump is the tire letting go, and the peak just before it is the slip point. If the trace flattens at 120 A and the wheel never breaks loose, you are reading the shipped stator limit rather than your carpet. Raise the constant and ramp again.",
+              "While the tire grips, the wheel cannot turn: velocity stays at zero and current keeps climbing with torque. The jump is the tire letting go, and the peak just before it is the slip point.",
           },
           {
             id: 5,
@@ -309,7 +339,7 @@ export default function SwerveDriveTuning() {
             ],
             correctAnswer: 1,
             explanation:
-              "At 4.54 m/s, 10% throws away everything under about 0.45 m/s, and a tuned velocity loop holds speeds that low. Zero deadband hands the robot every bit of a worn stick's drift instead. Halve it with the robot on blocks and your hands off the controller until the speed component of Drivetrain/ModuleTargets starts twitching, then go back one value.",
+              "A tuned velocity loop holds speeds under 0.45 m/s, so 10% throws away real control. Zero deadband hands the robot every bit of a worn stick's drift instead.",
           },
         ]}
       />

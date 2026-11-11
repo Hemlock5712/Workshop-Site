@@ -118,12 +118,10 @@ public class LeaveStartAuto extends PeriodicOpMode {
           command is called in the scheduler and on the dashboard.
         </p>
         <p>
-          This OpMode sets no default command. When the routine ends, the wheels
-          carry on at the last speed they were given, because{" "}
-          <a href="/running-program#latched" className="underline">
-            requests stay latched
-          </a>
-          . That is why <code>stopped</code> is sent twice. The last line of the
+          When the routine ends, the joystick default from{" "}
+          <code>Robot.java</code> takes the drivetrain back, and centered sticks
+          ask for zero. The routine still sends <code>stopped</code> itself, so
+          it does not depend on nobody touching the sticks. The last line of the
           coroutine covers a routine that runs to the end. A cancel skips that
           line, so <code>whenCanceled</code> sends the same zero.
         </p>
@@ -205,16 +203,16 @@ public class LeaveStartAuto extends PeriodicOpMode {
           {
             id: 1,
             question:
-              "You delete the setControl(stopped) line after the wait and run Leave Start on blocks. What do the wheels do after 1.5 seconds?",
+              "You delete the setControl(stopped) line after the wait and run Leave Start on blocks, hands off the controller. What do the wheels do after 1.5 seconds?",
             options: [
-              "They stop, because the command ends when the coroutine returns",
-              "They stop, because autonomous sets a default command",
-              "They keep turning at 1 m/s, because the last request stays latched and nothing replaces it",
+              "They stop, because ending a command sends zero to its motors",
+              "They keep turning at 1 m/s forever, because the last request stays latched",
+              "They stop, because Robot's joystick default takes the drivetrain back and centered sticks ask for zero",
               "They slow down gradually as the battery sags",
             ],
             correctAnswer: 2,
             explanation:
-              "The coroutine returns and the command ends, and ending a command sends nothing to the motors. This OpMode sets no default, so nothing claims the drivetrain afterwards. The zero-speed request is what replaces the moving one.",
+              "Ending a command sends nothing to the motors. What stops the wheels is the joystick default set in Robot.java, which applies in every mode: it claims the drivetrain once the routine ends, and centered sticks ask for zero. The routine sends stopped itself anyway, so it never relies on the sticks.",
           },
           {
             id: 2,

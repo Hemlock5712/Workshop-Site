@@ -255,7 +255,7 @@ export default function Home() {
             color: "var(--tx3)",
           }}
         >
-          {LESSON_COUNT} lessons · six workshops · one code repository
+          {LESSON_COUNT} lessons · seven workshops · one code repository
         </p>
       </section>
 

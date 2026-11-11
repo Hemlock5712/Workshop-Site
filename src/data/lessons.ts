@@ -12,7 +12,8 @@ export type LessonSectionId =
   | "workshop3"
   | "workshop4"
   | "workshop5"
-  | "workshop6";
+  | "workshop6"
+  | "workshop7";
 
 export interface Lesson {
   slug: Route;
@@ -75,18 +76,26 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
   },
   {
     id: "workshop5",
-    title: "Swerve & Autonomous",
+    title: "Swerve",
     num: "05",
     blurb:
-      "Generate and calibrate a swerve drive, plan a path, and run an autonomous OpMode.",
+      "Learn the parts and the terms, generate TunerConstants, and tune the drive.",
     unfinished: "Still being written. Rough draft based on current code.",
   },
   {
     id: "workshop6",
-    title: "Vision & Navigation",
+    title: "Navigation",
     num: "06",
     blurb:
-      "Add vision, drive to field poses, profile the motion, and plan around obstacles.",
+      "Run an autonomous, follow BLine paths, and drive to a pose on the field.",
+    unfinished: "Still being written. Rough draft based on current code.",
+  },
+  {
+    id: "workshop7",
+    title: "Vision",
+    num: "07",
+    blurb:
+      "Mount a camera, correct odometry with AprilTags, and line up on a tag.",
     unfinished: "Still being written. Rough draft based on current code.",
   },
 ];
@@ -206,10 +215,13 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     section: "workshop4",
   },
 
-  // Workshop 5: Swerve & Autonomous
+  // Workshop 5: Swerve. Owner's review, November 2026, split the old
+  // Swerve & Autonomous and Vision & Navigation into Swerve, Navigation and
+  // Vision. How Swerve Works became Swerve Basics (components, then terms),
+  // and Swerve Calibration folded into Swerve Drive Tuning.
   {
-    slug: "/swerve-prerequisites",
-    title: "How Swerve Works",
+    slug: "/swerve-basics",
+    title: "Swerve Basics",
     section: "workshop5",
   },
   {
@@ -218,49 +230,44 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     shortLabel: "Swerve Setup",
     section: "workshop5",
   },
-  {
-    slug: "/swerve-calibration",
-    title: "Swerve Calibration",
-    section: "workshop5",
-  },
-  // Split from Swerve Calibration in October 2026, when it ran 18 steps and
-  // 15 minutes: zeroing and steer gains stay there, and the carpet
-  // measurements and drive loop come here.
+  // Steer gains first, then wheel radius, top speed and the drive loop.
   {
     slug: "/swerve-drive-tuning",
     title: "Swerve Drive Tuning",
     section: "workshop5",
   },
-  // Autonomous comes first: it drives a timed routine with no library, so a
-  // student has a working auto before BLine adds paths on top of it.
+  // Workshop 6: Navigation. Autonomous comes first: it drives a timed routine
+  // with no library, so a student has a working auto before BLine adds paths
+  // on top of it.
   {
     slug: "/autonomous",
     title: "Autonomous",
-    section: "workshop5",
+    section: "workshop6",
   },
   // Replaced PathPlanner in November 2026; /pathplanner redirects here.
-  { slug: "/bline", title: "BLine Paths", section: "workshop5" },
+  { slug: "/bline", title: "BLine Paths", section: "workshop6" },
+  // November 2026: every on-the-fly drive is a one-waypoint BLine path.
+  // Drive to Point aims it at a field pose. Profiled Drive to Point is gone:
+  // BLine already profiles, so it had nothing left to teach.
+  { slug: "/drive-to-point", title: "Drive to Point", section: "workshop6" },
 
-  // Workshop 6: Vision & Navigation. Vision is two lessons again, as it was
+  // Workshop 7: Vision. Vision is two lessons again, as it was
   // until August 2026: the bench work has no Java in it and the code lesson
   // has no screwdriver in it, and folding them together left one hardware
   // procedure stranded inside a code page.
   {
     slug: "/vision-hardware",
     title: "Vision Hardware",
-    section: "workshop6",
+    section: "workshop7",
   },
   {
     slug: "/vision-implementation",
     title: "Vision",
-    section: "workshop6",
+    section: "workshop7",
   },
-  // November 2026: every on-the-fly drive is a one-waypoint BLine path.
-  // Drive to Point aims it at a field pose; Align to Tag aims it at a spot
-  // measured from one tag. Profiled Drive to Point is gone: BLine already
-  // profiles, so it had nothing left to teach.
-  { slug: "/drive-to-point", title: "Drive to Point", section: "workshop6" },
-  { slug: "/align-to-tag", title: "Align to Tag", section: "workshop6" },
+  // Align to Tag is the Drive to Point call aimed at a spot measured from one
+  // tag, so it sits after Vision, which it needs.
+  { slug: "/align-to-tag", title: "Align to Tag", section: "workshop7" },
 ];
 
 const SLUG_INDEX: ReadonlyMap<string, number> = new Map(
