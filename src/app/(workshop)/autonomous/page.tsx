@@ -140,7 +140,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
           A wait is the only finish line available here.{" "}
           <code>DriveMechanism</code> reports its pose, but nothing on it
           answers <em>am I there yet</em> the way{" "}
-          <code>robot.arm.isAtTarget()</code> did on Finish Conditions.
+          <code>robot.arm.isAtTarget()</code> did on Conditions and Logging.
         </p>
         <p>
           Two names go into this file and they do different jobs. The one in the

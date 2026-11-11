@@ -169,9 +169,9 @@ git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-3-Motion
   the button is released, and only then swaps the request for one that names a
   target. Every gain on the branch ships at `0.0`, so a fresh clone holds still
   and the student's own generated config is what makes it move.
-- `2-Logging`, on the swerve chain, is also embedded by no page. `/logging-implementation`
-  hand-writes its blocks and teaches the arm, so that branch is the wrong
-  parent for it.
+- `2-Logging`, on the swerve chain, is also embedded by no page. Logging is
+  taught on `/conditions-and-logging` against `mech-4-ReadingState`, so that
+  branch is the wrong parent for it.
 
 ## Lesson videos (`videos-next/`)
 
@@ -340,18 +340,28 @@ remain reachable without appearing in `LESSONS`.
 Workshop 3, Logging came up from the old Workshop 6 to join them, and Swerve
 and Vision shifted to 5 and 6. Workshop 3 is about making one mechanism work
 and stops at Motion Magic in Code; Workshop 4 is about making several cooperate
-with no driver holding a button, and Logging closes it because a routine that
-runs unattended is the first thing a student cannot debug by watching. The
-group was called Advanced Commands when it held State Machines. Two of its four
-lessons are not commands, so it is named for what a student builds.
+with no driver holding a button. The group was called Advanced Commands when
+it held State Machines, and is named for what a student builds.
+
+**Finish Conditions and Logging are one lesson, `/conditions-and-logging`.**
+Owner's call, November 2026: Finish Conditions had shrunk to three getters
+nothing called, and Logging sat after the routine it exists to explain. The
+merged lesson is `mech-4-ReadingState`: tolerance and the three getters, then
+`DataLogManager.start()` + `DriverStation.startDataLog(...)` in the `Robot`
+constructor, then each mechanism `implements Mechanism, TelemetryLoggable` with
+an `@Override logTo(TelemetryTable table)` that logs the getters, `AtTarget`
+and `AppliedVolts`, and `Robot.robotPeriodic()` calls
+`Telemetry.log("Arm", arm)` after the scheduler. The old private `record()` +
+`Scheduler.getDefault().addPeriodic(...)` shape is gone. Values go through
+`.in(Unit)`: a bare `Measure` logs in its base unit, radians for an `Angle`.
+Sim-verified: all eight `NT:/Telemetry/...` entries land in the `.wpilog`.
+Both old slugs 308 here, and Coroutines follows it.
 
 **There is no `/chaining-commands`, and routines are coroutines only.**
 Owner's call, November 2026: Commands v3 composes with coroutines, so Command
 Composition (`Command.sequence`, `Command.race`, `.withTimeout`) was cut, and
 Finish Conditions lost `.until(...)` and the builder-versus-`Command` `.named`
-ordering. No mech branch ever used any of them. Finish Conditions is now only
-the arrival question (`isAtTarget()` and its tolerance), checked on a Tuner X
-plot because nothing calls it yet. Coroutines owns every routine: the core
+ordering. No mech branch ever used any of them. Coroutines owns every routine: the core
 calls (`fork`, `waitUntil`, `await`, `wait`; `yield` and the hand-written
 `while` loop were cut), the Y button in `MyTeleop` with an unbounded wait,
 then `RaiseAndShootOpMode` with a time limit on every wait. To match,
@@ -370,9 +380,8 @@ replaced `4-DynamicFlywheel`. Builds and starts in sim; not verified on
 hardware.
 
 **There is no `/testing`.** Cut in the owner's November 2026 review: no
-entry-level team will write JUnit tests. Logging now closes Workshop 4. The
-`mech-6-Testing` branch was deleted with it.
-The slug 308s to `/logging-implementation`.
+entry-level team will write JUnit tests. The `mech-6-Testing` branch was
+deleted with it. The slug 308s to `/conditions-and-logging`.
 
 **There is no `/state-based`.** State Machines was retired in September 2026 and
 the page is deleted: `StateMachine` shipped in alpha-6, but there is no
@@ -406,14 +415,13 @@ gone, and nothing here linked to them. Don't reintroduce it, and don't confuse
 it with `/bline`, which is a lesson and stays.
 
 **Retired slugs, kept as 308 redirects in `next.config.ts`** — they're printed
-on old slides: `/logging-options` → `/logging-implementation`,
+on old slides: `/logging-options`, `/logging-implementation`,
+`/finish-conditions`, `/finish-lines` and `/testing` → `/conditions-and-logging`,
 `/vision-options` → `/vision-hardware`, `/ai-assistant` →
 `/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
-`/mechanisms`, `/building-subsystems` → `/mechanisms`, `/finish-lines` →
-`/finish-conditions`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
+`/mechanisms`, `/building-subsystems` → `/mechanisms`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
 `/drive-to-tag-inline` → `/align-to-tag`, `/pathplanner` → `/bline`, `/project-structure` and
-`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`, `/testing` →
-`/logging-implementation`.
+`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`.
 
 **There is no `/project-structure` or `/git-workflow`.** Both were cut in the
 owner's November 2026 review: Workshop 3 goes from Project Setup straight to
@@ -445,7 +453,8 @@ year after Commands v3 renamed the thing and the lesson title already said
 "Mechanisms"; its screenshots moved to `public/images/mechanisms/`, beside the
 arm and flywheel photos the home page uses. `/finish-lines` became
 `/finish-conditions`, because "finish lines" was a metaphor and the title was
-never that. Both old slugs redirect.
+never that, and merged into `/conditions-and-logging` in November 2026. Both old
+slugs redirect.
 
 **Vision is two lessons, and was one for a month.** September 2026:
 `/vision-hardware` opens Workshop 6 and `/vision-implementation` follows it.

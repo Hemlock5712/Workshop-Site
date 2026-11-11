@@ -178,40 +178,32 @@ export const LESSONS: ReadonlyArray<Lesson> = [
     shortLabel: "Motion Magic Code",
     section: "workshop3",
   },
-  // Workshop 4: Routines. Arrival checks and coroutines are
+  // Workshop 4: Routines. Arrival checks, the log and coroutines are
   // arm-and-flywheel lessons that need nothing but the bench project, and they
   // carry the chain from `mech-3-MotionMagic` through `mech-4-ReadingState` to
-  // `mech-5-Coroutines`. They spent a while filed under Swerve, where they sat
-  // behind four lessons of drivetrain a student does not need in order to make
-  // two commands run in order.
+  // `mech-5-Coroutines`.
   //
   // They are their own workshop rather than the tail of Robot Programming
   // because Workshop 3 is about making one mechanism work and this is about
-  // making several of them cooperate without a driver. The group was called
-  // Advanced Commands when it held State Machines; two of the four are not
-  // commands at all, so it is named for what a student builds instead.
+  // making several of them cooperate without a driver.
+  //
+  // November 2026: Finish Conditions and Logging merged. The getters are
+  // logged as soon as they are written, so `AtTarget` in the log is the
+  // lesson's check, and Coroutines starts with a log already running. Logging
+  // used to close the workshop, after the routine it exists to explain.
   {
-    slug: "/finish-conditions",
-    title: "Finish Conditions",
+    slug: "/conditions-and-logging",
+    title: "Conditions and Logging",
     section: "workshop4",
   },
-  // Coroutines follows Finish Conditions because its waits are built out of
-  // `isAtTarget()`. It is the only place the course builds a routine:
-  // Command Composition was cut in November 2026, because Commands v3
-  // composes with coroutines. `mech-5-Coroutines` writes the Y button, then
-  // the same routine in autonomous, where every wait is bounded.
+  // Coroutines follows because its waits are built out of `isAtTarget()`. It
+  // is the only place the course builds a routine: Command Composition was cut
+  // in November 2026, because Commands v3 composes with coroutines.
+  // `mech-5-Coroutines` writes the Y button, then the same routine in
+  // autonomous, where every wait is bounded.
   {
     slug: "/coroutines",
     title: "Coroutines",
-    section: "workshop4",
-  },
-  // Logging closes the workshop rather than sitting five lessons past the
-  // autonomous routine it exists to explain. A routine that runs unattended is
-  // the first thing a student cannot debug by watching, so the log is what
-  // replaces the eyes on the mechanism.
-  {
-    slug: "/logging-implementation",
-    title: "Logging",
     section: "workshop4",
   },
 

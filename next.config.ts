@@ -166,7 +166,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/logging-options",
-        destination: "/logging-implementation",
+        destination: "/conditions-and-logging",
         permanent: true,
       },
       // `/vision-options` was the hardware-and-comparison half of the old
@@ -213,7 +213,7 @@ const nextConfig: NextConfig = {
       // printed slides.
       {
         source: "/finish-lines",
-        destination: "/finish-conditions",
+        destination: "/conditions-and-logging",
         permanent: true,
       },
       {
@@ -236,10 +236,22 @@ const nextConfig: NextConfig = {
       },
       {
         // Testing was cut in the owner's November 2026 review: no entry-level
-        // team will write JUnit tests. Logging is the lesson before it and
-        // now closes Workshop 4.
+        // team will write JUnit tests. It followed Logging, which now lives
+        // in Conditions and Logging.
         source: "/testing",
-        destination: "/logging-implementation",
+        destination: "/conditions-and-logging",
+        permanent: true,
+      },
+      {
+        // Finish Conditions and Logging merged in the owner's November 2026
+        // review: the getters are logged as soon as they are written.
+        source: "/finish-conditions",
+        destination: "/conditions-and-logging",
+        permanent: true,
+      },
+      {
+        source: "/logging-implementation",
+        destination: "/conditions-and-logging",
         permanent: true,
       },
       {
