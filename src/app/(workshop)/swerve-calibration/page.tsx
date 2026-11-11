@@ -26,6 +26,10 @@ export const metadata = lessonMetadata("/swerve-calibration");
  * and the new quiz cover only what this half teaches. The old Q2, on
  * `seedFieldCentric()`, duplicated `/swerve-drive-project` Q5 and became a
  * question about `resetPose` instead.
+ *
+ * November 2026, pre-review pass in the owner's style: cut the closing
+ * "a consistent curve points at a module zero" diagnosis and its quiz
+ * question, and trimmed the "You should see" to what a student observes.
  */
 export default function SwerveCalibration() {
   return (
@@ -157,35 +161,15 @@ export default function SwerveCalibration() {
         </ol>
         <Box variant="alert-success" title="You should see">
           <p>
-            The robot tracking the line with no steady curve to either side.
-            Commanded and measured module angles sitting on top of each other
-            through every flick. After the bumper, forward moves to the new
-            facing, and x and y do not change.
+            The robot tracking the line. Commanded and measured module angles on
+            top of each other through every flick. After the bumper, forward
+            moves to the new facing, and x and y do not change.
           </p>
         </Box>
-        <p>
-          A consistent curve to one side points at a module zero first, so put
-          the straight edge back on and re-save. A wander that comes and goes
-          points at the steer gains.
-        </p>
       </LessonSection>
 
       <Quiz
         questions={[
-          {
-            id: 1,
-            question:
-              "After zeroing, the robot drives a steady curve to the left on every run. What do you do?",
-            options: [
-              "Raise the steer kP until the curve goes away",
-              "Put the straight edge back on and re-save the module zeros",
-              "Lower kWheelRadius on the left side",
-              "Press the left bumper to reset forward before each run",
-            ],
-            correctAnswer: 1,
-            explanation:
-              "A curve that is the same every time is a module that thinks straight is a degree or so off straight. That points at an offset, and re-zeroing against the straight edge is the first thing to try. A wander that comes and goes points at the steer gains. The bumper changes which way the sticks call forward, not how a module points.",
-          },
           {
             id: 2,
             question:

@@ -3,7 +3,6 @@ import LessonSection from "@/components/lesson/LessonSection";
 import CodeBlock from "@/components/CodeBlock";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
-import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import Link from "next/link";
 import { lessonMetadata } from "@/lib/lessonMetadata";
 
@@ -61,13 +60,6 @@ export default function AlignToTag() {
       branch="swerve-align-to-tag"
       time="14 minutes"
     >
-      <p>
-        Drive to Point arrives where the field pose says the spot is. If the
-        pose is off by 10 cm, so is the robot. Scoring usually happens in front
-        of one tag, and the camera can see that tag the whole way in. Measure
-        the spot from that tag and the field pose drops out of the problem.
-      </p>
-
       <LessonSection id="the-tags-frame" title="The tag's frame">
         <p>
           A pose measured from a tag uses the tag&apos;s own axes. X points
@@ -79,19 +71,23 @@ export default function AlignToTag() {
         <p>
           The Limelight reports the same thing in its own convention, called
           target space. X points right as you face the tag, Y down, and Z into
-          the wall. <code>toTagFrame</code> turns one into the other.
+          the wall. Add <code>toTagFrame</code> at the bottom of{" "}
+          <code>Vision</code> to turn one into the other.
         </p>
 
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Vision.java"
-          title="toTagFrame"
-          code={`private static Pose2d toTagFrame(Pose3d robotInTargetSpace) {
-  return new Pose2d(
-      -robotInTargetSpace.getZ(),
-      robotInTargetSpace.getX(),
-      // Turning about the downward Y axis is turning clockwise seen from above.
-      Rotation2d.PI.minus(new Rotation2d(robotInTargetSpace.getRotation().getY())));
+          code={`public class Vision {
+  // ... everything up to the end of addFrame, unchanged
+
+  private static Pose2d toTagFrame(Pose3d robotInTargetSpace) {
+    return new Pose2d(
+        -robotInTargetSpace.getZ(),
+        robotInTargetSpace.getX(),
+        // Turning about the downward Y axis is turning clockwise seen from above.
+        Rotation2d.PI.minus(new Rotation2d(robotInTargetSpace.getRotation().getY())));
+  }
 }`}
         />
 
@@ -109,67 +105,81 @@ export default function AlignToTag() {
       </LessonSection>
 
       <LessonSection id="remember-the-tag" title="The tag map">
-        <Split>
-          <ProseBlock>
-            <p>
-              The camera answers a few dozen times a second and late, and it
-              loses the tag when the robot gets close. The wheels answer every
-              loop. So each sighting puts the tag down once, in the same frame
-              as <code>drivetrain.getPose()</code>. Between sightings the wheels
-              say where the robot is from that spot.
-            </p>
-            <p>
-              <code>samplePoseAt</code> looks up where the robot was when the
-              picture was taken. Adding the tag&apos;s offset from the robot to
-              that pose places the tag. The call goes before the trust gates in{" "}
-              <code>addFrame</code>, because one close tag is exactly the
-              sighting those gates throw out.
-            </p>
-          </ProseBlock>
-          <MarginNote label="Why it does not drift">
-            Every new frame places the tag again, so drift only builds up
-            between frames, or after the tag leaves view. Over the last meter or
-            two that is a few millimeters.
-          </MarginNote>
-        </Split>
+        <p>
+          The camera answers a few dozen times a second and late, and it loses
+          the tag when the robot gets close. The wheels answer every loop. So
+          each sighting puts the tag down once, in the same frame as{" "}
+          <code>drivetrain.getPose()</code>. Between sightings, and after the
+          tag leaves view, the wheels say where the robot is from that spot.
+        </p>
+        <p>
+          Add the map, one call at the top of <code>addFrame</code>, and two
+          methods to <code>Vision</code>.
+        </p>
 
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Vision.java"
-          title="The tag map, rememberTags and robotInTag"
-          code={`// Where each tag sat in the drivetrain's pose frame the last time a camera saw it, by tag ID.
-private final Map<Integer, Pose2d> tagPoses = new HashMap<>();
+          highlightLines={[
+            4, 5, 9, 10, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34, 35, 36, 37,
+          ]}
+          code={`public class Vision {
+  // ... constants, drivetrain and cameras, unchanged
 
-private void rememberTags(LimelightResults frame, double timestampSeconds) {
-  Optional<Pose2d> poseThen = drivetrain.samplePoseAt(timestampSeconds);
-  if (poseThen.isEmpty()) {
-    return;
-  }
-  for (FiducialTarget tag : frame.fiducialTargets) {
-    Pose2d robotInTag = toTagFrame(tag.getRobotPose_TargetSpace());
-    // The tag's own origin, seen from the robot, added to where the robot was.
-    Pose2d tagPose = poseThen.get().plus(new Transform2d(robotInTag, Pose2d.ZERO));
-    tagPoses.put(tag.fiducialId, tagPose);
-    Telemetry.getTable("Vision").log("RobotInTag" + tag.fiducialId, robotInTag);
-  }
-}
+  // Where each tag sat in the drivetrain's pose frame the last time a camera saw it, by tag ID.
+  private final Map<Integer, Pose2d> tagPoses = new HashMap<>();
 
-public Optional<Pose2d> robotInTag(int tagId) {
-  Pose2d tagPose = tagPoses.get(tagId);
-  if (tagPose == null) {
-    return Optional.empty();
+  private void addFrame(Limelight camera, LimelightResults frame) {
+    PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
+    // Before any gate: aligning to one close tag is exactly the sighting the gates distrust.
+    rememberTags(frame, estimate.timestampSeconds);
+
+    // ... the rest of addFrame, unchanged
   }
-  return Optional.of(drivetrain.getPose().relativeTo(tagPose));
+
+  // ... toTagFrame, from above
+
+  private void rememberTags(LimelightResults frame, double timestampSeconds) {
+    Optional<Pose2d> poseThen = drivetrain.samplePoseAt(timestampSeconds);
+    if (poseThen.isEmpty()) {
+      return;
+    }
+    for (FiducialTarget tag : frame.fiducialTargets) {
+      Pose2d robotInTag = toTagFrame(tag.getRobotPose_TargetSpace());
+      // The tag's own origin, seen from the robot, added to where the robot was.
+      Pose2d tagPose = poseThen.get().plus(new Transform2d(robotInTag, Pose2d.ZERO));
+      tagPoses.put(tag.fiducialId, tagPose);
+      Telemetry.getTable("Vision").log("RobotInTag" + tag.fiducialId, robotInTag);
+    }
+  }
+
+  public Optional<Pose2d> robotInTag(int tagId) {
+    Pose2d tagPose = tagPoses.get(tagId);
+    if (tagPose == null) {
+      return Optional.empty();
+    }
+    return Optional.of(drivetrain.getPose().relativeTo(tagPose));
+  }
 }`}
         />
 
-        <p>
-          The first line of <code>addFrame</code> gets the call, right after the
-          MegaTag1 estimate:{" "}
-          <code>rememberTags(frame, estimate.timestampSeconds);</code>.{" "}
-          <code>DriveMechanism</code> gets a one-line <code>samplePoseAt</code>{" "}
-          that passes the call to the drivetrain.
-        </p>
+        <ul className="ml-5 list-disc space-y-3">
+          <li>
+            <code>rememberTags</code> goes before the trust gates in{" "}
+            <code>addFrame</code>, because one close tag is exactly the sighting
+            those gates throw out.
+          </li>
+          <li>
+            <code>samplePoseAt</code> looks up where the robot was when the
+            picture was taken. Adding the tag&apos;s offset from the robot to
+            that pose places the tag.
+          </li>
+          <li>
+            <code>robotInTag</code> answers where the robot is now, measured
+            from the tag. It is empty until a camera has seen that tag.
+          </li>
+        </ul>
       </LessonSection>
 
       <LessonSection
@@ -180,37 +190,53 @@ public Optional<Pose2d> robotInTag(int tagId) {
           BLine follows whatever pose it is handed. Give it a builder whose pose
           comes from <code>vision.robotInTag(tagId)</code> and it drives in the
           tag&apos;s frame, with the same one-waypoint path as Drive to Point.
+          Add <code>alignToTag</code> under <code>driveToPoint</code>, and the
+          one-line <code>samplePoseAt</code> that <code>Vision</code> calls.
         </p>
 
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          title="alignToTag, under driveToPoint"
-          code={`public Command alignToTag(Vision vision, int tagId, Pose2d spotInTag) {
-  FollowPath align =
-      new FollowPath.Builder(
-              DriveType.SWERVE,
-              this,
-              () -> vision.robotInTag(tagId).orElseThrow(), // where the robot is, from the tag
-              pose -> {}, // never reset odometry from a tag-relative pose
-              () -> getRobotVelocity(),
-              velocities -> driveRobotRelative(velocities),
-              new PIDController(2.0, 0.0, 0.0),
-              new PIDController(3.0, 0.0, 0.0),
-              new PIDController(0.2, 0.0, 0.0))
-          // The tag's frame has no alliance side, so there is nothing to turn around.
-          .withShouldFlip(() -> false)
-          .build(new Path(new Path.Waypoint(spotInTag)));
+          highlightLines={[
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+            22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+          ]}
+          code={`public class DriveMechanism implements Mechanism {
+  // ... everything up to driveToPoint, unchanged
 
-  return Command.noRequirements(
-          coroutine -> {
-            if (vision.robotInTag(tagId).isEmpty()) {
-              DataLogManager.log("AlignToTag: tag " + tagId + " not seen yet");
-              return;
-            }
-            coroutine.await(align);
-          })
-      .named("AlignToTag");
+  public Command alignToTag(Vision vision, int tagId, Pose2d spotInTag) {
+    FollowPath align =
+        new FollowPath.Builder(
+                DriveType.SWERVE,
+                this,
+                () -> vision.robotInTag(tagId).orElseThrow(), // where the robot is, from the tag
+                pose -> {}, // never reset odometry from a tag-relative pose
+                () -> getRobotVelocity(),
+                velocities -> driveRobotRelative(velocities),
+                new PIDController(2.0, 0.0, 0.0),
+                new PIDController(3.0, 0.0, 0.0),
+                new PIDController(0.2, 0.0, 0.0))
+            // The tag's frame has no alliance side, so there is nothing to turn around.
+            .withShouldFlip(() -> false)
+            .build(new Path(new Path.Waypoint(spotInTag)));
+
+    return Command.noRequirements(
+            coroutine -> {
+              if (vision.robotInTag(tagId).isEmpty()) {
+                DataLogManager.log("AlignToTag: tag " + tagId + " not seen yet");
+                return;
+              }
+              coroutine.await(align);
+            })
+        .named("AlignToTag");
+  }
+
+  /** The robot's pose at an earlier moment, from the drivetrain's history. */
+  public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
+    return drivetrain.samplePoseAt(timestampSeconds);
+  }
+
+  // ... the rest, unchanged
 }`}
         />
 
@@ -228,11 +254,18 @@ public Optional<Pose2d> robotInTag(int tagId) {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          title="The binding, under the Drive to Point bindings"
-          code={`    // Hold X to line up 1 m straight out from tag 7, facing it.
+          highlightLines={[6, 7, 8, 9, 10]}
+          code={`  public TeleopOpMode(Robot robot) {
+    // ... everything up to the Drive to Point bindings, unchanged
+    driver.a().whileTrue(drivetrain.driveToPoint(Pose2d.ZERO));
+    driver.b().whileTrue(drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));
+
+    // Hold X to line up 1 m straight out from tag 7, facing it. The spot is measured from the
+    // tag, so the field pose can be wrong and the robot still stops in the same place.
     driver
         .x()
-        .whileTrue(drivetrain.alignToTag(robot.vision, 7, new Pose2d(1.0, 0.0, Rotation2d.PI)));`}
+        .whileTrue(drivetrain.alignToTag(robot.vision, 7, new Pose2d(1.0, 0.0, Rotation2d.PI)));
+  }`}
         />
       </LessonSection>
 
@@ -300,24 +333,9 @@ public Optional<Pose2d> robotInTag(int tagId) {
         </Box>
 
         <p>
-          <strong>The command ends at once and nothing moves.</strong> No camera
-          has seen that tag ID. Check the number on the tag and that{" "}
-          <code>Vision/RobotInTag7</code> is updating.
-        </p>
-
-        <p>
-          <strong>The first check reads the wrong way.</strong> A Y that shrinks
-          as the robot moves right, or a heading that grows as it turns right,
-          is a sign flipped in <code>toTagFrame</code>. Fix it there and run the
-          first check again. Do not drive on it.
-        </p>
-
-        <p>
-          <strong>
-            It stops a few centimeters off, the same way every time.
-          </strong>{" "}
-          The spot is off, not the code. Record it again with the robot parked
-          where you want it.
+          If Y shrinks as the robot moves to its right, or the heading grows as
+          it turns right, a sign in <code>toTagFrame</code> is flipped. Fix it
+          there and run the first check again before anything drives.
         </p>
       </LessonSection>
 
@@ -349,7 +367,7 @@ public Optional<Pose2d> robotInTag(int tagId) {
             ],
             correctAnswer: 3,
             explanation:
-              "robotInTag keeps answering from drivetrain.getPose() against the stored tag pose. Odometry over the last 40 cm drifts by millimeters.",
+              "robotInTag keeps answering from drivetrain.getPose() against the stored tag pose. Over the last 40 cm, the wheels alone drift very little.",
           },
           {
             id: 3,

@@ -36,9 +36,11 @@ export const metadata = lessonMetadata("/conditions-and-logging");
  * wrote all eight `NT:/Telemetry/Arm/...` and `NT:/Telemetry/Flywheel/...`
  * entries to the `.wpilog` in the project's `logs` folder.
  *
- * Values are logged as doubles through `.in(Unit)`. A `Measure` passed
- * straight to `log` is written in its base unit, radians for an `Angle`,
- * which is the wrong unit to read an arm in.
+ * The getters are logged as `Measure`s, with no `.in(Unit)`. Owner's call,
+ * November 2026. `RobotBase` registers a type handler that writes a `Measure`
+ * in its SI base unit with a `unit` property, so the sim log carries
+ * `Position` and `TargetPosition` as `rad`, `Velocity` as `rad/s`, and
+ * `AppliedVoltage` as `V`. AdvantageScope converts on the graph.
  *
  * Written once, read twice; see `src/data/mechanisms.ts`.
  */
@@ -171,12 +173,13 @@ public Robot() {
 }`}
         />
         <p>
-          <code>DataLogManager.start()</code> opens the file and records every
-          NetworkTables value. On the robot it records console output too.{" "}
-          <code>DriverStation.startDataLog</code> adds what NetworkTables never
-          sees: enabled state, robot mode, which OpMode is running, and joystick
-          positions. Without it you have numbers and no way to tell whether the
-          robot was enabled when they happened.
+          <code>DataLogManager.start()</code> creates the log file and records
+          every NetworkTables value into it. On the robot it records console
+          output too. <code>DataLogManager.getLog()</code> hands back that same
+          file, and <code>DriverStation.startDataLog</code> writes the driver
+          station&apos;s values into it. Those are values that never appear in
+          NetworkTables: whether the robot is enabled, the robot mode, which
+          OpMode is running, and the joystick positions.
         </p>
       </LessonSection>
 
@@ -192,9 +195,7 @@ public Robot() {
             language="java"
             filename="src/main/java/first/robot/mechanisms/Arm.java"
             title="Arm.java: log the arrival check"
-            code={`import static org.wpilib.units.Units.Rotations;
-
-import org.wpilib.telemetry.TelemetryLoggable;
+            code={`import org.wpilib.telemetry.TelemetryLoggable;
 import org.wpilib.telemetry.TelemetryTable;
 
 public class Arm implements Mechanism, TelemetryLoggable {
@@ -203,10 +204,10 @@ public class Arm implements Mechanism, TelemetryLoggable {
   /** Write the arm's signals to the log. Robot calls this every loop. */
   @Override
   public void logTo(TelemetryTable table) {
-    table.log("PositionRot", getPosition().in(Rotations));
-    table.log("TargetRot", getTargetPosition().in(Rotations));
+    table.log("Position", getPosition());
+    table.log("TargetPosition", getTargetPosition());
     table.log("AtTarget", isAtTarget());
-    table.log("AppliedVolts", motor.getMotorVoltage().getValueAsDouble());
+    table.log("AppliedVoltage", motor.getMotorVoltage().getValue());
   }
 
   // ... setPosition and stopMotor, unchanged
@@ -227,10 +228,10 @@ public class Flywheel implements Mechanism, TelemetryLoggable {
   /** Write the flywheel's signals to the log. Robot calls this every loop. */
   @Override
   public void logTo(TelemetryTable table) {
-    table.log("VelocityRPS", getVelocity().in(RotationsPerSecond));
-    table.log("TargetRPS", getTargetVelocity().in(RotationsPerSecond));
+    table.log("Velocity", getVelocity());
+    table.log("TargetVelocity", getTargetVelocity());
     table.log("AtTarget", isAtTarget());
-    table.log("AppliedVolts", motor.getMotorVoltage().getValueAsDouble());
+    table.log("AppliedVoltage", motor.getMotorVoltage().getValue());
   }
 
   // ... setVelocity and stopMotor, unchanged
@@ -238,14 +239,13 @@ public class Flywheel implements Mechanism, TelemetryLoggable {
           />
         </Mech>
         <p>
-          <Mech for="arm">
-            <code>.in(Rotations)</code>
-          </Mech>
-          <Mech for="flywheel">
-            <code>.in(RotationsPerSecond)</code>
-          </Mech>{" "}
-          picks the unit the number is written in. Put the same unit in the
-          signal name, so whoever opens the log later does not have to guess.
+          A unit value logs in its SI unit, with the unit attached:{" "}
+          <Mech for="arm">radians for an angle</Mech>
+          <Mech for="flywheel">radians per second for a speed</Mech>, and volts
+          for the voltage. You do not convert it here. AdvantageScope can
+          convert it to <Mech for="arm">rotations or degrees</Mech>
+          <Mech for="flywheel">rotations per second or RPM</Mech> when you graph
+          it.
         </p>
         <p>
           Nothing calls <code>logTo</code> yet. <code>Robot</code> does, once
@@ -293,25 +293,26 @@ public void robotPeriodic() {
             deleted on the next start.
           </li>
           <Mech for="arm" as="li">
-            Expand <code>NT:/Telemetry/Arm</code>. Put <code>PositionRot</code>{" "}
-            and <code>TargetRot</code> on one graph, and <code>AtTarget</code>{" "}
-            and <code>AppliedVolts</code> on a second.
+            Expand <code>NT:/Telemetry/Arm</code>. Put <code>Position</code> and{" "}
+            <code>TargetPosition</code> on one graph, and <code>AtTarget</code>{" "}
+            and <code>AppliedVoltage</code> on a second.
           </Mech>
           <Mech for="flywheel" as="li">
             Expand <code>NT:/Telemetry/Flywheel</code>. Put{" "}
-            <code>VelocityRPS</code> and <code>TargetRPS</code> on one graph,
-            and <code>AtTarget</code> and <code>AppliedVolts</code> on a second.
+            <code>Velocity</code> and <code>TargetVelocity</code> on one graph,
+            and <code>AtTarget</code> and <code>AppliedVoltage</code> on a
+            second.
           </Mech>
         </ol>
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <Mech for="arm" as="li">
-              <code>TargetRot</code> stepping to your target, and{" "}
-              <code>PositionRot</code> catching up to meet it.
+              <code>TargetPosition</code> stepping to your target, and{" "}
+              <code>Position</code> catching up to meet it.
             </Mech>
             <Mech for="flywheel" as="li">
-              <code>TargetRPS</code> stepping to your target, and{" "}
-              <code>VelocityRPS</code> climbing to meet it.
+              <code>TargetVelocity</code> stepping to your target, and{" "}
+              <code>Velocity</code> climbing to meet it.
             </Mech>
             <li>
               <code>AtTarget</code> turning true once the two meet, and false
