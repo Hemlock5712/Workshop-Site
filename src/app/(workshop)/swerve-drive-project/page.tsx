@@ -290,7 +290,7 @@ export default function SwerveDriveProject() {
       new SwerveRequest.FieldCentric()
           .withDeadband(maxSpeed * 0.1)
           .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
-          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // plain voltage, no wheel PID
+          .withDriveRequestType(DriveRequestType.Velocity); // closed loop, uses the drive gains
 
   public Robot() {
     // Joystick drive, in every mode. Set here instead of in an OpMode so it always exists: when
