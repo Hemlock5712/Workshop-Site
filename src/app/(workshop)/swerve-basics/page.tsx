@@ -54,10 +54,10 @@ export default function SwerveBasics() {
         <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3">
           <ContentCard>
             <ImageBlock
-              src="/images/hardware/SwerveModule.png"
-              alt="A swerve module with its two motors on top"
-              width={160}
-              height={160}
+              src="/images/hardware/SwerveModule.jpg"
+              alt="An SDS swerve module"
+              width={1000}
+              height={1000}
               className="mb-4"
             />
             <span className="micro mb-1 block">Four</span>
@@ -73,8 +73,8 @@ export default function SwerveBasics() {
             <ImageBlock
               src="/images/hardware/Pigeon2.png"
               alt="CTRE Pigeon 2.0 IMU"
-              width={276}
-              height={256}
+              width={900}
+              height={827}
               className="mb-4"
             />
             <span className="micro mb-1 block">One</span>
