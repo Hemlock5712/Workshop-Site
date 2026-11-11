@@ -131,7 +131,7 @@ export default function Prerequisites() {
               </Link>
               , out of the New Project Creator that comes with the installer
               above. So there is nothing else to download yet. The swerve
-              lessons in Workshops 5 and 6 hand you a prepared project instead,
+              lessons in Workshops 5 to 7 hand you a prepared project instead,
               because generated CTRE constants are not something anyone types.
             </p>
           </ProseBlock>

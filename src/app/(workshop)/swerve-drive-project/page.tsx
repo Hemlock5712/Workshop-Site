@@ -52,8 +52,17 @@ const linkStyle =
  * November 2026, pre-review pass in the owner's style: cut the "Three ways
  * this goes wrong" box and its quiz question, the default-command
  * IllegalArgumentException paragraph, and the list of DriveMechanism methods
- * no page step uses yet. The TeleopOpMode block now shows the class around
- * the constructor.
+ * no page step uses yet.
+ *
+ * Owner's review, November 2026 (Recording 11): the page is about one file.
+ * The generator can write a whole project; we keep only `TunerConstants.java`,
+ * generated alone (not Generate Project) and pasted over ours, then the team
+ * number. Check your work moved up to right after those two edits. The
+ * joystick default moved from `TeleopOpMode` into the `Robot` constructor on
+ * `1-Swerve` and every swerve branch after it, so it applies in every mode, as
+ * last year's v2 RobotContainer default did. `seedFieldCentric()` was checked
+ * in Phoenix 6 `26.70.0-alpha-2` `SwerveDrivetrain`: it resets only the pose's
+ * rotation, from the operator perspective, and leaves X and Y alone.
  */
 export default function SwerveDriveProject() {
   return (
@@ -68,7 +77,7 @@ export default function SwerveDriveProject() {
         <>Phoenix Tuner X connected, with firmware current on every device.</>,
         <>
           Module anatomy and field-centric driving from{" "}
-          <strong>How Swerve Works</strong>.
+          <strong>Swerve Basics</strong>.
         </>,
         <>A tape measure, and the robot up on blocks.</>,
       ]}
@@ -96,25 +105,10 @@ export default function SwerveDriveProject() {
         title="What the generator writes"
       >
         <p>
-          The generator can write a whole project. Only one file comes back with
-          you:{" "}
-          <code>src/main/java/frc/robot/generated/TunerConstants.java</code>.
-        </p>
-        <p>
-          It has thirteen device IDs, <code>kDriveGearRatio</code>,{" "}
-          <code>kSteerGearRatio</code> and <code>kWheelRadius</code>. Per module
-          it holds an X and Y offset from the robot&apos;s center, which is what
-          kinematics runs on. There is a CANcoder offset per module as well,
-          measured with that wheel straight. <code>steerGains</code>,{" "}
-          <code>driveGains</code>, <code>kSlipCurrent</code> and{" "}
-          <code>kSpeedAt12Volts</code> are estimates you replace over the next
-          two lessons.
-        </p>
-        <p>
-          The copy checked into the workshop project is an example. It is
-          square, with modules 10 inches out, 7.36:1 on the drive, and fake IDs.
-          Deploy it unchanged and the code looks for motors that are not on your
-          bus.
+          The generator can write a whole project. We already have a project
+          made for you, so we only care about one file it writes,{" "}
+          <code>TunerConstants.java</code>. At the end you export it into this
+          project.
         </p>
       </LessonSection>
 
@@ -130,7 +124,8 @@ export default function SwerveDriveProject() {
             , behind a <strong>New Project</strong> button.
           </li>
           <li>
-            Measure the robot and enter four numbers.
+            Measure the robot and enter four numbers. Take them off the real
+            robot, not the CAD.
             <ul className="mt-2 ml-5 list-disc space-y-1">
               <li>
                 <strong>Wheelbase</strong>, labeled FL to BL: front-to-back
@@ -142,38 +137,35 @@ export default function SwerveDriveProject() {
               </li>
               <li>
                 <strong>Wheel radius</strong>: half the wheel&apos;s diameter.
-                The field asks for radius, not diameter.
               </li>
               <li>
                 <strong>Drive gear ratio</strong>: motor rotations per wheel
                 rotation, off the module&apos;s spec sheet.
               </li>
             </ul>
-            <p className="mt-2">Take them off the real robot, not the CAD.</p>
           </li>
           <li>
             For each module, pick its CANcoder and two motors. Then run{" "}
             <strong>Encoder Calibration</strong> with the wheel straight and the
-            bevel gear facing the center of the robot. That becomes the
-            corner&apos;s CANcoder offset. With the robot on blocks, run the
-            steer and drive checks. If the corner moving is not the one the
-            wizard named, its devices are assigned to the wrong module.
+            bevel gear facing the center of the robot. With the robot on blocks,
+            run the steer and drive checks. If the corner moving is not the one
+            the wizard named, its devices are assigned to the wrong module.
           </li>
           <li>
-            Generate the constants and replace{" "}
+            Generate only the constants. Do not select{" "}
+            <strong>Generate Project</strong>. Overwrite{" "}
             <code>src/main/java/frc/robot/generated/TunerConstants.java</code>{" "}
-            with the file it writes. Replace the whole file, since offsets,
-            inversions and IDs all come from the same run. You should see your
-            own CAN IDs and a <code>kCANBus</code> line naming your CANivore.
+            with the file it writes. You should see your own CAN IDs and a{" "}
+            <code>kCANBus</code> line naming your CANivore.
           </li>
           <li>
-            Set your team number in <code>.wpilib/wpilib_preferences.json</code>
-            , which ships as <code>5712</code>, and{" "}
+            Change <code>teamNumber</code> in{" "}
+            <code>.wpilib/wpilib_preferences.json</code> from <code>5712</code>{" "}
+            to your team number, and{" "}
             <Link href="/running-program#deploy" className={linkStyle}>
               deploy to SystemCore
             </Link>
-            . The driver station lists <strong>Teleop</strong> as a selectable
-            mode, and nothing spins on its own when you enable.
+            .
           </li>
         </ol>
         <DocumentationButton
@@ -181,131 +173,6 @@ export default function SwerveDriveProject() {
           title="CTRE: Tuner X Swerve Project Generator"
           icon={<Book className="h-5 w-5" />}
         />
-      </LessonSection>
-
-      <LessonSection id="full-simulation" title="Full simulation">
-        <p>
-          <Link href="/running-program" className={linkStyle}>
-            Hardware Simulation
-          </Link>{" "}
-          ran your code on the laptop against real motors on the bench. This
-          project also runs with no hardware at all. Phoenix 6 simulates every
-          TalonFX, CANcoder and the Pigeon, and{" "}
-          <code>CommandSwerveDrivetrain</code> runs a physics update every 4 ms
-          whenever it finds itself in simulation. The wheels turn, odometry
-          counts them, and the pose moves.
-        </p>
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Choose <strong>Simulate Robot Code</strong> from the same toolbar
-            menu, the line above <strong>Hardware Sim Robot Code</strong>.
-          </li>
-          <li>
-            In the simulation window, drag your controller onto{" "}
-            <strong>Joystick[0]</strong>, pick <strong>Teleoperated</strong>,
-            and select the <strong>Teleop</strong> OpMode.
-          </li>
-          <li>
-            Open AdvantageScope, connect it to the simulator, and drag{" "}
-            <code>Drivetrain/Pose</code> onto a 2D field view.
-          </li>
-        </ol>
-        <p>
-          <strong>You should see:</strong> the robot drawn on the field, moving
-          when you push the stick and stopping when you let go. The example
-          constants work here unchanged, because nothing goes looking for real
-          devices. Every later swerve page that says &quot;in the
-          simulator&quot; means this.
-        </p>
-      </LessonSection>
-
-      <LessonSection
-        id="three-files-and-why-there-have"
-        title="Three files, one drivetrain"
-      >
-        <p>
-          The drivetrain is three classes. <code>TunerConstants.java</code> is
-          Tuner X&apos;s, from your robot: every number about it, hand-edited
-          only when calibration says to.{" "}
-          <code>CommandSwerveDrivetrain.java</code> is Tuner X&apos;s too,
-          lightly edited. It holds the motors, odometry, the simulation thread,
-          and forward matched to your alliance color.
-        </p>
-        <p>
-          <code>DriveMechanism.java</code> is the workshop&apos;s, written by
-          hand. It implements <code>Mechanism</code>, owns a{" "}
-          <code>CommandSwerveDrivetrain</code> as a private field, and is what
-          an OpMode talks to. That keeps the code you write out of the files
-          Tuner X writes, and it exposes only the methods the rest of the robot
-          needs.
-        </p>
-      </LessonSection>
-
-      <LessonSection
-        id="your-first-real-default-command"
-        title="The drivetrain default command"
-      >
-        <p>
-          A <code>Mechanism</code> has no default command until you give it one,
-          and{" "}
-          <Link href="/running-program#latched" className={linkStyle}>
-            a canceled command leaves its last request in the motors
-          </Link>
-          . The arm gets away with that, because its last request is a position
-          and it holds there. A drivetrain&apos;s last request is a speed.
-        </p>
-        <p>
-          So teleop gives the drivetrain a real default, the only{" "}
-          <code>setDefaultCommand</code> call in the workshop code. It sits in{" "}
-          <code>TeleopOpMode</code> rather than <code>Robot</code> because it
-          needs that mode&apos;s controller.
-        </p>
-        <CodeBlock
-          language="java"
-          title="TeleopOpMode.java: the joystick drive, set as the default"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          code={`@Teleop(name = "Teleop")
-public class TeleopOpMode extends PeriodicOpMode {
-  // ... maxSpeed, maxAngularRate, the FieldCentric drive request and the driver controller
-
-  public TeleopOpMode(Robot robot) {
-    final DriveMechanism drivetrain = robot.drivetrain;
-
-    // In WPILib, X points forward and Y points left. The sticks read the other way around, so
-    // each axis below gets a minus sign.
-    drivetrain.setDefaultCommand(
-        drivetrain.applyRequest(
-            () ->
-                drive
-                    .withVelocityX(-driver.getLeftY() * maxSpeed) // left stick up = forward
-                    .withVelocityY(-driver.getLeftX() * maxSpeed) // left stick left = left
-                    .withRotationalRate(
-                        -driver.getRightX() * maxAngularRate))); // right stick left = turn left
-
-    // Left bumper: make the robot's current facing the new "forward".
-    driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
-  }
-}`}
-        />
-        <p>
-          <code>applyRequest(...)</code> is built on <code>runRepeatedly</code>,
-          so it re-reads the sticks and sends a fresh request every loop. Let go
-          and the command is still running, asking for zero. Full stick asks for{" "}
-          <code>maxSpeed</code>, which comes straight out of{" "}
-          <code>TunerConstants.kSpeedAt12Volts</code>.
-        </p>
-        <p>
-          The left bumper runs <code>seedFieldCentric()</code>: whatever way the
-          robot faces becomes forward for the sticks. It never says where the
-          robot is on the field.{" "}
-          <Link
-            href="/swerve-calibration#three-things-that-all-sound-like"
-            className={linkStyle}
-          >
-            Swerve Calibration
-          </Link>{" "}
-          sets it beside <code>resetPose(Pose2d)</code>, the call that does.
-        </p>
       </LessonSection>
 
       <LessonSection id="did-it-work" title="Check your work">
@@ -335,6 +202,145 @@ public class TeleopOpMode extends PeriodicOpMode {
             default command is asking for zero.
           </li>
         </ol>
+      </LessonSection>
+
+      <LessonSection id="full-simulation" title="Full simulation">
+        <p>
+          <Link href="/running-program" className={linkStyle}>
+            Hardware Simulation
+          </Link>{" "}
+          ran your code on the laptop against real motors on the bench.{" "}
+          <strong>Simulate Robot Code</strong> runs it with no hardware at all:
+          the wheels turn, odometry counts them, and the pose moves.
+        </p>
+        <ol className="ml-5 list-decimal space-y-3">
+          <li>
+            Choose <strong>Simulate Robot Code</strong> from the same toolbar
+            menu, the line above <strong>Hardware Sim Robot Code</strong>.
+          </li>
+          <li>
+            In the simulation window, drag your controller onto{" "}
+            <strong>Joystick[0]</strong>, pick <strong>Teleoperated</strong>,
+            and select the <strong>Teleop</strong> OpMode.
+          </li>
+          <li>
+            Open AdvantageScope, connect it to the simulator, and drag{" "}
+            <code>Drivetrain/Pose</code> onto a 2D field view.
+          </li>
+        </ol>
+        <p>
+          <strong>You should see:</strong> the robot drawn on the field, moving
+          when you push the stick and stopping when you let go. Every later
+          swerve page that says &quot;in the simulator&quot; means this.
+        </p>
+      </LessonSection>
+
+      <LessonSection
+        id="three-files-and-why-there-have"
+        title="Three files, one drivetrain"
+      >
+        <p>
+          The drivetrain is three classes. <code>TunerConstants.java</code> is
+          Tuner X&apos;s, from your robot: every number about it.{" "}
+          <code>CommandSwerveDrivetrain.java</code> is Tuner X&apos;s too,
+          lightly edited. It holds the motors, odometry, the simulation thread,
+          and forward matched to your alliance color.
+        </p>
+        <p>
+          <code>DriveMechanism.java</code> is the workshop&apos;s, written by
+          hand. It implements <code>Mechanism</code>, owns a{" "}
+          <code>CommandSwerveDrivetrain</code> as a private field, and is what
+          an OpMode talks to. That keeps the code you write out of the files
+          Tuner X writes.
+        </p>
+      </LessonSection>
+
+      <LessonSection
+        id="your-first-real-default-command"
+        title="The drivetrain default command"
+      >
+        <p>
+          A <code>Mechanism</code> has no default command until you give it one,
+          and{" "}
+          <Link href="/running-program#latched" className={linkStyle}>
+            a canceled command leaves its last request in the motors
+          </Link>
+          . For a drivetrain the last request is a speed, so the robot would
+          keep rolling.
+        </p>
+        <p>
+          So the <code>Robot</code> constructor makes the joystick drive the
+          drivetrain&apos;s default command, in every mode. Whenever another
+          drivetrain command ends or is interrupted, the drivetrain goes back to
+          the sticks.
+        </p>
+        <CodeBlock
+          language="java"
+          title="Robot.java: the joystick drive, set as the default"
+          filename="src/main/java/frc/robot/Robot.java"
+          code={`public class Robot extends OpModeRobot {
+  public final DriveMechanism drivetrain = new DriveMechanism();
+  public final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+
+  private final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // top speed
+  private final double maxAngularRate =
+      RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 turn per second
+
+  private final SwerveRequest.FieldCentric drive =
+      new SwerveRequest.FieldCentric()
+          .withDeadband(maxSpeed * 0.1)
+          .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
+          .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // plain voltage, no wheel PID
+
+  public Robot() {
+    // Joystick drive, in every mode. Set here instead of in an OpMode so it always exists: when
+    // any other drivetrain command ends or is interrupted, the drivetrain goes back to the sticks.
+    // In WPILib, X points forward and Y points left. The sticks read the other way around, so
+    // each axis below gets a minus sign.
+    drivetrain.setDefaultCommand(
+        drivetrain.applyRequest(
+            () ->
+                drive
+                    .withVelocityX(-driver.getLeftY() * maxSpeed) // left stick up = forward
+                    .withVelocityY(-driver.getLeftX() * maxSpeed) // left stick left = left
+                    .withRotationalRate(
+                        -driver.getRightX() * maxAngularRate))); // right stick left = turn left
+
+    // ... the disabled Idle binding, unchanged
+  }
+
+  // ... simulationInit and robotPeriodic, unchanged
+}`}
+        />
+        <p>
+          <code>applyRequest(...)</code> is built on <code>runRepeatedly</code>,
+          so it re-reads the sticks and sends a fresh request every loop. Let go
+          and the command is still running, asking for zero. Full stick asks for{" "}
+          <code>maxSpeed</code>, which comes straight out of{" "}
+          <code>TunerConstants.kSpeedAt12Volts</code>.
+        </p>
+        <p>
+          <code>TeleopOpMode</code> keeps only its buttons. The left bumper runs{" "}
+          <code>seedFieldCentric()</code>, which resets only the rotation of the
+          pose. The way the robot faces right now becomes forward for the
+          driver. X and Y do not change, so the robot&apos;s place on the field
+          stays the same.
+        </p>
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java: the buttons"
+          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          code={`@Teleop(name = "Teleop")
+public class TeleopOpMode extends PeriodicOpMode {
+  public TeleopOpMode(Robot robot) {
+    final DriveMechanism drivetrain = robot.drivetrain;
+    final CommandNiDsXboxController driver = robot.driver;
+
+    // Left bumper: make the robot's current facing the new "forward".
+    driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
+  }
+}`}
+        />
       </LessonSection>
 
       {/* The "Check yourself" the rewrite deleted to reach 12 minutes, which is
@@ -393,7 +399,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             question:
               "In teleop you let go of every stick. Why does the robot stop?",
             options: [
-              "The joystick default command is still running, and centered sticks are a request for zero speed",
+              "The joystick default command from Robot.java is still running, and centered sticks are a request for zero speed",
               "Canceling a command sends zero to its motors",
               "The drivetrain falls back to an idle command when nothing claims it",
               "The 10% deadband turns the motors off",
@@ -409,12 +415,12 @@ public class TeleopOpMode extends PeriodicOpMode {
             options: [
               "The top speed the drivetrain will command",
               "The robot's x and y on the field are now zero",
-              "Which direction the sticks call forward, and nothing about where the robot is",
+              "The heading in the pose, so the way the robot faces now becomes forward for the sticks. X and Y stay the same",
               "The CANcoder offsets stored in TunerConstants.java",
             ],
             correctAnswer: 2,
             explanation:
-              "seedFieldCentric() sets a heading reference. It never supplies an x or a y, so odometry reports what it reported before. resetPose(Pose2d) is the call that places the robot on the field, and Swerve Calibration lines both up next to applyOperatorPerspective().",
+              "seedFieldCentric() resets only the rotation of the pose: the way the robot faces right now becomes forward for the driver. It never touches x or y, so the robot's place on the field is what it was before.",
           },
         ]}
       />

@@ -255,6 +255,18 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // Owner's review, November 2026: How Swerve Works became Swerve
+        // Basics, and Swerve Calibration folded into Swerve Drive Tuning.
+        source: "/swerve-prerequisites",
+        destination: "/swerve-basics",
+        permanent: true,
+      },
+      {
+        source: "/swerve-calibration",
+        destination: "/swerve-drive-tuning",
+        permanent: true,
+      },
+      {
         source: "/glossary",
         destination: "/introduction",
         permanent: true,

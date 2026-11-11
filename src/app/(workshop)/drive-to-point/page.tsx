@@ -54,8 +54,8 @@ export default function DriveToPoint() {
         <p>
           The target is a <code>Pose2d</code>, a field coordinate measured from
           the blue alliance corner, as in{" "}
-          <Link href="/swerve-prerequisites" className={linkStyle}>
-            How Swerve Works
+          <Link href="/swerve-basics" className={linkStyle}>
+            Swerve Basics
           </Link>
           . The robot only arrives where you meant if <code>getPose()</code>{" "}
           agrees with the field. Odometry alone drifts and starts wherever the
@@ -133,16 +133,15 @@ export default function DriveToPoint() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          highlightLines={[1, 2, 13, 14, 15]}
+          highlightLines={[1, 2, 12, 13, 14]}
           code={`import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 // ... the other imports, unchanged
 
 public class TeleopOpMode extends PeriodicOpMode {
-  // ... fields, unchanged
-
   public TeleopOpMode(Robot robot) {
-    // ... the default command, unchanged
+    final DriveMechanism drivetrain = robot.drivetrain;
+    final CommandNiDsXboxController driver = robot.driver;
 
     driver.leftBumper().onTrue(drivetrain.seedFieldCentric());
 
