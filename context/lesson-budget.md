@@ -174,7 +174,7 @@ rather than one of nine.
 
 ## What still binds
 
-Everything in `CLAUDE.md`. WPILib 2027 and Commands v3 only, `org.wpilib.*`
+Everything in `CLAUDE.md` and `context/teaching-code.md`. WPILib 2027 and Commands v3 only, `org.wpilib.*`
 packages, OpModes rather than `RobotContainer`, no invented v3 APIs, no
 AdvantageKit, no enums in examples, no `SendableChooser`, CTRE hardware with
 no vendor hedging.

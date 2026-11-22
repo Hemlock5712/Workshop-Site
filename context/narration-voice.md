@@ -92,7 +92,7 @@ and must never be committed or uploaded.
 
 ## Content rules still bind
 
-Everything in `CLAUDE.md` applies to narration: WPILib 2027 and Commands v3
+Everything in `CLAUDE.md` and `context/teaching-code.md` applies to narration: WPILib 2027 and Commands v3
 only, OpModes rather than `RobotContainer`, no invented APIs, no AdvantageKit,
 no enums, and no mention of Commands v2 or "the old way". PathPlanner is the
 team's Commands v3 build, as on the site. Run `pnpm spell` after any pass.

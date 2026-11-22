@@ -42,196 +42,77 @@ Gray Matter Workshop is an FRC Programming Workshop website built with Next.js 1
 **Workshop Code:** [https://github.com/Hemlock5712/Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)  
 **Robot Template (NOT a source for this site, see below):** [https://github.com/Hemlock5712/2027-Template](https://github.com/Hemlock5712/2027-Template)
 
-## Workshop Content Stack (WPILib 2027 / Commands v3)
+## Where the detail lives
 
-All workshop content teaches the **WPILib 2027 alpha stack — Commands v3 + OpModes** — NOT the classic Commands v2 framework. When writing or editing any Java example or robot-code prose on the site:
+This file is loaded into every session, so it holds only what applies to every
+task. The rest was moved, unchanged, into `context/` in November 2026. **Read
+the matching file before starting that kind of work, and not otherwise.**
 
-- **Ground truth is [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code)**, checked against shipped WPILib 2027 alpha source. If an API is in neither, do NOT use it — never invent v3 APIs. On a disagreement between the two, the shipped WPILib source wins.
-- **2027-Template is NOT a source for this site.** It was ground truth until September 2026 and is now behind: it still has `extends Mechanism` and `kZero` while WPILib and all 14 Workshop-Code branches moved to `implements Mechanism` and `ZERO`. No lesson cites it, links to it, or copies code from it. The one page that still references it is `/ai-coding-assistant`, which points at its `ONBOARDING.md` and `.claude/skills` as material for grounding an AI assistant, because Workshop-Code has neither. Revisit when the template is brought up to alpha-7.
-- **Stack**: `org.wpilib.*` packages (not `edu.wpi.first.*`), Java 25, deploys to **SystemCore** (not roboRIO), Commands v3 (`org.wpilib.command3`), Phoenix 6 alpha, GradleRIO 2027 alpha.
-- **OpModes replace RobotContainer**: `Robot extends OpModeRobot` owns subsystems as `public final` fields; each mode is its own `@Teleop` / `@Autonomous` / `@Utility` class with per-mode bindings in its constructor; always-on bindings live in the `Robot` constructor. There is no `RobotContainer` and no `SendableChooser`.
-- **Key v3 APIs**: `Mechanism` is an **interface**, so subsystems `implement Mechanism` and get a default `getName()` from the class name; command factories are `mechanism.run(coroutine -> {...})` / `runRepeatedly(...)` / `idle()` finished with `.named("X")`; scheduler is `Scheduler.getDefault().run()`; `StateMachine` shipped in alpha-6; `ChassisSpeeds` was renamed `ChassisVelocities`; geometry constants are `ZERO`, not `kZero`.
-- **There is no implicit default command.** Alpha-7 stopped registering `idle()` as a mechanism's default, and `Scheduler` only ever populates a default from `setDefaultCommand`. The `Mechanism` javadoc still claims otherwise and is stale. So an unclaimed mechanism has nothing running on it, nothing sends a zero on the way out, and the last request stays latched in the motor controller. Never write that a mechanism "falls back to `idle()`".
-- **The swerve joystick drive default lives in `Robot.java`, not `TeleopOpMode`.** Owner's call, November 2026, matching last year's v2 RobotContainer: `Robot` owns `public final CommandXboxController driver` and the `FieldCentric` request, and sets the drivetrain default in its constructor, so it applies in every mode. A default set inside an OpMode only lasts while that OpMode runs. `TeleopOpMode` keeps per-mode buttons (`seedFieldCentric` on the left bumper) through `robot.driver`. `seedFieldCentric()` resets only the pose's rotation to the operator's forward (0° blue, 180° red) and leaves X and Y alone. Rebuilt on all seven swerve branches.
-- **`SwerveRequest.Idle` is not a stop.** It does nothing to the module state, so a drive command that ends on Idle leaves every module on its last request and the robot keeps rolling. Stop with a zero-velocity request on the command's own request object, `driveRequest.withVelocity(new ChassisVelocities())`. Idle in a `disabled()` binding is harmless, because disabling cuts output anyway.
-- **Latched requests are taught once.** `/running-program#latched` is the demo, an interactive `LatchedRequestDiagram` (controller, laptop, CANivore, TalonFX: hold, release with and without `whileFalse(stop())`) that replaced the delete-a-`whileFalse` bench step in November 2026, because that step's instructions were wrong. `/mechanisms#configs-and-requests` is the concept. Every other page links to one of them rather than re-explaining canceling-is-not-stopping.
-- **Coroutine waits are native**: `coroutine.waitUntil(condition, timeout)` returns a `WaitResult` with `timedOut()`. Do not build a wait out of `Command.waitUntil(...).named(...).withTimeout(...)`.
-- **Command names carry no `(hold)` suffix.** `runRepeatedly(...).named("runFast")`, not `"runFast (hold)"`. Owner's call, November 2026: the suffix added nothing. Mechanism commands stay on `runRepeatedly`. The prose word "hold" for such a command was dropped in the owner's November 2026 review: say it is a `runRepeatedly` command and never finishes. Coroutines teaches the consequence, fork what never ends and await what can end, because awaiting a `runRepeatedly` command blocks everything after it. The old numbered swerve branches still carry the suffix.
-- **Lambdas are always `() -> foo()`, never `foo::bar`.** The single exception is `Robot::new` in `Main.java`, which WPILib ships and nobody edits.
-- **Paths are BLine (FRC 2638), `BLine-Lib 2027.0.0-beta.3`, not PathPlanner.** Owner's call, November 2026: PathPlanner's 2027 editor stalled upstream and the team will not maintain its Commands v3 fork, while BLine ships a native Commands v3 2027 beta. Install from `https://raw.githubusercontent.com/edanliahovetsky/BLine-Lib/wpilib-2027/BLine-Lib-2027.json` (`wpilibYear: 2027_alpha7`, Maven artifact `com.github.edanliahovetsky:BLine-Lib:v2027.0.0-beta.3` from JitPack). The editor is BLine Web v1.0.0 at bline.run, the one that pairs with beta.3; a Windows desktop build of the same version exists and is untested here. Files live in `src/main/deploy/autos/`: `config.json` (kinematic defaults and end tolerances, required, the library will not load paths without it), `project.json` (editor state), and `paths/<name>.json`. Students import that folder, draw, delete stray empty paths (an empty one throws `Path has no destination` at load), and **File → Import / Export → Export Autos Folder...** back into `deploy`. The shape, from Workshop-Code `swerve-bline`: `DriveMechanism` builds one `FollowPath.Builder(DriveType.SWERVE, this, pose, resetPose, robot-relative velocity, driveRobotRelative, translation PID, rotation PID, cross-track PID).withDefaultShouldFlip()` and exposes `followPath(name)`, which reads the file at call time; the path request is `ApplyRobotVelocity` with `DriveRequestType.Velocity`, and heading kP is 3.0 because 1.0 stalled short in sim. `AutoOpMode` (`@Autonomous(name = "Auto")`) calls `FollowPath.registerEventTrigger(key, action)` first, builds each path with `.withPoseReset()`, wraps each routine as `Command.noRequirements(coroutine -> { coroutine.await(path); }).named(...)` (a second path is one more `await` line), fills a `Selectable<Command>` by hand with `addDefault`/`add` plus a "None", publishes it with `Tunables.publish("Auto", ...)`, reads `getSelected()` in `start()`, cancels and calls `FollowPath.clearPendingEventTriggers()` in `end()`, and `Tunables.remove`s in `close()`. Events: the editor's **Lib Key** must match the registered key exactly; reached events run in path order through the scheduler one loop later, canceling drops unreached ones, and an event command can outlive its path. **A finished or canceled `FollowPath` sends a zero velocity**, but on disable `Robot`'s disabled `Idle` binding overwrites it the same loop, so credit the stop in auto to disabling, never to the cancel. Red alliance flips the path around the field center using BLine's own 16.54 × 8.07 m field, not a 2027 one. Verified in simulation only (pose reset, 0.03 m / 2° finish, one event per run, None, red flip, re-enable); nothing is verified on hardware. Risk: one maintainer and JitPack builds; re-check the vendordep when the WPILib alpha moves. Branches: `swerve-autonomous` → `swerve-bline`, off `1-Swerve`. `swerve-pathplanner` and `swerve-pathfinding` were deleted in November 2026. Lesson: `/bline`.
-- **Every on-the-fly drive is a one-waypoint BLine path, built in code.** Owner's call, November 2026: Auto, Drive to Point and Align to Tag all run on BLine, and the hand-written `DriveToPoint` PID class and the LinearPath profiled version are gone. `driveToPoint(goal)` is `pathBuilder.build(new Path(new Path.Waypoint(goal))).withShouldFlip(() -> false)`: a field coordinate is the same spot on both alliances, so it must not take the builder's default flip. A code-built path needs no extra setup; it picks up BLine's defaults and finished within 0.03 m / 2° in sim. `alignToTag(vision, tagId, spotInTag)` builds its own `FollowPath.Builder` whose pose supplier is `vision.robotInTag(tagId)`, with a no-op pose reset and no flip, and ends at once without moving if the tag was never seen. The tag frame is WPILib's (X out of the face, Y to the tag's left, 180° facing it). `Vision.rememberTags` places each seen tag in the drivetrain's pose frame per frame via `samplePoseAt(estimate.timestampSeconds)` + `toTagFrame(getRobotPose_TargetSpace())`, before the trust gates, so the wheels carry the robot between frames and after the tag leaves view. The spot is recorded off `Vision/RobotInTag<id>` with the robot parked by hand on that field, never taped. **`toTagFrame`'s signs are unverified on hardware**: the jar copies Limelight's raw target space (X right, Y down, Z along the normal) into the `Pose3d` with no axis change, and the code assumes Z points into the wall. The sim check cannot catch a wrong sign because it synthesizes the sighting with the inverse of the same function. Swerve branches: `swerve-bline` → `swerve-vision` → `swerve-drive-to-point` → `swerve-align-to-tag`, one commit each. `5-DriveToPoint` and `6-ProfiledToPoint` are taught by no page.
-- **Vision is LimelightLib 2, installed as a vendordep, and the URL is pinned
-  to the alpha.** The vendordep is published per WPILib alpha and the file is
-  **not** called `LimelightLib.json`. A bare `LimelightLib.json` 404s, and so
-  does the Pages root, so a wrong URL is a lesson a student cannot start.
-  Today: `https://limelightvision.github.io/limelightlib-public/LimelightLib-alpha7.json`
-  (`2.0.0-beta9-alpha7`, `wpilibYear: 2027_alpha7`), with
-  `LimelightLib-alpha5-6.json` beside it for the older alphas. Re-check the
-  filename when the alpha moves. There is **no** `LimelightHelpers` class in
-  the jar, so the old "copy `LimelightHelpers.java` into `frc/robot/`" step is
-  gone and so are `getBotPoseEstimate_wpiBlue`, `SetRobotOrientation_NoFlush`,
-  `Flush()` and `validPoseEstimate`.
-- **Alpha-7 flattened the LimelightLib types, so beta2 sample code does not
-  compile.** `Limelight.PoseEstimate` and friends are now top-level
-  `com.limelightvision.PoseEstimate`, `LimelightResults`, `PoseEstimateType`.
-  `LimelightResults.botPoseTagCount` is gone, so pick the solver off the
-  estimate's `fieldedTagCount` instead, and `isMegaTag2()` is now `isMT2()`.
-  The rest, read off the alpha7 jar rather than from memory:
-  `new Limelight(name)` (the constructor already applies `defaultMT1()` and
-  `defaultMT2()`, which gate a lone tag at 3.0 m and 0.7 ambiguity),
-  `camera.setUseSharedOrientation(true)` paired with the static
-  `Limelight.setSharedRobotOrientation(deg)`, `camera.readResultsQueue()`,
-  `camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE)`, and on
-  `PoseEstimate` the fields `pose`, `timestampSeconds`, `fieldedTagCount`,
-  `avgTagDistanceMeters` and `rejectionFlags`.
-  `PoseEstimateConfig.describeRejection` names a rejection. **The lesson class
-  is `Vision`, not `Limelight`**, because the library owns that name now.
-- **`/vision-implementation` is on `swerve-vision`, not `3-Limelight`.**
-  November 2026: `swerve-vision` is one commit on `swerve-bline` with the
-  LimelightLib 2 vendordep and the page's `Vision` class. `Vision` is a field
-  on `Robot` (`public final Vision vision = new Vision(drivetrain, "limelight")`),
-  not a static `registerAll`, because Align to Tag asks it where a tag is.
-  `3-Limelight` still carries the copied helper and a subsystem called
-  `Limelight`, and only `4-DynamicFlywheel` builds on it. No page teaches
-  either since `/vision-shooting` moved to `swerve-vision-shooting`.
-- **Every pose is blue-wall origin, and stays that way until WPILib moves.**
-  PathPlanner's 2027 editor and AdvantageScope v27 draw from the field center,
-  but WPILib alpha-7 (and allwpilib `main`, October 2026) only offers
-  `Field.OriginPosition.BLUE_ALLIANCE_WALL_RIGHT_SIDE` / `RED_...`, and
-  LimelightLib 2 only estimates in `WPIBLUE` / `WPIRED`. Mixing frames pulls
-  odometry half a field on every vision update. Owner's call: keep the site's
-  field graphics, lessons and branches blue-wall, and switch everything
-  together once WPILib ships a center origin.
-- **Not used anywhere on the site**: AdvantageKit (logging uses `DataLogManager` only) and **enums in example code** (intentionally avoided — don't add them, even as a "before" contrast).
-- **Workshop-Code embeds**: `GitHubContent`/`MechanismTabs` embed live files from [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code) branches. The swerve project download uses release tag `v3.2-swerve` (November 2026, 1-Swerve on alpha-7 with `CommandXboxController`); cut a new tag when 1-Swerve moves. When changing an embed, verify the file path exists on that branch first.
-- **No GitHub embeds on the site at all, for now.** August 2026: every `<GitHubContent>` was removed from every lesson. A page that ends in someone else's 100-plus-line file is mostly scroll, and each of those pages already teaches the same code in `CodeBlock`s. The components survive (`GitHubContent`, `MechanismTabs`) and so does the `pr` prop that renders a "GitHub Changes" tab, but nothing calls them. A local `FileDiff` (unified diff, two gutters, parsed straight from `git diff` output) is built and also unused. The intended end state is a compare view in place of the whole-file dump, but not until the teaching chain's comments and prose settle: a diff of it today is a third Javadoc rewording, and that red and green buries the lines a student types. `pnpm check-embeds` now treats zero embeds as valid and only fails when a page uses the component and nothing parses.
-- **Branches are prefixed by chain, not numbered across the course.** There are two chains and they used to collide on every number. `mech-*` is the arm-and-flywheel bench project. The drivetrain chain keeps its old bare numbers (`1-Swerve`, `2-Logging`, `3-Limelight`, `4-DynamicFlywheel`, `5-DriveToPoint`, `6-ProfiledToPoint`) and is due the matching `swerve-*` rename when it is rebuilt. The prefix carries the chain and the suffix carries the topic, so inserting a lesson renames nothing. The mechanism chain was rebuilt off the new bare `main` in August 2026 and is linear, one commit per lesson:
-  `main → mech-1-Mechanisms → mech-2-Commands → mech-3-MotionMagic → mech-4-ReadingState → mech-5-Coroutines`. One commit per lesson, so each PR into the branch before it shows exactly that lesson. `mech-6-StateBased` was deleted in October 2026 with the State Machines lesson, and `mech-6-Testing` in November 2026 with the Testing lesson.
-- **The mechanism chain is `first.robot.mechanisms` and `first.robot.opmode`.** The swerve chain has not been rebuilt and is still `frc.robot.subsystems` and `frc.robot.opmodes`. A lesson page must match the chain it embeds; do not "fix" a swerve page to the new package until its branch moves.
-- **`TalonFXUtil` and `SimStartup` are gone from the mechanism chain.** Config applies once, directly, with `motor.getConfigurator().apply(config)`. `Robot` has no `simulationInit()` override. Both helpers still exist on the swerve branches; `swerve-vision-shooting` does not use `TalonFXUtil`.
-- **Motor config on the mechanism chain uses the fluent builders**, not `config.Slot0.kP = kP`. That is the shape Phoenix Tuner X emits from its config panel's three-dot **Generate Code** action, because a student pastes the config rather than typing it: `new TalonFXConfiguration().withMotorOutput(...).withSlot0(...).withMotionMagic(...)`, with WPILib unit types such as `RotationsPerSecond.of(...)`. Verified against Phoenix 6 `26.70.0-alpha-2`. `swerve-vision-shooting`'s `Flywheel` uses it too; the rest of the swerve chain is generated by Tuner X's swerve project.
-- **Paste the generated config whole, then make one edit.** Generate Code emits `final TalonFXConfiguration talonFXCfg = new TalonFXConfiguration()`, so the chain uses that name and that `final`, and it needs `import static org.wpilib.units.Units.*` members (`Volts`, `RotationsPerSecond`, `RotationsPerSecondPerSecond`) for the unit forms. The emitted feedback block hardcodes the encoder: `withFeedback(new FeedbackConfigs().withFeedbackRemoteSensorID(32).withFeedbackSensorSource(FeedbackSensorSourceValue.RemoteCANcoder))`. **Leave it exactly as generated.** `withRemoteCANcoder(encoder)` is equivalent (a remote sensor must sit on the Talon's own CAN bus, so the bare ID is unambiguous) but it was rejected: every edit a student has to make after a paste is a step they can get wrong, and this one breaks nothing when forgotten. The cost is that `Arm`'s `encoder` field has no reader until `mech-4-ReadingState` calls `getPosition()`. Tuner X still owns the encoder's own configuration, so never put a `CANcoderConfiguration` in a lesson.
-- **The generated OpMode keeps its generated name.** The New Project Creator writes `opmode/MyTeleop.java` with `@Teleop` already on it, and every mech branch edits that file rather than renaming it. It was `TeleopOpMode` until August 2026, which cost a lesson an F2-rename step and left a real trap: create a second file instead of renaming and two `@Teleop` classes both appear on the driver station. `MyAuto.java` is the same idea, though `/autonomous` still renames it to `LeaveStartAuto` on the swerve chain.
-- **The driver's controller is `CommandXboxController`, never `CommandNiDsXboxController`.** November 2026, found on a SystemCore bench run (`p1-flywheel`): the NiDs class's button and axis mapping only matches the NI Driver Station, and from the FIRST Driver Station the buttons are wrong. Every branch from `mech-2-Commands` and `1-Swerve` on was rebuilt with the plain class. `XboxController` applies a 0.1 deadband to each stick by default through `MathUtil.applyDeadband`, which rescales the rest of the travel to the full range, so the swerve `FieldCentric` request carries **no** `withDeadband` / `withRotationalDeadband`: Phoenix's request deadband cuts slow speeds off without rescaling. `/swerve-drive-tuning` shrinks the stick deadband with `driver.getController().setLeftXDeadband(...)` (and `LeftY`, `RightX`); `getHID()` returns the generic HID, not the `XboxController`. Stick signs through the new mapping are unverified on hardware.
-- **The driver's controller lives in `Robot.java` on every chain.** Owner's call, November 2026: `public final CommandXboxController driver = new CommandXboxController(0);` sits beside the mechanism fields from `mech-2-Commands` on, and OpModes bind through it, `robot.driver.y().whileTrue(...)`, the same way they reach `robot.arm`. Spotless wraps a binding that runs past 100 characters onto one call per line; copy the branch's formatting. The swerve chain matched first, when its joystick drive default moved into `Robot`.
-- **OpModes reach mechanisms through `robot` directly.** No `final Arm arm = robot.arm;` aliases in a constructor: write `robot.arm.runFast()`. Two locals that only shorten a field access are two more names to carry, and `robot.arm` already says where the mechanism lives. `Robot`'s own `public final Arm arm = new Arm();` field is a different thing and stays.
-- **The raw setter is `private` from lesson one, and the stop helper is `stopMotor`.** Nothing outside a mechanism ever called `setVoltage`, and `stop` is the name a Command wants in `mech-2-Commands`, so both are settled on `mech-1-Mechanisms`. That leaves the mech-1 to mech-2 diff purely additive: three Commands and one import, with no visibility change and no deleted method. The stop Command routes through `() -> stopMotor()` rather than calling the motor directly so the helper stays used.
-- **`Inverted` is not presented as a choice.** The direction is settled on the bench in `/mechanism-setup`, so lesson prose names only `NeutralMode` as a setting the student picks.
-- **Generate Code always emits the Expo pair, tuned or not.** A factory-defaulted device still produces `withMotionMagicExpo_kV(Volts.per(RotationsPerSecond).ofNative(0.119999997317791))` and `withMotionMagicExpo_kA(...ofNative(0.10000000149011612))`. Those are defaults riding along in the paste and nothing reads them: the course teaches the trapezoid, `MotionMagicCruiseVelocity` and `MotionMagicAcceleration`, and `/motion-magic` stays as written. Do not rewrite Workshop 1 around Expo, and do not strip the Expo lines out of a pasted block either.
-- **Students must not be able to copy our gains.** A tuned config belongs on the page as a screenshot of the Tuner X panel, never as a `CodeBlock` with a copy button. Code blocks in the paste lesson show the shape with `0.0` placeholders or show the edit, not somebody else's numbers.
-- **The arm keeps `stop()` and `stopMotor()` after Motion Magic.** Owner's call, November 2026: `mech-3-MotionMagic` swaps `setVoltage`/`runSlow`/`runFast` for `setPosition`/`vertical`/`horizontal` and keeps the stop pair, for stopping the arm mid-move. The left trigger still drops its `whileFalse(stop())`, because a latched position request is what holds the arm. There is no re-paste step on `/motion-magic-code`: the tuned config was pasted on `/mechanisms`.
-- **There is no separate PositionVoltage step.** `mech-3-MotionMagic` goes from open-loop `VoltageOut` straight to `MotionMagicVoltage`. Workshop 1 already tunes closed-loop position in Tuner X, so a second code-side PID lesson taught the same layer twice. `mech-1` and `mech-2` stay open loop on purpose, mirroring the bench order.
+| Before you...                                                          | Read                            |
+| ---------------------------------------------------------------------- | ------------------------------- |
+| write or edit Java, robot-code prose, or a Workshop-Code branch        | `context/teaching-code.md`      |
+| add, rename, reorder, merge or reinstate a lesson, or touch a redirect | `context/curriculum.md`         |
+| change the shell, search, theme, or a lesson building block            | `context/site-architecture.md`  |
+| make a visual change or edit lesson prose                              | `context/design-and-writing.md` |
+| size or shape a lesson                                                 | `context/lesson-budget.md`      |
+| touch `videos-next/` or `/video`                                       | `context/videos.md`             |
+| write narration                                                        | `context/narration-voice.md`    |
 
-### Local copies of the teaching code (`reference/`)
+A decision recorded in one of those files is the owner's and still binds. When
+a new one is made, record it in the matching file, not here.
 
-`pnpm reference:sync` puts **every branch of Workshop-Code on disk at once**,
-one worktree per branch, plus 2027-Template on `2027-dev` for comparison
-only. Check a lesson
-against the code it embeds without leaving the project:
+## Rules that apply everywhere
 
-```
-reference/
-  .git-store/            bare mirrors, one shared object store per repo
-  Workshop-Code/         one detached worktree per branch: mech-*, the numbered
-                         swerve chain, swerve-autonomous, swerve-bline,
-                         main
-  2027-Template/2027-dev comparison only, stale on alpha-6
-```
+### Teaching code
 
-The checkouts cost a few megabytes, because the worktrees share the mirror's
-history. Cross-state diffs work, and they are the teaching artifact:
+- The course teaches the **WPILib 2027 alpha stack, Commands v3 + OpModes**,
+  on SystemCore. Never Commands v2, never `RobotContainer`, and never mention
+  v2 to students.
+- **Never invent an API.** Ground truth is
+  [Workshop-Code](https://github.com/Hemlock5712/Workshop-Code), checked
+  against shipped WPILib 2027 alpha source; WPILib wins a disagreement.
+  2027-Template is stale and is not a source.
+- Every branch of Workshop-Code is on disk under `reference/Workshop-Code/`
+  (`pnpm reference:sync`). Check a lesson against it. Don't commit there; use
+  `pnpm workshop-code` to change teaching code.
+- No enums and no AdvantageKit in example code. Lambdas are `() -> foo()`,
+  never `foo::bar`. The controller is `CommandXboxController`, a field on
+  `Robot`.
+- There is no implicit default command, and canceling is not stopping. Never
+  write that a mechanism "falls back to `idle()`".
+- Paths are BLine, not PathPlanner. Every pose is blue-wall origin.
+- Students must not be able to copy our gains: screenshots or `0.0`
+  placeholders, never a tuned `CodeBlock`.
 
-```bash
-git -C reference/.git-store/Workshop-Code.git diff mech-2-Commands mech-3-MotionMagic
-```
+### The site
 
-- **`reference/` is gitignored**, so `scripts/sync-reference.mjs` is the only
-  record of how it is built. It is excluded from `tsconfig.json` (whose
-  `include` is `**/*.ts`) and `.prettierignore`.
-- **The worktrees are detached on purpose.** A worktree holding `refs/heads/X`
-  makes git refuse to move that ref, and the teaching chain gets rebased and
-  force-pushed whenever the WPILib alpha breaks an API. Don't commit here.
-- **To change the teaching code, use `pnpm workshop-code`.** It clones
-  Workshop-Code into `reference/work/Workshop-Code` (also gitignored) with
-  every branch tracked locally, which is the one place to commit, rebase the
-  linear mech chain, and run `./gradlew build` before a push. The header of
-  `scripts/workbench.mjs` has the rebase recipe. Push with
-  `--force-with-lease`, then `pnpm reference:refresh`.
-- **`pnpm reference:refresh`** fetches upstream, fast-forwards each worktree,
-  and prunes ones whose branch is gone. It skips any worktree with local
-  changes rather than clobbering it.
-- **This is not a submodule and must not become one.** A submodule tracks one
-  ref at one pinned commit; the teaching states are fourteen refs, and the pin
-  would need a commit here every time Workshop-Code moved.
-- **Nothing at build time reads it.** The embeds still fetch from GitHub
-  through `src/app/api/github/route.ts`, whose `ALLOWED_REPOS` is a one-entry
-  allowlist. `reference/` is for authoring, not for rendering.
-- **`mech-3-MotionMagic` is `/motion-magic-code`**, added August 2026 and the
-  last lesson of Workshop 3. It sits _after_ `/running-program`, not before it:
-  a student drives the mechanism with voltage commands first, sees it push until
-  the button is released, and only then swaps the request for one that names a
-  target. Every gain on the branch ships at `0.0`, so a fresh clone holds still
-  and the student's own generated config is what makes it move.
-- `2-Logging`, on the swerve chain, is also embedded by no page. Logging is
-  taught on `/conditions-and-logging` against `mech-4-ReadingState`, so that
-  branch is the wrong parent for it.
+- `src/data/lessons.ts` is the single source for lesson order, numbers,
+  grouping and prev/next. Never hard-code a lesson count or number.
+- Many lessons and slugs were retired on purpose. Check
+  `context/curriculum.md` before creating a page or restoring one.
+- Every lesson page uses `PageTemplate` and the lesson vocabulary in
+  `src/components/lesson/`. `src/app/(workshop)/pid-control/page.tsx` is the
+  reference implementation.
+- The scroll container is `<main id="main-content">`, not the window.
+- **Tokens only.** Tailwind colour scales (`text-slate-600`) are unregistered
+  and render as nothing. No inline `fontSize` or `text-[Npx]`. One accent hue.
+  `src/app/globals.css` is the design authority.
+- Body copy never leaves `--measure`. There is no sidebar and no margin rail.
+- After content edits run `pnpm generate-search`. After a front-end change run
+  the `visual-check` skill.
 
-## Lesson videos (`videos-next/`)
+### Prose
 
-One narrated video per lesson, 28 of them (Workshops 1 to 6, about 39
-minutes), drawn on a canvas rather than edited. Each lesson is a `scene.js`
-whose `draw(ctx, t)` is a pure function of time, cued off the narration's
-word timings, with an optional "your turn" gate a student drives live in the
-local player. The MP4s are assets on the `video-series` pre-release of this
-repo, and `/video` (noindex, not in the drawer) plays them from there.
-**No lesson page links or embeds them** until the owner says so. The old
-Remotion trailers (`videos/`, the `video-previews` release) were retired in
-October 2026; don't reinstate them.
+- A title is a noun phrase of five words at most. A lesson is 8 to 12 minutes,
+  15 at the cap.
+- No em dashes and no parentheses standing in for them. Vary sentence length.
+  No emoji. Flat procedural voice.
+- `pnpm prose` enforces the mechanical subset; `--only=<slug>` checks one page.
 
-- **`/video` plays through `/api/video/[file]`, never from the release URL.**
-  GitHub serves a release download as `application/octet-stream` with
-  `Content-Disposition: attachment`, both pinned in the signed redirect, and
-  no iPhone browser will play that. Chrome sniffs past it, so the bug only
-  shows on iOS. The route fetches the asset itself, forwards `Range`, and
-  answers `video/mp4`. Every byte then goes through a Vercel Function, which
-  is fine for an unlinked preview. Before the videos go on lesson pages, move
-  them to a host that serves `video/mp4` itself, such as Vercel Blob, and
-  delete the route.
+### Videos
 
-- **`series/series.json` is the single source** for every video's title,
-  hand-offs and narration lines. `series/BUILD.md` is the build contract
-  (accuracy rules, layout, the kit, real footage); read it before touching a
-  scene. `series/briefs/<id>.md` holds each lesson's research and shot list.
-  `context/narration-voice.md` is how the narration sounds.
-- **Layout**: `engine/` (`core.js` time, camera, captions; `kit.js` shared
-  visuals; `player.js` player and gates; `clip.js` real footage),
-  `lessons/<id>/` (`scene.js`, `script.json`, `voice.json`/`voice.js` timings,
-  `index.html`), `tools/`.
-- **The narration is the owner's own voice, cloned with Chatterbox Turbo**
-  (`tools/tts_chatterbox.py`, venv in `voice-bakeoff/`, reference in
-  `voices/joe/`). The reference, the venv and every generated clip
-  (`lessons/*/voice/`) are gitignored. **Never commit or upload them.**
-- **Changing a video**, in order:
-  1. Edit the line in `series.json`, then `node tools/series.mjs --emit <id>`
-     (rewrites `lessons/<id>/script.json`).
-  2. `node tools/render.mjs lessons/<id> --sheet out/<id>.png --every 6` and
-     look at it; a scene's `W(line, word)` cue throws if its word was edited out.
-  3. `node tools/voice.mjs lessons/<id>`: only changed lines regenerate.
-  4. `node tools/render.mjs lessons/<id> --mp4 out/<id>.mp4`, then
-     `node tools/gate-test.mjs lessons/<id> "<actions>" out/<id>-gate.png` for a
-     lesson with a gate.
-  5. `gh release upload video-series out/<id>.mp4 --clobber -R Hemlock5712/Workshop-Site`.
-- **Real tool footage for `"rec": true` lines** replaces a beat's drawn
-  schematic without editing the scene: record with `tools/record-window.ps1`,
-  drive the app with `tools/ui.ps1` logging to `$env:UI_LOG`, cut a beat with
-  `tools/capture-edit.mjs`, and the player draws `lessons/<id>/clips/` over
-  that line. Recipe in `BUILD.md`. `captures/` and `clips/` are gitignored,
-  because raw footage can show gains: mask every gain in the edit. At the
-  bench, never Factory Default, flash firmware or enable a motor without the
-  owner, and the CANivore stays named `canivore`.
-- `node tools/serve.mjs` serves the folder for the local player
-  (`http://localhost:5180/lessons/<id>/`). It is not a Next server and does
-  not touch `.next`.
+- No lesson page links or embeds the videos until the owner says so.
+- Never commit or upload the voice reference, the venv, or generated clips.
 
 ## Development Commands
 
@@ -253,384 +134,6 @@ Requires Node.js 22.18+: cspell and Vitest refuse older versions, and CI runs No
 - **Full test suite**: `pnpm test` (runs format:check + lint + type-check + test:unit + build)
 
 Users can substitute `npm`, `yarn`, or `bun` for `pnpm` in any command.
-
-## Code Architecture
-
-### Key Components Architecture
-
-#### Layout & Navigation — the shell
-
-There is **no persistent sidebar**. Every workshop route renders inside
-`src/components/shell/WorkshopShell.tsx`: a fixed 70px rail on the left, a sticky
-breadcrumb bar on top, and one scrolling `<main id="main-content">`. `Sidebar.tsx`,
-`HamburgerMenu.tsx`, `SidebarContext.tsx` and `SearchBar.tsx` were deleted — don't
-reintroduce them.
-
-- **`src/components/shell/WorkshopShell.tsx`**: The frame. Owns the single scroll container.
-- **`src/components/shell/AppRail.tsx`**: 70px rail — logo/home, MENU, scroll-progress spine, theme toggle.
-- **`src/components/shell/CurriculumDrawer.tsx`**: Full curriculum overlay behind MENU. Focus-trapped.
-- **`src/components/shell/Topbar.tsx`**: Breadcrumb, search affordance, and the course-wide derived completion count.
-- **`src/components/shell/SearchPalette.tsx`**: ⌘K palette (cmdk + lazy MiniSearch).
-- **`src/contexts/ShellContext.tsx`**: `navOpen` / `searchOpen` / `scrollPct` / `mainRef`. Owns ⌘K and Escape.
-- **`src/components/PageTemplate.tsx`**: Lesson frame — outline rail + article. Props: `title`, `lede`, `needs`, `branch`, `time`, and `slug` for a page whose title differs from its `lessons.ts` title (the lesson number is looked up by title otherwise). Every lesson page also exports `metadata = lessonMetadata("/slug")` for its tab title.
-- **`src/components/lesson/PairedLesson.tsx`**: the Tuner X ↔ code bridge. `kind="code"` on a Workshop 1 page links its code lesson; `kind="tuner"` on a code page links back.
-
-#### Search System
-
-- **`public/search-index.json`**: Search index, generated by `pnpm generate-search`
-- **`src/lib/searchConfig.ts`**: MiniSearch configuration and result mapping
-- **Search Features**: Fuzzy search, keyboard navigation, match highlighting, prefix matching
-- **Integration**: ⌘K palette from the topbar; `/search` for the full page. Result rows show lesson number and group, both derived from `lessons.ts`.
-
-#### Theme System
-
-- **`src/components/ThemeProvider.tsx`**: Theme provider wrapper using next-themes
-- **`src/components/ui/animated-theme-toggler.tsx`**: Animated theme toggle with smooth visual transitions
-- **Implementation**: Uses `class` attribute with next-themes for theme management
-- **Modes**: light, dark, system (follows OS preference with automatic detection)
-- **Integration**: Tailwind CSS `dark:` classes throughout the app
-- **Animation**: View Transitions API for smooth theme switching with circular reveal effect
-
-#### Lesson vocabulary
-
-Building blocks for lesson bodies. Prefer these over hand-rolled markup — they
-are what keeps every lesson looking like one site.
-
-- **`src/components/lesson/LessonSection.tsx`**: A numbered step. `id` + `title`. The number is a CSS counter (`.sec-num`), never a prop — inserting a section renumbers the rest for free.
-- **`src/components/lesson/Prose.tsx`**: `<Prose>`, `<ProseBlock>`, `<Split>`, `<MarginNote>`, `<WatchOut>`, `<Mark>`.
-- **`src/components/lesson/LessonOutline.tsx`**: The "on this page" rail. Scans the DOM for `data-sec` — never takes a hand-maintained list.
-- **`src/components/lesson/LessonKicker.tsx`**: "LESSON 15", derived from `lessons.ts`.
-- **`src/components/lesson/Mechanism.tsx`**: the arm/flywheel fork. `<M k="file" />` is an inline slot inside a sentence written once for both; `<Mech for="arm">` is a block only one mechanism reads. Both are server components — every variant ships in the HTML and CSS hides one, keyed off `data-mechanism` on `<html>`, which the root layout's inline script sets from `localStorage` before first paint.
-- **`src/components/lesson/MechanismSelector.tsx`**: "What mechanism are you working on?", the first child of a mechanism lesson's `PageTemplate`.
-
-**A mechanism lesson is written once and read twice.** From `/mechanisms`
-onward a student picks Arm or Flywheel at the top and reads a whole lesson
-about that mechanism. The prose is not duplicated to do it: a sentence true of
-both is written once with a slot in it, and the words that differ live in
-`src/data/mechanisms.ts`. That file holds **vocabulary, not sentences** — a
-name, a filename, a field, a pair of CAN IDs. If a paragraph is genuinely
-different for the two, it is different content and belongs in `<Mech>` on the
-page. Adding a `sentence` key to the profile turns it into a second content
-store nobody reviews as prose, which is the failure it exists to prevent.
-`pnpm prose` prices the default (arm) reading and drops the other branch, so
-the budget still describes one student at one bench.
-
-Layout rule: **body copy never leaves `--measure` (820px)**. Code blocks,
-tables and figures may take `--gutter` more (`.measure-wide`, 1000px);
-paragraphs may not.
-
-**There is no margin rail.** A lesson is one column at every width. `--measure`
-was 660px with a 250px note rail to its right until August 2026, and the pair
-only ever added up above 1240px — below that the rail collapsed inline and the
-column stayed at 660 with 300px of nothing beside it. `<MarginNote>` now stacks
-under the paragraph it annotates, styled like `<WatchOut>`, and `"You'll need"`
-sits under the lede instead of beside the title. `.split` is kept because fifty
-of them are written into the pages, but it is a one-column grid that owns the
-gap between a paragraph and its note. Don't reintroduce the rail.
-
-### Route Organization
-
-Lesson order, drawer grouping, the syllabus, and prev/next all come from
-`src/data/lessons.ts` — the single source of truth. The course is organized as
-seven workshops with a strict prerequisite boundary: Workshop 1 is entirely in
-Tuner X, Java starts at Workshop 2, the first file is written in Workshop 3,
-routines are built in Workshop 4, the swerve drive is generated and tuned in
-Workshop 5, Workshop 6 drives it (autonomous, BLine, Drive to Point), and
-Workshop 7 adds vision (Vision Hardware, Vision, Align to Tag). Historical side
-routes can remain reachable without appearing in `LESSONS`.
-
-**Swerve, Navigation and Vision are three workshops.** Owner's review,
-November 2026, split the old Swerve & Autonomous and Vision & Navigation.
-Workshop 5 is `/swerve-basics` (the components, then robot-centric,
-field-centric, `Pose2d` and odometry, kept short; it replaced How Swerve
-Works), `/swerve-drive-project` (generate only `TunerConstants.java` into the
-prepared project and set the team number) and `/swerve-drive-tuning` (steer
-gains first, then wheel radius, top speed and the drive loop, with
-every drive request on `DriveRequestType.Velocity`, owner's call: the generator's `OpenLoopVoltage` is changed in `Robot.java` on all seven swerve branches; Swerve Calibration folded in and its
-module-zeroing material was cut). Drive to Point sits in Navigation, before
-Vision; Align to Tag stays after Vision because it needs it.
-
-**Workshop 4 is Routines, and it renumbered everything after it.** September
-2026: Command Composition, Finish Conditions and Coroutines left the tail of
-Workshop 3, Logging came up from the old Workshop 6 to join them, and Swerve
-and Vision shifted to 5 and 6. Workshop 3 is about making one mechanism work
-and stops at Motion Magic in Code; Workshop 4 is about making several cooperate
-with no driver holding a button. The group was called Advanced Commands when
-it held State Machines, and is named for what a student builds.
-
-**Finish Conditions and Logging are one lesson, `/conditions-and-logging`.**
-Owner's call, November 2026: Finish Conditions had shrunk to three getters
-nothing called, and Logging sat after the routine it exists to explain. The
-merged lesson is `mech-4-ReadingState`: tolerance and the three getters, then
-`DataLogManager.start()` + `DriverStation.startDataLog(...)` in the `Robot`
-constructor, then each mechanism `implements Mechanism, TelemetryLoggable` with
-an `@Override logTo(TelemetryTable table)` that logs the getters, `AtTarget`
-and `AppliedVoltage`, and `Robot.robotPeriodic()` calls
-`Telemetry.log("Arm", arm)` after the scheduler. The old private `record()` +
-`Scheduler.getDefault().addPeriodic(...)` shape is gone. The getters are
-logged as `Measure`s with no `.in(Unit)` (owner's call): `RobotBase`'s type
-handler writes the SI base unit with a `unit` property, so `Position` is `rad`,
-`Velocity` `rad/s`, `AppliedVoltage` `V`, and AdvantageScope converts on the
-graph. Sim-verified: all eight `NT:/Telemetry/...` entries, with units, land
-in the `.wpilog`.
-Both old slugs 308 here, and Coroutines follows it.
-
-**There is no `/chaining-commands`, and routines are coroutines only.**
-Owner's call, November 2026: Commands v3 composes with coroutines, so Command
-Composition (`Command.sequence`, `Command.race`, `.withTimeout`) was cut, and
-Finish Conditions lost `.until(...)` and the builder-versus-`Command` `.named`
-ordering. No mech branch ever used any of them. Coroutines owns every routine: the core
-calls (`fork`, `waitUntil`, `await`, `wait`; `yield` and the hand-written
-`while` loop were cut), three teleop routines in `MyTeleop` with unbounded waits
-(Y `raiseAndLower` on the arm, X `spinUpAndStop` on the flywheel, B `wave`, the
-arm routine in a `for` loop), then `RaiseAndShootOpMode` with a time limit on
-every wait and each `Coroutine.WaitResult` stored before its `if`. Each
-finished routine is a `RoutineView`: a Code / Timeline toggle, so the picture
-costs no page length. `CoroutineTimeline` is deleted. To match,
-`mech-4-ReadingState` was rebuilt to add only the read side and the Y button
-moved to `mech-5-Coroutines`. Don't teach a routine as a command group or a
-decorated hold. The slug 308s to `/coroutines`.
-
-**`/vision-shooting` is optional and unlisted, on `swerve-vision-shooting`.**
-Owner's call, November 2026: rebuild it, keep it out of `lessons.ts`. The
-branch is one commit on `swerve-vision`: a two-Kraken `Flywheel` (CAN 21 and
-22, follower opposed) that reads the distance to a placeholder `TARGET` off
-`drivetrain.getPose()` and looks the speed up in an
-`InterpolatingDoubleTreeMap`, with the Tuner X paste at 0.0 gains and the
-right trigger bound `whileTrue(distanceShoot()).whileFalse(stop())`. It
-replaced `4-DynamicFlywheel`. Builds and starts in sim; not verified on
-hardware.
-
-**There is no `/testing`.** Cut in the owner's November 2026 review: no
-entry-level team will write JUnit tests. The `mech-6-Testing` branch was
-deleted with it. The slug 308s to `/conditions-and-logging`.
-
-**There is no `/state-based`.** State Machines was retired in September 2026 and
-the page is deleted: `StateMachine` shipped in alpha-6, but there is no
-documentation worth sending a student to and no Workshop-Code branch behind the
-lesson. The slug 308s to `/coroutines`, and the two `state-based-*.mp4` entries
-are gone from `/video`. Don't reinstate it without a branch and real docs.
-
-**Workshop 2 is concepts, Workshop 3 is code.** Splitting them was the point of
-the August 2026 regroup: Workshop 2 (Code Foundations) is Java Basics and The
-Command Framework, and nothing in it opens an editor. Workshop 3 (Robot
-Programming) opens with Project Setup and runs through Motion Magic in Code,
-and every lesson in it writes a file. Project Setup sits at the top of Workshop 3 rather
-than the bottom of Workshop 2 because making the project is the first thing you
-do to write code, not the last idea you learn before writing it. The section
-ids stay aligned with the displayed numbers (`workshop3` renders `03`); keep
-them that way if a group is ever inserted again.
-
-**`/` is not in `LESSONS`.** Home is the landing page, not lesson 00 — the
-lesson count is derived from `LESSONS`; do not hard-code it in UI copy.
-
-**There is no `/glossary`.** The standalone glossary page was retired in August
-2026 — it was a second copy of every definition, kept in sync by hand. Inline
-definitions now live only in `src/components/GlossaryTerm.tsx`, whose
-`glossaryDefinitions` record renders the hover/focus tooltip on an annotated
-term; add a term there, not to a page.
-
-**There is no `/planner` in this repo.** The waypoint planner was removed in
-August 2026 — `frc5712.com/planner` is served from a separate repository. The
-route, its ten components, four hooks and four lib modules (~5,100 lines) are
-gone, and nothing here linked to them. Don't reintroduce it, and don't confuse
-it with `/bline`, which is a lesson and stays.
-
-**Retired slugs, kept as 308 redirects in `next.config.ts`** — they're printed
-on old slides: `/logging-options`, `/logging-implementation`,
-`/finish-conditions`, `/finish-lines` and `/testing` → `/conditions-and-logging`,
-`/vision-options` → `/vision-hardware`, `/ai-assistant` →
-`/ai-coding-assistant`, `/glossary` → `/introduction`, `/robot-class` →
-`/mechanisms`, `/building-subsystems` → `/mechanisms`, `/dynamic-path-planning` and `/advanced-drive-to-point` → `/drive-to-point`,
-`/drive-to-tag-inline` → `/align-to-tag`, `/pathplanner` → `/bline`, `/project-structure` and
-`/git-workflow` → `/project-setup`, `/chaining-commands` → `/coroutines`,
-`/swerve-prerequisites` → `/swerve-basics`, `/swerve-calibration` →
-`/swerve-drive-tuning`.
-
-**There is no `/project-structure` or `/git-workflow`.** Both were cut in the
-owner's November 2026 review: Workshop 3 goes from Project Setup straight to
-Mechanisms. Don't reinstate them.
-
-**There is no `/dynamic-path-planning`.** Pathfinding was retired in
-November 2026 along with the decision to move off PathPlanner: BLine, its
-replacement, has no obstacle pathfinding, and a target chosen at runtime is a
-field pose handed to Drive to Point. The slug 308s to `/drive-to-point`.
-
-**`/align-to-tag` replaced `/drive-to-tag-inline`, and is not the same
-lesson.** The old page drove its own loop straight off LimelightLib target
-space, with flipped axes and no plan for losing the tag, and was retired in
-November 2026 in favour of handing a tag-layout field pose to Drive to Point.
-The owner reversed half of that the same month: a spot measured from one tag
-does not depend on the field pose being right, and recording it on each
-event's field absorbs that field's tag mounting. So Align to Tag is the Drive
-to Point call with a tag-frame pose supplier, anchored to odometry between
-frames. `7-InlineCommands` stays deleted. Don't bring back a camera-space
-control loop.
-
-**There is no `/advanced-drive-to-point`.** Profiled Drive to Point was
-retired in November 2026 when Drive to Point moved onto BLine, which already
-profiles every path. The slug 308s to `/drive-to-point`.
-
-**Two slugs were renamed to their titles in September 2026.**
-`/building-subsystems` became `/mechanisms`, having said "subsystem" for a
-year after Commands v3 renamed the thing and the lesson title already said
-"Mechanisms"; its screenshots moved to `public/images/mechanisms/`, beside the
-arm and flywheel photos the home page uses. `/finish-lines` became
-`/finish-conditions`, because "finish lines" was a metaphor and the title was
-never that, and merged into `/conditions-and-logging` in November 2026. Both old
-slugs redirect.
-
-**Vision is two lessons, and was one for a month.** September 2026:
-`/vision-hardware` opens Workshop 7 and `/vision-implementation` follows it.
-The split restores the January 2026 shape that an August 2026 pass collapsed.
-Collapsing them kept the code and dropped the bench work, which left the only
-hardware procedure on the site sitting inside a code lesson, and putting the
-missing material back into one page runs it past the 15 minute cap. So the
-hardware page has no Java on it and the code page has no screwdriver on it.
-`/vision-options` redirects to `/vision-hardware`, its successor, rather than
-to the code page. Don't merge them again. What the split deliberately did not
-bring back from the old `/vision-options`: the three-card "why vision matters"
-grid, the "what you'll learn" list, and the do/don't best-practices columns,
-each a heading with no procedure under it.
-
-**There is no `/robot-class`.** `Robot.java` was its own lesson until August 2026. `/command-framework` already taught `robotPeriodic()` and the
-`Scheduler.getDefault().run()` line, and even quizzes deleting it, so what
-actually remained was two `public final` fields. Those now sit in the last
-section of `/mechanisms`, next to the classes they own, because
-`mech-1-Mechanisms` is the commit that adds them. Don't reinstate the lesson.
-
-### Development Patterns
-
-- **File Naming**: kebab-case for routes, PascalCase for components
-- **Import Alias**: `@/*` maps to `src/*`
-- **Component Structure**: Functional components with TypeScript interfaces
-- **Styling**: Tailwind utility classes plus the design tokens in `globals.css`. Use template literals for conditional classNames (e.g., ``className={`p-4 ${isOpen ? "px-6" : "px-2"}`}``). The `cn()` utility from `@/lib/utils` is reserved for UI primitives only (`Box.tsx`, `animated-theme-toggler.tsx`).
-- **Colour**: **never hard-code a Tailwind colour scale.** `text-slate-600`, `bg-blue-50`, `border-primary-200` and friends were swept out entirely and the scales are no longer registered — they will silently render as nothing. Use the tokens: surfaces `--bg` / `--bg2` / `--bg3`, text `--tx` / `--tx2` / `--tx3`, rules `--rule` / `--rule-soft`, and `--accent` (+ `--accent-ink`, `--accent-soft`). Signals are `--ok` and `--err` only. **One accent hue** — if something needs to stand out and isn't the primary action, use a mono micro-label, not a second colour.
-- **Radius & elevation**: Tailwind's `--radius-*` and `--shadow-*` scales are redefined in `@theme` to the design's near-square corners and near-flat shadows. `rounded-lg` is 3px here. Don't fight it with arbitrary values.
-- **Navigation**: Client-side routing with active state management
-- **Video Integration**: YouTube embeds for educational content
-- **Code Learning**: Tabbed interfaces combining final code with development process
-- **GitHub Integration**: `GitHubContent` and `MechanismTabs` can embed live files from Workshop-Code, but no page calls them (see the embeds note above)
-- **Progressive Learning**: 5-step implementation approach following real development workflow
-- **Theme Management**: next-themes for system theme detection and persistence
-
-### Important Implementation Notes
-
-- Theme system uses next-themes with class-based dark mode. Dark is `:root`; light is the `html:not(.dark)` branch
-- **The scroll container is `<main id="main-content">`, not the window.** Anything measuring scroll position reads that element — `window.scrollY` is always 0 here
-- All workshop pages should use PageTemplate for consistency. A lesson opens with the sentence that teaches (`title` + `emphasis`), not its filing label — the short label lives in `lessons.ts` and is what the breadcrumb and drawer show
-- Navigation (drawer groups, syllabus, lesson order, prev/next, lesson numbers) is derived from `src/data/lessons.ts` — add/rename/reorder lessons there
-- `LessonSectionId` is the section-id union type in `lessons.ts`; `LessonSection` is the lesson-body component. They were both called `LessonSection` and collided
-- After content edits, regenerate the search index with `pnpm generate-search`. There is no `routeMap` any more: `scripts/generate-search-data.ts` reads `src/data/lessons.ts` directly and fails the build when the lesson list and the filesystem disagree, so a renamed lesson needs no second edit
-- Build process includes comprehensive testing (lint + type-check + build)
-- Search system provides fast fuzzy search across all workshop content using MiniSearch
-- Theme transitions use View Transitions API for smooth animated theme switching
-
-## Visual Development
-
-### Design Principles
-
-**`src/app/globals.css` is the design authority.** Read it before making any
-visual change — it is a design document as much as a stylesheet, and it
-explains _why_ at every decision: why the measure is 820px, why light-mode
-`--tx3` sits at 0.525 and not 0.565, why code blocks stay dark in both themes,
-why the radius scale is 2-3px, why `min-width: 0` is load-bearing.
-
-The rules that matter, all enforced there:
-
-- **Tokens only, never a Tailwind colour scale.** `text-slate-600`,
-  `bg-blue-50`, `border-primary-200` and friends are unregistered and render
-  as nothing. Surfaces `--bg` / `--bg2` / `--bg3`, text `--tx` / `--tx2` /
-  `--tx3`, rules `--rule` / `--rule-soft`, `--accent` (+ `--accent-ink`,
-  `--accent-soft`). Signals are `--ok` and `--err` — two, and only two.
-- **The type scale is named.** `--text-micro` / `--text-meta` / `--text-note`
-  / `--text-ui` / `--text-aside` / `--text-body` / `--text-lede` /
-  `--text-title`, plus the `.display` ramp. Do not write inline `fontSize` or
-  `text-[Npx]`: 536 of those were swept out, and each one is how the site
-  drifted into twenty-seven sizes against four named steps.
-- **Spacing is named too**: `--spacing-chip` / `tight` / `control` / `flow` /
-  `pad` / `step` / `panel` / `stack`. There is no `--spacing-block`.
-- **Body copy never leaves `--measure`.** Code, tables and figures may take
-  `--gutter` more via `.measure-wide`; paragraphs may not. `--gutter` is that
-  allowance, not a rail — nothing sits beside the prose.
-- **One accent hue.** If something must stand out and is not the primary
-  action, use a mono micro-label (`.micro`), not a second colour.
-- **Asides are budgeted.** Two per lesson, three at most (`pnpm prose`
-  enforces three per page), and one `alert-danger` per lesson. There were 297 of them and a warning stopped
-  meaning anything; the "why" belongs in a `<MarginNote>` under the paragraph.
-
-There is no `context/design-principles.md` or `context/style-guide.md` — both
-were deleted in August 2026. The first was generic "S-Tier SaaS Dashboard"
-boilerplate prescribing a persistent sidebar and admin tables, which describes
-neither this site nor its design; the second documented a colour palette that
-no longer exists. Do not reinstate either.
-
-### Writing
-
-Two authorities, and they do not overlap. **How a sentence sounds is the
-`unslop` skill** (`.claude/skills/unslop/SKILL.md`). **How big a lesson is and
-what shape it has is `context/lesson-budget.md`.** `pnpm prose` enforces the
-mechanical subset of both. Read both before writing or editing lesson prose.
-
-`context/writing-style.md` was the single authority until August 2026 and is
-gone. Its voice rules were replaced wholesale by unslop, which is stricter and
-covers more; its curriculum rules moved to `context/lesson-budget.md`
-unchanged. Do not reinstate it.
-
-- **Apply unslop's pattern-removal rules 1 to 31. Skip its "Adding soul"
-  section.** That section asks for opinions, first person, and deliberate mess.
-  The audience is an 11-to-18-year-old following a procedure next to a powered
-  mechanism, and personality in a bench procedure costs words without adding
-  instruction. The house voice stays flat, in the shape of the CTRE Phoenix 6
-  docs.
-- **A title is a name, not a pitch.** Noun phrase, five words at most: "PID
-  Tuning in Tuner X", not "Tune the motor before a robot program ever touches
-  it". `PageTemplate` no longer takes an `emphasis` prop; the accent-italic
-  phrase inside a sentence-title went with the sentence-titles.
-- **The lesson is the unit of attention, and it is 8 to 12 minutes.** 15 is the
-  hard cap and there is no floor. Over the cap, split the lesson. Short is
-  fine: a lesson that does its job in four minutes has done its job. Judge a
-  short page on whether it has its check and its failure modes, not on length.
-- **No em dashes, and no parentheses standing in for them.** unslop rule 13:
-  reaching for a bracket instead of a dash trades one tell for another. End the
-  sentence or use a comma.
-- **Vary sentence length.** Uniformly short sentences are the loudest tell that
-  a machine wrote the page, and it is the mistake this site made once already.
-- **Bold is functional here, not decorative.** The 280 `<strong>` runs on the
-  site name a lesson to go to, a Tuner X control to click, or a term at first
-  use. unslop rule 15 bans decorative bolding and this is not that, so an audit
-  flagging them all is a false positive. The same goes for rule 16 and the 21
-  `You should see:` procedure markers.
-- `src/app/(workshop)/pid-control/page.tsx` is the reference implementation.
-  Copy its shape.
-- **Quiz prose is prose.** `<Quiz>` is in the linter's `SKIP_ELEMENTS`, so for
-  a long time its ~6,000 student-facing words were never checked and that is
-  where the tells hid. `quizProseFindings` now runs the banned list over every
-  question, option, and explanation.
-
-**The `unslop` skill is not in this repository.** `.claude/` is gitignored, so
-the rules referenced above live only on whoever's machine created them. What is
-enforceable is in `pnpm prose`, whose `BANNED` list its own comments describe as
-"the mechanically checkable subset" of unslop. Treat the rest as judgement until
-the skill is committed somewhere tracked.
-
-`context/narration-voice.md` is the voice guide for the lesson videos and is
-worth reading before writing prose too. Its cadence findings apply to the
-website, not just the video scripts.
-
-### Quick Visual Check
-
-After any front-end change, run the `visual-check` skill. It drives a real
-browser through the `playwright` devDependency, because there is no Playwright
-MCP server configured for this project.
-
-### Comprehensive Design Review
-
-Invoke the `@agent-design-review` subagent for thorough design validation when:
-
-- Completing significant UI/UX features
-- Before finalizing PRs with visual changes
-- Needing comprehensive accessibility and responsiveness testing
 
 <!-- BEGIN:nextjs-agent-rules -->
 
