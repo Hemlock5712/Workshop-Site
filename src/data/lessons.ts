@@ -13,7 +13,8 @@ export type LessonSectionId =
   | "workshop4"
   | "workshop5"
   | "workshop6"
-  | "workshop7";
+  | "workshop7"
+  | "extras";
 
 export interface Lesson {
   slug: Route;
@@ -96,6 +97,17 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "07",
     blurb:
       "Mount a camera, correct odometry with AprilTags, and line up on a tag.",
+    unfinished: "Still being written. Rough draft based on current code.",
+  },
+  // Not a workshop. Side lessons for a team in a situation the bench course
+  // does not assume, such as writing code before the robot exists. Each one
+  // states its own prerequisites and nothing in Workshops 1 to 7 needs it.
+  {
+    id: "extras",
+    title: "Extras",
+    num: "EX",
+    blurb:
+      "Side lessons outside the bench course, starting with simulating a mechanism you have not built yet.",
     unfinished: "Still being written. Rough draft based on current code.",
   },
 ];
@@ -268,6 +280,17 @@ export const LESSONS: ReadonlyArray<Lesson> = [
   // Align to Tag is the Drive to Point call aimed at a spot measured from one
   // tag, so it sits after Vision, which it needs.
   { slug: "/align-to-tag", title: "Align to Tag", section: "workshop7" },
+
+  // Extras. Mechanism Simulation is `mech-sim`, one commit on
+  // `mech-5-Coroutines`: a physics model per mechanism under Simulate Robot
+  // Code, for teams programming before the robot is built.
+  {
+    slug: "/mechanism-simulation",
+    title: "Mechanism Simulation",
+    shortLabel: "Mechanism Sim",
+    section: "extras",
+    optional: true,
+  },
 ];
 
 const SLUG_INDEX: ReadonlyMap<string, number> = new Map(
