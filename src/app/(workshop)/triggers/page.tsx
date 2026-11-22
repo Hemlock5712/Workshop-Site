@@ -22,7 +22,7 @@ import { GitBranch } from "lucide-react";
  * each one cancels, `and` / `or` / `negate` / `debounce`, and the three
  * binding scopes. Every API here was checked against
  * `commandsv3/src/main/java/org/wpilib/command3/Trigger.java`,
- * `BindingScope.java` and the generated `CommandNiDsXboxController` in
+ * `BindingScope.java` and the generated `CommandXboxController` in
  * allwpilib: `leftTrigger()` really is an axis thresholded at 0.5, and
  * `createNarrowestScope` really is command, then opmode, then global.
  *

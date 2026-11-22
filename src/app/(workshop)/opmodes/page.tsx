@@ -90,7 +90,7 @@ export default function OpModes() {
 import first.robot.mechanisms.Arm;
 import first.robot.mechanisms.Flywheel;
 import org.wpilib.command3.Scheduler;
-import org.wpilib.command3.button.CommandNiDsXboxController;
+import org.wpilib.command3.button.CommandXboxController;
 import org.wpilib.framework.OpModeRobot;
 
 public class Robot extends OpModeRobot {
@@ -99,7 +99,7 @@ public class Robot extends OpModeRobot {
   public final Flywheel flywheel = new Flywheel();
 
   // The driver's controller on port 0. OpModes bind its buttons through robot.driver.
-  public final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  public final CommandXboxController driver = new CommandXboxController(0);
 
   // ... the constructor and robotPeriodic, unchanged
 }`}
@@ -107,8 +107,8 @@ public class Robot extends OpModeRobot {
         />
 
         <p>
-          <code>new CommandNiDsXboxController(0)</code> creates an Xbox
-          controller. The <code>0</code> is its port on the driver station.
+          <code>new CommandXboxController(0)</code> creates an Xbox controller.
+          The <code>0</code> is its port on the driver station.
         </p>
       </LessonSection>
 

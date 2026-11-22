@@ -90,13 +90,13 @@ export default function SwerveDriveProject() {
           steps 5 and 6 are the only two edits it needs.
         </p>
         <a
-          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.1-swerve.zip"
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.2-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)] px-6 py-3 font-medium text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           <Download className="h-5 w-5" />
-          Download Swerve Project (v3.1, Commands v3)
+          Download Swerve Project (v3.2, Commands v3)
         </a>
       </Box>
 
@@ -280,7 +280,7 @@ export default function SwerveDriveProject() {
           filename="src/main/java/frc/robot/Robot.java"
           code={`public class Robot extends OpModeRobot {
   public final DriveMechanism drivetrain = new DriveMechanism();
-  public final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  public final CommandXboxController driver = new CommandXboxController(0);
 
   private final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // top speed
   private final double maxAngularRate =
@@ -288,15 +288,14 @@ export default function SwerveDriveProject() {
 
   private final SwerveRequest.FieldCentric drive =
       new SwerveRequest.FieldCentric()
-          .withDeadband(maxSpeed * 0.1)
-          .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
           .withDriveRequestType(DriveRequestType.Velocity); // closed loop, uses the drive gains
 
   public Robot() {
     // Joystick drive, in every mode. Set here instead of in an OpMode so it always exists: when
     // any other drivetrain command ends or is interrupted, the drivetrain goes back to the sticks.
     // In WPILib, X points forward and Y points left. The sticks read the other way around, so
-    // each axis below gets a minus sign.
+    // each axis below gets a minus sign. The controller already ignores the bottom 10% of each
+    // stick, so a stick at rest reads 0.
     drivetrain.setDefaultCommand(
         drivetrain.applyRequest(
             () ->

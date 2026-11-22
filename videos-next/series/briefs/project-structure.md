@@ -61,7 +61,7 @@ The generated `Robot.java` comment on `main` is the source of the discovery rule
 ```java
 @Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(0);
 
   public MyTeleop(Robot robot) {
     driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());

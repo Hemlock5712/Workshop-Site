@@ -43,7 +43,7 @@ export default function SwerveDriveTuning() {
         <>Phoenix Tuner X, and six meters of clear carpet.</>,
         <>A tape measure, and a wall you may push against.</>,
       ]}
-      time="12 minutes"
+      time="14 minutes"
     >
       <LessonSection id="steer-gains" title="Tune the steer gains">
         <p>
@@ -217,10 +217,8 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           filename="src/main/java/frc/robot/Robot.java"
           code={`private final SwerveRequest.FieldCentric drive =
     new SwerveRequest.FieldCentric()
-        .withDeadband(maxSpeed * 0.1)
-        .withRotationalDeadband(maxAngularRate * 0.1) // ignore the sticks' bottom 10%
         .withDriveRequestType(DriveRequestType.Velocity); // closed loop, uses the drive gains`}
-          highlightLines={[5]}
+          highlightLines={[3]}
         />
         <p>
           A drive motor holds a speed, and on a velocity loop the feedforward
@@ -242,15 +240,28 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
     new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKS(0).withKV(0.124);`}
         />
         <p>
-          The same request throws away the bottom 10% of both sticks. At 4.54
-          m/s that is everything under about 0.45 m/s, which a tuned velocity
-          loop can hold. Shrink the deadband rather than deleting it, because it
-          keeps a worn stick&apos;s drift from creeping the robot across the
-          field. Put the robot on blocks, take your hands off the controller,
-          and watch the speed component of <code>Drivetrain/ModuleTargets</code>
-          . Halve the deadband and redeploy until those targets start twitching,
-          then go back one value.
+          The request has no deadband of its own. Phoenix&apos;s version cuts
+          off every speed under it, so the slowest speeds were never reachable.
+          The controller ignores the bottom 10% of each stick instead and
+          stretches the rest back over the full range. Full stick still asks for{" "}
+          <code>maxSpeed</code>.
         </p>
+        <p>
+          Shrink that 10% rather than setting it to zero, because it keeps a
+          worn stick&apos;s drift from creeping the robot across the field. Put
+          the robot on blocks, take your hands off the controller, and watch the
+          speed component of <code>Drivetrain/ModuleTargets</code>. Halve the
+          deadband in the <code>Robot</code> constructor and redeploy until
+          those targets start twitching, then go back one value.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/Robot.java"
+          code={`// In the Robot constructor, above setDefaultCommand
+driver.getController().setLeftXDeadband(0.05);
+driver.getController().setLeftYDeadband(0.05);
+driver.getController().setRightXDeadband(0.05);`}
+        />
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -329,16 +340,16 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           {
             id: 5,
             question:
-              "With the drive loop closed, why shrink the 10% deadband instead of deleting it?",
+              "Why does the course put the stick deadband on the controller instead of on the FieldCentric request?",
             options: [
-              "Below 10% the velocity loop cannot hold a speed anyway",
-              "A worn controller's stick drift would creep the robot across the field with nobody touching it",
-              "The rotational deadband has to stay larger than the translational one",
-              "kSpeedAt12Volts would have to be measured again",
+              "The request's deadband only works with OpenLoopVoltage",
+              "The controller stretches the travel past its deadband back over the full range, so the slowest speeds are still reachable",
+              "The controller's deadband stops a worn stick from drifting, and the request's does not",
+              "The request ignores its deadband once the drive gains are tuned",
             ],
             correctAnswer: 1,
             explanation:
-              "A tuned velocity loop holds speeds under 0.45 m/s, so 10% throws away real control. Zero deadband hands the robot every bit of a worn stick's drift instead.",
+              "Both stop drift. The request's deadband cuts off every speed under it, so a 10% deadband at 4.54 m/s leaves nothing under about 0.45 m/s. The controller maps 10% of stick to zero and full stick to full, so every speed in between is still there.",
           },
         ]}
       />

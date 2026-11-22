@@ -184,7 +184,7 @@ export default function CommandFramework() {
   public final Flywheel flywheel = new Flywheel();
 
   // The driver's controller on port 0. OpModes bind its buttons through robot.driver.
-  public final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  public final CommandXboxController driver = new CommandXboxController(0);
 
   @Override
   public void robotPeriodic() {
