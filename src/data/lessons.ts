@@ -108,6 +108,7 @@ export const SECTIONS: ReadonlyArray<SectionMeta> = [
     num: "EX",
     blurb:
       "Side lessons outside the bench course, starting with simulating a mechanism you have not built yet.",
+    unfinished: "Still being written. Rough draft based on current code.",
   },
 ];
 
