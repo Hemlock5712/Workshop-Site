@@ -249,13 +249,14 @@ export default function MechanismSimulation() {
           <li>
             In the config in <M k="file" />, enter your own starting{" "}
             <Mech for="arm">
-              <code>kG</code>, <code>kP</code>,
+              <code>kG</code>, <code>kP</code>, cruise velocity and
+              acceleration. Motion Magic will not move with a cruise velocity of
+              0.
             </Mech>
             <Mech for="flywheel">
-              <code>kV</code>, <code>kP</code>,
-            </Mech>{" "}
-            cruise velocity and acceleration. Motion Magic will not move with a
-            cruise velocity of 0.
+              <code>kV</code>, <code>kP</code> and acceleration. The velocity
+              profile ramps at that acceleration and has no cruise velocity.
+            </Mech>
           </li>
           <li>
             Open the <strong>&hellip;</strong> menu at the end of the editor
