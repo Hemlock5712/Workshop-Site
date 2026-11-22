@@ -90,13 +90,13 @@ export default function SwerveDriveProject() {
           steps 5 and 6 are the only two edits it needs.
         </p>
         <a
-          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.1-swerve.zip"
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.2-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)] px-6 py-3 font-medium text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           <Download className="h-5 w-5" />
-          Download Swerve Project (v3.1, Commands v3)
+          Download Swerve Project (v3.2, Commands v3)
         </a>
       </Box>
 
