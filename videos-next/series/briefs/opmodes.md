@@ -49,12 +49,12 @@ public class MyTeleop extends PeriodicOpMode {
 }
 ```
 
-After (`mech-2-Commands`, same path; imports are `first.robot.Robot`, `org.wpilib.command3.button.CommandNiDsXboxController`, `org.wpilib.opmode.PeriodicOpMode` and `org.wpilib.opmode.Teleop`):
+After (`mech-2-Commands`, same path; imports are `first.robot.Robot`, `org.wpilib.command3.button.CommandXboxController`, `org.wpilib.opmode.PeriodicOpMode` and `org.wpilib.opmode.Teleop`):
 
 ```java
 @Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(0);
 
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.

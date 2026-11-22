@@ -44,7 +44,7 @@ public class Robot extends OpModeRobot {
 ```java
 @Teleop(name = "Teleop")
 public class MyTeleop extends PeriodicOpMode {
-  private final CommandNiDsXboxController driver = new CommandNiDsXboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(0);
 
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
