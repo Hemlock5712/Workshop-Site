@@ -5,22 +5,16 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "url": "#install-the-library .code-card:has-text(\"Vendor dependency URLcopy\")",
-    "mega": "#megatag1-and-megatag2",
-    "megaP": "#megatag1-and-megatag2 > .lesson-stack > div:has-text(\"The camera solves the\")",
-    "mt1": "#megatag1-and-megatag2 p:has-text(\"MegaTag1 solves position\")",
-    "mt2": "#megatag1-and-megatag2 p:has-text(\"MegaTag2 takes your heading\")",
     "vision": "#the-vision-class .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
-    "trustHead": "#the-trust-weighting > div:first-child",
-    "trustP1": "#the-trust-weighting > .lesson-stack > p:has-text(\"Every sighting goes into\")",
-    "trustP2": "#the-trust-weighting > .lesson-stack > p:has-text(\"Distance hurts gently and\")",
-    "trustP3": "#the-trust-weighting > .lesson-stack > p:has-text(\"MegaTag2 solved its pose\")",
     "robotP": "#start-it-in-robot > .lesson-stack > p:has-text(\"Add one field to\")",
     "robot": "#start-it-in-robot .code-card:has-text(\"src/main/java/frc/robot/Robot.javacopy\")",
     "nameP": "#start-it-in-robot > .lesson-stack > p:has-text(\"The string has to\")",
     "steps": "#check-your-work > .lesson-stack > ol:has-text(\"Park about two meters\")",
     "stepUncover": "#check-your-work > .lesson-stack > ol:has-text(\"Park about two meters\") > li:has-text(\"Uncover the camera. The\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeCorrections stop\")",
-    "installP": "#install-the-library > .lesson-stack > div:has-text(\"LimelightLib is a vendor\")"
+    "installP": "#install-the-library > .lesson-stack > div:has-text(\"LimelightLib is a vendor\")",
+    "solversLi": "#the-vision-class > .lesson-stack > ul:has-text(\"A camera drives nothing\") > li:has-text(\"The camera solves each\")",
+    "trustLi": "#the-vision-class > .lesson-stack > ul:has-text(\"A camera drives nothing\") > li:has-text(\"Each sighting goes in\")"
   },
   "open": [
     {
@@ -45,21 +39,19 @@
     ],
     "solvers": [
       {
-        "show": "@mega"
+        "show": "@solversLi"
       },
       {
         "at": "first",
-        "spot": "@mt1"
+        "mark": "@solversLi",
+        "text": "needs two or more to do it well"
       }
     ],
     "borrow": [
       {
-        "spot": "@mt2"
-      },
-      {
-        "at": "wrong",
-        "mark": "@mt2",
-        "text": "wrong and looks fine"
+        "at": "second",
+        "mark": "@solversLi",
+        "text": "takes your heading as given"
       }
     ],
     "loop": [
@@ -93,22 +85,19 @@
     ],
     "trust": [
       {
-        "show": ["@trustHead", "@trustP1", "@trustP2"]
+        "show": "@trustLi"
       },
       {
-        "at": "quarter",
-        "mark": "@trustP2",
-        "text": "a second tag divides it by four"
+        "at": "distance",
+        "mark": "@trustLi",
+        "text": "grows with distance and shrinks with tag count"
       }
     ],
     "echo": [
       {
-        "show": "@trustP3"
-      },
-      {
         "at": "ignored",
-        "mark": "@trustP3",
-        "text": "the robot agreeing with itself"
+        "mark": "@trustLi",
+        "text": "is the one you handed the camera"
       }
     ],
     "robot": [

@@ -7,7 +7,7 @@
     "lede": "#main-content header:has(h1) .lesson-lede",
     "installHead": "#install > div:first-child",
     "installList": "#install > .lesson-stack > ol:has-text(\"In VS Code, open\")",
-    "installBuild": "#install > .lesson-stack > ol:has-text(\"In VS Code, open\") > li:has-text(\"Build the project. Gradle\")",
+    "installBuild": "#install > .lesson-stack > ol:has-text(\"In VS Code, open\") > li:has-text(\"Build the project. The first\")",
     "installUrl": "#install .code-card:has-text(\"BLine-Lib 2027.0.0-beta.3, WPILib 2027 alpha-7copy\")",
     "drawHead": "#draw > div:first-child",
     "folderP": "#draw > .lesson-stack > p:has-text(\"The editor works on\")",
@@ -59,7 +59,7 @@
       {
         "at": "rides",
         "mark": "@folderP",
-        "text": "It ships to the robot with every"
+        "text": "ships to the robot with every deploy"
       }
     ],
     "points": [

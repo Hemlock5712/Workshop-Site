@@ -1,11 +1,13 @@
 {
-  "pages": { "lesson": "/drive-to-point" },
+  "pages": {
+    "lesson": "/drive-to-point"
+  },
   "targets": {
     "header": "#main-content header:has(h1)",
     "poseHead": "#the-pose-you-are-driving-to > div:first-child",
     "poseP": "#the-pose-you-are-driving-to > .lesson-stack > p:has-text(\"The target is a\")",
     "oneHead": "#one-waypoint > div:first-child",
-    "oneP": "#one-waypoint > .lesson-stack > p:has-text(\"A drawn path is\")",
+    "oneP": "#one-waypoint > .lesson-stack > p:has-text(\"Add driveToPoint to\")",
     "driveCode": "#one-waypoint .code-card:has-text(\"src/main/java/frc/robot/subsystems/DriveMechanism.javacopy\")",
     "sameP": "#one-waypoint > .lesson-stack > p:has-text(\"Everything the pathBuilder was\")",
     "flipP": "#one-waypoint > .lesson-stack > p:has-text(\"withShouldFlip(() -> false) overrides\")",
@@ -15,10 +17,17 @@
     "step3": "#check-your-work > .lesson-stack > ol:has-text(\"Enable Teleop in full\") > li:has-text(\"Hold B until the\")",
     "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeOn A,\")"
   },
-  "open": [{ "card": "Drive to Point", "kicker": "Workshop 6 · Navigation" }],
+  "open": [
+    {
+      "card": "Drive to Point",
+      "kicker": "Workshop 6 · Navigation"
+    }
+  ],
   "lines": {
     "intro": [
-      { "show": "@header" },
+      {
+        "show": "@header"
+      },
       {
         "at": "single",
         "mark": "#main-content header:has(h1) .lesson-lede",
@@ -26,30 +35,71 @@
       }
     ],
     "pose": [
-      { "show": ["@poseHead", "@poseP"] },
-      { "at": "wheels", "mark": "@poseP", "text": "Odometry alone drifts" }
+      {
+        "show": ["@poseHead", "@poseP"]
+      },
+      {
+        "at": "wheels",
+        "mark": "@poseP",
+        "text": "odometry alone drifts"
+      }
     ],
     "list": [
-      { "show": ["@oneHead", "@oneP"] },
-      { "at": "one", "mark": "@oneP", "text": "is the whole path" }
+      {
+        "show": ["@oneHead", "@oneP"]
+      },
+      {
+        "at": "one",
+        "mark": "@oneP",
+        "text": "is the whole path"
+      }
     ],
-    "start": [{ "code": "@driveCode", "lines": [14, 16] }],
+    "start": [
+      {
+        "code": "@driveCode",
+        "lines": [14, 16]
+      }
+    ],
     "same": [
-      { "show": "@sameP" },
-      { "at": "controllers", "mark": "@sameP", "text": "comes along" }
+      {
+        "show": "@sameP"
+      },
+      {
+        "at": "controllers",
+        "mark": "@sameP",
+        "text": "comes along"
+      }
     ],
-    "flip": [{ "code": "@driveCode", "lines": [17, 18] }],
+    "flip": [
+      {
+        "code": "@driveCode",
+        "lines": [17, 18]
+      }
+    ],
     "fixed": [
-      { "show": "@flipP" },
-      { "at": "flipping", "mark": "@flipP", "text": "the far end" }
+      {
+        "show": "@flipP"
+      },
+      {
+        "at": "flipping",
+        "mark": "@flipP",
+        "text": "the far end"
+      }
     ],
-    "bind": [{ "code": "@teleopCode", "lines": [10, 12] }],
+    "bind": [
+      {
+        "code": "@teleopCode",
+        "lines": [10, 12]
+      }
+    ],
     "release": [
-      { "show": "@holdP" },
+      {
+        "show": "@holdP"
+      },
       {
         "at": "canceled",
         "mark": "@holdP",
-        "text": "sends the zero on the way out",
+        "text": "cancels the command when the button is released",
         "until": "end"
       }
     ],
@@ -61,9 +111,18 @@
       }
     ],
     "check": [
-      { "show": ["@steps", "@seeBox"] },
-      { "at": "third", "spot": "@step3" }
+      {
+        "show": ["@steps", "@seeBox"]
+      },
+      {
+        "at": "third",
+        "spot": "@step3"
+      }
     ],
-    "close": [{ "show": "@seeBox" }]
+    "close": [
+      {
+        "show": "@seeBox"
+      }
+    ]
   }
 }

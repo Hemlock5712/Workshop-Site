@@ -4,16 +4,16 @@
   },
   "targets": {
     "header": "#main-content header:has(h1)",
-    "crudeP": "#main-content p:has-text(\"The routine is a timed drive\")",
-    "code": "#build-the-routine .code-card:has-text(\"LeaveStartAuto.java: lifecycle and behavior togethercopy\")",
-    "poseP": "#build-the-routine > .lesson-stack > p:has-text(\"The robot's field position\")",
+    "crudeP": "#main-content p:has-text(\"You wrote an @Autonomous class\")",
+    "code": "#build-the-routine .code-card:has-text(\"LeaveStartAuto.javacopy\")",
+    "poseP": "#build-the-routine > .lesson-stack > p:has-text(\"The routine never sets\")",
     "warn": "#test-in-layers > .lesson-stack > div:has-text(\"Don'tNobody in front of\")",
     "list": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\")",
     "pass1": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"On blocks. Deploy, pick\")",
     "pass2": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"On the floor, once.\")",
     "pass3": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"Measured, three times. Tape\")",
     "pass4": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"Disabled partway. Hit disable\")",
-    "writeP": "#check-your-work > .lesson-stack > p:has-text(\"Write down the distance\")"
+    "writeP": "#check-your-work > .lesson-stack > p:has-text(\"Write down the taped\")"
   },
   "open": [
     {
@@ -34,7 +34,7 @@
       {
         "at": "timer",
         "mark": "@crudeP",
-        "text": "crude on purpose"
+        "text": "on a timer"
       }
     ],
     "forward": [
@@ -106,7 +106,7 @@
       {
         "at": "numbers",
         "mark": "@writeP",
-        "text": "the distance the tape measured, the end pose, and the wait"
+        "text": "the taped distance, the end pose and the wait"
       }
     ]
   }

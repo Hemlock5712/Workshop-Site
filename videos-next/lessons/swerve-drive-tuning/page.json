@@ -15,15 +15,14 @@
     "speedP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"kSpeedAt12Volts is the speed\")",
     "speedList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Full stick forward. Hold\")",
     "speedPlateau": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Full stick forward. Hold\") > li:has-text(\"Plot Drivetrain/TranslationSpeedMps and read\")",
-    "statorP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"Stator current is proportional\")",
+    "statorP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"A stator current limit\")",
     "slipList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Drive the robot against\")",
     "kneeP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"Current climbs while velocity\")",
     "hotBox": "#top-speed-and-slip > .lesson-stack > div:has-text(\"Don'tStalled motors get hot\")",
     "loopHead": "#close-the-drive-loop > div:first-child",
     "loopP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"Every drive request in\")",
-    "reqCard": "#close-the-drive-loop .code-card:has-text(\"withDriveRequestType\")",
-    "orderP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"A drive motor holds\")",
-    "shrinkP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"Shrink that 10% rather\")",
+    "orderP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"On a velocity loop\")",
+    "shrinkP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"The request has no deadband\")",
     "deadCard": "#close-the-drive-loop .code-card:has-text(\"setLeftXDeadband\")",
     "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Use the surface you\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot\")"
@@ -60,9 +59,9 @@
         "show": "@plotP"
       },
       {
-        "at": "lags",
+        "at": "watch",
         "mark": "@plotP",
-        "text": "lags, overshoots, or buzzes"
+        "text": "two traces on top of each other"
       }
     ],
     "radius": [
@@ -111,7 +110,7 @@
     ],
     "velocity": [
       {
-        "show": ["@loopHead", "@loopP", "@reqCard"]
+        "show": ["@loopHead", "@loopP"]
       },
       {
         "at": "straight",
