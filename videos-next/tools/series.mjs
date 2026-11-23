@@ -12,10 +12,12 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 const words = (v) => v.lines.reduce((n, l) => n + l[1].split(/\s+/).length, 0);
 
 // --emit <id>: write lessons/<id>/script.json from the approved lines
-const emit = process.argv.indexOf("--emit");
+// --emit-draft <id>: the same, from series/drafts/<id>.json (a script not yet merged)
+const emitDraft = process.argv.indexOf("--emit-draft");
+const emit = emitDraft > 0 ? emitDraft : process.argv.indexOf("--emit");
 if (emit > 0) {
   const id = process.argv[emit + 1];
-  const v = S.videos.find((x) => x.id === id);
+  const v = emitDraft > 0 ? JSON.parse(fs.readFileSync(path.join(ROOT, "series", "drafts", `${id}.json`), "utf8")) : S.videos.find((x) => x.id === id);
   if (!v) throw new Error(`no video ${id}`);
   const dir = path.join(ROOT, "lessons", id);
   fs.mkdirSync(dir, { recursive: true });

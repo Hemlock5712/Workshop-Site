@@ -1,5 +1,5 @@
 {
-  "title": "Configs and Requests",
+  "title": "Mechanisms",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,61 +10,67 @@
   "lines": [
     {
       "id": "intro",
-      "text": "A mechanism is one part of the robot, written as one class. This one's the arm.",
+      "text": "Your project builds, and there's nothing in it yet. The first class you write by hand is one physical part of the robot. We'll follow the arm.",
       "after": 0.6
     },
     {
-      "id": "callback",
-      "text": "In Tuner X, you set this motor up by hand. Generate Code copies those settings out. That copy goes right here, in the constructor.",
+      "id": "folder",
+      "text": "Where the file lands matters. The new folder has to sit right beside the robot class, and one made a level up puts your code in the wrong package.",
+      "after": 0.6
+    },
+    {
+      "id": "template",
+      "text": "You start from a template, and most of its imports will be greyed out. That's fine. They wake up as you fill the class in.",
       "after": 0.6
     },
     {
       "id": "fields",
-      "text": "First, the hardware: the CAN bus, the motor on thirty one, and the CANcoder on thirty two.",
+      "text": "The fields are the hardware you already met in Tuner X: the bus, the motor, and the CANcoder. If your bench came out with different numbers, change the code to match.",
       "after": 0.6
     },
     {
-      "id": "config",
-      "text": "When the arm gets built, the constructor sends that config to the motor once. The motor saves it and keeps it.",
+      "id": "bus",
+      "text": "Watch the bus name. It has to be spelled the way you named it in Tuner X, or nothing answers.",
       "after": 0.6
     },
     {
-      "id": "request",
-      "text": "A request is different. It says what to do right now, and the code sends a new one every loop.",
+      "id": "generate",
+      "text": "You don't type the configuration. Tuner X already has it, so it writes the code and you paste that into the constructor.",
       "after": 0.6
     },
     {
-      "id": "sticks",
-      "text": "Whichever request arrives last is the one the motor keeps doing. Hold on to that. It comes back in a few lessons.",
+      "id": "ours",
+      "text": "The config printed on the page is ours, there for its shape. Paste your own over the whole thing, and if your gains come along, leave them in.",
       "after": 0.6
-    },
-    {
-      "id": "count",
-      "text": "One setting matters more than it looks. The motor counts its own turns, but that count starts over at zero every time the robot powers on.",
-      "after": 0.6
-    },
-    {
-      "id": "tryit",
-      "text": "Try it. Move the arm, power cycle the robot, and compare the two readings.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
     },
     {
       "id": "feedback",
-      "text": "The CANcoder remembers the real angle. These lines make it the motor's source, so every angle you ask for later is a real one.",
+      "text": "For the arm, one part of that config matters most. The motor's own count starts from zero at every power-on, so the config points it at the absolute encoder instead.",
+      "after": 0.6
+    },
+    {
+      "id": "methods",
+      "text": "Two short methods finish the class. One sets the number on the request you built as a field and sends it. The other stops the motor, and Coast takes over.",
+      "after": 0.6
+    },
+    {
+      "id": "table",
+      "text": "Plain voltage is only a simple test. This table is the rest of the family, and the one you finished Workshop 1 on drops in just as easily.",
+      "after": 0.6
+    },
+    {
+      "id": "latched",
+      "text": "A motor keeps applying the last request it got, even after the code that sent it has stopped running. That's what the stop method is for.",
       "after": 0.6
     },
     {
       "id": "robot",
-      "text": "Last, the robot builds the arm once, as a field, and every mode you write uses that same arm.",
+      "text": "The robot class gets one field for the arm. It's public, so every OpMode you write later can reach it.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Settings go in once. Requests go every loop, and the last one sticks.",
+      "text": "Nothing here moves a motor, so the check is a clean build. Both methods are still private and nothing calls them, and turning them into commands is the next lesson.",
       "after": 0.6
     }
   ]

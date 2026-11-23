@@ -1,5 +1,5 @@
 {
-  "title": "Numbers and First Motion",
+  "title": "Motor Setup & CAN IDs",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,67 +10,67 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Before anything moves, every device gets its own number.",
+      "text": "Your bench is powered and showing up in Tuner X, and nothing has turned yet. Before anything does, each device needs its own number and the right settings.",
       "after": 0.6
-    },
-    {
-      "id": "reset",
-      "text": "Open the motor, and factory default it. That clears whatever last season left behind.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "blink",
-      "text": "Click Blink. The device that flashes is the one you're editing. If two flash together, they share an ID.",
-      "after": 0.6,
-      "rec": true
     },
     {
       "id": "ids",
-      "text": "Give each one its number and a name. The arm's motor is thirty one, its encoder is thirty two, and the flywheel is twenty one.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "encoder",
-      "text": "On the arm, turn it counterclockwise by hand, and the encoder's number should climb. Zero it with the arm level, and a quarter turn up reads point two five.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "link",
-      "text": "Then tell the arm's motor to use that encoder for its position. In the feedback settings, that's the encoder's ID, and remote CANcoder.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "voltage",
-      "text": "Now the first motion. Pick Voltage Out, and ask for one volt. It sends that voltage and nothing else. There's no target, and no place to stop.",
+      "text": "These are the numbers the rest of this page uses. Set the rows for the hardware you've got.",
       "after": 0.6
     },
     {
-      "id": "enable",
-      "text": "Enable it. The mechanism moves the moment you click, and it keeps going until you click again.",
-      "after": 0.6,
-      "rec": true
+      "id": "dup",
+      "text": "A factory default wipes nearly everything, but it leaves the ID alone. So if two devices flash on one blink, they're sharing a number, and one has to move first.",
+      "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Try it. Enable it, and stop it before it reaches the end.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
+      "id": "blink",
+      "text": "Blink is how you know which device you're about to change. A name in a list proves nothing until a light on the bench flashes back.",
+      "after": 0.6
     },
     {
-      "id": "direction",
-      "text": "Check the direction. The arm should turn counterclockwise, with the encoder counting up. If it goes the wrong way, invert the motor in its settings. Don't type a negative voltage.",
+      "id": "apply",
+      "text": "None of it is saved until you press Apply. It's a small arrow, and it writes settings to the device, not firmware.",
+      "after": 0.6
+    },
+    {
+      "id": "motor",
+      "text": "On the arm, direction comes first, and you check it by hand. The motor's position should climb as you turn the arm counterclockwise, with the motor facing you.",
+      "after": 0.6
+    },
+    {
+      "id": "encoder",
+      "text": "The encoder gets the same hand test. Then you pick the spot that counts as zero, and a quarter turn from there should read about a quarter of a rotation.",
+      "after": 0.6
+    },
+    {
+      "id": "rotations",
+      "text": "Rotations, not degrees. Counterclockwise is positive, and every position target from here on is written that way.",
+      "after": 0.6
+    },
+    {
+      "id": "link",
+      "text": "Only now do you link the two. Link them while they count in opposite directions and every lesson after this one breaks, so finish with one more turn by hand.",
+      "after": 0.6
+    },
+    {
+      "id": "voltage",
+      "text": "Now the first motion under power. Voltage Out sends a fixed voltage with no target, and it won't stop at the end of travel. You stop it.",
+      "after": 0.6
+    },
+    {
+      "id": "safe",
+      "text": "So start at one volt and enable for about a second. Blink first, too, because the voltage goes to an ID, not to the device you had in mind.",
+      "after": 0.6
+    },
+    {
+      "id": "wrong",
+      "text": "If the arm turns clockwise, don't fix it here. It means a hand test was skipped or never applied, so go back and redo them.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Every device has its own number, and positive means the same thing everywhere, before any code runs.",
+      "text": "Power the bench down, bring it back, and walk these checks. Once positive means the same direction by hand and under power, the motor is ready for a target. That's PID tuning.",
       "after": 0.6
     }
   ]

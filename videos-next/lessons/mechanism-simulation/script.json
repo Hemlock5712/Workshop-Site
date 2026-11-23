@@ -1,0 +1,72 @@
+{
+  "title": "Mechanism Simulation",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Everything you've written so far ran on a real motor on the bench. If your own robot isn't built yet, the same code can run against a physics model instead.",
+      "after": 0.6
+    },
+    {
+      "id": "two",
+      "text": "You've used Hardware Sim, where the laptop stood in for the robot controller. Here the motors are simulated too, and a simulated motor has nothing to turn.",
+      "after": 0.6
+    },
+    {
+      "id": "numbers",
+      "text": "The file to read is the sim class. It opens with the real arm written down as numbers, and the simulation is only as good as they are.",
+      "after": 0.6
+    },
+    {
+      "id": "model",
+      "text": "The physics comes from the library, an arm swinging on one joint under gravity. It asks for every number up front, which means there's no setting you can forget.",
+      "after": 0.6
+    },
+    {
+      "id": "loop",
+      "text": "Every loop is three steps. The motor's voltage goes into the model, the model moves the arm forward one tick, and the result goes back into the simulated sensors for your code to read.",
+      "after": 0.6
+    },
+    {
+      "id": "hook",
+      "text": "Two calls at the end of the constructor hook it in. The picture runs everywhere, because it only draws what the motor reports. The sim gets built only when there's no real arm.",
+      "after": 0.6
+    },
+    {
+      "id": "owner",
+      "text": "Nothing gets added to the robot class. The sim only lasts as long as whatever built it, so a mechanism made inside an OpMode stops simulating when that OpMode ends.",
+      "after": 0.6
+    },
+    {
+      "id": "gains",
+      "text": "Run it as it ships and nothing moves, because every gain starts at zero. Put in your own starting values first.",
+      "after": 0.6
+    },
+    {
+      "id": "see",
+      "text": "Once you're enabled, open the arm's picture. Hold a button, and a thin grey line shows where the closed loop is trying to take it.",
+      "after": 0.6
+    },
+    {
+      "id": "tune",
+      "text": "Tune in the same order as in Tuner X, changing the number in code and restarting between tries. The result fits a model, not your mechanism.",
+      "after": 0.6
+    },
+    {
+      "id": "motor",
+      "text": "For your own design, the motor changes in two places. The simulated Talon assumes a different one unless told, and left that way, the bench arm ran away from its target.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "You're done when the orange line settles on the grey one. That's the end of the course, and the next arm you tune should be a real one.",
+      "after": 0.6
+    }
+  ]
+}

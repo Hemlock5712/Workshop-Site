@@ -1,5 +1,5 @@
 {
-  "title": "Three Parts and a Bus",
+  "title": "Hardware Setup",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,56 +10,62 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Every mechanism in this workshop is three parts: a motor, a sensor, and a bus that connects them to your laptop.",
+      "text": "Your mechanism is built and wired, and Tuner X is already on your laptop. Today they meet. Get this part wrong, and every later lesson is spent fighting the hardware.",
       "after": 0.6
     },
     {
       "id": "motor",
-      "text": "The motor has its controller built into the back. It runs its own control loop and reports its own position, so the motor is a sensor too.",
+      "text": "Start with the motor. Its controller is built into the back, and it reports its own position so you already have one sensor before you add anything.",
       "after": 0.6
     },
     {
       "id": "sensor",
-      "text": "The arm also gets an absolute encoder. It still knows the arm's angle after the power's been off all week. The flywheel doesn't need one.",
+      "text": "So why does the arm get a second one? The motor's own count starts from zero wherever it sits at boot. This encoder reads a magnet on the shaft, and it remembers the angle with the power off.",
       "after": 0.6
     },
     {
       "id": "bus",
-      "text": "The CANivore gives those devices their own bus, and your laptop plugs straight into it. There's no robot in between, so you can start right now.",
+      "text": "The CANivore is the reason you don't need a robot yet. Your laptop plugs into it over USB, and it carries the conversation to everything else.",
+      "after": 0.6
+    },
+    {
+      "id": "flywheel",
+      "text": "If you built the flywheel, skip the encoder everywhere it comes up. A flywheel only cares about speed, and the motor measures that by itself.",
       "after": 0.6
     },
     {
       "id": "connect",
-      "text": "Power the mechanism first, then plug in the USB. In Tuner X, turn on CANivore USB, and set the address to localhost.",
-      "after": 0.6,
-      "rec": true
+      "text": "Order matters here. Power goes on first, then the USB cable. After that, Tuner X needs two settings changed, and neither one is a team number.",
+      "after": 0.6
     },
     {
       "id": "name",
-      "text": "Your CANivore shows up. Rename it canivore, all lowercase. Every line of code in this course uses that name, so spell it exactly the same.",
-      "after": 0.6,
-      "rec": true
+      "text": "Step four is the one that bites later. The name you type has to match the code in every lesson that follows, so spell it exactly as it's shown.",
+      "after": 0.6
     },
     {
       "id": "firmware",
-      "text": "Old firmware still connects, and then it fails later in ways that come and go. Put every device on the same version.",
-      "after": 0.6,
-      "rec": true
+      "text": "A device in the list isn't proof of anything, because old firmware connects and answers just the same. Update the CANivore first, then everything else.",
+      "after": 0.6
     },
     {
       "id": "colors",
-      "text": "The card's color tells you where you stand. Green is current. Yellow means there's an update. Red means two devices share an ID, and that's the next lesson.",
+      "text": "Once the flashing finishes, the card colours do the checking for you. Green is what you want on every card. Yellow means there's still an update waiting.",
+      "after": 0.6
+    },
+    {
+      "id": "red",
+      "text": "Red isn't a firmware problem at all. Two devices are answering to the same number, and that's the next lesson's job.",
       "after": 0.6
     },
     {
       "id": "check",
-      "text": "Power cycle everything. The name and the firmware live on the devices, so they come back exactly as you left them.",
-      "after": 0.6,
-      "rec": true
+      "text": "Now pull the battery and the USB, and bring both back. Nothing should be lost, since the name and the firmware live on the devices themselves.",
+      "after": 0.6
     },
     {
       "id": "close",
-      "text": "Three parts, one bus, and a name that matches the code.",
+      "text": "On an arm there's one more test. Turn it by hand and watch the encoder's position change on screen. Everything's on the bus and current, so next, each device gets its own number.",
       "after": 0.6
     }
   ]

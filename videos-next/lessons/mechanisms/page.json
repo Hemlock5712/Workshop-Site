@@ -1,0 +1,68 @@
+{
+  "pages": { "lesson": "/mechanisms" },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "figFolder": "#main-content figure:has-text(\"Right-click robot, not src\")",
+    "figFile": "#main-content figure:has-text(\"New File, not New Java File\")",
+    "empty": ".code-card:has-text(\"Arm.java: the empty class\")",
+    "greyP": "#hardware-fields > .lesson-stack > p:has-text(\"Your editor greys out\")",
+    "fieldsCode": ".code-card:has-text(\"Arm.java: the class line and the fields\")",
+    "fieldsList": "#hardware-fields > .lesson-stack > ul:has-text(\"implements Mechanism makes this\")",
+    "busItem": "#hardware-fields > .lesson-stack > ul:has-text(\"implements Mechanism makes this\") > li:has-text(\"names the bus these\")",
+    "genP": "#configure-once > .lesson-stack > p:has-text(\"You already have the\")",
+    "genFig": "#configure-once figure",
+    "warn": "#configure-once > .lesson-stack > div:has-text(\"Watch outThese are our\")",
+    "neutral": "#configure-once > .lesson-stack > div:has-text(\"NEUTRAL MODECoast, not BrakeNeutral\")",
+    "feedback": "#configure-once [data-mech=\"arm\"]:has-text(\"FEEDBACK SOURCE\") > div",
+    "methodsCode": ".code-card:has-text(\"Arm.java: the two methods\")",
+    "table": "#configs-and-requests table",
+    "latchedP": "#configs-and-requests > .lesson-stack > p:has-text(\"A request stays latched.\")",
+    "robotCode": ".code-card:has-text(\"Robot.java: the mechanism it owns\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Nothing on this branch\")",
+    "checkList": "#check-your-work > .lesson-stack > ol:has-text(\"Run WPILib: Build Robot\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seePrivate final\")"
+  },
+  "open": [
+    { "card": "Mechanisms", "kicker": "Workshop 3 · Robot Programming" }
+  ],
+  "lines": {
+    "intro": [
+      { "show": "@header" },
+      {
+        "at": "physical",
+        "mark": "@lede",
+        "text": "one physical part of the robot"
+      }
+    ],
+    "folder": [{ "show": ["@figFolder", "@figFile"] }],
+    "template": [{ "code": "@empty", "lines": [25, 33] }],
+    "fields": [{ "code": "@fieldsCode", "lines": [1, 7] }],
+    "bus": [{ "show": "@fieldsList" }, { "at": "bus", "spot": "@busItem" }],
+    "generate": [{ "show": "@genFig" }],
+    "ours": [
+      { "show": "@warn" },
+      {
+        "at": "own",
+        "mark": "@warn",
+        "text": "Paste your own over the whole statement."
+      }
+    ],
+    "feedback": [{ "show": "@feedback" }],
+    "methods": [
+      { "code": "@methodsCode", "lines": [6, 8] },
+      { "at": "other", "code": "@methodsCode", "lines": [10, 13] }
+    ],
+    "table": [{ "show": "@table" }],
+    "latched": [
+      { "show": "@latchedP" },
+      {
+        "at": "last",
+        "mark": "@latchedP",
+        "text": "until a different one arrives"
+      }
+    ],
+    "robot": [{ "code": "@robotCode", "lines": [7, 9] }],
+    "close": [{ "show": ["@checkP", "@checkList"] }]
+  }
+}

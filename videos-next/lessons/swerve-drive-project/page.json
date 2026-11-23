@@ -1,0 +1,158 @@
+{
+  "pages": {
+    "lesson": "/swerve-drive-project"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "onefile": "#one-file-is-the-whole-output",
+    "onefileP": "#one-file-is-the-whole-output > .lesson-stack > p:has-text(\"The generator can write\")",
+    "stepsHead": "#six-steps-in-this-order > div:first-child",
+    "stepIds": "#six-steps-in-this-order > .lesson-stack > ol:has-text(\"Put every device on\") > li:has-text(\"Put every device on\")",
+    "stepOpen": "#six-steps-in-this-order > .lesson-stack > ol:has-text(\"Put every device on\") > li:has-text(\"Open the swerve project\")",
+    "stepMeasure": "#six-steps-in-this-order > .lesson-stack > ol:has-text(\"Put every device on\") > li:has-text(\"Measure the robot and\")",
+    "stepModules": "#six-steps-in-this-order > .lesson-stack > ol:has-text(\"Put every device on\") > li:has-text(\"For each module, pick\")",
+    "stepGenerate": "#six-steps-in-this-order > .lesson-stack > ol:has-text(\"Put every device on\") > li:has-text(\"Generate only the constants.\")",
+    "stepTeam": "#six-steps-in-this-order > .lesson-stack > ol:has-text(\"Put every device on\") > li:has-text(\"Change teamNumber in .wpilib/wpilib_preferences.json\")",
+    "checkHead": "#did-it-work > div:first-child",
+    "checkP": "#did-it-work > .lesson-stack > p:has-text(\"Robot on blocks for\")",
+    "checkList": "#did-it-work > .lesson-stack > ol:has-text(\"Select Teleop and enable,\")",
+    "checkStill": "#did-it-work > .lesson-stack > ol:has-text(\"Select Teleop and enable,\") > li:has-text(\"Select Teleop and enable,\")",
+    "checkPush": "#did-it-work > .lesson-stack > ol:has-text(\"Select Teleop and enable,\") > li:has-text(\"Push the left stick\")",
+    "checkFloor": "#did-it-work > .lesson-stack > ol:has-text(\"Select Teleop and enable,\") > li:has-text(\"On the floor, point\")",
+    "sim": "#full-simulation",
+    "simP": "#full-simulation > .lesson-stack > p:has-text(\"Hardware Simulation ran your\")",
+    "files": "#three-files-and-why-there-have",
+    "filesMine": "#three-files-and-why-there-have > .lesson-stack > p:has-text(\"DriveMechanism.java is the workshop's,\")",
+    "defaultHead": "#your-first-real-default-command > div:first-child",
+    "latchedP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"A Mechanism has no\")",
+    "robotP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"So the Robot constructor\")",
+    "robotCode": "#your-first-real-default-command .code-card:has-text(\"Robot.java: the joystick drive, set as the default\")",
+    "teleopCode": "#your-first-real-default-command .code-card:has-text(\"TeleopOpMode.java: the buttons\")"
+  },
+  "open": [
+    {
+      "card": "Swerve Project Generator",
+      "kicker": "Workshop 5 · Swerve"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "one",
+        "mark": "@lede",
+        "text": "writes one file"
+      }
+    ],
+    "onefile": [
+      {
+        "show": "@onefile"
+      },
+      {
+        "at": "missing",
+        "mark": "@onefileP",
+        "text": "we only care about one file it writes"
+      }
+    ],
+    "ids": [
+      {
+        "show": ["@stepsHead", "@stepIds", "@stepOpen"]
+      },
+      {
+        "at": "Thirteen",
+        "spot": "@stepIds"
+      }
+    ],
+    "measure": [
+      {
+        "show": "@stepMeasure"
+      },
+      {
+        "at": "tape",
+        "mark": "@stepMeasure",
+        "text": "not the CAD"
+      }
+    ],
+    "modules": [
+      {
+        "show": "@stepModules"
+      },
+      {
+        "at": "different",
+        "mark": "@stepModules",
+        "text": "assigned to the wrong module"
+      }
+    ],
+    "generate": [
+      {
+        "show": ["@stepGenerate", "@stepTeam"]
+      },
+      {
+        "at": "only",
+        "spot": "@stepGenerate"
+      }
+    ],
+    "check": [
+      {
+        "show": ["@checkHead", "@checkP", "@checkList"]
+      },
+      {
+        "at": "Enabled",
+        "spot": "@checkStill"
+      },
+      {
+        "at": "floor",
+        "spot": "@checkFloor"
+      }
+    ],
+    "sim": [
+      {
+        "show": "@sim"
+      },
+      {
+        "at": "no",
+        "mark": "@simP",
+        "text": "with no hardware at all"
+      }
+    ],
+    "files": [
+      {
+        "show": "@files"
+      },
+      {
+        "at": "third",
+        "spot": "@filesMine"
+      }
+    ],
+    "latched": [
+      {
+        "show": ["@defaultHead", "@latchedP", "@robotP"]
+      },
+      {
+        "at": "speed",
+        "mark": "@latchedP",
+        "text": "the robot would keep rolling"
+      }
+    ],
+    "default": [
+      {
+        "code": "@robotCode",
+        "lines": [19, 26]
+      },
+      {
+        "at": "robot",
+        "code": "@robotCode",
+        "lines": [13, 15]
+      }
+    ],
+    "close": [
+      {
+        "code": "@teleopCode",
+        "lines": [4, 5]
+      }
+    ]
+  }
+}

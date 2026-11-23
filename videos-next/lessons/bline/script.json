@@ -1,0 +1,77 @@
+{
+  "title": "BLine Paths",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Leave Start drove on a timer, and a timer can't tell you where the robot ended up. This time you draw where it should go, and a library does the driving.",
+      "after": 0.6
+    },
+    {
+      "id": "install",
+      "text": "The library installs from a web address. Run the first build while you still have internet, because that's when it downloads.",
+      "after": 0.6
+    },
+    {
+      "id": "folder",
+      "text": "The editor never talks to the robot. It works on one folder inside your project, and that folder rides along with every deploy.",
+      "after": 0.6
+    },
+    {
+      "id": "points",
+      "text": "The path itself is short. A waypoint where the robot starts, one point to drive to, and a rotation that turns it along the way.",
+      "after": 0.6
+    },
+    {
+      "id": "event",
+      "text": "The event is the part to get exactly right. Its key is only a name, and your code looks up that same name later. One wrong capital and nothing runs.",
+      "after": 0.6
+    },
+    {
+      "id": "strays",
+      "text": "Before you export, delete any path you made and left empty. It exports with the rest, and the robot throws an error when it loads it.",
+      "after": 0.6
+    },
+    {
+      "id": "builder",
+      "text": "On the robot side, the builder is made once. Its arguments teach the library this robot: where it is, how fast it's moving, and how to drive it.",
+      "after": 0.6
+    },
+    {
+      "id": "gains",
+      "text": "Three controllers pull the robot back onto the path. Their values were only tuned in simulation, so on a real robot they're a place to start.",
+      "after": 0.6
+    },
+    {
+      "id": "opmode",
+      "text": "The old Leave Start class goes away. One autonomous class runs every routine now, and a drop-down on the dashboard picks which.",
+      "after": 0.6
+    },
+    {
+      "id": "trigger",
+      "text": "Here's that event name again, registered before any path is built. The path file gets read right here too, so a misspelled name fails when you pick the mode.",
+      "after": 0.6
+    },
+    {
+      "id": "reset",
+      "text": "The pose reset on that line matters more than it looks. Leave it off, and the robot drives the right shape in the wrong place.",
+      "after": 0.6
+    },
+    {
+      "id": "start",
+      "text": "The choice is read at enable, not when the mode is picked, since somebody can still change the drop-down in between.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "In simulation the pose should jump to the start, and the event should print once per run. Every path so far was drawn ahead of time. Next, the robot builds one while you hold a button.",
+      "after": 0.6
+    }
+  ]
+}

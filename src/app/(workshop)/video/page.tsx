@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LESSONS, SECTIONS } from "@/data/lessons";
 
 // Internal preview page for the lesson video series, one video per lesson,
 // built in videos-next/. Intentionally NOT linked from the curriculum drawer or
@@ -21,7 +22,6 @@ const SERIES_BASE = "/api/video";
 interface Video {
   file: string;
   title: string;
-  blurb: string;
 }
 
 interface VideoGroup {
@@ -29,158 +29,22 @@ interface VideoGroup {
   videos: Video[];
 }
 
-// One group per workshop, in course order: [id, title, blurb].
-const NEXT_SERIES: [string, [string, string, string][]][] = [
-  [
-    "Workshop 1 · Hardware & CTRE",
-    [
-      [
-        "hardware",
-        "Three Parts and a Bus",
-        "Hardware Setup: a motor, a sensor, and a bus to your laptop.",
-      ],
-      [
-        "mechanism-setup",
-        "Numbers and First Motion",
-        "Motor Setup: Voltage Out moves the moment you click.",
-      ],
-      [
-        "pid-control",
-        "One Motion, Then Silence",
-        "PID Tuning: feedforward holds, feedback fixes what's left.",
-      ],
-      [
-        "motion-magic",
-        "Walking the Target",
-        "Motion Magic: speed up, cruise, slow down.",
-      ],
-    ],
-  ],
-  [
-    "Workshop 2 · Code Foundations",
-    [
-      [
-        "java-basics",
-        "Handing Over Code",
-        "Java Basics: a lambda is code handed over to run later.",
-      ],
-      [
-        "command-framework",
-        "The Scheduler",
-        "The Command Framework: fifty times a second, one owner per mechanism.",
-      ],
-    ],
-  ],
-  [
-    "Workshop 3 · Robot Programming",
-    [
-      [
-        "mechanisms",
-        "Configs and Requests",
-        "Mechanisms: settings go in once, requests every loop.",
-      ],
-      [
-        "adding-commands",
-        "Every Command Is a Hold",
-        "Writing Commands: each one runs until something takes the arm.",
-      ],
-      [
-        "opmodes",
-        "Two Edges",
-        "OpModes: press and release, each with its own binding.",
-      ],
-      [
-        "latched",
-        "The Latched Request",
-        "Hardware Simulation: canceling a command is not stopping a motor.",
-      ],
-      [
-        "motion-magic-code",
-        "Naming a Target",
-        "Motion Magic in Code: a position request that stays holds the arm.",
-      ],
-    ],
-  ],
-  [
-    "Workshop 4 · Routines",
-    [
-      [
-        "finish-conditions",
-        "Ask Every Loop",
-        "Finish Conditions: ask the mechanism whether it has arrived.",
-      ],
-      [
-        "coroutines",
-        "Fork and Wait",
-        "Coroutines: fork the holds, await the steps.",
-      ],
-      [
-        "logging-implementation",
-        "What Nobody Watched",
-        "Logging: the file shows what nobody saw.",
-      ],
-    ],
-  ],
-  [
-    "Workshop 5 · Swerve & Autonomous",
-    [
-      [
-        "swerve-prerequisites",
-        "Facing One Way, Driving Another",
-        "How Swerve Works: field centric, and the blue-corner origin.",
-      ],
-      [
-        "swerve-drive-project",
-        "One File From Tuner X",
-        "Swerve Project Generator: measure it, generate it, drive it in sim.",
-      ],
-      [
-        "swerve-calibration",
-        "Straight Means Straight",
-        "Swerve Calibration: a steady curve is a zero.",
-      ],
-      [
-        "swerve-drive-tuning",
-        "What the Carpet Says",
-        "Swerve Drive Tuning: radius, top speed and slip, from the floor.",
-      ],
-      [
-        "autonomous",
-        "Fifteen Seconds, No Driver",
-        "Autonomous: every way out of the routine stops the robot.",
-      ],
-    ],
-  ],
-  [
-    "Workshop 6 · Vision & Navigation",
-    [
-      [
-        "vision-hardware",
-        "Seeing the Field",
-        "Vision Hardware: tags don't drift; never mount square.",
-      ],
-      [
-        "vision-implementation",
-        "Blending, Not Replacing",
-        "Vision: weigh, rewind, replay.",
-      ],
-      [
-        "drive-to-point",
-        "Speed From Distance",
-        "Drive to Point: it bolts, then creeps up short.",
-      ],
-    ],
-  ],
-];
-
-const GROUPS: VideoGroup[] = NEXT_SERIES.map(([heading, rows]) => ({
-  heading,
-  videos: rows.map(([id, title, blurb]) => ({
-    file: `${id}.mp4`,
-    title,
-    blurb,
-  })),
-}));
+// One video per lesson, named for its slug, grouped the way the course is.
+// Derived from `lessons.ts`, so adding or renaming a lesson needs no edit
+// here: its video is `videos-next/out/<slug>.mp4`, uploaded to the release.
+const GROUPS: VideoGroup[] = SECTIONS.map((section) => ({
+  // "00" (Getting Started) and "EX" (Extras) are not numbered workshops.
+  heading:
+    Number(section.num) > 0
+      ? `Workshop ${Number(section.num)} · ${section.title}`
+      : section.title,
+  videos: LESSONS.filter((lesson) => lesson.section === section.id).map(
+    (lesson) => ({
+      file: `${lesson.slug.slice(1)}.mp4`,
+      title: lesson.title,
+    })
+  ),
+})).filter((group) => group.videos.length > 0);
 const VIDEO_COUNT = GROUPS.reduce((n, g) => n + g.videos.length, 0);
 
 export default function VideoPreviewPage() {
@@ -237,7 +101,7 @@ export default function VideoPreviewPage() {
                       fetches the header but paints nothing, so the fragment
                       seeks in and the browser renders that
                       frame as its own poster. No poster files to keep in sync.
-                      The videos fade their title card in, so it
+                      The videos open on a title card, so it
                       seeks to 2 s, where the title is up. */}
                   <video
                     controls
@@ -252,15 +116,6 @@ export default function VideoPreviewPage() {
                     <h3 id={titleId} className="display m-0 text-aside">
                       {video.title}
                     </h3>
-                    <p
-                      className="m-0 mt-tight text-note"
-                      style={{
-                        fontFamily: "var(--font-serif)",
-                        color: "var(--tx2)",
-                      }}
-                    >
-                      {video.blurb}
-                    </p>
                   </figcaption>
                 </figure>
               );

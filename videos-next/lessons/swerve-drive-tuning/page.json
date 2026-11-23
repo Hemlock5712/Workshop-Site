@@ -1,0 +1,148 @@
+{
+  "pages": {
+    "lesson": "/swerve-drive-tuning"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "steerHead": "#steer-gains > div:first-child",
+    "steerP": "#steer-gains > .lesson-stack > p:has-text(\"A steering motor holds\")",
+    "plotP": "#steer-gains > .lesson-stack > p:has-text(\"DriveMechanism publishes Drivetrain/ModuleStates and\")",
+    "radiusHead": "#measure-the-drivetrain > div:first-child",
+    "radiusP": "#measure-the-drivetrain > .lesson-stack > p:has-text(\"The generator asked for\")",
+    "correction": "#measure-the-drivetrain > .lesson-stack > div:has-text(\"THE CORRECTIONRun it three\")",
+    "speedHead": "#top-speed-and-slip > div:first-child",
+    "speedP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"kSpeedAt12Volts is the speed\")",
+    "speedList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Full stick forward. Hold\")",
+    "speedPlateau": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Full stick forward. Hold\") > li:has-text(\"Plot Drivetrain/TranslationSpeedMps and read\")",
+    "statorP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"Stator current is proportional\")",
+    "slipList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Drive the robot against\")",
+    "kneeP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"Current climbs while velocity\")",
+    "hotBox": "#top-speed-and-slip > .lesson-stack > div:has-text(\"Don'tStalled motors get hot\")",
+    "loopHead": "#close-the-drive-loop > div:first-child",
+    "loopP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"Every drive request in\")",
+    "reqCard": "#close-the-drive-loop .code-card:has-text(\"withDriveRequestType\")",
+    "orderP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"A drive motor holds\")",
+    "shrinkP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"Shrink that 10% rather\")",
+    "deadCard": "#close-the-drive-loop .code-card:has-text(\"setLeftXDeadband\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Use the surface you\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot\")"
+  },
+  "open": [
+    {
+      "card": "Swerve Drive Tuning",
+      "kicker": "Workshop 5 · Swerve"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "guesses",
+        "mark": "@lede",
+        "text": "guessed gains and measurements"
+      }
+    ],
+    "steer": [
+      {
+        "show": ["@steerHead", "@steerP"]
+      },
+      {
+        "at": "gravity",
+        "mark": "@steerP",
+        "text": "no gravity to fight"
+      }
+    ],
+    "plot": [
+      {
+        "show": "@plotP"
+      },
+      {
+        "at": "lags",
+        "mark": "@plotP",
+        "text": "lags, overshoots, or buzzes"
+      }
+    ],
+    "radius": [
+      {
+        "show": ["@radiusHead", "@radiusP"]
+      },
+      {
+        "at": "changed",
+        "mark": "@radiusP",
+        "text": "only if you changed wheels"
+      }
+    ],
+    "correction": [
+      {
+        "show": "@correction"
+      }
+    ],
+    "speed": [
+      {
+        "show": ["@speedHead", "@speedP", "@speedList"]
+      },
+      {
+        "at": "plateau",
+        "spot": "@speedPlateau"
+      }
+    ],
+    "slip": [
+      {
+        "show": ["@statorP", "@slipList"]
+      }
+    ],
+    "knee": [
+      {
+        "show": "@kneeP"
+      },
+      {
+        "at": "jumps",
+        "mark": "@kneeP",
+        "text": "just before the drop"
+      }
+    ],
+    "hot": [
+      {
+        "show": "@hotBox"
+      }
+    ],
+    "velocity": [
+      {
+        "show": ["@loopHead", "@loopP", "@reqCard"]
+      },
+      {
+        "at": "straight",
+        "mark": "@loopP",
+        "text": "ignores those gains"
+      }
+    ],
+    "order": [
+      {
+        "show": "@orderP"
+      },
+      {
+        "at": "ground",
+        "mark": "@orderP",
+        "text": "Tune on the ground, not on blocks"
+      }
+    ],
+    "deadband": [
+      {
+        "show": ["@shrinkP", "@deadCard"]
+      },
+      {
+        "at": "twitch",
+        "mark": "@shrinkP",
+        "text": "then go back one value"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "title": "Mechanism CAD",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "The prerequisites put the software on your laptop. The other half is a mechanism on the bench, and this is where it comes from. If you've already got one, skip ahead.",
+      "after": 0.6
+    },
+    {
+      "id": "base",
+      "text": "It's really one build with two endings. The frame and the gearbox are the same either way, so most of what you buy for one goes straight into the other.",
+      "after": 0.6
+    },
+    {
+      "id": "flywheel",
+      "text": "Here's the flywheel. A wheel on each end of the shaft and no extra sensor, because the motor already has one inside it.",
+      "after": 0.6
+    },
+    {
+      "id": "arm",
+      "text": "And the arm. The part to find sits right at the joint, an encoder that reads the angle of the tube.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Turn it around before you build it. The buttons under each model snap to a fixed view, so you can see how the pieces stack up.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "files",
+      "text": "There are three ways to take a model with you. If you only want to print a part, grab the first. If something has to change size, you'll need the second.",
+      "after": 0.6
+    },
+    {
+      "id": "cost",
+      "text": "All new, the price looks like a lot, and most of it is CTRE hardware. Tick the boxes for parts you already own and parts you can print, and the arm drops to a fraction of that.",
+      "after": 0.6
+    },
+    {
+      "id": "canivore",
+      "text": "The most expensive row on either list is the CANivore, and one of them runs both builds. Check the shelf before it goes on the order.",
+      "after": 0.6
+    },
+    {
+      "id": "print",
+      "text": "You can even print the gearbox. The bought kit comes with its bearings and long screws and a printed one doesn't, so those stay on your list.",
+      "after": 0.6
+    },
+    {
+      "id": "tnuts",
+      "text": "Two of the build notes matter more than the rest. Every T-nut goes into the extrusion before the end cap does, because adding one later means pulling the cap back off.",
+      "after": 0.6
+    },
+    {
+      "id": "battery",
+      "text": "And the battery never clips straight onto the mechanism. The clips come off the adapter cable, and its leads go into the lever nuts.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Before any of it sees power, turn it by hand. If the arm goes all the way around and nothing rubs the encoder, it's ready to be powered up. That's next.",
+      "after": 0.6
+    }
+  ]
+}

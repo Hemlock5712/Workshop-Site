@@ -1,0 +1,165 @@
+{
+  "pages": {
+    "lesson": "/coroutines"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "calls": "#core-calls .code-card:has-text(\"The core calls, one example each\")",
+    "forkP": "#core-calls > .lesson-stack > p:has-text(\"vertical() is a runRepeatedly\")",
+    "arrowP": "#core-calls > .lesson-stack > p:has-text(\"waitUntil takes a lambda,\")",
+    "armCode": "#arm-routine .code-card:has-text(\"src/main/java/first/robot/opmode/MyTeleop.java\")",
+    "flyCode": "#flywheel-routine .code-card:has-text(\"src/main/java/first/robot/opmode/MyTeleop.java\")",
+    "loopCode": "#loop-routine .code-card:has-text(\"src/main/java/first/robot/opmode/MyTeleop.java\")",
+    "autoP": "#build-the-routine > .lesson-stack > p:has-text(\"Autonomous has no button\")",
+    "autoHead": "#build-the-routine > div:first-child",
+    "limitCode": "#build-the-routine .code-card:has-text(\"Add below the fork\")",
+    "limitP": "#build-the-routine > .lesson-stack > p:has-text(\"This is the arm\")",
+    "restCode": "#build-the-routine .code-card:has-text(\"The rest of the body\")",
+    "autoView": "#build-the-routine div:has(> [role=tablist])",
+    "autoTab": "#build-the-routine button[role=tab]:has-text(\"Timeline\")",
+    "checkList": "#check-your-work > .lesson-stack > ol:has-text(\"Start WPILib: Hardware Sim\")",
+    "checkTol": "#check-your-work > .lesson-stack > ol:has-text(\"Start WPILib: Hardware Sim\") > li:has-text(\"Change the arm's tolerance\")",
+    "checkAwait": "#check-your-work > .lesson-stack > ol:has-text(\"Start WPILib: Hardware Sim\") > li:has-text(\"Change the first line\")",
+    "loopView": "#loop-routine div:has(> [role=tablist])",
+    "loopTab": "#loop-routine button[role=tab]:has-text(\"Timeline\")"
+  },
+  "open": [
+    {
+      "card": "Coroutines",
+      "kicker": "Workshop 4 · Routines"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "calls": [
+      {
+        "show": "@calls"
+      }
+    ],
+    "fork": [
+      {
+        "show": "@forkP"
+      },
+      {
+        "at": "forever",
+        "mark": "@forkP",
+        "text": "anything that never ends"
+      }
+    ],
+    "arrow": [
+      {
+        "show": "@arrowP"
+      },
+      {
+        "at": "again",
+        "mark": "@arrowP",
+        "text": "calls it again on"
+      }
+    ],
+    "arm": [
+      {
+        "code": "@armCode",
+        "lines": [31, 39]
+      }
+    ],
+    "flywheel": [
+      {
+        "code": "@flyCode",
+        "lines": [23, 32]
+      },
+      {
+        "at": "stop#2",
+        "code": "@flyCode",
+        "lines": [29, 30]
+      }
+    ],
+    "loop": [
+      {
+        "code": "@loopCode",
+        "lines": [13, 22]
+      }
+    ],
+    "timeline": [
+      {
+        "show": "@loopView"
+      },
+      {
+        "at": "routine",
+        "click": "@loopTab"
+      },
+      {
+        "at": "timeline",
+        "show": "@loopView",
+        "zoom": 1.5
+      },
+      {
+        "at": "lane",
+        "note": "still running",
+        "on": "@loopView",
+        "side": "bottom"
+      }
+    ],
+    "auto": [
+      {
+        "show": ["@autoHead", "@autoP"]
+      },
+      {
+        "at": "wait",
+        "mark": "@autoP",
+        "text": "would eat the whole period"
+      }
+    ],
+    "limit": [
+      {
+        "show": ["@limitCode", "@limitP"]
+      },
+      {
+        "at": "ran",
+        "mark": "@limitP",
+        "text": "carries on as if the arm had"
+      }
+    ],
+    "exits": [
+      {
+        "code": "@restCode",
+        "lines": [6, 9]
+      },
+      {
+        "at": "normal",
+        "code": "@restCode",
+        "lines": [13, 14]
+      }
+    ],
+    "both": [
+      {
+        "show": "@autoView"
+      },
+      {
+        "at": "look",
+        "click": "@autoTab"
+      },
+      {
+        "at": "lanes",
+        "show": "@autoView",
+        "zoom": 1.35
+      }
+    ],
+    "close": [
+      {
+        "show": "@checkList"
+      },
+      {
+        "at": "break",
+        "spot": "@checkTol"
+      },
+      {
+        "at": "twice",
+        "spot": "@checkAwait"
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "pages": { "lesson": "/opmodes" },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "genHead": "#the-generated-file > div:first-child",
+    "openP": "#the-generated-file > .lesson-stack > p:has-text(\"Open src/main/java/first/robot/opmode/MyTeleop.java. The New\")",
+    "fiveP": "#the-generated-file > .lesson-stack > p:has-text(\"The generated file holds\")",
+    "ctrlHead": "#add-the-controller > div:first-child",
+    "ctrlP": "#add-the-controller > .lesson-stack > p:has-text(\"The controller lives in\")",
+    "robot": "#add-the-controller .code-card:has-text(\"src/main/java/first/robot/Robot.javacopy\")",
+    "teleop": "#bind-the-buttons .code-card:has-text(\"Left trigger\")",
+    "pieces": "#bind-the-buttons > .lesson-stack > ul:has-text(\"@Teleop(name = \\\"Teleop\\\") is\")",
+    "falseLi": "#bind-the-buttons > .lesson-stack > ul:has-text(\"@Teleop(name = \\\"Teleop\\\") is\") > li:has-text(\"whileFalse runs a command\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Run WPILib: Build Robot\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeBUILD SUCCESSFUL\")",
+    "checkOne": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeBUILD SUCCESSFUL\") li:has-text(\"One hit when you\")",
+    "checkFalse": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeBUILD SUCCESSFUL\") li:has-text(\"on every binding line\")"
+  },
+  "open": [{ "card": "OpModes", "kicker": "Workshop 3 · Robot Programming" }],
+  "lines": {
+    "intro": [{ "show": "@header" }],
+    "file": [
+      { "show": ["@genHead", "@openP"] },
+      {
+        "at": "annotation",
+        "mark": "@openP",
+        "text": "is what puts it on the driver station"
+      }
+    ],
+    "edit": [
+      { "show": "@fiveP" },
+      {
+        "at": "second",
+        "mark": "@fiveP",
+        "text": "puts two teleops on the driver station"
+      }
+    ],
+    "controller": [{ "show": ["@ctrlHead", "@ctrlP"] }],
+    "field": [
+      { "code": "@robot", "lines": [5, 7] },
+      { "at": "field", "code": "@robot", "lines": [14, 15] }
+    ],
+    "bind": [{ "show": "@teleop" }],
+    "ctor": [{ "code": "@teleop", "lines": [8, 9] }],
+    "held": [{ "code": "@teleop", "lines": [10, 11] }],
+    "release": [{ "show": "@pieces" }, { "at": "second", "spot": "@falseLi" }],
+    "check": [
+      { "show": ["@checkP", "@checkBox"] },
+      { "at": "Search", "spot": "@checkOne", "until": "end" }
+    ],
+    "close": [{ "spot": "@checkFalse" }]
+  }
+}

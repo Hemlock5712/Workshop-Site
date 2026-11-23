@@ -1,0 +1,72 @@
+{
+  "title": "Align to Tag",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Last lesson, the camera started correcting where the robot thinks it is on the field. Now it lines the robot up on one tag, and the field pose never comes into it.",
+      "after": 0.6
+    },
+    {
+      "id": "frame",
+      "text": "A spot measured from a tag needs the tag's own axes. Straight out of its face is forward, and a robot looking squarely at the tag reads a half turn.",
+      "after": 0.6
+    },
+    {
+      "id": "convert",
+      "text": "The camera reports the same thing with its axes pointed other ways, so this small method swaps them around. Every sign in it matters.",
+      "after": 0.6
+    },
+    {
+      "id": "danger",
+      "text": "Get one backwards and the robot heads the wrong way at full speed, so the first check on this page happens before anything drives.",
+      "after": 0.6
+    },
+    {
+      "id": "map",
+      "text": "Here's the idea the lesson rests on. The camera is slow, and it loses the tag up close, so a sighting only has to put the tag down. The wheels carry the robot from there.",
+      "after": 0.6
+    },
+    {
+      "id": "gates",
+      "text": "The new call runs ahead of the trust checks from last time. One close tag is exactly what those throw out, and it's the one sighting this needs.",
+      "after": 0.6
+    },
+    {
+      "id": "remember",
+      "text": "Each sighting looks up where the robot was when the picture was taken, then places the tag from there. It also logs a number you'll read later.",
+      "after": 0.6
+    },
+    {
+      "id": "drive",
+      "text": "The driving is the builder you already know from Drive to Point. What changed is where it gets its pose, which now comes from the tag.",
+      "after": 0.6
+    },
+    {
+      "id": "empty",
+      "text": "Notice the check before it drives. If no camera has seen that tag yet, the command writes a message and quits, and the robot stays put.",
+      "after": 0.6
+    },
+    {
+      "id": "record",
+      "text": "Don't reach for a tape measure. Park the robot by hand where it should score, read the numbers the camera gives you, and type those in. Whatever's off about the camera's mount cancels out.",
+      "after": 0.6
+    },
+    {
+      "id": "event",
+      "text": "Then do it again at the event, before your first match. Tags are mounted by hand, so every field differs a little.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "The third check is the one only this lesson has. Cover the camera, shove the robot sideways so its field pose is wrong, and it still stops on the same spot. That's the main course done, and mechanism simulation is an extra.",
+      "after": 0.6
+    }
+  ]
+}

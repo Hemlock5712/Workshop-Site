@@ -1,0 +1,86 @@
+{
+  "title": "Hardware Simulation",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Your buttons are bound, but none of that code has turned a motor yet. Now the laptop plays the robot controller, and everything past it is real.",
+      "after": 0.6
+    },
+    {
+      "id": "usb",
+      "text": "Tuner X and your program can't both have the devices. Turn that switch back off, or no motor ever answers your code.",
+      "after": 0.6
+    },
+    {
+      "id": "bench",
+      "text": "These are real motors. Clear the arm's path, and know where Disable is.",
+      "after": 0.6
+    },
+    {
+      "id": "menu",
+      "text": "Two entries sit right next to each other in this menu. Pick the one with Hardware in its name. The other fakes the motors, and your bench won't move.",
+      "after": 0.6
+    },
+    {
+      "id": "port",
+      "text": "Drag your controller onto the first slot. That's the port your code listens on.",
+      "after": 0.6
+    },
+    {
+      "id": "opmode",
+      "text": "Pick Teleoperated, then your OpMode under it. Your real devices show up on the right, and an empty list means you started the wrong simulator.",
+      "after": 0.6
+    },
+    {
+      "id": "enable",
+      "text": "Enable, and nothing moves, which is correct. Every command is waiting on a button. Hold one and the mechanism runs, then let go and the release binding takes over.",
+      "after": 0.6
+    },
+    {
+      "id": "latched",
+      "text": "So what about a binding with no release? This diagram follows one press from the controller, through your code, out to the motor controller.",
+      "after": 0.6
+    },
+    {
+      "id": "press",
+      "text": "Hold the button, and the command sends six volts every loop while the motor runs. Now let go.",
+      "after": 0.6
+    },
+    {
+      "id": "why",
+      "text": "The command is gone and the motor's still turning. Canceling a command sends the motor nothing, so it carries on with its last request.",
+      "after": 0.6
+    },
+    {
+      "id": "fix",
+      "text": "Tick the box, and the release gets a command of its own, one that sends the motor something new.",
+      "after": 0.6
+    },
+    {
+      "id": "tryit",
+      "text": "Try it again. Hold the button, let go, and watch what reaches the motor this time.",
+      "after": 0.3,
+      "gate": {
+        "id": "try",
+        "seconds": 8
+      }
+    },
+    {
+      "id": "rule",
+      "text": "A request stays on the motor until another one replaces it. For every button you bind, decide what the release sends.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "A real robot gets this same program from the same menu. Next the arm gets a target instead of a voltage, and there a request that stays put is exactly what you want.",
+      "after": 0.6
+    }
+  ]
+}

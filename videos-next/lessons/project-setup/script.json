@@ -1,0 +1,72 @@
+{
+  "title": "Project Setup",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "You know the parts of robot code now: triggers, commands, mechanisms. None of them has anywhere to live yet, so you make the project yourself.",
+      "after": 0.6
+    },
+    {
+      "id": "icon",
+      "text": "It all starts from one small red icon in the title bar. If you can't find it, you've opened the ordinary editor, not the one the installer gave you.",
+      "after": 0.6
+    },
+    {
+      "id": "template",
+      "text": "Pick the template. An example is a finished robot that somebody else wrote, and you're here to write your own.",
+      "after": 0.6
+    },
+    {
+      "id": "opmode",
+      "text": "The second page has a long list, and a couple of entries sound right. Only one matches the code you'll be typing for the rest of the course.",
+      "after": 0.6
+    },
+    {
+      "id": "third",
+      "text": "Slow down on the third page. Two of these four fields cause real trouble later if you get them wrong.",
+      "after": 0.6
+    },
+    {
+      "id": "desktop",
+      "text": "The checkbox is the easy one to miss. Without it the program can't run on your laptop, and running it on the laptop is how Workshop 3 drives the real motors.",
+      "after": 0.6
+    },
+    {
+      "id": "sync",
+      "text": "Then the folder path. Cloud sync rewrites files while the build is using them, and the failure looks like a mistake in your code. School laptops often sync Documents and Desktop without telling you.",
+      "after": 0.6
+    },
+    {
+      "id": "swap",
+      "text": "The new project isn't ready yet. It ships a different command library from the one every example here uses, and the two can't share a project. So one comes out before the other goes in.",
+      "after": 0.6
+    },
+    {
+      "id": "panel",
+      "text": "That swap, plus the library for the motor controllers, is three clicks in one panel. Watch the last one. A library with nearly the same name sits right underneath it, and it's the wrong one.",
+      "after": 0.6
+    },
+    {
+      "id": "build",
+      "text": "Changing a library kicks off a build by itself. Leave it alone. The first one has a lot to download, so it's slow, and later ones won't be.",
+      "after": 0.6
+    },
+    {
+      "id": "resolve",
+      "text": "If it stops because it couldn't resolve something, that's the network, not you. Reconnect, then run the build again from the same red icon.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "You're done when the build ends in success and your file tree matches this list. That's an empty robot that builds, and the next lesson puts the first mechanism in it.",
+      "after": 0.6
+    }
+  ]
+}

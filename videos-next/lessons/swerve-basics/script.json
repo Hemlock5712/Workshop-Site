@@ -1,0 +1,72 @@
+{
+  "title": "Swerve Basics",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "So far you've been running one arm and one flywheel. Now the whole robot moves, and the next few lessons assume you know the words on this page.",
+      "after": 0.6
+    },
+    {
+      "id": "corners",
+      "text": "The four corners are named from behind the robot. Stand in front of it instead and left and right swap, so pick your spot before you name anything.",
+      "after": 0.6
+    },
+    {
+      "id": "module",
+      "text": "A module is where the new trick happens. Two motors share one wheel, so it can roll and aim at the same time.",
+      "after": 0.6
+    },
+    {
+      "id": "gyro",
+      "text": "One gyro tells the robot which way it's facing. You'll need it again in a minute. The bus adapter is the same part from your bench.",
+      "after": 0.6
+    },
+    {
+      "id": "thirteen",
+      "text": "Count them up and it's thirteen devices on one bus. You won't write the math that coordinates eight motors, though. That gets generated for you in the next lesson.",
+      "after": 0.6
+    },
+    {
+      "id": "robot",
+      "text": "There are two ways to drive it. Robot-centric sounds simple until the robot turns to face you, and then pushing the stick away brings it straight at you.",
+      "after": 0.6
+    },
+    {
+      "id": "field",
+      "text": "Field-centric fixes that, because away from you always means away from you. It only works if the robot knows its heading, which is why the gyro is on the parts list.",
+      "after": 0.6
+    },
+    {
+      "id": "pose",
+      "text": "The next three terms stack. A spot on the field, then a heading, then the two together, and that last one describes both where the robot is and where you want it to go.",
+      "after": 0.6
+    },
+    {
+      "id": "odometry",
+      "text": "Odometry is the robot's own running estimate of that pose, built from nothing but how far its wheels turned. A wheel that slips still counts, so the estimate drifts.",
+      "after": 0.6
+    },
+    {
+      "id": "axes",
+      "text": "This is the frame those numbers live in. Everything is measured from the blue corner, with X running down the field and Y running across it to the left.",
+      "after": 0.6
+    },
+    {
+      "id": "red",
+      "text": "It doesn't flip when you're on red. A red robot sitting at its own wall reports a large X, so don't expect zero there.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Before you go on, stand behind a real robot with the power off and find all thirteen devices. The generator in the next lesson needs every one of them assigned to its corner.",
+      "after": 0.6
+    }
+  ]
+}

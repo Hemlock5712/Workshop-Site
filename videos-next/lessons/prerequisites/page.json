@@ -1,0 +1,138 @@
+{
+  "pages": {
+    "lesson": "/prerequisites"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "installHead": "#what-to-install > div:first-child",
+    "installP": "#what-to-install > .lesson-stack > p:has-text(\"Install these five programs,\")",
+    "installList": "#what-to-install > .lesson-stack > ol:has-text(\"WPILib 2027 alpha 7.\")",
+    "liWpilib": "#what-to-install > .lesson-stack > ol:has-text(\"WPILib 2027 alpha 7.\") > li:has-text(\"WPILib 2027 alpha 7.\")",
+    "liTuner": "#what-to-install > .lesson-stack > ol:has-text(\"WPILib 2027 alpha 7.\") > li:has-text(\"Phoenix Tuner X. From\")",
+    "stack": "#the-2027-alpha-stack > .lesson-stack > div:has-text(\"This workshop runs on\")",
+    "alphaNote": "#the-2027-alpha-stack aside",
+    "java": "#java-nothing-to-install",
+    "benchHead": "#the-minimum-to-follow > div:first-child",
+    "benchP": "#the-minimum-to-follow > .lesson-stack > p:has-text(\"Workshop 1 will be\")",
+    "benchP2": "#the-minimum-to-follow > .lesson-stack > p:has-text(\"You find each motor\")",
+    "benchList": "#the-minimum-to-follow > .lesson-stack > ul:has-text(\"The assembled mechanism. The\")",
+    "liCanivore": "#the-minimum-to-follow > .lesson-stack > ul:has-text(\"The assembled mechanism. The\") > li:has-text(\"A CANivore. Plugs into\")",
+    "liBattery": "#the-minimum-to-follow > .lesson-stack > ul:has-text(\"The assembled mechanism. The\") > li:has-text(\"A charged battery and\")",
+    "rigP": "#the-minimum-to-follow > .lesson-stack > p:has-text(\"You do not need\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Open all five programs\")",
+    "table": "#check-your-work table",
+    "ready": "#check-your-work > .lesson-stack > div:has-text(\"CheckReady to startAll five\")",
+    "nextP": "#check-your-work > .lesson-stack > p:has-text(\"Next is Hardware Setup,\")"
+  },
+  "open": [
+    {
+      "card": "Prerequisites",
+      "kicker": "Getting Started"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "install": [
+      {
+        "show": ["@installHead", "@installP", "@installList"]
+      },
+      {
+        "at": "Java",
+        "mark": "@installP",
+        "text": "Do not install Java on its own"
+      }
+    ],
+    "wpilib": [
+      {
+        "spot": "@liWpilib"
+      },
+      {
+        "at": "guide",
+        "mark": "@liWpilib",
+        "text": "not the install guide"
+      }
+    ],
+    "newer": [
+      {
+        "at": "newer",
+        "mark": "@liWpilib",
+        "text": "stay on alpha 7"
+      }
+    ],
+    "tuner": [
+      {
+        "show": ["@installHead", "@installP", "@installList"]
+      },
+      {
+        "at": "Tuner",
+        "spot": "@liTuner"
+      }
+    ],
+    "alpha": [
+      {
+        "show": "@stack"
+      },
+      {
+        "at": "moving",
+        "spot": "@alphaNote"
+      }
+    ],
+    "java": [
+      {
+        "show": "@java"
+      }
+    ],
+    "bench": [
+      {
+        "show": ["@benchHead", "@benchP", "@benchP2"]
+      },
+      {
+        "at": "directly",
+        "mark": "@benchP",
+        "text": "fully inside Tuner X"
+      }
+    ],
+    "canivore": [
+      {
+        "show": "@benchList"
+      },
+      {
+        "at": "CANivore",
+        "spot": "@liCanivore"
+      }
+    ],
+    "battery": [
+      {
+        "show": "@benchList"
+      },
+      {
+        "at": "Bench",
+        "spot": "@liBattery"
+      }
+    ],
+    "norobot": [
+      {
+        "show": "@rigP"
+      },
+      {
+        "at": "robot",
+        "mark": "@rigP",
+        "text": "a SystemCore, a radio, or a robot"
+      }
+    ],
+    "check": [
+      {
+        "show": ["@checkP", "@table"]
+      }
+    ],
+    "close": [
+      {
+        "show": ["@ready", "@nextP"]
+      }
+    ]
+  }
+}

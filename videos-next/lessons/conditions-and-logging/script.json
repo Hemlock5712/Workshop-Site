@@ -1,0 +1,72 @@
+{
+  "title": "Conditions and Logging",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "Your arm now drives to an angle on Motion Magic while you hold a trigger. That command never ends on its own, so nothing in your code can say when the arm got there.",
+      "after": 0.6
+    },
+    {
+      "id": "tol",
+      "text": "Arriving needs a tolerance, and picking it is a judgment call. A real sensor never sits perfectly still, so waiting for an exact match means waiting forever.",
+      "after": 0.6
+    },
+    {
+      "id": "getters",
+      "text": "Then three small methods. Two only report: where the arm is right now, and where it's headed, read straight off the request you're already sending.",
+      "after": 0.6
+    },
+    {
+      "id": "arrive",
+      "text": "The third compares those two using your tolerance. Every routine you write later asks this question, so how close counts gets decided in one place.",
+      "after": 0.6
+    },
+    {
+      "id": "start",
+      "text": "An answer you can't see is hard to trust, so record it. Two lines at the top of the robot's constructor start a log file that runs for as long as the program does.",
+      "after": 0.6
+    },
+    {
+      "id": "station",
+      "text": "The second of those lines is the one people skip. It adds the driver station's side: whether the robot was enabled and what the sticks were doing.",
+      "after": 0.6
+    },
+    {
+      "id": "signals",
+      "text": "The arm writes its own signals. Each one gets a name here, and those names are what you'll look for when you open the file.",
+      "after": 0.6
+    },
+    {
+      "id": "units",
+      "text": "Notice there's no unit conversion anywhere. The value goes in with its unit attached, and you choose degrees or rotations later, on the graph.",
+      "after": 0.6
+    },
+    {
+      "id": "call",
+      "text": "None of that runs until the robot calls it. One line for each mechanism, every loop, in a method that runs in every mode, so the log keeps going when your command doesn't.",
+      "after": 0.6
+    },
+    {
+      "id": "run",
+      "text": "Run it in hardware sim and move the arm twice. Then disable before you stop the program, or the last few entries never reach the file.",
+      "after": 0.6
+    },
+    {
+      "id": "open",
+      "text": "Open the newest log in AdvantageScope before you start the program again, because a file that hasn't been renamed yet gets deleted on the next start.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "This is the check. The position catches up to the target, and the arrival signal turns true when they meet. A routine can wait on exactly that, which is the next lesson.",
+      "after": 0.6
+    }
+  ]
+}

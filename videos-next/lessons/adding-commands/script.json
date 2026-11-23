@@ -1,5 +1,5 @@
 {
-  "title": "Every Command Is a Hold",
+  "title": "Writing Commands",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,46 +10,57 @@
   "lines": [
     {
       "id": "intro",
-      "text": "The arm's setters are private, so nothing outside the arm can call them. A command is the only way in.",
+      "text": "Last lesson left the arm with a working motor and two private methods, and nothing outside that class can reach them. A command is how the rest of the robot gets to ask.",
+      "after": 0.6
+    },
+    {
+      "id": "owner",
+      "text": "It's also what keeps things safe. The scheduler gives the arm to one command at a time, so two pieces of code can't both be driving the same motor.",
+      "after": 0.6
+    },
+    {
+      "id": "import",
+      "text": "One import comes first. Watch the package name as it goes in, because getting it wrong is one of the two build errors waiting at the bottom of this page.",
       "after": 0.6
     },
     {
       "id": "first",
-      "text": "Here's the first one. It pushes at three volts.",
-      "after": 0.6
-    },
-    {
-      "id": "every",
-      "text": "You've seen the arrow before. It hands the job over, and this part runs that job every loop, for as long as the command runs.",
-      "after": 0.6
-    },
-    {
-      "id": "named",
-      "text": "The name on the end is what makes it a command. Leave it off, and the build fails with an error that doesn't tell you why.",
+      "text": "Here's the first command. The method is public, so anything can ask for it, while the setter it wraps stays private.",
       "after": 0.6
     },
     {
       "id": "three",
-      "text": "The other two work the same way: six volts, and stop. Even stop sends its zero every loop.",
+      "text": "The other two are built the same way. One pushes harder, and one stops the motor.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Try it. Pick a command and watch the request it sends, then pick another.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
+      "id": "lambda",
+      "text": "That arrow is the lambda from Java Basics. It doesn't push the motor right there. It packs the call up and hands it over, to be made once every loop.",
+      "after": 0.6
+    },
+    {
+      "id": "named",
+      "text": "The name on the end isn't decoration. Until it's attached, what you have is only half built, and the build won't accept it.",
+      "after": 0.6
     },
     {
       "id": "hold",
-      "text": "Look at the word at the end of every name. Hold. None of these ever finishes. Each one runs until something else takes the arm.",
+      "text": "None of the three has an exit. Each keeps running until something else claims the arm, and even the stop sends its zero every loop, because canceling a command doesn't stop a motor.",
+      "after": 0.6
+    },
+    {
+      "id": "warn",
+      "text": "So nothing should ever wait for one of these to end. It'd wait forever. A routine asks a question about the mechanism instead, and writing that question comes later.",
+      "after": 0.6
+    },
+    {
+      "id": "build",
+      "text": "Now build. If it fails, check these two before anything else: a command that's missing its name, or the import that never went in.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "So what takes it? On the robot, it's the driver's thumb, and that's the next lesson.",
+      "text": "That's three commands on the arm, and so far nothing runs any of them. The controller's buttons do that, and wiring those up is the next lesson.",
       "after": 0.6
     }
   ]

@@ -1,6 +1,6 @@
 // The series' shared pieces: every video draws the same controller, arm, motor
 // card and code panel, so a student who has seen one video can read the next.
-// Lifted from lessons/latched (which still carries its own copies).
+// Lifted from the canvas scenes these videos used to be (archive/canvas-videos-2026-11).
 
 import { C, MONO, SANS, alpha, micro, rrect, text } from "./core.js";
 

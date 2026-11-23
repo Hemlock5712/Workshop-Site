@@ -1,0 +1,129 @@
+{
+  "pages": {
+    "lesson": "/swerve-basics"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "cornersP": "#components > .lesson-stack > p:has-text(\"A swerve drive has\")",
+    "cards": "#components > .lesson-stack > div:has-text(\"Swerve module\")",
+    "cardModule": "#components div.module:has-text(\"Swerve module\")",
+    "cardPigeon": "#components div.module:has-text(\"A gyro.\")",
+    "cardCanivore": "#components div.module:has-text(\"Carries every swerve device\")",
+    "thirteenP": "#components > .lesson-stack > p:has-text(\"That is thirteen devices:\")",
+    "terms": "#basic-terms > .lesson-stack > dl:has-text(\"Robot-centricForward is wherever the\")",
+    "termRobot": "#basic-terms dl > div:has(> dt:text-is(\"Robot-centric\"))",
+    "termField": "#basic-terms dl > div:has(> dt:text-is(\"Field-centric\"))",
+    "termTranslation": "#basic-terms dl > div:has(> dt:text-is(\"Translation2d\"))",
+    "termRotation": "#basic-terms dl > div:has(> dt:text-is(\"Rotation2d\"))",
+    "termPose": "#basic-terms dl > div:has(> dt:text-is(\"Pose2d\"))",
+    "termOdometry": "#basic-terms dl > div:has(> dt:text-is(\"Odometry\"))",
+    "figure": "#basic-terms figure",
+    "axesP": "#basic-terms > .lesson-stack > p:has-text(\"X runs down the\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Power off. Stand behind\")",
+    "checkList": "#check-your-work > .lesson-stack > ol:has-text(\"Name the four corners:\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThirteen devices:\")"
+  },
+  "open": [
+    {
+      "card": "Swerve Basics",
+      "kicker": "Workshop 5 · Swerve"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "corners": [
+      {
+        "show": "@cornersP"
+      },
+      {
+        "at": "behind",
+        "mark": "@cornersP",
+        "text": "named from behind the robot"
+      }
+    ],
+    "module": [
+      {
+        "show": "@cards"
+      },
+      {
+        "at": "module",
+        "spot": "@cardModule"
+      }
+    ],
+    "gyro": [
+      {
+        "spot": "@cardPigeon"
+      },
+      {
+        "at": "adapter",
+        "spot": "@cardCanivore"
+      }
+    ],
+    "thirteen": [
+      {
+        "show": "@thirteenP"
+      },
+      {
+        "at": "math",
+        "mark": "@thirteenP",
+        "text": "You never write the math"
+      }
+    ],
+    "robot": [
+      {
+        "show": "@terms"
+      },
+      {
+        "at": "Robot-centric",
+        "spot": "@termRobot"
+      }
+    ],
+    "field": [
+      {
+        "spot": "@termField"
+      }
+    ],
+    "pose": [
+      {
+        "spot": "@termTranslation"
+      },
+      {
+        "at": "heading",
+        "spot": "@termRotation"
+      },
+      {
+        "at": "together",
+        "spot": "@termPose"
+      }
+    ],
+    "odometry": [
+      {
+        "spot": "@termOdometry"
+      }
+    ],
+    "axes": [
+      {
+        "show": "@figure"
+      }
+    ],
+    "red": [
+      {
+        "show": "@axesP"
+      },
+      {
+        "at": "flip",
+        "mark": "@axesP",
+        "text": "The frame does not flip on red"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkList", "@checkBox"]
+      }
+    ]
+  }
+}

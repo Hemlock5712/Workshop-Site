@@ -1,0 +1,85 @@
+{
+  "pages": { "lesson": "/mechanism-cad" },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "base": "#main-content .split:has-text(\"Both builds start from\")",
+    "baseP": "#main-content .split p:has-text(\"Both builds start from\")",
+    "fly": "#interactive-3d-models > .lesson-stack > div:has-text(\"Flywheel Mechanism\")",
+    "flyP": "#interactive-3d-models p:has-text(\"The gearbox output carries\")",
+    "arm": "#interactive-3d-models > .lesson-stack > div:has-text(\"Arm Mechanism\")",
+    "armP": "#interactive-3d-models p:has-text(\"A 9 inch aluminum\")",
+    "armSide": "#interactive-3d-models > .lesson-stack > div:has-text(\"Arm Mechanism\") button:has-text(\"Side\")",
+    "armTop": "#interactive-3d-models > .lesson-stack > div:has-text(\"Arm Mechanism\") button:has-text(\"Top\")",
+    "armReset": "#interactive-3d-models > .lesson-stack > div:has-text(\"Arm Mechanism\") button:has-text(\"Reset\")",
+    "table": "#interactive-3d-models table",
+    "stl": "#interactive-3d-models table tr:has-text(\"Slice and print\")",
+    "stp": "#interactive-3d-models table tr:has-text(\"Change a dimension\")",
+    "bom": "#bill-of-materials > .lesson-stack > div:has-text(\"Both lists are complete\")",
+    "costP": "#bill-of-materials p:has-text(\"All new, the arm\")",
+    "note": "#bill-of-materials aside:has-text(\"The CANivore is the\")",
+    "printP": "#printing-the-parts > .lesson-stack > p:has-text(\"Seven rows on the\")",
+    "printing": "#printing-the-parts",
+    "notes": "#assembly-notes",
+    "liNuts": "#assembly-notes > .lesson-stack > ul:has-text(\"Slide all eleven T-nuts\") > li:has-text(\"Slide all eleven T-nuts\")",
+    "liBatt": "#assembly-notes > .lesson-stack > ul:has-text(\"Slide all eleven T-nuts\") > li:has-text(\"The mechanism never connects\")",
+    "check": "#check-your-work",
+    "checkArm": "#check-your-work li:has-text(\"it turns a full circle\")"
+  },
+  "open": [{ "card": "Mechanism CAD", "kicker": "Getting Started" }],
+  "lines": {
+    "intro": [
+      { "show": "@header" },
+      {
+        "at": "already",
+        "mark": "@lede",
+        "text": "already has a mechanism with a TalonFX on it"
+      }
+    ],
+    "base": [
+      { "show": "@base" },
+      { "at": "most", "mark": "@baseP", "text": "share most of their rows" }
+    ],
+    "flywheel": [
+      { "show": "@fly" },
+      {
+        "at": "sensor",
+        "mark": "@flyP",
+        "text": "There is no encoder on this build."
+      }
+    ],
+    "arm": [
+      { "show": "@arm" },
+      { "at": "encoder", "mark": "@armP", "text": "through-bore CANcoder" }
+    ],
+    "tryit": [
+      { "show": "@arm" },
+      { "ask": "Try the view buttons.", "place": "bottom" },
+      { "at": "gate:10%", "click": "@armSide" },
+      { "at": "gate:45%", "click": "@armTop" },
+      { "at": "gate:80%", "click": "@armReset" }
+    ],
+    "files": [
+      { "show": "@table" },
+      { "at": "If", "spot": "@stl" },
+      { "at": "If#2", "spot": "@stp" }
+    ],
+    "cost": [
+      { "show": "@bom" },
+      {
+        "at": "Tick",
+        "mark": "@costP",
+        "text": "the arm lands near $170",
+        "until": "end"
+      }
+    ],
+    "canivore": [{ "at": "CANivore", "spot": "@note" }],
+    "print": [
+      { "show": "@printing" },
+      { "at": "bearings", "mark": "@printP", "text": "four flanged bearings" }
+    ],
+    "tnuts": [{ "show": "@notes" }, { "at": "T-nut", "spot": "@liNuts" }],
+    "battery": [{ "at": "battery", "spot": "@liBatt" }],
+    "close": [{ "show": "@check" }, { "at": "arm", "spot": "@checkArm" }]
+  }
+}

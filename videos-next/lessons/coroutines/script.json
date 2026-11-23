@@ -1,5 +1,5 @@
 {
-  "title": "Fork and Wait",
+  "title": "Coroutines",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,61 +10,67 @@
   "lines": [
     {
       "id": "intro",
-      "text": "A coroutine is a routine written as plain code, one line after another, that can pause on a line.",
+      "text": "Your arm and flywheel can both say whether they've arrived, but nothing waits for that answer yet. A coroutine does. It's a routine that can stop on a line until something comes true.",
       "after": 0.6
     },
     {
-      "id": "callback",
-      "text": "In autonomous, nobody's holding a button. There's nobody to let go.",
-      "after": 0.6
-    },
-    {
-      "id": "why",
-      "text": "And the arm has to keep holding while everything after it happens. A list can't do that.",
+      "id": "calls",
+      "text": "Four calls build every routine in this course. Two of them start a command, and the other two only wait.",
       "after": 0.6
     },
     {
       "id": "fork",
-      "text": "Fork starts a command and moves straight on. The arm's lane keeps running on its own.",
+      "text": "The arm's command never finishes on its own. Await it, and the routine never leaves that line, so anything that runs forever gets forked instead.",
       "after": 0.6
     },
     {
-      "id": "wait",
-      "text": "Then the routine waits until the arm is in place, but never longer than three seconds.",
+      "id": "arrow",
+      "text": "Don't drop the little arrow in front of the question. It's what lets the routine ask again on every loop, instead of asking once and keeping a stale answer.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Your turn. Fork the arm, or await it. Pick one, and run it.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 11
-      }
-    },
-    {
-      "id": "await",
-      "text": "Await waits for the command to finish. The arm holds forever, so the routine never gets past the first line.",
+      "id": "arm",
+      "text": "Here's the first routine, on the Y button. Read it straight down: send the arm up, wait for it, send it down, wait again, print.",
       "after": 0.6
     },
     {
-      "id": "timeout",
-      "text": "If that wait runs out, the routine checks, and leaves. Without the check, it would shoot at an angle nobody looked at.",
+      "id": "flywheel",
+      "text": "The flywheel's routine ends differently. Canceling a command doesn't stop a motor, so the routine sends the stop itself before it runs out of lines.",
       "after": 0.6
     },
     {
-      "id": "shoot",
-      "text": "Then the flywheel spins up, the routine waits for it to reach speed, and the shot gets one second.",
+      "id": "loop",
+      "text": "A routine is plain Java, so a loop just works. Same four lines, three times round.",
       "after": 0.6
     },
     {
-      "id": "stop",
-      "text": "Last, it forks a stop for the flywheel. Ending a routine cancels everything it started, and canceling doesn't stop a motor.",
+      "id": "timeline",
+      "text": "Every routine on the page has a timeline behind its code. On this one, look at the arm's lane. It keeps moving while the routine is parked on a wait.",
+      "after": 0.6
+    },
+    {
+      "id": "auto",
+      "text": "Autonomous changes one thing. Nobody's holding a button, so nobody can let go, and a wait that never comes true would sit there for the whole period.",
+      "after": 0.6
+    },
+    {
+      "id": "limit",
+      "text": "So every wait gets a limit. Then check which ending you got, because a wait that ran out carries straight on as if the arm had arrived.",
+      "after": 0.6
+    },
+    {
+      "id": "exits",
+      "text": "Once the flywheel is spinning, every way out stops it first. There are two here, the early one and the normal one.",
+      "after": 0.6
+    },
+    {
+      "id": "both",
+      "text": "Now look at the two lanes together. The arm's command is still running underneath while the flywheel spins up and the shot happens, which is the whole reason it was forked.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Fork the holds, await the steps, put a limit on every wait, and stop what you started before you leave.",
+      "text": "Before you move on, break it on purpose, twice, and see what each change does. That's the bench mechanisms done. Next the course moves to the drivetrain.",
       "after": 0.6
     }
   ]

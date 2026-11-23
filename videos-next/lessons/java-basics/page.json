@@ -1,0 +1,76 @@
+{
+  "pages": { "lesson": "/java-basics" },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "courseHead": "#learn-the-language > div:first-child",
+    "courseP": "#learn-the-language > .lesson-stack > p:has-text(\"Codecademy's Learn Java is\")",
+    "modules": "#learn-the-language table",
+    "oop": "#learn-the-language table tr:has-text(\"Object-Oriented\")",
+    "stopP": "#learn-the-language > .lesson-stack > p:has-text(\"Stop after Conditionals and\")",
+    "sixHead": "#the-six-pieces > div:first-child",
+    "sixP": "#the-six-pieces > .lesson-stack > p:has-text(\"There are six main\")",
+    "pieces": "#the-six-pieces table",
+    "ctorRow": "#the-six-pieces table tr:has-text(\"constructor\")",
+    "lambdaRow": "#the-six-pieces table tr:has-text(\"lambda\")",
+    "implP": "#the-six-pieces > .lesson-stack > p:has-text(\"Another word you will\")",
+    "code": "#the-six-pieces .code-card:has-text(\"Arm.java, branch mech-2-Commands: the method, the lambda, an\")",
+    "warn": "#the-six-pieces > .lesson-stack > div:has-text(\"WATCH OUTWriting a lambda\")",
+    "checkHead": "#check-your-work > div:first-child",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Five questions on the\")"
+  },
+  "open": [
+    { "card": "Java Basics", "kicker": "Workshop 2 · Code Foundations" }
+  ],
+  "lines": {
+    "intro": [
+      { "show": "@header" },
+      {
+        "at": "short",
+        "mark": "@lede",
+        "text": "We will not be teaching you full Java"
+      }
+    ],
+    "course": [
+      { "show": ["@courseHead", "@courseP", "@modules"] },
+      { "at": "third", "spot": "@oop" }
+    ],
+    "stop": [
+      { "show": ["@modules", "@stopP"] },
+      {
+        "at": "nothing",
+        "mark": "@stopP",
+        "text": "We will not use arrays, string methods or loops."
+      }
+    ],
+    "six": [
+      { "show": ["@sixHead", "@sixP", "@pieces"] },
+      {
+        "at": "course",
+        "mark": "@sixP",
+        "text": "all of them except the lambda"
+      }
+    ],
+    "build": [
+      { "show": "@pieces" },
+      { "at": "constructor", "spot": "@ctorRow" }
+    ],
+    "lambda": [{ "show": "@pieces" }, { "at": "lambda", "spot": "@lambdaRow" }],
+    "borrow": [
+      { "show": "@implP" },
+      { "at": "word", "mark": "@implP", "text": "implements" }
+    ],
+    "method": [
+      { "code": "@code", "lines": [2, 4] },
+      { "at": "lambda", "code": "@code", "lines": [3, 3] }
+    ],
+    "nothing": [
+      { "show": ["@code", "@warn"] },
+      { "at": "Calling", "spot": "@warn" }
+    ],
+    "close": [
+      { "show": ["@checkHead", "@checkP"] },
+      { "at": "more", "mark": "@checkP", "text": "miss more than one" }
+    ]
+  }
+}
