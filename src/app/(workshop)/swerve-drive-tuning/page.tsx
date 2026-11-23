@@ -102,11 +102,7 @@ export default function SwerveDriveTuning() {
             Tape the floor at the robot&apos;s front edge. Restart the code so{" "}
             <code>Drivetrain/Pose</code> reads (0, 0).
           </li>
-          <li>
-            Drive straight forward, slowly, about five meters. A wheel that
-            spins under hard acceleration counts distance the robot never
-            travels.
-          </li>
+          <li>Drive straight forward, slowly, about five meters.</li>
           <li>
             Tape the front edge again. The gap between marks is the actual
             distance, and <code>Drivetrain/Pose</code> at the end of the run is
@@ -157,8 +153,8 @@ export default function SwerveDriveTuning() {
           </li>
         </ol>
         <p>
-          Stator current is proportional to torque, so a stator limit caps how
-          hard a wheel twists. Set it where the tire loses grip.
+          A stator current limit caps how hard a wheel twists. Set it where the
+          tire loses grip.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -180,12 +176,11 @@ export default function SwerveDriveTuning() {
         </p>
         <Box variant="alert-danger" title="Stalled motors get hot fast">
           <p>
-            A drive motor pushing a wall it cannot move is a stalled motor. Keep
-            each ramp short and back off to zero between attempts. One person on
-            the disable, somebody else on the laptop.
+            Keep each ramp short and back off to zero between attempts. One
+            person on the disable, somebody else on the laptop.
           </p>
         </Box>
-        <p>Both numbers go in the same file:</p>
+        <p>Both numbers go in the same file.</p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/generated/TunerConstants.java"
@@ -211,14 +206,6 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           and ignores those gains. The workshop project already changes it in{" "}
           <code>Robot.java</code>.
         </p>
-        <CodeBlock
-          language="java"
-          filename="src/main/java/frc/robot/Robot.java"
-          code={`private final SwerveRequest.FieldCentric drive =
-    new SwerveRequest.FieldCentric()
-        .withDriveRequestType(DriveRequestType.Velocity); // closed loop, uses the drive gains`}
-          highlightLines={[3]}
-        />
         <p>
           On a velocity loop the feedforward does nearly all of the work.{" "}
           <a
@@ -241,11 +228,8 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           The request has no deadband of its own, because Phoenix&apos;s version
           cuts off every speed under it. The controller ignores the bottom 10%
           of each stick instead and stretches the rest back over the full range.
-        </p>
-        <p>
-          Shrink that 10% rather than setting it to zero, because it keeps a
-          worn stick from creeping the robot. Put the robot on blocks, take your
-          hands off the controller, and watch the speed in{" "}
+          To shrink it, put the robot on blocks, take your hands off the
+          controller, and watch the speed in{" "}
           <code>Drivetrain/ModuleTargets</code>. Halve the deadband in the{" "}
           <code>Robot</code> constructor and redeploy until those targets start
           twitching, then go back one value.

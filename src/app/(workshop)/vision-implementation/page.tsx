@@ -119,24 +119,6 @@ export default function VisionImplementation() {
         />
       </LessonSection>
 
-      <LessonSection id="megatag1-and-megatag2" title="MegaTag1 and MegaTag2">
-        <ProseBlock>
-          <p>
-            The camera solves the same frame two ways, and you pick which answer
-            to believe.
-          </p>
-          <p>
-            MegaTag1 solves position and heading from the tags in frame. Two or
-            more tags do that well. With one tag, a small error in the measured
-            corners swings the solved heading, and the position follows it.
-          </p>
-          <p>
-            MegaTag2 takes your heading as given and solves only for position,
-            so one tag is enough. A wrong gyro heading gives a wrong position.
-          </p>
-        </ProseBlock>
-      </LessonSection>
-
       <LessonSection id="the-vision-class" title="The Vision class">
         <p>
           Create <code>src/main/java/frc/robot/subsystems/Vision.java</code> and
@@ -250,9 +232,11 @@ public class Vision {
             since the last call, so no frame is skipped and none is used twice.
           </li>
           <li>
-            <code>addFrame</code> asks MegaTag1 first, then reads{" "}
-            <code>fieldedTagCount</code> off the answer. Under two tags, it asks
-            the same frame again as MegaTag2.
+            The camera solves each frame two ways. MegaTag1 solves position and
+            heading from the tags, and needs two or more to do it well. MegaTag2
+            takes your heading as given and solves only position, so one tag is
+            enough. <code>addFrame</code> asks MegaTag1 first, and under two
+            tags it asks the same frame again as MegaTag2.
           </li>
           <li>
             <code>rejectionFlags</code> is the library&apos;s own verdict on the
@@ -266,27 +250,14 @@ public class Vision {
             <code>estimate.timestampSeconds</code>, not the current time,
             because the picture was taken before your code saw it.
           </li>
+          <li>
+            Each sighting goes in with a standard deviation, how far off it
+            might be. It grows with distance and shrinks with tag count, and a
+            bigger number means trust it less. A MegaTag2 heading is the one you
+            handed the camera, so it goes in with{" "}
+            <code>IGNORE_VISION_HEADING</code>.
+          </li>
         </ul>
-      </LessonSection>
-
-      <LessonSection id="the-trust-weighting" title="The trust weighting">
-        <p>
-          Every sighting goes into the estimator with a standard deviation: how
-          far off it might be, in meters and radians. Bigger means trust it
-          less.
-        </p>
-        <p>
-          Distance raises it and tag count lowers it. Doubling the distance
-          multiplies it by about 2.3, and a second tag divides it by four. One
-          tag at two meters gives about 0.77 m. Two tags at the same distance
-          give about 0.19 m.
-        </p>
-        <p>
-          MegaTag2 solved its pose from the heading you handed the camera, so
-          that heading is not a new measurement. Its estimates go in with{" "}
-          <code>IGNORE_VISION_HEADING</code>, and the estimator ignores their
-          heading.
-        </p>
       </LessonSection>
 
       <LessonSection id="start-it-in-robot" title="Start it in Robot">
@@ -394,16 +365,16 @@ public class Robot extends OpModeRobot {
           {
             id: 4,
             question:
-              "The robot sees two tags at 2 m instead of one tag at 2 m. What happens to the position standard deviation?",
+              "Why does addVisionMeasurement take estimate.timestampSeconds instead of the current time?",
             options: [
-              "It stays the same, because only distance affects it",
-              "It halves, because tagCount doubles",
-              "It doubles, because more tags means more disagreement",
-              "It drops to a quarter, because the divisor is tagCount squared",
+              "The current time is not available inside a periodic method",
+              "The estimator rejects any measurement stamped with the current time",
+              "The timestamp tells the estimator which camera sent the frame",
+              "The picture was taken before your code saw it, so the sighting belongs to that earlier moment",
             ],
             correctAnswer: 3,
             explanation:
-              "The divisor is fieldedTagCount squared, so two tags divide by 4 and three divide by 9. One tag at 2 m gives about 0.77 m; two tags at the same distance give about 0.19 m.",
+              "A frame takes time to process and arrive, and the robot keeps moving. The estimator needs to know when the picture was taken to place the sighting correctly.",
           },
           {
             id: 5,

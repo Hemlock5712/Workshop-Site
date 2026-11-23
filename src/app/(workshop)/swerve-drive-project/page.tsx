@@ -234,40 +234,21 @@ export default function SwerveDriveProject() {
       </LessonSection>
 
       <LessonSection
-        id="three-files-and-why-there-have"
-        title="Three files, one drivetrain"
-      >
-        <p>
-          The drivetrain is three classes. <code>TunerConstants.java</code> is
-          Tuner X&apos;s: every number about your robot.{" "}
-          <code>CommandSwerveDrivetrain.java</code> is Tuner X&apos;s too, and
-          holds the motors and odometry.
-        </p>
-        <p>
-          <code>DriveMechanism.java</code> is the workshop&apos;s. It implements{" "}
-          <code>Mechanism</code>, owns a <code>CommandSwerveDrivetrain</code> as
-          a private field, and is what an OpMode talks to. That keeps the code
-          you write out of the files Tuner X writes.
-        </p>
-      </LessonSection>
-
-      <LessonSection
         id="your-first-real-default-command"
         title="The drivetrain default command"
       >
         <p>
-          A <code>Mechanism</code> has no default command until you give it one,
-          and{" "}
-          <Link href="/running-program#latched" className={linkStyle}>
-            a canceled command leaves its last request in the motors
-          </Link>
-          . For a drivetrain the last request is a speed, so the robot would
-          keep rolling.
+          Your own drivetrain code goes in <code>DriveMechanism.java</code>,
+          which is what an OpMode talks to. That keeps it out of the files Tuner
+          X writes.
         </p>
         <p>
-          So the <code>Robot</code> constructor makes the joystick drive the
-          drivetrain&apos;s default command, in every mode. Whenever another
-          drivetrain command ends, the drivetrain goes back to the sticks.
+          <Link href="/running-program#latched" className={linkStyle}>
+            A canceled command leaves its last request in the motors
+          </Link>
+          , so a drivetrain would keep rolling. The <code>Robot</code>{" "}
+          constructor makes the joystick drive the drivetrain&apos;s default
+          command, in every mode.
         </p>
         <CodeBlock
           language="java"
@@ -309,9 +290,7 @@ export default function SwerveDriveProject() {
         <p>
           <code>applyRequest(...)</code> is built on <code>runRepeatedly</code>,
           so it re-reads the sticks and sends a fresh request every loop. Let go
-          and the command is still running, asking for zero. Full stick asks for{" "}
-          <code>maxSpeed</code>, which comes from{" "}
-          <code>TunerConstants.kSpeedAt12Volts</code>.
+          and the command is still running, asking for zero.
         </p>
         <p>
           <code>TeleopOpMode</code> keeps only its buttons. The left bumper runs{" "}
@@ -382,7 +361,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "DriveMechanism implements Mechanism and is what commands and OpModes talk to. It owns the CommandSwerveDrivetrain privately, so the code you write stays out of the files Tuner X writes.",
+              "DriveMechanism is what commands and OpModes talk to. That keeps the code you write out of the files Tuner X writes.",
           },
           {
             id: 4,
