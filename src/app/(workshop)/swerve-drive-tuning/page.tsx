@@ -48,8 +48,8 @@ export default function SwerveDriveTuning() {
       <LessonSection id="steer-gains" title="Tune the steer gains">
         <p>
           A steering motor holds an angle. That is a position loop with no
-          gravity to fight, so skip kG and start at kS. The generator gave you
-          real numbers. Adjust them rather than starting from zero.
+          gravity to fight, so skip kG and start at kS. Adjust the
+          generator&apos;s numbers rather than starting from zero.
         </p>
         <CodeBlock
           language="java"
@@ -82,16 +82,15 @@ export default function SwerveDriveTuning() {
           <code>Drivetrain/ModuleStates</code> and{" "}
           <code>Drivetrain/ModuleTargets</code>. Put the angle from both on one
           AdvantageScope plot and flick the right stick. Tuned looks like two
-          traces on top of each other. Untuned lags, overshoots, or buzzes.
+          traces on top of each other.
         </p>
       </LessonSection>
 
       <LessonSection id="measure-the-drivetrain" title="Wheel radius">
         <p>
-          The generator asked for your wheel size, so if your modules use the
-          wheels you told it about, <code>kWheelRadius</code> is already close
-          enough. Measure it only if you changed wheels, or if odometry reads
-          long or short against a tape measure.
+          The generator asked for your wheel size, so <code>kWheelRadius</code>{" "}
+          is already close. Measure it only if you changed wheels, or if
+          odometry reads long or short against a tape measure.
         </p>
         <CodeBlock
           language="java"
@@ -103,11 +102,7 @@ export default function SwerveDriveTuning() {
             Tape the floor at the robot&apos;s front edge. Restart the code so{" "}
             <code>Drivetrain/Pose</code> reads (0, 0).
           </li>
-          <li>
-            Drive straight forward, slowly, about five meters. A wheel that
-            spins under hard acceleration counts distance the robot never
-            travels.
-          </li>
+          <li>Drive straight forward, slowly, about five meters.</li>
           <li>
             Tape the front edge again. The gap between marks is the actual
             distance, and <code>Drivetrain/Pose</code> at the end of the run is
@@ -158,8 +153,8 @@ export default function SwerveDriveTuning() {
           </li>
         </ol>
         <p>
-          Stator current is proportional to torque, so a stator limit caps how
-          hard a wheel twists. Set it where the tire loses grip.
+          A stator current limit caps how hard a wheel twists. Set it where the
+          tire loses grip.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -174,19 +169,18 @@ export default function SwerveDriveTuning() {
         </ol>
         <p>
           Current climbs while velocity sits at zero. Then velocity jumps and
-          current drops in the same instant. That is the tire letting go. Read
-          the current at the top of the climb, just before the drop. The shipped
-          120 A is itself a stator limit. If the trace flattens there and the
-          wheel never breaks loose, raise the constant for now and ramp again.
+          current drops, which is the tire letting go. Read the current at the
+          top of the climb, just before the drop. If the trace flattens at the
+          shipped 120 A and the wheel never breaks loose, raise the constant and
+          ramp again.
         </p>
         <Box variant="alert-danger" title="Stalled motors get hot fast">
           <p>
-            A drive motor pushing a wall it cannot move is a stalled motor. Keep
-            each ramp short and back off to zero between attempts. One person on
-            the disable, somebody else on the laptop.
+            Keep each ramp short and back off to zero between attempts. One
+            person on the disable, somebody else on the laptop.
           </p>
         </Box>
-        <p>Both numbers go in the same file:</p>
+        <p>Both numbers go in the same file.</p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/generated/TunerConstants.java"
@@ -208,21 +202,12 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           Every drive request in this course is{" "}
           <code>DriveRequestType.Velocity</code>: the drive motors hold a wheel
           speed with the drive gains below. CTRE&apos;s generator writes{" "}
-          <code>OpenLoopVoltage</code> for the joystick request, which sends the
-          stick straight to volts and ignores those gains. The workshop project
-          already changes it in <code>Robot.java</code>.
+          <code>OpenLoopVoltage</code>, which sends the stick straight to volts
+          and ignores those gains. The workshop project already changes it in{" "}
+          <code>Robot.java</code>.
         </p>
-        <CodeBlock
-          language="java"
-          filename="src/main/java/frc/robot/Robot.java"
-          code={`private final SwerveRequest.FieldCentric drive =
-    new SwerveRequest.FieldCentric()
-        .withDriveRequestType(DriveRequestType.Velocity); // closed loop, uses the drive gains`}
-          highlightLines={[3]}
-        />
         <p>
-          A drive motor holds a speed, and on a velocity loop the feedforward
-          does nearly all of the work.{" "}
+          On a velocity loop the feedforward does nearly all of the work.{" "}
           <a
             href="/pid-control#feedforward-first"
             className="font-semibold underline decoration-1 underline-offset-2"
@@ -240,19 +225,14 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
     new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKS(0).withKV(0.124);`}
         />
         <p>
-          The request has no deadband of its own. Phoenix&apos;s version cuts
-          off every speed under it, so the slowest speeds were never reachable.
-          The controller ignores the bottom 10% of each stick instead and
-          stretches the rest back over the full range. Full stick still asks for{" "}
-          <code>maxSpeed</code>.
-        </p>
-        <p>
-          Shrink that 10% rather than setting it to zero, because it keeps a
-          worn stick&apos;s drift from creeping the robot across the field. Put
-          the robot on blocks, take your hands off the controller, and watch the
-          speed component of <code>Drivetrain/ModuleTargets</code>. Halve the
-          deadband in the <code>Robot</code> constructor and redeploy until
-          those targets start twitching, then go back one value.
+          The request has no deadband of its own, because Phoenix&apos;s version
+          cuts off every speed under it. The controller ignores the bottom 10%
+          of each stick instead and stretches the rest back over the full range.
+          To shrink it, put the robot on blocks, take your hands off the
+          controller, and watch the speed in{" "}
+          <code>Drivetrain/ModuleTargets</code>. Halve the deadband in the{" "}
+          <code>Robot</code> constructor and redeploy until those targets start
+          twitching, then go back one value.
         </p>
         <CodeBlock
           language="java"
@@ -293,7 +273,7 @@ driver.getController().setRightXDeadband(0.05);`}
             ],
             correctAnswer: 1,
             explanation:
-              "OpenLoopVoltage turns the stick into volts and never reads driveGains. Velocity asks each drive motor for a wheel speed and closes the loop with driveGains. That is why those gains are worth tuning.",
+              "OpenLoopVoltage turns the stick into volts and never reads driveGains. Velocity asks each drive motor for a wheel speed and closes the loop with driveGains.",
           },
           {
             id: 2,
@@ -307,7 +287,7 @@ driver.getController().setRightXDeadband(0.05);`}
             ],
             correctAnswer: 3,
             explanation:
-              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went less far than it reported, so the radius in the file is too big and goes down. The run is slow so the gap is the radius, not wheel slip.",
+              "newRadius = (actualDistance / reportedDistance) × currentRadius. The robot went less far than it reported, so the radius in the file is too big and goes down.",
           },
           {
             id: 3,
@@ -321,7 +301,7 @@ driver.getController().setRightXDeadband(0.05);`}
             ],
             correctAnswer: 0,
             explanation:
-              "The steer loop's job is to put the wheel where the drivetrain asked, immediately. Lag, overshoot and buzz are the three ways it falls short. Raise kP until it oscillates and back off, then add kD until just before it jitters.",
+              "The steer loop's job is to put the wheel where the drivetrain asked. Raise kP until it oscillates and back off, then add kD until just before it jitters.",
           },
           {
             id: 4,
@@ -335,7 +315,7 @@ driver.getController().setRightXDeadband(0.05);`}
             ],
             correctAnswer: 2,
             explanation:
-              "While the tire grips, the wheel cannot turn: velocity stays at zero and current keeps climbing with torque. The jump is the tire letting go, and the peak just before it is the slip point.",
+              "While the tire grips, velocity stays at zero and current keeps climbing. The jump is the tire letting go, and the peak just before it is the slip point.",
           },
           {
             id: 5,
@@ -349,7 +329,7 @@ driver.getController().setRightXDeadband(0.05);`}
             ],
             correctAnswer: 1,
             explanation:
-              "Both stop drift. The request's deadband cuts off every speed under it, so a 10% deadband at 4.54 m/s leaves nothing under about 0.45 m/s. The controller maps 10% of stick to zero and full stick to full, so every speed in between is still there.",
+              "Both stop drift. The request's deadband cuts off every speed under it. The controller maps 10% of stick to zero and full stick to full, so every speed in between is still there.",
           },
         ]}
       />

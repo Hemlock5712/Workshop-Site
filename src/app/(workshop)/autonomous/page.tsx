@@ -21,7 +21,7 @@ export default function Autonomous() {
   return (
     <PageTemplate
       title="Autonomous"
-      lede="One autonomous routine is one class holding one command. The class puts a name on the driver station and owns the mode boundary. The command does the driving, and the one you build here leaves the starting line and stops."
+      lede="An autonomous routine is one class holding one command. The one you build here drives off the starting line and stops."
       needs={[
         <>
           A swerve robot you can drive, with a pose you trust, from{" "}
@@ -37,16 +37,9 @@ export default function Autonomous() {
       time="8 minutes"
     >
       <p>
-        You have written an <code>@Autonomous</code> class once already: Raise
-        And Shoot, on <strong>Coroutines</strong>, ran the arm and flywheel with
-        no one holding a button. This one has the same shape and drives the
-        whole robot.
-      </p>
-      <p>
-        The routine is a timed drive, and it is crude on purpose. A timed step
-        tells you whether the mode list, the scheduler, and the drivetrain agree
-        with each other. It tells you very little about where the robot ended
-        up.
+        You wrote an <code>@Autonomous</code> class on{" "}
+        <strong>Coroutines</strong>, for the arm and flywheel. This one has the
+        same shape and drives the whole robot, on a timer.
       </p>
 
       <LessonSection id="build-the-routine" title="Build the routine">
@@ -60,7 +53,7 @@ export default function Autonomous() {
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/LeaveStartAuto.java"
-          title="LeaveStartAuto.java: lifecycle and behavior together"
+          title="LeaveStartAuto.java"
           code={`package frc.robot.opmodes;
 
 import static org.wpilib.units.Units.Seconds;
@@ -106,35 +99,26 @@ public class LeaveStartAuto extends PeriodicOpMode {
 }`}
         />
         <p>
-          A wait is the only finish line available here.{" "}
-          <code>DriveMechanism</code> reports its pose, but nothing on it
-          answers <em>am I there yet</em> the way{" "}
-          <code>robot.arm.isAtTarget()</code> did on Conditions and Logging.
-        </p>
-        <p>
-          Two names go into this file and they do different jobs. The one in the
-          annotation is what the driver station lists, so it is the one a driver
-          reads under pressure. The one in <code>.named(...)</code> is what the
-          command is called in the scheduler and on the dashboard.
+          The name in the annotation is what the driver station lists. The name
+          in <code>.named(...)</code> is what the command is called on the
+          dashboard.
         </p>
         <p>
           When the routine ends, the joystick default from{" "}
           <code>Robot.java</code> takes the drivetrain back, and centered sticks
           ask for zero. The routine still sends <code>stopped</code> itself, so
-          it does not depend on nobody touching the sticks. The last line of the
-          coroutine covers a routine that runs to the end. A cancel skips that
-          line, so <code>whenCanceled</code> sends the same zero.
+          it does not rely on the sticks. A cancel skips the last line of the
+          coroutine, so <code>whenCanceled</code> sends the same zero.
         </p>
         <p>
-          The robot&apos;s field position is never set in this routine.{" "}
-          <code>Drivetrain/Pose</code> starts wherever odometry left off.
-          Restart the robot code before a measured run and it reads near zero,
-          which makes the distance easy to read straight off AdvantageScope.
+          The routine never sets the robot&apos;s field position. Restart the
+          robot code before a measured run and <code>Drivetrain/Pose</code>{" "}
+          starts near zero.
         </p>
       </LessonSection>
 
       <LessonSection id="test-in-layers" title="Four test passes">
-        <p>Each pass answers one question. Run them in order.</p>
+        <p>Run them in order.</p>
         <Box variant="alert-danger" title="Nobody in front of the robot">
           <p>
             An autonomous routine drives with nobody holding a stick. Give one
@@ -155,7 +139,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
             with clear floor ahead of it and run the same routine. It leaves in
             the direction its front bumper points, because{" "}
             <code>RobotCentric</code> X is the robot&apos;s forward and not the
-            field&apos;s. The starting heading sets the direction.
+            field&apos;s.
           </li>
           <li>
             <strong>Measured, three times.</strong> Tape the floor at the front
@@ -174,9 +158,8 @@ public class LeaveStartAuto extends PeriodicOpMode {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Run the routine three times from the same tape mark, on the floor,
-          with AdvantageScope connected. You are done when the three runs land
-          on top of each other.
+          You are done when three runs from the same tape mark land on top of
+          each other.
         </p>
         <Box variant="alert-success" title="You should see">
           <p>
@@ -186,16 +169,14 @@ public class LeaveStartAuto extends PeriodicOpMode {
           </p>
         </Box>
         <p>
-          Write down the distance the tape measured, the end pose, and the wait
-          that produced them. BLine Paths replaces that wait with a path drawn
-          from the same tape mark. These three numbers are what you will hold
-          the path against.
+          Write down the taped distance, the end pose and the wait.{" "}
+          <strong>BLine Paths</strong> replaces the wait with a path drawn from
+          the same tape mark.
         </p>
         <p>
           A second routine is a second file. Copy this one, change the
-          annotation name and the numbers, and it turns up on the list beside
-          the first. Nothing registers it, and nothing in{" "}
-          <code>Robot.java</code> chooses between the two.
+          annotation name and the numbers, and it shows up on the list beside
+          the first. Nothing registers it.
         </p>
       </LessonSection>
       <Quiz
@@ -212,7 +193,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
             ],
             correctAnswer: 2,
             explanation:
-              "Ending a command sends nothing to the motors. What stops the wheels is the joystick default set in Robot.java, which applies in every mode: it claims the drivetrain once the routine ends, and centered sticks ask for zero. The routine sends stopped itself anyway, so it never relies on the sticks.",
+              "Ending a command sends nothing to the motors. The joystick default set in Robot.java claims the drivetrain once the routine ends, and centered sticks ask for zero. The routine sends stopped itself so it never relies on the sticks.",
           },
           {
             id: 2,
@@ -226,7 +207,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
             ],
             correctAnswer: 0,
             explanation:
-              "RobotCentric means the velocities are relative to the robot's front bumper. Point the robot at the side wall and X is toward the side wall. The starting heading on the tape mark is what aims the routine.",
+              "RobotCentric velocities are relative to the robot's front bumper. Point the robot at the side wall and X is toward the side wall.",
           },
           {
             id: 3,
@@ -240,7 +221,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "The driver station lists every @Autonomous class it finds. One routine is one class, and nothing registers it or chooses between them in code. The name in the annotation is the one a driver reads off the list.",
+              "The driver station lists every @Autonomous class it finds, under the name in the annotation. Nothing registers the class in code.",
           },
           {
             id: 4,
@@ -254,7 +235,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
             ],
             correctAnswer: 3,
             explanation:
-              "end() runs when the mode stops for any reason, and it cancels the routine. The cancel runs whenCanceled, which sends the zero. Enable again and the next run starts from the first line, with no need to pick the mode again.",
+              "end() runs when the mode stops for any reason, and it cancels the routine. The cancel runs whenCanceled, which sends the zero. Enable again and the routine starts from the first line.",
           },
         ]}
       />

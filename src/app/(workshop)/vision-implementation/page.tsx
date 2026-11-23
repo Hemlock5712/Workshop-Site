@@ -77,23 +77,18 @@ export default function VisionImplementation() {
     >
       <Box variant="alert-warning" title="No camera in simulation">
         <p>
-          None of this runs in the simulator. There is no camera, so nothing
-          publishes to NetworkTables, the frame queue comes back empty, and the
-          update method returns every loop. Check this page on the real robot.
+          None of this runs in the simulator, because there is no camera. Check
+          this page on the real robot.
         </p>
       </Box>
 
       <LessonSection id="install-the-library" title="Install the library">
         <ProseBlock>
           <p>
-            LimelightLib is a vendor dependency, the same kind of thing as
-            Phoenix 6.
-          </p>
-          <p>
-            Open the <strong>WPILib Vendor Dependencies</strong> view from the
-            activity bar on the left. Expand <strong>INSTALL FROM URL</strong>,
-            paste the URL below into the box, and press <strong>Install</strong>
-            .
+            LimelightLib is a vendor dependency, like Phoenix 6. Open the{" "}
+            <strong>WPILib Vendor Dependencies</strong> view from the activity
+            bar on the left. Expand <strong>INSTALL FROM URL</strong>, paste the
+            URL below, and press <strong>Install</strong>.
           </p>
         </ProseBlock>
 
@@ -113,9 +108,8 @@ export default function VisionImplementation() {
         />
 
         <p>
-          Build once so Gradle pulls the jar. You now have{" "}
-          <code>com.limelightvision.Limelight</code>, which is one class per
-          camera with everything the camera publishes hanging off it.
+          Build once so Gradle downloads it. You now have{" "}
+          <code>com.limelightvision.Limelight</code>, one object per camera.
         </p>
 
         <DocumentationButton
@@ -123,26 +117,6 @@ export default function VisionImplementation() {
           title="Limelight: LimelightLib"
           icon={<BookOpen className="h-5 w-5" />}
         />
-      </LessonSection>
-
-      <LessonSection id="megatag1-and-megatag2" title="MegaTag1 and MegaTag2">
-        <ProseBlock>
-          <p>
-            The camera solves the same frame two ways, and you pick which answer
-            to believe.
-          </p>
-          <p>
-            MegaTag1 solves position and heading from the geometry of the tags
-            in frame. Two or more tags spread across the image constrain that
-            geometry well. One tag does not. A small error in the measured
-            corners swings the solved heading, and the position follows it.
-          </p>
-          <p>
-            MegaTag2 takes your heading as given and solves only for position.
-            One tag is enough. The heading goes in uncorrected, so a gyro ten
-            degrees out returns a position that is wrong and looks fine.
-          </p>
-        </ProseBlock>
       </LessonSection>
 
       <LessonSection id="the-vision-class" title="The Vision class">
@@ -255,60 +229,42 @@ public class Vision {
           </li>
           <li>
             <code>readResultsQueue()</code> hands back every frame that arrived
-            since the last call, so no frame is skipped and none goes into the
-            estimator twice.
+            since the last call, so no frame is skipped and none is used twice.
           </li>
           <li>
-            <code>addFrame</code> asks MegaTag1 first, then reads{" "}
-            <code>fieldedTagCount</code> off the answer. Under two tags, it asks
-            the same frame again as MegaTag2.
+            The camera solves each frame two ways. MegaTag1 solves position and
+            heading from the tags, and needs two or more to do it well. MegaTag2
+            takes your heading as given and solves only position, so one tag is
+            enough. <code>addFrame</code> asks MegaTag1 first, and under two
+            tags it asks the same frame again as MegaTag2.
           </li>
           <li>
             <code>rejectionFlags</code> is the library&apos;s own verdict on the
-            frame, and zero means it found nothing wrong. A fresh{" "}
-            <code>new Limelight(name)</code> already has gates. It rejects a
-            single tag past three meters or with ambiguity over 0.7, and a solve
-            with no fielded tag. So <code>tagFactor</code> is never zero.{" "}
+            frame, and zero means it found nothing wrong. By default it rejects
+            a single tag past three meters or with ambiguity over 0.7.{" "}
             <code>PoseEstimateConfig.describeRejection(flags)</code> names the
-            reason for a rejected frame.
+            reason.
           </li>
           <li>
             <code>addVisionMeasurement</code> takes{" "}
-            <code>estimate.timestampSeconds</code>, not the current time. The
-            picture was taken before your code saw it. The estimator winds its
-            history back to that moment and folds the sighting in there.
+            <code>estimate.timestampSeconds</code>, not the current time,
+            because the picture was taken before your code saw it.
+          </li>
+          <li>
+            Each sighting goes in with a standard deviation, how far off it
+            might be. It grows with distance and shrinks with tag count, and a
+            bigger number means trust it less. A MegaTag2 heading is the one you
+            handed the camera, so it goes in with{" "}
+            <code>IGNORE_VISION_HEADING</code>.
           </li>
         </ul>
       </LessonSection>
 
-      <LessonSection id="the-trust-weighting" title="The trust weighting">
-        <p>
-          Every sighting goes into the estimator with a standard deviation: how
-          far off it might be, in meters and radians. Bigger means trust it
-          less, and the estimator blends the sighting against the wheels in that
-          proportion.
-        </p>
-        <p>
-          Distance hurts gently and tag count helps hard. Doubling the distance
-          multiplies the error bar by about 2.3, while a second tag divides it
-          by four. One tag at two meters gives about 0.77 m. Two tags at the
-          same distance give about 0.19 m.
-        </p>
-        <p>
-          MegaTag2 solved its pose from the heading you handed the camera.
-          Feeding that heading back as a measurement would be the robot agreeing
-          with itself. So MegaTag2 estimates go in with{" "}
-          <code>IGNORE_VISION_HEADING</code>, which the estimator reads as
-          infinity. MegaTag1 heading is a real observation, and it gets a real
-          weight.
-        </p>
-      </LessonSection>
-
       <LessonSection id="start-it-in-robot" title="Start it in Robot">
         <p>
-          Add one field to <code>Robot</code>, under the drivetrain. Not in an
-          OpMode: an OpMode is thrown away on every mode switch, and vision has
-          to keep correcting in every mode.
+          Add one field to <code>Robot</code>, under the drivetrain. An OpMode
+          is thrown away on every mode switch, and vision has to keep correcting
+          in every mode.
         </p>
         <CodeBlock
           language="java"
@@ -376,7 +332,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 0,
             explanation:
-              "The code asks MegaTag1 first and reads fieldedTagCount off the answer. Below two tags it re-asks the same frame as MT2_WPIBLUE. MegaTag1 solves heading from the tag corners themselves, which is shaky off a single tag; MegaTag2 takes your heading as given and solves only position.",
+              "The code asks MegaTag1 first and reads fieldedTagCount off the answer. Below two tags it asks the same frame again as MegaTag2, which takes your heading as given and solves only position.",
           },
           {
             id: 2,
@@ -390,7 +346,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 2,
             explanation:
-              "Camera frames and robot loops do not line up. Some loops see no new frame and some see two. The queue hands you exactly what arrived, so a fast camera does not lose sightings and a slow one does not get the same sighting added to the estimator twice.",
+              "Camera frames and robot loops do not line up. Some loops see no new frame and some see two. The queue hands you exactly what arrived.",
           },
           {
             id: 3,
@@ -404,21 +360,21 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 1,
             explanation:
-              "Zero means no gate fired. A fresh Limelight starts with defaults that reject a lone tag past three meters, a lone tag with ambiguity over 0.7, and a solve with no fielded tags. When a flag is set, PoseEstimateConfig.describeRejection turns it into a name you can read.",
+              "Zero means no gate fired. The defaults reject a lone tag past three meters or with ambiguity over 0.7. When a flag is set, PoseEstimateConfig.describeRejection names the reason.",
           },
           {
             id: 4,
             question:
-              "The robot sees two tags at 2 m instead of one tag at 2 m. What happens to the position standard deviation?",
+              "Why does addVisionMeasurement take estimate.timestampSeconds instead of the current time?",
             options: [
-              "It stays the same, because only distance affects it",
-              "It halves, because tagCount doubles",
-              "It doubles, because more tags means more disagreement",
-              "It drops to a quarter, because the divisor is tagCount squared",
+              "The current time is not available inside a periodic method",
+              "The estimator rejects any measurement stamped with the current time",
+              "The timestamp tells the estimator which camera sent the frame",
+              "The picture was taken before your code saw it, so the sighting belongs to that earlier moment",
             ],
             correctAnswer: 3,
             explanation:
-              "The divisor is fieldedTagCount squared, so two tags divide by 4 and three divide by 9. One tag at 2 m gives about 0.77 m; two tags at the same distance give about 0.19 m.",
+              "A frame takes time to process and arrive, and the robot keeps moving. The estimator needs to know when the picture was taken to place the sighting correctly.",
           },
           {
             id: 5,
@@ -432,7 +388,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 2,
             explanation:
-              "MegaTag2 is handed your gyro heading and solves only position. Its reported heading is therefore your own heading coming back, and treating it as an independent observation would make the estimator more confident in a number it already had. A huge deviation tells the estimator to ignore that axis.",
+              "MegaTag2 is handed your gyro heading and solves only position. Its reported heading is your own heading coming back, so a huge deviation tells the estimator to ignore it.",
           },
           {
             id: 6,
@@ -446,7 +402,7 @@ public class Robot extends OpModeRobot {
             ],
             correctAnswer: 1,
             explanation:
-              "Each OpMode is built when its mode is picked and loses everything it set up when the mode changes. Vision is not a mode-specific behaviour: the pose estimator drifts in teleop, autonomous and disabled alike, so the update has to live where it survives all three.",
+              "Each OpMode is built when its mode is picked and thrown away when the mode changes. Odometry drifts in every mode, so Vision lives on Robot, which lasts through all of them.",
           },
         ]}
       />

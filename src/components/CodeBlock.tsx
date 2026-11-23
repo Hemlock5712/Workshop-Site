@@ -1,4 +1,5 @@
 import { highlightLines } from "@/lib/highlight";
+import { ChevronRight } from "lucide-react";
 import CodeCopyButton from "./CodeCopyButton";
 
 /**
@@ -37,6 +38,12 @@ interface CodeBlockProps {
    * the gutter, which is how you point at "this line" without a screenshot.
    */
   highlightLines?: number[];
+  /**
+   * Start folded to its header, for a whole file a student copies rather than
+   * reads. A native `<details>`, so it still ships no JavaScript, and the copy
+   * button works without opening it.
+   */
+  collapsed?: boolean;
 }
 
 export default async function CodeBlock({
@@ -49,51 +56,56 @@ export default async function CodeBlock({
   showLineNumbers = true,
   hideControls = false,
   highlightLines: marked = [],
+  collapsed = false,
 }: CodeBlockProps) {
   const lines = await highlightLines(code, language);
   const label = title ?? filename;
   const markedSet = new Set(marked);
   const gutterWidth = `${Math.max(2, String(lines.length).length)}ch`;
 
-  return (
-    <div
-      className={`code-card overflow-hidden ${className}`.trim()}
-      style={{
-        border: "1px solid var(--rule)",
-        borderRadius: 3,
-        background: "var(--code-bg)",
-      }}
-    >
-      {!hideControls && (
-        <div
-          className="flex items-center gap-3 px-3.5 py-[9px]"
-          style={{ borderBottom: "1px solid var(--rule)" }}
-        >
-          <span
-            className="mono truncate"
-            style={{ fontSize: "var(--text-meta)", color: "var(--code-tx)" }}
-          >
-            {label ?? language}
-          </span>
-          {branch && (
-            <span
-              className="mono shrink-0 whitespace-nowrap"
-              style={{
-                fontSize: "var(--text-micro)",
-                letterSpacing: "0.12em",
-                color: "var(--accent)",
-                border: "1px solid var(--accent)",
-                borderRadius: 2,
-                padding: "1px 5px",
-              }}
-            >
-              {branch}
-            </span>
-          )}
-          <CodeCopyButton code={code} />
-        </div>
-      )}
+  const cardStyle = {
+    border: "1px solid var(--rule)",
+    borderRadius: 3,
+    background: "var(--code-bg)",
+  };
 
+  const chrome = (
+    <>
+      <span
+        className="mono truncate"
+        style={{ fontSize: "var(--text-meta)", color: "var(--code-tx)" }}
+      >
+        {label ?? language}
+      </span>
+      {collapsed && (
+        <span
+          className="mono shrink-0 whitespace-nowrap"
+          style={{ fontSize: "var(--text-micro)", color: "var(--code-tx2)" }}
+        >
+          {lines.length} lines
+        </span>
+      )}
+      {branch && (
+        <span
+          className="mono shrink-0 whitespace-nowrap"
+          style={{
+            fontSize: "var(--text-micro)",
+            letterSpacing: "0.12em",
+            color: "var(--accent)",
+            border: "1px solid var(--accent)",
+            borderRadius: 2,
+            padding: "1px 5px",
+          }}
+        >
+          {branch}
+        </span>
+      )}
+      <CodeCopyButton code={code} />
+    </>
+  );
+
+  const body = (
+    <>
       {/* The gutter is its own grid column rather than a `::before` on each
           line, so the numbers hold still while a long line scrolls the code
           column, and a copy-paste never picks them up. */}
@@ -153,6 +165,42 @@ export default async function CodeBlock({
           })}
         </code>
       </pre>
+    </>
+  );
+
+  if (collapsed) {
+    return (
+      <details
+        className={`code-card group overflow-hidden ${className}`.trim()}
+        style={cardStyle}
+      >
+        <summary className="flex cursor-pointer list-none items-center gap-3 px-3.5 py-[9px] [&::-webkit-details-marker]:hidden">
+          <ChevronRight
+            aria-hidden="true"
+            className="h-3.5 w-3.5 shrink-0 transition-transform group-open:rotate-90"
+            style={{ color: "var(--code-tx2)" }}
+          />
+          {chrome}
+        </summary>
+        <div style={{ borderTop: "1px solid var(--rule)" }}>{body}</div>
+      </details>
+    );
+  }
+
+  return (
+    <div
+      className={`code-card overflow-hidden ${className}`.trim()}
+      style={cardStyle}
+    >
+      {!hideControls && (
+        <div
+          className="flex items-center gap-3 px-3.5 py-[9px]"
+          style={{ borderBottom: "1px solid var(--rule)" }}
+        >
+          {chrome}
+        </div>
+      )}
+      {body}
     </div>
   );
 }

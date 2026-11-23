@@ -61,8 +61,8 @@ export default function BLineLesson() {
             and press <strong>Install</strong>.
           </li>
           <li>
-            Build the project. Gradle downloads the library from JitPack the
-            first time, so the first build needs internet.
+            Build the project. The first build downloads the library, so it
+            needs internet.
           </li>
         </ol>
         <CodeBlock
@@ -78,10 +78,8 @@ export default function BLineLesson() {
 
       <LessonSection id="draw" title="Draw a path">
         <p>
-          The editor works on the <code>src/main/deploy/autos</code> folder:{" "}
-          <code>config.json</code>, <code>project.json</code>, and one file per
-          path under <code>paths/</code>. It ships to the robot with every
-          deploy.
+          The editor works on the <code>src/main/deploy/autos</code> folder,
+          which ships to the robot with every deploy.
         </p>
         <ImageBlock
           src="/images/bline/editor-import-autos-folder.png"
@@ -159,7 +157,6 @@ export default function BLineLesson() {
         <p>
           You will add three things to <code>DriveMechanism</code>: a request
           field, the builder in the constructor, and two methods that use them.
-          The builder is made once and turns every path file into a command.
         </p>
         <CodeBlock
           language="java"
@@ -217,13 +214,13 @@ export default function BLineLesson() {
             with X as its forward.
           </li>
           <li>
-            The first six arguments say which mechanism a path claims and how to
-            read the pose and speed. They also say how to reset the pose and how
-            to drive.
+            The first six arguments name the mechanism a path claims, then say
+            how to read the pose and speed, reset the pose, and drive.
           </li>
           <li>
             The three <code>PIDController</code>s pull the robot back onto the
-            path. They are a starting point tuned in simulation only.
+            path. They were tuned in simulation only, so tune them on your
+            robot.
           </li>
           <li>
             <code>followPath(name)</code> reads{" "}
@@ -303,28 +300,19 @@ public class AutoOpMode extends PeriodicOpMode {
   }
 }`}
         />
-        <Split>
-          <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
-            <p>
-              The event trigger is registered first, before any path command is
-              built. The routine is a coroutine that awaits the path, so a
-              second path is one more line under the first:{" "}
-              <code>coroutine.await(nextPath);</code>.
-            </p>
-            <p>
-              <code>start()</code> reads the drop-down, because someone can
-              still change it after picking the mode. <code>end()</code> cancels
-              the routine and clears any event the path passed but has not run
-              yet. <code>close()</code> takes the drop-down off the dashboard
-              when another OpMode is picked.
-            </p>
-          </div>
-          <MarginNote label="Events">
-            A reached event runs through the scheduler one loop later, in path
-            order. A canceled path drops the events it never reached. An event
-            command can keep running after its path ends.
-          </MarginNote>
-        </Split>
+        <p>
+          The event trigger is registered first, before any path command is
+          built. The routine is a coroutine that awaits the path, so a second
+          path is one more line under the first:{" "}
+          <code>coroutine.await(nextPath);</code>.
+        </p>
+        <p>
+          <code>start()</code> reads the drop-down, because someone can still
+          change it after picking the mode. <code>end()</code> cancels the
+          routine and clears any event that has not run yet.{" "}
+          <code>close()</code> takes the drop-down off the dashboard when
+          another OpMode is picked.
+        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
@@ -379,7 +367,7 @@ public class AutoOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "The library loads paths from deploy/autos/paths/<name>.json, and it needs autos/config.json beside them. The editor never talks to the robot. The exported folder ships with every deploy.",
+              "The library loads paths from deploy/autos/paths/<name>.json. The editor never talks to the robot. The exported folder ships with every deploy.",
           },
           {
             id: 2,
@@ -407,7 +395,7 @@ public class AutoOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 0,
             explanation:
-              "Near the end of a path the corrections are small. A small voltage can leave a wheel sitting against friction, so the path stalls short of its tolerance. A velocity request keeps closing the gap.",
+              "Near the end of a path the corrections are small. A small voltage can leave a wheel sitting against friction, so the path stalls short. A velocity request keeps closing the gap.",
           },
           {
             id: 4,

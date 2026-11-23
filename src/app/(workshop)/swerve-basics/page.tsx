@@ -122,9 +122,7 @@ export default function SwerveBasics() {
 
         <p>
           That is thirteen devices: eight motors, four CANcoders and one Pigeon
-          2. You never write the math that turns &quot;drive left while
-          turning&quot; into eight motor commands. Tuner X generates it on the
-          next page.
+          2.
         </p>
       </LessonSection>
 
