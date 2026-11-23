@@ -42,7 +42,7 @@ export default function AlignToTag() {
   return (
     <PageTemplate
       title="Align to Tag"
-      lede="Hold a button and the robot lines up on a spot measured from one AprilTag. It never asks where it is on the field, so a wrong field pose cannot move the spot. You record the spot on each field before the event."
+      lede="Hold a button and the robot lines up on a spot measured from one AprilTag. It never asks where it is on the field, so a wrong field pose cannot move the spot."
       needs={[
         <>
           <strong>Drive to Point</strong>. This lesson is the same call with a
@@ -106,11 +106,11 @@ export default function AlignToTag() {
 
       <LessonSection id="remember-the-tag" title="The tag map">
         <p>
-          The camera answers a few dozen times a second and late, and it loses
-          the tag when the robot gets close. The wheels answer every loop. So
-          each sighting puts the tag down once, in the same frame as{" "}
-          <code>drivetrain.getPose()</code>. Between sightings, and after the
-          tag leaves view, the wheels say where the robot is from that spot.
+          The camera answers late, and it loses the tag when the robot gets
+          close. The wheels answer every loop. So each sighting places the tag
+          in the same frame as <code>drivetrain.getPose()</code>. Between
+          sightings, and after the tag leaves view, the wheels say where the
+          robot is from that spot.
         </p>
         <p>
           Add the map, one call at the top of <code>addFrame</code>, and two
@@ -187,11 +187,11 @@ export default function AlignToTag() {
         title="Drive in the tag's frame"
       >
         <p>
-          BLine follows whatever pose it is handed. Give it a builder whose pose
-          comes from <code>vision.robotInTag(tagId)</code> and it drives in the
-          tag&apos;s frame, with the same one-waypoint path as Drive to Point.
           Add <code>alignToTag</code> under <code>driveToPoint</code>, and the
-          one-line <code>samplePoseAt</code> that <code>Vision</code> calls.
+          one-line <code>samplePoseAt</code> that <code>Vision</code> calls. It
+          is the same one-waypoint path as Drive to Point, on a builder whose
+          pose comes from <code>vision.robotInTag(tagId)</code>, so BLine drives
+          in the tag&apos;s frame.
         </p>
 
         <CodeBlock
@@ -243,8 +243,8 @@ export default function AlignToTag() {
         <p>
           The pose reset does nothing, because a pose measured from a tag is not
           a field pose. If no camera has seen the tag, the check before the{" "}
-          <code>await</code> ends the command at once. The robot never drives on
-          an empty answer. The gains are the ones from{" "}
+          <code>await</code> ends the command at once. The gains are the ones
+          from{" "}
           <Link href="/bline#builder" className={linkStyle}>
             BLine Paths
           </Link>
@@ -274,8 +274,7 @@ export default function AlignToTag() {
       <LessonSection id="record-your-spot" title="Record your spot">
         <p>
           Do not measure the spot with a tape. Record it with the camera that
-          will drive to it, and its mounting error goes into the number and back
-          out again.
+          will drive to it, so the camera&apos;s mounting error cancels out.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -296,7 +295,7 @@ export default function AlignToTag() {
         <p>
           Record it again on the competition field at the event, before the
           first match. Field crews mount tags by hand, so no two fields match to
-          the centimeter. A spot recorded on that field is right on that field.
+          the centimeter.
         </p>
       </LessonSection>
 
@@ -355,7 +354,7 @@ export default function AlignToTag() {
             ],
             correctAnswer: 1,
             explanation:
-              "Vision places the tag by adding the camera's tag offset to the drivetrain's pose, and the robot's distance from the tag is the drivetrain's pose minus that placement. A shared 20 cm error appears in both and subtracts out.",
+              "Vision places the tag from the drivetrain's pose, and the robot's distance from the tag is the drivetrain's pose minus that placement. The 20 cm error is in both and subtracts out.",
           },
           {
             id: 2,
@@ -369,7 +368,7 @@ export default function AlignToTag() {
             ],
             correctAnswer: 3,
             explanation:
-              "robotInTag keeps answering from drivetrain.getPose() against the stored tag pose. Over the last 40 cm, the wheels alone drift very little.",
+              "robotInTag keeps answering from drivetrain.getPose() against the stored tag pose.",
           },
           {
             id: 3,
@@ -382,7 +381,7 @@ export default function AlignToTag() {
             ],
             correctAnswer: 2,
             explanation:
-              "Recording with the same camera puts the camera's own mounting error into the spot, where it cancels when the robot drives back. Recording on the event's field takes that field's tag mounting with it.",
+              "Recording with the same camera cancels its mounting error. Recording on the event's field takes that field's tag mounting with it.",
           },
           {
             id: 4,

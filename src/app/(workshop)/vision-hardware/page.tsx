@@ -50,27 +50,23 @@ export default function VisionHardware() {
       <LessonSection id="tags-against-drift" title="Tags against drift">
         <ProseBlock>
           <p>
-            An AprilTag is a printed marker with an ID number. The field drawing
-            lists where each ID sits, how high, and which way it faces. A camera
-            measures the corners of the tag in the image and solves for the
-            transform between camera and tag. From there it works backwards to a
-            position on the field.
+            An AprilTag is a printed marker with an ID number, and the field map
+            lists where each one sits. A camera measures the corners of the tag
+            in the image and works backwards to its own position on the field.
           </p>
           <p>
-            Unlike odometry, that answer does not drift the longer the robot
-            drives. It is also occasional and noisy, so it does not replace
-            odometry. The robot blends the two.
+            Unlike odometry, that answer does not drift. It is also occasional
+            and noisy, so the robot blends the two.
           </p>
         </ProseBlock>
       </LessonSection>
 
       <LessonSection id="limelight-or-photonvision" title="The camera">
         <p>
-          This course uses a Limelight: camera and processor in one sealed unit,
-          set up through a web page it serves itself. PhotonVision is the other
-          common choice. It is free software on a coprocessor you buy and flash
-          yourself. The ideas on the next page carry over to it with different
-          class names.
+          This course uses a Limelight: camera and processor in one unit, set up
+          through its own web page. PhotonVision is the other common choice, and
+          the ideas on the next page carry over to it with different class
+          names.
         </p>
         <DocumentationButton
           href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary"
@@ -96,8 +92,8 @@ export default function VisionHardware() {
             <p>
               A tag viewed square-on and at its own height is a plain rectangle.
               A small error in the measured corners then swings the solved angle
-              a long way. View the same tag from off to one side and the shape
-              in the image carries much more information about where you stand.
+              a long way. Seen from an angle, its shape says much more about
+              where the camera is.
             </p>
             <p>
               We have found Limelight 3 and Limelight 4 lenses do not come
@@ -122,8 +118,7 @@ export default function VisionHardware() {
           <li>
             <strong>Update the Limelight OS and upload the field map.</strong>{" "}
             The OS goes on over USB. The map is a separate download, and it
-            loads through the web interface. A camera running last season&apos;s
-            map places every tag in the wrong spot.
+            loads through the web interface.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/resources/downloads"
@@ -145,10 +140,9 @@ export default function VisionHardware() {
           </li>
           <li>
             <strong>Enter the camera offsets.</strong> Measure where the camera
-            sits relative to the robot&apos;s center, and at what angle. Solving
-            gives the camera&apos;s pose, and the offsets turn it into the
-            robot&apos;s. Get them wrong and every measurement shifts the same
-            way.
+            sits relative to the robot&apos;s center, and at what angle. The
+            offsets turn the camera&apos;s pose into the robot&apos;s, so an
+            error in them shifts every measurement the same way.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
@@ -170,9 +164,8 @@ export default function VisionHardware() {
             </div>
           </li>
           <li>
-            <strong>Write down the camera&apos;s name.</strong> That string is
-            the NetworkTables table the camera publishes to, and the Java on the
-            next page addresses the camera by it. The default is{" "}
+            <strong>Write down the camera&apos;s name.</strong> The Java on the
+            next page finds the camera by it. The default is{" "}
             <code>limelight</code>.
           </li>
         </ol>
@@ -206,7 +199,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 2,
             explanation:
-              "Odometry accumulates: every skid and every millimeter of wheel-radius error stays in the total. A tag sighting is measured against a known field position, so its error is whatever that one reading is worth and nothing more. It is often noisier than odometry frame to frame, so the robot blends the two instead of choosing.",
+              "Odometry adds up, so every skid stays in the total. A tag sighting is measured against a known field position, so its error does not grow. It is noisier than odometry from frame to frame, so the robot blends the two.",
           },
           {
             id: 2,
@@ -220,7 +213,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 0,
             explanation:
-              "Square-on and at tag height is the worst case. The tag is a plain rectangle in the image, and a pixel of error on a corner swings the solved angle a long way. Viewing from an angle puts perspective into the shape, and perspective is what pins the answer down.",
+              "Square-on and at tag height is the worst case. The tag is a plain rectangle in the image, and a small error on a corner swings the solved angle a long way.",
           },
           {
             id: 3,
@@ -234,7 +227,7 @@ export default function VisionHardware() {
             ],
             correctAnswer: 1,
             explanation:
-              "Solving a tag gives the camera's pose. The offsets are what turn that into the robot's pose, so an error in them shifts every measurement the same way, in the same direction, by the same amount. A stale field map moves individual tags rather than shifting everything uniformly.",
+              "Solving a tag gives the camera's pose. The offsets turn that into the robot's pose, so an error in them shifts every measurement the same way by the same amount.",
           },
           {
             id: 5,

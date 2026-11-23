@@ -68,7 +68,7 @@ export default function SwerveDriveProject() {
   return (
     <PageTemplate
       title="Swerve Project Generator"
-      lede="Tuner X measures your drivetrain and writes one file. The rest of the swerve project is already written, so you swap that file in and drive. Have the robot assembled and up on blocks."
+      lede="Tuner X measures your drivetrain and writes one file. The rest of the swerve project is already written, so you swap that file in and drive."
       needs={[
         <>
           An assembled drivetrain: eight TalonFX, four CANcoders, one Pigeon 2,
@@ -105,10 +105,9 @@ export default function SwerveDriveProject() {
         title="What the generator writes"
       >
         <p>
-          The generator can write a whole project. We already have a project
-          made for you, so we only care about one file it writes,{" "}
-          <code>TunerConstants.java</code>. At the end you export it into this
-          project.
+          The generator can write a whole project. We already have one made for
+          you, so we only care about one file it writes,{" "}
+          <code>TunerConstants.java</code>.
         </p>
       </LessonSection>
 
@@ -210,8 +209,7 @@ export default function SwerveDriveProject() {
             Hardware Simulation
           </Link>{" "}
           ran your code on the laptop against real motors on the bench.{" "}
-          <strong>Simulate Robot Code</strong> runs it with no hardware at all:
-          the wheels turn, odometry counts them, and the pose moves.
+          <strong>Simulate Robot Code</strong> runs it with no hardware at all.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -241,17 +239,15 @@ export default function SwerveDriveProject() {
       >
         <p>
           The drivetrain is three classes. <code>TunerConstants.java</code> is
-          Tuner X&apos;s, from your robot: every number about it.{" "}
-          <code>CommandSwerveDrivetrain.java</code> is Tuner X&apos;s too,
-          lightly edited. It holds the motors, odometry, the simulation thread,
-          and forward matched to your alliance color.
+          Tuner X&apos;s: every number about your robot.{" "}
+          <code>CommandSwerveDrivetrain.java</code> is Tuner X&apos;s too, and
+          holds the motors and odometry.
         </p>
         <p>
-          <code>DriveMechanism.java</code> is the workshop&apos;s, written by
-          hand. It implements <code>Mechanism</code>, owns a{" "}
-          <code>CommandSwerveDrivetrain</code> as a private field, and is what
-          an OpMode talks to. That keeps the code you write out of the files
-          Tuner X writes.
+          <code>DriveMechanism.java</code> is the workshop&apos;s. It implements{" "}
+          <code>Mechanism</code>, owns a <code>CommandSwerveDrivetrain</code> as
+          a private field, and is what an OpMode talks to. That keeps the code
+          you write out of the files Tuner X writes.
         </p>
       </LessonSection>
 
@@ -271,8 +267,7 @@ export default function SwerveDriveProject() {
         <p>
           So the <code>Robot</code> constructor makes the joystick drive the
           drivetrain&apos;s default command, in every mode. Whenever another
-          drivetrain command ends or is interrupted, the drivetrain goes back to
-          the sticks.
+          drivetrain command ends, the drivetrain goes back to the sticks.
         </p>
         <CodeBlock
           language="java"
@@ -315,15 +310,14 @@ export default function SwerveDriveProject() {
           <code>applyRequest(...)</code> is built on <code>runRepeatedly</code>,
           so it re-reads the sticks and sends a fresh request every loop. Let go
           and the command is still running, asking for zero. Full stick asks for{" "}
-          <code>maxSpeed</code>, which comes straight out of{" "}
+          <code>maxSpeed</code>, which comes from{" "}
           <code>TunerConstants.kSpeedAt12Volts</code>.
         </p>
         <p>
           <code>TeleopOpMode</code> keeps only its buttons. The left bumper runs{" "}
           <code>seedFieldCentric()</code>, which resets only the rotation of the
           pose. The way the robot faces right now becomes forward for the
-          driver. X and Y do not change, so the robot&apos;s place on the field
-          stays the same.
+          driver. X and Y do not change.
         </p>
         <CodeBlock
           language="java"
@@ -360,7 +354,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 0,
             explanation:
-              "TunerConstants.java is the only output you keep. It holds your thirteen device IDs, the gear ratios, the wheel radius, each module's position and CANcoder offset, and the starting gains. The rest of the swerve project is already written.",
+              "TunerConstants.java is the only output you keep. The rest of the swerve project is already written.",
           },
           {
             id: 2,
@@ -374,7 +368,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 3,
             explanation:
-              "An offset or an inversion changes how a module moves, not which module answers. A different corner moving means the devices picked for that module are not the ones on that corner, and every measurement taken after that gets filed under the wrong wheel.",
+              "An offset or an inversion changes how a module moves, not which module answers. A different corner moving means the devices picked for that module are not the ones on that corner.",
           },
           {
             id: 3,
@@ -388,7 +382,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "DriveMechanism implements Mechanism and is the drivetrain as far as commands and OpModes are concerned. It owns the CommandSwerveDrivetrain privately, so the code you write stays out of the files Tuner X writes, and the rest of the robot only sees applyRequest, seedFieldCentric, setControl and the pose readings.",
+              "DriveMechanism implements Mechanism and is what commands and OpModes talk to. It owns the CommandSwerveDrivetrain privately, so the code you write stays out of the files Tuner X writes.",
           },
           {
             id: 4,
@@ -402,7 +396,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 0,
             explanation:
-              "Nothing stops a motor on its own: a mechanism nobody commands keeps its last request. The drivetrain stops because its default command re-reads the sticks every loop and sends whatever they say, and centered sticks say zero. Delete the setDefaultCommand line and a robot driven by a released command would keep rolling.",
+              "A mechanism nobody commands keeps its last request. The drivetrain stops because its default command re-reads the sticks every loop, and centered sticks say zero.",
           },
           {
             id: 5,
@@ -416,7 +410,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 2,
             explanation:
-              "seedFieldCentric() resets only the rotation of the pose: the way the robot faces right now becomes forward for the driver. It never touches x or y, so the robot's place on the field is what it was before.",
+              "seedFieldCentric() resets only the rotation of the pose: the way the robot faces right now becomes forward for the driver. It never touches x or y.",
           },
         ]}
       />

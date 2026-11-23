@@ -33,7 +33,7 @@ export default function DriveToPoint() {
   return (
     <PageTemplate
       title="Drive to Point"
-      lede="Hold a button and the robot drives itself to one spot on the field, position and heading together. It is a BLine path with one waypoint, built in code at the moment you ask for it instead of drawn in the editor beforehand."
+      lede="Hold a button and the robot drives itself to one spot on the field. It is a BLine path with one waypoint, built in code instead of drawn in the editor."
       needs={[
         <>
           <strong>BLine Paths</strong>, for the builder in{" "}
@@ -53,22 +53,19 @@ export default function DriveToPoint() {
           <Link href="/swerve-basics" className={linkStyle}>
             Swerve Basics
           </Link>
-          . The robot only arrives where you meant if <code>getPose()</code>{" "}
-          agrees with the field. Odometry alone drifts and starts wherever the
-          code started. Expect the robot to stop a little off the spot, and
-          further off the longer it has been driving. The Vision workshop comes
-          next and corrects that drift with a camera.
+          . The robot only arrives there if <code>getPose()</code> agrees with
+          the field, and odometry alone drifts. Expect the robot to stop a
+          little off the spot. The Vision workshop corrects that drift with a
+          camera.
         </p>
       </LessonSection>
 
       <LessonSection id="one-waypoint" title="One waypoint, built in code">
         <p>
-          A drawn path is a list of elements read from a file. The same list can
-          be built in Java. Add <code>driveToPoint</code> to{" "}
-          <code>DriveMechanism</code>, under <code>followPath</code>. One{" "}
-          <code>Path.Waypoint</code> is the whole path: BLine starts from
-          wherever the robot is when the command starts, and drives to the
-          waypoint.
+          Add <code>driveToPoint</code> to <code>DriveMechanism</code>, under{" "}
+          <code>followPath</code>. One <code>Path.Waypoint</code> is the whole
+          path: BLine starts from wherever the robot is when the command starts,
+          and drives to the waypoint.
         </p>
 
         <CodeBlock
@@ -106,17 +103,15 @@ export default function DriveToPoint() {
           <Link href="/bline#builder" className={linkStyle}>
             BLine Paths
           </Link>{" "}
-          comes along: the three controllers, the speed limits in{" "}
-          <code>config.json</code>, and the end tolerances. The command finishes
-          once the robot is within 3 cm and 2° of the goal. It sends a zero
-          velocity on the way out, finished or canceled.
+          comes along: the three controllers, the speed limits and the end
+          tolerances. The command finishes once the robot is within 3 cm and 2°
+          of the goal. It sends a zero velocity when it finishes or is canceled.
         </p>
         <p>
           <code>withShouldFlip(() -&gt; false)</code> overrides the
-          builder&apos;s default. Paths are drawn from the blue side, and on red
-          BLine turns them around the field center. A field coordinate is a
-          fixed spot. Flipping (3, 2) on red would send the robot to the far end
-          of the field.
+          builder&apos;s default. On red, BLine turns a drawn path around the
+          field center. A field coordinate is a fixed spot, so flipping (3, 2)
+          would send the robot to the far end of the field.
         </p>
       </LessonSection>
 
@@ -150,10 +145,9 @@ public class TeleopOpMode extends PeriodicOpMode {
 
         <p>
           <code>whileTrue</code> cancels the command when the button is
-          released, and BLine sends the zero on the way out. While it runs, the
-          path command owns the drivetrain, so the joystick default waits. Once
-          the robot arrives the command ends, and the sticks have the drivetrain
-          back even if the button is still down.
+          released. While it runs, the path command owns the drivetrain, so the
+          joystick default waits. Once the robot arrives the command ends, and
+          the sticks have the drivetrain back even if the button is still down.
         </p>
       </LessonSection>
 
@@ -209,7 +203,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 1,
             explanation:
-              "The path is new Path(new Path.Waypoint(goal)). BLine drives from the robot's current pose to that waypoint. Nothing resets the pose: withPoseReset is never called, which is right, since the robot is not starting from a known spot.",
+              "The path is new Path(new Path.Waypoint(goal)). BLine drives from the robot's current pose to that waypoint, and nothing resets the pose.",
           },
           {
             id: 2,
@@ -223,7 +217,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 3,
             explanation:
-              "The builder was made with withDefaultShouldFlip, which turns a path around the field center on red. That is right for a routine drawn from the blue side and wrong for a field coordinate, which names the same spot on both alliances.",
+              "The builder was made with withDefaultShouldFlip, which turns a path around the field center on red. A field coordinate names the same spot on both alliances.",
           },
           {
             id: 3,
