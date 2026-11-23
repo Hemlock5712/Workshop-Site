@@ -6,6 +6,7 @@ import Quiz from "@/components/Quiz";
 import MechanismSelector from "@/components/lesson/MechanismSelector";
 import { M, Mech } from "@/components/lesson/Mechanism";
 import { lessonMetadata } from "@/lib/lessonMetadata";
+import { MECHANISM_VIEWS_JAVA, SIM_UTIL_JAVA } from "./utilSources";
 
 export const metadata = lessonMetadata("/mechanism-simulation");
 
@@ -34,7 +35,7 @@ export default function MechanismSimulation() {
   return (
     <PageTemplate
       title="Mechanism Simulation"
-      lede="No mechanism yet? A physics model can stand in for it. Your code runs unchanged, the simulated Talon runs its closed loop against the model, and a picture shows where the mechanism went."
+      lede="No mechanism yet? A physics model can stand in for it. Your code runs unchanged, and a picture shows where the mechanism went."
       needs={[
         <>
           Workshops 3 and 4 done, through{" "}
@@ -55,32 +56,33 @@ export default function MechanismSimulation() {
 
       <LessonSection id="two-simulations" title="Simulate, not Hardware Sim">
         <p>
-          The editor offers two simulations, one line apart.{" "}
           <a href="/running-program" className="underline">
             Hardware Simulation
           </a>{" "}
-          used <strong>Hardware Sim Robot Code</strong>: the laptop replaced the
-          robot controller, and the motors were real. This lesson uses{" "}
-          <strong>Simulate Robot Code</strong>, where the motors are simulated
-          too. A simulated Talon accepts every request and runs its closed loop,
-          but nothing turns its rotor. Something has to play the part of the{" "}
-          <M k="noun" />, and that is the sim class.
+          used <strong>Hardware Sim Robot Code</strong>, where the motors were
+          real. This lesson uses <strong>Simulate Robot Code</strong>, where the
+          motors are simulated too. A simulated Talon accepts every request and
+          runs its closed loop, but nothing turns its rotor. Something has to
+          play the part of the <M k="noun" />, and that is the sim class.
         </p>
         <p>
           The branch adds four files. <M k="name" />
           <code>Sim.java</code> sits in <code>mechanisms/</code> beside the
           class it models, and it is the one to read and change. The two in{" "}
-          <code>utils/</code> are plumbing you copy as they are:{" "}
-          <code>SimUtil</code> handles the CTRE setup and{" "}
-          <code>MechanismViews</code> draws the picture.
+          <code>utils/</code> you copy as they are: <code>SimUtil</code> handles
+          the CTRE setup and <code>MechanismViews</code> draws the picture. Both
+          are printed whole under{" "}
+          <a href="#your-mechanism" className="underline">
+            Your own mechanism
+          </a>
+          .
         </p>
       </LessonSection>
 
       <LessonSection id="the-sim-class" title="The sim class">
         <p>
           The top of the class is the real mechanism, written down. WPILib
-          provides the physics model, and its constructor takes every number, so
-          none can be left out.
+          provides the physics model, and its constructor takes every number.
         </p>
         <Mech for="arm">
           <CodeBlock
@@ -124,12 +126,11 @@ export default function MechanismSimulation() {
           />
         </Mech>
         <p>
-          Every loop, <code>update()</code> takes three steps, the same ones
-          CTRE&apos;s own swerve simulation takes. It reads the voltage the
-          simulated motor is applying and hands it to the model. The model moves
-          the <M k="noun" /> forward 20 ms. The result goes back into the
-          simulated devices, so your code reads it the way it would read a real
-          sensor.
+          Every loop, <code>update()</code> takes three steps. It reads the
+          voltage the simulated motor is applying and hands it to the model. The
+          model moves the <M k="noun" /> forward 20 ms. The result goes back
+          into the simulated devices, so your code reads it the way it would
+          read a real sensor.
         </p>
         <Mech for="arm">
           <CodeBlock
@@ -230,20 +231,18 @@ export default function MechanismSimulation() {
         </Mech>
         <p>
           Nothing goes in <code>Robot.java</code>. The sim registers its own
-          loop with the scheduler, the same way the picture does. A robot with
-          three mechanisms does not grow three physics blocks in one{" "}
-          <code>simulationPeriodic</code>. That registration lasts only as long
-          as whatever made it. A mechanism built as a field on{" "}
-          <code>Robot</code> lasts the whole run. One built inside an OpMode
-          would stop simulating when that OpMode ended.
+          loop with the scheduler, the same way the picture does. That
+          registration lasts as long as whatever made it, so build the mechanism
+          as a field on <code>Robot</code>. One built inside an OpMode would
+          stop simulating when that OpMode ended.
         </p>
       </LessonSection>
 
       <LessonSection id="run-it" title="Run it">
         <p>
-          The branch ships every gain at <code>0.0</code>, as the chain always
-          has, so the simulated <M k="noun" /> holds still at first. Give it
-          gains of your own before you run it.
+          The branch ships every gain at <code>0.0</code>, so the simulated{" "}
+          <M k="noun" /> holds still at first. Give it gains of your own before
+          you run it.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -296,8 +295,8 @@ export default function MechanismSimulation() {
             PID Tuning in Tuner X
           </a>{" "}
           does, in the same order, but change the number in code and restart the
-          simulation between tries. The gains you end with tune a model, not
-          your mechanism. Expect to tune again once it is built.
+          simulation between tries. These gains tune a model, not your
+          mechanism, so expect to tune again once it is built.
         </p>
       </LessonSection>
 
@@ -309,6 +308,24 @@ export default function MechanismSimulation() {
           <Mech for="flywheel">the wheel&apos;s moment of inertia,</Mech> and
           the motor in <code>DCMotor</code>. Most of them come from your CAD.
         </p>
+        <p>
+          The two <code>utils/</code> files go in unchanged. Each is folded
+          here. Copy it from the header, or open it to read.
+        </p>
+        <CodeBlock
+          collapsed
+          language="java"
+          title="SimUtil.java"
+          filename="src/main/java/first/robot/utils/SimUtil.java"
+          code={SIM_UTIL_JAVA}
+        />
+        <CodeBlock
+          collapsed
+          language="java"
+          title="MechanismViews.java"
+          filename="src/main/java/first/robot/utils/MechanismViews.java"
+          code={MECHANISM_VIEWS_JAVA}
+        />
         <p>
           Change the motor in one more place. A simulated Talon models its own
           motor for current limiting, and it assumes a Kraken X60 unless told.
@@ -368,7 +385,7 @@ export default function MechanismSimulation() {
             ],
             correctAnswer: 1,
             explanation:
-              "The sim class only makes sense when there is no real mechanism. Phoenix's Utils.isSimulation() is true under Simulate Robot Code only, so a deployed robot and Hardware Sim both skip it. The picture is outside the check because it reads what the motor reports, and that works everywhere.",
+              "Phoenix's Utils.isSimulation() is true under Simulate Robot Code only, so a deployed robot and Hardware Sim both skip the sim class. The picture is outside the check because it reads what the motor reports, and that works everywhere.",
           },
           {
             id: 3,
@@ -382,7 +399,7 @@ export default function MechanismSimulation() {
             ],
             correctAnswer: 3,
             explanation:
-              "The model is only as good as the numbers you gave it, such as a mass from CAD, and it leaves out friction and backlash. Simulated gains get code written and checked early. The real mechanism gets tuned again in Tuner X.",
+              "The model is only as good as the numbers you gave it, and it leaves out friction and backlash. The real mechanism gets tuned again in Tuner X.",
           },
         ]}
       />
