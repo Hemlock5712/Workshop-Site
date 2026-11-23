@@ -1,0 +1,113 @@
+{
+  "pages": {
+    "lesson": "/autonomous"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "crudeP": "#main-content p:has-text(\"The routine is a timed drive\")",
+    "code": "#build-the-routine .code-card:has-text(\"LeaveStartAuto.java: lifecycle and behavior togethercopy\")",
+    "poseP": "#build-the-routine > .lesson-stack > p:has-text(\"The robot's field position\")",
+    "warn": "#test-in-layers > .lesson-stack > div:has-text(\"Don'tNobody in front of\")",
+    "list": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\")",
+    "pass1": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"On blocks. Deploy, pick\")",
+    "pass2": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"On the floor, once.\")",
+    "pass3": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"Measured, three times. Tape\")",
+    "pass4": "#test-in-layers > .lesson-stack > ol:has-text(\"On blocks. Deploy, pick\") > li:has-text(\"Disabled partway. Hit disable\")",
+    "writeP": "#check-your-work > .lesson-stack > p:has-text(\"Write down the distance\")"
+  },
+  "open": [
+    {
+      "card": "Autonomous",
+      "kicker": "Workshop 6 · Navigation"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "crude": [
+      {
+        "show": "@crudeP"
+      },
+      {
+        "at": "timer",
+        "mark": "@crudeP",
+        "text": "crude on purpose"
+      }
+    ],
+    "forward": [
+      {
+        "code": "@code",
+        "lines": [17, 19]
+      }
+    ],
+    "routine": [
+      {
+        "code": "@code",
+        "lines": [25, 29]
+      }
+    ],
+    "cancel": [
+      {
+        "code": "@code",
+        "lines": [28, 30]
+      }
+    ],
+    "life": [
+      {
+        "code": "@code",
+        "lines": [34, 42]
+      }
+    ],
+    "pose": [
+      {
+        "show": "@poseP"
+      },
+      {
+        "at": "Restart",
+        "mark": "@poseP",
+        "text": "Restart the robot code before a measured run"
+      }
+    ],
+    "safety": [
+      {
+        "show": "@warn"
+      }
+    ],
+    "passes": [
+      {
+        "show": "@list"
+      },
+      {
+        "at": "blocks",
+        "spot": "@pass1"
+      },
+      {
+        "at": "floor",
+        "spot": "@pass2"
+      }
+    ],
+    "measured": [
+      {
+        "spot": "@pass3"
+      }
+    ],
+    "disable": [
+      {
+        "spot": "@pass4"
+      }
+    ],
+    "close": [
+      {
+        "show": "@writeP"
+      },
+      {
+        "at": "numbers",
+        "mark": "@writeP",
+        "text": "the distance the tape measured, the end pose, and the wait"
+      }
+    ]
+  }
+}

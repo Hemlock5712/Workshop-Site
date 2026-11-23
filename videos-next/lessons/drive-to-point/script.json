@@ -1,5 +1,5 @@
 {
-  "title": "Speed From Distance",
+  "title": "Drive to Point",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,61 +10,62 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Hold a button, and the robot drives itself to a spot on the field.",
+      "text": "Last time you drew a path in the editor and the robot followed it. This path has a single stop, and nobody draws it. You hold a button, and the robot goes there.",
       "after": 0.6
     },
     {
-      "id": "connect",
-      "text": "Every meter so far, a person drove. Now the robot uses its own pose.",
+      "id": "pose",
+      "text": "The target is a spot on the field, measured from the blue corner. The robot only gets there if it knows where it's standing right now, and wheels alone lose track.",
       "after": 0.6
     },
     {
-      "id": "goal",
-      "text": "The goal is a pose too: three meters, two meters, facing the other way.",
+      "id": "list",
+      "text": "A drawn path is only a list that gets read from a file, so the same list can be built in code. Here it has one entry.",
       "after": 0.6
     },
     {
-      "id": "loop",
-      "text": "The command is the same loop you already know. Start, run every loop, check if it's done, and stop on the way out.",
+      "id": "start",
+      "text": "Look at what's missing. There's no starting point anywhere, because the path begins wherever the robot happens to be when the command starts.",
       "after": 0.6
     },
     {
-      "id": "three",
-      "text": "Three controllers run at once: one for X, one for Y, and one for heading. Each one turns its error into a speed.",
+      "id": "same",
+      "text": "It comes out of the same builder as your drawn paths, so it gets the same controllers, the same speed limits, and the same idea of close enough.",
       "after": 0.6
     },
     {
-      "id": "wrap",
-      "text": "Heading needs one extra line. Otherwise, turning from a hundred seventy nine degrees to minus a hundred seventy nine goes the long way around.",
+      "id": "flip",
+      "text": "This last line is the one to remember. A drawn path gets turned around when you're on red, and that's right for a routine drawn from the blue side.",
       "after": 0.6
     },
     {
-      "id": "math",
-      "text": "Three meters out, with a gain of ten, it asks for thirty meters per second. The robot can't do that, so it runs flat out.",
+      "id": "fixed",
+      "text": "A field coordinate isn't like that. It's one fixed spot for both alliances, so flipping it would send the robot to the far end of the field.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Try it. Drag the goal somewhere else, and hold the button.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
-    },
-    {
-      "id": "creep",
-      "text": "Close to the goal, the error is small, so the speed is small, and it creeps up short. That's the falls short shape from tuning.",
+      "id": "bind",
+      "text": "Two buttons, two spots. One brings the robot back to the field origin, and the other sends it a few meters away, turned to face the opposite direction.",
       "after": 0.6
     },
     {
-      "id": "stop",
-      "text": "Let go, and the command ends with a zero speed request. Sending idle instead would leave every wheel on its last speed.",
+      "id": "release",
+      "text": "Both are held, not tapped. Let go partway and the command is canceled, with a zero sent on the way out, so the robot stops where it is.",
+      "after": 0.6
+    },
+    {
+      "id": "arrive",
+      "text": "Once it arrives, the command is over. Your sticks have the drivetrain back, even with the button still down.",
+      "after": 0.6
+    },
+    {
+      "id": "check",
+      "text": "When you test it, don't skip the third step. Run the far spot on blue, switch to red, and run it again. The pose should settle on the same numbers both times.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Speed from distance gets you there, badly. Next, plan the trip.",
+      "text": "Any spot you can write as a coordinate, the robot can now drive to. It's only as good as the pose it starts from, and the camera that keeps that honest comes next.",
       "after": 0.6
     }
   ]

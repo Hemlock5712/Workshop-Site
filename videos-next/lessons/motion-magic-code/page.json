@@ -1,0 +1,71 @@
+{
+  "pages": {
+    "lesson": "/motion-magic-code"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "reqHead": "#the-request > div:first-child",
+    "reqP": "#the-request > .lesson-stack > p:has-text(\"On Motion Magic in\")",
+    "fieldCode": "#the-request .code-card:has-text(\"Arm.java: the request field\")",
+    "cmdHead": "#the-commands > div:first-child",
+    "cmdP": "#the-commands p:has-text(\"Replace setVoltage with setPosition\")",
+    "cmdCode": "#the-commands .code-card:has-text(\"Arm.java: the commands\")",
+    "bindHead": "#the-opmode > div:first-child",
+    "bindP": "#the-opmode p:has-text(\"With closed-loop control\")",
+    "bindCode": "#the-opmode .code-card:has-text(\"MyTeleop.java: the arm binding\")",
+    "releaseP": "#the-opmode p:has-text(\"Releasing the trigger cancels\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Start Hardware Sim Robot\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe arm\")",
+    "wrongP": "#check-your-work > .lesson-stack > p:has-text(\"A armflywheel that does\")"
+  },
+  "open": [
+    {
+      "card": "Motion Magic in Code",
+      "kicker": "Workshop 3 · Robot Programming"
+    }
+  ],
+  "lines": {
+    "intro": [
+      { "show": "@header" },
+      {
+        "at": "sends",
+        "mark": "@lede",
+        "text": "sends the same request from code"
+      }
+    ],
+    "request": [
+      { "show": ["@reqHead", "@reqP"] },
+      {
+        "at": "same",
+        "mark": "@reqP",
+        "text": "the Java class has the same name"
+      }
+    ],
+    "field": [{ "code": "@fieldCode", "lines": [1, 2] }],
+    "commands": [{ "show": ["@cmdHead", "@cmdP"] }],
+    "vertical": [{ "code": "@cmdCode", "lines": [1, 7] }],
+    "setter": [{ "code": "@cmdCode", "lines": [17, 19] }],
+    "binding": [
+      { "show": ["@bindHead", "@bindP", "@bindCode"] },
+      { "at": "piece", "mark": "@bindP", "text": "delete the" }
+    ],
+    "release": [
+      { "show": "@releaseP" },
+      {
+        "at": "place",
+        "mark": "@releaseP",
+        "text": "the arm holds the target against gravity"
+      }
+    ],
+    "check": [
+      { "show": ["@checkP", "@checkBox"] },
+      { "at": "stops", "spot": "@checkBox" }
+    ],
+    "wrong": [
+      { "show": "@wrongP" },
+      { "at": "tuning", "mark": "@wrongP", "text": "is a tuning problem" }
+    ],
+    "close": [{ "code": "@cmdCode", "lines": [1, 7] }]
+  }
+}

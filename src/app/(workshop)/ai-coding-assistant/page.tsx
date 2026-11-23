@@ -72,7 +72,7 @@ export default function AICodingAssistant() {
         <CodeBlock
           language="java"
           title="The same command, both ways"
-          code={`// WHAT AN ASSISTANT HANDS YOU BY DEFAULT — Commands v2. Does not compile here.
+          code={`// WHAT AN ASSISTANT HANDS YOU BY DEFAULT: Commands v2. Does not compile here.
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -82,7 +82,7 @@ public class Arm extends SubsystemBase {
   }
 }
 
-// WHAT YOUR PROJECT ACTUALLY USES — Commands v3.
+// WHAT YOUR PROJECT ACTUALLY USES: Commands v3.
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 

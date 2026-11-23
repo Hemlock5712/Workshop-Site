@@ -10,8 +10,9 @@ makes. The cadence findings below apply to the website's prose too.
 ## Who is listening
 
 A student following the course in order, 11 to 18, often with a mechanism on
-the bench beside them. By the time a video plays they have read that lesson's
-page or are about to. They know what the earlier lessons taught, and nothing
+the bench beside them. The video is a guided first look at that lesson's page: the
+page is what is on screen, so the voice says why a block matters, never what it
+already says. They know what the earlier lessons taught, and nothing
 after.
 
 ## Spoken, not written
@@ -72,11 +73,10 @@ in matched pairs.
 
 ## Mechanical rules
 
-**Scenes cue off words.** A scene's `W(lineId, word)` throws if the word is no
-longer in that line, so the page shows an error instead of a video. After
-editing a line in `series.json`, emit it, then render a contact sheet for the
-lesson (`node tools/render.mjs lessons/<id> --sheet out/<id>.png --every 6`)
-before voicing anything.
+**Cues fire on words.** A cue in `lessons/<id>/page.json` names the word it
+lands on, and the renderer stops if that word is no longer in the line. After
+editing a line in `series.json`, emit it, then run
+`node tools/render-page.mjs lessons/<id> --draft --dry` before voicing anything.
 
 **Pronunciation is not spelling.** The caption shows `text`. If the voice
 mispronounces something, give that line in `script.json` a `say` field with
@@ -94,5 +94,5 @@ and must never be committed or uploaded.
 
 Everything in `CLAUDE.md` and `context/teaching-code.md` applies to narration: WPILib 2027 and Commands v3
 only, OpModes rather than `RobotContainer`, no invented APIs, no AdvantageKit,
-no enums, and no mention of Commands v2 or "the old way". PathPlanner is the
-team's Commands v3 build, as on the site. Run `pnpm spell` after any pass.
+no enums, and no mention of Commands v2 or "the old way". Paths are BLine, as
+on the site. Run `pnpm spell` after any pass.

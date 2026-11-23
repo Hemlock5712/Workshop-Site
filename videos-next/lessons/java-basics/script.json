@@ -1,5 +1,5 @@
 {
-  "title": "Handing Over Code",
+  "title": "Java Basics",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,51 +10,52 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Most of the Java in this course is ordinary: classes, fields, methods. One piece works differently, and everything else is built on it.",
+      "text": "Everything you've done so far happened in Tuner X, with no code at all. From here on you write it, and this page is the short list of Java you'll want first.",
       "after": 0.6
     },
     {
-      "id": "callback",
-      "text": "In Tuner X, the motor pushed the moment you enabled Voltage Out. Code doesn't have to work that way.",
+      "id": "course",
+      "text": "If Java is new to you, start with this free course. Four modules is plenty, and the third one is what the robot code leans on hardest.",
       "after": 0.6
     },
     {
-      "id": "show",
-      "text": "Here's a method on the arm. It builds a command that pushes the arm at three volts.",
+      "id": "stop",
+      "text": "Then stop. There's more Java after that, but nothing in this workshop uses it, and we'll fill in the rest as it comes up.",
       "after": 0.6
     },
     {
-      "id": "parcel",
-      "text": "That little arrow makes a lambda. It turns the code after it into a package that's written down and handed over, but not run.",
+      "id": "six",
+      "text": "These six words show up in every lesson after this one. The course teaches five of them.",
       "after": 0.6
     },
     {
-      "id": "call",
-      "text": "So when this method runs, the motor doesn't move. You get back a command with that package inside, and that's all.",
+      "id": "build",
+      "text": "The constructor runs once, at the moment the arm is built. That makes it the place for anything that should only happen a single time, like setting up a motor.",
       "after": 0.6
     },
     {
-      "id": "silent",
-      "text": "There's no error and no warning. The arm just sits there, because nothing has run the command yet.",
+      "id": "lambda",
+      "text": "The lambda is the odd one out. That little arrow turns the code after it into a parcel, written down and handed over instead of run.",
       "after": 0.6
     },
     {
-      "id": "run",
-      "text": "When something does run it, the package opens, and it keeps opening every loop. Now the motor gets its three volts.",
+      "id": "borrow",
+      "text": "You'll also call methods you can't find anywhere in your own file. One word on the class line is why, because the arm gets everything a mechanism can do without writing any of it.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Try it. Call the method, then run the command, and watch which one moves the arm.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
+      "id": "method",
+      "text": "Here's all of that in one real method from the arm. A name and a return type on top, then a lambda in the middle with dots chaining the calls around it.",
+      "after": 0.6
+    },
+    {
+      "id": "nothing",
+      "text": "This is the part people miss. Calling that method doesn't move the arm. You get a command back with the parcel inside, and it sits there until something else runs it.",
+      "after": 0.6
     },
     {
       "id": "close",
-      "text": "A lambda is code you hand to something else to run later. Next, you'll meet what runs it.",
+      "text": "Five questions tell you whether this stuck, so miss more than one and go back to the course. After that, you'll meet the thing that actually runs the command.",
       "after": 0.6
     }
   ]

@@ -1,0 +1,170 @@
+{
+  "pages": {
+    "lesson": "/running-program"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "usbHead": "#canivore-usb-off > div:first-child",
+    "usbP": "#canivore-usb-off > .lesson-stack > p:has-text(\"Make sure to turn\")",
+    "usbP2": "#canivore-usb-off > .lesson-stack > p:has-text(\"It is the switch\")",
+    "warn": "#canivore-usb-off > .lesson-stack > div:has-text(\"WATCH OUT · REAL\")",
+    "menuFig": "#first-run figure:has-text(\"The two sit next to\")",
+    "portStep": "#first-run > .lesson-stack > ol:has-text(\"A Pick extensions to\") > li:has-text(\"Drag your controller out\")",
+    "portFig": "#first-run figure:has-text(\"Once it lands, the axis\")",
+    "opmodeFig": "#first-run figure:has-text(\"Other Devices on the right\")",
+    "runSteps": "#first-run > .lesson-stack > ol:has-text(\"Click Enable. You should\")",
+    "stepEnable": "#first-run > .lesson-stack > ol:has-text(\"Click Enable. You should\") > li:has-text(\"Click Enable. You should\")",
+    "stepHold": "#first-run > .lesson-stack > ol:has-text(\"Click Enable. You should\") > li:has-text(\"Now run it. Hold\")",
+    "latchedHead": "#latched > div:first-child",
+    "latchedP": "#latched > .lesson-stack > p:has-text(\"One common issue is\")",
+    "diagram": "#latched figure.module",
+    "talon": "#latched figure div:has(> span.micro:text-is('Motor controller'))",
+    "button": "#latched figure button[aria-pressed]",
+    "bind": "#latched figure input[type=checkbox]",
+    "reset": "#latched figure button:has-text('Reset')",
+    "takeaway": "#latched > .lesson-stack > p:has-text(\"Releasing the button cancels\")",
+    "deployHead": "#deploy > div:first-child",
+    "deployP": "#deploy > .lesson-stack > p:has-text(\"A robot runs the\")"
+  },
+  "open": [
+    {
+      "card": "Hardware Simulation",
+      "kicker": "Workshop 3 · Robot Programming"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "laptop",
+        "mark": "@lede",
+        "text": "stands in for the robot controller"
+      }
+    ],
+    "usb": [
+      {
+        "show": ["@usbHead", "@usbP", "@usbP2"]
+      },
+      {
+        "at": "switch",
+        "mark": "@usbP",
+        "text": "CANivore USB"
+      }
+    ],
+    "bench": [
+      {
+        "show": "@warn"
+      }
+    ],
+    "menu": [
+      {
+        "show": "@menuFig"
+      }
+    ],
+    "port": [
+      {
+        "show": "@portFig"
+      }
+    ],
+    "opmode": [
+      {
+        "show": "@opmodeFig"
+      },
+      {
+        "at": "right",
+        "note": "Other Devices",
+        "on": "@opmodeFig",
+        "side": "right"
+      }
+    ],
+    "enable": [
+      {
+        "show": "@runSteps"
+      },
+      {
+        "spot": "@stepEnable"
+      },
+      {
+        "at": "Hold",
+        "spot": "@stepHold"
+      }
+    ],
+    "latched": [
+      {
+        "show": ["@latchedHead", "@latchedP", "@diagram"]
+      },
+      {
+        "at": "diagram",
+        "spot": "@diagram"
+      }
+    ],
+    "press": [
+      {
+        "show": "@diagram"
+      },
+      {
+        "at": "Hold",
+        "hold": "@button",
+        "until": "let"
+      }
+    ],
+    "why": [
+      {
+        "spot": "@talon"
+      },
+      {
+        "at": "nothing",
+        "note": "keeps its last request",
+        "on": "@talon",
+        "side": "top"
+      }
+    ],
+    "fix": [
+      {
+        "show": "@diagram"
+      },
+      {
+        "at": "Tick",
+        "click": "@bind"
+      }
+    ],
+    "tryit": [
+      {
+        "ask": "Hold the button, then let go.",
+        "place": "bottom"
+      },
+      {
+        "at": "Try",
+        "click": "@reset"
+      },
+      {
+        "at": "gate:15%",
+        "hold": "@button",
+        "until": "gate:55%"
+      }
+    ],
+    "rule": [
+      {
+        "show": "@takeaway"
+      },
+      {
+        "at": "until",
+        "mark": "@takeaway",
+        "text": "until a new one arrives"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@deployHead", "@deployP"]
+      },
+      {
+        "at": "menu",
+        "mark": "@deployP",
+        "text": "Deploy Robot Code"
+      }
+    ]
+  }
+}

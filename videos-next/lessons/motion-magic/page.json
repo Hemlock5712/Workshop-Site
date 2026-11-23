@@ -1,0 +1,138 @@
+{
+  "pages": {
+    "lesson": "/motion-magic"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "introP": "#main-content div.split:has-text(\"Motion Magic calculates a target\")",
+    "kinds": "#main-content dl:has-text(\"Position profile\")",
+    "arm": "#main-content dl:has-text(\"Position profile\") > div:has-text(\"Position profile\")",
+    "fly": "#main-content dl:has-text(\"Position profile\") > div:has-text(\"Velocity profile\")",
+    "setHead": "#configure-motion-magic > div:first-child",
+    "startP": "#configure-motion-magic > .lesson-stack > div:has-text(\"Start with extremely small\")",
+    "units": "#configure-motion-magic > .lesson-stack > div:has-text(\"Start with extremely small\") aside",
+    "steps": "#configure-motion-magic > .lesson-stack > ol:has-text(\"On the Control tab,\")",
+    "stepMode": "#configure-motion-magic > .lesson-stack > ol:has-text(\"On the Control tab,\") > li:has-text(\"On the Control tab,\")",
+    "stepLimits": "#configure-motion-magic > .lesson-stack > ol:has-text(\"On the Control tab,\") > li:has-text(\"Under the Motion Magic\")",
+    "stepEnable": "#configure-motion-magic > .lesson-stack > ol:has-text(\"On the Control tab,\") > li:has-text(\"Enable the device again,\")",
+    "raiseHead": "#tune-the-limits > div:first-child",
+    "raiseP": "#tune-the-limits > .lesson-stack > p:has-text(\"The motor should now\")",
+    "raiseList": "#tune-the-limits > .lesson-stack > ol:has-text(\"Raise acceleration one step\")",
+    "stepAccel": "#tune-the-limits > .lesson-stack > ol:has-text(\"Raise acceleration one step\") > li:has-text(\"Raise acceleration one step\")",
+    "stepLong": "#tune-the-limits > .lesson-stack > ol:has-text(\"Raise acceleration one step\") > li:has-text(\"Run the longest move\")",
+    "stepShort": "#tune-the-limits > .lesson-stack > ol:has-text(\"Raise acceleration one step\") > li:has-text(\"Run the shortest useful\")",
+    "marginP": "#tune-the-limits > .lesson-stack > p:has-text(\"Don't tune to the\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Run the same move\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")"
+  },
+  "open": [
+    {
+      "card": "Motion Magic in Tuner X",
+      "kicker": "Workshop 1 · Hardware & CTRE"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "whole",
+        "mark": "@lede",
+        "text": "asks for the whole move at once"
+      }
+    ],
+    "same": [
+      {
+        "at": "chasing",
+        "mark": "@lede",
+        "text": "carry over unchanged"
+      }
+    ],
+    "limits": [
+      {
+        "show": "@introP"
+      }
+    ],
+    "kinds": [
+      {
+        "show": "@kinds"
+      },
+      {
+        "at": "arm",
+        "spot": "@arm",
+        "until": "flywheel"
+      },
+      {
+        "at": "flywheel",
+        "spot": "@fly"
+      }
+    ],
+    "small": [
+      {
+        "show": ["@setHead", "@startP"]
+      },
+      {
+        "at": "units",
+        "spot": "@units"
+      }
+    ],
+    "mode": [
+      {
+        "show": "@steps"
+      },
+      {
+        "at": "Nothing",
+        "spot": "@stepMode",
+        "until": "limits"
+      },
+      {
+        "at": "limits",
+        "spot": "@stepLimits",
+        "until": "end"
+      }
+    ],
+    "enable": [
+      {
+        "spot": "@stepEnable"
+      }
+    ],
+    "raise": [
+      {
+        "show": ["@raiseHead", "@raiseP", "@raiseList"]
+      },
+      {
+        "at": "stop",
+        "spot": "@stepAccel",
+        "until": "end"
+      }
+    ],
+    "moves": [
+      {
+        "at": "longest",
+        "spot": "@stepLong",
+        "until": "shortest"
+      },
+      {
+        "at": "short",
+        "spot": "@stepShort"
+      }
+    ],
+    "margin": [
+      {
+        "show": "@marginP"
+      },
+      {
+        "at": "battery",
+        "mark": "@marginP",
+        "text": "around 80% of the maximum we found"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      }
+    ]
+  }
+}

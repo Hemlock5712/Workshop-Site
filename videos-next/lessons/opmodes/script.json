@@ -1,5 +1,5 @@
 {
-  "title": "Two Edges",
+  "title": "OpModes",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,56 +10,57 @@
   "lines": [
     {
       "id": "intro",
-      "text": "An OpMode is one way the robot can run. Teleop is one of them, and each one is its own class.",
+      "text": "You've got three commands on your mechanism, and nothing that runs them yet. This is where one of them gets a button.",
       "after": 0.6
     },
     {
-      "id": "callback",
-      "text": "The project creator already made a teleop for you. The annotation at the top is what puts it on the driver station.",
+      "id": "file",
+      "text": "The project creator already made a teleop file for you. The annotation on the class is what puts it on the driver station, and without it there's nothing to choose.",
       "after": 0.6
     },
     {
       "id": "edit",
-      "text": "So edit that file. Don't add a second one, or you'll end up with two teleops on the list.",
+      "text": "Those five empty methods can go. What matters is that you edit this file and don't make a new one, because a second teleop class means two teleops on the list.",
+      "after": 0.6
+    },
+    {
+      "id": "controller",
+      "text": "The controller goes in the robot class, right beside the mechanisms. Put it there once, and every OpMode you ever write reaches it the same way.",
+      "after": 0.6
+    },
+    {
+      "id": "field",
+      "text": "It's two additions. The import goes up top, then the field, and the zero is the port the controller sits on at the driver station.",
       "after": 0.6
     },
     {
       "id": "bind",
-      "text": "Clear out the empty methods, and bind the buttons in the constructor. The robot hands it the arm and the flywheel.",
+      "text": "Now the teleop itself. Everything under the copyright header gets replaced, and what's left is short: one class, one constructor, one binding.",
       "after": 0.6
     },
     {
-      "id": "edges",
-      "text": "Every button has two edges. Pressing it is one, letting go is the other, and each edge gets its own binding.",
+      "id": "ctor",
+      "text": "The constructor is handed the robot. That's how this file gets to your mechanism, and to the controller you just added.",
       "after": 0.6
     },
     {
-      "id": "left",
-      "text": "Hold the left trigger, and the arm pushes. Let go, and the release runs stop.",
+      "id": "held",
+      "text": "Read the binding left to right. It picks the left trigger, and the first half runs the fast command for as long as the trigger's held, then cancels it when you let go.",
       "after": 0.6
     },
     {
-      "id": "right",
-      "text": "The right trigger's release is different. It drops the flywheel back to three volts, not to zero.",
+      "id": "release",
+      "text": "The second half covers the release. Once the trigger comes up it runs a command of its own, and here that's stop.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Your turn. Choose what the release does, then let go.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
-    },
-    {
-      "id": "mode",
-      "text": "Bindings belong to their mode. Switch to auto, and the triggers do nothing. Switch back, and they're there again. There's nothing to clean up.",
+      "id": "check",
+      "text": "A passing build isn't enough here, because nothing moves yet. Search the folder for the teleop annotation too, and make sure it turns up exactly once.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Every hold needs a release. Next, you'll see exactly what happens without one.",
+      "text": "Every binding line gets a release. Why it needs one is something you'll see for yourself next, in Hardware Simulation, when you finally pull the trigger.",
       "after": 0.6
     }
   ]

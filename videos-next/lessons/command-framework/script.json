@@ -1,5 +1,5 @@
 {
-  "title": "The Scheduler",
+  "title": "The Command Framework",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,56 +10,67 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Robot code comes down to three things. Triggers say when. Mechanisms are what moves. Commands say how.",
+      "text": "Last time, a command came back with its code parked inside, waiting for something else to run it. Here's that something else.",
       "after": 0.6
     },
     {
-      "id": "callback",
-      "text": "Last time, a command was a package waiting for something to run it. That something is the scheduler.",
+      "id": "parts",
+      "text": "Each part answers a question. A trigger is when and a mechanism is what moves, with a command in between saying how. The coroutine is just the steps inside that command.",
       "after": 0.6
     },
     {
       "id": "tick",
-      "text": "Fifty times a second, the robot calls one line, and the scheduler takes a turn. It checks every trigger, starts and cancels commands, and runs whatever's scheduled.",
+      "text": "None of them runs by itself. Fifty times a second the robot calls this one method, and the single line inside it gives the scheduler its turn.",
       "after": 0.6
     },
     {
-      "id": "lanes",
-      "text": "Each mechanism gets a lane, and a lane holds one command at a time.",
+      "id": "job",
+      "text": "Each turn it checks every trigger, then starts and cancels commands from what it found. Delete that line and nothing on the robot ever runs.",
       "after": 0.6
     },
     {
-      "id": "press",
-      "text": "Hold the left trigger. The command that pushes at six volts takes the arm's lane. It owns the arm now, and nothing else can drive that motor.",
+      "id": "owns",
+      "text": "A command built inside a mechanism owns it while it runs, which keeps two commands from driving one motor at once.",
       "after": 0.6
     },
     {
-      "id": "hold",
-      "text": "That command never decides to stop on its own. Ending it is the trigger's job.",
+      "id": "priority",
+      "text": "So what happens when a second command wants the arm? Every command here has the same priority, so the newcomer takes it and the old one is canceled.",
+      "after": 0.6
+    },
+    {
+      "id": "cancel",
+      "text": "Canceled doesn't mean stopped. When nothing owns the arm, nothing is talking to its motor, and it carries on with the last request it was given.",
+      "after": 0.6
+    },
+    {
+      "id": "robot",
+      "text": "Mechanisms and the driver's controller get created once, in the same file as the scheduler call, and they're public so every mode can reach them.",
+      "after": 0.6
+    },
+    {
+      "id": "modes",
+      "text": "What the robot does with them is up to a mode. Each is its own class, and the marking on top puts it in the driver station's list.",
+      "after": 0.6
+    },
+    {
+      "id": "bind",
+      "text": "Button bindings go in the mode's constructor. The class is built when someone picks the mode and thrown away on a switch, so a binding from auto can't fire in teleop.",
+      "after": 0.6
+    },
+    {
+      "id": "forever",
+      "text": "Most commands in this course run their body every loop and never finish, so something outside has to end them.",
       "after": 0.6
     },
     {
       "id": "release",
-      "text": "Let go, and in a single tick it's canceled, and the stop command takes the lane.",
-      "after": 0.6
-    },
-    {
-      "id": "tryit",
-      "text": "Your turn. Hold one trigger, then both. Each mechanism has its own lane, so each one has its own owner.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 9
-      }
-    },
-    {
-      "id": "newcomer",
-      "text": "If a second command asks for a lane that's already taken, the newcomer wins, and the old one is canceled.",
+      "text": "Here a trigger does it. Letting go cancels the running command, and the second half of the line starts the one that stops the motor.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Fifty times a second, the scheduler decides which one command owns each mechanism.",
+      "text": "Before you move on, work out who owns the arm before the press, during the hold and after the release. Next you'll make the project all this code goes into.",
       "after": 0.6
     }
   ]

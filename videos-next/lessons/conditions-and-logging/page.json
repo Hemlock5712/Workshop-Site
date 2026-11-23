@@ -1,0 +1,62 @@
+{
+  "pages": {
+    "lesson": "/conditions-and-logging"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "tolHead": "#sensor-condition > div:first-child",
+    "tolP": "#sensor-condition > .lesson-stack > p:has-text(\"First, decide what tolerance\")",
+    "tuneP": "#sensor-condition > .lesson-stack > p:has-text(\"This may take some\")",
+    "armCheck": "#sensor-condition .code-card:has-text(\"Arm.java: the arrival check\")",
+    "startCode": "#start-the-log .code-card:has-text(\"Robot.java: start recording\")",
+    "startP": "#start-the-log > .lesson-stack > p:has-text(\"DataLogManager.start() creates the log\")",
+    "armLog": "#log-the-mechanism .code-card:has-text(\"Arm.java: log the arrival check\")",
+    "unitsP": "#log-the-mechanism > .lesson-stack > p:has-text(\"A unit value logs\")",
+    "periodic": "#log-the-mechanism .code-card:has-text(\"Robot.java: log every mechanism every loop\")",
+    "steps": "#read-the-file > .lesson-stack > ol:has-text(\"Start WPILib: Hardware Sim\")",
+    "stepDisable": "#read-the-file > .lesson-stack > ol:has-text(\"Start WPILib: Hardware Sim\") > li:has-text(\"Disable, then stop the\")",
+    "stepOpen": "#read-the-file > .lesson-stack > ol:has-text(\"Start WPILib: Hardware Sim\") > li:has-text(\"Open the newest .wpilog\")",
+    "seeBox": "#read-the-file > .lesson-stack > div:has-text(\"You should see\")"
+  },
+  "open": [
+    {
+      "card": "Conditions and Logging",
+      "kicker": "Workshop 4 · Routines"
+    }
+  ],
+  "lines": {
+    "intro": [
+      { "show": "@header" },
+      { "at": "never", "mark": "@lede", "text": "so it never ends" }
+    ],
+    "tol": [
+      { "show": ["@tolHead", "@tolP", "@tuneP"] },
+      { "at": "exact", "mark": "@tuneP", "text": "it almost never will" }
+    ],
+    "getters": [{ "code": "@armCheck", "lines": [14, 22] }],
+    "arrive": [{ "code": "@armCheck", "lines": [9, 12] }],
+    "start": [{ "code": "@startCode", "lines": [4, 8] }],
+    "station": [
+      { "show": "@startP" },
+      {
+        "at": "driver",
+        "mark": "@startP",
+        "text": "values that never appear in NetworkTables"
+      }
+    ],
+    "signals": [{ "code": "@armLog", "lines": [7, 14] }],
+    "units": [
+      { "show": "@unitsP" },
+      {
+        "at": "conversion",
+        "mark": "@unitsP",
+        "text": "You do not convert it here"
+      }
+    ],
+    "call": [{ "code": "@periodic", "lines": [4, 8] }],
+    "run": [{ "show": "@steps" }, { "at": "disable", "spot": "@stepDisable" }],
+    "open": [{ "spot": "@stepOpen" }],
+    "close": [{ "show": "@seeBox" }]
+  }
+}

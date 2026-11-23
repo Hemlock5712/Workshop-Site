@@ -1,5 +1,5 @@
 {
-  "title": "What the Carpet Says",
+  "title": "Swerve Drive Tuning",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,60 +10,67 @@
   "lines": [
     {
       "id": "intro",
-      "text": "The generator guessed three numbers. The carpet tells you the real ones.",
+      "text": "The generator handed you a robot that drives, on a file full of guesses. Now you replace them with measured numbers, starting with the motors that aim the wheels.",
       "after": 0.6
     },
     {
-      "id": "order",
-      "text": "Tune them in order: the wheel radius, then top speed, then slip, and close the speed loop last.",
+      "id": "steer",
+      "text": "Steering is a position loop with nothing pulling it down, so the gravity gain drops out. You're adjusting the generator's numbers, not starting from zero.",
+      "after": 0.6
+    },
+    {
+      "id": "plot",
+      "text": "Flick the stick and watch the measured angle chase the commanded one. If it lags, shoots past or buzzes, change one number, redeploy, and flick again.",
       "after": 0.6
     },
     {
       "id": "radius",
-      "text": "Drive a measured distance, and compare the tape with what odometry says. The ratio between them tells you how far off the radius is.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "tryit",
-      "text": "Try it. Change the radius until the two marks agree.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
-    },
-    {
-      "id": "speed",
-      "text": "For top speed, drive flat out, and read where the speed levels off. Use that plateau, not the spike before it.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "slip",
-      "text": "For slip, push the robot into a wall with Voltage Out, and watch the current climb. Read the top of the climb, right before the wheels break loose.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "loop",
-      "text": "Then tune the speed loop like any other: the velocity gain, then static, then proportional, with the robot on the ground.",
+      "text": "Wheel radius is the one you can probably skip. Only measure it if you've changed wheels, or the robot's idea of distance disagrees with a tape measure.",
       "after": 0.6
     },
     {
-      "id": "switch",
-      "text": "Last, change one word, so the drive asks for a speed instead of a voltage.",
-      "after": 0.6,
-      "rec": true
+      "id": "correction",
+      "text": "Here the robot went less far than it reported, so the radius in the file was too big, and it comes down.",
+      "after": 0.6
+    },
+    {
+      "id": "speed",
+      "text": "Top speed has a trap. Full stick asks for exactly the number in the file, so a plateau sitting right on it tells you nothing about the robot. Raise it until the robot falls short.",
+      "after": 0.6
+    },
+    {
+      "id": "slip",
+      "text": "Slip current needs a wall and one drive motor, with the voltage ramped up slowly.",
+      "after": 0.6
+    },
+    {
+      "id": "knee",
+      "text": "Watch for the instant velocity jumps and current drops. That's the tire letting go, and you want the peak just before it.",
+      "after": 0.6
+    },
+    {
+      "id": "hot",
+      "text": "Keep each ramp short. A motor pushing a wall it can't move is stalled, and it heats up fast.",
+      "after": 0.6
+    },
+    {
+      "id": "velocity",
+      "text": "The drive gains only matter because every drive request in this course asks for a wheel speed. The generator's version sends the stick straight to volts and never reads them.",
+      "after": 0.6
+    },
+    {
+      "id": "order",
+      "text": "On a speed loop, feedforward does nearly all of the work, so it's tuned first. Keep the wheels on the ground, because a wheel in the air has no load.",
+      "after": 0.6
     },
     {
       "id": "deadband",
-      "text": "And shrink the deadband until the robot twitches at rest, then back off one step.",
+      "text": "The deadband keeps a worn stick from creeping the robot across the field. Halve it until the wheel targets twitch with your hands off, then go back one.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Measure on the carpet you'll drive on. The file is only as good as the floor you took it from.",
+      "text": "Drive a square, and check that the robot comes back to its tape with the pose near zero. Autonomous leans on that pose next, with nobody on the sticks.",
       "after": 0.6
     }
   ]

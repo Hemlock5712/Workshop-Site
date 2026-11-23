@@ -1,0 +1,157 @@
+{
+  "pages": {
+    "lesson": "/mechanism-setup"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "idsHead": "#assign-can-ids > div:first-child",
+    "dupP": "#assign-can-ids > .lesson-stack > p:has-text(\"Factory Default resets inversion\")",
+    "table": "#assign-can-ids table",
+    "steps": "#assign-can-ids > .lesson-stack > ol:has-text(\"Open a device, click\")",
+    "stepBlink": "#assign-can-ids > .lesson-stack > ol:has-text(\"Open a device, click\") > li:has-text(\"Click the Blink button\")",
+    "applyP": "#assign-can-ids > .lesson-stack > p:has-text(\"A config change does\")",
+    "applyFig": "#assign-can-ids figure:has-text(\"Apply is the arrow icon\")",
+    "motorHead": "#arm-motor-direction > div:first-child",
+    "motorP": "#arm-motor-direction > .lesson-stack > p:has-text(\"Get the motor right\")",
+    "motorSteps": "#arm-motor-direction > .lesson-stack > ol:has-text(\"Select the arm TalonFX\")",
+    "motorUp": "#arm-motor-direction > .lesson-stack > ol:has-text(\"Select the arm TalonFX\") > li:has-text(\"The motor's position must\")",
+    "encSteps": "#verify-the-arm-sensor > .lesson-stack > ol:has-text(\"Open the CANcoder device\")",
+    "encZero": "#verify-the-arm-sensor > .lesson-stack > ol:has-text(\"Open the CANcoder device\") > li:has-text(\"Put the arm to\")",
+    "rotP": "#verify-the-arm-sensor > .lesson-stack > p:has-text(\"Positions are measured in\")",
+    "rotFigs": "#verify-the-arm-sensor > .lesson-stack > div:has(figure)",
+    "linkHead": "#link-the-encoder > div:first-child",
+    "linkP": "#link-the-encoder > .lesson-stack > p:has-text(\"The motor and the\")",
+    "linkSteps": "#link-the-encoder > .lesson-stack > ol:has-text(\"Select the arm motor\")",
+    "linkTurn": "#link-the-encoder > .lesson-stack > p:has-text(\"Turn the arm counterclockwise\")",
+    "powerHead": "#verify-motor-direction > div:first-child",
+    "powerP": "#verify-motor-direction > .lesson-stack > p:has-text(\"This is the first\")",
+    "powerArm": "#verify-motor-direction > .lesson-stack > p:has-text(\"You have checked the\")",
+    "warn": "#verify-motor-direction > .lesson-stack > div:has-text(\"Before you enable anything\")",
+    "powerFig": "#verify-motor-direction figure",
+    "wrongP": "#verify-motor-direction > .lesson-stack > p:has-text(\"If it turns clockwise,\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Power the bench down,\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")"
+  },
+  "open": [
+    {
+      "card": "Motor Setup & CAN IDs",
+      "kicker": "Workshop 1 · Hardware & CTRE"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "ids": [
+      {
+        "show": ["@idsHead", "@dupP", "@table"]
+      },
+      {
+        "at": "numbers",
+        "spot": "@table"
+      }
+    ],
+    "dup": [
+      {
+        "show": ["@idsHead", "@dupP", "@table"]
+      },
+      {
+        "at": "alone",
+        "mark": "@dupP",
+        "text": "it does not reset the CAN ID"
+      }
+    ],
+    "blink": [
+      {
+        "show": "@steps"
+      },
+      {
+        "at": "Blink",
+        "spot": "@stepBlink"
+      }
+    ],
+    "apply": [
+      {
+        "show": ["@applyP", "@applyFig"]
+      },
+      {
+        "at": "saved",
+        "mark": "@applyP",
+        "text": "A config change does nothing until you press"
+      }
+    ],
+    "motor": [
+      {
+        "show": ["@motorHead", "@motorP", "@motorSteps"]
+      },
+      {
+        "at": "climb",
+        "spot": "@motorUp"
+      }
+    ],
+    "encoder": [
+      {
+        "show": "@encSteps"
+      },
+      {
+        "at": "zero",
+        "spot": "@encZero"
+      }
+    ],
+    "rotations": [
+      {
+        "show": ["@rotP", "@rotFigs"]
+      },
+      {
+        "at": "Counterclockwise",
+        "mark": "@rotP",
+        "text": "Counterclockwise with the motor facing you is positive"
+      }
+    ],
+    "link": [
+      {
+        "show": ["@linkHead", "@linkP", "@linkSteps", "@linkTurn"]
+      },
+      {
+        "at": "finish",
+        "spot": "@linkTurn"
+      }
+    ],
+    "voltage": [
+      {
+        "show": ["@powerHead", "@powerP", "@powerArm"]
+      },
+      {
+        "at": "target",
+        "mark": "@powerP",
+        "text": "no target and no stopping at the end of travel"
+      }
+    ],
+    "safe": [
+      {
+        "show": "@warn"
+      },
+      {
+        "at": "Blink",
+        "mark": "@warn",
+        "text": "voltage goes to a CAN ID, not to the one you meant"
+      }
+    ],
+    "wrong": [
+      {
+        "show": ["@powerFig", "@wrongP"]
+      },
+      {
+        "at": "don't",
+        "spot": "@wrongP"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      }
+    ]
+  }
+}

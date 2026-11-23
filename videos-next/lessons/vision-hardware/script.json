@@ -1,5 +1,5 @@
 {
-  "title": "Seeing the Field",
+  "title": "Vision Hardware",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,64 +10,62 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Your autos trust the robot's pose, and every skid goes into it and stays there.",
+      "text": "Drive to Point only works if the robot knows where it's standing. A camera is how it finds out, and none of this is code yet.",
       "after": 0.6
     },
     {
-      "id": "drift",
-      "text": "Odometry drifts further the longer you drive. A camera that sees a tag gives an answer that doesn't drift. It's noisy, but the error doesn't grow.",
-      "after": 0.6
-    },
-    {
-      "id": "tag",
-      "text": "An AprilTag has an ID and a known spot on the field. From its four corners, the camera works backwards to where the robot must be.",
+      "id": "tags",
+      "text": "Wheels lose a little ground the longer you drive, and they never get it back. A tag sits at a known place on the field, so a sighting late in a match is as good as one at the start.",
       "after": 0.6
     },
     {
       "id": "blend",
-      "text": "Those sightings come now and then, and they're noisy, so they don't replace odometry. The next lesson blends the two.",
+      "text": "It isn't a replacement, though. Sightings come now and then, and they're noisy, so the robot keeps its odometry and blends the two.",
+      "after": 0.6
+    },
+    {
+      "id": "camera",
+      "text": "We use a Limelight, with the camera and processor in one sealed unit. On PhotonVision, the ideas still carry over.",
       "after": 0.6
     },
     {
       "id": "mount",
-      "text": "Mount the camera where it sees the scoring tags while you're scoring, and give it its own breaker.",
+      "text": "Pick the mounting spot by thinking about the moment you score. That's when the pose has to be right, so that's when the camera needs a tag in view.",
       "after": 0.6
     },
     {
       "id": "angle",
-      "text": "Never mount it level and square to a tag. Head on, small errors smear the answer. At an angle, the answer tightens up.",
+      "text": "Seen straight on from its own height, a tag is a plain rectangle, and a tiny error in one corner swings the answer a long way. From off to one side, the shape tells the camera far more.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Try it. Move the camera until the cloud of answers is tight.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
+      "id": "glue",
+      "text": "On the Limelight 3 and 4, we've found the lens doesn't come glued, so you may want to glue yours.",
+      "after": 0.6
     },
     {
-      "id": "setup",
-      "text": "In the camera's web page, load the field map, pick the AprilTag pipeline, and turn the exposure down.",
-      "after": 0.6,
-      "rec": true
+      "id": "map",
+      "text": "Six steps, and the order matters. The field map comes first, because a camera still running last season's map puts every tag in the wrong spot.",
+      "after": 0.6
+    },
+    {
+      "id": "pipeline",
+      "text": "Then the AprilTag pipeline, since a color pipeline never reports a position at all. Turn the exposure down as far as the camera can stand, so a moving robot doesn't blur the tag.",
+      "after": 0.6
     },
     {
       "id": "offsets",
-      "text": "Enter where the camera sits on the robot, calibrate it with the ChArUco board, and give it a name.",
-      "after": 0.6,
-      "rec": true
+      "text": "The camera only ever solves for where the camera is. The offsets move that answer to the middle of the robot, so if they're wrong, every reading is off the same way.",
+      "after": 0.6
     },
     {
-      "id": "check",
-      "text": "Hold a tag a meter away. You should see its ID, the right distance, and a pose that holds steady.",
-      "after": 0.6,
-      "rec": true
+      "id": "calibrate",
+      "text": "Calibration takes out the bend in the lens, which is worst near the edges of the picture. Then write down the camera's name, because that's how the code will find it.",
+      "after": 0.6
     },
     {
       "id": "close",
-      "text": "Write down the camera's name. Next, the code feeds these sightings into the pose.",
+      "text": "Now test it. Hold a tag about a meter out and check the distance against a tape measure. Once they agree, the code can start feeding these sightings into the pose.",
       "after": 0.6
     }
   ]

@@ -18,99 +18,99 @@ interface GlossaryTermProps {
 const glossaryDefinitions: Record<string, string> = {
   // Hardware & Electronics
   "motor controller":
-    "A smart device that controls how a motor spins - like a dimmer switch for lights, but much smarter. It can control speed, direction, and precisely how far the motor turns.",
+    "A device that sets the voltage or current applied to a motor. It controls the motor's direction, speed, and position.",
   talonfx:
-    "CTRE's motor controller integrated into motors like the Kraken, featuring built-in FOC control and 1kHz PID loops.",
+    "The CTRE motor controller built into motors such as the Kraken. It runs closed-loop position and velocity control on the motor at 1 kHz.",
   kraken:
-    "A powerful motor with a built-in controller that makes it smart. Instead of just spinning when you apply power, it can precisely control how fast it spins and exactly where it stops.",
+    "A brushless motor with a TalonFX motor controller built in. It accepts a position or velocity target as well as a voltage.",
   encoder:
-    "A sensor that measures how far and how fast a motor has turned - like a speedometer and odometer combined, but for motors instead of cars.",
+    "A sensor that measures how far a shaft has turned and how fast it is turning.",
   cancoder:
-    "A standalone encoder that measures exactly where a rotating part is positioned, like a digital protractor. It remembers position even when the robot is turned off.",
+    "A CTRE magnetic encoder that reports the absolute angle of a shaft over the CAN bus. It keeps that angle through a power cycle.",
   canivore:
-    "A device that creates a high-speed communication network for all your robot parts - like a Wi-Fi router, but for motors and sensors instead of computers.",
+    "A CTRE USB adapter that provides a CAN FD bus for motors and sensors.",
   "can bus":
-    "The communication network that connects motors, sensors, and the robot brain (roboRIO). Like a telephone line that lets all robot parts talk to each other using the same wire.",
+    "The wired network that connects motors, sensors, and the robot controller, a SystemCore in this course. Every device on the bus shares the same pair of wires.",
   "device id":
-    "A unique number (like a name tag) given to each motor or sensor so your code knows which one to control - like how each house has a different address.",
+    "The number that identifies one motor or sensor on a CAN bus. Code uses it to select the device to control.",
   roborio:
-    "The 'brain' of your robot - a small computer that runs your code and tells all the motors and sensors what to do.",
+    "The FRC robot controller that SystemCore replaces. This course deploys to SystemCore, and its code does not run on a roboRIO.",
 
   // Programming Concepts
   subsystem:
-    "A section of code that represents one physical part of your robot (like an arm, shooter, or drivetrain). It knows how to control its motors and read its sensors.",
+    "One physical part of the robot, such as an arm, a flywheel, or a drivetrain, and the code that owns its motors and sensors. Commands v3 calls it a mechanism.",
   command:
-    "An action your robot performs, like 'raise arm' or 'shoot ball'. Commands use subsystems to get things done.",
+    "An action the robot performs, such as raising an arm or spinning a flywheel. A command claims the mechanisms it uses while it runs.",
   trigger:
-    "A connection between a button (or sensor reading) and a command. Hold button A and the trigger runs its command; for holds, whileTrue cancels it on release, and whileFalse is how you name what runs next.",
+    "A condition, such as a button press or a sensor reading, bound to a command. whileTrue runs the command while the condition is true and cancels it when the condition ends.",
   "command-based programming":
-    "The main way FRC teams organize robot code. You divide your robot into subsystems (parts), create commands (actions), and use triggers (buttons) to make things happen.",
+    "The structure most FRC teams use for robot code. Mechanisms own the hardware, commands are the actions, and triggers start the commands.",
   periodic:
-    "A method that runs automatically every 20 milliseconds (50 times per second). Used for displaying data or monitoring sensors, NOT for controlling motors directly.",
+    "A method the robot program calls once every loop, 50 times a second. Robot has robotPeriodic() and an OpMode has periodic(). A mechanism has none.",
   mechanism:
-    "The Commands v3 name for a subsystem - one physical part of the robot (arm, flywheel, drivetrain). An interface you implement on a class that owns the hardware and hands out commands.",
+    "One physical part of the robot, such as an arm, a flywheel, or a drivetrain. In Commands v3, Mechanism is an interface implemented by the class that owns the hardware and hands out its commands.",
   opmode:
-    "A 'mode' the robot can be in - driver teleop, an autonomous routine, or a calibration task. Each one is its own class; the driver station lists them by name.",
-  hold: "A command that takes a mechanism to a setpoint and stays there, re-sending the request forever. Bind holds with whileTrue so releasing the button cancels them. A hold never finishes, so nothing may ever wait on one.",
+    "One selectable mode of the robot program, such as teleop, an autonomous routine, or a utility task. Each OpMode is its own class, and the Driver Station lists them by name.",
+  hold: "A runRepeatedly command that sends the same request every loop and never finishes. Bind it with whileTrue so releasing the button cancels it. In a coroutine, fork it, because awaiting it blocks every later step.",
   "state machine":
-    "An optional, advanced pattern where the robot is always in exactly one named state and buttons/sensors move it between states. Illegal jumps can't happen because no transition was declared for them.",
+    "A pattern where the robot is in exactly one named state at a time, and buttons or sensors move it between states. A jump with no declared transition cannot happen.",
   coroutine:
-    "A command whose body is ordinary Java, read top to bottom, that can pause and resume on the same line (fork, await, waitUntil, wait, yield). Every routine in this course is one: fork the holds, await the steps, waitUntil a condition.",
+    "A command body written as ordinary Java that runs top to bottom and can pause on a line, then resume there on a later loop. Its calls are fork, await, waitUntil, wait, and yield.",
 
   // Control Theory
-  pid: "A smart way to automatically control motors to reach exact positions or speeds. Like cruise control in a car - you set a target, and PID does the adjusting automatically.",
+  pid: "A closed-loop controller that drives a motor to a target position or velocity. It computes its output from the error, the difference between the target and the measurement.",
   "pid control":
-    "A smart way to automatically control motors to reach exact positions or speeds. Like cruise control in a car - you set a target, and PID does the adjusting automatically.",
-  kp: "Proportional gain - how hard to push based on how far you are from the target. Far away = push hard, close = push gently. Like parking a car.",
+    "A closed-loop controller that drives a motor to a target position or velocity. It computes its output from the error, the difference between the target and the measurement.",
+  kp: "Proportional gain. Its output is the error multiplied by kP, so a larger error produces a larger output.",
   proportional:
-    "How hard to push based on how far you are from the target. Far away = push hard, close = push gently. Like parking a car.",
-  ki: "Integral gain - remembers past errors and adds extra push if you've been stuck away from the target. Usually kept at 0 for beginners to avoid instability.",
+    "The PID term whose output is the error multiplied by kP. A larger error produces a larger output.",
+  ki: "Integral gain. Its output grows with the error accumulated over time, which removes a small steady error. This course leaves kI at zero.",
   integral:
-    "Remembers past errors and adds extra push if you've been stuck away from the target. Usually kept at 0 for beginners to avoid instability.",
-  kd: "Derivative gain - slows down as you approach the target to prevent overshooting. The 'brakes' of your PID system. Like slowing down before a stop sign.",
+    "The PID term whose output grows with the error accumulated over time, which removes a small steady error. This course leaves kI at zero.",
+  kd: "Derivative gain. Its output is proportional to how fast the error is changing, which slows the approach to the target and reduces overshoot.",
   derivative:
-    "Slows down as you approach the target to prevent overshooting. The 'brakes' of your PID system. Like slowing down before a stop sign.",
+    "The PID term whose output is proportional to how fast the error is changing. It slows the approach to the target and reduces overshoot.",
   feedforward:
-    "A 'smart guess' about how much power you need, based on physics rather than error. Predicts what's needed instead of waiting to be wrong and then correcting.",
-  ks: "Static feedforward - the minimum voltage needed to overcome friction and get your mechanism moving from a standstill. Like the initial push to get a heavy door opening.",
-  kg: "Gravity feedforward - extra power needed to hold up an arm or elevator against gravity. The voltage changes based on the angle - horizontal arms need more help.",
-  kv: "Velocity feedforward - how much voltage is needed per unit of speed. Helps the motor reach and maintain target speeds smoothly. Important for flywheels and shooters.",
+    "Output calculated from the target and a model of the mechanism, not from the error. It leaves the PID terms less to correct.",
+  ks: "Static feedforward. The voltage needed to overcome static friction, applied in the direction of motion.",
+  kg: "Gravity feedforward. The voltage needed to hold an arm or elevator against gravity. On an arm it scales with the cosine of the angle and is largest when the arm is horizontal.",
+  kv: "Velocity feedforward. The voltage applied per unit of target velocity. A flywheel gets most of its output from it.",
   "motion magic":
-    "An upgrade to PID that makes movements smooth instead of jerky. Instead of rushing to the target, it accelerates smoothly, cruises, then slows down smoothly - like an elevator.",
+    "A Phoenix 6 control mode that moves to a position target along a motion profile. The mechanism accelerates to a cruise velocity, holds it, then decelerates into the target.",
   "closed-loop":
-    "Control that uses sensor feedback - the motor checks where it actually is and adjusts automatically to reach the target.",
+    "Control that uses sensor feedback. The controller compares the measurement to the target and adjusts the output to reduce the error.",
   "control request":
     "The instruction a TalonFX is following right now: what to output and what target to aim at. VoltageOut and MotionMagicVoltage are two. Code sends one every loop, and the motor keeps applying the last one it received until a different one replaces it.",
   "open-loop":
-    "Direct voltage control with no sensor feedback - you tell the motor 'run at 6 volts' and hope it does what you want. Simple but imprecise.",
+    "Control with no sensor feedback. The code sets an output, such as 6 volts, and nothing checks the result.",
 
   // Software & Tools
   wpilib:
-    "The main programming toolkit for FRC robots - like Microsoft Word for documents, but WPILib is for robot code. Includes VS Code, libraries, and simulation tools.",
+    "The official FRC software library and tools for writing, deploying, and simulating robot code.",
   "phoenix tuner":
-    "A program that lets you test motors and sensors without writing any code - like a 'motor remote control' app. Makes troubleshooting much easier.",
+    "The CTRE application for configuring, updating, and testing CTRE devices over the CAN bus. It can drive a motor and plot its signals without any robot code.",
   "phoenix tuner x":
-    "A program that lets you test motors and sensors without writing any code - like a 'motor remote control' app. Makes troubleshooting much easier.",
+    "The CTRE application for configuring, updating, and testing CTRE devices over the CAN bus. It can drive a motor and plot its signals without any robot code.",
   "driver station":
-    "The program that connects your laptop to the robot during matches. Shows robot status, lets you enable/disable, and displays error messages.",
-  git: "A version control system that saves every change you make to your code - like an unlimited 'undo' button that remembers everything forever.",
+    "The application that connects a laptop to the robot. It enables and disables the robot, selects the OpMode, and shows status and errors.",
+  git: "A version control system that records each change to a project as a commit. Any earlier commit can be restored.",
 
   // Units & Measurements
   rotations:
-    "How CTRE motors measure position - one full spin = 1 rotation. Much easier than degrees (360°) or radians (2π).",
-  rps: "Rotations Per Second - how fast a motor is spinning. A motor running at 10 RPS completes 10 full spins every second.",
+    "The position unit Phoenix 6 uses. One full turn of the shaft is 1 rotation.",
+  rps: "Rotations per second, the velocity unit Phoenix 6 uses. A motor at 10 RPS completes 10 full turns every second.",
   voltage:
-    "The 'strength' of electrical power sent to the motor. FRC uses 12-volt batteries, so motors can receive -12V (full reverse) to +12V (full forward).",
+    "The electrical output applied to a motor. An FRC robot runs on a 12 volt battery, so the output ranges from -12 V for full reverse to +12 V for full forward.",
   "gear ratio":
-    "How much the motor's speed is reduced to increase power. A 25:1 ratio means the motor spins 25 times for the output to spin once - slower but 25x stronger.",
+    "The number of motor rotations per rotation of the output. At 25:1 the motor turns 25 times for one output turn, so the output is 25 times slower with 25 times the torque.",
   tolerance:
-    "How close is 'close enough' to the target. If your target is 90° with tolerance of 2°, anywhere from 88-92° counts as success. Perfect precision is impossible.",
+    "The allowed distance from the target that still counts as reached. With a target of 90° and a tolerance of 2°, any angle from 88° to 92° counts.",
   "swerve drive":
-    "An advanced drivetrain where each wheel can spin and rotate independently. Like a shopping cart where every wheel can steer - allows the robot to move in any direction while rotating.",
+    "A drivetrain where every wheel module steers and drives independently. The robot can move in any direction while it rotates.",
   motor:
-    "An electric device that spins when given power. The 'muscles' of your robot that make things move - wheels, arms, shooters, etc.",
+    "An electric device that turns a shaft when voltage is applied. Motors move the robot's wheels, arms, and flywheels.",
   sensor:
-    "A device that measures something about the physical world - position, speed, distance, color, etc. The robot's 'senses' like eyes and touch.",
+    "A device that measures a physical quantity, such as position, velocity, or distance, and reports it to the robot code.",
 };
 
 export default function GlossaryTerm({

@@ -1,0 +1,77 @@
+{
+  "title": "Prerequisites",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "The overview laid out where this course is headed. Before it can start there are two lists to finish, and most of that time goes to watching installers run.",
+      "after": 0.6
+    },
+    {
+      "id": "install",
+      "text": "Five programs, in any order you like. Notice what's missing, though. You don't install Java yourself, because the first program brings the right version with it.",
+      "after": 0.6
+    },
+    {
+      "id": "wpilib",
+      "text": "The first one is where people go wrong. The official install guide still sends you to last season, so use the link here and take the alpha by its exact version.",
+      "after": 0.6
+    },
+    {
+      "id": "newer",
+      "text": "A newer alpha is already out, and grabbing the latest feels safe. Don't. The course is staying on this one for now.",
+      "after": 0.6
+    },
+    {
+      "id": "tuner",
+      "text": "Tuner X is the program you'll open first and use the most. All of Workshop 1 happens inside it, before you've written any code at all.",
+      "after": 0.6
+    },
+    {
+      "id": "alpha",
+      "text": "Alpha means the tools are still moving. Something in an example here could be renamed before the season starts, so don't be surprised when one changes.",
+      "after": 0.6
+    },
+    {
+      "id": "java",
+      "text": "Never written Java? That's fine. It gets taught in Workshop 2, and the code is explained as it shows up.",
+      "after": 0.6
+    },
+    {
+      "id": "bench",
+      "text": "Now the bench. For all of Workshop 1 your laptop runs the mechanism directly, and that's why the hardware list is so short.",
+      "after": 0.6
+    },
+    {
+      "id": "canivore",
+      "text": "The CANivore is what joins the two halves. It plugs into a USB port on your laptop, and the name you give it now gets used again in Workshop 3.",
+      "after": 0.6
+    },
+    {
+      "id": "battery",
+      "text": "Bench tests only use a volt or two, but that's no reason to skip the battery. The motor still needs a real, charged one behind it.",
+      "after": 0.6
+    },
+    {
+      "id": "norobot",
+      "text": "Here's what you don't need: a robot. One mechanism on a table with a laptop beside it is the whole rig.",
+      "after": 0.6
+    },
+    {
+      "id": "check",
+      "text": "Before you leave, open each program once. You're only checking that it starts without an error, so empty windows and red lights are exactly right for now.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "Once all three are true, the waiting is over. Next you plug the CANivore in and find out whether Tuner X can see every device on it.",
+      "after": 0.6
+    }
+  ]
+}

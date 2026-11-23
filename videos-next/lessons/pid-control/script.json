@@ -1,5 +1,5 @@
 {
-  "title": "One Motion, Then Silence",
+  "title": "PID Tuning in Tuner X",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,45 +10,22 @@
   "lines": [
     {
       "id": "intro",
-      "text": "The motor runs its own control loop. Tuner X just sends it a target, and draws what happens.",
+      "text": "Last time you sent the motor one volt, and it had no idea where to stop. Now it gets a target, and the motor itself does the work of getting there.",
       "after": 0.6
     },
     {
-      "id": "zero",
-      "text": "Start with every gain at zero, and enable. Nothing moves. That's correct: zero gains mean zero volts.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "gravity",
-      "text": "Gravity pulls hardest when the arm is level, and not at all when it's straight up.",
+      "id": "guide",
+      "text": "CTRE's own tuning guide is the one to follow. The steps here are the same method rewritten in volts, for when you can't reach it.",
       "after": 0.6
     },
     {
-      "id": "kg",
-      "text": "The gravity gain cancels exactly that pull, at every angle. Raise it until the arm holds level on its own.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "ks",
-      "text": "The static gain covers friction. Set it to half the gap between the smallest and largest gravity gains that hold.",
-      "after": 0.6
-    },
-    {
-      "id": "kp",
-      "text": "Now the feedback. Double the proportional gain until the arm overshoots, then cut it in half.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "kd",
-      "text": "The derivative gain takes out the overshoot. Too much of it, and the arm buzzes.",
+      "id": "play",
+      "text": "Before you touch the real mechanism, break this one. Every gain starts at zero, and a bad number costs you nothing.",
       "after": 0.6
     },
     {
       "id": "tryit",
-      "text": "Try it. Pick a gain that's too low, then one that's too high, and watch the plot.",
+      "text": "Try it. Push the proportional gain up until the arm swings past its target, and watch the trace.",
       "after": 0.3,
       "gate": {
         "id": "try",
@@ -56,19 +33,43 @@
       }
     },
     {
-      "id": "shapes",
-      "text": "Three shapes tell you what's wrong. It runs away, it buzzes, or it falls short. Read the plot, not the mechanism.",
+      "id": "units",
+      "text": "Every gain on this page is volts for each rotation. A number copied from a guide that uses different units won't mean the same thing here.",
+      "after": 0.6
+    },
+    {
+      "id": "plot",
+      "text": "The plot is how you'll judge every change, so set it up first. Both signals go in one group, and the timespan comes way down, because it's counted in minutes.",
       "after": 0.6
     },
     {
       "id": "apply",
-      "text": "Apply the gains, and power cycle. They're saved on the motor.",
-      "after": 0.6,
-      "rec": true
+      "text": "A gain you type does nothing until you press Apply. If a change seems to have no effect, check that before you change it again.",
+      "after": 0.6
+    },
+    {
+      "id": "zero",
+      "text": "Start with every gain at zero. Whatever the mechanism does after that, you'll know which number caused it.",
+      "after": 0.6
+    },
+    {
+      "id": "forward",
+      "text": "Feedforward comes first. Find the smallest and the largest gravity gain that hold the arm level, and what you want sits in the middle.",
+      "after": 0.6
+    },
+    {
+      "id": "feedback",
+      "text": "Then feedback. Keep doubling the proportional gain until it overshoots, back off to about half, and let a little derivative take out the rest.",
+      "after": 0.6
+    },
+    {
+      "id": "shapes",
+      "text": "When it goes wrong, read the plot. Error that keeps growing means a direction is backwards, so disable right away. A hum at rest is too much gain, and more damping won't fix it.",
+      "after": 0.6
     },
     {
       "id": "close",
-      "text": "Feedforward pays for holding. Feedback fixes what's left. A tuned arm makes one motion, and then it's silent.",
+      "text": "You're done when three runs each way look alike. The target still jumps there all at once, though, and smoothing that out is the next lesson.",
       "after": 0.6
     }
   ]

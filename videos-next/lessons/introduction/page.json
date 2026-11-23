@@ -1,0 +1,145 @@
+{
+  "pages": {
+    "lesson": "/introduction"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "whoP": "#main-content .lesson-stack > .split p:has-text(\"Nothing here assumes\")",
+    "who": "#main-content .lesson-stack > .split:has-text(\"Nothing here assumes\")",
+    "hardware": "#the-hardware-is-the-course",
+    "simP": "#the-hardware-is-the-course > .lesson-stack > p:has-text(\"There is no software-only\")",
+    "devicesP": "#the-hardware-is-the-course > .lesson-stack > p:has-text(\"This workshop is written\")",
+    "stackHead": "#what-you-are-learning-exactly > div:first-child",
+    "stackP": "#what-you-are-learning-exactly > .lesson-stack > div:has-text(\"For the 2027 season,\")",
+    "alphaNote": "#what-you-are-learning-exactly > .lesson-stack > div:has-text(\"For the 2027 season,\") aside",
+    "grid": "#what-you-are-learning-exactly > .lesson-stack > dl:has-text(\"LibraryWPILib 2027 alphaCommands v3\")",
+    "java": "#what-you-are-learning-exactly > .lesson-stack > dl:has-text(\"LibraryWPILib 2027 alphaCommands v3\") > div:has-text(\"Java 25\")",
+    "road": "#the-road-ahead",
+    "checkList": "#check-your-work > .lesson-stack > ol:has-text(\"A mechanism on a\")",
+    "mechItem": "#check-your-work > .lesson-stack > ol:has-text(\"A mechanism on a\") > li:has-text(\"A mechanism on a\")",
+    "laptopItem": "#check-your-work > .lesson-stack > ol:has-text(\"A mechanism on a\") > li:has-text(\"A laptop you are\")",
+    "readyBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou are ready whenBoth\")",
+    "nextP": "#check-your-work > .lesson-stack > p:has-text(\"Next is Prerequisites, which\")"
+  },
+  "open": [
+    {
+      "card": "Workshop Overview",
+      "kicker": "Getting Started"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "mechanism",
+        "mark": "@lede",
+        "text": "works up to a swerve drive"
+      }
+    ],
+    "who": [
+      {
+        "show": "@who"
+      },
+      {
+        "at": "mechanism",
+        "mark": "@whoP",
+        "text": "you have a mechanism to run"
+      }
+    ],
+    "sim": [
+      {
+        "show": "@hardware"
+      },
+      {
+        "at": "phrase",
+        "mark": "@simP",
+        "text": "hardware simulation",
+        "until": "only"
+      },
+      {
+        "at": "only",
+        "mark": "@simP",
+        "text": "Your laptop stands in for the robot controller.",
+        "until": "end"
+      }
+    ],
+    "real": [
+      {
+        "at": "Everything",
+        "mark": "@simP",
+        "text": "the arm on the bench is the arm that moves",
+        "until": "end"
+      }
+    ],
+    "devices": [
+      {
+        "at": "CTRE",
+        "spot": "@devicesP"
+      }
+    ],
+    "stack": [
+      {
+        "show": ["@stackHead", "@stackP"]
+      },
+      {
+        "at": "SystemCore",
+        "mark": "@stackP",
+        "text": "use a SystemCore",
+        "until": "end"
+      }
+    ],
+    "alpha": [
+      {
+        "at": "alpha",
+        "spot": "@alphaNote"
+      }
+    ],
+    "language": [
+      {
+        "show": "@grid"
+      },
+      {
+        "at": "language",
+        "spot": "@java"
+      }
+    ],
+    "order": [
+      {
+        "show": "@road"
+      }
+    ],
+    "check": [
+      {
+        "show": ["@checkList", "@readyBox"]
+      },
+      {
+        "at": "mechanism",
+        "spot": "@mechItem",
+        "until": "front"
+      },
+      {
+        "at": "front",
+        "mark": "@readyBox",
+        "text": "rather than on a purchase order"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkList", "@readyBox", "@nextP"]
+      },
+      {
+        "at": "laptop",
+        "spot": "@laptopItem",
+        "until": "next"
+      },
+      {
+        "at": "next",
+        "mark": "@nextP",
+        "text": "every download and account"
+      }
+    ]
+  }
+}

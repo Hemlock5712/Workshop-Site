@@ -1,0 +1,91 @@
+{
+  "pages": { "lesson": "/vision-hardware" },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "tagsHead": "#tags-against-drift > div:first-child",
+    "tagsBody": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\")",
+    "tagsP": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\") p:has-text(\"An AprilTag is a\")",
+    "blendP": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\") p:has-text(\"Unlike odometry\")",
+    "cameraHead": "#limelight-or-photonvision > div:first-child",
+    "cameraP": "#limelight-or-photonvision > .lesson-stack > p:has-text(\"This course uses a\")",
+    "mountHead": "#mounting-and-wiring > div:first-child",
+    "mountP": "#mounting-and-wiring > .lesson-stack > p:has-text(\"Bolt the camera where\")",
+    "powerP": "#mounting-and-wiring > .lesson-stack > p:has-text(\"Power it with 12\")",
+    "split": "#mounting-and-wiring > .lesson-stack > div:has-text(\"A tag viewed square-on\")",
+    "squareP": "#mounting-and-wiring > .lesson-stack > div:has-text(\"A tag viewed square-on\") p:has-text(\"A tag viewed square-on\")",
+    "glueP": "#mounting-and-wiring > .lesson-stack > div:has-text(\"A tag viewed square-on\") p:has-text(\"We have found Limelight\")",
+    "setupHead": "#set-the-camera-up > div:first-child",
+    "setupP": "#set-the-camera-up > .lesson-stack > p:has-text(\"Do these in order,\")",
+    "stepMap": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Update the Limelight OS\")",
+    "stepPipe": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Switch the active pipeline\")",
+    "stepExp": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Drop the exposure as\")",
+    "stepOff": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Enter the camera offsets.\")",
+    "stepCal": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Calibrate the lens with\")",
+    "stepName": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Write down the camera's\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Hold a printed tag\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe tag's\")"
+  },
+  "open": [{ "card": "Vision Hardware", "kicker": "Workshop 7 · Vision" }],
+  "lines": {
+    "intro": [
+      { "show": "@header" },
+      { "at": "none", "mark": "@lede", "text": "before any Java" }
+    ],
+    "tags": [
+      { "show": ["@tagsHead", "@tagsBody"] },
+      { "at": "tag", "spot": "@tagsP" }
+    ],
+    "blend": [
+      { "spot": "@blendP" },
+      { "at": "blends", "mark": "@blendP", "text": "The robot blends the two." }
+    ],
+    "camera": [{ "show": ["@cameraHead", "@cameraP"] }],
+    "mount": [
+      { "show": ["@mountHead", "@mountP", "@powerP"] },
+      {
+        "at": "score",
+        "mark": "@mountP",
+        "text": "at the moment you are scoring"
+      }
+    ],
+    "angle": [
+      { "show": "@split" },
+      {
+        "at": "rectangle",
+        "mark": "@squareP",
+        "text": "a plain rectangle",
+        "until": "end"
+      }
+    ],
+    "glue": [{ "spot": "@glueP" }],
+    "map": [
+      { "show": ["@setupHead", "@setupP", "@stepMap"] },
+      { "at": "map", "spot": "@stepMap" }
+    ],
+    "pipeline": [
+      { "show": ["@stepPipe", "@stepExp"] },
+      { "at": "exposure", "spot": "@stepExp" }
+    ],
+    "offsets": [
+      { "show": "@stepOff" },
+      {
+        "at": "wrong",
+        "mark": "@stepOff",
+        "text": "every measurement shifts the same"
+      }
+    ],
+    "calibrate": [
+      { "show": ["@stepCal", "@stepName"] },
+      { "at": "name", "spot": "@stepName" }
+    ],
+    "close": [
+      { "show": ["@checkP", "@checkBox"] },
+      {
+        "at": "tape",
+        "mark": "@checkBox",
+        "text": "a distance that matches a tape measure"
+      }
+    ]
+  }
+}

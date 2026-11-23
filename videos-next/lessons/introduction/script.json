@@ -1,0 +1,67 @@
+{
+  "title": "Workshop Overview",
+  "voice": {
+    "engine": "chatterbox",
+    "id": "joe",
+    "ref": "voices/joe/reference.wav"
+  },
+  "lead": 3.4,
+  "tail": 2.6,
+  "lines": [
+    {
+      "id": "intro",
+      "text": "This is the start of the course, so there's nothing to look back on yet. What's ahead runs from one small mechanism on a bench all the way to a swerve drive.",
+      "after": 0.6
+    },
+    {
+      "id": "who",
+      "text": "You don't need to have written code before. What you do need is a mechanism, because the whole course is built around running one.",
+      "after": 0.6
+    },
+    {
+      "id": "sim",
+      "text": "People trip on the phrase hardware simulation. It sounds like nothing real is involved, but the only part being stood in for is the robot controller, and your laptop plays that role.",
+      "after": 0.6
+    },
+    {
+      "id": "real",
+      "text": "Everything else is real. The motors spin, the bus carries real messages, and the arm on your bench is the one that moves.",
+      "after": 0.6
+    },
+    {
+      "id": "devices",
+      "text": "The code is written for CTRE devices and nothing else. With other motor controllers the ideas still carry over, but the examples won't run as written.",
+      "after": 0.6
+    },
+    {
+      "id": "stack",
+      "text": "For 2027 the way you write robot code changed, and this course teaches the new style from the start. Plan on a SystemCore when you move to a robot, because a roboRIO can't run it.",
+      "after": 0.6
+    },
+    {
+      "id": "alpha",
+      "text": "Both libraries are alpha releases, which means things can shift between builds. Project Setup pins the exact versions, so match them when you get there.",
+      "after": 0.6
+    },
+    {
+      "id": "language",
+      "text": "The language card is a quick test for any example you find online. If its package names don't start the way these do, it was written for an older year.",
+      "after": 0.6
+    },
+    {
+      "id": "order",
+      "text": "Go in order. Each workshop leans on the hardware or the code from the one before it.",
+      "after": 0.6
+    },
+    {
+      "id": "check",
+      "text": "Nothing runs on this page, so the check is short and honest. The mechanism has to be in front of you and powered, not still on a purchase order.",
+      "after": 0.6
+    },
+    {
+      "id": "close",
+      "text": "The laptop matters just as much. The next page is all downloads and accounts, and you'll want every one finished before anything gets plugged in.",
+      "after": 0.6
+    }
+  ]
+}

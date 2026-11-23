@@ -40,10 +40,6 @@ export default function DriveToPoint() {
           <code>DriveMechanism</code>.
         </>,
         <>
-          <strong>Vision</strong>. The robot drives to where its pose says the
-          spot is, so the pose has to be right.
-        </>,
-        <>
           <code>whileTrue</code> from <strong>Writing Commands</strong>.
         </>,
       ]}
@@ -59,7 +55,9 @@ export default function DriveToPoint() {
           </Link>
           . The robot only arrives where you meant if <code>getPose()</code>{" "}
           agrees with the field. Odometry alone drifts and starts wherever the
-          code started. Vision pulls it back, so this lesson comes after Vision.
+          code started. Expect the robot to stop a little off the spot, and
+          further off the longer it has been driving. The Vision workshop comes
+          next and corrects that drift with a camera.
         </p>
       </LessonSection>
 

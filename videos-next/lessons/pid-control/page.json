@@ -1,0 +1,142 @@
+{
+  "pages": {
+    "lesson": "/pid-control"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header .lesson-lede",
+    "guide": "#how-to-tune",
+    "volts": "#how-to-tune > .lesson-stack > p:has-text(\"If that site is\")",
+    "play": "#play-with-the-gains-first section.module",
+    "kp": "#play-with-the-gains-first input[type=range][aria-label^=\"Proportional gain\"]",
+    "reset": "#play-with-the-gains-first button[aria-label^=\"Reset all gains\"]",
+    "unitsP": "#units-and-sizes > .lesson-stack > p:has-text(\"Every gain is output\")",
+    "unitsHead": "#units-and-sizes > div:first-child",
+    "plot": "#feedforward-first figure:has-text(\"Both signals in Group 1,\")",
+    "applyP": "#feedforward-first > .lesson-stack > p:has-text(\"Run these steps on\")",
+    "stepZero": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Set every gain in\")",
+    "stepKg": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Raise kG\")",
+    "stepKp": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Raise kP\")",
+    "stepKd": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Add kD\")",
+    "shapes": "#failure-shapes > .lesson-stack > dl:has-text(\"Runs away\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Drive the mechanism to\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")",
+    "target": "#play-with-the-gains-first input[type=range][aria-label^=\"Target angle\"]"
+  },
+  "open": [
+    {
+      "card": "PID Tuning in Tuner X",
+      "kicker": "Workshop 1 · Hardware & CTRE"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "itself",
+        "mark": "@lede",
+        "text": "runs the control loop itself"
+      }
+    ],
+    "guide": [
+      {
+        "show": "@guide"
+      },
+      {
+        "at": "volts",
+        "mark": "@volts",
+        "text": "we rewrote it in volts"
+      }
+    ],
+    "play": [
+      {
+        "show": "@play"
+      }
+    ],
+    "tryit": [
+      {
+        "ask": "Raise kP until the arm overshoots."
+      },
+      {
+        "at": "Try",
+        "set": "@target",
+        "value": 45,
+        "over": 1
+      },
+      {
+        "at": "proportional",
+        "set": "@kp",
+        "value": 40,
+        "over": 1.5
+      },
+      {
+        "at": "gate:30%",
+        "set": "@kp",
+        "value": 300,
+        "over": 1.5
+      }
+    ],
+    "units": [
+      {
+        "show": ["@unitsHead", "@unitsP"]
+      },
+      {
+        "at": "different",
+        "mark": "@unitsP",
+        "text": "a guide written for another unit"
+      }
+    ],
+    "plot": [
+      {
+        "show": "@plot"
+      },
+      {
+        "at": "timespan",
+        "note": "Timespan, in minutes",
+        "on": "@plot",
+        "side": "top"
+      }
+    ],
+    "apply": [
+      {
+        "show": "@applyP"
+      },
+      {
+        "at": "Apply",
+        "mark": "@applyP",
+        "text": "never reaches the motor"
+      }
+    ],
+    "zero": [
+      {
+        "show": "@stepZero"
+      }
+    ],
+    "forward": [
+      {
+        "show": "@stepKg"
+      }
+    ],
+    "feedback": [
+      {
+        "show": ["@stepKp", "@stepKd"]
+      },
+      {
+        "at": "derivative",
+        "spot": "@stepKd"
+      }
+    ],
+    "shapes": [
+      {
+        "show": "@shapes"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      }
+    ]
+  }
+}

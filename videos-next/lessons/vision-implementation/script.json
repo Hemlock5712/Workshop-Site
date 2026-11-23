@@ -1,5 +1,5 @@
 {
-  "title": "Blending, Not Replacing",
+  "title": "Vision",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,62 +10,62 @@
   "lines": [
     {
       "id": "intro",
-      "text": "The camera can see a tag and work out where the robot is. Now the robot has to listen.",
+      "text": "Your camera's mounted, calibrated and named, and the robot still ignores it. This is where the wheels stop being the only opinion about where the robot is.",
       "after": 0.6
     },
     {
       "id": "install",
-      "text": "Install the Limelight library from its vendor file. The address is pinned to the WPILib alpha, so copy it exactly.",
-      "after": 0.6,
-      "rec": true
+      "text": "The library installs like Phoenix did, from a web address. The file name carries the WPILib alpha it was built for, so copy it, don't type it.",
+      "after": 0.6
     },
     {
       "id": "solvers",
-      "text": "There are two ways to solve a pose. One works out the heading from the tags. The other borrows the robot's own heading, and that's the one to trust with a single tag.",
+      "text": "The camera answers every frame twice. The first works out heading from the tags themselves, and with one tag in view, a tiny error in the corners throws it off.",
       "after": 0.6
     },
     {
-      "id": "heading",
-      "text": "So every loop, the robot sends its heading to the camera first.",
+      "id": "borrow",
+      "text": "The second takes your gyro's heading on faith and only solves for position. One tag is plenty, but a bad heading comes back as a wrong position that looks fine.",
       "after": 0.6
     },
     {
-      "id": "queue",
-      "text": "The camera and the robot run on different clocks. Reading the frame queue takes exactly the frames that arrived, no more and no fewer.",
+      "id": "loop",
+      "text": "Every loop, the heading goes out to the cameras first, because that second answer depends on it. Then it reads a queue, since camera frames and robot loops don't tick together.",
+      "after": 0.6
+    },
+    {
+      "id": "pick",
+      "text": "Each frame gets asked the first way. Fewer than two tags in that answer, and the same frame is asked again the second way.",
       "after": 0.6
     },
     {
       "id": "gates",
-      "text": "Some sightings get thrown out: anything the library flags, and anything more than four meters away.",
+      "text": "Some sightings get thrown out. The library has its own checks, and anything averaging past four meters never reaches the estimator.",
+      "after": 0.6
+    },
+    {
+      "id": "stamp",
+      "text": "What's left goes in with the picture's own timestamp. The photo's already old when your code sees it, so the estimator winds back to that moment and folds it in there.",
       "after": 0.6
     },
     {
       "id": "trust",
-      "text": "The rest get weighed. Far away, the error circle grows. A second tag shrinks it to a quarter.",
+      "text": "Every sighting also says how far off it might be, and distance makes that worse slowly. A second tag cuts it to a quarter, more than halving the distance would.",
       "after": 0.6
     },
     {
-      "id": "rewind",
-      "text": "Each picture was taken a moment ago. The estimator rewinds to that moment, folds the sighting in, and replays forward to now.",
+      "id": "echo",
+      "text": "And when the second answer was used, its heading is ignored. That heading was yours to begin with, so it tells the estimator nothing new.",
       "after": 0.6
     },
     {
-      "id": "tryit",
-      "text": "Try it. Cover the camera, push the robot, then uncover it.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
-    },
-    {
-      "id": "walk",
-      "text": "It doesn't jump. The estimate walks back over about a second, and faster when the sighting is good.",
+      "id": "robot",
+      "text": "It all starts from one line in the robot class, not in an OpMode, because those get thrown away on every mode switch. The name in quotes has to match the camera's exactly.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Blend the camera into the pose. Don't replace the pose with the camera.",
+      "text": "Cover the camera, push the robot sideways, then uncover it. The pose should settle back. Next, the robot lines up on a single tag without asking where it is on the field.",
       "after": 0.6
     }
   ]

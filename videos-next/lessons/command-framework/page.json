@@ -1,0 +1,141 @@
+{
+  "pages": {
+    "lesson": "/command-framework"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "grid": "#main-content dl:has-text(\"A controller button\")",
+    "coroutine": "#main-content dl:has-text(\"A controller button\") > div:has-text(\"The body of a command\")",
+    "schedHead": "#the-scheduler-and-the-one-line > div:first-child",
+    "schedP": "#the-scheduler-and-the-one-line > .lesson-stack > p:has-text(\"None of the four\")",
+    "schedCode": "#the-scheduler-and-the-one-line .code-card:has-text(\"Robot.java: the one call that runs the schedulercopy\")",
+    "jobP": "#the-scheduler-and-the-one-line > .lesson-stack > p:has-text(\"One call does the\")",
+    "ownHead": "#one-mechanism-one-command-at-a > div:first-child",
+    "buildP": "#one-mechanism-one-command-at-a > .lesson-stack > p:has-text(\"We build most commands\")",
+    "ownP": "#one-mechanism-one-command-at-a > .lesson-stack > p:has-text(\"Take runFast(), a command\")",
+    "prioP": "#one-mechanism-one-command-at-a > .lesson-stack > p:has-text(\"Every command has a\")",
+    "cancelBox": "#one-mechanism-one-command-at-a > .lesson-stack > div:has-text(\"Canceling is not stoppingA\")",
+    "robotCode": "#opmodes-the-layer-above-all-of .code-card:has-text(\"Robot.java: the same file, with the mechanisms and controlle\")",
+    "modesP": "#opmodes-the-layer-above-all-of > .lesson-stack > p:has-text(\"There are three types\")",
+    "teleopCode": "#opmodes-the-layer-above-all-of .code-card:has-text(\"MyTeleop.java: the shape of a mode classcopy\")",
+    "foreverHead": "#holds-what-almost-every-command-here > div:first-child",
+    "foreverP": "#holds-what-almost-every-command-here > .lesson-stack > p:has-text(\"Almost every command in\")",
+    "endP": "#holds-what-almost-every-command-here > .lesson-stack > p:has-text(\"Nothing inside it decides\")",
+    "releaseCode": "#holds-what-almost-every-command-here .code-card:has-text(\"MyTeleop.java: run while held, stop on releasecopy\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"No editor yet. Take\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should haveBefore the\")"
+  },
+  "open": [
+    {
+      "card": "The Command Framework",
+      "kicker": "Workshop 2 · Code Foundations"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "parts": [
+      {
+        "show": "@grid"
+      },
+      {
+        "at": "coroutine",
+        "spot": "@coroutine"
+      }
+    ],
+    "tick": [
+      {
+        "show": ["@schedHead", "@schedP", "@schedCode"]
+      },
+      {
+        "at": "Fifty",
+        "mark": "@schedP",
+        "text": "50 times a second"
+      }
+    ],
+    "job": [
+      {
+        "show": ["@schedCode", "@jobP"]
+      },
+      {
+        "at": "checks",
+        "mark": "@jobP",
+        "text": "checks every trigger"
+      }
+    ],
+    "owns": [
+      {
+        "show": ["@ownHead", "@buildP", "@ownP"]
+      },
+      {
+        "at": "owns",
+        "spot": "@ownP"
+      }
+    ],
+    "priority": [
+      {
+        "show": "@prioP"
+      },
+      {
+        "at": "newcomer",
+        "mark": "@prioP",
+        "text": "the new one always gets to run"
+      }
+    ],
+    "cancel": [
+      {
+        "show": "@cancelBox"
+      },
+      {
+        "at": "motor",
+        "mark": "@cancelBox",
+        "text": "canceling a command does not stop hardware"
+      }
+    ],
+    "robot": [
+      {
+        "code": "@robotCode",
+        "lines": [2, 7]
+      }
+    ],
+    "modes": [
+      {
+        "show": "@modesP"
+      },
+      {
+        "at": "marking",
+        "mark": "@modesP",
+        "text": "the list on the driver station"
+      }
+    ],
+    "bind": [
+      {
+        "code": "@teleopCode",
+        "lines": [3, 6]
+      }
+    ],
+    "forever": [
+      {
+        "show": ["@foreverHead", "@foreverP"]
+      }
+    ],
+    "release": [
+      {
+        "show": ["@endP", "@releaseCode"]
+      },
+      {
+        "at": "second",
+        "mark": "@endP",
+        "text": "add it with"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      }
+    ]
+  }
+}

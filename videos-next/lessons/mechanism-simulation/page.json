@@ -1,0 +1,81 @@
+{
+  "pages": {
+    "lesson": "/mechanism-simulation"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "twoHead": "#two-simulations > div:first-child",
+    "twoP": "#two-simulations > .lesson-stack > p:has-text(\"The editor offers two\")",
+    "simTop": "#the-sim-class .code-card:has-text(\"ArmSim.java: the arm, written down\")",
+    "simLoop": "#the-sim-class .code-card:has-text(\"ArmSim.java: one loop\")",
+    "hookCode": "#hook-it-in .code-card:has-text(\"Arm.java: end of the constructor\")",
+    "robotP": "#hook-it-in > .lesson-stack > p:has-text(\"Nothing goes in Robot.java.\")",
+    "runHead": "#run-it > div:first-child",
+    "runP": "#run-it > .lesson-stack > p:has-text(\"The branch ships every\")",
+    "stepGains": "#run-it > .lesson-stack > ol:has-text(\"In the config in\") > li:has-text(\"In the config in\")",
+    "stepView": "#run-it > .lesson-stack > ol:has-text(\"In the config in\") > li:has-text(\"From the NetworkTables menu,\")",
+    "stepHold": "#run-it > .lesson-stack > ol:has-text(\"In the config in\") > li:has-text(\"Hold the buttons you\")",
+    "tuneP": "#run-it > .lesson-stack > p:has-text(\"Tune the way PID\")",
+    "motorP": "#your-mechanism > .lesson-stack > p:has-text(\"Change the motor in\")",
+    "motorCode": "#your-mechanism .code-card:has-text(\"The sim's constructor\")",
+    "ranP": "#your-mechanism > .lesson-stack > p:has-text(\"Left at the X60,\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")"
+  },
+  "open": [
+    {
+      "card": "Mechanism Simulation",
+      "kicker": "Extras · Mechanism Simulation"
+    }
+  ],
+  "lines": {
+    "intro": [{ "show": "@header" }],
+    "two": [
+      { "show": ["@twoHead", "@twoP"] },
+      {
+        "at": "motors",
+        "mark": "@twoP",
+        "text": "the motors are simulated too"
+      }
+    ],
+    "numbers": [{ "code": "@simTop", "lines": [1, 4] }],
+    "model": [{ "code": "@simTop", "lines": [6, 16] }],
+    "loop": [
+      { "code": "@simLoop", "lines": [1, 5] },
+      { "at": "moves", "code": "@simLoop", "lines": [7, 8] },
+      { "at": "result", "code": "@simLoop", "lines": [10, 17] }
+    ],
+    "hook": [
+      { "code": "@hookCode", "lines": [3, 4] },
+      { "at": "sim", "code": "@hookCode", "lines": [6, 9] }
+    ],
+    "owner": [
+      { "show": "@robotP" },
+      {
+        "at": "lasts",
+        "mark": "@robotP",
+        "text": "lasts only as long as whatever made it"
+      }
+    ],
+    "gains": [
+      { "show": ["@runHead", "@runP", "@stepGains"] },
+      { "at": "Put", "spot": "@stepGains" }
+    ],
+    "see": [
+      { "show": ["@stepView", "@stepHold"] },
+      { "at": "hold", "spot": "@stepHold" }
+    ],
+    "tune": [
+      { "show": "@tuneP" },
+      {
+        "at": "fits",
+        "mark": "@tuneP",
+        "text": "tune a model, not your mechanism"
+      }
+    ],
+    "motor": [
+      { "show": ["@motorP", "@motorCode", "@ranP"] },
+      { "at": "ran", "mark": "@ranP", "text": "ran away from its target" }
+    ],
+    "close": [{ "show": "@checkBox" }]
+  }
+}

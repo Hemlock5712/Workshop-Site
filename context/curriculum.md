@@ -25,6 +25,15 @@ every drive request on `DriveRequestType.Velocity`, owner's call: the generator'
 module-zeroing material was cut). Drive to Point sits in Navigation, before
 Vision; Align to Tag stays after Vision because it needs it.
 
+**Drive to Point teaches the drift that Vision then fixes.** Owner's call,
+November 2026: a student drives to a point on odometry alone, sees the robot
+land a little off and further off over time, and the Vision workshop is the
+correction. So `/drive-to-point` does not list Vision under "You'll need" and
+must not say it comes after Vision. The Workshop-Code branch order still
+disagrees: `swerve-drive-to-point` is built on `swerve-vision`, so a student on
+that branch already has the camera code. Reorder the branches when the swerve
+chain is next rebuilt.
+
 **Workshop 4 is Routines, and it renumbered everything after it.** September
 2026: Command Composition, Finish Conditions and Coroutines left the tail of
 Workshop 3, Logging came up from the old Workshop 6 to join them, and Swerve

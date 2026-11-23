@@ -14,8 +14,9 @@
 //
 // Writes <lesson>/voice/voice.wav and <lesson>/voice.json:
 //   { duration, lines: [{ id, text, t0, t1, words: [{ w, t0, t1 }] }], gates: [{ id, line, t0, t1 }] }
-// Word times are estimated from letter counts inside each line. Lines are short,
-// so the estimate lands within a word or two; swap in forced alignment later.
+// Word times come from forced alignment (tools/align.py, wav2vec2 on the GPU):
+// each caption word is placed where it is actually spoken, to about 20 ms. With
+// --no-align, or if the aligner is missing, they are estimated from letter counts.
 
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -143,6 +144,7 @@ if (engine === "chatterbox") {
 }
 
 const parts = [];
+const takes = [];
 const lines = [];
 const gates = [];
 let t = S.lead ?? 1.0;
@@ -169,12 +171,52 @@ for (const L of S.lines) {
   const pcm = decode(file);
   const dur = pcm.length / 2 / SR;
   lines.push({ id: L.id, text: L.text, t0: +t.toFixed(3), t1: +(t + dur).toFixed(3), words: estimateWords(L.text, t, t + dur) });
+  takes.push({ pcm, spoken, same: spoken === L.text });
   parts.push([Math.round(t * SR), pcm]);
   t += dur + (L.after ?? 0.4);
   if (L.gate) {
     gates.push({ id: L.gate.id, line: L.id, t0: +t.toFixed(3), t1: +(t + L.gate.seconds).toFixed(3) });
     t += L.gate.seconds;
   }
+}
+
+// Replace the estimates with where each word is really spoken. A line with a
+// "say" respelling is aligned on what was spoken only when the word counts match.
+const PY = path.join(HERE, "..", "voice-bakeoff", ".venvs", "chatterbox", "Scripts", "python.exe");
+let alignedLines = 0;
+if (!argv.includes("--no-align") && fs.existsSync(PY)) {
+  const jobs = lines.map((l, i) => {
+    const wavFile = path.join(VDIR, `.align-${i}.wav`);
+    fs.writeFileSync(wavFile, wav(takes[i].pcm));
+    const said = takes[i].spoken.split(/\s+/).filter(Boolean);
+    return { wav: wavFile, words: said.length === l.words.length ? said : l.words.map((w) => w.w) };
+  });
+  const jobFile = path.join(VDIR, ".align.json");
+  fs.writeFileSync(jobFile, JSON.stringify(jobs));
+  const r = spawnSync(PY, [path.join(HERE, "align.py"), jobFile], { env: { ...process.env, PYTHONUTF8: "1" }, maxBuffer: 1 << 26 });
+  for (const j of jobs) fs.rmSync(j.wav);
+  fs.rmSync(jobFile);
+  if (r.status === 0) {
+    const all = JSON.parse(r.stdout.toString().trim().split("\n").at(-1));
+    lines.forEach((l, i) => {
+      const got = all[i];
+      if (!got || got.every((x) => !x)) return;
+      alignedLines++;
+      l.words.forEach((w, k) => {
+        if (!got[k]) return; // a word with no letters keeps its estimate, clamped below
+        w.t0 = +(l.t0 + got[k][0]).toFixed(3);
+        w.t1 = +(l.t0 + got[k][1]).toFixed(3);
+      });
+      // keep the words in order: an estimated word sits between its aligned neighbours
+      l.words.forEach((w, k) => {
+        const prev = l.words[k - 1];
+        const next = l.words.slice(k + 1).find((_, n) => got[k + 1 + n]);
+        if (got[k]) return;
+        w.t0 = prev ? prev.t1 : l.t0;
+        w.t1 = Math.max(w.t0, next ? next.t0 : l.t1);
+      });
+    });
+  } else console.warn("align failed, word times are estimates:\n" + r.stderr.toString().slice(-600));
 }
 
 const duration = +(lines.at(-1).t1 + (S.tail ?? 1.5)).toFixed(3);
@@ -185,6 +227,5 @@ fs.writeFileSync(cachePath, JSON.stringify(cache, null, 2));
 
 const out = { engine, voice: voiceId, duration, lines, gates };
 fs.writeFileSync(path.join(ROOT, "voice.json"), JSON.stringify(out, null, 2));
-// also as a script so the page works without fetch()
-fs.writeFileSync(path.join(ROOT, "voice.js"), `window.VOICE = ${JSON.stringify(out)};\n`);
+console.log(`words: ${alignedLines}/${lines.length} lines force-aligned`);
 console.log(`voice: ${lines.length} lines, ${gates.length} gate(s), ${duration.toFixed(1)}s -> ${path.relative(process.cwd(), VDIR)}`);

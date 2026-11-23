@@ -1,0 +1,105 @@
+{
+  "pages": {
+    "lesson": "/adding-commands"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "lede": "#main-content header:has(h1) .lesson-lede",
+    "why": "#main-content p:has-text(\"has a working motor and no way yet\")",
+    "importCard": "#add-the-command-import .code-card:has-text(\"the bottom of the import block\")",
+    "cmds": "#your-first-command .code-card:has-text(\"Arm.java: the three commands\")",
+    "things": "#your-first-command > .lesson-stack > ul:has-text(\"() -> setVoltage(3.0) is\")",
+    "liLambda": "#your-first-command > .lesson-stack > ul:has-text(\"() -> setVoltage(3.0) is\") > li:has-text(\"() -> setVoltage(3.0) is\")",
+    "liNamed": "#your-first-command > .lesson-stack > ul:has-text(\"() -> setVoltage(3.0) is\") > li:has-text(\".named(...) gives the command\")",
+    "holdP": "#your-first-command > .lesson-stack > p:has-text(\"() -> stopMotor() in\")",
+    "warnBox": "#your-first-command > .lesson-stack > div:has-text(\"Watch outA hold never\")",
+    "buildP": "#did-it-work > .lesson-stack > p:has-text(\"Run WPILib: Build Robot\")",
+    "errors": "#did-it-work table"
+  },
+  "open": [
+    {
+      "card": "Writing Commands",
+      "kicker": "Workshop 3 · Robot Programming"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      },
+      {
+        "at": "reach",
+        "mark": "@lede",
+        "text": "nothing can reach them"
+      }
+    ],
+    "owner": [
+      {
+        "show": "@why"
+      },
+      {
+        "at": "one",
+        "mark": "@why",
+        "text": "one command at a time"
+      }
+    ],
+    "import": [
+      {
+        "code": "@importCard",
+        "lines": [2, 2]
+      }
+    ],
+    "first": [
+      {
+        "code": "@cmds",
+        "lines": [4, 7]
+      }
+    ],
+    "three": [
+      {
+        "code": "@cmds",
+        "lines": [9, 17]
+      }
+    ],
+    "lambda": [
+      {
+        "show": "@things"
+      },
+      {
+        "at": "arrow",
+        "spot": "@liLambda"
+      }
+    ],
+    "named": [
+      {
+        "spot": "@liNamed"
+      }
+    ],
+    "hold": [
+      {
+        "show": "@holdP"
+      },
+      {
+        "at": "canceling",
+        "mark": "@holdP",
+        "text": "canceling a command does not stop the motor"
+      }
+    ],
+    "warn": [
+      {
+        "show": "@warnBox"
+      }
+    ],
+    "build": [
+      {
+        "show": ["@buildP", "@errors"]
+      }
+    ],
+    "close": [
+      {
+        "code": "@cmds",
+        "lines": [4, 17]
+      }
+    ]
+  }
+}

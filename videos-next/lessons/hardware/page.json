@@ -1,0 +1,123 @@
+{
+  "pages": {
+    "lesson": "/hardware"
+  },
+  "targets": {
+    "header": "#main-content header:has(h1)",
+    "motorCard": "#hardware-components div.module:has-text(\"A brushless motor\")",
+    "encoderCard": "#hardware-components div.module:has-text(\"An absolute position\")",
+    "busCard": "#hardware-components div.module:has-text(\"A USB adapter\")",
+    "flywheelP": "#hardware-components > .lesson-stack > p:has-text(\"The flywheel has no\")",
+    "connectP": "#connecting-to-your-device > .lesson-stack > div:has-text(\"Power the mechanism first,\")",
+    "connectList": "#connecting-to-your-device > .lesson-stack > ol:has-text(\"Open Phoenix Tuner X\")",
+    "stepRename": "#connecting-to-your-device > .lesson-stack > ol:has-text(\"Open Phoenix Tuner X\") > li:has-text(\"Rename it to canivore.\")",
+    "firmwareP": "#updating-your-ctre-products > .lesson-stack > p:has-text(\"Now update everything. A\")",
+    "firmwareList": "#updating-your-ctre-products > .lesson-stack > ol:has-text(\"Update the CANivore.Update the\")",
+    "stepCanivore": "#updating-your-ctre-products > .lesson-stack > ol:has-text(\"Update the CANivore.Update the\") > li:has-text(\"Update the CANivore.\")",
+    "table": "#updating-your-ctre-products table",
+    "rowGreen": "#updating-your-ctre-products table tr:has-text(\"latest firmware\")",
+    "rowYellow": "#updating-your-ctre-products table tr:has-text(\"newer version\")",
+    "rowRed": "#updating-your-ctre-products table tr:has-text(\"Duplicate ID\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Power cycle the mechanism:\")",
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe CANivore\")",
+    "checkHand": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe CANivore\") li:has-text(\"On the arm, turning\")"
+  },
+  "open": [
+    {
+      "card": "Hardware Setup",
+      "kicker": "Workshop 1 · Hardware & CTRE"
+    }
+  ],
+  "lines": {
+    "intro": [
+      {
+        "show": "@header"
+      }
+    ],
+    "motor": [
+      {
+        "show": ["@motorCard", "@encoderCard", "@busCard"]
+      },
+      {
+        "at": "motor",
+        "spot": "@motorCard",
+        "until": "end"
+      }
+    ],
+    "sensor": [
+      {
+        "spot": "@encoderCard",
+        "until": "end"
+      }
+    ],
+    "bus": [
+      {
+        "spot": "@busCard",
+        "until": "end"
+      }
+    ],
+    "flywheel": [
+      {
+        "show": "@flywheelP"
+      }
+    ],
+    "connect": [
+      {
+        "show": ["@connectP", "@connectList"]
+      }
+    ],
+    "name": [
+      {
+        "spot": "@stepRename",
+        "until": "end"
+      }
+    ],
+    "firmware": [
+      {
+        "show": ["@firmwareP", "@firmwareList"]
+      },
+      {
+        "at": "Update",
+        "spot": "@stepCanivore",
+        "until": "end"
+      }
+    ],
+    "colors": [
+      {
+        "show": "@table"
+      },
+      {
+        "at": "Green",
+        "spot": "@rowGreen",
+        "until": "Yellow"
+      },
+      {
+        "at": "Yellow",
+        "spot": "@rowYellow",
+        "until": "end"
+      }
+    ],
+    "red": [
+      {
+        "spot": "@rowRed",
+        "until": "end"
+      }
+    ],
+    "check": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      },
+      {
+        "at": "name",
+        "mark": "@checkP",
+        "text": "stored on the devices",
+        "until": "end"
+      }
+    ],
+    "close": [
+      {
+        "spot": "@checkHand"
+      }
+    ]
+  }
+}

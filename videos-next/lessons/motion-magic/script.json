@@ -1,5 +1,5 @@
 {
-  "title": "Walking the Target",
+  "title": "Motion Magic in Tuner X",
   "voice": {
     "engine": "chatterbox",
     "id": "joe",
@@ -10,70 +10,57 @@
   "lines": [
     {
       "id": "intro",
-      "text": "Last time, the target jumped all at once. Motion Magic walks it there instead.",
-      "after": 0.6
-    },
-    {
-      "id": "route",
-      "text": "Two numbers describe the walk: how fast it may go, and how fast it may speed up.",
-      "after": 0.6
-    },
-    {
-      "id": "trapezoid",
-      "text": "So every move has three parts. It speeds up, it cruises, and it slows down, arriving with no speed left.",
+      "text": "Your gains are saved, and three runs each way look alike. The target still jumps to the end in one step, though, so the loop gets asked for the whole move at once.",
       "after": 0.6
     },
     {
       "id": "same",
-      "text": "Your gains don't change. Motion Magic only moves the target they chase.",
+      "text": "None of that tuning gets thrown away. Motion Magic only changes the target your gains are chasing, so keep the same plot open and leave Slot 0 alone.",
       "after": 0.6
     },
     {
-      "id": "set",
-      "text": "In the Motion Magic settings, start slow: half a rotation per second, and one rotation per second squared. Leave jerk at zero, and apply.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "run",
-      "text": "Pick Motion Magic from the control menu, ask for a quarter turn, and enable. The plot draws the shape.",
-      "after": 0.6,
-      "rec": true
-    },
-    {
-      "id": "tryit",
-      "text": "Try it. Make the move shorter, and watch what happens to the cruise.",
-      "after": 0.3,
-      "gate": {
-        "id": "try",
-        "seconds": 8
-      }
-    },
-    {
-      "id": "triangle",
-      "text": "On a short move, there's no room to cruise. It starts slowing down before it reaches top speed, and that's correct.",
+      "id": "limits",
+      "text": "Two limits shape the trip. One is a top speed, and the other is how quickly the mechanism may build up to it. Jerk you can ignore unless your mechanism is very heavy.",
       "after": 0.6
     },
     {
-      "id": "flywheel",
-      "text": "A flywheel isn't going anywhere, so it has no cruise. Only the acceleration shapes its ramp.",
+      "id": "kinds",
+      "text": "An arm is going somewhere, so its plan includes the stop. A flywheel never arrives anywhere, which is why it only gets a ramp.",
+      "after": 0.6
+    },
+    {
+      "id": "small",
+      "text": "Start much slower than you think you need, because the first run is only there to show you what the profile does. Check the units too. They count turns of the mechanism, not the motor.",
+      "after": 0.6
+    },
+    {
+      "id": "mode",
+      "text": "Nothing changes until you switch the control mode over on the Control tab. The limits themselves go in the Motion Magic section of the configs.",
+      "after": 0.6
+    },
+    {
+      "id": "enable",
+      "text": "Switching the mode also disabled the motor. If you press Apply and nothing moves, that's the reason, so enable it again before you run anything.",
       "after": 0.6
     },
     {
       "id": "raise",
-      "text": "Raise the limits one step at a time, until the arm starts to lag, then back off a little.",
-      "after": 0.6,
-      "rec": true
+      "text": "Once it follows the profile cleanly on every run, raise the limits a step at a time. You stop when the measurement falls behind, the current spikes, or the structure shakes.",
+      "after": 0.6
     },
     {
-      "id": "generate",
-      "text": "Everything you set now lives on the motor. In the three dot menu, Generate Code copies it out, and that's where the code picks up in Workshop 3.",
-      "after": 0.6,
-      "rec": true
+      "id": "moves",
+      "text": "Then try the longest move you'll ever ask for, both ways, and the shortest. A short one never gets up to cruising speed, so what it really tests is the stop.",
+      "after": 0.6
+    },
+    {
+      "id": "margin",
+      "text": "Don't keep the best numbers you found. A battery late in a match can't keep up with what it managed fresh, so back the limits off and leave some room.",
+      "after": 0.6
     },
     {
       "id": "close",
-      "text": "Name where it should end up, and the motor plans the way there.",
+      "text": "Five runs with the traces stacked on each other, and the motor plans its own way there. All of it happened by clicking. Next you start on Java, so code can ask for the same move.",
       "after": 0.6
     }
   ]
