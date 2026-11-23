@@ -1,5 +1,7 @@
 {
-  "pages": { "lesson": "/vision-hardware" },
+  "pages": {
+    "lesson": "/vision-hardware"
+  },
   "targets": {
     "header": "#main-content header:has(h1)",
     "lede": "#main-content header:has(h1) .lesson-lede",
@@ -26,23 +28,51 @@
     "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Hold a printed tag\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe tag's\")"
   },
-  "open": [{ "card": "Vision Hardware", "kicker": "Workshop 7 · Vision" }],
+  "open": [
+    {
+      "card": "Vision Hardware",
+      "kicker": "Workshop 7 · Vision"
+    }
+  ],
   "lines": {
     "intro": [
-      { "show": "@header" },
-      { "at": "none", "mark": "@lede", "text": "before any Java" }
+      {
+        "show": "@header"
+      },
+      {
+        "at": "none",
+        "mark": "@lede",
+        "text": "before any Java"
+      }
     ],
     "tags": [
-      { "show": ["@tagsHead", "@tagsBody"] },
-      { "at": "tag", "spot": "@tagsP" }
+      {
+        "show": ["@tagsHead", "@tagsBody"]
+      },
+      {
+        "at": "tag",
+        "spot": "@tagsP"
+      }
     ],
     "blend": [
-      { "spot": "@blendP" },
-      { "at": "blends", "mark": "@blendP", "text": "The robot blends the two." }
+      {
+        "spot": "@blendP"
+      },
+      {
+        "at": "blends",
+        "mark": "@blendP",
+        "text": "the robot blends the two"
+      }
     ],
-    "camera": [{ "show": ["@cameraHead", "@cameraP"] }],
+    "camera": [
+      {
+        "show": ["@cameraHead", "@cameraP"]
+      }
+    ],
     "mount": [
-      { "show": ["@mountHead", "@mountP", "@powerP"] },
+      {
+        "show": ["@mountHead", "@mountP", "@powerP"]
+      },
       {
         "at": "score",
         "mark": "@mountP",
@@ -50,7 +80,9 @@
       }
     ],
     "angle": [
-      { "show": "@split" },
+      {
+        "show": "@split"
+      },
       {
         "at": "rectangle",
         "mark": "@squareP",
@@ -58,29 +90,52 @@
         "until": "end"
       }
     ],
-    "glue": [{ "spot": "@glueP" }],
+    "glue": [
+      {
+        "spot": "@glueP"
+      }
+    ],
     "map": [
-      { "show": ["@setupHead", "@setupP", "@stepMap"] },
-      { "at": "map", "spot": "@stepMap" }
+      {
+        "show": ["@setupHead", "@setupP", "@stepMap"]
+      },
+      {
+        "at": "map",
+        "spot": "@stepMap"
+      }
     ],
     "pipeline": [
-      { "show": ["@stepPipe", "@stepExp"] },
-      { "at": "exposure", "spot": "@stepExp" }
+      {
+        "show": ["@stepPipe", "@stepExp"]
+      },
+      {
+        "at": "exposure",
+        "spot": "@stepExp"
+      }
     ],
     "offsets": [
-      { "show": "@stepOff" },
+      {
+        "show": "@stepOff"
+      },
       {
         "at": "wrong",
         "mark": "@stepOff",
-        "text": "every measurement shifts the same"
+        "text": "shifts every measurement the same way"
       }
     ],
     "calibrate": [
-      { "show": ["@stepCal", "@stepName"] },
-      { "at": "name", "spot": "@stepName" }
+      {
+        "show": ["@stepCal", "@stepName"]
+      },
+      {
+        "at": "name",
+        "spot": "@stepName"
+      }
     ],
     "close": [
-      { "show": ["@checkP", "@checkBox"] },
+      {
+        "show": ["@checkP", "@checkBox"]
+      },
       {
         "at": "tape",
         "mark": "@checkBox",

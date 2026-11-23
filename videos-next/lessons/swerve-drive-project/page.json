@@ -22,13 +22,11 @@
     "checkFloor": "#did-it-work > .lesson-stack > ol:has-text(\"Select Teleop and enable,\") > li:has-text(\"On the floor, point\")",
     "sim": "#full-simulation",
     "simP": "#full-simulation > .lesson-stack > p:has-text(\"Hardware Simulation ran your\")",
-    "files": "#three-files-and-why-there-have",
-    "filesMine": "#three-files-and-why-there-have > .lesson-stack > p:has-text(\"DriveMechanism.java is the workshop's,\")",
     "defaultHead": "#your-first-real-default-command > div:first-child",
-    "latchedP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"A Mechanism has no\")",
-    "robotP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"So the Robot constructor\")",
+    "latchedP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"A canceled command leaves\")",
     "robotCode": "#your-first-real-default-command .code-card:has-text(\"Robot.java: the joystick drive, set as the default\")",
-    "teleopCode": "#your-first-real-default-command .code-card:has-text(\"TeleopOpMode.java: the buttons\")"
+    "teleopCode": "#your-first-real-default-command .code-card:has-text(\"TeleopOpMode.java: the buttons\")",
+    "mineP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"Your own drivetrain code\")"
   },
   "open": [
     {
@@ -120,21 +118,22 @@
     ],
     "files": [
       {
-        "show": "@files"
+        "show": ["@defaultHead", "@mineP"]
       },
       {
         "at": "third",
-        "spot": "@filesMine"
+        "mark": "@mineP",
+        "text": "what an OpMode talks to"
       }
     ],
     "latched": [
       {
-        "show": ["@defaultHead", "@latchedP", "@robotP"]
+        "show": "@latchedP"
       },
       {
         "at": "speed",
         "mark": "@latchedP",
-        "text": "the robot would keep rolling"
+        "text": "a drivetrain would keep rolling"
       }
     ],
     "default": [

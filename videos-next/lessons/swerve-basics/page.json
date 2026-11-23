@@ -66,11 +66,6 @@
     "thirteen": [
       {
         "show": "@thirteenP"
-      },
-      {
-        "at": "math",
-        "mark": "@thirteenP",
-        "text": "You never write the math"
       }
     ],
     "robot": [

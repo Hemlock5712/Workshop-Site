@@ -1,5 +1,7 @@
 {
-  "pages": { "lesson": "/align-to-tag" },
+  "pages": {
+    "lesson": "/align-to-tag"
+  },
   "targets": {
     "header": "#main-content header:has(h1)",
     "lede": "#main-content header:has(h1) .lesson-lede",
@@ -8,10 +10,10 @@
     "frameCode": "#the-tags-frame .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
     "danger": "#the-tags-frame > .lesson-stack > div:has-text(\"DANGER · SIGNSTest this\")",
     "mapHead": "#remember-the-tag > div:first-child",
-    "mapP": "#remember-the-tag > .lesson-stack > p:has-text(\"The camera answers a\")",
+    "mapP": "#remember-the-tag > .lesson-stack > p:has-text(\"The camera answers late\")",
     "mapCode": "#remember-the-tag .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
     "driveHead": "#drive-in-the-tags-frame > div:first-child",
-    "driveP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"BLine follows whatever pose\")",
+    "driveP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"Add alignToTag under\")",
     "resetP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"The pose reset does\")",
     "recordHead": "#record-your-spot > div:first-child",
     "recordP": "#record-your-spot > .lesson-stack > p:has-text(\"Do not measure the\")",
@@ -21,10 +23,17 @@
     "check3": "#check-your-work > .lesson-stack > ol:has-text(\"Disabled, push the robot\") > li:has-text(\"Cover the camera, push\")",
     "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeAbout (1.5,\")"
   },
-  "open": [{ "card": "Align to Tag", "kicker": "Workshop 7 · Vision" }],
+  "open": [
+    {
+      "card": "Align to Tag",
+      "kicker": "Workshop 7 · Vision"
+    }
+  ],
   "lines": {
     "intro": [
-      { "show": "@header" },
+      {
+        "show": "@header"
+      },
       {
         "at": "never",
         "mark": "@lede",
@@ -32,50 +41,87 @@
       }
     ],
     "frame": [
-      { "show": ["@frameHead", "@frameP"] },
+      {
+        "show": ["@frameHead", "@frameP"]
+      },
       {
         "at": "forward",
         "mark": "@frameP",
         "text": "X points straight out of its face"
       }
     ],
-    "convert": [{ "code": "@frameCode", "lines": [4, 10] }],
-    "danger": [{ "show": "@danger" }],
+    "convert": [
+      {
+        "code": "@frameCode",
+        "lines": [4, 10]
+      }
+    ],
+    "danger": [
+      {
+        "show": "@danger"
+      }
+    ],
     "map": [
-      { "show": ["@mapHead", "@mapP"] },
+      {
+        "show": ["@mapHead", "@mapP"]
+      },
       {
         "at": "sighting",
         "mark": "@mapP",
-        "text": "each sighting puts the tag down once"
+        "text": "each sighting places the tag"
       }
     ],
-    "gates": [{ "code": "@mapCode", "lines": [7, 10] }],
+    "gates": [
+      {
+        "code": "@mapCode",
+        "lines": [7, 10]
+      }
+    ],
     "remember": [
-      { "code": "@mapCode", "lines": [17, 29] },
-      { "at": "logs", "code": "@mapCode", "lines": [27, 27] }
+      {
+        "code": "@mapCode",
+        "lines": [17, 29]
+      },
+      {
+        "at": "logs",
+        "code": "@mapCode",
+        "lines": [27, 27]
+      }
     ],
     "drive": [
-      { "show": ["@driveHead", "@driveP"] },
+      {
+        "show": ["@driveHead", "@driveP"]
+      },
       {
         "at": "pose",
         "mark": "@driveP",
-        "text": "it drives in the tag's frame"
+        "text": "BLine drives in the tag's frame"
       }
     ],
     "empty": [
-      { "show": "@resetP" },
-      { "at": "check", "mark": "@resetP", "text": "ends the command at once" }
+      {
+        "show": "@resetP"
+      },
+      {
+        "at": "check",
+        "mark": "@resetP",
+        "text": "ends the command at once"
+      }
     ],
     "record": [
-      { "show": ["@recordHead", "@recordP", "@recordSteps"] },
+      {
+        "show": ["@recordHead", "@recordP", "@recordSteps"]
+      },
       {
         "at": "measure",
         "mark": "@recordP",
-        "text": "goes into the number and back out again"
+        "text": "mounting error cancels out"
       }
     ],
     "event": [
-      { "show": "@eventP" },
+      {
+        "show": "@eventP"
+      },
       {
         "at": "hand",
         "mark": "@eventP",
@@ -83,8 +129,13 @@
       }
     ],
     "close": [
-      { "show": ["@checkSteps", "@seeBox"] },
-      { "at": "third", "spot": "@check3" }
+      {
+        "show": ["@checkSteps", "@seeBox"]
+      },
+      {
+        "at": "third",
+        "spot": "@check3"
+      }
     ]
   }
 }
