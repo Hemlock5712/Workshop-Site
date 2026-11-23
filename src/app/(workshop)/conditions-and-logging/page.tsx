@@ -322,7 +322,7 @@ public void robotPeriodic() {
         </Box>
         <p>
           A signal that holds one value is not always a bug. Telemetry writes an
-          entry only when the value changes, so a <M k="noun" /> that is still
+          entry only when the value changes, so a mechanism that is still
           records one sample and then nothing until it moves.
         </p>
         <WatchOut>
