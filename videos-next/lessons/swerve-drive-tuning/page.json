@@ -15,8 +15,8 @@
     "speedP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"kSpeedAt12Volts is the speed\")",
     "speedList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Full stick forward. Hold\")",
     "speedPlateau": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Full stick forward. Hold\") > li:has-text(\"Plot Drivetrain/TranslationSpeedMps and read\")",
-    "statorP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"A stator current limit\")",
-    "slipList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Drive the robot against\")",
+    "statorP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"We can also use\")",
+    "slipList": "#top-speed-and-slip > .lesson-stack > ol:has-text(\"Drive the robot up\")",
     "kneeP": "#top-speed-and-slip > .lesson-stack > p:has-text(\"Current climbs while velocity\")",
     "hotBox": "#top-speed-and-slip > .lesson-stack > div:has-text(\"Don'tStalled motors get hot\")",
     "loopHead": "#close-the-drive-loop > div:first-child",
@@ -25,7 +25,8 @@
     "shrinkP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"The request has no deadband\")",
     "deadCard": "#close-the-drive-loop .code-card:has-text(\"setLeftXDeadband\")",
     "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Use the surface you\")",
-    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot\")"
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot\")",
+    "findP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"To find your own\")"
   },
   "open": [
     {
@@ -100,7 +101,7 @@
       {
         "at": "jumps",
         "mark": "@kneeP",
-        "text": "just before the drop"
+        "text": "the stator current at that moment is your slip current"
       }
     ],
     "hot": [
@@ -130,12 +131,12 @@
     ],
     "deadband": [
       {
-        "show": ["@shrinkP", "@deadCard"]
+        "show": ["@shrinkP", "@findP", "@deadCard"]
       },
       {
         "at": "twitch",
-        "mark": "@shrinkP",
-        "text": "then go back one value"
+        "mark": "@findP",
+        "text": "Take the largest reading you see at rest"
       }
     ],
     "close": [

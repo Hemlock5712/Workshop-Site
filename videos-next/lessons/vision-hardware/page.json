@@ -8,7 +8,7 @@
     "tagsHead": "#tags-against-drift > div:first-child",
     "tagsBody": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\")",
     "tagsP": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\") p:has-text(\"An AprilTag is a\")",
-    "blendP": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\") p:has-text(\"Unlike odometry\")",
+    "blendP": "#tags-against-drift > .lesson-stack > div:has-text(\"An AprilTag is a\") p:has-text(\"One issue with vision\")",
     "cameraHead": "#limelight-or-photonvision > div:first-child",
     "cameraP": "#limelight-or-photonvision > .lesson-stack > p:has-text(\"This course uses a\")",
     "mountHead": "#mounting-and-wiring > div:first-child",
@@ -18,15 +18,13 @@
     "squareP": "#mounting-and-wiring > .lesson-stack > div:has-text(\"A tag viewed square-on\") p:has-text(\"A tag viewed square-on\")",
     "glueP": "#mounting-and-wiring > .lesson-stack > div:has-text(\"A tag viewed square-on\") p:has-text(\"We have found Limelight\")",
     "setupHead": "#set-the-camera-up > div:first-child",
-    "setupP": "#set-the-camera-up > .lesson-stack > p:has-text(\"Do these in order,\")",
-    "stepMap": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Update the Limelight OS\")",
-    "stepPipe": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Switch the active pipeline\")",
-    "stepExp": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Drop the exposure as\")",
-    "stepOff": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Enter the camera offsets.\")",
-    "stepCal": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Calibrate the lens with\")",
-    "stepName": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Update the Limelight OS\") > li:has-text(\"Write down the camera's\")",
+    "stepPipe": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Flash the newest Limelight\") > li:has-text(\"Change the pipeline to\")",
+    "stepOff": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Flash the newest Limelight\") > li:has-text(\"Enter the camera offsets.\")",
+    "stepCal": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Flash the newest Limelight\") > li:has-text(\"Calibrate the camera. If\")",
+    "stepName": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Flash the newest Limelight\") > li:has-text(\"Write down the camera's\")",
     "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Hold a printed tag\")",
-    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe tag's\")"
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe tag's\")",
+    "stepFlash": "#set-the-camera-up > .lesson-stack > ol:has-text(\"Flash the newest Limelight\") > li:has-text(\"Flash the newest Limelight\")"
   },
   "open": [
     {
@@ -61,7 +59,7 @@
       {
         "at": "blends",
         "mark": "@blendP",
-        "text": "the robot blends the two"
+        "text": "merge vision with our drivetrain readings"
       }
     ],
     "camera": [
@@ -97,20 +95,22 @@
     ],
     "map": [
       {
-        "show": ["@setupHead", "@setupP", "@stepMap"]
+        "show": ["@setupHead", "@stepFlash"]
       },
       {
         "at": "map",
-        "spot": "@stepMap"
+        "mark": "@stepFlash",
+        "text": "The field map comes with the install"
       }
     ],
     "pipeline": [
       {
-        "show": ["@stepPipe", "@stepExp"]
+        "show": "@stepPipe"
       },
       {
         "at": "exposure",
-        "spot": "@stepExp"
+        "mark": "@stepPipe",
+        "text": "dropping the exposure as low as it will go"
       }
     ],
     "offsets": [
