@@ -59,7 +59,7 @@ export default function VisionHardware() {
     >
       <LessonSection id="tags-against-drift" title="Tags against drift">
         <ImageBlock
-          src="/images/vision/apriltag.webp"
+          src="/images/vision/april-tag.webp"
           alt="An AprilTag: a square black and white grid pattern inside a black border"
           caption="An AprilTag. The pattern inside the border is its ID number."
           width={270}

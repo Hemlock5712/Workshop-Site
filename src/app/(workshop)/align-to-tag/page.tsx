@@ -46,7 +46,7 @@ const linkStyle =
  * (1, 0, 180) reached at (3.99, 2.99, 0) with a 0.4 s blackout mid-drive and
  * again with sightings cut off for good 1.5 s in, the speed never dipping; no
  * motion when the tag was never seen. That harness skips `samplePoseAt`, so
- * the real camera path is compiled and unrun. The spot is still read off
+ * the real camera path is compiled and not yet run. The spot is still read off
  * `Vision/RobotInTag<id>` rather than the Limelight web page: the web page
  * shows Limelight's own axes, and the logged value is the exact number the
  * path drives on.
