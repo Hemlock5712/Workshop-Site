@@ -10,18 +10,18 @@
     "frameCode": "#the-tags-frame .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
     "danger": "#the-tags-frame > .lesson-stack > div:has-text(\"DANGER · SIGNSTest this\")",
     "mapHead": "#remember-the-tag > div:first-child",
-    "mapP": "#remember-the-tag > .lesson-stack > p:has-text(\"The camera answers late\")",
+    "mapP": "#remember-the-tag > .lesson-stack > p:has-text(\"The camera will lose\")",
     "mapCode": "#remember-the-tag .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
     "driveHead": "#drive-in-the-tags-frame > div:first-child",
-    "driveP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"Add alignToTag under\")",
-    "resetP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"The pose reset does\")",
+    "driveP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"Add alignToTag to DriveMechanism,\")",
     "recordHead": "#record-your-spot > div:first-child",
     "recordP": "#record-your-spot > .lesson-stack > p:has-text(\"Do not measure the\")",
     "recordSteps": "#record-your-spot > .lesson-stack > ol:has-text(\"Disable the robot and\")",
     "eventP": "#record-your-spot > .lesson-stack > p:has-text(\"Record it again on\")",
     "checkSteps": "#check-your-work > .lesson-stack > ol:has-text(\"Disabled, push the robot\")",
-    "check3": "#check-your-work > .lesson-stack > ol:has-text(\"Disabled, push the robot\") > li:has-text(\"Cover the camera, push\")",
-    "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeAbout (1.5,\")"
+    "check3": "#check-your-work > .lesson-stack > ol:has-text(\"Disabled, push the robot\") > li:has-text(\"Back the robot up,\")",
+    "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeAbout (1.5,\")",
+    "lostP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"If the camera loses\")"
   },
   "open": [
     {
@@ -37,7 +37,7 @@
       {
         "at": "never",
         "mark": "@lede",
-        "text": "a wrong field pose cannot move the spot"
+        "text": "a spot measured from one AprilTag"
       }
     ],
     "frame": [
@@ -66,26 +66,26 @@
         "show": ["@mapHead", "@mapP"]
       },
       {
-        "at": "sighting",
+        "at": "wheels",
         "mark": "@mapP",
-        "text": "each sighting places the tag"
+        "text": "From then on the wheels fill in"
       }
     ],
     "gates": [
       {
         "code": "@mapCode",
-        "lines": [7, 10]
+        "lines": [12, 15]
       }
     ],
     "remember": [
       {
         "code": "@mapCode",
-        "lines": [17, 29]
+        "lines": [22, 33]
       },
       {
         "at": "logs",
         "code": "@mapCode",
-        "lines": [27, 27]
+        "lines": [31, 31]
       }
     ],
     "drive": [
@@ -100,12 +100,12 @@
     ],
     "empty": [
       {
-        "show": "@resetP"
+        "show": "@lostP"
       },
       {
-        "at": "check",
-        "mark": "@resetP",
-        "text": "ends the command at once"
+        "at": "quits",
+        "mark": "@lostP",
+        "text": "The path finishes at once and nothing moves"
       }
     ],
     "record": [

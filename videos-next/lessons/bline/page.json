@@ -5,10 +5,6 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "lede": "#main-content header:has(h1) .lesson-lede",
-    "installHead": "#install > div:first-child",
-    "installList": "#install > .lesson-stack > ol:has-text(\"In VS Code, open\")",
-    "installBuild": "#install > .lesson-stack > ol:has-text(\"In VS Code, open\") > li:has-text(\"Build the project. The first\")",
-    "installUrl": "#install .code-card:has-text(\"BLine-Lib 2027.0.0-beta.3, WPILib 2027 alpha-7copy\")",
     "drawHead": "#draw > div:first-child",
     "folderP": "#draw > .lesson-stack > p:has-text(\"The editor works on\")",
     "importFig": "#draw figure:has-text(\"Home, then Import, then Autos\")",
@@ -20,11 +16,14 @@
     "builderCode": "#builder .code-card:has-text(\"DriveMechanism.java: the path request, the builder, and foll\")",
     "gainsLi": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\") > li:has-text(\"The three PIDControllers pull\")",
     "opmodeHead": "#auto-opmode > div:first-child",
-    "opmodeP": "#auto-opmode > .lesson-stack > p:has-text(\"Delete LeaveStartAuto.java and create\")",
-    "opmodeCode": "#auto-opmode .code-card:has-text(\"src/main/java/frc/robot/opmodes/AutoOpMode.javacopy\")",
+    "opmodeP": "#auto-opmode > .lesson-stack > p:has-text(\"Now let's create AutoOpMode.java\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")",
     "builderList": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\")",
-    "argsLi": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\") > li:has-text(\"The first six arguments\")"
+    "argsLi": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\") > li:has-text(\"The first six arguments\")",
+    "dropP": "#auto-opmode > .lesson-stack > p:has-text(\"One AutoOpMode can hold\")",
+    "eventCode": "#auto-opmode .code-card:has-text(\"the rest of the constructor\")",
+    "pathCode": "#auto-opmode .code-card:has-text(\"Read the path file now\"):not(:has-text(\"package frc.robot.opmodes\"))",
+    "startCode": "#auto-opmode .code-card:has-text(\"routine = autoChooser.getSelected()\"):not(:has-text(\"package frc.robot.opmodes\"))"
   },
   "open": [
     {
@@ -40,16 +39,7 @@
       {
         "at": "draw",
         "mark": "@lede",
-        "text": "replaces the Leave Start timer with a drawn path"
-      }
-    ],
-    "install": [
-      {
-        "show": ["@installHead", "@installList", "@installUrl"]
-      },
-      {
-        "at": "first",
-        "spot": "@installBuild"
+        "text": "Draw a path on the field"
       }
     ],
     "folder": [
@@ -124,32 +114,36 @@
         "show": ["@opmodeHead", "@opmodeP"]
       },
       {
+        "at": "One",
+        "show": "@dropP"
+      },
+      {
         "at": "drop-down",
-        "mark": "@opmodeP",
-        "text": "a drop-down on the dashboard picks"
+        "mark": "@dropP",
+        "text": "Add a drop-down for the dashboard"
       }
     ],
     "trigger": [
       {
-        "code": "@opmodeCode",
-        "lines": [19, 23]
+        "code": "@eventCode",
+        "lines": [5, 6]
       },
       {
         "at": "file",
-        "code": "@opmodeCode",
-        "lines": [25, 27]
+        "code": "@pathCode",
+        "lines": [2, 4]
       }
     ],
     "reset": [
       {
-        "code": "@opmodeCode",
-        "lines": [25, 27]
+        "code": "@pathCode",
+        "lines": [2, 4]
       }
     ],
     "start": [
       {
-        "code": "@opmodeCode",
-        "lines": [44, 48]
+        "code": "@startCode",
+        "lines": [3, 7]
       }
     ],
     "close": [

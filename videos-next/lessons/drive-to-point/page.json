@@ -5,17 +5,17 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "poseHead": "#the-pose-you-are-driving-to > div:first-child",
-    "poseP": "#the-pose-you-are-driving-to > .lesson-stack > p:has-text(\"The target is a\")",
+    "poseP": "#the-pose-you-are-driving-to > .lesson-stack > p:has-text(\"As you learned in\")",
     "oneHead": "#one-waypoint > div:first-child",
     "oneP": "#one-waypoint > .lesson-stack > p:has-text(\"Add driveToPoint to\")",
     "driveCode": "#one-waypoint .code-card:has-text(\"src/main/java/frc/robot/subsystems/DriveMechanism.javacopy\")",
     "sameP": "#one-waypoint > .lesson-stack > p:has-text(\"Everything the pathBuilder was\")",
-    "flipP": "#one-waypoint > .lesson-stack > p:has-text(\"withShouldFlip(() -> false) overrides\")",
     "teleopCode": "#bind-it .code-card:has-text(\"src/main/java/frc/robot/opmodes/TeleopOpMode.javacopy\")",
     "holdP": "#bind-it > .lesson-stack > p:has-text(\"whileTrue cancels the command\")",
     "steps": "#check-your-work > .lesson-stack > ol:has-text(\"Enable Teleop in full\")",
     "step3": "#check-your-work > .lesson-stack > ol:has-text(\"Enable Teleop in full\") > li:has-text(\"Hold B until the\")",
-    "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeOn A,\")"
+    "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeOn A,\")",
+    "allianceP": "#one-waypoint > .lesson-stack > p:has-text(\"The alliance check comes\")"
   },
   "open": [
     {
@@ -31,7 +31,7 @@
       {
         "at": "single",
         "mark": "#main-content header:has(h1) .lesson-lede",
-        "text": "a BLine path with one waypoint"
+        "text": "with BLine, on the fly"
       }
     ],
     "pose": [
@@ -57,7 +57,7 @@
     "start": [
       {
         "code": "@driveCode",
-        "lines": [14, 16]
+        "lines": [4, 6]
       }
     ],
     "same": [
@@ -72,18 +72,12 @@
     ],
     "flip": [
       {
-        "code": "@driveCode",
-        "lines": [17, 18]
-      }
-    ],
-    "fixed": [
-      {
-        "show": "@flipP"
+        "show": "@allianceP"
       },
       {
-        "at": "flipping",
-        "mark": "@flipP",
-        "text": "the far end"
+        "at": "turned",
+        "mark": "@allianceP",
+        "text": "On red, BLine turns it around the field center"
       }
     ],
     "bind": [
