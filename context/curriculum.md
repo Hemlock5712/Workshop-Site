@@ -31,8 +31,9 @@ land a little off and further off over time, and the Vision workshop is the
 correction. So `/drive-to-point` does not list Vision under "You'll need" and
 must not say it comes after Vision. The Workshop-Code branch order still
 disagrees: `swerve-drive-to-point` is built on `swerve-vision`, so a student on
-that branch already has the camera code. Reorder the branches when the swerve
-chain is next rebuilt.
+that branch already has the camera code. The November 2026 rebuild for
+Recording 13 puts `swerve-drive-to-point` on `swerve-bline`, ahead of
+`swerve-vision`; see the Recording 13 bullet in `context/teaching-code.md`.
 
 **Workshop 4 is Routines, and it renumbered everything after it.** September
 2026: Command Composition, Finish Conditions and Coroutines left the tail of

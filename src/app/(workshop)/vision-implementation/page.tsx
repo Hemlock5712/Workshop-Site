@@ -1,8 +1,6 @@
 import PageTemplate from "@/components/PageTemplate";
-import { ProseBlock } from "@/components/lesson/Prose";
 import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
-import ImageBlock from "@/components/ImageBlock";
 import DocumentationButton from "@/components/DocumentationButton";
 import CodeBlock from "@/components/CodeBlock";
 import Quiz from "@/components/Quiz";
@@ -54,6 +52,27 @@ export const metadata = lessonMetadata("/vision-implementation");
  * `Robot` rather than a static `registerAll`, because `/align-to-tag` asks it
  * where a tag is. The class is `Vision` rather than `Limelight` because the
  * library now owns that name.
+ *
+ * The install section went the same month: `1-Swerve` ships the LimelightLib
+ * vendordep, so the pinned URL above now matters to whoever maintains that
+ * branch, not to a student.
+ *
+ * Owner's review, November 2026 (Recording 13): `Vision` is built up in six
+ * steps instead of pasted whole, with the explanation beside each step and the
+ * long bullet list gone. The trust numbers moved out of constants and into
+ * `addFrame`, the heading ternary became an `if`, and `addFrame` logs
+ * `Vision/Accepted`, `Vision/TagCount` and `Vision/Pose` through Telemetry
+ * (not AdvantageKit, which the course does not use), so Check your work reads
+ * the log.
+ *
+ * Same review, the owner's follow-up: nobody knew where the old 0.333, 1.5 and
+ * 1.2 power came from, so the formula was replaced by one a student can reason
+ * about, `0.5 * distance / tagCount`. The share-per-picture rule on the page,
+ * 0.1 / (0.1 + stdDev), is WPILib's closed-form gain with Phoenix's default
+ * 0.1 odometry standard deviation, and it was measured on `swerve-vision` in
+ * simulation: one `addVisionMeasurement` a meter away moved the pose 0.100 at
+ * 0.9, 0.500 at 0.1, 0.167 at 0.5 and 0.048 at 2.0. The 0.5 and 1.0 starting
+ * points are not tuned on a robot.
  */
 export default function VisionImplementation() {
   return (
@@ -82,53 +101,191 @@ export default function VisionImplementation() {
         </p>
       </Box>
 
-      <LessonSection id="install-the-library" title="Install the library">
-        <ProseBlock>
-          <p>
-            LimelightLib is a vendor dependency, like Phoenix 6. Open the{" "}
-            <strong>WPILib Vendor Dependencies</strong> view from the activity
-            bar on the left. Expand <strong>INSTALL FROM URL</strong>, paste the
-            URL below, and press <strong>Install</strong>.
-          </p>
-        </ProseBlock>
-
-        <CodeBlock
-          language="text"
-          title="Vendor dependency URL"
-          code={`https://limelightvision.github.io/limelightlib-public/LimelightLib-alpha7.json`}
-        />
-
-        <ImageBlock
-          src="/images/vision/install-from-url.png"
-          alt="The WPILib Vendor Dependencies panel in VS Code, with the INSTALL FROM URL section expanded and the Install button circled"
-          title="Install from URL"
-          caption="Paste the URL, press Install, and it appears under INSTALLED DEPENDENCIES."
-          width={499}
-          height={412}
-        />
-
+      <LessonSection id="the-vision-class" title="The Vision class">
         <p>
-          Build once so Gradle downloads it. You now have{" "}
+          The swerve project comes with LimelightLib installed, the same way it
+          comes with Phoenix 6 and BLine. It gives you{" "}
           <code>com.limelightvision.Limelight</code>, one object per camera.
         </p>
-
         <DocumentationButton
           href="https://docs.limelightvision.io/docs/docs-limelight/apis/limelight-lib"
           title="Limelight: LimelightLib"
           icon={<BookOpen className="h-5 w-5" />}
         />
-      </LessonSection>
-
-      <LessonSection id="the-vision-class" title="The Vision class">
         <p>
-          Create <code>src/main/java/frc/robot/subsystems/Vision.java</code> and
-          paste the whole class. It is called <code>Vision</code> and not{" "}
-          <code>Limelight</code> because the library owns that name.
+          Create <code>src/main/java/frc/robot/subsystems/Vision.java</code>. We
+          will build it up a few lines at a time. Start with a class that
+          remembers the drivetrain and makes one <code>Limelight</code> object
+          per camera name.
         </p>
-
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Vision.java"
+          code={`package frc.robot.subsystems;
+
+import com.limelightvision.Limelight;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Vision {
+  private final DriveMechanism drivetrain;
+  private final List<Limelight> cameras = new ArrayList<>();
+
+  public Vision(DriveMechanism drivetrain, String... cameraNames) {
+    this.drivetrain = drivetrain;
+    for (String name : cameraNames) {
+      Limelight camera = new Limelight(name);
+      cameras.add(camera);
+    }
+  }
+}`}
+        />
+
+        <p>
+          Next, add an <code>update()</code> method that runs every loop. A
+          camera drives nothing, so <code>Vision</code> is not a mechanism. The
+          constructor hands <code>update()</code> to the scheduler instead.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          highlightLines={[5, 6, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]}
+          code={`  public Vision(DriveMechanism drivetrain, String... cameraNames) {
+    this.drivetrain = drivetrain;
+    for (String name : cameraNames) {
+      Limelight camera = new Limelight(name);
+      // Read the heading that update() shares, for MegaTag2.
+      camera.setUseSharedOrientation(true);
+      cameras.add(camera);
+    }
+    Scheduler.getDefault().addPeriodic(() -> update());
+  }
+
+  private void update() {
+    // One write reaches every camera that reads the shared heading.
+    Limelight.setSharedRobotOrientation(drivetrain.getPose().getRotation().getDegrees());
+
+    for (Limelight camera : cameras) {
+      // Every frame since the last loop, so none is skipped and none is used twice.
+      for (LimelightResults frame : camera.readResultsQueue()) {
+        addFrame(camera, frame);
+      }
+    }
+  }`}
+        />
+        <p>
+          <code>update()</code> first tells every camera which way the robot is
+          facing. Then it walks <code>readResultsQueue()</code>, which hands
+          back every frame that arrived since the last call, and passes each one
+          to <code>addFrame</code>. We will write <code>addFrame</code> next, in
+          four pieces.
+        </p>
+
+        <p>
+          The camera can solve a frame two ways. MegaTag1 solves position and
+          heading from the tags alone, and needs two or more tags to do it well.
+          MegaTag2 takes the heading you shared as given and solves only
+          position, so one tag is enough.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          code={`  private void addFrame(Limelight camera, LimelightResults frame) {
+    // MegaTag1 solves position and heading from the tags alone. It needs two tags to do it well.
+    PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
+    if (estimate.fieldedTagCount < 2) {
+      // With one tag, ask again as MegaTag2. It takes our heading as given and solves only position.
+      estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
+    }
+  }`}
+        />
+
+        <p>
+          Not every frame is worth using. <code>rejectionFlags</code> is the
+          library&apos;s own verdict, and zero means it found nothing wrong. We
+          also skip any frame whose tags average more than 4 meters away. Log
+          the result so you can watch it, then stop if the frame was not
+          accepted.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          code={`    // ... inside addFrame, under the if
+
+    // Zero flags means the library found nothing wrong with the frame. Past 4 meters a tag is too
+    // small in the picture to trust.
+    boolean accepted = estimate.rejectionFlags == 0 && estimate.avgTagDistanceMeters <= 4.0;
+
+    // Watch these in AdvantageScope. Pose is where the camera says the robot is.
+    TelemetryTable table = Telemetry.getTable("Vision");
+    table.log("Accepted", accepted);
+    table.log("TagCount", estimate.fieldedTagCount);
+    if (!accepted) {
+      return;
+    }
+    table.log("Pose", estimate.pose);`}
+        />
+
+        <p>
+          Each sighting goes in with a standard deviation, which says how far
+          off it might be. That number decides how far one picture moves the
+          pose toward where the camera says the robot is. The drivetrain trusts
+          its own wheels to 0.1, so the share is 0.1 / (0.1 + standard
+          deviation).
+        </p>
+        <ul className="ml-5 list-disc space-y-2">
+          <li>0.1 moves the pose halfway to the camera&apos;s answer.</li>
+          <li>0.5 moves it a sixth of the way.</li>
+          <li>0.9 moves it a tenth of the way.</li>
+        </ul>
+        <p>
+          A small number makes the pose jump around with every noisy picture,
+          and a big one keeps it calm but slow to correct. We start at 0.5 for
+          one tag one meter away. The number grows with distance, because a far
+          tag is a worse measurement. More tags shrink it, because several tags
+          agree with each other. If the pose jumps around on your robot, raise
+          the 0.5.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          code={`    // A standard deviation says how far off a sighting might be, and it sets how far each picture
+    // moves the pose toward where the camera says the robot is. That share is 0.1 / (0.1 + stdDev):
+    // 0.1 moves it halfway, 0.5 a sixth of the way, 0.9 a tenth. Bigger means calmer.
+    // Start at 0.5 for one tag one meter away. Trust a far tag less and several tags more.
+    double xyStdDev = 0.5 * estimate.avgTagDistanceMeters / estimate.fieldedTagCount; // meters
+    double headingStdDev =
+        1.0 * estimate.avgTagDistanceMeters / estimate.fieldedTagCount; // radians
+    if (estimate.isMT2()) {
+      // MegaTag2 solved from our own heading, so its heading is not a new measurement. A huge
+      // number tells the estimator to ignore it.
+      headingStdDev = 9_999_999;
+    }`}
+        />
+
+        <p>
+          Last, hand the sighting to the drivetrain. It takes{" "}
+          <code>estimate.timestampSeconds</code>, not the current time, because
+          the picture was taken before your code saw it.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          code={`    // The picture's own timestamp: the estimator winds back to when it was taken.
+    drivetrain.addVisionMeasurement(
+        estimate.pose,
+        estimate.timestampSeconds,
+        VecBuilder.fill(xyStdDev, xyStdDev, headingStdDev));
+  }
+}`}
+        />
+
+        <p>The finished file, with its imports:</p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          title="Vision.java"
+          collapsed
           code={`package frc.robot.subsystems;
 
 import com.limelightvision.Limelight;
@@ -139,6 +296,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.math.linalg.VecBuilder;
+import org.wpilib.telemetry.Telemetry;
+import org.wpilib.telemetry.TelemetryTable;
 
 /**
  * Feeds AprilTag sightings from every Limelight on the robot into the drivetrain's pose estimator,
@@ -148,14 +307,6 @@ import org.wpilib.math.linalg.VecBuilder;
  * periodic list instead, every loop and in every mode.
  */
 public class Vision {
-  // Trust weighting. A sighting's error bar grows with distance and shrinks with tag count.
-  private static final double XY_STD_DEV_COEFFICIENT = 0.333;
-  private static final double ROTATION_STD_DEV_COEFFICIENT = 1.5;
-  private static final double MAX_TAG_DISTANCE_METERS = 4.0;
-  // MegaTag2 solved from our own heading, so its heading is not a new measurement.
-  private static final double IGNORE_VISION_HEADING = 9_999_999;
-  private static final int MIN_TAGS_FOR_MEGATAG1 = 2;
-
   private final DriveMechanism drivetrain;
   private final List<Limelight> cameras = new ArrayList<>();
 
@@ -187,23 +338,38 @@ public class Vision {
   }
 
   private void addFrame(Limelight camera, LimelightResults frame) {
+    // MegaTag1 solves position and heading from the tags alone. It needs two tags to do it well.
     PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
-    if (estimate.fieldedTagCount < MIN_TAGS_FOR_MEGATAG1) {
+    if (estimate.fieldedTagCount < 2) {
+      // With one tag, ask again as MegaTag2. It takes our heading as given and solves only position.
       estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
     }
 
-    // Zero means the library's own gates found nothing wrong with the frame.
-    if (estimate.rejectionFlags != 0 || estimate.avgTagDistanceMeters > MAX_TAG_DISTANCE_METERS) {
+    // Zero flags means the library found nothing wrong with the frame. Past 4 meters a tag is too
+    // small in the picture to trust.
+    boolean accepted = estimate.rejectionFlags == 0 && estimate.avgTagDistanceMeters <= 4.0;
+
+    // Watch these in AdvantageScope. Pose is where the camera says the robot is.
+    TelemetryTable table = Telemetry.getTable("Vision");
+    table.log("Accepted", accepted);
+    table.log("TagCount", estimate.fieldedTagCount);
+    if (!accepted) {
       return;
     }
+    table.log("Pose", estimate.pose);
 
-    double distanceFactor = Math.pow(estimate.avgTagDistanceMeters, 1.2);
-    double tagFactor = estimate.fieldedTagCount * estimate.fieldedTagCount;
-    double xyStdDev = XY_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
+    // A standard deviation says how far off a sighting might be, and it sets how far each picture
+    // moves the pose toward where the camera says the robot is. That share is 0.1 / (0.1 + stdDev):
+    // 0.1 moves it halfway, 0.5 a sixth of the way, 0.9 a tenth. Bigger means calmer.
+    // Start at 0.5 for one tag one meter away. Trust a far tag less and several tags more.
+    double xyStdDev = 0.5 * estimate.avgTagDistanceMeters / estimate.fieldedTagCount; // meters
     double headingStdDev =
-        estimate.isMT2()
-            ? IGNORE_VISION_HEADING
-            : ROTATION_STD_DEV_COEFFICIENT * distanceFactor / tagFactor;
+        1.0 * estimate.avgTagDistanceMeters / estimate.fieldedTagCount; // radians
+    if (estimate.isMT2()) {
+      // MegaTag2 solved from our own heading, so its heading is not a new measurement. A huge
+      // number tells the estimator to ignore it.
+      headingStdDev = 9_999_999;
+    }
 
     // The picture's own timestamp: the estimator winds back to when it was taken.
     drivetrain.addVisionMeasurement(
@@ -213,51 +379,6 @@ public class Vision {
   }
 }`}
         />
-
-        <ul className="ml-5 list-disc space-y-3">
-          <li>
-            A camera drives nothing, so <code>Vision</code> is not a mechanism.
-            The constructor hands <code>update()</code> to{" "}
-            <code>Scheduler.getDefault().addPeriodic</code>, which runs it every
-            loop.
-          </li>
-          <li>
-            <code>setUseSharedOrientation(true)</code> tells each camera to read
-            a shared heading topic, and the static{" "}
-            <code>Limelight.setSharedRobotOrientation</code> writes it once per
-            loop for every camera. MegaTag2 needs that heading.
-          </li>
-          <li>
-            <code>readResultsQueue()</code> hands back every frame that arrived
-            since the last call, so no frame is skipped and none is used twice.
-          </li>
-          <li>
-            The camera solves each frame two ways. MegaTag1 solves position and
-            heading from the tags, and needs two or more to do it well. MegaTag2
-            takes your heading as given and solves only position, so one tag is
-            enough. <code>addFrame</code> asks MegaTag1 first, and under two
-            tags it asks the same frame again as MegaTag2.
-          </li>
-          <li>
-            <code>rejectionFlags</code> is the library&apos;s own verdict on the
-            frame, and zero means it found nothing wrong. By default it rejects
-            a single tag past three meters or with ambiguity over 0.7.{" "}
-            <code>PoseEstimateConfig.describeRejection(flags)</code> names the
-            reason.
-          </li>
-          <li>
-            <code>addVisionMeasurement</code> takes{" "}
-            <code>estimate.timestampSeconds</code>, not the current time,
-            because the picture was taken before your code saw it.
-          </li>
-          <li>
-            Each sighting goes in with a standard deviation, how far off it
-            might be. It grows with distance and shrinks with tag count, and a
-            bigger number means trust it less. A MegaTag2 heading is the one you
-            handed the camera, so it goes in with{" "}
-            <code>IGNORE_VISION_HEADING</code>.
-          </li>
-        </ul>
       </LessonSection>
 
       <LessonSection id="start-it-in-robot" title="Start it in Robot">
@@ -291,29 +412,23 @@ public class Robot extends OpModeRobot {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Deploy, put the robot on the floor with a tag in view, and watch{" "}
-          <code>Telemetry/Drivetrain/Pose</code> in NetworkTables.
+          Deploy, put the robot on the floor with a tag in view, and open
+          AdvantageScope. Put <code>Drivetrain/Pose</code> and{" "}
+          <code>Vision/Pose</code> on the 2D field, and watch{" "}
+          <code>Vision/Accepted</code> and <code>Vision/TagCount</code>.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            Park about two meters from a tag and note the pose. Cover the camera
-            and push the robot a meter sideways. The pose follows the wheels.
-          </li>
-          <li>
-            Uncover the camera. The pose settles toward where the tag says the
-            robot is.
-          </li>
-          <li>
-            Back away past four meters, then close in again. Line up on two
-            tags, then on one.
-          </li>
+          <li>Park about two meters from a tag.</li>
+          <li>Back away past four meters, then close in again.</li>
         </ol>
 
         <Box variant="alert-success" title="You should see">
           <p>
-            Corrections stop past four meters and resume when you close in. With
-            one tag in view the position moves and the heading does not.
+            Near the tag, <code>Accepted</code> true and the two poses on top of
+            each other. Past four meters <code>Accepted</code> goes false and{" "}
+            <code>Vision/Pose</code> stops updating, then both come back when
+            you close in.
           </p>
         </Box>
       </LessonSection>
