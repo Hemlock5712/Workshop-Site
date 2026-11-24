@@ -22,6 +22,13 @@ export const metadata = lessonMetadata("/bline");
  * stop to disabling and never to the cancel. Reached events run through the
  * scheduler one loop later, in path order; canceling drops unreached ones.
  *
+ * Owner's review, November 2026 (Recording 13): the install section is gone.
+ * `1-Swerve` now ships the BLine vendordep, `deploy/autos` with `config.json`,
+ * and the builder in `DriveMechanism`, so the page explains the builder
+ * instead of having a student type it. `LeaveStartAuto` is kept, so the
+ * driver station lists two autonomous classes. `AutoOpMode` is built up in
+ * five steps and the whole file sits folded at the end.
+ *
  * Verified in simulation, November 2026: pose reset, finish within 0.03 m and
  * 2 degrees, one event per run, None, red flip, re-enable, disable. Not
  * verified: real hardware, the editor's folder-picker export, the desktop app.
@@ -30,11 +37,11 @@ export default function BLineLesson() {
   return (
     <PageTemplate
       title="BLine Paths"
-      lede="BLine is a path library with a field editor. You draw a path in the browser, export it into the robot project, and the library turns it into a command. This lesson replaces the Leave Start timer with a drawn path."
+      lede="Draw a path on the field and have the robot follow it."
       needs={[
         <>
           The <strong>Leave Start</strong> routine from{" "}
-          <strong>Autonomous</strong>, and the numbers it measured.
+          <strong>Autonomous</strong>.
         </>,
         <>
           <code>coroutine.await(...)</code> and the OpMode lifecycle, from{" "}
@@ -43,38 +50,32 @@ export default function BLineLesson() {
         <>A browser for the editor at bline.run.</>,
       ]}
       branch="swerve-bline"
-      time="30 minutes"
+      time="25 minutes"
     >
       <p>
-        A <strong>path</strong> is an ordered list of elements. A waypoint sets
-        where the robot starts, translations are the points it drives through,
-        and rotations set the way it faces on the way. An{" "}
-        <strong>event trigger</strong> is a marker along the path that runs a
-        piece of code when the robot passes it.
+        In this section, we will be learning about following a path. We will be
+        using software called BLine. There are four main parts of BLine to know.
       </p>
-
-      <LessonSection id="install" title="Install the library">
-        <ol className="ml-5 list-decimal space-y-3">
-          <li>
-            In VS Code, open the <strong>WPILib Vendor Dependencies</strong>{" "}
-            view. Expand <strong>INSTALL FROM URL</strong>, paste the URL below,
-            and press <strong>Install</strong>.
-          </li>
-          <li>
-            Build the project. The first build downloads the library, so it
-            needs internet.
-          </li>
-        </ol>
-        <CodeBlock
-          language="text"
-          title="BLine-Lib 2027.0.0-beta.3, WPILib 2027 alpha-7"
-          code="https://raw.githubusercontent.com/edanliahovetsky/BLine-Lib/wpilib-2027/BLine-Lib-2027.json"
-        />
-        <p>
-          The editor at <strong>bline.run</strong> is version 1.0.0, the one
-          that pairs with this library.
-        </p>
-      </LessonSection>
+      <ul className="ml-5 list-disc space-y-2">
+        <li>
+          A <strong>waypoint</strong> sets where the robot starts.
+        </li>
+        <li>
+          A <strong>translation</strong> is a point the robot drives through.
+        </li>
+        <li>
+          A <strong>rotation</strong> sets the way the robot faces on the way.
+        </li>
+        <li>
+          An <strong>event trigger</strong> is a marker along the path that runs
+          a piece of code when the robot passes it.
+        </li>
+      </ul>
+      <p>
+        The swerve project comes with BLine installed, the same way it comes
+        with Phoenix 6, and with a <code>src/main/deploy/autos</code> folder for
+        the paths you draw.
+      </p>
 
       <LessonSection id="draw" title="Draw a path">
         <p>
@@ -86,14 +87,13 @@ export default function BLineLesson() {
           alt="BLine editor home screen with the Import menu open, showing Autos folder and Project archive"
           width={1600}
           height={950}
-          caption="Home, then Import, then Autos folder. A project with no autos folder yet starts from Create project."
+          caption="Home, then Import, then Autos folder."
         />
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             On <strong>Home</strong>, open <strong>Import ▾</strong>, choose{" "}
             <strong>Autos folder</strong>, and pick{" "}
-            <code>src/main/deploy/autos</code>. With no folder yet, click{" "}
-            <strong>Create project</strong>.
+            <code>src/main/deploy/autos</code>.
           </li>
           <li>
             Choose <strong>File → New Path</strong>. Name it{" "}
@@ -155,15 +155,17 @@ export default function BLineLesson() {
 
       <LessonSection id="builder" title="The builder in DriveMechanism">
         <p>
-          You will add three things to <code>DriveMechanism</code>: a request
-          field, the builder in the constructor, and two methods that use them.
+          The project also comes with a BLine path follower built into{" "}
+          <code>DriveMechanism</code>. You do not type any of it. Open the file
+          and find these three pieces: a request field, the builder in the
+          constructor, and two methods that use them.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
           title="DriveMechanism.java: the path request, the builder, and followPath"
           code={`public class DriveMechanism implements Mechanism {
-  // ... drivetrain field, unchanged
+  // ... drivetrain field
 
   // BLine hands back speeds relative to the robot, so the request is robot-relative too.
   // Velocity asks each wheel for an exact speed, so the small corrections at the end of a path
@@ -175,7 +177,7 @@ export default function BLineLesson() {
   private final FollowPath.Builder pathBuilder;
 
   public DriveMechanism() {
-    // ... applyOperatorPerspective and registerTelemetry, unchanged
+    // ... applyOperatorPerspective and registerTelemetry
 
     // Teaches BLine how to drive this robot. After this, followPath can turn any path drawn in
     // the BLine editor into a command.
@@ -196,7 +198,7 @@ export default function BLineLesson() {
             .withDefaultShouldFlip();
   }
 
-  // ... getName, getPose and the other methods, unchanged
+  // ... getName, getPose and the other methods
 
   public FollowPath followPath(String name) {
     return pathBuilder.build(new Path(name));
@@ -223,6 +225,11 @@ export default function BLineLesson() {
             robot.
           </li>
           <li>
+            <code>withDefaultShouldFlip()</code> checks which alliance you are
+            on. Paths are drawn from the blue side, and on red BLine turns them
+            around the field center.
+          </li>
+          <li>
             <code>followPath(name)</code> reads{" "}
             <code>deploy/autos/paths/&lt;name&gt;.json</code> when it is called.
           </li>
@@ -231,14 +238,140 @@ export default function BLineLesson() {
 
       <LessonSection id="auto-opmode" title="The Auto OpMode">
         <p>
-          Delete <code>LeaveStartAuto.java</code> and create{" "}
-          <code>AutoOpMode.java</code> beside it. One <code>@Autonomous</code>{" "}
-          class now runs every routine, and a drop-down on the dashboard picks
-          which one.
+          Now let&apos;s create <code>AutoOpMode.java</code> in the{" "}
+          <code>opmodes</code> folder, beside <code>LeaveStartAuto.java</code>.
+          Keep <code>LeaveStartAuto</code>. We will be able to see both of our
+          autonomous classes in the list on the driver station and pick which
+          one to run. Start with the empty class.
         </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          code={`package frc.robot.opmodes;
+
+import frc.robot.Robot;
+import org.wpilib.opmode.Autonomous;
+import org.wpilib.opmode.PeriodicOpMode;
+
+@Autonomous(name = "Auto")
+public class AutoOpMode extends PeriodicOpMode {
+  public AutoOpMode(Robot robot) {}
+}`}
+        />
+
+        <p>
+          Next, turn the path into a command and write a routine that follows
+          it. Both go in the constructor.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          code={`  public AutoOpMode(Robot robot) {
+    // Read the path file now, so a misspelled name fails when this OpMode is picked.
+    // withPoseReset puts odometry at the path's first point before it drives.
+    final var leaveStartPath = robot.drivetrain.followPath("leave-start").withPoseReset();
+
+    // The routine owns no mechanism itself. The path command it awaits claims the drivetrain for
+    // as long as it drives, and a second path would go on the next line.
+    final Command leaveStart =
+        Command.noRequirements(
+                coroutine -> {
+                  coroutine.await(leaveStartPath);
+                })
+            .named("Leave Start");
+  }`}
+        />
+        <p>
+          <code>followPath(&quot;leave-start&quot;)</code> is the path you drew,
+          by name. <code>withPoseReset()</code> tells the robot it is standing
+          on the path&apos;s first point when the path starts. The routine is a
+          coroutine that awaits the path, so a second path is one more line
+          under the first: <code>coroutine.await(nextPath);</code>.
+        </p>
+
+        <p>
+          One <code>AutoOpMode</code> can hold more than one routine. Add a
+          drop-down for the dashboard, give it the routine and a{" "}
+          <code>None</code> that does nothing, and publish it.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          highlightLines={[2, 3, 8, 10, 11, 12]}
+          code={`public class AutoOpMode extends PeriodicOpMode {
+  private final Selectable<Command> autoChooser = new Selectable<>();
+  private Command routine;
+
+  public AutoOpMode(Robot robot) {
+    // ... leaveStartPath and leaveStart, from above
+
+    final Command none = Command.noRequirements(coroutine -> {}).named("None");
+
+    autoChooser.addDefault("Leave Start", leaveStart);
+    autoChooser.add("None", none);
+    Tunables.publish("Auto", autoChooser);
+  }
+}`}
+        />
+
+        <p>
+          Then tell the OpMode when to run. <code>start()</code> reads the
+          drop-down on enable, because someone can still change it after picking
+          the mode. <code>end()</code> cancels the routine. <code>close()</code>{" "}
+          takes the drop-down off the dashboard when another OpMode is picked.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          code={`  // ... the constructor
+
+  @Override
+  public void start() {
+    routine = autoChooser.getSelected();
+    Scheduler.getDefault().schedule(routine);
+  }
+
+  @Override
+  public void end() {
+    Scheduler.getDefault().cancel(routine);
+    FollowPath.clearPendingEventTriggers();
+  }
+
+  @Override
+  public void close() {
+    Tunables.remove("Auto");
+  }
+}`}
+        />
+
+        <p>
+          Last, give the event trigger you drew something to run. Register it at
+          the top of the constructor, before any path command is built. The key
+          in quotes has to match <strong>Lib Key</strong> in the editor exactly.
+          The <code>clearPendingEventTriggers()</code> line in{" "}
+          <code>end()</code> drops any event that has not run yet.
+        </p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          highlightLines={[5, 6]}
+          code={`  public AutoOpMode(Robot robot) {
+    // Event triggers are the markers along a path. The key in quotes must match the marker's key
+    // in the BLine editor exactly. This one is a stand-in that only prints a line to the driver
+    // station console and the log. A robot with an intake would start the intake here instead.
+    FollowPath.registerEventTrigger(
+        "atMidpoint", () -> DataLogManager.log("Leave Start: reached the midpoint"));
+
+    // ... the rest of the constructor
+  }`}
+        />
+
+        <p>The finished file, with its imports:</p>
+        <CodeBlock
+          language="java"
+          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          title="AutoOpMode.java"
+          collapsed
           code={`package frc.robot.opmodes;
 
 import bline.commands.FollowPath;
@@ -300,28 +433,15 @@ public class AutoOpMode extends PeriodicOpMode {
   }
 }`}
         />
-        <p>
-          The event trigger is registered first, before any path command is
-          built. The routine is a coroutine that awaits the path, so a second
-          path is one more line under the first:{" "}
-          <code>coroutine.await(nextPath);</code>.
-        </p>
-        <p>
-          <code>start()</code> reads the drop-down, because someone can still
-          change it after picking the mode. <code>end()</code> cancels the
-          routine and clears any event that has not run yet.{" "}
-          <code>close()</code> takes the drop-down off the dashboard when
-          another OpMode is picked.
-        </p>
       </LessonSection>
 
       <LessonSection id="check-your-work" title="Check your work">
         <ol className="ml-5 list-decimal space-y-3">
           <li>
             Run <strong>WPILib: Simulate Robot Code</strong> and pick{" "}
-            <strong>Auto</strong> from the autonomous list.{" "}
-            <code>Leave Start</code> is already selected under{" "}
-            <code>Tunables/Auto</code>.
+            <strong>Auto</strong> from the autonomous list, where it sits beside{" "}
+            <strong>Leave Start</strong>. <code>Leave Start</code> is already
+            selected under <code>Tunables/Auto</code>.
           </li>
           <li>
             Enable and watch <code>Drivetrain/Pose</code> on the 2D field in

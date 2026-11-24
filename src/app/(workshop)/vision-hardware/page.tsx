@@ -3,6 +3,7 @@ import LessonSection from "@/components/lesson/LessonSection";
 import Box from "@/components/Box";
 import Quiz from "@/components/Quiz";
 import DocumentationButton from "@/components/DocumentationButton";
+import ImageBlock from "@/components/ImageBlock";
 import { MarginNote, ProseBlock, Split } from "@/components/lesson/Prose";
 import { BookOpen, Wrench } from "lucide-react";
 import { lessonMetadata } from "@/lib/lessonMetadata";
@@ -33,6 +34,15 @@ export const metadata = lessonMetadata("/vision-hardware");
  * November 2026, before the owner's review: the failure readings under
  * "Check your work" and their two quiz questions were cut, and the
  * power/network/angle cards folded into one paragraph.
+ *
+ * Owner's review, November 2026 (Recording 13): the opening and the camera
+ * paragraph are his wording, the mounting rule became a warning, and the setup
+ * steps start from Limelight Hardware Manager. The field map upload is gone:
+ * the OS image carries the season's map. The camera's Ethernet goes to the
+ * radio, not the SystemCore, which has one Ethernet port (Limelight's
+ * SystemCore spec sheet, June 2025) and spends it on the radio. The tab the
+ * camera offsets live on is the owner's recollection, not checked against the
+ * web interface. The AprilTag and Limelight pictures are the owner's.
  */
 export default function VisionHardware() {
   return (
@@ -41,51 +51,70 @@ export default function VisionHardware() {
       lede="A camera that sees an AprilTag can tell the robot where it is standing. Everything on this page happens before any Java."
       needs={[
         <>A swerve robot on its wheels, with a SystemCore.</>,
-        <>A Limelight, its mount, and an Ethernet cable.</>,
+        <>A Limelight, its mount, an Ethernet cable and a USB-C cable.</>,
         <>A printed AprilTag from the current field map.</>,
         <>A laptop on the robot network, for the camera web interface.</>,
       ]}
       time="12 minutes"
     >
       <LessonSection id="tags-against-drift" title="Tags against drift">
+        <ImageBlock
+          src="/images/vision/april-tag.webp"
+          alt="An AprilTag: a square black and white grid pattern inside a black border"
+          caption="An AprilTag. The pattern inside the border is its ID number."
+          width={270}
+          height={269}
+          maxWidth={240}
+        />
         <ProseBlock>
           <p>
-            An AprilTag is a printed marker with an ID number, and the field map
-            lists where each one sits. A camera measures the corners of the tag
-            in the image and works backwards to its own position on the field.
+            An AprilTag is a printed marker with an ID number. Each Limelight
+            comes with a field map that knows where each tag sits. A camera can
+            then measure the corners of the tag and work backwards to calculate
+            the position of the robot.
           </p>
           <p>
-            Unlike odometry, that answer does not drift. It is also occasional
-            and noisy, so the robot blends the two.
+            One issue with vision is that you do not always see tags, and the
+            reading can be noisy. So we will merge vision with our drivetrain
+            readings to calculate a pose on the field.
           </p>
         </ProseBlock>
       </LessonSection>
 
       <LessonSection id="limelight-or-photonvision" title="The camera">
         <p>
-          This course uses a Limelight: camera and processor in one unit, set up
-          through its own web page. PhotonVision is the other common choice, and
-          the ideas on the next page carry over to it with different class
-          names.
+          This course uses a Limelight. It is a camera and processor in one
+          unit, and we will be setting it up in its own web page. PhotonVision
+          is the other common choice, and the ideas on the next pages will carry
+          over if you decide to go with that hardware.
         </p>
-        <DocumentationButton
-          href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/summary"
-          title="Limelight: getting started"
-          icon={<BookOpen className="h-5 w-5" />}
+        <ImageBlock
+          src="/images/vision/limelight.webp"
+          alt="A Limelight 4 camera: a black box with a lens ringed by LEDs, and USB and Ethernet ports on its side"
+          caption="A Limelight 4."
+          width={1400}
+          height={788}
+          maxWidth={560}
         />
       </LessonSection>
 
       <LessonSection id="mounting-and-wiring" title="Mounting and wiring">
         <p>
           Bolt the camera where it can see the scoring tags at the moment you
-          are scoring.
+          are scoring. Power it with 12 V from the power distribution panel and
+          run its Ethernet to a spare port on the robot radio. The SystemCore
+          has one Ethernet port, and that one goes to the radio too.
         </p>
 
-        <p>
-          Power it with 12 V from the power distribution panel and plug its
-          Ethernet straight into the SystemCore. Mount it off to one side, and
-          above or below the tags, never level and square-on.
-        </p>
+        <Box variant="alert-warning" title="Not level with the tags">
+          <p>
+            One issue we commonly see is a team mounting the Limelight at the
+            same height as the AprilTags. You do NOT want to do this. Mount it
+            off to one side, and above or below the tags. You want a height
+            difference and an angle difference between the camera and every tag
+            it reads.
+          </p>
+        </Box>
 
         <Split>
           <ProseBlock>
@@ -109,16 +138,12 @@ export default function VisionHardware() {
       </LessonSection>
 
       <LessonSection id="set-the-camera-up" title="Set the camera up">
-        <p>
-          Do these in order, with the robot powered and the laptop on the robot
-          network.
-        </p>
-
         <ol className="ml-5 list-decimal space-y-4">
           <li>
-            <strong>Update the Limelight OS and upload the field map.</strong>{" "}
-            The OS goes on over USB. The map is a separate download, and it
-            loads through the web interface.
+            <strong>Flash the newest Limelight OS.</strong> Download Limelight
+            Hardware Manager and the newest OS image for your Limelight. Inside
+            Limelight Hardware Manager, flash your Limelight to that version.
+            The field map comes with the install.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/resources/downloads"
@@ -128,21 +153,27 @@ export default function VisionHardware() {
             </div>
           </li>
           <li>
-            <strong>Switch the active pipeline to AprilTag.</strong> A
-            color-blob pipeline never publishes a botpose. The AprilTag pipeline
-            sets <strong>Marker Size</strong> for you. Check that it reads
-            165.1, the edge of an FRC tag in millimeters, and match it to your
-            tag if you printed another size.
+            <strong>Find the camera.</strong> With the Limelight wired to the
+            radio, connect to your robot, open Limelight Hardware Manager and
+            find your Limelight. Open its link to reach the web interface.
           </li>
           <li>
-            <strong>Drop the exposure</strong> as low as it goes while the
-            camera still finds tags. A short shutter cuts motion blur.
+            <strong>Change the pipeline to AprilTag.</strong> We recommend
+            dropping the exposure as low as it will go while the camera still
+            sees tags.
+            <div className="mt-3">
+              <DocumentationButton
+                href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltags"
+                title="Limelight: tracking AprilTags"
+                icon={<BookOpen className="h-5 w-5" />}
+              />
+            </div>
           </li>
           <li>
-            <strong>Enter the camera offsets.</strong> Measure where the camera
-            sits relative to the robot&apos;s center, and at what angle. The
-            offsets turn the camera&apos;s pose into the robot&apos;s, so an
-            error in them shifts every measurement the same way.
+            <strong>Enter the camera offsets.</strong> In the advanced settings,
+            change the offsets to match where the camera sits on your robot and
+            at what angle. An error in them shifts every measurement the same
+            way.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-3d#full-3d-tracking"
@@ -152,9 +183,8 @@ export default function VisionHardware() {
             </div>
           </li>
           <li>
-            <strong>Calibrate the lens</strong> with a printed ChArUco board.
-            This corrects lens distortion, which is worst at the edges of the
-            image.
+            <strong>Calibrate the camera.</strong> If you have a calibration
+            board, we recommend calibrating your camera.
             <div className="mt-3">
               <DocumentationButton
                 href="https://docs.limelightvision.io/docs/docs-limelight/getting-started/performing-charuco-camera-calibration"
@@ -165,12 +195,11 @@ export default function VisionHardware() {
           </li>
           <li>
             <strong>Write down the camera&apos;s name.</strong> The Java on the
-            next page finds the camera by it. The default is{" "}
-            <code>limelight</code>.
+            next page finds the camera by it, so give each camera a unique one.
+            The default is <code>limelight</code>.
           </li>
         </ol>
       </LessonSection>
-
       <LessonSection id="check-your-work" title="Check your work">
         <p>
           Hold a printed tag about a meter in front of the camera and watch the
@@ -222,7 +251,7 @@ export default function VisionHardware() {
             options: [
               "The exposure is too high",
               "The camera offsets entered in the web interface do not match where the camera is bolted",
-              "The field map is from last season",
+              "The pipeline is still set to color detection",
               "The Ethernet cable is running through a noisy area",
             ],
             correctAnswer: 1,
@@ -232,7 +261,7 @@ export default function VisionHardware() {
           {
             id: 5,
             question:
-              "What does calibrating the lens with a ChArUco board correct?",
+              "What does calibrating the camera with a calibration board correct?",
             options: [
               "The camera's position relative to the robot's center",
               "The mapping between tag IDs and field positions",

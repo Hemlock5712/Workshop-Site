@@ -372,7 +372,25 @@ function extract(source: ts.SourceFile): Extracted {
         tag === "CodeBlockLive" ||
         tag === "GitHubContent"
       ) {
-        out.codeBlocks += 1;
+        // A `collapsed` block is the finished file folded under the steps that
+        // built it. The steps were already counted, and nobody matches the
+        // folded copy against their editor, so it costs nothing.
+        const attributes = ts.isJsxElement(node)
+          ? node.openingElement.attributes
+          : node.attributes;
+        // Only a bare `collapsed` or `collapsed={true}` folds the block.
+        // `collapsed={false}`, or anything not known here, still costs.
+        const collapsed = attributes.properties.some((property) => {
+          if (!ts.isJsxAttribute(property)) return false;
+          if (property.name.getText() !== "collapsed") return false;
+          const value = property.initializer;
+          if (!value) return true;
+          return (
+            ts.isJsxExpression(value) &&
+            value.expression?.kind === ts.SyntaxKind.TrueKeyword
+          );
+        });
+        if (!collapsed) out.codeBlocks += 1;
       }
       if (tag === "MechanismTabs") out.codeBlocks += 2;
       if (tag === "Box") {

@@ -28,6 +28,14 @@ export const metadata = lessonMetadata("/swerve-drive-tuning");
  * gains shown are the generator's defaults, not ours. 1-Swerve publishes
  * Drivetrain/* through Telemetry but never starts DataLogManager, so every
  * measurement here is read off a live AdvantageScope plot.
+ *
+ * Owner's review, November 2026 (Recording 13): slip current is found with the
+ * controller, not Tuner X Voltage Out, and the limit goes slightly below the
+ * reading. The wall stays, from CTRE's own procedure: a robot driving freely
+ * never loads the tire enough to slip. The deadband is read off the driver
+ * station's stick display instead of halved until ModuleTargets twitch.
+ * `Inches.of(2.167)` was checked against CTRE's Phoenix6-Examples on `main`
+ * and `2027_alpha7`: it is the generator's value, not ours, so it stays.
  */
 export default function SwerveDriveTuning() {
   return (
@@ -40,7 +48,7 @@ export default function SwerveDriveTuning() {
           <strong>Swerve Project Generator</strong>.
         </>,
         <>AdvantageScope connected to the robot, for live plots.</>,
-        <>Phoenix Tuner X, and six meters of clear carpet.</>,
+        <>Phoenix Tuner X, the driver station, and six meters of carpet.</>,
         <>A tape measure, and a wall you may push against.</>,
       ]}
       time="14 minutes"
@@ -153,30 +161,34 @@ export default function SwerveDriveTuning() {
           </li>
         </ol>
         <p>
-          A stator current limit caps how hard a wheel twists. Set it where the
-          tire loses grip.
+          We can also use a stator current limit to keep a wheel from slipping
+          when the robot accelerates hard. You find the limit by driving, with
+          the controller.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
-            Drive the robot against a wall on carpet and square it up so all
-            four wheels point into the wall.
+            Drive the robot up to a wall on carpet and square it up so all four
+            wheels point into the wall.
           </li>
           <li>
-            In Tuner X, open one drive motor on <strong>Voltage Out</strong> and
-            plot its velocity and its stator current.
+            In Tuner X, open one drive motor and plot its stator current and its
+            velocity.
           </li>
-          <li>Ramp the voltage up slowly from zero, watching both traces.</li>
+          <li>
+            Push the stick forward slowly, a little at a time, and watch both
+            traces.
+          </li>
         </ol>
         <p>
-          Current climbs while velocity sits at zero. Then velocity jumps and
-          current drops, which is the tire letting go. Read the current at the
-          top of the climb, just before the drop. If the trace flattens at the
-          shipped 120 A and the wheel never breaks loose, raise the constant and
-          ramp again.
+          Current climbs while velocity sits at zero. When the velocity goes up,
+          the tire has let go, and the stator current at that moment is your
+          slip current. Set <code>kSlipCurrent</code> slightly below it. If the
+          trace flattens at the shipped 120 A and the wheel never breaks loose,
+          raise the constant and try again.
         </p>
         <Box variant="alert-danger" title="Stalled motors get hot fast">
           <p>
-            Keep each ramp short and back off to zero between attempts. One
+            Keep each push short and let go of the stick between attempts. One
             person on the disable, somebody else on the laptop.
           </p>
         </Box>
@@ -228,11 +240,14 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           The request has no deadband of its own, because Phoenix&apos;s version
           cuts off every speed under it. The controller ignores the bottom 10%
           of each stick instead and stretches the rest back over the full range.
-          To shrink it, put the robot on blocks, take your hands off the
-          controller, and watch the speed in{" "}
-          <code>Drivetrain/ModuleTargets</code>. Halve the deadband in the{" "}
-          <code>Robot</code> constructor and redeploy until those targets start
-          twitching, then go back one value.
+        </p>
+        <p>
+          To find your own deadband, open the driver station, take your hands
+          off the controller, and look at what each stick axis reads. Flick each
+          stick and let it snap back a few times. Take the largest reading you
+          see at rest, ignoring its sign, and add a little to it. That keeps the
+          robot from driving when the driver is not touching the stick. Set it
+          in the <code>Robot</code> constructor.
         </p>
         <CodeBlock
           language="java"
@@ -306,16 +321,16 @@ driver.getController().setRightXDeadband(0.05);`}
           {
             id: 4,
             question:
-              "Current climbs while velocity sits at zero, then velocity jumps and current drops. What goes in kSlipCurrent?",
+              "Against the wall, current climbs while velocity sits at zero, then the velocity goes up. What goes in kSlipCurrent?",
             options: [
-              "The stator current after the drop, with the wheel spinning",
+              "The stator current well after the jump, with the wheel spinning",
               "The velocity at the jump",
-              "The stator current at the top of the climb, the instant before the drop",
+              "A value slightly below the stator current at the moment the velocity went up",
               "70 A, the supply limit driveInitialConfigs already sets",
             ],
             correctAnswer: 2,
             explanation:
-              "While the tire grips, velocity stays at zero and current keeps climbing. The jump is the tire letting go, and the peak just before it is the slip point.",
+              "While the tire grips, velocity stays at zero and current keeps climbing. The velocity going up is the tire letting go. A limit slightly below that current keeps the wheel from slipping.",
           },
           {
             id: 5,

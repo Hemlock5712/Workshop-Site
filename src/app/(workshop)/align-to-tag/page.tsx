@@ -13,36 +13,56 @@ const linkStyle =
 
 /**
  * Added November 2026, on the owner's call, and written against Workshop-Code
- * `swerve-align-to-tag` (b5651d8), whose parent is `swerve-drive-to-point`.
+ * `swerve-align-to-tag`, whose parent is `swerve-vision`.
  *
  * This is not the retired `/drive-to-tag-inline`. That page drove a loop of
  * its own straight off camera-space numbers, with no plan for losing the tag.
- * This one is the Drive to Point call with a different pose supplier: Vision
- * places each tag in the drivetrain's pose frame once per frame, the wheels
- * carry the robot between frames and after the tag leaves view, and BLine
- * drives in the tag's frame. The spot is recorded off telemetry with the robot
- * parked by hand, never measured, so camera-mount and tag-mount error cancel.
+ * This one is the Drive to Point call with a different pose supplier. The spot
+ * is recorded off telemetry with the robot parked by hand, never measured, so
+ * camera-mount and tag-mount error cancel.
  *
  * API read off the alpha-7 jar: `FiducialTarget.getRobotPose_TargetSpace()`
  * copies the raw array into a `Pose3d` with no axis change, so `toTagFrame`
- * does the conversion. Phoenix's `samplePoseAt` takes the same clock as
- * `addVisionMeasurement`, so it gets the same `estimate.timestampSeconds`.
- *
- * Verified in simulation with a synthesized sighting, November 2026: tag 7 at
- * field (5, 3) facing -X, spot (1, 0, 180) reached at (3.98, 2.98, 0.0) in
- * 3.4 s, the same with sightings cut off one second into the drive, and an
- * immediate end with no motion when the tag was never seen.
+ * does the conversion.
  *
  * NOT verified: the Limelight target-space signs inside `toTagFrame`. The sim
- * check builds its sighting with the inverse of the same function, so it
- * cannot catch a wrong sign. The first check on this page is that test, on a
- * real camera, and it has to pass before the robot is allowed to drive.
+ * check builds its sighting in the tag's frame directly, so it cannot catch a
+ * wrong sign. Limelight's coordinate-systems page says target-space Z points
+ * OUT of the target, where this code assumes into the wall; the page's first
+ * check is that test, on a real camera, and it has to pass before the robot is
+ * allowed to drive.
+ *
+ * Owner's review, November 2026 (Recording 13), and his two follow-ups the
+ * same day: simplified, but a lost tag must not brake the robot. `Vision`
+ * keeps the newest `Sighting` of each tag: where the tag put the robot, and
+ * where the wheels said the robot was when the picture was taken
+ * (`samplePoseAt` on the frame's timestamp). `robotInTag` is that sighting
+ * plus how far the wheels have moved since, which is the same math as
+ * re-computing the target in the drivetrain's frame on every sighting and
+ * driving to the last one. There is no time limit on a sighting, so a tag
+ * seen long ago still answers. The pose supplier falls back to the spot itself
+ * only when the tag was never seen. Sim, same month, with sightings written
+ * straight into `Vision` at 10 Hz: tag at field (5, 3) facing -X, spot
+ * (1, 0, 180) reached at (3.99, 2.99, 0) with a 0.4 s blackout mid-drive and
+ * again with sightings cut off for good 1.5 s in, the speed never dipping; no
+ * motion when the tag was never seen. That harness skips `samplePoseAt`, so
+ * the real camera path is compiled and not yet run. The spot is still read off
+ * `Vision/RobotInTag<id>` rather than the Limelight web page: the web page
+ * shows Limelight's own axes, and the logged value is the exact number the
+ * path drives on.
+ *
+ * Known limit, raised in review of PR 151: `getPose()` is the fused pose, so a
+ * vision correction applied after a sighting reads as wheel motion until the
+ * next sighting replaces it. While the tag is in view that is at most one
+ * frame's correction. Anchoring the tag in the field frame, as the first
+ * version did, is the same subtraction and has the same limit. Phoenix does not
+ * expose wheel-only odometry, so this stands.
  */
 export default function AlignToTag() {
   return (
     <PageTemplate
       title="Align to Tag"
-      lede="Hold a button and the robot lines up on a spot measured from one AprilTag. It never asks where it is on the field, so a wrong field pose cannot move the spot."
+      lede="Hold a button and the robot lines up on a spot measured from one AprilTag."
       needs={[
         <>
           <strong>Drive to Point</strong>. This lesson is the same call with a
@@ -58,8 +78,27 @@ export default function AlignToTag() {
         </>,
       ]}
       branch="swerve-align-to-tag"
-      time="14 minutes"
+      time="12 minutes"
     >
+      <p>
+        In the last lesson, we added vision to correct our position on the
+        field. This makes our field pose more accurate and lets us drive to a
+        spot on the field. However, there are issues with this.
+      </p>
+      <ul className="ml-5 list-disc space-y-2">
+        <li>The AprilTags can be slightly bent, or mounted a little off.</li>
+        <li>The field is never built exactly to the drawing.</li>
+        <li>
+          The camera position and angle you entered in the Limelight are not
+          quite right. An angle that is 1° off moves the answer about 5 cm when
+          the tag is 3 m away.
+        </li>
+      </ul>
+      <p>
+        So to line up on something next to a tag, we skip the field pose and
+        measure straight from that one tag.
+      </p>
+
       <LessonSection id="the-tags-frame" title="The tag's frame">
         <p>
           A pose measured from a tag uses the tag&apos;s own axes. X points
@@ -69,9 +108,8 @@ export default function AlignToTag() {
         </p>
 
         <p>
-          The Limelight reports the same thing in its own convention, called
-          target space. X points right as you face the tag, Y down, and Z into
-          the wall. Add <code>toTagFrame</code> at the bottom of{" "}
+          The Limelight reports the same thing in its own axes, called target
+          space. Add <code>toTagFrame</code> at the bottom of{" "}
           <code>Vision</code> to turn one into the other.
         </p>
 
@@ -98,41 +136,44 @@ export default function AlignToTag() {
         >
           <p>
             A wrong sign here sends the robot the wrong way at full speed. Run
-            the first check below with the robot on blocks or disabled before
-            anything drives.
+            the first check below with the robot disabled before anything
+            drives.
           </p>
         </Box>
       </LessonSection>
 
-      <LessonSection id="remember-the-tag" title="The tag map">
+      <LessonSection id="remember-the-tag" title="Remember each tag">
         <p>
-          The camera answers late, and it loses the tag when the robot gets
-          close. The wheels answer every loop. So each sighting places the tag
-          in the same frame as <code>drivetrain.getPose()</code>. Between
-          sightings, and after the tag leaves view, the wheels say where the
-          robot is from that spot.
-        </p>
-        <p>
-          Add the map, one call at the top of <code>addFrame</code>, and two
-          methods to <code>Vision</code>.
+          The camera will lose the tag now and then, and we do not want the
+          robot to slam on the brakes when it does. So for each sighting,{" "}
+          <code>Vision</code> saves where the tag put the robot and where the
+          wheels said the robot was when the picture was taken. From then on the
+          wheels fill in, and the robot keeps driving to the last place it saw
+          the tag. Add a record, a map, one call in <code>addFrame</code>, and
+          two methods.
         </p>
 
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/Vision.java"
           highlightLines={[
-            4, 5, 9, 10, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
-            31, 32, 33, 34, 35, 36, 37,
+            4, 5, 6, 8, 9, 13, 14, 15, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+            32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
           ]}
           code={`public class Vision {
-  // ... constants, drivetrain and cameras, unchanged
+  // ... drivetrain and cameras, unchanged
 
-  // Where each tag sat in the drivetrain's pose frame the last time a camera saw it, by tag ID.
-  private final Map<Integer, Pose2d> tagPoses = new HashMap<>();
+  // One look at a tag: where the tag put the robot, and where the wheels said the robot was when
+  // the picture was taken.
+  private record Sighting(Pose2d robotInTag, Pose2d drivePose) {}
+
+  // The newest sighting of each tag, by tag ID.
+  private final Map<Integer, Sighting> sightings = new HashMap<>();
 
   private void addFrame(Limelight camera, LimelightResults frame) {
     PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
-    // Before any gate: aligning to one close tag is exactly the sighting the gates distrust.
+    // Before the trust checks below: lining up on one close tag is exactly the sighting they
+    // throw out.
     rememberTags(frame, estimate.timestampSeconds);
 
     // ... the rest of addFrame, unchanged
@@ -141,45 +182,44 @@ export default function AlignToTag() {
   // ... toTagFrame, from above
 
   private void rememberTags(LimelightResults frame, double timestampSeconds) {
+    // Where the wheels said the robot was when the picture was taken.
     Optional<Pose2d> poseThen = drivetrain.samplePoseAt(timestampSeconds);
     if (poseThen.isEmpty()) {
       return;
     }
     for (FiducialTarget tag : frame.fiducialTargets) {
-      Pose2d robotInTag = toTagFrame(tag.getRobotPose_TargetSpace());
-      // The tag's own origin, seen from the robot, added to where the robot was.
-      Pose2d tagPose = poseThen.get().plus(new Transform2d(robotInTag, Pose2d.ZERO));
-      tagPoses.put(tag.fiducialId, tagPose);
-      Telemetry.getTable("Vision").log("RobotInTag" + tag.fiducialId, robotInTag);
+      Pose2d pose = toTagFrame(tag.getRobotPose_TargetSpace());
+      sightings.put(tag.fiducialId, new Sighting(pose, poseThen.get()));
+      Telemetry.getTable("Vision").log("RobotInTag" + tag.fiducialId, pose);
     }
   }
 
   public Optional<Pose2d> robotInTag(int tagId) {
-    Pose2d tagPose = tagPoses.get(tagId);
-    if (tagPose == null) {
+    Sighting seen = sightings.get(tagId);
+    if (seen == null) {
       return Optional.empty();
     }
-    return Optional.of(drivetrain.getPose().relativeTo(tagPose));
+    // How far the wheels say the robot has moved since that picture.
+    Transform2d movedSince = drivetrain.getPose().minus(seen.drivePose());
+    return Optional.of(seen.robotInTag().plus(movedSince));
   }
 }`}
         />
 
-        <ul className="ml-5 list-disc space-y-3">
-          <li>
-            <code>rememberTags</code> goes before the trust gates in{" "}
-            <code>addFrame</code>, because one close tag is exactly the sighting
-            those gates throw out.
-          </li>
-          <li>
-            <code>samplePoseAt</code> looks up where the robot was when the
-            picture was taken. Adding the tag&apos;s offset from the robot to
-            that pose places the tag.
-          </li>
-          <li>
-            <code>robotInTag</code> answers where the robot is now, measured
-            from the tag. It is empty until a camera has seen that tag.
-          </li>
-        </ul>
+        <p>
+          <code>rememberTags</code> runs on every frame.{" "}
+          <code>samplePoseAt</code> looks up where the wheels said the robot was
+          when the picture was taken. That goes into a <code>Sighting</code>{" "}
+          beside what the tag said. It also logs the pose, which you will read
+          in a later step.
+        </p>
+        <p>
+          <code>robotInTag</code> answers where the robot is now, measured from
+          one tag. It takes the newest sighting and adds how far the wheels have
+          moved since. Each new picture replaces the last one, so the answer
+          gets better as the robot gets closer. It is empty until a camera has
+          seen that tag.
+        </p>
       </LessonSection>
 
       <LessonSection
@@ -187,51 +227,39 @@ export default function AlignToTag() {
         title="Drive in the tag's frame"
       >
         <p>
-          Add <code>alignToTag</code> under <code>driveToPoint</code>, and the
-          one-line <code>samplePoseAt</code> that <code>Vision</code> calls. It
-          is the same one-waypoint path as Drive to Point, on a builder whose
-          pose comes from <code>vision.robotInTag(tagId)</code>, so BLine drives
-          in the tag&apos;s frame.
+          Add <code>alignToTag</code> to <code>DriveMechanism</code>, under{" "}
+          <code>driveToPoint</code>, and the one-line <code>samplePoseAt</code>{" "}
+          that <code>Vision</code> calls. It is the same one-waypoint path as
+          Drive to Point, on a builder whose pose comes from{" "}
+          <code>vision.robotInTag(tagId)</code>, so BLine drives in the
+          tag&apos;s frame.
         </p>
 
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
           highlightLines={[
-            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-            22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34,
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22,
           ]}
           code={`public class DriveMechanism implements Mechanism {
   // ... everything up to driveToPoint, unchanged
 
-  public Command alignToTag(Vision vision, int tagId, Pose2d spotInTag) {
-    FollowPath align =
-        new FollowPath.Builder(
-                DriveType.SWERVE,
-                this,
-                () -> vision.robotInTag(tagId).orElseThrow(), // where the robot is, from the tag
-                pose -> {}, // never reset odometry from a tag-relative pose
-                () -> getRobotVelocity(),
-                velocities -> driveRobotRelative(velocities),
-                new PIDController(2.0, 0.0, 0.0),
-                new PIDController(3.0, 0.0, 0.0),
-                new PIDController(0.2, 0.0, 0.0))
-            // The tag's frame has no alliance side, so there is nothing to turn around.
-            .withShouldFlip(() -> false)
-            .build(new Path(new Path.Waypoint(spotInTag)));
-
-    return Command.noRequirements(
-            coroutine -> {
-              if (vision.robotInTag(tagId).isEmpty()) {
-                DataLogManager.log("AlignToTag: tag " + tagId + " not seen yet");
-                return;
-              }
-              coroutine.await(align);
-            })
-        .named("AlignToTag");
+  public FollowPath alignToTag(Vision vision, int tagId, Pose2d spotInTag) {
+    return new FollowPath.Builder(
+            DriveType.SWERVE,
+            this,
+            () -> vision.robotInTag(tagId).orElse(spotInTag), // where the robot is, from the tag
+            pose -> {}, // a pose measured from a tag is not a field pose, so never reset to it
+            () -> getRobotVelocity(),
+            velocities -> driveRobotRelative(velocities),
+            new PIDController(2.0, 0.0, 0.0),
+            new PIDController(3.0, 0.0, 0.0),
+            new PIDController(0.2, 0.0, 0.0))
+        // The tag's frame has no alliance side, so there is nothing to turn around.
+        .withShouldFlip(() -> false)
+        .build(new Path(new Path.Waypoint(spotInTag)));
   }
 
-  /** The robot's pose at an earlier moment, from the drivetrain's history. */
   public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
     return drivetrain.samplePoseAt(timestampSeconds);
   }
@@ -241,27 +269,31 @@ export default function AlignToTag() {
         />
 
         <p>
-          The pose reset does nothing, because a pose measured from a tag is not
-          a field pose. If no camera has seen the tag, the check before the{" "}
-          <code>await</code> ends the command at once. The gains are the ones
-          from{" "}
+          If the camera loses the tag on the way in, the robot finishes the
+          drive on its wheels. It works from the last place it saw the tag. If
+          no camera has seen the tag at all, <code>orElse(spotInTag)</code>{" "}
+          reports that the robot is already on the spot. The path finishes at
+          once and nothing moves. The gains are the ones from{" "}
           <Link href="/bline#builder" className={linkStyle}>
             BLine Paths
           </Link>
           .
         </p>
 
+        <p>
+          Then bind it in <code>TeleopOpMode</code>, under the Drive to Point
+          buttons.
+        </p>
         <CodeBlock
           language="java"
           filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
-          highlightLines={[6, 7, 8, 9, 10, 11, 12]}
+          highlightLines={[6, 7, 8, 9, 10, 11]}
           code={`  public TeleopOpMode(Robot robot) {
     // ... everything up to the Drive to Point bindings, unchanged
     robot.driver.a().whileTrue(robot.drivetrain.driveToPoint(Pose2d.ZERO));
     robot.driver.b().whileTrue(robot.drivetrain.driveToPoint(new Pose2d(3, 2, Rotation2d.PI)));
 
-    // Hold X to line up 1 m straight out from tag 7, facing it. The spot is measured from the
-    // tag, so the field pose can be wrong and the robot still stops in the same place.
+    // Hold X to line up 1 m straight out from tag 7, facing it. The camera has to see the tag.
     robot
         .driver
         .x()
@@ -311,8 +343,8 @@ export default function AlignToTag() {
             hold <strong>X</strong>.
           </li>
           <li>
-            Cover the camera, push the robot a meter sideways so the field pose
-            is wrong, uncover it, and hold <strong>X</strong> again.
+            Back the robot up, hold <strong>X</strong> again, and cover the
+            camera partway in.
           </li>
         </ol>
 
@@ -328,7 +360,8 @@ export default function AlignToTag() {
               its own.
             </li>
             <li>
-              The same stopping spot the second time, wrong field pose or not.
+              The robot finish the drive with the camera covered, and stop close
+              to the same spot.
             </li>
           </ul>
         </Box>
@@ -348,27 +381,27 @@ export default function AlignToTag() {
               "The field pose is 20 cm wrong when the driver holds X. Where does the robot stop?",
             options: [
               "20 cm from the spot, the same as Drive to Point",
-              "On the spot. Every sighting places the tag again from the camera, so the field pose error cancels",
+              "On the spot. The path drives on the pose measured from the tag and never reads the field pose",
               "Nowhere. The command ends because the pose is untrusted",
               "On the spot, but only if the error is in X and not Y",
             ],
             correctAnswer: 1,
             explanation:
-              "Vision places the tag from the drivetrain's pose, and the robot's distance from the tag is the drivetrain's pose minus that placement. The 20 cm error is in both and subtracts out.",
+              "alignToTag builds its path on vision.robotInTag, which comes straight from the camera's view of that one tag. The field pose is not part of it.",
           },
           {
             id: 2,
             question:
-              "The camera loses the tag 40 cm from the spot. What happens?",
+              "The camera loses the tag 40 cm from the spot and does not get it back. What happens?",
             options: [
-              "The command ends and the robot stops short",
-              "The robot stops and waits for the tag to come back",
+              "The robot stops where it is and waits for the tag to come back",
+              "The robot keeps driving at its last speed until the button is released",
               "The robot drives on toward the field origin",
-              "The robot finishes on the wheels, measured from the last place the tag was put down",
+              "The robot finishes the drive on its wheels, measured from the last place it saw the tag",
             ],
             correctAnswer: 3,
             explanation:
-              "robotInTag keeps answering from drivetrain.getPose() against the stored tag pose.",
+              "robotInTag is the newest sighting plus how far the wheels have moved since. With no new picture, it keeps answering from the last one.",
           },
           {
             id: 3,
@@ -386,16 +419,16 @@ export default function AlignToTag() {
           {
             id: 4,
             question:
-              "Why does rememberTags run before the trust gates in addFrame?",
+              "Why does rememberTags run before the trust checks in addFrame?",
             options: [
-              "One close tag is the sighting the pose estimator gates throw out, and it is exactly the one alignment needs",
-              "The gates need the tag map to decide",
-              "It runs faster before the gates",
-              "The gates change the frame's timestamp",
+              "The trust checks decide whether a frame corrects the field pose. Alignment needs every sighting of its tag, including one from a frame the checks reject",
+              "The checks need the saved tags to decide",
+              "It runs faster before the checks",
+              "The checks change the frame's timestamp",
             ],
             correctAnswer: 0,
             explanation:
-              "The gates protect the field pose from shaky single-tag solves. Alignment never touches the field pose, and the tag it is lining up on is often the only one in view.",
+              "The checks protect the field pose from a shaky solve. Alignment never touches the field pose, so rememberTags saves the sighting first, whether or not the frame goes on to pass.",
           },
           {
             id: 5,
