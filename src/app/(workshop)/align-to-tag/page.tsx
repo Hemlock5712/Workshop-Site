@@ -157,8 +157,8 @@ export default function AlignToTag() {
           language="java"
           filename="src/main/java/frc/robot/subsystems/Vision.java"
           highlightLines={[
-            4, 5, 6, 8, 9, 13, 14, 15, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-            32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+            4, 5, 6, 8, 9, 13, 14, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+            32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
           ]}
           code={`public class Vision {
   // ... drivetrain and cameras, unchanged
@@ -172,8 +172,7 @@ export default function AlignToTag() {
 
   private void addFrame(Limelight camera, LimelightResults frame) {
     PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
-    // Before the trust checks below: lining up on one close tag is exactly the sighting they
-    // throw out.
+    // Before the trust checks below, so a tag is remembered even when its frame is rejected.
     rememberTags(frame, estimate.timestampSeconds);
 
     // ... the rest of addFrame, unchanged
