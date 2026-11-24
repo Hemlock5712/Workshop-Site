@@ -245,9 +245,9 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
           To find your own deadband, open the driver station, take your hands
           off the controller, and look at what each stick axis reads. Flick each
           stick and let it snap back a few times. Take the largest reading you
-          see at rest and add a little to it. That keeps the robot from driving
-          when the driver is not touching the stick. Set it in the{" "}
-          <code>Robot</code> constructor.
+          see at rest, ignoring its sign, and add a little to it. That keeps the
+          robot from driving when the driver is not touching the stick. Set it
+          in the <code>Robot</code> constructor.
         </p>
         <CodeBlock
           language="java"

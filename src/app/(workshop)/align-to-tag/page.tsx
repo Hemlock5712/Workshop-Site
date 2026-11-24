@@ -50,6 +50,13 @@ const linkStyle =
  * `Vision/RobotInTag<id>` rather than the Limelight web page: the web page
  * shows Limelight's own axes, and the logged value is the exact number the
  * path drives on.
+ *
+ * Known limit, raised in review of PR 151: `getPose()` is the fused pose, so a
+ * vision correction applied after a sighting reads as wheel motion until the
+ * next sighting replaces it. While the tag is in view that is at most one
+ * frame's correction. Anchoring the tag in the field frame, as the first
+ * version did, is the same subtraction and has the same limit. Phoenix does not
+ * expose wheel-only odometry, so this stands.
  */
 export default function AlignToTag() {
   return (
@@ -414,14 +421,14 @@ export default function AlignToTag() {
             question:
               "Why does rememberTags run before the trust checks in addFrame?",
             options: [
-              "One close tag is the sighting the trust checks throw out, and it is exactly the one alignment needs",
+              "The trust checks decide whether a frame corrects the field pose. Alignment needs every sighting of its tag, including one from a frame the checks reject",
               "The checks need the saved tags to decide",
               "It runs faster before the checks",
               "The checks change the frame's timestamp",
             ],
             correctAnswer: 0,
             explanation:
-              "The checks protect the field pose from shaky single-tag solves. Alignment never touches the field pose, and the tag it is lining up on is often the only one in view.",
+              "The checks protect the field pose from a shaky solve. Alignment never touches the field pose, so rememberTags saves the sighting first, whether or not the frame goes on to pass.",
           },
           {
             id: 5,

@@ -378,11 +378,18 @@ function extract(source: ts.SourceFile): Extracted {
         const attributes = ts.isJsxElement(node)
           ? node.openingElement.attributes
           : node.attributes;
-        const collapsed = attributes.properties.some(
-          (property) =>
-            ts.isJsxAttribute(property) &&
-            property.name.getText() === "collapsed"
-        );
+        // Only a bare `collapsed` or `collapsed={true}` folds the block.
+        // `collapsed={false}`, or anything not known here, still costs.
+        const collapsed = attributes.properties.some((property) => {
+          if (!ts.isJsxAttribute(property)) return false;
+          if (property.name.getText() !== "collapsed") return false;
+          const value = property.initializer;
+          if (!value) return true;
+          return (
+            ts.isJsxExpression(value) &&
+            value.expression?.kind === ts.SyntaxKind.TrueKeyword
+          );
+        });
         if (!collapsed) out.codeBlocks += 1;
       }
       if (tag === "MechanismTabs") out.codeBlocks += 2;
