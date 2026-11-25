@@ -30,7 +30,21 @@ have no alpha-8 builds, so the upgrade waits for beta 1.
       own v3 example (`wpilibjExamples/.../rebuiltcmdv3`) instead overrides
       `idle()` to send zero and calls `setDefaultCommand(x.idle())` in
       `Robot`. The latched-request demo on `/running-program` depends on the
-      choice.
+      choice. The default-command option already works on alpha-7; the
+      `whenExited` option needs beta 1.
+
+- [ ] **Delete the branches no page teaches.** `2-Logging`, `3-Limelight`,
+      `4-DynamicFlywheel`, `5-DriveToPoint` and `6-ProfiledToPoint` appear on
+      the site only in code comments, and `p1-flywheel` was a one-off bench
+      run. Deleting a branch cannot be undone from here, so say yes first;
+      then drop them, prune `reference/`, and trim the comments and the
+      `teaching-code.md` notes that name them.
+- [ ] **`/ai-coding-assistant` points at a stale template.** It sends
+      students to 2027-Template's `ONBOARDING.md` and `.claude/skills`, and
+      2027-Template is still on GradleRIO alpha-6 (`2027-dev`, last change
+      October 2026). Either bring 2027-Template to alpha-7, or give
+      Workshop-Code `main` its own onboarding file and skills and point the
+      page there.
 
 ## On the real robot
 
@@ -89,6 +103,13 @@ extends TunerSwerveDrivetrain implements Mechanism` works and the "a
       and the shooter `Flywheel` constructors, the 7 pages that name
       `DriveMechanism`, and `/swerve-drive-project`, whose reason for the
       split ("keeps your code out of the files Tuner X writes") goes.
+  - This is the swerve rebuild `teaching-code.md` has been waiting on:
+    move the chain from `frc.robot.subsystems` / `frc.robot.opmodes` to
+    `first.robot.mechanisms` / `first.robot.opmode`, and rename `1-Swerve`
+    to the `swerve-*` scheme, in the same pass. Every swerve page and
+    embed follows.
+  - Cut a release tag after `v3.3-swerve` and point the swerve project
+    download at it.
 - [ ] Drop `end() { cancel(routine); }` from `RaiseAndShootOpMode`,
       `LeaveStartAuto` and `AutoOpMode`. A command scheduled inside an OpMode
       is already canceled when that OpMode exits (allwpilib#8492 and #8705,
