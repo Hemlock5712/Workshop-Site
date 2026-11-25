@@ -96,8 +96,13 @@ CoordinateSystem.NWU())` does: Limelight target space is X right, Y
       installs `commandsv3` itself for a `commandversion: 3` template. The
       skeleton's `Robot` already runs `Scheduler.getDefault().run()`; delete
       its `@Logged` and `Epilogue.update(this)`, since logging is Telemetry.
-      The full template's OpModes `implements OpMode`, not `extends
-  PeriodicOpMode`, which only adds an `addPeriodic` nothing uses. First
+      Neither template has swerve code. The full one adds an
+      `ExampleMechanism` that prints every loop, two `constants/` files, a
+      `CommandGamepad` and `ExampleTeleop` / `ExampleAuto`, all to delete, so
+      the skeleton is the better fit for the arm and flywheel chain; the
+      student then writes the teleop OpMode as `implements OpMode`. The full
+      template's OpModes `implements OpMode`, not `extends
+PeriodicOpMode`, which only adds an `addPeriodic` nothing uses. First
       open the alpha-7 New Project Creator and confirm both appear, then
       choose a template. The swap step, its screenshots and quiz question,
       the `MyTeleop` / `MyAuto` rule in `teaching-code.md`, and every mech
