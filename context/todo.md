@@ -116,6 +116,12 @@ PeriodicOpMode`, which only adds an `addPeriodic` nothing uses. First
       `notifyNewData()`, run the scheduler). Move the OpMode pick and enable
       into a test or test helper under `src/test`, drop the rest, and rewrite
       the headless recipe in `teaching-code.md`.
+
+### Later, on a machine that can build
+
+Needs `frcmaven.wpi.edu` and `maven.ctr-electronics.com` for Gradle and `javap`.
+A cloud session reaches neither unless the environment allows them.
+
 - [ ] **`MechanismViews` guesses the control mode from its name.**
       `isPositionControl` and the flywheel check match strings inside
       `ControlModeValue.toString()`. Either pass the mechanism's own getters
