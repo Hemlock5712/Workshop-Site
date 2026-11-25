@@ -115,26 +115,31 @@ CoordinateSystem.NWU())` does: Limelight target space is X right, Y
       the target", the library call gives +X out of the face with no minus
       sign, which is the opposite of today's `-getZ()`. Pair it with the sign
       check above, then update `/align-to-tag`.
-- [ ] **Start from the Command v3 template.** `/project-setup` picks "OpMode
-      Robot", which WPILib's `templates.json` marks `commandversion: 2`, then
-      swaps CommandsV2 for CommandsV3 by hand. Alpha-7 also ships "Command v3
-      Robot" and "Command v3 Robot Skeleton (Advanced)" (allwpilib#8887), and
-      the alpha-7 VS Code extension builds its list from that same file and
-      installs `commandsv3` itself for a `commandversion: 3` template. The
-      skeleton's `Robot` already runs `Scheduler.getDefault().run()`; delete
-      its `@Logged` and `Epilogue.update(this)`, since logging is Telemetry.
-      Neither template has swerve code. The full one adds an
-      `ExampleMechanism` that prints every loop, two `constants/` files, a
-      `CommandGamepad` and `ExampleTeleop` / `ExampleAuto`, all to delete, so
-      the skeleton is the better fit for the arm and flywheel chain; the
-      student then writes the teleop OpMode as `implements OpMode`, not
-      `extends PeriodicOpMode`, which only adds an `addPeriodic` nothing uses.
-      AdvantageScope's current "Hello, Telemetry!" tutorial already tells
-      students to pick "Template > Java > Command v3 Robot", so the entry is
-      in the creator; still check the skeleton on alpha-7. The
-      swap step, its screenshots and quiz question, the `MyTeleop` / `MyAuto`
-      rule in `teaching-code.md`, and every mech branch's starting commit
-      change with it.
+- [ ] **Start from "Command v3 Robot Skeleton (Advanced)".** Owner's call,
+      November 2026. `/project-setup` picks "OpMode Robot" today, which
+      WPILib's `templates.json` marks `commandversion: 2`, then swaps
+      CommandsV2 for CommandsV3 by hand. The skeleton (allwpilib#8887, in
+      alpha-7) is `commandversion: 3`, so the VS Code extension installs
+      `commandsv3` itself and the swap step goes. Its `Robot extends
+OpModeRobot` already runs `Scheduler.getDefault().run()` in
+      `robotPeriodic()`. The student deletes `@Logged`,
+      `Epilogue.update(this)` and their two imports, for the reason in the
+      logging bullet of `teaching-code.md`. The skeleton ships no OpMode, so
+      the student creates `opmode/MyTeleop.java` as `@Teleop public class
+MyTeleop implements OpMode`, keeping the name every later lesson uses.
+      `PeriodicOpMode` only adds an `addPeriodic` nothing calls. `MyAuto` is
+      empty on the mech chain and is not created. Work:
+  - Confirm the skeleton is listed in the alpha-7 New Project Creator.
+    AdvantageScope's "Hello, Telemetry!" tutorial already shows "Command v3
+    Robot" there.
+  - Rebuild `main` from a fresh skeleton project, then rebase the mech chain
+    onto it with the recipe in `scripts/workbench.mjs`. Every `MyTeleop` on
+    the chain becomes `implements OpMode`.
+  - `/project-setup`: new template step and screenshot, delete the swap
+    step, its screenshots and the quiz question about the swap, and add the
+    Epilogue deletion and the `MyTeleop` file.
+  - Rewrite the "generated OpMode keeps its generated name" bullet in
+    `teaching-code.md`, and update `/opmodes`, which names `MyAuto`.
 - [ ] **`SimStartup` out of the student project.** The swerve chain ships
       `SimStartup.java`, a `simulationInit()` override that calls it, and a
       `simulateJavaAgent` block in `build.gradle`, about 140 lines that only
