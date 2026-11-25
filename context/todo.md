@@ -31,18 +31,6 @@ have no alpha-8 builds, so the upgrade waits for beta 1.
       `idle()` to send zero and calls `setDefaultCommand(x.idle())` in
       `Robot`. The latched-request demo on `/running-program` depends on the
       choice.
-- [ ] **Fold `DriveMechanism` into `CommandSwerveDrivetrain`.** Since
-      allwpilib#8303 (alpha-7) `Mechanism` is an interface, made one for
-      CTRE swerve, so `CommandSwerveDrivetrain extends TunerSwerveDrivetrain
-implements Mechanism` works and the "a Java class can only extend one
-      thing" Javadoc is out of date. The `setControl`, `resetPose`,
-      `samplePoseAt` and `addVisionMeasurement` wrappers go away because the
-      drivetrain already has them. The `seedFieldCentric` command needs a new
-      name, because the generated class already has a `void
-seedFieldCentric()`. Cost: 7 pages name `DriveMechanism`, and
-      `/swerve-drive-project` gives "keeps your code out of the files Tuner X
-      writes" as the reason for the split. First check what the 2027 Tuner X
-      generator emits; if it already implements `Mechanism`, copy its shape.
 
 ## On the real robot
 
@@ -85,6 +73,22 @@ reaches only if the environment allows them; check the Phoenix 6 jar with
 `javap` before using any Phoenix method, because CTRE's API site is not
 reachable either.
 
+- [ ] **Fold `DriveMechanism` into `CommandSwerveDrivetrain`.** Owner's
+      call, November 2026. Since allwpilib#8303 (alpha-7) `Mechanism` is an
+      interface, made one for CTRE swerve, so `CommandSwerveDrivetrain
+extends TunerSwerveDrivetrain implements Mechanism` works and the "a
+      Java class can only extend one thing" Javadoc is out of date. Move the
+      BLine builder, `applyRequest`, `followPath`, `driveToPoint`,
+      `alignToTag`, the telemetry and the `addPeriodic` call across; the
+      `setControl`, `resetPose`, `samplePoseAt` and `addVisionMeasurement`
+      wrappers go away because the drivetrain already has them. The
+      `seedFieldCentric` command needs a new name, because the generated
+      class already has a `void seedFieldCentric()`. First check what the
+      2027 Tuner X generator emits; if it already implements `Mechanism`,
+      copy its shape. Then every swerve branch from `1-Swerve` on, `Vision`
+      and the shooter `Flywheel` constructors, the 7 pages that name
+      `DriveMechanism`, and `/swerve-drive-project`, whose reason for the
+      split ("keeps your code out of the files Tuner X writes") goes.
 - [ ] Drop `end() { cancel(routine); }` from `RaiseAndShootOpMode`,
       `LeaveStartAuto` and `AutoOpMode`. A command scheduled inside an OpMode
       is already canceled when that OpMode exits (allwpilib#8492 and #8705,
