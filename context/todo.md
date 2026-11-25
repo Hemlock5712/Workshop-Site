@@ -22,6 +22,66 @@ delete this file when the list is empty.
       small runtime stub, in place of the lazy MiniSearch. Sequence it with
       the MDX decision.
 
+## WPILib beta 1 upgrade
+
+Workshop-Code is on alpha-7. Alpha-8 shipped on 2026-10-24, but BLine
+(`2027.0.0-beta.3`, `wpilibYear: 2027_alpha7`), LimelightLib and Phoenix 6
+have no alpha-8 builds, so the move waits for beta 1. Found by reading
+allwpilib `main` on 2026-11-25 against every Workshop-Code branch. Nothing
+was built or run.
+
+### Needs the owner
+
+- [ ] **Center-origin field.** allwpilib#9590 is on `main` and will ship in
+      beta 1: the origin is the field center, +X points at the blue wall, and
+      every field pose turns 180 degrees from 2026. The blue-wall rule in
+      `teaching-code.md` says to switch when WPILib ships this. Lesson poses,
+      field graphics, the BLine flip and the LimelightLib `WPIBLUE` estimate
+      move together.
+- [ ] **How a released button stops a mechanism.** Today it is
+      `whileFalse(stop())`, taught on 8 pages. Alpha-8 adds
+      `.whenExited(() -> stopMotor())` on the command builder
+      (allwpilib#9402), which runs on finish, cancel and interrupt. WPILib's
+      own v3 example (`wpilibjExamples/.../rebuiltcmdv3`) instead overrides
+      `idle()` to send zero and calls `setDefaultCommand(x.idle())` in
+      `Robot`. The latched-request demo on `/running-program` depends on the
+      choice.
+- [ ] **Fold `DriveMechanism` into `CommandSwerveDrivetrain`.** Since
+      allwpilib#8303 (alpha-7) `Mechanism` is an interface, made one for
+      CTRE swerve, so `CommandSwerveDrivetrain extends TunerSwerveDrivetrain
+    implements Mechanism` works and the "a Java class can only extend one
+      thing" Javadoc is out of date. The `setControl`, `resetPose`,
+      `samplePoseAt` and `addVisionMeasurement` wrappers go away because the
+      drivetrain already has them. The `seedFieldCentric` command needs a new
+      name, because the generated class already has a `void
+    seedFieldCentric()`. Cost: 7 pages name `DriveMechanism`, and
+      `/swerve-drive-project` gives "keeps your code out of the files Tuner X
+      writes" as the reason for the split. First check what the 2027 Tuner X
+      generator emits; if it already implements `Mechanism`, copy its shape.
+
+### Code, once beta 1 and the vendordeps land
+
+- [ ] Bump GradleRIO, Phoenix 6, BLine and LimelightLib on every branch.
+      The LimelightLib file name changes per release, so re-check the URL.
+- [ ] Delete `RobotModeTriggers.disabled().whileTrue(...)` from the swerve
+      `Robot.java`. Since allwpilib#9417 (alpha-8) a command whose mechanism
+      is not `controllableDuringDisabled()` is refused while disabled, so the
+      binding never runs. Update `/triggers`, which teaches it, and the BLine
+      bullet in `teaching-code.md`, which credits the stop on disable to it.
+- [ ] `LeaveStartAuto`: replace the stop at the end of `run` and the
+      `.whenCanceled(...)` with one `.whenExited(...)`. Update `/autonomous`.
+- [ ] Drop `end() { cancel(routine); }` from `RaiseAndShootOpMode`,
+      `LeaveStartAuto` and `AutoOpMode`. A command scheduled inside an OpMode
+      is already canceled when that OpMode exits (allwpilib#8492 and #8705,
+      both in alpha-7). `AutoOpMode` keeps its
+      `FollowPath.clearPendingEventTriggers()`. Check one auto in sim first,
+      then update `/coroutines`, `/autonomous` and `/bline`.
+- [ ] `mech-sim`: `org.wpilib.math.util.Units` is renamed `UnitConversions`
+      (allwpilib#9621).
+- [ ] Prose: `SystemCore` is now `Systemcore` (allwpilib#9671), on 10 pages.
+- [ ] Check the Auto chooser on the 2027 Driver Station. allwpilib#9622
+      removed the shim that let older dashboards show a `Selectable`.
+
 ## Still to do
 
 - [ ] Wire `scripts/audit-ui.mjs` into CI against `next start`.
