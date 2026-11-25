@@ -23,12 +23,6 @@ have no alpha-8 builds, so the upgrade waits for beta 1.
       views and web vitals itself, so one tool could cover all three; or drop
       PostHog and the banner if traffic counts are all anyone reads. Check
       PostHog's current web vitals option before choosing.
-- [ ] **Center-origin field.** allwpilib#9590 is on `main` and will ship in
-      beta 1: the origin is the field center, +X points at the blue wall, and
-      every field pose turns 180 degrees from 2026. The blue-wall rule in
-      `teaching-code.md` says to switch when WPILib ships this. Lesson poses,
-      field graphics, the BLine flip and the LimelightLib `WPIBLUE` estimate
-      move together.
 - [ ] **How a released button stops a mechanism.** Today it is
       `whileFalse(stop())`, taught on 8 pages. Alpha-8 adds
       `.whenExited(() -> stopMotor())` on the command builder
@@ -160,6 +154,24 @@ MyTeleop implements OpMode`, keeping the name every later lesson uses.
       `LimelightHelpers.java`, which no mech branch has.
 
 ## Once beta 1 and the vendordeps land
+
+- [ ] **Move to the center-origin field.** allwpilib#9590 is on `main`
+      (2026-11-07) and will ship in beta 1: (0, 0) is the field center, +X
+      points at the blue alliance wall, and every field-relative pose turns
+      180 degrees from 2026. WPILib calls it silently breaking, because a
+      logged pose does not say which frame it is in. The owner's rule in
+      `teaching-code.md` ("Every pose is blue-wall origin") is to switch
+      everything together once WPILib ships it, so wait until BLine and
+      LimelightLib also have center-origin builds; mixing frames pulls
+      odometry half a field on every vision update. Then:
+  - Branches: `driveToPoint` goals, the shooter `TARGET` (the red goal
+    becomes `TARGET.rotateBy(Rotation2d.PI)`), BLine's flip and its
+    16.54 × 8.07 m field, and the LimelightLib estimate type that replaces
+    `MT1_WPIBLUE` / `MT2_WPIBLUE`.
+  - Pages with field coordinates: `/drive-to-point`, `/autonomous`,
+    `/swerve-basics`, `/vision-shooting`, `/align-to-tag`, plus the site's
+    field graphics.
+  - Rewrite the blue-wall bullet in `teaching-code.md`.
 
 - [ ] Bump GradleRIO, Phoenix 6, BLine and LimelightLib on every branch.
       The LimelightLib file name changes per release, so re-check the URL.
