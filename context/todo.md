@@ -49,26 +49,15 @@ was built or run.
 - [ ] **Fold `DriveMechanism` into `CommandSwerveDrivetrain`.** Since
       allwpilib#8303 (alpha-7) `Mechanism` is an interface, made one for
       CTRE swerve, so `CommandSwerveDrivetrain extends TunerSwerveDrivetrain
-  implements Mechanism` works and the "a Java class can only extend one
+implements Mechanism` works and the "a Java class can only extend one
       thing" Javadoc is out of date. The `setControl`, `resetPose`,
       `samplePoseAt` and `addVisionMeasurement` wrappers go away because the
       drivetrain already has them. The `seedFieldCentric` command needs a new
       name, because the generated class already has a `void
-  seedFieldCentric()`. Cost: 7 pages name `DriveMechanism`, and
+seedFieldCentric()`. Cost: 7 pages name `DriveMechanism`, and
       `/swerve-drive-project` gives "keeps your code out of the files Tuner X
       writes" as the reason for the split. First check what the 2027 Tuner X
       generator emits; if it already implements `Mechanism`, copy its shape.
-- [ ] **Logging through Epilogue.** WPILib's own Commands v3 templates put
-      `@Logged` on `Robot` and call `Epilogue.update(this)` in
-      `robotPeriodic()`. Epilogue walks every field and public getter on its
-      own, so the `TelemetryLoggable` + `logTo` + `Telemetry.log("Arm", arm)`
-      shape taught on `/conditions-and-logging` could become one annotation
-      and one line. The prebuilt `Epilogue` class arrived in alpha-8
-      (allwpilib#9493), so this waits for beta 1. Costs: it logs everything
-      unless told not to (`@NotLogged`, `importance`), names come from the
-      code, and nobody has checked what it does with a `TalonFX` field, so
-      `AppliedVoltage` would likely need its own getter. Reverses the November
-      decision recorded in `curriculum.md`.
 
 ### Can do now, on alpha-7
 
@@ -91,7 +80,7 @@ was built or run.
       two have reasons; the `Flywheel` should match the mech chain's `Flywheel`.
 - [ ] **`Vision.toTagFrame` can use wpimath.** The hand-written axis swap is
       what `CoordinateSystem.convert(pose, CoordinateSystem.EDN(),
-  CoordinateSystem.NWU())` does: Limelight target space is X right, Y
+CoordinateSystem.NWU())` does: Limelight target space is X right, Y
       down, Z along the tag's normal. With Limelight's documented "Z out of
       the target", the library call gives +X out of the face with no minus
       sign, which is the opposite of today's `-getZ()`. Pair it with the sign
@@ -99,6 +88,38 @@ was built or run.
       `/align-to-tag`.
 - [ ] The mech chain's `build.gradle` Spotless block still excludes
       `LimelightHelpers.java`, which no mech branch has.
+- [ ] **Start from the Command v3 template.** `/project-setup` picks "OpMode
+      Robot", which WPILib's `templates.json` marks `commandversion: 2`, then
+      swaps CommandsV2 for CommandsV3 by hand. Alpha-7 also ships "Command v3
+      Robot" and "Command v3 Robot Skeleton (Advanced)" (allwpilib#8887), and
+      the alpha-7 VS Code extension builds its list from that same file and
+      installs `commandsv3` itself for a `commandversion: 3` template. The
+      skeleton's `Robot` already runs `Scheduler.getDefault().run()`; delete
+      its `@Logged` and `Epilogue.update(this)`, since logging is Telemetry.
+      The full template's OpModes `implements OpMode`, not `extends
+  PeriodicOpMode`, which only adds an `addPeriodic` nothing uses. First
+      open the alpha-7 New Project Creator and confirm both appear, then
+      choose a template. The swap step, its screenshots and quiz question,
+      the `MyTeleop` / `MyAuto` rule in `teaching-code.md`, and every mech
+      branch's starting commit change with it.
+- [ ] **`SimStartup` out of the student project.** The swerve chain ships
+      `SimStartup.java`, a `simulationInit()` override that calls it, and a
+      `simulateJavaAgent` block in `build.gradle`, about 140 lines that only
+      exist so an agent can start sim enabled. GradleRIO has no such task.
+      `mech-sim` already does the same job as a JUnit test
+      (`MechanismSimTest`: `DriverStationSim` mode, enable,
+      `notifyNewData()`, run the scheduler). Move the OpMode pick and enable
+      into a test or test helper under `src/test`, drop the rest, and rewrite
+      the headless recipe in `teaching-code.md`.
+- [ ] **`MechanismViews` guesses the control mode from its name.**
+      `isPositionControl` and the flywheel check match strings inside
+      `ControlModeValue.toString()`. Either pass the mechanism's own getters
+      (`() -> getPosition()`, `() -> getTargetPosition()`) so the picture
+      draws what the mechanism asked for, or use the Talon's applied-control
+      getter if the Phoenix 6 jar has one. CTRE's API site is unreachable from
+      a cloud session, so check the jar with `javap` before using any Phoenix
+      method. The file is shown on `/mechanism-simulation`
+      (`utilSources.ts`).
 
 ### Code, once beta 1 and the vendordeps land
 
