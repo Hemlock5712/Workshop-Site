@@ -129,7 +129,9 @@ CoordinateSystem.NWU())` does: Limelight target space is X right, Y
       the skeleton is the better fit for the arm and flywheel chain; the
       student then writes the teleop OpMode as `implements OpMode`, not
       `extends PeriodicOpMode`, which only adds an `addPeriodic` nothing uses.
-      First open the alpha-7 New Project Creator and confirm both appear. The
+      AdvantageScope's current "Hello, Telemetry!" tutorial already tells
+      students to pick "Template > Java > Command v3 Robot", so the entry is
+      in the creator; still check the skeleton on alpha-7. The
       swap step, its screenshots and quiz question, the `MyTeleop` / `MyAuto`
       rule in `teaching-code.md`, and every mech branch's starting commit
       change with it.
