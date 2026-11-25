@@ -1,37 +1,28 @@
-# Site overhaul to-do
+# To-do
 
-What is left from the October 2026 review. Check items off as they land and
-delete this file when the list is empty.
+Open work on the site and on Workshop-Code, rewritten on 2026-11-25 after
+reading allwpilib `main` against every branch. Check items off as they land
+and delete this file when the list is empty.
+
+Workshop-Code is on WPILib alpha-7. Alpha-8 shipped on 2026-10-24, but BLine
+(`2027.0.0-beta.3`, `wpilibYear: 2027_alpha7`), LimelightLib and Phoenix 6
+have no alpha-8 builds, so the upgrade waits for beta 1.
 
 ## Needs the owner
 
-- [ ] **Re-record the Tuner X videos** on the real bench (the owner is
-      recording them; simulation cannot show kG or the hand tests):
-      `pid-control` `Pt7SBFfl3oM` (plus a flywheel one), `motion-magic`
-      `7I7r9p1RBZI`, `mechanism-setup` `cDWF3bj1Juk` and `mjGn3y19eUc`,
-      `hardware` `aktcCtcrEyY` and `TkScJADvD-Y`.
-- [ ] **BLine on the real robot.** Run `swerve-bline` for gains, traction and
-      the stop on disable. Untested so far: the editor's folder-picker export
-      and the Windows desktop app.
-- [ ] **Control-system plate** for the bench mechanism (mentor request):
-      needs Onshape CAD.
-- [ ] **Analytics.** Vercel Analytics plus Speed Insights and PostHog all
-      run. Pick one product-analytics tool or keep both.
-- [ ] **MDX for lesson prose.** Optional; pilot on one page if wanted.
-- [ ] **Pagefind for search.** Indexes the rendered HTML at build time with a
-      small runtime stub, in place of the lazy MiniSearch. Sequence it with
-      the MDX decision.
-
-## WPILib beta 1 upgrade
-
-Workshop-Code is on alpha-7. Alpha-8 shipped on 2026-10-24, but BLine
-(`2027.0.0-beta.3`, `wpilibYear: 2027_alpha7`), LimelightLib and Phoenix 6
-have no alpha-8 builds, so the move waits for beta 1. Found by reading
-allwpilib `main` on 2026-11-25 against every Workshop-Code branch. Nothing
-was built or run.
-
-### Needs the owner
-
+- [ ] **Re-record the Tuner X videos** on the real bench. Simulation cannot
+      show kG or the hand tests. Still embedded: `pid-control` `Pt7SBFfl3oM`
+      plus a flywheel one to make, `motion-magic` `7I7r9p1RBZI`,
+      `mechanism-setup` `cDWF3bj1Juk` and `mjGn3y19eUc`, `hardware`
+      `aktcCtcrEyY` and `TkScJADvD-Y`.
+- [ ] **Control-system plate** for the bench mechanism, a mentor request.
+      Needs Onshape CAD.
+- [ ] **Analytics.** Three tools run: Vercel Analytics and Speed Insights,
+      which are cookieless and only load when the site is hosted on Vercel,
+      and PostHog, which needs the consent banner. PostHog can record page
+      views and web vitals itself, so one tool could cover all three; or drop
+      PostHog and the banner if traffic counts are all anyone reads. Check
+      PostHog's current web vitals option before choosing.
 - [ ] **Center-origin field.** allwpilib#9590 is on `main` and will ship in
       beta 1: the origin is the field center, +X points at the blue wall, and
       every field pose turns 180 degrees from 2026. The blue-wall rule in
@@ -59,7 +50,46 @@ seedFieldCentric()`. Cost: 7 pages name `DriveMechanism`, and
       writes" as the reason for the split. First check what the 2027 Tuner X
       generator emits; if it already implements `Mechanism`, copy its shape.
 
-### Can do now, on alpha-7
+## On the real robot
+
+Everything below was checked in simulation only.
+
+- [ ] **BLine.** Run `swerve-bline` for gains, traction and the stop on
+      disable. Untested: the editor's folder-picker export and the Windows
+      desktop app.
+- [ ] **The tag frame's sign.** `toTagFrame` assumes target-space Z points
+      into the wall; Limelight's docs say out of it. The sim check cannot
+      catch this. Settle it before anyone drives Align to Tag, and do it
+      together with the `CoordinateSystem` item below.
+- [ ] **Stick signs** through `CommandXboxController` on the FIRST Driver
+      Station.
+
+## Can do now: the site
+
+- [ ] **Make `scripts/audit-ui.mjs` fit for CI**, then add it as a job that
+      builds, runs `next start` and audits. Run on 2026-11-25 it failed all
+      28 page states, every one a false alarm: the `/_vercel/insights` and
+      `/_vercel/speed-insights` scripts 404 off Vercel, and the name check
+      reads only `aria-label`, `title` and text, so a radio inside a
+      `<label>` counts as unnamed. Ignore `/_vercel/` responses and count
+      `el.labels`. The one real hit is a decorative `·` separator on
+      `/vision-shooting` at 360 px, 1.4:1 in light and 1.6:1 in dark; mark it
+      `aria-hidden` or give it a readable token. In a cloud session launch
+      with `executablePath: "/opt/pw-browsers/chromium"`, because the
+      project's Playwright pins a browser build that is not installed there.
+- [ ] Pages over the 12 minute target, all under the 15 cap, from
+      `pnpm prose` on 2026-11-25: `/bline` 14.8, `/mechanism-setup` 14.2,
+      `/coroutines` 13.2, `/ai-coding-assistant` 13.0, `/mechanisms` 13.0,
+      `/pid-control` 12.7, `/swerve-drive-tuning` 12.2. `/bline` is closest
+      to the cap.
+
+## Can do now: Workshop-Code
+
+Each item changes a branch and the pages that show it. Building needs
+`frcmaven.wpi.edu` and `maven.ctr-electronics.com`, which a cloud session
+reaches only if the environment allows them; check the Phoenix 6 jar with
+`javap` before using any Phoenix method, because CTRE's API site is not
+reachable either.
 
 - [ ] Drop `end() { cancel(routine); }` from `RaiseAndShootOpMode`,
       `LeaveStartAuto` and `AutoOpMode`. A command scheduled inside an OpMode
@@ -84,10 +114,7 @@ CoordinateSystem.NWU())` does: Limelight target space is X right, Y
       down, Z along the tag's normal. With Limelight's documented "Z out of
       the target", the library call gives +X out of the face with no minus
       sign, which is the opposite of today's `-getZ()`. Pair it with the sign
-      check `teaching-code.md` already gates driving on, then update
-      `/align-to-tag`.
-- [ ] The mech chain's `build.gradle` Spotless block still excludes
-      `LimelightHelpers.java`, which no mech branch has.
+      check above, then update `/align-to-tag`.
 - [ ] **Start from the Command v3 template.** `/project-setup` picks "OpMode
       Robot", which WPILib's `templates.json` marks `commandversion: 2`, then
       swaps CommandsV2 for CommandsV3 by hand. Alpha-7 also ships "Command v3
@@ -100,13 +127,12 @@ CoordinateSystem.NWU())` does: Limelight target space is X right, Y
       `ExampleMechanism` that prints every loop, two `constants/` files, a
       `CommandGamepad` and `ExampleTeleop` / `ExampleAuto`, all to delete, so
       the skeleton is the better fit for the arm and flywheel chain; the
-      student then writes the teleop OpMode as `implements OpMode`. The full
-      template's OpModes `implements OpMode`, not `extends
-PeriodicOpMode`, which only adds an `addPeriodic` nothing uses. First
-      open the alpha-7 New Project Creator and confirm both appear, then
-      choose a template. The swap step, its screenshots and quiz question,
-      the `MyTeleop` / `MyAuto` rule in `teaching-code.md`, and every mech
-      branch's starting commit change with it.
+      student then writes the teleop OpMode as `implements OpMode`, not
+      `extends PeriodicOpMode`, which only adds an `addPeriodic` nothing uses.
+      First open the alpha-7 New Project Creator and confirm both appear. The
+      swap step, its screenshots and quiz question, the `MyTeleop` / `MyAuto`
+      rule in `teaching-code.md`, and every mech branch's starting commit
+      change with it.
 - [ ] **`SimStartup` out of the student project.** The swerve chain ships
       `SimStartup.java`, a `simulationInit()` override that calls it, and a
       `simulateJavaAgent` block in `build.gradle`, about 140 lines that only
@@ -116,23 +142,17 @@ PeriodicOpMode`, which only adds an `addPeriodic` nothing uses. First
       `notifyNewData()`, run the scheduler). Move the OpMode pick and enable
       into a test or test helper under `src/test`, drop the rest, and rewrite
       the headless recipe in `teaching-code.md`.
-
-### Later, on a machine that can build
-
-Needs `frcmaven.wpi.edu` and `maven.ctr-electronics.com` for Gradle and `javap`.
-A cloud session reaches neither unless the environment allows them.
-
 - [ ] **`MechanismViews` guesses the control mode from its name.**
       `isPositionControl` and the flywheel check match strings inside
       `ControlModeValue.toString()`. Either pass the mechanism's own getters
       (`() -> getPosition()`, `() -> getTargetPosition()`) so the picture
       draws what the mechanism asked for, or use the Talon's applied-control
-      getter if the Phoenix 6 jar has one. CTRE's API site is unreachable from
-      a cloud session, so check the jar with `javap` before using any Phoenix
-      method. The file is shown on `/mechanism-simulation`
-      (`utilSources.ts`).
+      getter if the Phoenix 6 jar has one. The file is shown on
+      `/mechanism-simulation` (`utilSources.ts`).
+- [ ] The mech chain's `build.gradle` Spotless block still excludes
+      `LimelightHelpers.java`, which no mech branch has.
 
-### Code, once beta 1 and the vendordeps land
+## Once beta 1 and the vendordeps land
 
 - [ ] Bump GradleRIO, Phoenix 6, BLine and LimelightLib on every branch.
       The LimelightLib file name changes per release, so re-check the URL.
@@ -148,14 +168,3 @@ A cloud session reaches neither unless the environment allows them.
 - [ ] Prose: `SystemCore` is now `Systemcore` (allwpilib#9671), on 10 pages.
 - [ ] Check the Auto chooser on the 2027 Driver Station. allwpilib#9622
       removed the shim that let older dashboards show a `Selectable`.
-
-## Still to do
-
-- [ ] Wire `scripts/audit-ui.mjs` into CI against `next start`.
-- [ ] Pages over the 12 minute target (all under the 15 cap, November 2026):
-      `/drive-to-point` 14.7, `/mechanism-setup` 14.2, `/mechanisms` 14.0,
-      `/coroutines` 13.5, `/swerve-drive-project` 13.2,
-      `/ai-coding-assistant` 13.1, `/bline` 12.7,
-      `/pid-control` 12.7, `/finish-conditions` 12.1.
-- [ ] Inline `style={{}}` props (about 400) to utility classes; split the
-      large explainer components alongside the new unit tests.
