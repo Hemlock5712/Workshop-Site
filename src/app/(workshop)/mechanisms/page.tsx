@@ -246,14 +246,7 @@ public class Flywheel implements Mechanism {
           <Mech for="flywheel" as="li">
             One wheel, one motor, and no CANcoder. A flywheel is tuned for
             speed, and the encoder inside the TalonFX already measures speed.
-            The arm needs a second device because an angle has to be right the
-            moment the robot boots.
           </Mech>
-          <li>
-            <code>VoltageOut</code> is a control request, built once as a field
-            and reused. <strong>Configs and requests</strong> below says what
-            that means.
-          </li>
         </ul>
       </LessonSection>
 
@@ -274,7 +267,6 @@ public class Flywheel implements Mechanism {
           src="/images/setup/generate-code.png"
           alt="Phoenix Tuner X with the config panel's three-dot menu open and Generate Code circled in red, above the Motion Magic fields"
           title="Where the config comes from"
-          caption="Generate Code is in the config panel's three-dot menu."
           width={2559}
           height={1525}
         />
@@ -451,8 +443,8 @@ public class Flywheel implements Mechanism {
         </p>
 
         <p>
-          As you will notice, both methods are <code>void</code>. The next
-          lesson converts them into commands.
+          Both methods are <code>void</code>. The next lesson converts them into
+          commands.
         </p>
       </LessonSection>
 
@@ -463,8 +455,7 @@ public class Flywheel implements Mechanism {
           the table below. <code>VoltageOut</code> is a simple test. By the end
           of Workshop 1 you were using Motion Magic Voltage in Tuner X.{" "}
           <code>MotionMagicVoltage</code> drops in just as easily in{" "}
-          <strong>Motion Magic in Code</strong>. For now, we start by applying
-          voltage.
+          <strong>Motion Magic in Code</strong>.
         </p>
 
         <div className="measure-wide overflow-x-auto">

@@ -164,7 +164,6 @@ public class Arm implements Mechanism {
           The compiler settles this faster than reading does. Run{" "}
           <em>WPILib: Build Robot Code</em> and a v2 import fails at once with{" "}
           <code>package edu.wpi.first.wpilibj2.command does not exist</code>.
-          Build after every change, before you run anything.
         </p>
       </LessonSection>
 
@@ -204,9 +203,7 @@ public class Arm implements Mechanism {
 
         <p>
           Point an assistant at <code>robot-description</code> first. It has the
-          wiring model, and the surprise for anyone coming from v2: there is no{" "}
-          <code>RobotContainer</code>. Teacher mode is on by default and keeps
-          explanations short.
+          wiring model. Teacher mode keeps explanations short.
         </p>
 
         <DocumentationButton
@@ -359,11 +356,9 @@ Show me the diff before you write anything.`}
         </ol>
 
         <p>
-          <code>whileTrue</code> schedules a hold and cancels it on release, but
-          canceling is not stopping. Releasing B works because{" "}
-          <code>whileFalse</code> schedules <code>robot.arm.stop()</code>. If
-          the arm keeps pushing after you let go, that half of the binding is
-          missing.
+          Releasing B works because <code>whileFalse</code> schedules{" "}
+          <code>robot.arm.stop()</code>. If the arm keeps pushing after you let
+          go, that half of the binding is missing.
         </p>
 
         <FigureGrid
