@@ -1016,12 +1016,13 @@ function checkPage(route: string, file: string): PageReport {
   }
 
   if (x.lede) {
-    // A full stop, question mark or exclamation mark followed by more text.
-    const sentences = x.lede.split(/[.!?]\s+(?=\S)/).length;
-    if (sentences > 1 || wordCount(x.lede) > MAX_LEDE_WORDS) {
+    // The shared splitter, so "e.g. the arm" stays one sentence and a
+    // sentence that ends inside a closing quote still counts as ended.
+    const ledeSentences = sentences(x.lede).length;
+    if (ledeSentences > 1 || wordCount(x.lede) > MAX_LEDE_WORDS) {
       findings.push({
         rule: "lede",
-        detail: `The lede is ${sentences} sentence(s), ${wordCount(x.lede)} words. A lede is one sentence of ${MAX_LEDE_WORDS} words or fewer; the explanation goes in the first paragraph.`,
+        detail: `The lede is ${ledeSentences} sentence(s), ${wordCount(x.lede)} words. A lede is one sentence of ${MAX_LEDE_WORDS} words or fewer; the explanation goes in the first paragraph.`,
       });
     }
   }

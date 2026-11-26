@@ -227,6 +227,14 @@ const FOCUS_PROBE = () => {
     const r = el.getBoundingClientRect();
     return cs.visibility !== "hidden" && cs.display !== "none" && r.width > 0;
   });
+  // Text a screen reader would announce: `aria-hidden` subtrees are left
+  // out, so a label holding only a decorative marker does not count as a name.
+  const spoken = (node) => {
+    if (!node) return "";
+    const copy = node.cloneNode(true);
+    copy.querySelectorAll('[aria-hidden="true"]').forEach((n) => n.remove());
+    return copy.textContent.trim();
+  };
   const unlabelled = els
     .filter((el) => {
       // A control is also named by a `<label>` (wrapping it or pointing at it
@@ -234,11 +242,11 @@ const FOCUS_PROBE = () => {
       // attributes and text reported every radio inside a label as unnamed.
       const labelledBy = (el.getAttribute("aria-labelledby") || "")
         .split(/\s+/)
-        .map((id) => document.getElementById(id)?.textContent.trim())
+        .map((id) => spoken(document.getElementById(id)))
         .filter(Boolean)
         .join(" ");
       const fromLabels = [...(el.labels ?? [])]
-        .map((l) => l.textContent.trim())
+        .map((l) => spoken(l))
         .filter(Boolean)
         .join(" ");
       const label =
@@ -246,7 +254,7 @@ const FOCUS_PROBE = () => {
         labelledBy ||
         fromLabels ||
         el.getAttribute("title") ||
-        el.textContent.trim() ||
+        spoken(el) ||
         el.querySelector("img[alt]")?.getAttribute("alt") ||
         el.getAttribute("placeholder");
       return !label;
