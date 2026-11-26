@@ -83,8 +83,14 @@ branch is one commit on `swerve-vision`: a two-Kraken `Flywheel` (CAN 21 and
 `drivetrain.getPose()` and looks the speed up in an
 `InterpolatingDoubleTreeMap`, with the Tuner X paste at 0.0 gains and the
 right trigger bound `whileTrue(distanceShoot()).whileFalse(stop())`. It
-replaced `4-DynamicFlywheel`. Builds and starts in sim; not verified on
-hardware.
+replaced `4-DynamicFlywheel`. Since the November 2026 rebuild the goal follows
+the alliance: `TARGET` is written for blue and `target()` returns
+`FlippingUtil.flipFieldPosition(TARGET)` on red, BLine's own helper and the
+same turn `driveToPoint` gets, because a fixed `TARGET` fed the table the
+distance to the wrong goal on red. The `Flywheel` logs like the mech chain's,
+`implements TelemetryLoggable` with a `logTo` that `Robot.robotPeriodic()`
+calls, in place of logging inside its setters. Sim-checked: 3.00 m from the
+blue spot and 2.99 m from the matching red one. Not verified on hardware.
 
 **There is no `/testing`.** Cut in the owner's November 2026 review: no
 entry-level team will write JUnit tests. The `mech-6-Testing` branch was

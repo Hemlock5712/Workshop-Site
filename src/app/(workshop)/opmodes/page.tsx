@@ -27,12 +27,19 @@ export const metadata = lessonMetadata("/opmodes");
  * The code block is forked by mechanism: a student reads and pastes only the
  * bindings for the mechanism they built. After the block, one line per piece,
  * at the level an 11-to-18-year-old needs (owner's November 2026 review).
+ *
+ * November 2026: `MyTeleop` is no longer generated. The project now starts
+ * from the "Command v3 Robot Skeleton (Advanced)" template, which ships no
+ * OpMode, so the student creates the file in `/project-setup` and it holds one
+ * empty constructor. The first section says that instead of listing five
+ * generated methods, `MyAuto` is gone from the chain and from this page, and
+ * both blocks are `implements OpMode`, matching `mech-2-Commands`.
  */
 export default function OpModes() {
   return (
     <PageTemplate
       title="OpModes"
-      lede="Each way the robot can run is its own class, marked with an annotation. Project Setup generated one marked @Teleop. You edit it so the controller's buttons run the commands you just wrote."
+      lede="Bind the controller's buttons to your commands in a teleop OpMode."
       needs={[
         <>
           The three commands on each mechanism from{" "}
@@ -50,28 +57,28 @@ export default function OpModes() {
       branch="mech-2-Commands"
       time="7 minutes"
     >
+      <p>
+        Each way the robot can run is its own class, marked with an annotation.
+      </p>
+
       <MechanismSelector />
 
-      <LessonSection id="the-generated-file" title="The generated MyTeleop">
+      <LessonSection id="the-generated-file" title="The MyTeleop file">
         <p>
-          Open <code>src/main/java/first/robot/opmode/MyTeleop.java</code>. The
-          New Project Creator created this teleop file for you. The{" "}
+          Open <code>src/main/java/first/robot/opmode/MyTeleop.java</code>. You
+          created this teleop file in <strong>Project Setup</strong>. The{" "}
           <code>@Teleop</code> on the class is what puts it on the driver
           station. If you leave it off, it no longer shows up as an OpMode you
           can choose.
         </p>
         <p>
-          The generated file holds five empty methods with comments in them:{" "}
-          <code>disabledPeriodic</code>, <code>start</code>,{" "}
-          <code>periodic</code>, <code>end</code> and <code>close</code>. We do
-          not need them in this project, so you replace the whole class below.
-          They are useful to know for future projects, such as autonomous
-          routines. Edit this file rather than making a new one: a second{" "}
-          <code>@Teleop</code> class puts two teleops on the driver station.
+          The class holds one empty constructor, and this lesson fills it. Edit
+          this file rather than making a new one: a second <code>@Teleop</code>{" "}
+          class puts two teleops on the driver station.
         </p>
         <p>
-          <code>MyAuto.java</code> beside it is marked <code>@Autonomous</code>{" "}
-          and stays empty for now. We will work on autonomous routines later.
+          An autonomous routine gets its own class, marked{" "}
+          <code>@Autonomous</code>. We will work on those later.
         </p>
       </LessonSection>
 
@@ -113,7 +120,7 @@ public class Robot extends OpModeRobot {
       </LessonSection>
 
       <LessonSection id="bind-the-buttons" title="Bind the buttons">
-        <p>Replace everything below the copyright header with this.</p>
+        <p>Replace the contents of the file with this.</p>
 
         <Mech for="arm">
           <CodeBlock
@@ -122,11 +129,11 @@ public class Robot extends OpModeRobot {
             code={`package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.OpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop(name = "Teleop")
-public class MyTeleop extends PeriodicOpMode {
+public class MyTeleop implements OpMode {
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
     robot.driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());
@@ -142,11 +149,11 @@ public class MyTeleop extends PeriodicOpMode {
             code={`package first.robot.opmode;
 
 import first.robot.Robot;
-import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.OpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop(name = "Teleop")
-public class MyTeleop extends PeriodicOpMode {
+public class MyTeleop implements OpMode {
   public MyTeleop(Robot robot) {
     // Right trigger: spin fast while held, drop back to the slow voltage when released.
     robot
@@ -228,14 +235,14 @@ public class MyTeleop extends PeriodicOpMode {
             question:
               "Instead of editing MyTeleop, a teammate makes a new TeleopOpMode.java with @Teleop on it and the same bindings. What goes wrong?",
             options: [
-              "The build fails, because only one class may extend PeriodicOpMode",
+              "The build fails, because only one class may implement OpMode",
               "Nothing: the framework uses the newest class",
               "The bindings run twice, once from each class",
-              "The driver station lists two teleops, and the generated empty one can be picked by mistake",
+              "The driver station lists two teleops, and the empty MyTeleop can be picked by mistake",
             ],
             correctAnswer: 3,
             explanation:
-              "Every annotated class is registered, so both appear in the list. Picking the generated MyTeleop runs a teleop with no bindings, and nothing moves. Edit the generated file rather than adding a second one.",
+              "Every annotated class is registered, so both appear in the list. Picking the empty MyTeleop runs a teleop with no bindings, and nothing moves. Edit the file you already have rather than adding a second one.",
           },
         ]}
       />

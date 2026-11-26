@@ -38,7 +38,7 @@ export default function MotionMagic() {
   return (
     <PageTemplate
       title="Motion Magic in Tuner X"
-      lede="Plain position control asks for the whole move at once. Motion Magic hands the loop a moving target instead, so the mechanism accelerates, cruises, and stops smoothly. The Slot 0 gains you already saved carry over unchanged."
+      lede="Motion Magic moves the mechanism to a target smoothly."
       needs={[
         <>
           Slot 0 gains you trust, saved in{" "}
@@ -51,6 +51,13 @@ export default function MotionMagic() {
       ]}
       time="6 minutes"
     >
+      <p>
+        Plain position control asks for the whole move at once. Motion Magic
+        hands the loop a moving target instead, so the mechanism accelerates,
+        cruises, and stops smoothly. The Slot 0 gains you already saved carry
+        over unchanged.
+      </p>
+
       <MechanismSelector />
 
       <Split>

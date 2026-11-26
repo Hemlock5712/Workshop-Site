@@ -35,12 +35,7 @@
     },
     {
       "id": "flip",
-      "text": "This last line is the one to remember. A drawn path gets turned around when you're on red, and that's right for a routine drawn from the blue side.",
-      "after": 0.6
-    },
-    {
-      "id": "fixed",
-      "text": "A field coordinate isn't like that. It's one fixed spot for both alliances, so flipping it would send the robot to the far end of the field.",
+      "text": "The alliance flip comes along too. You write the goal for blue, and on red the same button drives to the matching spot on your own side of the field.",
       "after": 0.6
     },
     {
@@ -60,7 +55,12 @@
     },
     {
       "id": "check",
-      "text": "When you test it, don't skip the third step. Run the far spot on blue, switch to red, and run it again. The pose should settle on the same numbers both times.",
+      "text": "When you test it, don't skip the third step. Run the far spot on blue, switch to red, and run it again. The second time it should finish at the other end of the field, facing the other way.",
+      "after": 0.6
+    },
+    {
+      "id": "warn",
+      "text": "That's why you look at the alliance before holding the button on a real robot. On a floor with no field, red puts the target a whole field length away, and the robot will try to get there.",
       "after": 0.6
     },
     {

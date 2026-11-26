@@ -35,12 +35,25 @@ import Quiz from "@/components/Quiz";
  * With the shipped 0.0 Motion Magic acceleration the reference stays at 0,
  * which is the "zero until you paste" behaviour; the check gave the probe a
  * test-only ramp rate. Nothing is verified on hardware.
+ *
+ * November 2026, the fold: rewritten against the rebuilt branch.
+ * `DriveMechanism` is gone, so the constructor takes
+ * `CommandSwerveDrivetrain`, and `Flywheel` moved to `first.robot.mechanisms`.
+ * It now logs the way the mech chain does: `implements TelemetryLoggable`, a
+ * `logTo` with `DistanceToTargetMeters`, `Velocity`, `TargetVelocity` and
+ * `AppliedVoltage`, and `Telemetry.log("Flywheel", flywheel)` in
+ * `Robot.robotPeriodic()`. The stored table and the logging inside the
+ * setters went, and `TargetVelocityRps` with them. The lookup table field is
+ * `speedTable`. The goal follows the alliance: `target()` returns `TARGET` on
+ * blue and `FlippingUtil.flipFieldPosition(TARGET)` on red. Sim, same month:
+ * 3.00 m from the blue spot and 2.99 m from the matching red one. The `Robot`
+ * edit became a `CodeBlock` because it is now two edits, so `time` went up.
  */
 export default function DynamicFlywheel() {
   return (
     <PageTemplate
       title="Vision Shooting"
-      lede="One fixed flywheel speed scores from one spot on the field. Here the flywheel takes the distance to the goal from the drivetrain's pose and looks up a speed for it. A few measured shots cover everything in between."
+      lede="Pick the flywheel speed from the distance to the goal."
       needs={[
         <>
           <strong>Vision</strong>. This branch is one commit on{" "}
@@ -55,12 +68,19 @@ export default function DynamicFlywheel() {
         </>,
       ]}
       branch="swerve-vision-shooting"
-      time="10 minutes"
+      time="11 minutes"
     >
       <p>
+        One fixed flywheel speed scores from one spot on the field. Here the
+        flywheel takes the distance to the goal from the drivetrain&apos;s pose
+        and looks up a speed for it. A few measured shots cover everything in
+        between.
+      </p>
+
+      <p>
         This page is optional. The branch adds{" "}
-        <code>subsystems/Flywheel.java</code>, one line in <code>Robot</code>{" "}
-        and one binding in <code>TeleopOpMode</code>. Drive to Point does not
+        <code>mechanisms/Flywheel.java</code>, two lines in <code>Robot</code>{" "}
+        and one binding in <code>TeleopOpMode</code>. Align to Tag does not
         build on it, so commit your work to a branch of your own before you
         check that one out.
       </p>
@@ -143,9 +163,10 @@ export default function DynamicFlywheel() {
         <CodeBlock
           language="java"
           title="Flywheel.java: fields and constructor"
-          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
-          code={`public class Flywheel implements Mechanism {
-  // The point we are shooting at, from the blue alliance corner, in meters. Set the real goal.
+          filename="src/main/java/first/robot/mechanisms/Flywheel.java"
+          code={`public class Flywheel implements Mechanism, TelemetryLoggable {
+  // The blue alliance's goal, from the blue alliance corner, in meters. Set the real goal. On red,
+  // target() turns it around the field center, the same way a drawn path is turned.
   private static final Translation2d TARGET = new Translation2d(3, 5);
 
   private final CANBus canivore = new CANBus("canivore");
@@ -155,22 +176,19 @@ export default function DynamicFlywheel() {
   // Asks the motor to ramp to a target speed instead of jumping to it.
   private final MotionMagicVelocityVoltage velocityOut = new MotionMagicVelocityVoltage(0);
 
-  private final DriveMechanism drivetrain;
+  private final CommandSwerveDrivetrain drivetrain;
 
   // Distance in meters -> flywheel speed in rotations per second. Gaps are filled in for you.
-  private final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+  private final InterpolatingDoubleTreeMap speedTable = new InterpolatingDoubleTreeMap();
 
-  // Everything logged here lands under Flywheel/, live on the dashboard and in the log file.
-  private final TelemetryTable telemetry = Telemetry.getTable(getName());
-
-  public Flywheel(DriveMechanism drivetrain) {
+  public Flywheel(CommandSwerveDrivetrain drivetrain) {
     this.drivetrain = drivetrain;
 
     // Placeholders. Replace every row with speeds you measured on your own robot.
-    table.put(0.0, 0.0);
-    table.put(1.0, 10.0);
-    table.put(2.0, 30.0);
-    table.put(3.0, 60.0);
+    speedTable.put(0.0, 0.0);
+    speedTable.put(1.0, 10.0);
+    speedTable.put(2.0, 30.0);
+    speedTable.put(3.0, 60.0);
 
     // Pasted from Tuner X. Every gain is 0.0 until you paste yours over it.
     final TalonFXConfiguration talonFXCfg = new TalonFXConfiguration() /* ... */;
@@ -205,10 +223,11 @@ export default function DynamicFlywheel() {
         <CodeBlock
           language="java"
           title="Flywheel.java: commands and helpers"
-          filename="src/main/java/frc/robot/subsystems/Flywheel.java"
+          filename="src/main/java/first/robot/mechanisms/Flywheel.java"
           code={`  /** Keep setting the speed from the live distance to the goal. A hold: it never finishes. */
   public Command distanceShoot() {
-    return runRepeatedly(() -> setVelocity(table.get(distanceToTarget()))).named("distanceShoot");
+    return runRepeatedly(() -> setVelocity(speedTable.get(distanceToTarget())))
+        .named("distanceShoot");
   }
 
   /** Stop the flywheel and keep it stopped. Never finishes. */
@@ -216,15 +235,29 @@ export default function DynamicFlywheel() {
     return runRepeatedly(() -> stopMotor()).named("stop");
   }
 
+  /** Write the flywheel's signals to the log. Robot calls this every loop. */
+  @Override
+  public void logTo(TelemetryTable table) {
+    table.log("DistanceToTargetMeters", distanceToTarget());
+    table.log("Velocity", leader.getVelocity().getValue());
+    table.log("TargetVelocity", velocityOut.getVelocityMeasure());
+    table.log("AppliedVoltage", leader.getMotorVoltage().getValue());
+  }
+
+  /** Our own alliance's goal. Poses are always measured from the blue corner, on both alliances. */
+  private Translation2d target() {
+    if (MatchState.getAlliance().orElse(Alliance.BLUE) == Alliance.RED) {
+      return FlippingUtil.flipFieldPosition(TARGET);
+    }
+    return TARGET;
+  }
+
   /** Distance in meters from where the robot thinks it is to the goal. */
   private double distanceToTarget() {
-    double distance = drivetrain.getPose().getTranslation().getDistance(TARGET);
-    telemetry.log("DistanceToTargetMeters", distance);
-    return distance;
+    return drivetrain.getPose().getTranslation().getDistance(target());
   }
 
   private void setVelocity(double rps) {
-    telemetry.log("TargetVelocityRps", rps);
     leader.setControl(velocityOut.withVelocity(RotationsPerSecond.of(rps)));
   }
 
@@ -235,9 +268,16 @@ export default function DynamicFlywheel() {
 
         <p>
           Read the distance line right to left. <code>getTranslation()</code>{" "}
-          drops the heading off the pose, and <code>getDistance(TARGET)</code>{" "}
+          drops the heading off the pose, and <code>getDistance(target())</code>{" "}
           is the distance you would measure with a tape. The pose is odometry
           corrected by AprilTag sightings, so this number carries that error.
+        </p>
+
+        <p>
+          <code>TARGET</code> is written for the blue alliance. On red,{" "}
+          <code>target()</code> returns the matching goal at the other end of
+          the field. <code>FlippingUtil.flipFieldPosition</code> is the same
+          turn around the field center that Drive to Point uses.
         </p>
 
         <p>
@@ -245,26 +285,60 @@ export default function DynamicFlywheel() {
           Measure, look up and send all happen again while the robot is still
           driving, so the speed follows the distance.
         </p>
+
+        <p>
+          <code>logTo</code> writes four values under <code>Flywheel/</code>:{" "}
+          <code>DistanceToTargetMeters</code>, <code>Velocity</code>,{" "}
+          <code>TargetVelocity</code> and <code>AppliedVoltage</code>. It does
+          nothing until <code>Robot</code> calls it.
+        </p>
       </LessonSection>
 
       <LessonSection id="own-it-in-robot" title="Own it, bind it">
         <p>
           Add the flywheel to <code>Robot</code>, one line below the vision
-          field:{" "}
-          <code>
-            public final Flywheel flywheel = new Flywheel(drivetrain);
-          </code>
-          . Java will not let a field read one declared after it, so above the
-          drivetrain the build stops with <code>illegal forward reference</code>
-          .
+          field, and log it in <code>robotPeriodic</code>. Java will not let a
+          field read one declared after it, so above the drivetrain the build
+          stops with <code>illegal forward reference</code>.
         </p>
 
         <CodeBlock
           language="java"
-          title="TeleopOpMode.java: under the left-bumper binding"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          title="Robot.java: the field and the log line"
+          filename="src/main/java/first/robot/Robot.java"
+          highlightLines={[1, 2, 7, 8, 16, 17]}
+          code={`import first.robot.mechanisms.Flywheel;
+import org.wpilib.telemetry.Telemetry;
+// ... the other imports, unchanged
+
+public class Robot extends OpModeRobot {
+  // ... drivetrain and vision, unchanged
+  // Below the drivetrain: a field cannot read one declared after it.
+  public final Flywheel flywheel = new Flywheel(drivetrain);
+
+  // ... the driver, the drive request and the constructor, unchanged
+
+  @Override
+  public void robotPeriodic() {
+    Scheduler.getDefault().run();
+
+    // After the scheduler, so the log shows what the commands asked for this loop.
+    Telemetry.log("Flywheel", flywheel);
+  }
+}`}
+        />
+
+        <p>
+          Then bind the right trigger in <code>TeleopOpMode</code>.
+        </p>
+
+        <CodeBlock
+          language="java"
+          title="TeleopOpMode.java: under the Drive to Point bindings"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           code={`    // Right trigger: spin up for the distance to the goal while held, stop when released.
-    driver
+    robot
+        .driver
         .rightTrigger()
         .whileTrue(robot.flywheel.distanceShoot())
         .whileFalse(robot.flywheel.stop());`}
@@ -286,8 +360,8 @@ export default function DynamicFlywheel() {
         <p>
           0, 10, 30 and 60 are placeholders. The right speed depends on the game
           piece and the wheel, so only shooting tells you. <code>TARGET</code>{" "}
-          is a placeholder too: take the real goal coordinates from the game
-          manual.
+          is a placeholder too: take the blue alliance&apos;s goal coordinates
+          from the game manual.
         </p>
 
         <ol className="ml-5 list-decimal space-y-3">
@@ -298,8 +372,8 @@ export default function DynamicFlywheel() {
           </li>
           <li>
             <strong>Find the speed that scores.</strong> Change the number in{" "}
-            <code>table.put(...)</code>, redeploy, and shoot several times. Big
-            steps first, then smaller ones.
+            <code>speedTable.put(...)</code>, redeploy, and shoot several times.
+            Big steps first, then smaller ones.
           </li>
           <li>
             <strong>Move and do it again.</strong> Three or four distances,
@@ -311,8 +385,8 @@ export default function DynamicFlywheel() {
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Enable Teleop, drive toward <code>TARGET</code> and hold the right
-          trigger.
+          Enable Teleop, drive toward your alliance&apos;s goal and hold the
+          right trigger.
         </p>
 
         <Box variant="alert-success" title="You should see">
@@ -321,12 +395,13 @@ export default function DynamicFlywheel() {
               <code>Flywheel/DistanceToTargetMeters</code> fall as you close in.
             </li>
             <li>
-              <code>Flywheel/TargetVelocityRps</code> slide from about 30 at 2
-              meters to about 10 at 1 meter, and sit near 20 at 1.5.
+              <code>Flywheel/TargetVelocity</code>, graphed in rotations per
+              second, slide from about 30 at 2 meters to about 10 at 1 meter,
+              and sit near 20 at 1.5.
             </li>
             <li>
-              With your config pasted, the wheel follow that speed and coast
-              down when you release.
+              With your config pasted, <code>Flywheel/Velocity</code> follow
+              that speed, and the wheel coast down when you release.
             </li>
           </ul>
         </Box>
@@ -343,7 +418,7 @@ export default function DynamicFlywheel() {
           {
             id: 1,
             question:
-              "Your table has table.put(1.0, 10.0) and table.put(2.0, 30.0). The robot is 1.5 meters away. What speed does table.get(1.5) return?",
+              "Your table has speedTable.put(1.0, 10.0) and speedTable.put(2.0, 30.0). The robot is 1.5 meters away. What speed does speedTable.get(1.5) return?",
             options: ["40.0", "10.0", "20.0", "30.0"],
             correctAnswer: 2,
             explanation:
@@ -352,7 +427,7 @@ export default function DynamicFlywheel() {
           {
             id: 2,
             question:
-              "The last row of the table is table.put(3.0, 60.0). The robot drives out to 5 meters. What does the map return?",
+              "The last row of the table is speedTable.put(3.0, 60.0). The robot drives out to 5 meters. What does the map return?",
             options: [
               "60.0: it stops at the last row and does not extrapolate",
               "100.0: it keeps the line going past the last row",
@@ -383,13 +458,13 @@ export default function DynamicFlywheel() {
               "Where does the flywheel get the distance to the goal from?",
             options: [
               "The Limelight reports the distance directly",
-              "drivetrain.getPose() measured against a fixed Translation2d field point",
+              "drivetrain.getPose() measured against the goal for your alliance, a Translation2d field point",
               "The driver types it into the dashboard before each shot",
               "A rangefinder mounted next to the shooter",
             ],
             correctAnswer: 1,
             explanation:
-              "distanceToTarget() calls drivetrain.getPose().getTranslation().getDistance(TARGET). The pose is wheel odometry corrected by AprilTag sightings, so this number inherits its error. Check it against a tape measure before you trust it.",
+              "distanceToTarget() calls drivetrain.getPose().getTranslation().getDistance(target()), and target() is TARGET on blue and the matching point on red. The pose is wheel odometry corrected by AprilTag sightings, so this number inherits its error. Check it against a tape measure before you trust it.",
           },
         ]}
       />

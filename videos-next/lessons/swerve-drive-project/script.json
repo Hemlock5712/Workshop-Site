@@ -35,7 +35,7 @@
     },
     {
       "id": "generate",
-      "text": "Slow down here. Generate only the constants, not a project, and put that file over the one already in yours. The team number is the only other edit.",
+      "text": "Slow down here. Generate only the constants, not a project, and put that file over the one already in yours. Then fix one import near the top, because the generator still writes the old folder name, and the build stops on that line until you do.",
       "after": 0.6
     },
     {
@@ -50,7 +50,7 @@
     },
     {
       "id": "files",
-      "text": "Three files make the drivetrain, and two are Tuner X's. The third is written by hand, and it's the one your OpModes talk to.",
+      "text": "Your own drivetrain commands go in the drivetrain class, and that's what your OpModes talk to. Tuner X only ever writes the constants file, so pasting in a new one never touches them.",
       "after": 0.6
     },
     {

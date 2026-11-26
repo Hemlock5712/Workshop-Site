@@ -10,7 +10,7 @@
     "steps": "#assign-can-ids > .lesson-stack > ol:has-text(\"Open a device, click\")",
     "stepBlink": "#assign-can-ids > .lesson-stack > ol:has-text(\"Open a device, click\") > li:has-text(\"Click the Blink button\")",
     "applyP": "#assign-can-ids > .lesson-stack > p:has-text(\"A config change does\")",
-    "applyFig": "#assign-can-ids figure:has-text(\"Apply is the arrow icon\")",
+    "applyFig": "#assign-can-ids figure:has(img[alt^=\"Screenshot of the config panel with the Apply\"])",
     "motorHead": "#arm-motor-direction > div:first-child",
     "motorP": "#arm-motor-direction > .lesson-stack > p:has-text(\"Get the motor right\")",
     "motorSteps": "#arm-motor-direction > .lesson-stack > ol:has-text(\"Select the arm TalonFX\")",
@@ -20,12 +20,10 @@
     "rotP": "#verify-the-arm-sensor > .lesson-stack > p:has-text(\"Positions are measured in\")",
     "rotFigs": "#verify-the-arm-sensor > .lesson-stack > div:has(figure)",
     "linkHead": "#link-the-encoder > div:first-child",
-    "linkP": "#link-the-encoder > .lesson-stack > p:has-text(\"The motor and the\")",
     "linkSteps": "#link-the-encoder > .lesson-stack > ol:has-text(\"Select the arm motor\")",
     "linkTurn": "#link-the-encoder > .lesson-stack > p:has-text(\"Turn the arm counterclockwise\")",
     "powerHead": "#verify-motor-direction > div:first-child",
     "powerP": "#verify-motor-direction > .lesson-stack > p:has-text(\"This is the first\")",
-    "powerArm": "#verify-motor-direction > .lesson-stack > p:has-text(\"You have checked the\")",
     "warn": "#verify-motor-direction > .lesson-stack > div:has-text(\"Before you enable anything\")",
     "powerFig": "#verify-motor-direction figure",
     "wrongP": "#verify-motor-direction > .lesson-stack > p:has-text(\"If it turns clockwise,\")",
@@ -112,7 +110,7 @@
     ],
     "link": [
       {
-        "show": ["@linkHead", "@linkP", "@linkSteps", "@linkTurn"]
+        "show": ["@linkHead", "@linkSteps", "@linkTurn"]
       },
       {
         "at": "finish",
@@ -121,7 +119,7 @@
     ],
     "voltage": [
       {
-        "show": ["@powerHead", "@powerP", "@powerArm"]
+        "show": ["@powerHead", "@powerP"]
       },
       {
         "at": "target",

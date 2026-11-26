@@ -4,6 +4,10 @@
  * not typed. When the branch moves, replace each string with the output of:
  *
  *   git -C reference/work/Workshop-Code show mech-sim:src/main/java/first/robot/utils/SimUtil.java
+ *
+ * November 2026: `MechanismViews` replaced from the rebuilt branch. Its views
+ * take the mechanism's own getters instead of the `TalonFX`, and the grey
+ * target is always drawn. `SimUtil` is unchanged.
  */
 export const SIM_UTIL_JAVA = `// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
@@ -89,24 +93,26 @@ export const MECHANISM_VIEWS_JAVA = `// Copyright (c) FIRST and other WPILib con
 
 package first.robot.utils;
 
+import static org.wpilib.units.Units.Degrees;
 import static org.wpilib.units.Units.Meters;
+import static org.wpilib.units.Units.RotationsPerSecond;
 
-import com.ctre.phoenix6.BaseStatusSignal;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.ControlModeValue;
+import java.util.function.Supplier;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.smartdashboard.Mechanism2d;
 import org.wpilib.smartdashboard.MechanismLigament2d;
 import org.wpilib.smartdashboard.MechanismRoot2d;
 import org.wpilib.telemetry.Telemetry;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Distance;
 import org.wpilib.util.Color;
 import org.wpilib.util.Color8Bit;
 
 /**
- * Mechanism2d pictures of a mechanism, drawn from what its motor reports. They run everywhere: on a
- * SystemCore, in Hardware Sim and in Simulate Robot Code, so the picture always shows the real (or
- * simulated) mechanism and the target its closed loop is chasing.
+ * Mechanism2d pictures of a mechanism, drawn from the mechanism's own getters. They run everywhere:
+ * on a SystemCore, in Hardware Sim and in Simulate Robot Code, so the picture always shows the real
+ * (or simulated) mechanism and the target it was asked for.
  *
  * <p>Open them in the Sim GUI or AdvantageScope under the name you give.
  */
@@ -114,41 +120,33 @@ public final class MechanismViews {
   private MechanismViews() {}
 
   /**
-   * An arm: a thick orange line where the motor says the arm is, and a thin grey line at its
-   * position target while a position loop (such as Motion Magic) is running. Angles are the motor's
-   * own: 0 points right, 0.25 rotations straight up.
+   * An arm: a thick orange line where the arm is, and a thin grey line where it was last asked to
+   * go. Angles are the mechanism's own: 0 points right, 0.25 rotations straight up.
+   *
+   * @param name the picture's name on the dashboard
+   * @param position where the arm is, such as {@code () -> getPosition()}
+   * @param target where the arm was asked to go, such as {@code () -> getTargetPosition()}
+   * @param length the arm's length, pivot to tip
    */
-  public static void arm(String name, TalonFX motor, Distance length) {
+  public static void arm(
+      String name, Supplier<Angle> position, Supplier<Angle> target, Distance length) {
     double lengthMeters = length.in(Meters);
     double size = lengthMeters * 2.4;
     var view = new Mechanism2d(size, size);
     MechanismRoot2d pivot = view.getRoot("pivot", size / 2, size / 2);
     // The target goes first so the arm draws over it.
-    MechanismLigament2d target =
-        pivot.append(new MechanismLigament2d("target", 0, 0, 3, new Color8Bit(Color.GRAY)));
-    MechanismLigament2d arm =
+    MechanismLigament2d targetLine =
+        pivot.append(
+            new MechanismLigament2d("target", lengthMeters, 0, 3, new Color8Bit(Color.GRAY)));
+    MechanismLigament2d armLine =
         pivot.append(
             new MechanismLigament2d("arm", lengthMeters, 0, 8, new Color8Bit(Color.ORANGE)));
-
-    // Grabbed once and refreshed together every loop, quietly: a missing motor just stops the
-    // picture instead of printing an error 50 times a second.
-    var position = motor.getPosition(false);
-    var mode = motor.getControlMode(false);
-    var reference = motor.getClosedLoopReference(false);
 
     Scheduler.getDefault()
         .addPeriodic(
             () -> {
-              if (!BaseStatusSignal.refreshAll(position, mode, reference).isOK()) {
-                return;
-              }
-              arm.setAngle(position.getValueAsDouble() * 360);
-              if (isPositionControl(mode.getValue())) {
-                target.setLength(lengthMeters);
-                target.setAngle(reference.getValueAsDouble() * 360);
-              } else {
-                target.setLength(0);
-              }
+              armLine.setAngle(position.get().in(Degrees));
+              targetLine.setAngle(target.get().in(Degrees));
               Telemetry.log(name, view);
             });
   }
@@ -156,44 +154,33 @@ public final class MechanismViews {
   /**
    * A flywheel, as a speed gauge: a wheel at 75 rotations per second can't be drawn turning when
    * the picture updates 50 times a second. A thick orange bar for how fast it is spinning, and a
-   * thin grey bar for its target speed while a velocity loop is running. A full bar is {@code
-   * fullScaleRps}.
+   * thin grey bar for the speed it was last asked for. A full bar is {@code fullScaleRps}.
+   *
+   * @param name the picture's name on the dashboard
+   * @param velocity how fast the wheel is spinning, such as {@code () -> getVelocity()}
+   * @param target the speed it was asked for, such as {@code () -> getTargetVelocity()}
+   * @param fullScaleRps the speed that fills the bar, in rotations per second
    */
-  public static void flywheel(String name, TalonFX motor, double fullScaleRps) {
+  public static void flywheel(
+      String name,
+      Supplier<AngularVelocity> velocity,
+      Supplier<AngularVelocity> target,
+      double fullScaleRps) {
     var view = new Mechanism2d(1.2, 0.5);
     MechanismRoot2d targetRoot = view.getRoot("target", 0.1, 0.3);
     MechanismRoot2d speedRoot = view.getRoot("speed", 0.1, 0.2);
-    MechanismLigament2d target =
+    MechanismLigament2d targetBar =
         targetRoot.append(new MechanismLigament2d("target", 0, 0, 3, new Color8Bit(Color.GRAY)));
-    MechanismLigament2d speed =
+    MechanismLigament2d speedBar =
         speedRoot.append(new MechanismLigament2d("speed", 0, 0, 12, new Color8Bit(Color.ORANGE)));
-
-    // Grabbed once and refreshed together every loop, quietly, as in arm().
-    var velocity = motor.getVelocity(false);
-    var mode = motor.getControlMode(false);
-    var reference = motor.getClosedLoopReference(false);
 
     Scheduler.getDefault()
         .addPeriodic(
             () -> {
-              if (!BaseStatusSignal.refreshAll(velocity, mode, reference).isOK()) {
-                return;
-              }
-              speed.setLength(gauge(velocity.getValueAsDouble(), fullScaleRps));
-              if (mode.getValue().toString().contains("Velocity")) {
-                target.setLength(gauge(reference.getValueAsDouble(), fullScaleRps));
-              } else {
-                target.setLength(0);
-              }
+              speedBar.setLength(gauge(velocity.get().in(RotationsPerSecond), fullScaleRps));
+              targetBar.setLength(gauge(target.get().in(RotationsPerSecond), fullScaleRps));
               Telemetry.log(name, view);
             });
-  }
-
-  /** True while the motor runs a position loop, so its closed-loop reference is an angle. */
-  private static boolean isPositionControl(ControlModeValue mode) {
-    String name = mode.toString();
-    return name.contains("Position")
-        || (name.contains("MotionMagic") && !name.contains("Velocity"));
   }
 
   /** A speed as a bar length, 0 to 1 m. Reverse is drawn the same as forward. */

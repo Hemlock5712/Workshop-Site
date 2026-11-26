@@ -141,9 +141,11 @@ export default async function CodeBlock({
                     className="sticky left-0 select-none pr-3.5 text-right"
                     style={{
                       background: "var(--code-bg)",
-                      color: isMarked ? "var(--accent)" : "var(--code-tx2)",
+                      color: isMarked
+                        ? "var(--code-accent)"
+                        : "var(--code-tx2)",
                       borderRight: isMarked
-                        ? "2px solid var(--accent)"
+                        ? "2px solid var(--code-accent)"
                         : "1px solid var(--rule-soft)",
                       paddingLeft: 14,
                     }}

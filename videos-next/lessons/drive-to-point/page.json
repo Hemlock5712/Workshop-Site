@@ -4,13 +4,15 @@
   },
   "targets": {
     "header": "#main-content header:has(h1)",
+    "introP": "#lesson-article > .lesson-stack > p:has-text(\"In teleop we will\")",
+    "warnBox": "#check-your-work > .lesson-stack > div:has-text(\"On a real robot, look\")",
     "poseHead": "#the-pose-you-are-driving-to > div:first-child",
     "poseP": "#the-pose-you-are-driving-to > .lesson-stack > p:has-text(\"As you learned in\")",
     "oneHead": "#one-waypoint > div:first-child",
     "oneP": "#one-waypoint > .lesson-stack > p:has-text(\"Add driveToPoint to\")",
-    "driveCode": "#one-waypoint .code-card:has-text(\"src/main/java/frc/robot/subsystems/DriveMechanism.javacopy\")",
+    "driveCode": "#one-waypoint .code-card:has-text(\"src/main/java/first/robot/mechanisms/CommandSwerveDrivetrain.javacopy\")",
     "sameP": "#one-waypoint > .lesson-stack > p:has-text(\"Everything the pathBuilder was\")",
-    "teleopCode": "#bind-it .code-card:has-text(\"src/main/java/frc/robot/opmodes/TeleopOpMode.javacopy\")",
+    "teleopCode": "#bind-it .code-card:has-text(\"src/main/java/first/robot/opmode/TeleopOpMode.javacopy\")",
     "holdP": "#bind-it > .lesson-stack > p:has-text(\"whileTrue cancels the command\")",
     "steps": "#check-your-work > .lesson-stack > ol:has-text(\"Enable Teleop in full\")",
     "step3": "#check-your-work > .lesson-stack > ol:has-text(\"Enable Teleop in full\") > li:has-text(\"Hold B until the\")",
@@ -26,11 +28,11 @@
   "lines": {
     "intro": [
       {
-        "show": "@header"
+        "show": ["@header", "@introP"]
       },
       {
         "at": "single",
-        "mark": "#main-content header:has(h1) .lesson-lede",
+        "mark": "@introP",
         "text": "with BLine, on the fly"
       }
     ],
@@ -75,7 +77,7 @@
         "show": "@allianceP"
       },
       {
-        "at": "turned",
+        "at": "red",
         "mark": "@allianceP",
         "text": "On red, BLine turns it around the field center"
       }
@@ -111,6 +113,16 @@
       {
         "at": "third",
         "spot": "@step3"
+      }
+    ],
+    "warn": [
+      {
+        "show": "@warnBox"
+      },
+      {
+        "at": "field",
+        "mark": "@warnBox",
+        "text": "On red the target is at the far end of the"
       }
     ],
     "close": [

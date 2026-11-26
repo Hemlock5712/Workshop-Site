@@ -47,8 +47,8 @@ export const metadata = lessonMetadata("/vision-implementation");
  * `defaultMT1()` still gates a lone tag at 3.0 m and 0.7 ambiguity.
  *
  * November 2026: the page has a branch again, `swerve-vision`, one commit on
- * `swerve-bline`. `3-Limelight` still carries the copied `LimelightHelpers.java`
- * and is no longer the parent of anything taught. `Vision` is a field on
+ * `swerve-bline`. `3-Limelight`, which carried the copied
+ * `LimelightHelpers.java`, was deleted later that month. `Vision` is a field on
  * `Robot` rather than a static `registerAll`, because `/align-to-tag` asks it
  * where a tag is. The class is `Vision` rather than `Limelight` because the
  * library now owns that name.
@@ -73,6 +73,15 @@ export const metadata = lessonMetadata("/vision-implementation");
  * simulation: one `addVisionMeasurement` a meter away moved the pose 0.100 at
  * 0.9, 0.500 at 0.1, 0.167 at 0.5 and 0.048 at 2.0. The 0.5 and 1.0 starting
  * points are not tuned on a robot.
+ *
+ * November 2026, the fold: `DriveMechanism` is gone from the swerve chain and
+ * `CommandSwerveDrivetrain` is the mechanism, so `Vision`'s field and
+ * constructor take that class. `getPose()` is the project's own method on it,
+ * and `addVisionMeasurement` is the Phoenix drivetrain's, called directly.
+ * Packages moved: `Vision` and the drivetrain are both in
+ * `first.robot.mechanisms`, so `Vision` needs no import for it. Nothing else
+ * in `Vision` changed. The MegaTag2 comment in two blocks was also re-wrapped
+ * to match the branch, which it had not.
  */
 export default function VisionImplementation() {
   return (
@@ -113,25 +122,25 @@ export default function VisionImplementation() {
           icon={<BookOpen className="h-5 w-5" />}
         />
         <p>
-          Create <code>src/main/java/frc/robot/subsystems/Vision.java</code>. We
-          will build it up a few lines at a time. Start with a class that
+          Create <code>src/main/java/first/robot/mechanisms/Vision.java</code>.
+          We will build it up a few lines at a time. Start with a class that
           remembers the drivetrain and makes one <code>Limelight</code> object
           per camera name.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
-          code={`package frc.robot.subsystems;
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
+          code={`package first.robot.mechanisms;
 
 import com.limelightvision.Limelight;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Vision {
-  private final DriveMechanism drivetrain;
+  private final CommandSwerveDrivetrain drivetrain;
   private final List<Limelight> cameras = new ArrayList<>();
 
-  public Vision(DriveMechanism drivetrain, String... cameraNames) {
+  public Vision(CommandSwerveDrivetrain drivetrain, String... cameraNames) {
     this.drivetrain = drivetrain;
     for (String name : cameraNames) {
       Limelight camera = new Limelight(name);
@@ -148,9 +157,9 @@ public class Vision {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           highlightLines={[5, 6, 9, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]}
-          code={`  public Vision(DriveMechanism drivetrain, String... cameraNames) {
+          code={`  public Vision(CommandSwerveDrivetrain drivetrain, String... cameraNames) {
     this.drivetrain = drivetrain;
     for (String name : cameraNames) {
       Limelight camera = new Limelight(name);
@@ -189,12 +198,13 @@ public class Vision {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           code={`  private void addFrame(Limelight camera, LimelightResults frame) {
     // MegaTag1 solves position and heading from the tags alone. It needs two tags to do it well.
     PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
     if (estimate.fieldedTagCount < 2) {
-      // With one tag, ask again as MegaTag2. It takes our heading as given and solves only position.
+      // With one tag, ask again as MegaTag2. It takes our heading as given and solves only
+      // position.
       estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
     }
   }`}
@@ -209,7 +219,7 @@ public class Vision {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           code={`    // ... inside addFrame, under the if
 
     // Zero flags means the library found nothing wrong with the frame. Past 4 meters a tag is too
@@ -248,7 +258,7 @@ public class Vision {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           code={`    // A standard deviation says how far off a sighting might be, and it sets how far each picture
     // moves the pose toward where the camera says the robot is. That share is 0.1 / (0.1 + stdDev):
     // 0.1 moves it halfway, 0.5 a sixth of the way, 0.9 a tenth. Bigger means calmer.
@@ -270,7 +280,7 @@ public class Vision {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           code={`    // The picture's own timestamp: the estimator winds back to when it was taken.
     drivetrain.addVisionMeasurement(
         estimate.pose,
@@ -283,10 +293,10 @@ public class Vision {
         <p>The finished file, with its imports:</p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           title="Vision.java"
           collapsed
-          code={`package frc.robot.subsystems;
+          code={`package first.robot.mechanisms;
 
 import com.limelightvision.Limelight;
 import com.limelightvision.LimelightResults;
@@ -307,14 +317,14 @@ import org.wpilib.telemetry.TelemetryTable;
  * periodic list instead, every loop and in every mode.
  */
 public class Vision {
-  private final DriveMechanism drivetrain;
+  private final CommandSwerveDrivetrain drivetrain;
   private final List<Limelight> cameras = new ArrayList<>();
 
   /**
    * @param drivetrain the drivetrain whose pose estimate the cameras correct
    * @param cameraNames each camera's NetworkTables name, exactly as set in its web interface
    */
-  public Vision(DriveMechanism drivetrain, String... cameraNames) {
+  public Vision(CommandSwerveDrivetrain drivetrain, String... cameraNames) {
     this.drivetrain = drivetrain;
     for (String name : cameraNames) {
       Limelight camera = new Limelight(name);
@@ -341,7 +351,8 @@ public class Vision {
     // MegaTag1 solves position and heading from the tags alone. It needs two tags to do it well.
     PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
     if (estimate.fieldedTagCount < 2) {
-      // With one tag, ask again as MegaTag2. It takes our heading as given and solves only position.
+      // With one tag, ask again as MegaTag2. It takes our heading as given and solves only
+      // position.
       estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT2_WPIBLUE);
     }
 
@@ -389,15 +400,15 @@ public class Vision {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           highlightLines={[2, 8, 9]}
-          code={`import frc.robot.subsystems.DriveMechanism;
-import frc.robot.subsystems.Vision;
+          code={`import first.robot.mechanisms.CommandSwerveDrivetrain;
+import first.robot.mechanisms.Vision;
 
 // ... the other imports, unchanged
 
 public class Robot extends OpModeRobot {
-  public final DriveMechanism drivetrain = new DriveMechanism();
+  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   // Every camera on the robot, by its NetworkTables name. A second camera is a second string.
   public final Vision vision = new Vision(drivetrain, "limelight");
 

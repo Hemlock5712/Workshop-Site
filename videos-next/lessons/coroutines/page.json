@@ -13,7 +13,7 @@
     "autoP": "#build-the-routine > .lesson-stack > p:has-text(\"Autonomous has no button\")",
     "autoHead": "#build-the-routine > div:first-child",
     "limitCode": "#build-the-routine .code-card:has-text(\"Add below the fork\")",
-    "limitP": "#build-the-routine > .lesson-stack > p:has-text(\"This is the arm\")",
+    "limitP": "#build-the-routine > .lesson-stack > p:has-text(\"waitUntil returns a\")",
     "restCode": "#build-the-routine .code-card:has-text(\"The rest of the body\")",
     "autoView": "#build-the-routine div:has(> [role=tablist])",
     "autoTab": "#build-the-routine button[role=tab]:has-text(\"Timeline\")",

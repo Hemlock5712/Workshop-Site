@@ -26,7 +26,7 @@ export default function AddingCommands() {
   return (
     <PageTemplate
       title="Writing Commands"
-      lede="Right now the mechanism has two private void methods, and nothing can reach them. This lesson converts them into commands that control the mechanism."
+      lede="Turn the mechanism's two private methods into commands."
       needs={[
         <>
           Branch <code>mech-1-Mechanisms</code> building clean, with a private{" "}

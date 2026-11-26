@@ -17,7 +17,7 @@ export default function Hardware() {
   return (
     <PageTemplate
       title="Hardware Setup"
-      lede="This lesson powers up your mechanism. Nothing turns yet. No robot controller, and no code."
+      lede="Power up your mechanism with no robot controller and no code, before anything turns."
       needs={[
         <>
           The mechanism assembled and wired, with a charged battery. See{" "}

@@ -15,12 +15,12 @@
     },
     {
       "id": "file",
-      "text": "The project creator already made a teleop file for you. The annotation on the class is what puts it on the driver station, and without it there's nothing to choose.",
+      "text": "You made this teleop file yourself in Project Setup. The annotation on the class is what puts it on the driver station, and without it there's nothing to choose.",
       "after": 0.6
     },
     {
       "id": "edit",
-      "text": "Those five empty methods can go. What matters is that you edit this file and don't make a new one, because a second teleop class means two teleops on the list.",
+      "text": "So far it's one empty constructor, and this lesson fills it. Edit this file and don't make a new one, because a second teleop class means two teleops on the list.",
       "after": 0.6
     },
     {
@@ -35,7 +35,7 @@
     },
     {
       "id": "bind",
-      "text": "Now the teleop itself. Everything under the copyright header gets replaced, and what's left is short: one class, one constructor, one binding.",
+      "text": "Now the teleop itself. Its whole contents get replaced, and what's left is short: one class, one constructor, one binding.",
       "after": 0.6
     },
     {

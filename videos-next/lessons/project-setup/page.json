@@ -1,64 +1,142 @@
 {
-  "pages": { "lesson": "/project-setup" },
+  "pages": {
+    "lesson": "/project-setup"
+  },
   "targets": {
     "header": "#main-content header:has(h1)",
     "lede": "#main-content header:has(h1) .lesson-lede",
     "fig1": "#make-the-project figure:has-text(\"No red icon here means\")",
     "fig3": "#make-the-project figure:has-text(\"Template gives you a skeleton.\")",
-    "fig4": "#make-the-project figure:has-text(\"Timed Robot and Command v2\")",
+    "baseP": "#make-the-project > .lesson-stack > p:has-text(\"On the second page\")",
     "thirdP": "#make-the-project > .lesson-stack > p:has-text(\"The third page is\")",
     "fields": "#make-the-project > .lesson-stack > ol:has-text(\"Base Folder. Click Select\")",
     "fig5": "#make-the-project figure:has-text(\"Enable Desktop Support is circled.\")",
     "warn": "#make-the-project > .lesson-stack > div:has-text(\"Watch outNot in OneDriveOneDrive,\")",
-    "swapHead": "#vendor-libraries > div:first-child",
-    "swapP": "#vendor-libraries > .lesson-stack > p:has-text(\"The project you just\")",
-    "steps": "#vendor-libraries > .lesson-stack > ol:has-text(\"Under Installed Dependencies, delete\")",
-    "stepPhoenix": "#vendor-libraries > .lesson-stack > ol:has-text(\"Under Installed Dependencies, delete\") > li:has-text(\"In the same list,\")",
-    "fig8": "#vendor-libraries figure",
+    "epiHead": "#delete-epilogue > div:first-child",
+    "epiP": "#delete-epilogue > .lesson-stack > p:has-text(\"Open src/main/java/first/robot/Robot.java. The skeleton\")",
+    "epiList": "#delete-epilogue > .lesson-stack > ul:has-text(\"@Logged, on the line\")",
+    "epiWhy": "#delete-epilogue > .lesson-stack > p:has-text(\"The course logs through\")",
+    "teleHead": "#create-myteleop > div:first-child",
+    "teleSteps": "#create-myteleop > .lesson-stack > ol:has-text(\"In the Explorer, right-click\")",
+    "teleCode": "#create-myteleop .code-card:has-text(\"src/main/java/first/robot/opmode/MyTeleop.javacopy\")",
+    "teleKeep": "#create-myteleop > .lesson-stack > p:has-text(\"@Teleop is what puts\")",
+    "phxHead": "#vendor-libraries > div:first-child",
+    "phxP": "#vendor-libraries > .lesson-stack > p:has-text(\"Every Java example in\")",
+    "phxPanel": "#vendor-libraries > .lesson-stack > p:has-text(\"Click the WPILib icon\")",
+    "phxInstall": "#vendor-libraries > .lesson-stack > p:has-text(\"Under Available Dependencies, install\")",
     "buildP": "#vendor-libraries > .lesson-stack > p:has-text(\"Changing a dependency starts\")",
     "resolveP": "#vendor-libraries > .lesson-stack > p:has-text(\"A build that stops\")",
     "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Wait for the build\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeBUILD SUCCESSFUL\")"
   },
   "open": [
-    { "card": "Project Setup", "kicker": "Workshop 3 · Robot Programming" }
+    {
+      "card": "Project Setup",
+      "kicker": "Workshop 3 · Robot Programming"
+    }
   ],
   "lines": {
     "intro": [
-      { "show": "@header" },
+      {
+        "show": "@header"
+      },
       {
         "at": "project",
         "mark": "@lede",
-        "text": "You generate a robot project"
+        "text": "Generate the robot project"
       }
     ],
-    "icon": [{ "show": "@fig1" }],
-    "template": [{ "show": "@fig3" }],
-    "opmode": [
-      { "show": "@fig4" },
-      { "at": "one", "note": "OpMode Robot", "on": "@fig4", "side": "top" }
+    "icon": [
+      {
+        "show": "@fig1"
+      }
     ],
-    "third": [{ "show": ["@thirdP", "@fields"] }],
-    "desktop": [{ "show": "@fig5" }],
+    "template": [
+      {
+        "show": "@fig3"
+      }
+    ],
+    "opmode": [
+      {
+        "show": "@baseP"
+      },
+      {
+        "at": "one",
+        "mark": "@baseP",
+        "text": "Command v3 Robot Skeleton (Advanced)"
+      }
+    ],
+    "third": [
+      {
+        "show": ["@thirdP", "@fields"]
+      }
+    ],
+    "desktop": [
+      {
+        "show": "@fig5"
+      }
+    ],
     "sync": [
-      { "show": "@warn" },
+      {
+        "show": "@warn"
+      },
       {
         "at": "Documents",
         "mark": "@warn",
         "text": "are often synced without anyone saying so"
       }
     ],
-    "swap": [
-      { "show": ["@swapHead", "@swapP"] },
+    "epilogue": [
       {
-        "at": "share",
-        "mark": "@swapP",
-        "text": "cannot sit in the same project"
+        "show": ["@epiHead", "@epiP", "@epiList"]
+      },
+      {
+        "at": "logged",
+        "show": "@epiWhy"
+      },
+      {
+        "at": "twice",
+        "mark": "@epiWhy",
+        "text": "logs each mechanism a second time"
       }
     ],
-    "panel": [{ "show": "@steps" }, { "at": "Watch", "spot": "@stepPhoenix" }],
-    "build": [{ "show": ["@fig8", "@buildP"] }],
-    "resolve": [{ "show": "@resolveP" }],
-    "close": [{ "show": ["@checkP", "@checkBox"] }]
+    "teleop": [
+      {
+        "show": ["@teleHead", "@teleSteps", "@teleCode"]
+      },
+      {
+        "at": "name",
+        "show": ["@teleCode", "@teleKeep"]
+      },
+      {
+        "at": "every",
+        "mark": "@teleKeep",
+        "text": "every later lesson edits this file"
+      }
+    ],
+    "phoenix": [
+      {
+        "show": ["@phxHead", "@phxP", "@phxPanel", "@phxInstall"]
+      },
+      {
+        "at": "Watch",
+        "spot": "@phxInstall"
+      }
+    ],
+    "build": [
+      {
+        "show": "@buildP"
+      }
+    ],
+    "resolve": [
+      {
+        "show": "@resolveP"
+      }
+    ],
+    "close": [
+      {
+        "show": ["@checkP", "@checkBox"]
+      }
+    ]
   }
 }

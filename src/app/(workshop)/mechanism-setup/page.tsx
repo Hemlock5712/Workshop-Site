@@ -38,7 +38,7 @@ export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Motor Setup & CAN IDs"
-      lede="Now set up each device. Every device needs its own CAN ID and the correct configuration, so the software matches the hardware. You prove it by applying a volt or two and checking that the mechanism moves the correct direction. Get this wrong and tuning in the next lessons is impossible."
+      lede="Give every device a CAN ID and the correct configuration, then prove it under power."
       needs={[
         <>The mechanism assembled and powered.</>,
         <>
@@ -48,6 +48,13 @@ export default function MechanismSetup() {
       ]}
       time="14 minutes"
     >
+      <p>
+        Every device needs its own CAN ID and the correct configuration, so the
+        software matches the hardware. You prove it by applying a volt or two
+        and checking that the mechanism moves the correct direction. Get this
+        wrong and tuning in the next lessons is impossible.
+      </p>
+
       <MechanismSelector />
 
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
@@ -95,7 +102,6 @@ export default function MechanismSetup() {
         <ImageBlock
           src="/images/setup/factory-default.png"
           alt="Screenshot highlighting the Factory Default button in the device configuration screen."
-          caption="In Tuner X, open the device, then the three dots, then Factory Default."
         />
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -133,7 +139,6 @@ export default function MechanismSetup() {
         <ImageBlock
           src="/images/setup/apply-configs.png"
           alt="Screenshot of the config panel with the Apply arrow icon circled and its tooltip showing."
-          caption="Apply is the arrow icon above the config list."
         />
       </LessonSection>
 
@@ -141,7 +146,6 @@ export default function MechanismSetup() {
         <LessonSection id="arm-motor-direction" title="Arm motor direction">
           <p>
             Get the motor right first, by hand, before the encoder or any power.
-            Factory Default reset its inversion, so you set it here.
           </p>
           <ol className="ml-5 list-decimal space-y-3">
             <li>
@@ -169,10 +173,7 @@ export default function MechanismSetup() {
           id="verify-the-arm-sensor"
           title="Arm encoder direction and zero"
         >
-          <p>
-            With the motor right, check the encoder the same way. It is what
-            every downstream lesson uses.
-          </p>
+          <p>With the motor right, check the encoder the same way.</p>
           <VideoEmbed id="mjGn3y19eUc" title="Calibrate and zero the encoder" />
           <ol className="ml-5 list-decimal space-y-3">
             <li>Open the CANcoder device in Tuner X and plot the position.</li>
@@ -216,10 +217,10 @@ export default function MechanismSetup() {
           </ol>
           <p>
             Positions are measured in <strong>rotations</strong>, not degrees.
-            One full turn is <code>1.0</code>. Counterclockwise with the motor
-            facing you is positive, and every position target from here to
-            Motion Magic is written that way. Every photo on this site is taken
-            from that side, so your directions match ours.
+            Counterclockwise with the motor facing you is positive, and every
+            position target from here to Motion Magic is written that way. Every
+            photo on this site is taken from that side, so your directions match
+            ours.
           </p>
 
           <div className="flex flex-col items-center gap-6 md:flex-row md:justify-center">
@@ -247,10 +248,6 @@ export default function MechanismSetup() {
 
       <Mech for="arm">
         <LessonSection id="link-the-encoder" title="Link the Encoder">
-          <p>
-            The motor and the encoder have each been checked on their own. Now
-            link them.
-          </p>
           <ol className="ml-5 list-decimal space-y-3">
             <li>
               Select the arm motor and scroll down in the config section to the{" "}
@@ -275,7 +272,6 @@ export default function MechanismSetup() {
           <ImageBlock
             src="/images/setup/link-the-encoder.png"
             alt="Screenshot highlighting the Feedback section of the arm TalonFX configuration."
-            caption="In Tuner X, link the encoder to the motor by setting the Feedback Remote Sensor ID."
           />
           <p>
             Leave <code>Sensor To Mechanism Ratio</code> at 1. The CANcoder sits
@@ -296,11 +292,6 @@ export default function MechanismSetup() {
           fixed voltage and nothing else: no target and no stopping at the end
           of travel.
         </p>
-        <Mech for="arm" as="p">
-          You have checked the motor, the encoder and the link by hand. Now
-          prove it under power: positive voltage has to turn the arm
-          counterclockwise.
-        </Mech>
         <Mech for="flywheel" as="div">
           <Split>
             <ProseBlock>
@@ -395,8 +386,7 @@ export default function MechanismSetup() {
             {" "}
             A wheel takes a moment to come up and coasts for a while after you
             disable, so give it time before you call the direction.
-          </Mech>{" "}
-          You are checking which way it goes, not how fast.
+          </Mech>
         </p>
         <Mech for="flywheel" as="p">
           The flywheel reads the motor&apos;s own sensor, so its positions and
@@ -435,12 +425,11 @@ export default function MechanismSetup() {
             </Mech>
             <Mech for="flywheel" as="li">
               Positive voltage on TalonFX 21 spins the wheel the way it shoots,
-              clockwise from the motor side, and it spins down on its own once
-              you disable.
+              clockwise from the motor side. It spins down on its own once you
+              disable.
             </Mech>
           </ul>
         </Box>
-        <p>PID tuning starts on the next page!</p>
       </LessonSection>
 
       <Quiz

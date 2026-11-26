@@ -29,7 +29,7 @@ export default function PIDControl() {
   return (
     <PageTemplate
       title="PID Tuning in Tuner X"
-      lede="The Talon FX runs the control loop itself. We can send it a setpoint from Tuner X, plot the response, and save the gains onto the motor."
+      lede="Tune a control loop in Tuner X and save the gains onto the motor."
       needs={[
         <>
           Motor, encoder direction, and mechanism zero verified in{" "}
@@ -43,6 +43,8 @@ export default function PIDControl() {
       ]}
       time="13 minutes"
     >
+      <p>The Talon FX runs the control loop itself.</p>
+
       <MechanismSelector />
 
       <LessonSection id="how-to-tune" title="How to tune">
@@ -115,7 +117,7 @@ export default function PIDControl() {
         <ImageBlock
           src="/images/setup/plot-group.png"
           alt="Screenshot of the Tuner X plot with the Timespan box and Group 1, holding the target and measured position, circled."
-          caption="Both signals in Group 1, with a short Timespan. The bottom axis is a timestamp in seconds; only the spacing matters."
+          caption="The bottom axis is a timestamp in seconds; only the spacing matters."
         />
         <ImageBlock
           src="/images/setup/control-mode.png"
@@ -124,9 +126,9 @@ export default function PIDControl() {
           caption="Control Mode on the Control tab. Click DISABLED to enable the device."
         />
         <p>
-          Run these steps on your actual mechanism. Press <strong>Apply</strong>
-          , the arrow icon above the config list, after every gain change. A
-          gain that was never applied never reaches the motor.
+          Press <strong>Apply</strong>, the arrow icon above the config list,
+          after every gain change. A gain that was never applied never reaches
+          the motor.
         </p>
         <ol className="ml-5 list-decimal space-y-3">
           <li>
@@ -227,20 +229,12 @@ export default function PIDControl() {
             slot do nothing.
           </li>
           <li>
-            A gain from an amps or duty cycle guide is meaningless in a voltage
-            request.
-          </li>
-          <li>
             A tired battery cannot reach the voltage a fresh one can. Re-check
             your gains on a charged battery.
           </li>
           <li>
             A current limit that clips the output looks like too little gain.
             Watch for current sitting flat at the limit.
-          </li>
-          <li>
-            A runaway means the sensor or motor direction changed since{" "}
-            <strong>Motor Setup &amp; CAN IDs</strong>. Fix it there.
           </li>
           <li>
             Gains that were never applied are lost. Power cycle, reopen the
@@ -257,9 +251,6 @@ export default function PIDControl() {
         <Box variant="alert-success" title="You should see">
           <ul className="ml-5 list-disc space-y-2">
             <li>The measured trace meets the target and stays there.</li>
-            <li>
-              Closed-loop error settles near zero and does not drift back out.
-            </li>
             <li>Voltage is steady at rest, not chattering.</li>
             <li>The same gains behave across the full range of travel.</li>
           </ul>

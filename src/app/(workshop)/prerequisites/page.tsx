@@ -14,7 +14,7 @@ export default function Prerequisites() {
   return (
     <PageTemplate
       title="Prerequisites"
-      lede="The software half goes on your laptop. The hardware half sits on the bench in front of you."
+      lede="What to install on your laptop and what to have on the bench."
       needs={[
         <>A laptop you can install software on.</>,
         <>About half an hour, most of it waiting on downloads.</>,

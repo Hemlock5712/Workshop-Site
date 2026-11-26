@@ -24,8 +24,8 @@ export const metadata = lessonMetadata("/swerve-drive-tuning");
  * the teleop request; every swerve branch changes it in `Robot.java`, so the
  * page says so once and the student tunes the gains that loop uses.
  *
- * Every `TunerConstants` snippet matches `1-Swerve`'s generated file. The
- * gains shown are the generator's defaults, not ours. 1-Swerve publishes
+ * Every `TunerConstants` snippet matches `swerve-project`'s generated file.
+ * The gains shown are the generator's defaults, not ours. It publishes
  * Drivetrain/* through Telemetry but never starts DataLogManager, so every
  * measurement here is read off a live AdvantageScope plot.
  *
@@ -36,12 +36,21 @@ export const metadata = lessonMetadata("/swerve-drive-tuning");
  * station's stick display instead of halved until ModuleTargets twitch.
  * `Inches.of(2.167)` was checked against CTRE's Phoenix6-Examples on `main`
  * and `2027_alpha7`: it is the generator's value, not ours, so it stays.
+ *
+ * November 2026, the swerve chain rebuild: `1-Swerve` is now `swerve-project`
+ * and its packages moved to `first.robot`, so every `filename` changed.
+ * `DriveMechanism` was folded into `CommandSwerveDrivetrain`, which is the
+ * class that publishes Drivetrain/* now. The snippets were re-read against
+ * the new `TunerConstants.java` and none of their lines changed. Two
+ * sentences that repeated a neighbour were cut for the budget: the slip
+ * current lead-in that restated its own step 3, and a second "surface you
+ * compete on".
  */
 export default function SwerveDriveTuning() {
   return (
     <PageTemplate
       title="Swerve Drive Tuning"
-      lede="The generator gave you a TunerConstants.java with guessed gains and measurements. This lesson tunes the steer motors, checks the wheel radius, measures top speed and slip current, then closes the drive loop."
+      lede="Tune the steer and drive gains and measure what the generator guessed."
       needs={[
         <>
           A swerve robot you can drive, from{" "}
@@ -53,6 +62,13 @@ export default function SwerveDriveTuning() {
       ]}
       time="14 minutes"
     >
+      <p>
+        The generator gave you a <code>TunerConstants.java</code> with guessed
+        gains and measurements. This lesson tunes the steer motors, checks the
+        wheel radius, measures top speed and slip current, then closes the drive
+        loop.
+      </p>
+
       <LessonSection id="steer-gains" title="Tune the steer gains">
         <p>
           A steering motor holds an angle. That is a position loop with no
@@ -61,7 +77,7 @@ export default function SwerveDriveTuning() {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          filename="src/main/java/first/robot/generated/TunerConstants.java"
           code={`private static final Slot0Configs steerGains =
     new Slot0Configs()
         .withKP(100)
@@ -86,7 +102,7 @@ export default function SwerveDriveTuning() {
           without jitter. Change one number per test, and redeploy after each.
         </p>
         <p>
-          <code>DriveMechanism</code> publishes{" "}
+          <code>CommandSwerveDrivetrain</code> publishes{" "}
           <code>Drivetrain/ModuleStates</code> and{" "}
           <code>Drivetrain/ModuleTargets</code>. Put the angle from both on one
           AdvantageScope plot and flick the right stick. Tuned looks like two
@@ -102,7 +118,7 @@ export default function SwerveDriveTuning() {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          filename="src/main/java/first/robot/generated/TunerConstants.java"
           code={`private static final Distance kWheelRadius = Inches.of(2.167);`}
         />
         <ol className="ml-5 list-decimal space-y-2">
@@ -162,8 +178,7 @@ export default function SwerveDriveTuning() {
         </ol>
         <p>
           We can also use a stator current limit to keep a wheel from slipping
-          when the robot accelerates hard. You find the limit by driving, with
-          the controller.
+          when the robot accelerates hard.
         </p>
         <ol className="ml-5 list-decimal space-y-2">
           <li>
@@ -195,7 +210,7 @@ export default function SwerveDriveTuning() {
         <p>Both numbers go in the same file.</p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          filename="src/main/java/first/robot/generated/TunerConstants.java"
           code={`private static final Current kSlipCurrent = Amps.of(120);
 
 // ...
@@ -232,7 +247,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/generated/TunerConstants.java"
+          filename="src/main/java/first/robot/generated/TunerConstants.java"
           code={`private static final Slot0Configs driveGains =
     new Slot0Configs().withKP(0.2).withKI(0).withKD(0).withKS(0).withKV(0.124);`}
         />
@@ -251,7 +266,7 @@ public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(4.54);`}
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           code={`// In the Robot constructor, above setDefaultCommand
 driver.getController().setLeftXDeadband(0.05);
 driver.getController().setLeftYDeadband(0.05);
@@ -261,9 +276,9 @@ driver.getController().setRightXDeadband(0.05);`}
 
       <LessonSection id="check-your-work" title="Check your work">
         <p>
-          Use the surface you compete on. Tape a start mark, restart the code so{" "}
-          <code>Drivetrain/Pose</code> reads (0, 0), and drive a square: three
-          meters forward, three left, three back, three right.
+          Tape a start mark, restart the code so <code>Drivetrain/Pose</code>{" "}
+          reads (0, 0), and drive a square: three meters forward, three left,
+          three back, three right.
         </p>
         <Box variant="alert-success" title="You should see">
           <p>

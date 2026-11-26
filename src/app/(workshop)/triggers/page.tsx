@@ -45,12 +45,18 @@ import { GitBranch } from "lucide-react";
  * rising/falling edge names the prose and quiz both use, and a sixth quiz
  * question on the 0.5 threshold. A quiz costs a flat two minutes, so the
  * sixth question is free.
+ *
+ * November 2026: the swerve chain was rebuilt. The starting branch is
+ * `swerve-project`, not `1-Swerve`, and its `Robot.java` moved to
+ * `first/robot`. The global-binding block, its filename and the link under it
+ * follow, and the block's comment is the branch's new wording. The disabled
+ * binding itself stays until WPILib beta 1.
  */
 export default function Triggers() {
   return (
     <PageTemplate
       title="Triggers"
-      lede="A Trigger is a yes-or-no question the scheduler asks once a loop, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to MyTeleop."
+      lede="Triggers decide when a command runs."
       needs={[
         <>
           Branch <code>mech-2-Commands</code> checked out, with{" "}
@@ -69,6 +75,14 @@ export default function Triggers() {
       branch="mech-2-Commands"
       time="12 minutes"
     >
+      <p>
+        A Trigger is a yes-or-no question the scheduler asks once a loop, with
+        commands hung on the moments the answer changes. This page covers the
+        four binding verbs, the operators that build one condition out of
+        several, and how long a binding lasts. You add one line to{" "}
+        <code>MyTeleop</code>.
+      </p>
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>
@@ -279,13 +293,13 @@ public static Trigger disabled() {
 
         <CodeBlock
           language="java"
-          title="Robot.java: the one global binding, from 1-Swerve"
-          filename="src/main/java/frc/robot/Robot.java"
+          title="Robot.java: the one global binding, from swerve-project"
+          filename="src/main/java/first/robot/Robot.java"
           code={`public Robot() {
   // ...
 
-  // Brake while disabled, in every mode. This binding is made here instead of in an OpMode so
-  // it always exists. OpMode bindings go away on a mode switch; this one never does.
+  // Brake while disabled, in every mode. Made here for the same reason: OpMode bindings go
+  // away on a mode switch; this one never does.
   final var idle = new SwerveRequest.Idle();
   RobotModeTriggers.disabled().whileTrue(drivetrain.applyRequest(() -> idle));
 }`}
@@ -313,8 +327,8 @@ public static Trigger disabled() {
         </p>
 
         <DocumentationButton
-          href="https://github.com/Hemlock5712/Workshop-Code/blob/1-Swerve/src/main/java/frc/robot/Robot.java"
-          title="Workshop-Code 1-Swerve: Robot.java"
+          href="https://github.com/Hemlock5712/Workshop-Code/blob/swerve-project/src/main/java/first/robot/Robot.java"
+          title="Workshop-Code swerve-project: Robot.java"
           icon={<GitBranch className="w-5 h-5" />}
         />
       </LessonSection>

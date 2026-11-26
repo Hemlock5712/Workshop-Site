@@ -5,9 +5,10 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "lede": "#main-content header:has(h1) .lesson-lede",
+    "introP": "#lesson-article > .lesson-stack > p:has-text(\"The generator gave you\")",
     "steerHead": "#steer-gains > div:first-child",
     "steerP": "#steer-gains > .lesson-stack > p:has-text(\"A steering motor holds\")",
-    "plotP": "#steer-gains > .lesson-stack > p:has-text(\"DriveMechanism publishes Drivetrain/ModuleStates and\")",
+    "plotP": "#steer-gains > .lesson-stack > p:has-text(\"CommandSwerveDrivetrain publishes Drivetrain/ModuleStates and\")",
     "radiusHead": "#measure-the-drivetrain > div:first-child",
     "radiusP": "#measure-the-drivetrain > .lesson-stack > p:has-text(\"The generator asked for\")",
     "correction": "#measure-the-drivetrain > .lesson-stack > div:has-text(\"THE CORRECTIONRun it three\")",
@@ -24,7 +25,7 @@
     "orderP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"On a velocity loop\")",
     "shrinkP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"The request has no deadband\")",
     "deadCard": "#close-the-drive-loop .code-card:has-text(\"setLeftXDeadband\")",
-    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Use the surface you\")",
+    "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Tape a start mark,\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot\")",
     "findP": "#close-the-drive-loop > .lesson-stack > p:has-text(\"To find your own\")"
   },
@@ -37,11 +38,11 @@
   "lines": {
     "intro": [
       {
-        "show": "@header"
+        "show": ["@header", "@introP"]
       },
       {
         "at": "guesses",
-        "mark": "@lede",
+        "mark": "@introP",
         "text": "guessed gains and measurements"
       }
     ],

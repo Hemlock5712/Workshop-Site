@@ -30,12 +30,18 @@ export const metadata = lessonMetadata("/mechanism-simulation");
  * and Talon read the true angle, kG agrees with Arm_Cosine, flywheel reaches
  * 50 rps, both pictures publish). Not verified: tuning in Tuner X against the
  * simulated devices, so the page tunes in code.
+ *
+ * November 2026: `MechanismViews.arm` and `.flywheel` take the mechanism's
+ * getters, not the `TalonFX`, so they no longer guess the control mode from
+ * its name. The grey target is always drawn, at what the mechanism was last
+ * asked for. Both call-site blocks, the hook-in prose, two Run it steps and
+ * one quiz explanation follow the rebuilt `mech-sim`.
  */
 export default function MechanismSimulation() {
   return (
     <PageTemplate
       title="Mechanism Simulation"
-      lede="No mechanism yet? A physics model can stand in for it. Your code runs unchanged, and a picture shows where the mechanism went."
+      lede="Run your code against a physics model when there is no mechanism."
       needs={[
         <>
           Workshops 3 and 4 done, through{" "}
@@ -52,6 +58,10 @@ export default function MechanismSimulation() {
       branch="mech-sim"
       time="12 minutes"
     >
+      <p>
+        Your code runs unchanged, and a picture shows where the mechanism went.
+      </p>
+
       <MechanismSelector />
 
       <LessonSection id="two-simulations" title="Simulate, not Hardware Sim">
@@ -186,9 +196,9 @@ export default function MechanismSimulation() {
       <LessonSection id="hook-it-in" title="Hook it into the mechanism">
         <p>
           Two calls go at the end of the <M k="file" /> constructor, after the
-          config is applied. The picture is drawn from what the motor reports,
-          so it runs on a real robot too. The sim is built only under Simulate
-          Robot Code, which is what Phoenix&apos;s{" "}
+          config is applied. The picture is drawn from the mechanism&apos;s own
+          getters, so it runs on a real robot too. The sim is built only under
+          Simulate Robot Code, which is what Phoenix&apos;s{" "}
           <code>Utils.isSimulation()</code> reports. A deployed robot and
           Hardware Sim both skip it.
         </p>
@@ -199,8 +209,8 @@ export default function MechanismSimulation() {
             filename="src/main/java/first/robot/mechanisms/Arm.java"
             code={`    motor.getConfigurator().apply(talonFXCfg);
 
-    // A picture of the arm, drawn from what the motor reports. Runs everywhere.
-    MechanismViews.arm("ArmView", motor, LENGTH);
+    // A picture of the arm, drawn from its own getters. Runs everywhere.
+    MechanismViews.arm("ArmView", () -> getPosition(), () -> getTargetPosition(), LENGTH);
 
     // Simulate Robot Code only: there is no real arm, so physics plays its part.
     if (Utils.isSimulation()) {
@@ -220,8 +230,8 @@ export default function MechanismSimulation() {
             filename="src/main/java/first/robot/mechanisms/Flywheel.java"
             code={`    motor.getConfigurator().apply(talonFXCfg);
 
-    // A speed gauge, drawn from what the motor reports. A full bar is 100 rotations per second.
-    MechanismViews.flywheel("FlywheelView", motor, 100);
+    // A speed gauge, drawn from its own getters. A full bar is 100 rotations per second.
+    MechanismViews.flywheel("FlywheelView", () -> getVelocity(), () -> getTargetVelocity(), 100);
 
     // Simulate Robot Code only: there is no real flywheel, so physics plays its part.
     if (Utils.isSimulation()) {
@@ -280,13 +290,16 @@ export default function MechanismSimulation() {
               <strong>FlywheelView</strong>
             </Mech>
             . <strong>You should see:</strong>{" "}
-            <Mech for="arm">an orange arm hanging straight down.</Mech>
+            <Mech for="arm">
+              an orange arm hanging straight down, and a thin grey target line
+              pointing right, at 0.
+            </Mech>
             <Mech for="flywheel">an empty gauge.</Mech>
           </li>
           <li>
             Hold the buttons you bound. <strong>You should see:</strong> the
-            picture follow, with a thin grey line marking the target while the
-            closed loop is chasing it.
+            picture follow. The thin grey line marks the target the mechanism
+            was last asked for, and it stays drawn after you let go.
           </li>
         </ol>
         <p>
@@ -385,7 +398,7 @@ export default function MechanismSimulation() {
             ],
             correctAnswer: 1,
             explanation:
-              "Phoenix's Utils.isSimulation() is true under Simulate Robot Code only, so a deployed robot and Hardware Sim both skip the sim class. The picture is outside the check because it reads what the motor reports, and that works everywhere.",
+              "Phoenix's Utils.isSimulation() is true under Simulate Robot Code only, so a deployed robot and Hardware Sim both skip the sim class. The picture is outside the check because it reads the mechanism's own getters, and those work everywhere.",
           },
           {
             id: 3,

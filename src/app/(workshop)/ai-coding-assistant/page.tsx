@@ -42,7 +42,7 @@ export default function AICodingAssistant() {
   return (
     <PageTemplate
       title="AI Coding Assistant"
-      lede="An assistant reads your robot project, writes commands, and runs Gradle. It also writes Commands v2 by default, because v3 is newer than nearly everything it learned from. Optional: nothing else depends on it."
+      lede="An optional lesson on using an AI assistant with a Commands v3 project."
       needs={[
         <>
           The robot project from <strong>Project Setup</strong>, with its{" "}
@@ -62,6 +62,11 @@ export default function AICodingAssistant() {
       branch="mech-2-Commands"
       time="13 minutes"
     >
+      <p>
+        An assistant reads your robot project, writes commands, and runs Gradle.
+        This page is optional, and nothing else depends on it.
+      </p>
+
       <LessonSection id="commands-v2-by-default" title="Commands v2 by default">
         <p>
           Read this section even if you skip the rest. Nearly every FRC
@@ -164,7 +169,6 @@ public class Arm implements Mechanism {
           The compiler settles this faster than reading does. Run{" "}
           <em>WPILib: Build Robot Code</em> and a v2 import fails at once with{" "}
           <code>package edu.wpi.first.wpilibj2.command does not exist</code>.
-          Build after every change, before you run anything.
         </p>
       </LessonSection>
 
@@ -204,9 +208,7 @@ public class Arm implements Mechanism {
 
         <p>
           Point an assistant at <code>robot-description</code> first. It has the
-          wiring model, and the surprise for anyone coming from v2: there is no{" "}
-          <code>RobotContainer</code>. Teacher mode is on by default and keeps
-          explanations short.
+          wiring model. Teacher mode keeps explanations short.
         </p>
 
         <DocumentationButton
@@ -359,11 +361,9 @@ Show me the diff before you write anything.`}
         </ol>
 
         <p>
-          <code>whileTrue</code> schedules a hold and cancels it on release, but
-          canceling is not stopping. Releasing B works because{" "}
-          <code>whileFalse</code> schedules <code>robot.arm.stop()</code>. If
-          the arm keeps pushing after you let go, that half of the binding is
-          missing.
+          Releasing B works because <code>whileFalse</code> schedules{" "}
+          <code>robot.arm.stop()</code>. If the arm keeps pushing after you let
+          go, that half of the binding is missing.
         </p>
 
         <FigureGrid

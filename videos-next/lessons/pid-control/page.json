@@ -12,8 +12,8 @@
     "reset": "#play-with-the-gains-first button[aria-label^=\"Reset all gains\"]",
     "unitsP": "#units-and-sizes > .lesson-stack > p:has-text(\"Every gain is output\")",
     "unitsHead": "#units-and-sizes > div:first-child",
-    "plot": "#feedforward-first figure:has-text(\"Both signals in Group 1,\")",
-    "applyP": "#feedforward-first > .lesson-stack > p:has-text(\"Run these steps on\")",
+    "plot": "#feedforward-first figure:has-text(\"The bottom axis is a\")",
+    "applyP": "#feedforward-first > .lesson-stack > p:has-text(\"Press Apply, the arrow\")",
     "stepZero": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Set every gain in\")",
     "stepKg": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Raise kG\")",
     "stepKp": "#feedforward-first > .lesson-stack > ol:has-text(\"Set every gain in\") > li:has-text(\"Raise kP\")",
@@ -21,7 +21,8 @@
     "shapes": "#failure-shapes > .lesson-stack > dl:has-text(\"Runs away\")",
     "checkP": "#check-your-work > .lesson-stack > p:has-text(\"Drive the mechanism to\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")",
-    "target": "#play-with-the-gains-first input[type=range][aria-label^=\"Target angle\"]"
+    "target": "#play-with-the-gains-first input[type=range][aria-label^=\"Target angle\"]",
+    "introP": "#lesson-article > .lesson-stack > p:has-text(\"The Talon FX runs\")"
   },
   "open": [
     {
@@ -32,11 +33,11 @@
   "lines": {
     "intro": [
       {
-        "show": "@header"
+        "show": ["@header", "@introP"]
       },
       {
         "at": "itself",
-        "mark": "@lede",
+        "mark": "@introP",
         "text": "runs the control loop itself"
       }
     ],

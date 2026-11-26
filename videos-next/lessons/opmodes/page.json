@@ -3,8 +3,8 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "genHead": "#the-generated-file > div:first-child",
-    "openP": "#the-generated-file > .lesson-stack > p:has-text(\"Open src/main/java/first/robot/opmode/MyTeleop.java. The New\")",
-    "fiveP": "#the-generated-file > .lesson-stack > p:has-text(\"The generated file holds\")",
+    "openP": "#the-generated-file > .lesson-stack > p:has-text(\"Open src/main/java/first/robot/opmode/MyTeleop.java. You created\")",
+    "fiveP": "#the-generated-file > .lesson-stack > p:has-text(\"The class holds one\")",
     "ctrlHead": "#add-the-controller > div:first-child",
     "ctrlP": "#add-the-controller > .lesson-stack > p:has-text(\"The controller lives in\")",
     "robot": "#add-the-controller .code-card:has-text(\"src/main/java/first/robot/Robot.javacopy\")",

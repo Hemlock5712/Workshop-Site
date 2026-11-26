@@ -45,12 +45,20 @@ export const metadata = lessonMetadata("/coroutines");
  * Timeline times are illustrative: 0.5 s per 90 degrees of arm travel, 0.6 s
  * to reach 75 rps. The routines themselves build on the branch; with the
  * branch's 0.0 gains nothing arrives, so the timing is not measured.
+ *
+ * November 2026: both OpModes are `implements OpMode`, matching the rebuilt
+ * `mech-5-Coroutines`, and `RaiseAndShootOpMode` lost its `end()`. A command
+ * an OpMode schedules is canceled by the framework when that OpMode exits
+ * (allwpilib#8492 and #8705, both in alpha-7), so the shell has only
+ * `start()` and the prose says the framework cancels the routine. Two
+ * duplicates went in the same pass: the House rules bullet restating
+ * `waitUntil` from the core calls, and one sentence under Step 3.
  */
 export default function Coroutines() {
   return (
     <PageTemplate
       title="Coroutines"
-      lede="A coroutine is a routine written as ordinary Java, read top to bottom, that can pause on a line and carry on from there. This lesson writes three for buttons, then one for autonomous."
+      lede="Write routines as ordinary Java that waits on the mechanisms."
       needs={[
         <>
           An <code>Arm</code> and <code>Flywheel</code> with{" "}
@@ -67,6 +75,12 @@ export default function Coroutines() {
       branch="mech-5-Coroutines"
       time="15 minutes"
     >
+      <p>
+        A coroutine is a routine written as ordinary Java, read top to bottom,
+        that can pause on a line and carry on from there. This lesson writes
+        three for buttons, then one for autonomous.
+      </p>
+
       <LessonSection id="core-calls" title="The core calls">
         <p>
           A coroutine body takes one argument, an object called{" "}
@@ -124,11 +138,11 @@ coroutine.wait(Seconds.of(1.0));`}
 import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Coroutine;
-import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.OpMode;
 import org.wpilib.opmode.Teleop;
 
 @Teleop(name = "Teleop")
-public class MyTeleop extends PeriodicOpMode {
+public class MyTeleop implements OpMode {
   private final Robot robot;
 
   public MyTeleop(Robot robot) {
@@ -266,7 +280,7 @@ public class MyTeleop extends PeriodicOpMode {
 import first.robot.Robot;
 // ... the other imports, unchanged
 
-public class MyTeleop extends PeriodicOpMode {
+public class MyTeleop implements OpMode {
   // ... fields, unchanged
 
   public MyTeleop(Robot robot) {
@@ -371,7 +385,7 @@ public class MyTeleop extends PeriodicOpMode {
             <CodeBlock
               language="java"
               filename="src/main/java/first/robot/opmode/MyTeleop.java"
-              code={`public class MyTeleop extends PeriodicOpMode {
+              code={`public class MyTeleop implements OpMode {
   // ... fields, unchanged
 
   public MyTeleop(Robot robot) {
@@ -487,10 +501,10 @@ import org.wpilib.command3.Command;
 import org.wpilib.command3.Coroutine;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
-import org.wpilib.opmode.PeriodicOpMode;
+import org.wpilib.opmode.OpMode;
 
 @Autonomous(name = "Raise And Shoot")
-public class RaiseAndShootOpMode extends PeriodicOpMode {
+public class RaiseAndShootOpMode implements OpMode {
   private final Robot robot;
   private final Command routine;
 
@@ -504,22 +518,21 @@ public class RaiseAndShootOpMode extends PeriodicOpMode {
     // Steps 2 to 4 go in here.
   }
 
-  /** No trigger owns this routine, so the OpMode starts and stops it. */
+  /**
+   * No trigger owns this routine, so the OpMode starts it. The framework cancels a command an
+   * OpMode scheduled when that OpMode exits, so there is no matching {@code end()}.
+   */
   @Override
   public void start() {
     Scheduler.getDefault().schedule(routine);
-  }
-
-  @Override
-  public void end() {
-    Scheduler.getDefault().cancel(routine);
   }
 }`}
         />
 
         <p>
           Paste the whole shell. No button binds this routine, so{" "}
-          <code>start()</code> and <code>end()</code> schedule and cancel it.
+          <code>start()</code> schedules it. Nothing here cancels it: the
+          framework does that when the OpMode exits.
         </p>
 
         <h3 className="display m-0 text-aside">Step 2: Fork the arm</h3>
@@ -551,7 +564,6 @@ if (armResult.timedOut()) {
         />
 
         <p>
-          This is the arm routine&apos;s wait with a limit added.{" "}
           <code>waitUntil</code> returns a <code>WaitResult</code>, kept here in{" "}
           <code>armResult</code>, and <code>.timedOut()</code> tells you which
           ending you got. Ignore it and the routine carries on as if the arm had
@@ -706,10 +718,6 @@ coroutine.fork(robot.flywheel.stop());`}
               </code>{" "}
               with <code>.named(...)</code>. The body is a private method, so a{" "}
               <code>return</code> plainly leaves the routine.
-            </li>
-            <li>
-              <strong>Wait on a condition</strong> with{" "}
-              <code>coroutine.waitUntil(...)</code> and a lambda.
             </li>
             <li>
               <strong>Every wait in an autonomous has a time limit.</strong>

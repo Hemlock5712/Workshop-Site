@@ -48,7 +48,7 @@ export default function VisionHardware() {
   return (
     <PageTemplate
       title="Vision Hardware"
-      lede="A camera that sees an AprilTag can tell the robot where it is standing. Everything on this page happens before any Java."
+      lede="Set up the camera that reads AprilTags, before any Java."
       needs={[
         <>A swerve robot on its wheels, with a SystemCore.</>,
         <>A Limelight, its mount, an Ethernet cable and a USB-C cable.</>,
@@ -57,6 +57,10 @@ export default function VisionHardware() {
       ]}
       time="12 minutes"
     >
+      <p>
+        A camera that sees an AprilTag can tell the robot where it is standing.
+      </p>
+
       <LessonSection id="tags-against-drift" title="Tags against drift">
         <ImageBlock
           src="/images/vision/april-tag.webp"
