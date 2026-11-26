@@ -47,8 +47,8 @@ export const metadata = lessonMetadata("/vision-implementation");
  * `defaultMT1()` still gates a lone tag at 3.0 m and 0.7 ambiguity.
  *
  * November 2026: the page has a branch again, `swerve-vision`, one commit on
- * `swerve-bline`. `3-Limelight` still carries the copied `LimelightHelpers.java`
- * and is no longer the parent of anything taught. `Vision` is a field on
+ * `swerve-bline`. `3-Limelight`, which carried the copied
+ * `LimelightHelpers.java`, was deleted later that month. `Vision` is a field on
  * `Robot` rather than a static `registerAll`, because `/align-to-tag` asks it
  * where a tag is. The class is `Vision` rather than `Limelight` because the
  * library now owns that name.

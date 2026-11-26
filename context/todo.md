@@ -33,17 +33,13 @@ have no alpha-8 builds, so the upgrade waits for beta 1.
       choice. The default-command option already works on alpha-7; the
       `whenExited` option needs beta 1.
 
-- [ ] **Delete the branches no page teaches.** `2-Logging`, `3-Limelight`,
-      `4-DynamicFlywheel`, `5-DriveToPoint` and `6-ProfiledToPoint` appear on
-      the site only in code comments, and `p1-flywheel` was a one-off bench
-      run. Deleting a branch cannot be undone from here, so say yes first;
-      then drop them, prune `reference/`, and trim the comments and the
-      `teaching-code.md` notes that name them.
-  - **`1-Swerve` is still on GitHub**, stale, although its rename to
-    `swerve-project` was approved and pushed on 2026-11-26. Deleting it
-    closes PR #8 (`2-Logging` into `1-Swerve`), so it goes with the branches
-    above. PR #25 was retargeted to `swerve-project`. Every rebuilt branch has
-    a local `backup/2026-11-26/<branch>` tag in `reference/work/Workshop-Code`.
+- [x] **Deleted the branches no page teaches**, 2026-11-26, on the owner's
+      word: `1-Swerve` (renamed `swerve-project`), `2-Logging`, `3-Limelight`,
+      `4-DynamicFlywheel`, `5-DriveToPoint` and `6-ProfiledToPoint`. Their
+      pull requests (#8 to #12) closed with them. Every one has a local
+      `backup/2026-11-26/<branch>` tag in `reference/work/Workshop-Code`,
+      which is not on GitHub. `p1-flywheel`, the one-off bench run, is still
+      there: it was not named when the others were approved.
 - [ ] **Re-capture three `/project-setup` screenshots.** The page moved to
       the "Command v3 Robot Skeleton (Advanced)" template on 2026-11-26 and
       three pictures showed the old flow, so their `ImageBlock`s were removed
