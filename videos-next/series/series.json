@@ -579,12 +579,16 @@
           "Then the folder path. Cloud sync rewrites files while the build is using them, and the failure looks like a mistake in your code. School laptops often sync Documents and Desktop without telling you."
         ],
         [
-          "swap",
-          "The new project isn't ready yet. It ships a different command library from the one every example here uses, and the two can't share a project. So one comes out before the other goes in."
+          "epilogue",
+          "The skeleton switches on a second logging tool this course doesn't use. Take those four lines out, or every mechanism gets logged twice and each build prints a note for every field it can't log."
         ],
         [
-          "panel",
-          "That swap, plus the library for the motor controllers, is three clicks in one panel. Watch the last one. A library with nearly the same name sits right underneath it, and it's the wrong one."
+          "teleop",
+          "It also ships with nothing for the driver station to pick. You make the teleop file by hand, and keep its name exactly as written, because every lesson after this one opens it."
+        ],
+        [
+          "phoenix",
+          "The command library came with the template. The motor controllers' library didn't. Watch which one you install, because a library with nearly the same name sits right underneath it, and it's the wrong one."
         ],
         [
           "build",
@@ -736,11 +740,11 @@
         ],
         [
           "file",
-          "The project creator already made a teleop file for you. The annotation on the class is what puts it on the driver station, and without it there's nothing to choose."
+          "You made this teleop file yourself in Project Setup. The annotation on the class is what puts it on the driver station, and without it there's nothing to choose."
         ],
         [
           "edit",
-          "Those five empty methods can go. What matters is that you edit this file and don't make a new one, because a second teleop class means two teleops on the list."
+          "So far it's one empty constructor, and this lesson fills it. Edit this file and don't make a new one, because a second teleop class means two teleops on the list."
         ],
         [
           "controller",
@@ -752,7 +756,7 @@
         ],
         [
           "bind",
-          "Now the teleop itself. Everything under the copyright header gets replaced, and what's left is short: one class, one constructor, one binding."
+          "Now the teleop itself. Its whole contents get replaced, and what's left is short: one class, one constructor, one binding."
         ],
         [
           "ctor",
@@ -1117,7 +1121,7 @@
         ],
         [
           "generate",
-          "Slow down here. Generate only the constants, not a project, and put that file over the one already in yours. The team number is the only other edit."
+          "Slow down here. Generate only the constants, not a project, and put that file over the one already in yours. Then fix one import near the top, because the generator still writes the old folder name, and the build stops on that line until you do."
         ],
         [
           "check",
@@ -1129,7 +1133,7 @@
         ],
         [
           "files",
-          "Three files make the drivetrain, and two are Tuner X's. The third is written by hand, and it's the one your OpModes talk to."
+          "Your own drivetrain commands go in the drivetrain class, and that's what your OpModes talk to. Tuner X only ever writes the constants file, so pasting in a new one never touches them."
         ],
         [
           "latched",
@@ -1215,7 +1219,7 @@
       "title": "Autonomous",
       "page": "/autonomous",
       "opensFrom": "Swerve Drive Tuning ended with the robot driven around a square by hand, back on its tape mark with a pose you can trust.",
-      "handsTo": "BLine Paths replaces the timed wait with a path drawn from the same tape mark, held against the three numbers written down here.",
+      "handsTo": "BLine Paths keeps this timed routine and adds a second one beside it that follows a path drawn in an editor.",
       "gate": "None.",
       "visuals": "The lesson page, filmed: lessons/autonomous/page.json.",
       "lines": [
@@ -1241,31 +1245,23 @@
         ],
         [
           "life",
-          "The class around it stays thin. One method schedules the routine on enable. The other cancels it whenever the mode stops, and a disable counts."
+          "The class around it stays thin. One method schedules the routine on enable, and there's nothing to write for the end, because leaving the mode cancels the routine for you. A disable counts."
         ],
         [
-          "pose",
-          "Nothing in this routine tells the robot where it is on the field. Restart the robot code before a run you plan to measure, so the pose starts near zero and the distance is easy to read."
+          "sim",
+          "Run it in the simulator first and watch the pose. Stopping isn't enough. It has to stay stopped, because a request nobody replaces keeps the wheels turning."
         ],
         [
           "safety",
           "Set the room up before you enable. One person watches the robot, one keeps a thumb near disable, and enabling comes last."
         ],
         [
-          "passes",
-          "Then four passes, in order. It runs on blocks first and on the floor once, and each pass answers a single question before you move on."
-        ],
-        [
-          "measured",
-          "The third pass is the one that counts. Tape the floor before and after every run, and check the tape against the pose the robot logged."
-        ],
-        [
-          "disable",
-          "Last, disable it about a second in. The wheels should stop, and when you enable again the routine starts over from its first line."
+          "floor",
+          "Then the floor, with clear space ahead. It leaves the way its front bumper points, so aim the robot before you enable, not after."
         ],
         [
           "close",
-          "Write down three numbers: the taped distance, the end pose, and the wait that produced them. Next you'll draw a path from that same tape mark, and those numbers are what it has to match."
+          "A second routine is just a second file, and it shows up on the list by itself. Next, the timer goes, and a drawn path tells the robot where to drive instead of how long."
         ]
       ]
     },
@@ -1284,12 +1280,8 @@
           "Leave Start drove on a timer, and a timer can't tell you where the robot ended up. This time you draw where it should go, and a library does the driving."
         ],
         [
-          "install",
-          "The library installs from a web address. Run the first build while you still have internet, because that's when it downloads."
-        ],
-        [
           "folder",
-          "The editor never talks to the robot. It works on one folder inside your project, and that folder rides along with every deploy."
+          "Nothing to install this time. The library came with the swerve project, and the paths you draw live in one folder that ships to the robot with every deploy."
         ],
         [
           "points",
@@ -1305,7 +1297,7 @@
         ],
         [
           "builder",
-          "On the robot side, the builder is made once. Its arguments teach the library this robot: where it is, how fast it's moving, and how to drive it."
+          "There's nothing to type on the robot side. The follower's already built into the drivetrain class, and its arguments teach the library this robot: where it is, how fast it's moving, how to drive it."
         ],
         [
           "gains",
@@ -1313,19 +1305,27 @@
         ],
         [
           "opmode",
-          "The old Leave Start class goes away. One autonomous class runs every routine now, and a drop-down on the dashboard picks which."
+          "Leave Start stays. The new autonomous class goes in beside it, and both show up on the driver station's list."
         ],
         [
-          "trigger",
-          "Here's that event name again, registered before any path is built. The path file gets read right here too, so a misspelled name fails when you pick the mode."
+          "path",
+          "First the path becomes a command. The file's read right here, so a misspelled name fails the moment you pick the mode."
         ],
         [
           "reset",
           "The pose reset on that line matters more than it looks. Leave it off, and the robot drives the right shape in the wrong place."
         ],
         [
+          "chooser",
+          "One class can hold several routines. A drop-down on the dashboard picks which, and one choice does nothing at all."
+        ],
+        [
           "start",
-          "The choice is read at enable, not when the mode is picked, since somebody can still change the drop-down in between."
+          "The choice is read at enable, not when the mode is picked, since somebody can still change the drop-down in between. Nothing here cancels the routine. Leaving the mode does that."
+        ],
+        [
+          "trigger",
+          "Last, give the event something to run. It's registered before any path gets built, and this one only prints a line."
         ],
         [
           "close",
@@ -1365,11 +1365,7 @@
         ],
         [
           "flip",
-          "This last line is the one to remember. A drawn path gets turned around when you're on red, and that's right for a routine drawn from the blue side."
-        ],
-        [
-          "fixed",
-          "A field coordinate isn't like that. It's one fixed spot for both alliances, so flipping it would send the robot to the far end of the field."
+          "The alliance flip comes along too. You write the goal for blue, and on red the same button drives to the matching spot on your own side of the field."
         ],
         [
           "bind",
@@ -1385,7 +1381,11 @@
         ],
         [
           "check",
-          "When you test it, don't skip the third step. Run the far spot on blue, switch to red, and run it again. The pose should settle on the same numbers both times."
+          "When you test it, don't skip the third step. Run the far spot on blue, switch to red, and run it again. The second time it should finish at the other end of the field, facing the other way."
+        ],
+        [
+          "warn",
+          "That's why you look at the alliance before holding the button on a real robot. On a floor with no field, red puts the target a whole field length away, and the robot will try to get there."
         ],
         [
           "close",
@@ -1469,7 +1469,7 @@
         ],
         [
           "install",
-          "The library installs like Phoenix did, from a web address. The file name carries the WPILib alpha it was built for, so copy it, don't type it."
+          "Nothing to install. The camera library came with the swerve project, so all you write is one class that passes what the camera sees to the drivetrain."
         ],
         [
           "solvers",
@@ -1557,7 +1557,7 @@
         ],
         [
           "empty",
-          "Notice the check before it drives. If no camera has seen that tag yet, the command writes a message and quits, and the robot stays put."
+          "Losing the tag on the way in doesn't stop it, because the wheels finish from the last sighting. And if no camera has ever seen that tag, the robot is told it's already there, so nothing moves."
         ],
         [
           "record",

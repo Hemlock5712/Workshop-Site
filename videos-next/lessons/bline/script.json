@@ -14,13 +14,8 @@
       "after": 0.6
     },
     {
-      "id": "install",
-      "text": "The library installs from a web address. Run the first build while you still have internet, because that's when it downloads.",
-      "after": 0.6
-    },
-    {
       "id": "folder",
-      "text": "The editor never talks to the robot. It works on one folder inside your project, and that folder rides along with every deploy.",
+      "text": "Nothing to install this time. The library came with the swerve project, and the paths you draw live in one folder that ships to the robot with every deploy.",
       "after": 0.6
     },
     {
@@ -40,7 +35,7 @@
     },
     {
       "id": "builder",
-      "text": "On the robot side, the builder is made once. Its arguments teach the library this robot: where it is, how fast it's moving, and how to drive it.",
+      "text": "There's nothing to type on the robot side. The follower's already built into the drivetrain class, and its arguments teach the library this robot: where it is, how fast it's moving, how to drive it.",
       "after": 0.6
     },
     {
@@ -50,12 +45,12 @@
     },
     {
       "id": "opmode",
-      "text": "The old Leave Start class goes away. One autonomous class runs every routine now, and a drop-down on the dashboard picks which.",
+      "text": "Leave Start stays. The new autonomous class goes in beside it, and both show up on the driver station's list.",
       "after": 0.6
     },
     {
-      "id": "trigger",
-      "text": "Here's that event name again, registered before any path is built. The path file gets read right here too, so a misspelled name fails when you pick the mode.",
+      "id": "path",
+      "text": "First the path becomes a command. The file's read right here, so a misspelled name fails the moment you pick the mode.",
       "after": 0.6
     },
     {
@@ -64,8 +59,18 @@
       "after": 0.6
     },
     {
+      "id": "chooser",
+      "text": "One class can hold several routines. A drop-down on the dashboard picks which, and one choice does nothing at all.",
+      "after": 0.6
+    },
+    {
       "id": "start",
-      "text": "The choice is read at enable, not when the mode is picked, since somebody can still change the drop-down in between.",
+      "text": "The choice is read at enable, not when the mode is picked, since somebody can still change the drop-down in between. Nothing here cancels the routine. Leaving the mode does that.",
+      "after": 0.6
+    },
+    {
+      "id": "trigger",
+      "text": "Last, give the event something to run. It's registered before any path gets built, and this one only prints a line.",
       "after": 0.6
     },
     {

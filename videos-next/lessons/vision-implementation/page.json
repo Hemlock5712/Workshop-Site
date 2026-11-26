@@ -5,20 +5,20 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "robotP": "#start-it-in-robot > .lesson-stack > p:has-text(\"Add one field to\")",
-    "robot": "#start-it-in-robot .code-card:has-text(\"src/main/java/frc/robot/Robot.javacopy\")",
+    "robot": "#start-it-in-robot .code-card:has-text(\"src/main/java/first/robot/Robot.javacopy\")",
     "nameP": "#start-it-in-robot > .lesson-stack > p:has-text(\"The string has to\")",
     "steps": "#check-your-work > .lesson-stack > ol:has-text(\"Park about two meters\")",
     "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeNear the\")",
     "classHead": "#the-vision-class > div:first-child",
     "libP": "#the-vision-class > .lesson-stack > p:has-text(\"The swerve project comes\")",
     "solversP": "#the-vision-class > .lesson-stack > p:has-text(\"The camera can solve\")",
-    "updateCode": "#the-vision-class .code-card:has-text(\"private void update()\"):not(:has-text(\"package frc.robot.subsystems\"))",
-    "pickCode": "#the-vision-class .code-card:has-text(\"With one tag, ask again as MegaTag2\"):not(:has-text(\"package frc.robot.subsystems\"))",
+    "updateCode": "#the-vision-class .code-card:has-text(\"private void update()\"):not(:has-text(\"package first.robot.mechanisms\"))",
+    "pickCode": "#the-vision-class .code-card:has-text(\"With one tag, ask again as MegaTag2\"):not(:has-text(\"package first.robot.mechanisms\"))",
     "gateCode": "#the-vision-class .code-card:has-text(\"inside addFrame, under the if\")",
     "trustP": "#the-vision-class > .lesson-stack > p:has-text(\"Each sighting goes in\")",
     "growP": "#the-vision-class > .lesson-stack > p:has-text(\"A small number makes\")",
-    "stdCode": "#the-vision-class .code-card:has-text(\"headingStdDev = 9_999_999\"):not(:has-text(\"package frc.robot.subsystems\"))",
-    "stampCode": "#the-vision-class .code-card:has-text(\"drivetrain.addVisionMeasurement\"):not(:has-text(\"package frc.robot.subsystems\"))"
+    "stdCode": "#the-vision-class .code-card:has-text(\"headingStdDev = 9_999_999\"):not(:has-text(\"package first.robot.mechanisms\"))",
+    "stampCode": "#the-vision-class .code-card:has-text(\"drivetrain.addVisionMeasurement\"):not(:has-text(\"package first.robot.mechanisms\"))"
   },
   "open": [
     {

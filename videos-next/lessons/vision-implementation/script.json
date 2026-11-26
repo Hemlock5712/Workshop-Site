@@ -15,7 +15,7 @@
     },
     {
       "id": "install",
-      "text": "The library installs like Phoenix did, from a web address. The file name carries the WPILib alpha it was built for, so copy it, don't type it.",
+      "text": "Nothing to install. The camera library came with the swerve project, so all you write is one class that passes what the camera sees to the drivetrain.",
       "after": 0.6
     },
     {

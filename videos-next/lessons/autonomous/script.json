@@ -35,12 +35,12 @@
     },
     {
       "id": "life",
-      "text": "The class around it stays thin. One method schedules the routine on enable. The other cancels it whenever the mode stops, and a disable counts.",
+      "text": "The class around it stays thin. One method schedules the routine on enable, and there's nothing to write for the end, because leaving the mode cancels the routine for you. A disable counts.",
       "after": 0.6
     },
     {
-      "id": "pose",
-      "text": "Nothing in this routine tells the robot where it is on the field. Restart the robot code before a run you plan to measure, so the pose starts near zero and the distance is easy to read.",
+      "id": "sim",
+      "text": "Run it in the simulator first and watch the pose. Stopping isn't enough. It has to stay stopped, because a request nobody replaces keeps the wheels turning.",
       "after": 0.6
     },
     {
@@ -49,23 +49,13 @@
       "after": 0.6
     },
     {
-      "id": "passes",
-      "text": "Then four passes, in order. It runs on blocks first and on the floor once, and each pass answers a single question before you move on.",
-      "after": 0.6
-    },
-    {
-      "id": "measured",
-      "text": "The third pass is the one that counts. Tape the floor before and after every run, and check the tape against the pose the robot logged.",
-      "after": 0.6
-    },
-    {
-      "id": "disable",
-      "text": "Last, disable it about a second in. The wheels should stop, and when you enable again the routine starts over from its first line.",
+      "id": "floor",
+      "text": "Then the floor, with clear space ahead. It leaves the way its front bumper points, so aim the robot before you enable, not after.",
       "after": 0.6
     },
     {
       "id": "close",
-      "text": "Write down three numbers: the taped distance, the end pose, and the wait that produced them. Next you'll draw a path from that same tape mark, and those numbers are what it has to match.",
+      "text": "A second routine is just a second file, and it shows up on the list by itself. Next, the timer goes, and a drawn path tells the robot where to drive instead of how long.",
       "after": 0.6
     }
   ]

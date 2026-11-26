@@ -5,25 +5,26 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "lede": "#main-content header:has(h1) .lesson-lede",
-    "drawHead": "#draw > div:first-child",
-    "folderP": "#draw > .lesson-stack > p:has-text(\"The editor works on\")",
-    "importFig": "#draw figure:has-text(\"Home, then Import, then Autos\")",
+    "folderP": "#lesson-article > .lesson-stack > p:has-text(\"The swerve project comes\")",
     "stepWaypoint": "#draw > .lesson-stack > ol:has-text(\"On Home, open Import\") > li:has-text(\"With the Waypoint tool,\")",
     "stepRotation": "#draw > .lesson-stack > ol:has-text(\"On Home, open Import\") > li:has-text(\"With the Rotation tool,\")",
     "eventFig": "#draw figure:has-text(\"An event trigger selected. Lib\")",
     "constraints": "#draw > .lesson-stack > div:has-text(\"Speed limits sit on\")",
     "strayNote": "#draw > .lesson-stack > div:has-text(\"Speed limits sit on\") aside",
-    "builderCode": "#builder .code-card:has-text(\"DriveMechanism.java: the path request, the builder, and foll\")",
-    "gainsLi": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\") > li:has-text(\"The three PIDControllers pull\")",
+    "builderHead": "#builder > div:first-child",
+    "builderP": "#builder > .lesson-stack > p:has-text(\"The project also comes\")",
+    "builderList": "#builder > .lesson-stack > ul:has-text(\"The three PIDControllers pull\")",
+    "gainsLi": "#builder > .lesson-stack > ul:has-text(\"The three PIDControllers pull\") > li:has-text(\"The three PIDControllers pull\")",
     "opmodeHead": "#auto-opmode > div:first-child",
     "opmodeP": "#auto-opmode > .lesson-stack > p:has-text(\"Now let's create AutoOpMode.java\")",
-    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")",
-    "builderList": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\")",
-    "argsLi": "#builder > .lesson-stack > ul:has-text(\"pathRequest is an ApplyRobotVelocity\") > li:has-text(\"The first six arguments\")",
+    "pathCode": "#auto-opmode .code-card:has-text(\"Read the path file now\"):not(:has-text(\"package first.robot.opmode\"))",
     "dropP": "#auto-opmode > .lesson-stack > p:has-text(\"One AutoOpMode can hold\")",
+    "chooserCode": "#auto-opmode .code-card:has-text(\"Tunables.publish\"):not(:has-text(\"package first.robot.opmode\"))",
+    "startP": "#auto-opmode > .lesson-stack > p:has-text(\"Then tell the OpMode\")",
+    "startCode": "#auto-opmode .code-card:has-text(\"Tunables.remove\"):not(:has-text(\"package first.robot.opmode\"))",
+    "eventP": "#auto-opmode > .lesson-stack > p:has-text(\"Last, give the event\")",
     "eventCode": "#auto-opmode .code-card:has-text(\"the rest of the constructor\")",
-    "pathCode": "#auto-opmode .code-card:has-text(\"Read the path file now\"):not(:has-text(\"package frc.robot.opmodes\"))",
-    "startCode": "#auto-opmode .code-card:has-text(\"routine = autoChooser.getSelected()\"):not(:has-text(\"package frc.robot.opmodes\"))"
+    "checkBox": "#check-your-work > .lesson-stack > div:has-text(\"You should see\")"
   },
   "open": [
     {
@@ -44,10 +45,10 @@
     ],
     "folder": [
       {
-        "show": ["@drawHead", "@folderP"]
+        "show": "@folderP"
       },
       {
-        "at": "rides",
+        "at": "ships",
         "mark": "@folderP",
         "text": "ships to the robot with every deploy"
       }
@@ -83,16 +84,12 @@
     ],
     "builder": [
       {
-        "code": "@builderCode",
-        "lines": [10, 11]
+        "show": ["@builderHead", "@builderP"]
       },
       {
-        "at": "arguments",
-        "show": "@builderList"
-      },
-      {
-        "at": "where",
-        "spot": "@argsLi"
+        "at": "nothing",
+        "mark": "@builderP",
+        "text": "You do not type any of it."
       }
     ],
     "gains": [
@@ -114,22 +111,13 @@
         "show": ["@opmodeHead", "@opmodeP"]
       },
       {
-        "at": "One",
-        "show": "@dropP"
-      },
-      {
-        "at": "drop-down",
-        "mark": "@dropP",
-        "text": "Add a drop-down for the dashboard"
+        "at": "stays",
+        "mark": "@opmodeP",
+        "text": "Keep LeaveStartAuto."
       }
     ],
-    "trigger": [
+    "path": [
       {
-        "code": "@eventCode",
-        "lines": [5, 6]
-      },
-      {
-        "at": "file",
         "code": "@pathCode",
         "lines": [2, 4]
       }
@@ -137,13 +125,37 @@
     "reset": [
       {
         "code": "@pathCode",
-        "lines": [2, 4]
+        "lines": [3, 4]
+      }
+    ],
+    "chooser": [
+      {
+        "show": ["@dropP", "@chooserCode"]
+      },
+      {
+        "at": "nothing",
+        "code": "@chooserCode",
+        "lines": [5, 8]
       }
     ],
     "start": [
       {
-        "code": "@startCode",
-        "lines": [3, 7]
+        "show": ["@startP", "@startCode"]
+      },
+      {
+        "at": "cancels",
+        "mark": "@startP",
+        "text": "The framework cancels the routine when the OpMode exits."
+      }
+    ],
+    "trigger": [
+      {
+        "show": "@eventP"
+      },
+      {
+        "at": "registered",
+        "code": "@eventCode",
+        "lines": [5, 6]
       }
     ],
     "close": [

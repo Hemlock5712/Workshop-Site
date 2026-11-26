@@ -50,7 +50,7 @@
     },
     {
       "id": "empty",
-      "text": "Notice the check before it drives. If no camera has seen that tag yet, the command writes a message and quits, and the robot stays put.",
+      "text": "Losing the tag on the way in doesn't stop it, because the wheels finish from the last sighting. And if no camera has ever seen that tag, the robot is told it's already there, so nothing moves.",
       "after": 0.6
     },
     {

@@ -26,7 +26,8 @@
     "latchedP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"A canceled command leaves\")",
     "robotCode": "#your-first-real-default-command .code-card:has-text(\"Robot.java: the joystick drive, set as the default\")",
     "teleopCode": "#your-first-real-default-command .code-card:has-text(\"TeleopOpMode.java: the buttons\")",
-    "mineP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"Your own drivetrain code\")"
+    "mineP": "#your-first-real-default-command > .lesson-stack > p:has-text(\"Your own drivetrain commands\")",
+    "introP": "#lesson-article > .lesson-stack > p:has-text(\"Tuner X measures your\")"
   },
   "open": [
     {
@@ -37,11 +38,11 @@
   "lines": {
     "intro": [
       {
-        "show": "@header"
+        "show": ["@header", "@introP"]
       },
       {
         "at": "one",
-        "mark": "@lede",
+        "mark": "@introP",
         "text": "writes one file"
       }
     ],
@@ -89,8 +90,9 @@
         "show": ["@stepGenerate", "@stepTeam"]
       },
       {
-        "at": "only",
-        "spot": "@stepGenerate"
+        "at": "import",
+        "mark": "@stepGenerate",
+        "text": "Then change the import"
       }
     ],
     "check": [
@@ -121,9 +123,9 @@
         "show": ["@defaultHead", "@mineP"]
       },
       {
-        "at": "third",
+        "at": "OpModes",
         "mark": "@mineP",
-        "text": "what an OpMode talks to"
+        "text": "which is what an OpMode talks to"
       }
     ],
     "latched": [
@@ -139,12 +141,12 @@
     "default": [
       {
         "code": "@robotCode",
-        "lines": [19, 26]
+        "lines": [21, 28]
       },
       {
         "at": "robot",
         "code": "@robotCode",
-        "lines": [13, 15]
+        "lines": [15, 17]
       }
     ],
     "close": [

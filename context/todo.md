@@ -52,16 +52,22 @@ have no alpha-8 builds, so the upgrade waits for beta 1.
       circled). Nobody has watched the new flow in the real wizard: the
       Epilogue lines and the missing OpMode are read off the extension's
       template files.
-- [ ] **Twelve lesson videos no longer match their pages.** The 2026-11-26
-      page edits broke the cue files, and several scripts now say something
-      the page does not: `project-setup` (the vendordep swap), `opmodes` (the
-      generated file), `autonomous` and `bline` (`end()` canceling),
-      `swerve-drive-project`, `swerve-drive-tuning`, `drive-to-point`,
-      `vision-implementation` and `align-to-tag` (`DriveMechanism`, old
-      paths), plus `coroutines`, `mechanism-setup` and `pid-control`, which
-      only lost a sentence a cue pointed at. `node tools/render-page.mjs
-lessons/<id> --dry` lists each break. Rewrite the lines in
-      `series.json`, repoint the cues, re-voice and re-render.
+- [ ] **Twelve lesson videos are stale until re-voiced and re-rendered.**
+      The scripts and cue files were brought back in line with the 2026-11-26
+      pages, and all twelve pass `render-page.mjs --draft --dry`. What is left
+      needs the owner's go-ahead, because voicing uses the cloned voice and
+      uploading publishes. Re-voice, then render and upload (`voice.mjs`,
+      then steps 4 and 5 in `context/videos.md`): `project-setup` (epilogue,
+      teleop and phoenix lines replace the CommandsV2 swap), `opmodes` (file,
+      edit, bind), `swerve-drive-project` (generate, files), `autonomous`
+      (life, sim, floor, close; the old four-pass and three-numbers lines were
+      stale), `bline` (folder, builder, opmode, path, chooser, start, trigger;
+      the install line is cut, Leave Start is kept, nothing cancels in
+      `end()`), `drive-to-point` (flip, check, a new warn line; the goal now
+      flips with the alliance), `vision-implementation` (install) and
+      `align-to-tag` (empty). Render and upload only, narration unchanged and
+      the voiced dry run already passing: `coroutines`, `mechanism-setup`,
+      `pid-control`, `swerve-drive-tuning`.
 - [ ] **`/ai-coding-assistant` points at a stale template.** It sends
       students to 2027-Template's `ONBOARDING.md` and `.claude/skills`, and
       2027-Template is still on GradleRIO alpha-6 (`2027-dev`, last change

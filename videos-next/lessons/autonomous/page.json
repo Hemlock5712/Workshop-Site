@@ -5,15 +5,18 @@
   "targets": {
     "header": "#main-content header:has(h1)",
     "crudeP": "#build-the-routine > .lesson-stack > p:has-text(\"Create LeaveStartAuto.java in the\")",
-    "code": "#build-the-routine .code-card:has-text(\"every speed is zero\"):not(:has-text(\"package frc.robot.opmodes\"))",
+    "code": "#build-the-routine .code-card:has-text(\"every speed is zero\"):not(:has-text(\"package first.robot.opmode\"))",
     "warn": "#check-your-work > .lesson-stack > div:has-text(\"Don'tNobody in front of\")",
+    "lifeP": "#build-the-routine > .lesson-stack > p:has-text(\"Last, tell the OpMode\")",
     "lifeCode": "#build-the-routine .code-card:has-text(\"the constructor, unchanged\")",
     "simHead": "#simulation-first > div:first-child",
     "simP": "#simulation-first > .lesson-stack > p:has-text(\"Before you run any\")",
     "simList": "#simulation-first > .lesson-stack > ol:has-text(\"Run WPILib: Simulate Robot\")",
     "simPose": "#simulation-first > .lesson-stack > ol:has-text(\"Run WPILib: Simulate Robot\") > li:has-text(\"Enable, and watch Drivetrain/Pose\")",
+    "simBox": "#simulation-first > .lesson-stack > div:has-text(\"CheckYou should seeThe robot drive\")",
     "floorP": "#check-your-work > .lesson-stack > p:has-text(\"Put the robot on\")",
-    "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot\")"
+    "seeBox": "#check-your-work > .lesson-stack > div:has-text(\"CheckYou should seeThe robot leaving\")",
+    "secondP": "#check-your-work > .lesson-stack > p:has-text(\"A second routine is\")"
   },
   "open": [
     {
@@ -57,17 +60,25 @@
     ],
     "life": [
       {
-        "code": "@lifeCode",
-        "lines": [3, 11]
+        "show": ["@lifeP", "@lifeCode"]
+      },
+      {
+        "at": "nothing",
+        "mark": "@lifeP",
+        "text": "There is no end() to write."
       }
     ],
-    "pose": [
+    "sim": [
       {
-        "show": ["@simHead", "@simP", "@simList"]
+        "show": ["@simHead", "@simP", "@simList", "@simBox"]
       },
       {
         "at": "pose",
         "spot": "@simPose"
+      },
+      {
+        "at": "stay",
+        "spot": "@simBox"
       }
     ],
     "safety": [
@@ -75,23 +86,24 @@
         "show": "@warn"
       }
     ],
-    "passes": [
+    "floor": [
       {
         "show": ["@floorP", "@seeBox"]
       },
       {
-        "at": "floor",
-        "mark": "@floorP",
-        "text": "Put the robot on the floor",
-        "until": "end"
+        "at": "bumper",
+        "mark": "@seeBox",
+        "text": "in the direction its front bumper points"
       }
     ],
-    "disable": [
+    "close": [
       {
-        "at": "stop",
-        "mark": "@seeBox",
-        "text": "stopping and staying stopped",
-        "until": "end"
+        "show": "@secondP"
+      },
+      {
+        "at": "second",
+        "mark": "@secondP",
+        "text": "A second routine is a second file."
       }
     ]
   }

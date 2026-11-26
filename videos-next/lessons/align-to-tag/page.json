@@ -7,13 +7,13 @@
     "lede": "#main-content header:has(h1) .lesson-lede",
     "frameHead": "#the-tags-frame > div:first-child",
     "frameP": "#the-tags-frame > .lesson-stack > p:has-text(\"A pose measured from\")",
-    "frameCode": "#the-tags-frame .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
+    "frameCode": "#the-tags-frame .code-card:has-text(\"src/main/java/first/robot/mechanisms/Vision.javacopy\")",
     "danger": "#the-tags-frame > .lesson-stack > div:has-text(\"DANGER · SIGNSTest this\")",
     "mapHead": "#remember-the-tag > div:first-child",
     "mapP": "#remember-the-tag > .lesson-stack > p:has-text(\"The camera will lose\")",
-    "mapCode": "#remember-the-tag .code-card:has-text(\"src/main/java/frc/robot/subsystems/Vision.javacopy\")",
+    "mapCode": "#remember-the-tag .code-card:has-text(\"src/main/java/first/robot/mechanisms/Vision.javacopy\")",
     "driveHead": "#drive-in-the-tags-frame > div:first-child",
-    "driveP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"Add alignToTag to DriveMechanism,\")",
+    "driveP": "#drive-in-the-tags-frame > .lesson-stack > p:has-text(\"Add alignToTag to CommandSwerveDrivetrain,\")",
     "recordHead": "#record-your-spot > div:first-child",
     "recordP": "#record-your-spot > .lesson-stack > p:has-text(\"Do not measure the\")",
     "recordSteps": "#record-your-spot > .lesson-stack > ol:has-text(\"Disable the robot and\")",
@@ -74,18 +74,18 @@
     "gates": [
       {
         "code": "@mapCode",
-        "lines": [12, 15]
+        "lines": [13, 15]
       }
     ],
     "remember": [
       {
         "code": "@mapCode",
-        "lines": [22, 33]
+        "lines": [20, 31]
       },
       {
         "at": "logs",
         "code": "@mapCode",
-        "lines": [31, 31]
+        "lines": [29, 29]
       }
     ],
     "drive": [
@@ -103,7 +103,7 @@
         "show": "@lostP"
       },
       {
-        "at": "quits",
+        "at": "seen",
         "mark": "@lostP",
         "text": "The path finishes at once and nothing moves"
       }

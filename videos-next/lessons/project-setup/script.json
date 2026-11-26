@@ -44,13 +44,18 @@
       "after": 0.6
     },
     {
-      "id": "swap",
-      "text": "The new project isn't ready yet. It ships a different command library from the one every example here uses, and the two can't share a project. So one comes out before the other goes in.",
+      "id": "epilogue",
+      "text": "The skeleton switches on a second logging tool this course doesn't use. Take those four lines out, or every mechanism gets logged twice and each build prints a note for every field it can't log.",
       "after": 0.6
     },
     {
-      "id": "panel",
-      "text": "That swap, plus the library for the motor controllers, is three clicks in one panel. Watch the last one. A library with nearly the same name sits right underneath it, and it's the wrong one.",
+      "id": "teleop",
+      "text": "It also ships with nothing for the driver station to pick. You make the teleop file by hand, and keep its name exactly as written, because every lesson after this one opens it.",
+      "after": 0.6
+    },
+    {
+      "id": "phoenix",
+      "text": "The command library came with the template. The motor controllers' library didn't. Watch which one you install, because a library with nearly the same name sits right underneath it, and it's the wrong one.",
       "after": 0.6
     },
     {
