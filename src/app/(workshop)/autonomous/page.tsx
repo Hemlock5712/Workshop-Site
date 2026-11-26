@@ -13,7 +13,7 @@ const linkStyle =
 
 /**
  * Written against Workshop-Code `swerve-autonomous`, one commit on top of
- * `1-Swerve` that adds LeaveStartAuto. `/bline` follows this lesson on
+ * `swerve-project` that adds LeaveStartAuto. `/bline` follows this lesson on
  * `swerve-bline` and adds a second autonomous that follows a drawn path.
  *
  * Owner-style pass, November 2026: cut the "Two layers" lifecycle/behavior
@@ -24,6 +24,14 @@ const linkStyle =
  * three steps instead of pasted whole, the four test passes became
  * "Simulation first", and the taped, measured runs went with them. `/bline`
  * no longer needs numbers from this page and no longer deletes this class.
+ *
+ * November 2026, the swerve chain rebuild: `LeaveStartAuto` has no `end()`.
+ * The framework cancels a command an OpMode scheduled when that OpMode exits
+ * (allwpilib#8492 and #8705, both in alpha-7), checked in simulation by
+ * disabling mid-run. The third step, the finished file, the prose around
+ * `start()` and quiz question 4 say so. The `whenCanceled` stop stays, because
+ * canceling is still not stopping. Packages moved to `first.robot` and the
+ * folder is `opmode`, singular. `1-Swerve` is now `swerve-project`.
  */
 export default function Autonomous() {
   return (
@@ -46,18 +54,18 @@ export default function Autonomous() {
     >
       <LessonSection id="build-the-routine" title="Build the routine">
         <p>
-          Create <code>LeaveStartAuto.java</code> in the <code>opmodes</code>{" "}
+          Create <code>LeaveStartAuto.java</code> in the <code>opmode</code>{" "}
           folder, beside <code>TeleopOpMode.java</code>. We will be creating a
           coroutine to drive the robot forward on a timer. Start with the empty
           class.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/LeaveStartAuto.java"
+          filename="src/main/java/first/robot/opmode/LeaveStartAuto.java"
           highlightLines={[7]}
-          code={`package frc.robot.opmodes;
+          code={`package first.robot.opmode;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.opmode.Autonomous;
 import org.wpilib.opmode.PeriodicOpMode;
 
@@ -75,7 +83,7 @@ public class LeaveStartAuto extends PeriodicOpMode {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/LeaveStartAuto.java"
+          filename="src/main/java/first/robot/opmode/LeaveStartAuto.java"
           highlightLines={[19]}
           code={`public class LeaveStartAuto extends PeriodicOpMode {
   private final Command routine;
@@ -109,37 +117,33 @@ public class LeaveStartAuto extends PeriodicOpMode {
 
         <p>
           Last, tell the OpMode when to run the routine. <code>start()</code>{" "}
-          schedules it on enable. <code>end()</code> cancels it when the mode
-          stops for any reason, a disable included.
+          schedules it on enable. There is no <code>end()</code> to write. The
+          framework cancels a command an OpMode scheduled when that OpMode
+          exits, a disable included.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/LeaveStartAuto.java"
+          filename="src/main/java/first/robot/opmode/LeaveStartAuto.java"
           code={`  // ... the constructor, unchanged
 
   @Override
   public void start() {
     Scheduler.getDefault().schedule(routine);
   }
-
-  @Override
-  public void end() {
-    Scheduler.getDefault().cancel(routine);
-  }
 }`}
         />
         <p>The finished file, with its imports:</p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/LeaveStartAuto.java"
+          filename="src/main/java/first/robot/opmode/LeaveStartAuto.java"
           title="LeaveStartAuto.java"
           collapsed
-          code={`package frc.robot.opmodes;
+          code={`package first.robot.opmode;
 
 import static org.wpilib.units.Units.Seconds;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -170,11 +174,6 @@ public class LeaveStartAuto extends PeriodicOpMode {
   @Override
   public void start() {
     Scheduler.getDefault().schedule(routine);
-  }
-
-  @Override
-  public void end() {
-    Scheduler.getDefault().cancel(routine);
   }
 }`}
         />
@@ -280,16 +279,16 @@ public class LeaveStartAuto extends PeriodicOpMode {
           {
             id: 4,
             question:
-              "You hit disable one second into the drive. Which method stops the routine, and what do you do before the next run?",
+              "You hit disable one second into the drive. What cancels the routine, and what happens on the next enable?",
             options: [
-              "start() runs again on disable, so just enable to resume",
-              "Nothing stops it; the routine finishes on its own after re-enable",
-              "The constructor runs again on disable, so nothing else is needed",
-              "end() cancels the routine, and enabling again starts it fresh",
+              "start() runs again on disable and cancels it, so enabling resumes the drive",
+              "Nothing cancels it; the routine finishes on its own after re-enable",
+              "An end() method in LeaveStartAuto cancels it, and enabling again starts it fresh",
+              "The framework cancels it when the OpMode exits, and enabling again starts it fresh",
             ],
             correctAnswer: 3,
             explanation:
-              "end() runs when the mode stops for any reason, and it cancels the routine. The cancel runs whenCanceled, which sends the zero. Enable again and the routine starts from the first line.",
+              "LeaveStartAuto has no end(). The framework cancels a command an OpMode scheduled when that OpMode exits. The cancel runs whenCanceled, which sends the zero. Enable again and the routine starts from the first line.",
           },
         ]}
       />

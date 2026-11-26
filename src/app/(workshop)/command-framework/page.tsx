@@ -20,6 +20,9 @@ export const metadata = lessonMetadata("/command-framework");
  *
  * The no-RobotContainer point survives as a margin note, where it costs a
  * student who has never seen FRC code nothing at all.
+ *
+ * November 2026: the `MyTeleop` block is `implements OpMode`, matching the
+ * rebuilt `mech-2-Commands`. No mech-chain OpMode extends `PeriodicOpMode` now.
  */
 export default function CommandFramework() {
   return (
@@ -207,7 +210,7 @@ export default function CommandFramework() {
           title="MyTeleop.java: the shape of a mode class"
           filename="src/main/java/first/robot/opmode/MyTeleop.java"
           code={`@Teleop(name = "Teleop")
-public class MyTeleop extends PeriodicOpMode {
+public class MyTeleop implements OpMode {
   public MyTeleop(Robot robot) {
     // Left trigger: push the arm up while held, stop when released.
     robot.driver.leftTrigger().whileTrue(robot.arm.runFast()).whileFalse(robot.arm.stop());

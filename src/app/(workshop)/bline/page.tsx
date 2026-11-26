@@ -12,7 +12,7 @@ import { lessonMetadata } from "@/lib/lessonMetadata";
 export const metadata = lessonMetadata("/bline");
 
 /**
- * Written against Workshop-Code `swerve-bline` (8492c6d), whose parent is
+ * Written against Workshop-Code `swerve-bline` (65762fa), whose parent is
  * `swerve-autonomous` (the Leave Start routine from /autonomous).
  *
  * BLine-Lib `2027.0.0-beta.3` from JitPack, paired with the BLine Web editor
@@ -23,8 +23,9 @@ export const metadata = lessonMetadata("/bline");
  * scheduler one loop later, in path order; canceling drops unreached ones.
  *
  * Owner's review, November 2026 (Recording 13): the install section is gone.
- * `1-Swerve` now ships the BLine vendordep, `deploy/autos` with `config.json`,
- * and the builder in `DriveMechanism`, so the page explains the builder
+ * `swerve-project` ships the BLine vendordep, `deploy/autos` with
+ * `config.json`, and the builder in the drivetrain class, so the page
+ * explains the builder
  * instead of having a student type it. `LeaveStartAuto` is kept, so the
  * driver station lists two autonomous classes. `AutoOpMode` is built up in
  * five steps and the whole file sits folded at the end.
@@ -32,6 +33,20 @@ export const metadata = lessonMetadata("/bline");
  * Verified in simulation, November 2026: pose reset, finish within 0.03 m and
  * 2 degrees, one event per run, None, red flip, re-enable, disable. Not
  * verified: real hardware, the editor's folder-picker export, the desktop app.
+ *
+ * November 2026, the swerve chain rebuild: `DriveMechanism` was folded into
+ * `CommandSwerveDrivetrain`, so the builder section is about that class and
+ * `driveRobotRelative` calls `setControl` directly. `AutoOpMode` has no
+ * `routine` field. `start()` schedules `autoChooser.getSelected()`, the
+ * framework cancels it when the OpMode exits (allwpilib#8492 and #8705), and
+ * `end()` only clears pending event triggers. Packages moved to `first.robot`,
+ * the OpMode folder is `opmode` and the drivetrain class is in `mechanisms`.
+ * `1-Swerve` is now `swerve-project`.
+ *
+ * Budget cuts in the same pass, all prose that repeated a comment in the code
+ * block beside it or an adjacent paragraph: the builder bullets on
+ * `pathRequest` and on the six arguments, the `withPoseReset()` sentence under
+ * step two, and the second mention of what the `autos` folder is for.
  */
 export default function BLineLesson() {
   return (
@@ -73,15 +88,11 @@ export default function BLineLesson() {
       </ul>
       <p>
         The swerve project comes with BLine installed, the same way it comes
-        with Phoenix 6, and with a <code>src/main/deploy/autos</code> folder for
-        the paths you draw.
+        with Phoenix 6. Its <code>src/main/deploy/autos</code> folder holds the
+        paths you draw and ships to the robot with every deploy.
       </p>
 
       <LessonSection id="draw" title="Draw a path">
-        <p>
-          The editor works on the <code>src/main/deploy/autos</code> folder,
-          which ships to the robot with every deploy.
-        </p>
         <ImageBlock
           src="/images/bline/editor-import-autos-folder.png"
           alt="BLine editor home screen with the Import menu open, showing Autos folder and Project archive"
@@ -153,19 +164,22 @@ export default function BLineLesson() {
         />
       </LessonSection>
 
-      <LessonSection id="builder" title="The builder in DriveMechanism">
+      <LessonSection
+        id="builder"
+        title="The builder in CommandSwerveDrivetrain"
+      >
         <p>
           The project also comes with a BLine path follower built into{" "}
-          <code>DriveMechanism</code>. You do not type any of it. Open the file
-          and find these three pieces: a request field, the builder in the
-          constructor, and two methods that use them.
+          <code>CommandSwerveDrivetrain</code>. You do not type any of it. Open
+          the file and find these three pieces: a request field, the builder in
+          the constructor, and two methods that use them.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
-          title="DriveMechanism.java: the path request, the builder, and followPath"
-          code={`public class DriveMechanism implements Mechanism {
-  // ... drivetrain field
+          filename="src/main/java/first/robot/mechanisms/CommandSwerveDrivetrain.java"
+          title="CommandSwerveDrivetrain.java: the path request, the builder, and followPath"
+          code={`public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Mechanism {
+  // ... simulation and operator perspective fields
 
   // BLine hands back speeds relative to the robot, so the request is robot-relative too.
   // Velocity asks each wheel for an exact speed, so the small corrections at the end of a path
@@ -176,8 +190,10 @@ export default function BLineLesson() {
   // Turns a path file into a command that drives it. Built once, used for every path.
   private final FollowPath.Builder pathBuilder;
 
-  public DriveMechanism() {
-    // ... applyOperatorPerspective and registerTelemetry
+  public CommandSwerveDrivetrain(
+      SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
+    super(drivetrainConstants, modules);
+    // ... the simulation thread, applyOperatorPerspective and registerTelemetry
 
     // Teaches BLine how to drive this robot. After this, followPath can turn any path drawn in
     // the BLine editor into a command.
@@ -198,27 +214,20 @@ export default function BLineLesson() {
             .withDefaultShouldFlip();
   }
 
-  // ... getName, getPose and the other methods
+  // ... getName, applyRequest and resetHeading
 
   public FollowPath followPath(String name) {
     return pathBuilder.build(new Path(name));
   }
 
   public void driveRobotRelative(ChassisVelocities velocities) {
-    drivetrain.setControl(pathRequest.withVelocity(velocities));
+    setControl(pathRequest.withVelocity(velocities));
   }
+
+  // ... getPose and the other methods
 }`}
         />
         <ul className="ml-5 list-disc space-y-3">
-          <li>
-            <code>pathRequest</code> is an <code>ApplyRobotVelocity</code>{" "}
-            request, because BLine works in the robot&apos;s own directions,
-            with X as its forward.
-          </li>
-          <li>
-            The first six arguments name the mechanism a path claims, then say
-            how to read the pose and speed, reset the pose, and drive.
-          </li>
           <li>
             The three <code>PIDController</code>s pull the robot back onto the
             path. They were tuned in simulation only, so tune them on your
@@ -239,17 +248,17 @@ export default function BLineLesson() {
       <LessonSection id="auto-opmode" title="The Auto OpMode">
         <p>
           Now let&apos;s create <code>AutoOpMode.java</code> in the{" "}
-          <code>opmodes</code> folder, beside <code>LeaveStartAuto.java</code>.
+          <code>opmode</code> folder, beside <code>LeaveStartAuto.java</code>.
           Keep <code>LeaveStartAuto</code>. We will be able to see both of our
           autonomous classes in the list on the driver station and pick which
           one to run. Start with the empty class.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
-          code={`package frc.robot.opmodes;
+          filename="src/main/java/first/robot/opmode/AutoOpMode.java"
+          code={`package first.robot.opmode;
 
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.opmode.Autonomous;
 import org.wpilib.opmode.PeriodicOpMode;
 
@@ -265,7 +274,7 @@ public class AutoOpMode extends PeriodicOpMode {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          filename="src/main/java/first/robot/opmode/AutoOpMode.java"
           code={`  public AutoOpMode(Robot robot) {
     // Read the path file now, so a misspelled name fails when this OpMode is picked.
     // withPoseReset puts odometry at the path's first point before it drives.
@@ -283,10 +292,9 @@ public class AutoOpMode extends PeriodicOpMode {
         />
         <p>
           <code>followPath(&quot;leave-start&quot;)</code> is the path you drew,
-          by name. <code>withPoseReset()</code> tells the robot it is standing
-          on the path&apos;s first point when the path starts. The routine is a
-          coroutine that awaits the path, so a second path is one more line
-          under the first: <code>coroutine.await(nextPath);</code>.
+          by name. The routine is a coroutine that awaits the path, so a second
+          path is one more line under the first:{" "}
+          <code>coroutine.await(nextPath);</code>.
         </p>
 
         <p>
@@ -296,11 +304,10 @@ public class AutoOpMode extends PeriodicOpMode {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
-          highlightLines={[2, 3, 8, 10, 11, 12]}
+          filename="src/main/java/first/robot/opmode/AutoOpMode.java"
+          highlightLines={[2, 7, 9, 10, 11]}
           code={`public class AutoOpMode extends PeriodicOpMode {
   private final Selectable<Command> autoChooser = new Selectable<>();
-  private Command routine;
 
   public AutoOpMode(Robot robot) {
     // ... leaveStartPath and leaveStart, from above
@@ -317,23 +324,23 @@ public class AutoOpMode extends PeriodicOpMode {
         <p>
           Then tell the OpMode when to run. <code>start()</code> reads the
           drop-down on enable, because someone can still change it after picking
-          the mode. <code>end()</code> cancels the routine. <code>close()</code>{" "}
-          takes the drop-down off the dashboard when another OpMode is picked.
+          the mode, and schedules that routine. <code>end()</code> does not
+          cancel it. The framework cancels the routine when the OpMode exits.{" "}
+          <code>close()</code> takes the drop-down off the dashboard when
+          another OpMode is picked.
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          filename="src/main/java/first/robot/opmode/AutoOpMode.java"
           code={`  // ... the constructor
 
   @Override
   public void start() {
-    routine = autoChooser.getSelected();
-    Scheduler.getDefault().schedule(routine);
+    Scheduler.getDefault().schedule(autoChooser.getSelected());
   }
 
   @Override
   public void end() {
-    Scheduler.getDefault().cancel(routine);
     FollowPath.clearPendingEventTriggers();
   }
 
@@ -353,7 +360,7 @@ public class AutoOpMode extends PeriodicOpMode {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          filename="src/main/java/first/robot/opmode/AutoOpMode.java"
           highlightLines={[5, 6]}
           code={`  public AutoOpMode(Robot robot) {
     // Event triggers are the markers along a path. The key in quotes must match the marker's key
@@ -369,13 +376,13 @@ public class AutoOpMode extends PeriodicOpMode {
         <p>The finished file, with its imports:</p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/AutoOpMode.java"
+          filename="src/main/java/first/robot/opmode/AutoOpMode.java"
           title="AutoOpMode.java"
           collapsed
-          code={`package frc.robot.opmodes;
+          code={`package first.robot.opmode;
 
 import bline.commands.FollowPath;
-import frc.robot.Robot;
+import first.robot.Robot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.opmode.Autonomous;
@@ -387,7 +394,6 @@ import org.wpilib.tunable.Tunables;
 @Autonomous(name = "Auto")
 public class AutoOpMode extends PeriodicOpMode {
   private final Selectable<Command> autoChooser = new Selectable<>();
-  private Command routine;
 
   public AutoOpMode(Robot robot) {
     // Event triggers are the markers along a path. The key in quotes must match the marker's key
@@ -417,13 +423,11 @@ public class AutoOpMode extends PeriodicOpMode {
 
   @Override
   public void start() {
-    routine = autoChooser.getSelected();
-    Scheduler.getDefault().schedule(routine);
+    Scheduler.getDefault().schedule(autoChooser.getSelected());
   }
 
   @Override
   public void end() {
-    Scheduler.getDefault().cancel(routine);
     FollowPath.clearPendingEventTriggers();
   }
 

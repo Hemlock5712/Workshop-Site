@@ -39,6 +39,33 @@ have no alpha-8 builds, so the upgrade waits for beta 1.
       run. Deleting a branch cannot be undone from here, so say yes first;
       then drop them, prune `reference/`, and trim the comments and the
       `teaching-code.md` notes that name them.
+  - **`1-Swerve` is still on GitHub**, stale, although its rename to
+    `swerve-project` was approved and pushed on 2026-11-26. Deleting it
+    closes PR #8 (`2-Logging` into `1-Swerve`), so it goes with the branches
+    above. PR #25 was retargeted to `swerve-project`. Every rebuilt branch has
+    a local `backup/2026-11-26/<branch>` tag in `reference/work/Workshop-Code`.
+- [ ] **Re-capture three `/project-setup` screenshots.** The page moved to
+      the "Command v3 Robot Skeleton (Advanced)" template on 2026-11-26 and
+      three pictures showed the old flow, so their `ImageBlock`s were removed
+      and the figure titles now skip from Step 3 to 5 to 7. The files are
+      still in `public/images/project-setup/`:
+      `step-4.png` (New Project Creator page 2, Project Base set to the
+      skeleton), `step-6.png` (Review and Create, naming the skeleton) and
+      `step-8.png` (Vendor Dependencies on a fresh skeleton project, Commands
+      v3 already installed, only the CTRE-Phoenix (v6) Install button
+      circled). Nobody has watched the new flow in the real wizard: the
+      Epilogue lines and the missing OpMode are read off the extension's
+      template files.
+- [ ] **Twelve lesson videos no longer match their pages.** The 2026-11-26
+      page edits broke the cue files, and several scripts now say something
+      the page does not: `project-setup` (the vendordep swap), `opmodes` (the
+      generated file), `autonomous` and `bline` (`end()` canceling),
+      `swerve-drive-project`, `swerve-drive-tuning`, `drive-to-point`,
+      `vision-implementation` and `align-to-tag` (`DriveMechanism`, old
+      paths), plus `coroutines`, `mechanism-setup` and `pid-control`, which
+      only lost a sentence a cue pointed at. `node tools/render-page.mjs
+lessons/<id> --dry` lists each break. Rewrite the lines in
+      `series.json`, repoint the cues, re-voice and re-render.
 - [ ] **`/ai-coding-assistant` points at a stale template.** It sends
       students to 2027-Template's `ONBOARDING.md` and `.claude/skills`, and
       2027-Template is still on GradleRIO alpha-6 (`2027-dev`, last change
@@ -55,29 +82,44 @@ Everything below was checked in simulation only.
       desktop app.
 - [ ] **The tag frame's sign.** `toTagFrame` assumes target-space Z points
       into the wall; Limelight's docs say out of it. The sim check cannot
-      catch this. Settle it before anyone drives Align to Tag, and do it
-      together with the `CoordinateSystem` item below.
+      catch this. Settle it before anyone drives Align to Tag.
+- [ ] **`Vision.toTagFrame` can use wpimath**, once the sign above is known.
+      The hand-written axis swap is what `CoordinateSystem.convert(pose,
+CoordinateSystem.EDN(), CoordinateSystem.NWU())` does: Limelight target
+      space is X right, Y down, Z along the tag's normal. With Limelight's
+      documented "Z out of the target", the library call gives +X out of the
+      face with no minus sign, the opposite of today's `-getZ()`, and what the
+      rotation becomes has not been worked out. Left alone on 2026-11-26
+      because the sim check synthesizes the sighting with the inverse of the
+      same function, so it cannot catch a wrong sign. Then update
+      `/align-to-tag`.
 - [ ] **Stick signs** through `CommandXboxController` on the FIRST Driver
       Station.
 
 ## Can do now: the site
 
-- [ ] **Make `scripts/audit-ui.mjs` fit for CI**, then add it as a job that
-      builds, runs `next start` and audits. Run on 2026-11-25 it failed all
-      28 page states, every one a false alarm: the `/_vercel/insights` and
-      `/_vercel/speed-insights` scripts 404 off Vercel, and the name check
-      reads only `aria-label`, `title` and text, so a radio inside a
-      `<label>` counts as unnamed. Ignore `/_vercel/` responses and count
-      `el.labels`. The one real hit is a decorative `·` separator on
-      `/vision-shooting` at 360 px, 1.4:1 in light and 1.6:1 in dark; mark it
-      `aria-hidden` or give it a readable token. In a cloud session launch
-      with `executablePath: "/opt/pw-browsers/chromium"`, because the
-      project's Playwright pins a browser build that is not installed there.
+- [x] `scripts/audit-ui.mjs` is fit for CI and runs as the `ui-audit` job:
+      it ignores `/_vercel/` responses, counts `el.labels` and
+      `aria-labelledby`, fails on an unnamed control, and takes
+      `AUDIT_CHROMIUM` for a browser path. The `·` separator on lesson pages
+      uses `--tx3`. Clean on all 28 page states on 2026-11-26.
 - [ ] Pages over the 12 minute target, all under the 15 cap, from
-      `pnpm prose` on 2026-11-25: `/bline` 14.8, `/mechanism-setup` 14.2,
-      `/coroutines` 13.2, `/ai-coding-assistant` 13.0, `/mechanisms` 13.0,
-      `/pid-control` 12.7, `/swerve-drive-tuning` 12.2. `/bline` is closest
-      to the cap.
+      `pnpm prose` on 2026-11-26: `/bline` 14.3, `/mechanism-setup` 13.5,
+      `/coroutines` 13.0, `/ai-coding-assistant` 12.8, `/mechanisms` 12.6,
+      `/swerve-drive-tuning` 12.1. A pass that day cut only duplication:
+      captions repeating a step, bullets restating a code comment, recap
+      sentences. It brought `/pid-control` to 12.0 and took the rest down by
+      0.1 to 0.7. What is left is structure, not prose: `/mechanism-setup` is
+      about 19 steps, a table and a quiz, and `/bline` is six code blocks and
+      eight steps, built up in steps on the owner's instruction. Getting
+      either to 12 means splitting the page or dropping a step, which is the
+      owner's call.
+- [ ] `scripts/audit-ui.mjs` checks seven pages. It runs in CI since
+      2026-11-26. A one-off run that day over eleven more lessons found one
+      real failure the seven had missed, since fixed: highlighted line numbers
+      in `CodeBlock` used the light theme's `--accent` on the dark code
+      background, 3.68:1. Consider auditing every route in `lessons.ts`, which
+      costs about three seconds a page state.
 
 ## Can do now: Workshop-Code
 
@@ -87,96 +129,23 @@ reaches only if the environment allows them; check the Phoenix 6 jar with
 `javap` before using any Phoenix method, because CTRE's API site is not
 reachable either.
 
-- [ ] **Fold `DriveMechanism` into `CommandSwerveDrivetrain`.** Owner's
-      call, November 2026. Since allwpilib#8303 (alpha-7) `Mechanism` is an
-      interface, made one for CTRE swerve, so `CommandSwerveDrivetrain
-extends TunerSwerveDrivetrain implements Mechanism` works and the "a
-      Java class can only extend one thing" Javadoc is out of date. Move the
-      BLine builder, `applyRequest`, `followPath`, `driveToPoint`,
-      `alignToTag`, the telemetry and the `addPeriodic` call across; the
-      `setControl`, `resetPose`, `samplePoseAt` and `addVisionMeasurement`
-      wrappers go away because the drivetrain already has them. The
-      `seedFieldCentric` command needs a new name, because the generated
-      class already has a `void seedFieldCentric()`. First check what the
-      2027 Tuner X generator emits; if it already implements `Mechanism`,
-      copy its shape. Then every swerve branch from `1-Swerve` on, `Vision`
-      and the shooter `Flywheel` constructors, the 7 pages that name
-      `DriveMechanism`, and `/swerve-drive-project`, whose reason for the
-      split ("keeps your code out of the files Tuner X writes") goes.
-  - This is the swerve rebuild `teaching-code.md` has been waiting on:
-    move the chain from `frc.robot.subsystems` / `frc.robot.opmodes` to
-    `first.robot.mechanisms` / `first.robot.opmode`, and rename `1-Swerve`
-    to the `swerve-*` scheme, in the same pass. Every swerve page and
-    embed follows.
-  - Cut a release tag after `v3.3-swerve` and point the swerve project
-    download at it.
-- [ ] Drop `end() { cancel(routine); }` from `RaiseAndShootOpMode`,
-      `LeaveStartAuto` and `AutoOpMode`. A command scheduled inside an OpMode
-      is already canceled when that OpMode exits (allwpilib#8492 and #8705,
-      both in alpha-7). `AutoOpMode` keeps its
-      `FollowPath.clearPendingEventTriggers()`. Check one auto in sim first,
-      then update `/coroutines`, `/autonomous` and `/bline`.
-- [ ] **The shooter aims at the blue goal on red.** `swerve-vision-shooting`'s
-      `Flywheel` measures distance to a fixed `TARGET = (3, 5)`, while
-      `driveToPoint` flips with the alliance. On red the lookup table is fed
-      the distance to the wrong goal. Flip `TARGET` by
-      `MatchState.getAlliance()`; after the center-origin switch the red goal
-      is `TARGET.rotateBy(Rotation2d.PI)`. Update `/vision-shooting`.
-- [ ] **One logging shape on the swerve chain.** The mech chain uses
-      `implements TelemetryLoggable`. The shooter `Flywheel` instead logs
-      inside its setters through a stored `TelemetryTable`, `Vision` logs per
-      frame and `DriveMechanism` logs from CTRE's telemetry thread. The last
-      two have reasons; the `Flywheel` should match the mech chain's `Flywheel`.
-- [ ] **`Vision.toTagFrame` can use wpimath.** The hand-written axis swap is
-      what `CoordinateSystem.convert(pose, CoordinateSystem.EDN(),
-CoordinateSystem.NWU())` does: Limelight target space is X right, Y
-      down, Z along the tag's normal. With Limelight's documented "Z out of
-      the target", the library call gives +X out of the face with no minus
-      sign, which is the opposite of today's `-getZ()`. Pair it with the sign
-      check above, then update `/align-to-tag`.
-- [ ] **Start from "Command v3 Robot Skeleton (Advanced)".** Owner's call,
-      November 2026. `/project-setup` picks "OpMode Robot" today, which
-      WPILib's `templates.json` marks `commandversion: 2`, then swaps
-      CommandsV2 for CommandsV3 by hand. The skeleton (allwpilib#8887, in
-      alpha-7) is `commandversion: 3`, so the VS Code extension installs
-      `commandsv3` itself and the swap step goes. Its `Robot extends
-OpModeRobot` already runs `Scheduler.getDefault().run()` in
-      `robotPeriodic()`. The student deletes `@Logged`,
-      `Epilogue.update(this)` and their two imports, for the reason in the
-      logging bullet of `teaching-code.md`. The skeleton ships no OpMode, so
-      the student creates `opmode/MyTeleop.java` as `@Teleop public class
-MyTeleop implements OpMode`, keeping the name every later lesson uses.
-      `PeriodicOpMode` only adds an `addPeriodic` nothing calls. `MyAuto` is
-      empty on the mech chain and is not created. Work:
-  - Confirm the skeleton is listed in the alpha-7 New Project Creator.
-    AdvantageScope's "Hello, Telemetry!" tutorial already shows "Command v3
-    Robot" there.
-  - Rebuild `main` from a fresh skeleton project, then rebase the mech chain
-    onto it with the recipe in `scripts/workbench.mjs`. Every `MyTeleop` on
-    the chain becomes `implements OpMode`.
-  - `/project-setup`: new template step and screenshot, delete the swap
-    step, its screenshots and the quiz question about the swap, and add the
-    Epilogue deletion and the `MyTeleop` file.
-  - Rewrite the "generated OpMode keeps its generated name" bullet in
-    `teaching-code.md`, and update `/opmodes`, which names `MyAuto`.
-- [ ] **`SimStartup` out of the student project.** The swerve chain ships
-      `SimStartup.java`, a `simulationInit()` override that calls it, and a
-      `simulateJavaAgent` block in `build.gradle`, about 140 lines that only
-      exist so an agent can start sim enabled. GradleRIO has no such task.
-      `mech-sim` already does the same job as a JUnit test
-      (`MechanismSimTest`: `DriverStationSim` mode, enable,
-      `notifyNewData()`, run the scheduler). Move the OpMode pick and enable
-      into a test or test helper under `src/test`, drop the rest, and rewrite
-      the headless recipe in `teaching-code.md`.
-- [ ] **`MechanismViews` guesses the control mode from its name.**
-      `isPositionControl` and the flywheel check match strings inside
-      `ControlModeValue.toString()`. Either pass the mechanism's own getters
-      (`() -> getPosition()`, `() -> getTargetPosition()`) so the picture
-      draws what the mechanism asked for, or use the Talon's applied-control
-      getter if the Phoenix 6 jar has one. The file is shown on
-      `/mechanism-simulation` (`utilSources.ts`).
-- [ ] The mech chain's `build.gradle` Spotless block still excludes
-      `LimelightHelpers.java`, which no mech branch has.
+Landed on 2026-11-26, built on every branch and checked in simulation. The
+detail is in `teaching-code.md` and `curriculum.md`.
+
+- [x] Fold `DriveMechanism` into `CommandSwerveDrivetrain`, move the swerve
+      chain to `first.robot`, rename `1-Swerve` to `swerve-project`, and cut
+      tag `v3.4-swerve`.
+- [x] Drop `end() { cancel(routine); }` from `RaiseAndShootOpMode`,
+      `LeaveStartAuto` and `AutoOpMode`.
+- [x] The shooter aims at its own alliance's goal.
+- [x] One logging shape: the shooter `Flywheel` is `TelemetryLoggable`.
+- [x] Start from "Command v3 Robot Skeleton (Advanced)": `main` rebuilt, the
+      mech chain rebased, every `MyTeleop` is `implements OpMode`.
+- [x] `SimStartup` out of the student project, replaced by `SimRobot` under
+      `src/test`.
+- [x] `MechanismViews` draws from the mechanism's own getters.
+- [x] The mech chain's Spotless block no longer excludes
+      `LimelightHelpers.java`. The swerve chain's `build.gradle` still does.
 
 ## Once beta 1 and the vendordeps land
 
@@ -189,8 +158,9 @@ MyTeleop implements OpMode`, keeping the name every later lesson uses.
       everything together once WPILib ships it, so wait until BLine and
       LimelightLib also have center-origin builds; mixing frames pulls
       odometry half a field on every vision update. Then:
-  - Branches: `driveToPoint` goals, the shooter `TARGET` (the red goal
-    becomes `TARGET.rotateBy(Rotation2d.PI)`), BLine's flip and its
+  - Branches: `driveToPoint` goals, the shooter `TARGET` (its `target()`
+    uses BLine's `FlippingUtil` today; the red goal becomes
+    `TARGET.rotateBy(Rotation2d.PI)`), BLine's flip and its
     16.54 × 8.07 m field, and the LimelightLib estimate type that replaces
     `MT1_WPIBLUE` / `MT2_WPIBLUE`.
   - Pages with field coordinates: `/drive-to-point`, `/autonomous`,

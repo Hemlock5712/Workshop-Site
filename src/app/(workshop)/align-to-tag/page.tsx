@@ -57,6 +57,14 @@ const linkStyle =
  * frame's correction. Anchoring the tag in the field frame, as the first
  * version did, is the same subtraction and has the same limit. Phoenix does not
  * expose wheel-only odometry, so this stands.
+ *
+ * November 2026, the fold: `DriveMechanism` is gone from the swerve chain and
+ * `CommandSwerveDrivetrain` is the mechanism, so `alignToTag` sits in that
+ * file and calls `getRobotVelocity()` and `driveRobotRelative(...)` on itself.
+ * The one-line `samplePoseAt` wrapper left the page with the class it lived
+ * in: `Vision` now calls the Phoenix drivetrain's own `samplePoseAt`. `Vision`
+ * and the drivetrain both moved to `first.robot.mechanisms`. `toTagFrame` did
+ * not change and the sign check still gates driving.
  */
 export default function AlignToTag() {
   return (
@@ -115,7 +123,7 @@ export default function AlignToTag() {
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           code={`public class Vision {
   // ... everything up to the end of addFrame, unchanged
 
@@ -155,10 +163,10 @@ export default function AlignToTag() {
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/Vision.java"
+          filename="src/main/java/first/robot/mechanisms/Vision.java"
           highlightLines={[
-            4, 5, 6, 8, 9, 13, 14, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-            32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
+            4, 5, 6, 8, 9, 14, 15, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+            31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
           ]}
           code={`public class Vision {
   // ... drivetrain and cameras, unchanged
@@ -171,14 +179,13 @@ export default function AlignToTag() {
   private final Map<Integer, Sighting> sightings = new HashMap<>();
 
   private void addFrame(Limelight camera, LimelightResults frame) {
+    // MegaTag1 solves position and heading from the tags alone. It needs two tags to do it well.
     PoseEstimate estimate = camera.getPoseEstimate(frame, PoseEstimateType.MT1_WPIBLUE);
     // Before the trust checks below, so a tag is remembered even when its frame is rejected.
     rememberTags(frame, estimate.timestampSeconds);
 
     // ... the rest of addFrame, unchanged
   }
-
-  // ... toTagFrame, from above
 
   private void rememberTags(LimelightResults frame, double timestampSeconds) {
     // Where the wheels said the robot was when the picture was taken.
@@ -202,6 +209,8 @@ export default function AlignToTag() {
     Transform2d movedSince = drivetrain.getPose().minus(seen.drivePose());
     return Optional.of(seen.robotInTag().plus(movedSince));
   }
+
+  // ... toTagFrame, from above
 }`}
         />
 
@@ -226,9 +235,8 @@ export default function AlignToTag() {
         title="Drive in the tag's frame"
       >
         <p>
-          Add <code>alignToTag</code> to <code>DriveMechanism</code>, under{" "}
-          <code>driveToPoint</code>, and the one-line <code>samplePoseAt</code>{" "}
-          that <code>Vision</code> calls. It is the same one-waypoint path as
+          Add <code>alignToTag</code> to <code>CommandSwerveDrivetrain</code>,
+          under <code>driveToPoint</code>. It is the same one-waypoint path as
           Drive to Point, on a builder whose pose comes from{" "}
           <code>vision.robotInTag(tagId)</code>, so BLine drives in the
           tag&apos;s frame.
@@ -236,11 +244,11 @@ export default function AlignToTag() {
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
+          filename="src/main/java/first/robot/mechanisms/CommandSwerveDrivetrain.java"
           highlightLines={[
-            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22,
+            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
           ]}
-          code={`public class DriveMechanism implements Mechanism {
+          code={`public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Mechanism {
   // ... everything up to driveToPoint, unchanged
 
   public FollowPath alignToTag(Vision vision, int tagId, Pose2d spotInTag) {
@@ -257,10 +265,6 @@ export default function AlignToTag() {
         // The tag's frame has no alliance side, so there is nothing to turn around.
         .withShouldFlip(() -> false)
         .build(new Path(new Path.Waypoint(spotInTag)));
-  }
-
-  public Optional<Pose2d> samplePoseAt(double timestampSeconds) {
-    return drivetrain.samplePoseAt(timestampSeconds);
   }
 
   // ... the rest, unchanged
@@ -285,7 +289,7 @@ export default function AlignToTag() {
         </p>
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           highlightLines={[6, 7, 8, 9, 10, 11]}
           code={`  public TeleopOpMode(Robot robot) {
     // ... everything up to the Drive to Point bindings, unchanged

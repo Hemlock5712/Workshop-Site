@@ -25,7 +25,7 @@ const linkStyle =
  * minutes. The "Check yourself" quiz, which the budget may never buy. The
  * `TunerConstants` field names a student greps for. The example robot's
  * geometry, 10 inch offsets on a 7.36:1 drive and a 2.167 inch wheel radius,
- * read off `1-Swerve` to confirm every digit. The two rules the scheduler
+ * read off `swerve-project` to confirm every digit. The two rules the scheduler
  * enforces on a default command, checked against `commandsv3` `Scheduler.java`,
  * which throws `IllegalArgumentException` on both. And the reason the call
  * sits in `TeleopOpMode`, which is that file's own javadoc.
@@ -37,7 +37,7 @@ const linkStyle =
  * hardware sim, against real motors, and every later swerve page says "in the
  * simulator", so plain Simulate Robot Code is introduced here. It works because
  * `CommandSwerveDrivetrain` starts a 4 ms `updateSimState` notifier whenever
- * `Utils.isSimulation()`, on `1-Swerve`. The three-file table became prose:
+ * `Utils.isSimulation()`, on `swerve-project`. The three-file table became prose:
  * its "a class extends only one other class" reason was the wrong reason once
  * `Mechanism` became an interface, and the honest one (keep the part you write
  * out of the part Tuner X wrote) fits in two sentences. The default-command
@@ -59,10 +59,27 @@ const linkStyle =
  * generated alone (not Generate Project) and pasted over ours, then the team
  * number. Check your work moved up to right after those two edits. The
  * joystick default moved from `TeleopOpMode` into the `Robot` constructor on
- * `1-Swerve` and every swerve branch after it, so it applies in every mode, as
+ * `swerve-project` and every swerve branch after it, so it applies in every mode, as
  * last year's v2 RobotContainer default did. `seedFieldCentric()` was checked
  * in Phoenix 6 `26.70.0-alpha-2` `SwerveDrivetrain`: it resets only the pose's
  * rotation, from the operator perspective, and leaves X and Y alone.
+ *
+ * November 2026, the swerve chain rebuild: the branch `1-Swerve` is now
+ * `swerve-project` and the notes above use the new name. `DriveMechanism` was
+ * folded into `CommandSwerveDrivetrain`, which `implements Mechanism` itself,
+ * so the default-command section and quiz question 3 name that file and the
+ * "keeps it out of the files Tuner X writes" reason is gone: Tuner X writes
+ * only `TunerConstants.java`. The bumper command is `resetHeading()`, because
+ * the generated class already has a `void seedFieldCentric()`, which it still
+ * calls. Packages moved to `first.robot` with the folder `opmode`, and `Robot`
+ * lost `simulationInit`. The download still points at the `v3.3-swerve`
+ * release until a new tag is cut.
+ *
+ * Owner's call in the same rebuild: `CommandSwerveDrivetrain` lives in
+ * `first.robot.mechanisms` and there is no `subsystems` package. CTRE's 2027
+ * alpha-7 generator still writes `import first.robot.subsystems...` into
+ * `TunerConstants.java`, so step 5 has the student change that one import and
+ * names the build error they get if they forget.
  */
 export default function SwerveDriveProject() {
   return (
@@ -81,7 +98,7 @@ export default function SwerveDriveProject() {
         </>,
         <>A tape measure, and the robot up on blocks.</>,
       ]}
-      branch="1-Swerve"
+      branch="swerve-project"
       time="60 minutes"
     >
       <Box variant="alert-info" title="Start from the workshop project">
@@ -90,13 +107,13 @@ export default function SwerveDriveProject() {
           steps 5 and 6 are the only two edits it needs.
         </p>
         <a
-          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.3-swerve.zip"
+          href="https://github.com/Hemlock5712/Workshop-Code/archive/refs/tags/v3.4-swerve.zip"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg border border-[var(--rule)] bg-[var(--bg2)] px-6 py-3 font-medium text-[var(--tx2)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           <Download className="h-5 w-5" />
-          Download Swerve Project (v3.3, Commands v3)
+          Download Swerve Project (v3.4, Commands v3)
         </a>
       </Box>
 
@@ -153,9 +170,17 @@ export default function SwerveDriveProject() {
           <li>
             Generate only the constants. Do not select{" "}
             <strong>Generate Project</strong>. Overwrite{" "}
-            <code>src/main/java/frc/robot/generated/TunerConstants.java</code>{" "}
+            <code>src/main/java/first/robot/generated/TunerConstants.java</code>{" "}
             with the file it writes. You should see your own CAN IDs and a{" "}
-            <code>kCANBus</code> line naming your CANivore.
+            <code>kCANBus</code> line naming your CANivore. Check that the first
+            line reads <code>package first.robot.generated;</code>. Then change
+            the import{" "}
+            <code>first.robot.subsystems.CommandSwerveDrivetrain</code> near the
+            top to <code>first.robot.mechanisms.CommandSwerveDrivetrain</code>.
+            Commands v3 calls them mechanisms, so this project keeps the
+            drivetrain in the <code>mechanisms</code> folder. The generator
+            still writes the old folder name. Forget this edit and the build
+            fails with a <code>cannot find symbol</code> error on that line.
           </li>
           <li>
             Change <code>teamNumber</code> in{" "}
@@ -238,9 +263,10 @@ export default function SwerveDriveProject() {
         title="The drivetrain default command"
       >
         <p>
-          Your own drivetrain code goes in <code>DriveMechanism.java</code>,
-          which is what an OpMode talks to. That keeps it out of the files Tuner
-          X writes.
+          Your own drivetrain commands go in{" "}
+          <code>CommandSwerveDrivetrain.java</code>, which is what an OpMode
+          talks to. Tuner X only writes <code>TunerConstants.java</code>, so
+          pasting a new one never touches them.
         </p>
         <p>
           <Link href="/running-program#latched" className={linkStyle}>
@@ -253,9 +279,11 @@ export default function SwerveDriveProject() {
         <CodeBlock
           language="java"
           title="Robot.java: the joystick drive, set as the default"
-          filename="src/main/java/frc/robot/Robot.java"
+          filename="src/main/java/first/robot/Robot.java"
           code={`public class Robot extends OpModeRobot {
-  public final DriveMechanism drivetrain = new DriveMechanism();
+  // TunerConstants comes from the Tuner X swerve generator. The checked-in file is an EXAMPLE
+  // with fake device IDs and gains - regenerate it from Tuner X for your own robot.
+  public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
   public final CommandXboxController driver = new CommandXboxController(0);
 
   private final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // top speed
@@ -284,7 +312,7 @@ export default function SwerveDriveProject() {
     // ... the disabled Idle binding, unchanged
   }
 
-  // ... simulationInit and robotPeriodic, unchanged
+  // ... robotPeriodic, unchanged
 }`}
         />
         <p>
@@ -294,19 +322,19 @@ export default function SwerveDriveProject() {
         </p>
         <p>
           <code>TeleopOpMode</code> keeps only its buttons. The left bumper runs{" "}
-          <code>seedFieldCentric()</code>, which resets only the rotation of the
+          <code>resetHeading()</code>, which resets only the rotation of the
           pose. The way the robot faces right now becomes forward for the
           driver. X and Y do not change.
         </p>
         <CodeBlock
           language="java"
           title="TeleopOpMode.java: the buttons"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           code={`@Teleop(name = "Teleop")
 public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     // Left bumper: make the robot's current facing the new "forward".
-    robot.driver.leftBumper().onTrue(robot.drivetrain.seedFieldCentric());
+    robot.driver.leftBumper().onTrue(robot.drivetrain.resetHeading());
   }
 }`}
         />
@@ -318,7 +346,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           their wording tightened. The two that leaned on the deleted file
           embeds are replaced: one on the module test naming the wrong corner,
           one on the inversion-and-offset pair, both from procedure steps that
-          survived. Every option checked against Workshop-Code `1-Swerve`. */}
+          survived. Every option checked against Workshop-Code `swerve-project`. */}
       <Quiz
         questions={[
           {
@@ -329,7 +357,7 @@ public class TeleopOpMode extends PeriodicOpMode {
               "TunerConstants.java",
               "The whole generated project, replacing the one you downloaded",
               "CommandSwerveDrivetrain.java",
-              "DriveMechanism.java",
+              "Robot.java",
             ],
             correctAnswer: 0,
             explanation:
@@ -352,16 +380,16 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 3,
             question:
-              "You want a command that drives the robot in a square. Which file does it talk to?",
+              "You want a command that drives the robot in a square. Which file does it go in?",
             options: [
               "TunerConstants.java, because it holds the drivetrain's numbers",
-              "DriveMechanism.java, the Mechanism an OpMode talks to",
-              "CommandSwerveDrivetrain.java, editing it in place",
+              "CommandSwerveDrivetrain.java, the Mechanism an OpMode talks to",
+              "A new file in the generated folder, beside TunerConstants.java",
               "Whichever file the generator wrote last",
             ],
             correctAnswer: 1,
             explanation:
-              "DriveMechanism is what commands and OpModes talk to. That keeps the code you write out of the files Tuner X writes.",
+              "Your drivetrain commands go in CommandSwerveDrivetrain.java. Tuner X only writes TunerConstants.java, so pasting a new one leaves them alone.",
           },
           {
             id: 4,
@@ -380,7 +408,7 @@ public class TeleopOpMode extends PeriodicOpMode {
           {
             id: 5,
             question:
-              "You press the left bumper, which runs seedFieldCentric(). What changed?",
+              "You press the left bumper, which runs resetHeading(). What changed?",
             options: [
               "The top speed the drivetrain will command",
               "The robot's x and y on the field are now zero",
@@ -389,7 +417,7 @@ public class TeleopOpMode extends PeriodicOpMode {
             ],
             correctAnswer: 2,
             explanation:
-              "seedFieldCentric() resets only the rotation of the pose: the way the robot faces right now becomes forward for the driver. It never touches x or y.",
+              "resetHeading() resets only the rotation of the pose: the way the robot faces right now becomes forward for the driver. It never touches x or y.",
           },
         ]}
       />

@@ -35,6 +35,13 @@ const linkStyle =
  * matching spot on red. Sim, same month: blue ends at (2.99, 2.02, 178),
  * red at (13.53, 6.06, 0). The branch moved onto `swerve-bline`, ahead of
  * `swerve-vision`, to match the lesson order.
+ *
+ * November 2026, the fold: `DriveMechanism` is gone from the swerve chain.
+ * `CommandSwerveDrivetrain` now `implements Mechanism` itself, possible since
+ * alpha-7 made `Mechanism` an interface, so `driveToPoint` sits in that file.
+ * Packages moved to `first.robot`: the drivetrain is in `mechanisms` and the
+ * OpModes in `opmode`. The left-bumper command is `resetHeading()`. The
+ * method body did not change.
  */
 export default function DriveToPoint() {
   return (
@@ -44,7 +51,7 @@ export default function DriveToPoint() {
       needs={[
         <>
           <strong>BLine Paths</strong>, for the builder in{" "}
-          <code>DriveMechanism</code>.
+          <code>CommandSwerveDrivetrain</code>.
         </>,
         <>
           <code>whileTrue</code> from <strong>Writing Commands</strong>.
@@ -73,17 +80,17 @@ export default function DriveToPoint() {
 
       <LessonSection id="one-waypoint" title="One waypoint, built in code">
         <p>
-          Add <code>driveToPoint</code> to <code>DriveMechanism</code>, under{" "}
-          <code>followPath</code>. One <code>Path.Waypoint</code> is the whole
-          path: BLine starts from wherever the robot is when the command starts,
-          and drives to the waypoint.
+          Add <code>driveToPoint</code> to <code>CommandSwerveDrivetrain</code>,
+          under <code>followPath</code>. One <code>Path.Waypoint</code> is the
+          whole path: BLine starts from wherever the robot is when the command
+          starts, and drives to the waypoint.
         </p>
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/subsystems/DriveMechanism.java"
+          filename="src/main/java/first/robot/mechanisms/CommandSwerveDrivetrain.java"
           highlightLines={[4, 5, 6]}
-          code={`public class DriveMechanism implements Mechanism {
+          code={`public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Mechanism {
   // ... everything up to followPath, unchanged
 
   public FollowPath driveToPoint(Pose2d goal) {
@@ -122,7 +129,7 @@ export default function DriveToPoint() {
 
         <CodeBlock
           language="java"
-          filename="src/main/java/frc/robot/opmodes/TeleopOpMode.java"
+          filename="src/main/java/first/robot/opmode/TeleopOpMode.java"
           highlightLines={[1, 2, 10, 11, 12]}
           code={`import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -131,7 +138,7 @@ import org.wpilib.math.geometry.Rotation2d;
 public class TeleopOpMode extends PeriodicOpMode {
   public TeleopOpMode(Robot robot) {
     // Left bumper: make the robot's current facing the new "forward".
-    robot.driver.leftBumper().onTrue(robot.drivetrain.seedFieldCentric());
+    robot.driver.leftBumper().onTrue(robot.drivetrain.resetHeading());
 
     // Hold A or B to drive straight to a fixed spot on the field. Let go to stop.
     robot.driver.a().whileTrue(robot.drivetrain.driveToPoint(Pose2d.ZERO));
