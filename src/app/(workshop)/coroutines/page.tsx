@@ -58,7 +58,7 @@ export default function Coroutines() {
   return (
     <PageTemplate
       title="Coroutines"
-      lede="A coroutine is a routine written as ordinary Java, read top to bottom, that can pause on a line and carry on from there. This lesson writes three for buttons, then one for autonomous."
+      lede="Write routines as ordinary Java that waits on the mechanisms."
       needs={[
         <>
           An <code>Arm</code> and <code>Flywheel</code> with{" "}
@@ -75,6 +75,12 @@ export default function Coroutines() {
       branch="mech-5-Coroutines"
       time="15 minutes"
     >
+      <p>
+        A coroutine is a routine written as ordinary Java, read top to bottom,
+        that can pause on a line and carry on from there. This lesson writes
+        three for buttons, then one for autonomous.
+      </p>
+
       <LessonSection id="core-calls" title="The core calls">
         <p>
           A coroutine body takes one argument, an object called{" "}

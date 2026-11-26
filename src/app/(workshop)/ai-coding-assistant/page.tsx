@@ -42,7 +42,7 @@ export default function AICodingAssistant() {
   return (
     <PageTemplate
       title="AI Coding Assistant"
-      lede="An assistant reads your robot project, writes commands, and runs Gradle. It also writes Commands v2 by default, because v3 is newer than nearly everything it learned from. Optional: nothing else depends on it."
+      lede="An optional lesson on using an AI assistant with a Commands v3 project."
       needs={[
         <>
           The robot project from <strong>Project Setup</strong>, with its{" "}
@@ -62,6 +62,11 @@ export default function AICodingAssistant() {
       branch="mech-2-Commands"
       time="13 minutes"
     >
+      <p>
+        An assistant reads your robot project, writes commands, and runs Gradle.
+        This page is optional, and nothing else depends on it.
+      </p>
+
       <LessonSection id="commands-v2-by-default" title="Commands v2 by default">
         <p>
           Read this section even if you skip the rest. Nearly every FRC

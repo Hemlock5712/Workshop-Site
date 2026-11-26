@@ -50,7 +50,7 @@ export default function SwerveDriveTuning() {
   return (
     <PageTemplate
       title="Swerve Drive Tuning"
-      lede="The generator gave you a TunerConstants.java with guessed gains and measurements. This lesson tunes the steer motors, checks the wheel radius, measures top speed and slip current, then closes the drive loop."
+      lede="Tune the steer and drive gains and measure what the generator guessed."
       needs={[
         <>
           A swerve robot you can drive, from{" "}
@@ -62,6 +62,13 @@ export default function SwerveDriveTuning() {
       ]}
       time="14 minutes"
     >
+      <p>
+        The generator gave you a <code>TunerConstants.java</code> with guessed
+        gains and measurements. This lesson tunes the steer motors, checks the
+        wheel radius, measures top speed and slip current, then closes the drive
+        loop.
+      </p>
+
       <LessonSection id="steer-gains" title="Tune the steer gains">
         <p>
           A steering motor holds an angle. That is a position loop with no

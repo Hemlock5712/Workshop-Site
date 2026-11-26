@@ -47,7 +47,7 @@ export default function DriveToPoint() {
   return (
     <PageTemplate
       title="Drive to Point"
-      lede="In teleop we will often want our robot to drive itself to a specific spot on the field. We can do this with BLine, on the fly."
+      lede="Hold a button and the robot drives itself to a spot on the field."
       needs={[
         <>
           <strong>BLine Paths</strong>, for the builder in{" "}
@@ -60,6 +60,11 @@ export default function DriveToPoint() {
       branch="swerve-drive-to-point"
       time="8 minutes"
     >
+      <p>
+        In teleop we will often want our robot to drive itself to a specific
+        spot on the field. We can do this with BLine, on the fly.
+      </p>
+
       <LessonSection id="the-pose-you-are-driving-to" title="The target pose">
         <p>
           As you learned in{" "}

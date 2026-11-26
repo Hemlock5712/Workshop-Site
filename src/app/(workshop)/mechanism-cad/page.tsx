@@ -22,9 +22,15 @@ export default function MechanismCAD() {
   return (
     <PageTemplate
       title="Mechanism CAD"
-      lede="The course runs on a real arm or a real flywheel on a bench. This page has the 3D models, the parts lists, and the build notes for both. Teams attending in person can skip it, and so can a team that already has a mechanism with a TalonFX on it."
+      lede="The 3D models, parts lists and build notes for the arm and the flywheel."
       time="5 minutes"
     >
+      <p>
+        The course runs on a real arm or a real flywheel on a bench. Teams
+        attending in person can skip this page, and so can a team that already
+        has a mechanism with a TalonFX on it.
+      </p>
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>

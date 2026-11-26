@@ -16,7 +16,7 @@ export default function RunningProgram() {
   return (
     <PageTemplate
       title="Hardware Simulation"
-      lede="Your laptop stands in for the robot controller and drives the real motors. You start the program, pick Teleop, enable it, and press the buttons bound in your MyTeleop."
+      lede="Run your code on the laptop against the real motors."
       needs={[
         <>
           The <code>mech-2-Commands</code> branch checked out and building.
@@ -37,6 +37,11 @@ export default function RunningProgram() {
       branch="mech-2-Commands"
       time="11 minutes"
     >
+      <p>
+        You start the program, pick Teleop, enable it, and press the buttons
+        bound in your <code>MyTeleop</code>.
+      </p>
+
       <MechanismSelector />
 
       <Split>

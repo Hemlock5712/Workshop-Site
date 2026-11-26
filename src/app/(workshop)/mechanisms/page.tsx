@@ -43,7 +43,7 @@ export default function Mechanisms() {
   return (
     <PageTemplate
       title="Mechanisms"
-      lede="A mechanism is one physical part of the robot, written as a Java class. Here we will build an arm or a flywheel."
+      lede="Write an arm or a flywheel as a Java class."
       needs={[
         <>
           A clean build, from <strong>Project Setup</strong>.
@@ -56,6 +56,10 @@ export default function Mechanisms() {
       branch="mech-1-Mechanisms"
       time="14 minutes"
     >
+      <p>
+        A mechanism is one physical part of the robot, written as a Java class.
+      </p>
+
       <MechanismSelector />
 
       <PairedLesson kind="tuner" to="/mechanism-setup" />

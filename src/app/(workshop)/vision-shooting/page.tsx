@@ -53,7 +53,7 @@ export default function DynamicFlywheel() {
   return (
     <PageTemplate
       title="Vision Shooting"
-      lede="One fixed flywheel speed scores from one spot on the field. Here the flywheel takes the distance to the goal from the drivetrain's pose and looks up a speed for it. A few measured shots cover everything in between."
+      lede="Pick the flywheel speed from the distance to the goal."
       needs={[
         <>
           <strong>Vision</strong>. This branch is one commit on{" "}
@@ -70,6 +70,13 @@ export default function DynamicFlywheel() {
       branch="swerve-vision-shooting"
       time="11 minutes"
     >
+      <p>
+        One fixed flywheel speed scores from one spot on the field. Here the
+        flywheel takes the distance to the goal from the drivetrain&apos;s pose
+        and looks up a speed for it. A few measured shots cover everything in
+        between.
+      </p>
+
       <p>
         This page is optional. The branch adds{" "}
         <code>mechanisms/Flywheel.java</code>, two lines in <code>Robot</code>{" "}

@@ -41,13 +41,19 @@ export default function JavaBasics() {
   return (
     <PageTemplate
       title="Java Basics"
-      lede="We will not be teaching you full Java. If you have no Java experience, we recommend a few free lessons below. Even without them, we will cover things as we go."
+      lede="The small part of Java this course uses, and where to learn it."
       needs={[
         <>Nothing installed. No project, no robot, no build.</>,
         <>A free Codecademy account, which the course below needs.</>,
       ]}
       time="7 minutes"
     >
+      <p>
+        We will not be teaching you full Java. If you have no Java experience,
+        we recommend a few free lessons below. Even without them, we will cover
+        things as we go.
+      </p>
+
       <LessonSection id="learn-the-language" title="Learn Java on Codecademy">
         <p>
           Codecademy&apos;s <strong>Learn Java</strong> is free and runs in the

@@ -33,7 +33,7 @@ export default function MotionMagicCode() {
   return (
     <PageTemplate
       title="Motion Magic in Code"
-      lede="You have already run Motion Magic from the Control drop-down in Tuner X. This lesson sends the same request from code."
+      lede="Send the Motion Magic request from code."
       needs={[
         <>
           Buttons moving your mechanism, from{" "}

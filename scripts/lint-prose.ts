@@ -133,6 +133,13 @@ const MAX_MINUTES = 15;
  */
 
 const MAX_TITLE_WORDS = 5;
+/**
+ * The lede is the one line under the title: one sentence saying what the
+ * lesson does. Owner's call, November 2026. Ledes had drifted to anywhere
+ * from 12 to 51 words and one to four sentences, so the top of every page
+ * looked different. The explanation goes in the first paragraph of the body.
+ */
+const MAX_LEDE_WORDS = 18;
 const MAX_HEADING_WORDS = 6;
 const MAX_SENTENCE_WORDS = 25;
 const MAX_SECTIONS = 6;
@@ -260,6 +267,7 @@ interface Extracted {
   prose: string[];
   /** The page title, from `PageTemplate`. */
   title: string | null;
+  lede: string | null;
   /** `<LessonSection>` headings. */
   headings: string[];
   /** The `time` prop on `PageTemplate`, as authored. */
@@ -280,6 +288,7 @@ function extract(source: ts.SourceFile): Extracted {
   const out: Extracted = {
     prose: [],
     title: null,
+    lede: null,
     headings: [],
     time: null,
     codeBlocks: 0,
@@ -439,6 +448,8 @@ function extract(source: ts.SourceFile): Extracted {
       if (tag === "PageTemplate") {
         const title = stringAttr(node, "title");
         if (title) out.title = title;
+        const lede = stringAttr(node, "lede");
+        if (lede) out.lede = lede;
         const time = stringAttr(node, "time");
         if (time) out.time = time;
       }
@@ -1002,6 +1013,17 @@ function checkPage(route: string, file: string): PageReport {
       rule: "title",
       detail: `"${x.title}" is ${wordCount(x.title)} words. A title is a name, ${MAX_TITLE_WORDS} words or fewer.`,
     });
+  }
+
+  if (x.lede) {
+    // A full stop, question mark or exclamation mark followed by more text.
+    const sentences = x.lede.split(/[.!?]\s+(?=\S)/).length;
+    if (sentences > 1 || wordCount(x.lede) > MAX_LEDE_WORDS) {
+      findings.push({
+        rule: "lede",
+        detail: `The lede is ${sentences} sentence(s), ${wordCount(x.lede)} words. A lede is one sentence of ${MAX_LEDE_WORDS} words or fewer; the explanation goes in the first paragraph.`,
+      });
+    }
   }
 
   for (const heading of x.headings) {

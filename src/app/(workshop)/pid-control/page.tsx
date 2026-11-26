@@ -29,7 +29,7 @@ export default function PIDControl() {
   return (
     <PageTemplate
       title="PID Tuning in Tuner X"
-      lede="The Talon FX runs the control loop itself. We can send it a setpoint from Tuner X, plot the response, and save the gains onto the motor."
+      lede="Tune a control loop in Tuner X and save the gains onto the motor."
       needs={[
         <>
           Motor, encoder direction, and mechanism zero verified in{" "}
@@ -43,6 +43,8 @@ export default function PIDControl() {
       ]}
       time="13 minutes"
     >
+      <p>The Talon FX runs the control loop itself.</p>
+
       <MechanismSelector />
 
       <LessonSection id="how-to-tune" title="How to tune">

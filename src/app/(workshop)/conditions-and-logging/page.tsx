@@ -48,7 +48,7 @@ export default function ConditionsAndLogging() {
   return (
     <PageTemplate
       title="Conditions and Logging"
-      lede="Every mechanism command so far uses runRepeatedly, so it never ends. A routine needs another way to know when that command has finished, or should be considered finished. Then we log that answer, so you can see it come true."
+      lede="Give each mechanism a way to say it has arrived, then log it."
       needs={[
         <>
           An arm or flywheel on Motion Magic, from{" "}
@@ -59,6 +59,13 @@ export default function ConditionsAndLogging() {
       branch="mech-4-ReadingState"
       time="11 minutes"
     >
+      <p>
+        Every mechanism command so far uses <code>runRepeatedly</code>, so it
+        never ends. A routine needs another way to know when that command has
+        finished, or should be considered finished. Then we log that answer, so
+        you can see it come true.
+      </p>
+
       <MechanismSelector />
 
       <LessonSection id="sensor-condition" title="The arrival question">

@@ -39,7 +39,7 @@ export default function OpModes() {
   return (
     <PageTemplate
       title="OpModes"
-      lede="Each way the robot can run is its own class, marked with an annotation. You made one in Project Setup, marked @Teleop. You edit it so the controller's buttons run the commands you just wrote."
+      lede="Bind the controller's buttons to your commands in a teleop OpMode."
       needs={[
         <>
           The three commands on each mechanism from{" "}
@@ -57,6 +57,10 @@ export default function OpModes() {
       branch="mech-2-Commands"
       time="7 minutes"
     >
+      <p>
+        Each way the robot can run is its own class, marked with an annotation.
+      </p>
+
       <MechanismSelector />
 
       <LessonSection id="the-generated-file" title="The MyTeleop file">

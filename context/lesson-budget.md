@@ -97,13 +97,25 @@ six pages silently fell behind.
 
 ```
 Title            noun phrase, <= 5 words
-Lede             2-3 flat sentences
+Lede             one sentence, <= 18 words
+Opening          the explanation, as the first paragraph of the body
 needs[]          <= 4 items, <= 15 words each
 time             honest, e.g. "12 minutes"
 
 Section 1..N     3 to 5 sections, <= 350 words each
 Last section     "Check your work" - a concrete, observable result
 ```
+
+**The lede is one short sentence, and the explanation is the first
+paragraph.** Owner's call, November 2026. Ledes had drifted to anywhere from
+12 to 51 words and one to four sentences, so the top of every page looked
+different. The lede says what the lesson does or what you end up with: "Draw
+a path on the field and have the robot follow it." Why it matters, what came
+before and what the page covers go in a plain `<p>` that is the first child of
+`PageTemplate`, above the mechanism selector and the first section. Write the
+lede as a plain string, because `pnpm prose` checks it (one sentence, 18 words
+at most) and cannot read a JSX one. A page whose opening section already says
+it needs no extra paragraph.
 
 Three to five sections, six at the outside. A lesson with nine sections is two
 lessons.

@@ -30,7 +30,7 @@ export default function SwerveBasics() {
   return (
     <PageTemplate
       title="Swerve Basics"
-      lede="A swerve drive can slide sideways, drive diagonally and spin, all at the same time. This page names its parts and the terms the next pages use."
+      lede="The parts of a swerve drive and the terms the next pages use."
       needs={[
         <>
           The words CAN bus, CANcoder and CANivore, from{" "}
@@ -43,6 +43,11 @@ export default function SwerveBasics() {
       ]}
       time="6 minutes"
     >
+      <p>
+        A swerve drive can slide sideways, drive diagonally and spin, all at the
+        same time.
+      </p>
+
       <LessonSection id="components" title="Components">
         <p>
           A swerve drive has a module at each corner: front left, front right,

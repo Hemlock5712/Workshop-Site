@@ -41,7 +41,7 @@ export default function MechanismSimulation() {
   return (
     <PageTemplate
       title="Mechanism Simulation"
-      lede="No mechanism yet? A physics model can stand in for it. Your code runs unchanged, and a picture shows where the mechanism went."
+      lede="Run your code against a physics model when there is no mechanism."
       needs={[
         <>
           Workshops 3 and 4 done, through{" "}
@@ -58,6 +58,10 @@ export default function MechanismSimulation() {
       branch="mech-sim"
       time="12 minutes"
     >
+      <p>
+        Your code runs unchanged, and a picture shows where the mechanism went.
+      </p>
+
       <MechanismSelector />
 
       <LessonSection id="two-simulations" title="Simulate, not Hardware Sim">

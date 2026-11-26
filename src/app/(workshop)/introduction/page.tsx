@@ -36,7 +36,7 @@ export default function Introduction() {
   return (
     <PageTemplate
       title="Workshop Overview"
-      lede="This site is a written version of Team 5712's programming workshops. It starts with a simple mechanism, a flywheel or an arm, and works up to a swerve drive. To keep things simple, it covers CTRE mechanisms and swerve drives only."
+      lede="A written version of Team 5712's programming workshops."
       needs={[
         <>
           Every download on{" "}
@@ -55,6 +55,12 @@ export default function Introduction() {
       ]}
       time="4 minutes"
     >
+      <p>
+        The course starts with a simple mechanism, a flywheel or an arm, and
+        works up to a swerve drive. To keep things simple, it covers CTRE
+        mechanisms and swerve drives only.
+      </p>
+
       <Split>
         <ProseBlock>
           <p>

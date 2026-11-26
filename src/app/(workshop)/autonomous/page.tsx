@@ -37,7 +37,7 @@ export default function Autonomous() {
   return (
     <PageTemplate
       title="Autonomous"
-      lede="An autonomous routine is one class holding one command. The one you build here drives off the starting line and stops."
+      lede="Build an autonomous routine that drives off the starting line and stops."
       needs={[
         <>
           A swerve robot you can drive, from{" "}
@@ -52,6 +52,8 @@ export default function Autonomous() {
       branch="swerve-autonomous"
       time="8 minutes"
     >
+      <p>An autonomous routine is one class holding one command.</p>
+
       <LessonSection id="build-the-routine" title="Build the routine">
         <p>
           Create <code>LeaveStartAuto.java</code> in the <code>opmode</code>{" "}

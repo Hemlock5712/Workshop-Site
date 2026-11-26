@@ -56,7 +56,7 @@ export default function Triggers() {
   return (
     <PageTemplate
       title="Triggers"
-      lede="A Trigger is a yes-or-no question the scheduler asks once a loop, with commands hung on the moments the answer changes. This page covers the four binding verbs, the operators that build one condition out of several, and how long a binding lasts. You add one line to MyTeleop."
+      lede="Triggers decide when a command runs."
       needs={[
         <>
           Branch <code>mech-2-Commands</code> checked out, with{" "}
@@ -75,6 +75,14 @@ export default function Triggers() {
       branch="mech-2-Commands"
       time="12 minutes"
     >
+      <p>
+        A Trigger is a yes-or-no question the scheduler asks once a loop, with
+        commands hung on the moments the answer changes. This page covers the
+        four binding verbs, the operators that build one condition out of
+        several, and how long a binding lasts. You add one line to{" "}
+        <code>MyTeleop</code>.
+      </p>
+
       <Split>
         <div className="measure flex flex-col gap-pad [&>p]:m-0 [&>p]:prose-body">
           <p>

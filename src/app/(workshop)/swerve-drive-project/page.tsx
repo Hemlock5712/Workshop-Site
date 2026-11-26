@@ -85,7 +85,7 @@ export default function SwerveDriveProject() {
   return (
     <PageTemplate
       title="Swerve Project Generator"
-      lede="Tuner X measures your drivetrain and writes one file. The rest of the swerve project is already written, so you swap that file in and drive."
+      lede="Generate one file in Tuner X and drop it into the swerve project."
       needs={[
         <>
           An assembled drivetrain: eight TalonFX, four CANcoders, one Pigeon 2,
@@ -101,6 +101,11 @@ export default function SwerveDriveProject() {
       branch="swerve-project"
       time="60 minutes"
     >
+      <p>
+        Tuner X measures your drivetrain and writes one file. The rest of the
+        swerve project is already written, so you swap that file in and drive.
+      </p>
+
       <Box variant="alert-info" title="Start from the workshop project">
         <p className="mb-4">
           Download the swerve project below. It is the code on this page, and

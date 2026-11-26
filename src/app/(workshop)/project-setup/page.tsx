@@ -45,7 +45,7 @@ export default function ProjectSetup() {
   return (
     <PageTemplate
       title="Project Setup"
-      lede="You generate a Commands v3 robot project with the WPILib New Project Creator, make two small edits, and add Phoenix 6. The build at the end proves Java, Gradle and the vendor libraries all work."
+      lede="Generate the robot project and add Phoenix 6."
       needs={[
         <>
           The WPILib <strong>2027 alpha 7</strong> installed, from{" "}
@@ -56,6 +56,12 @@ export default function ProjectSetup() {
       ]}
       time="12 minutes"
     >
+      <p>
+        You generate a Commands v3 robot project with the WPILib New Project
+        Creator, make two small edits, and add Phoenix 6. The build at the end
+        proves Java, Gradle and the vendor libraries all work.
+      </p>
+
       <PairedLesson kind="tuner" to="/hardware" />
 
       <LessonSection id="make-the-project" title="Make the project">

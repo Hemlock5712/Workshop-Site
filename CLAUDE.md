@@ -103,8 +103,9 @@ a new one is made, record it in the matching file, not here.
 
 ### Prose
 
-- A title is a noun phrase of five words at most. A lesson is 8 to 12 minutes,
-  15 at the cap.
+- A title is a noun phrase of five words at most. The lede under it is one
+  sentence of 18 words at most; the explanation is the first paragraph. A
+  lesson is 8 to 12 minutes, 15 at the cap.
 - No em dashes and no parentheses standing in for them. Vary sentence length.
   No emoji. Flat procedural voice.
 - `pnpm prose` enforces the mechanical subset; `--only=<slug>` checks one page.

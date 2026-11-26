@@ -38,7 +38,7 @@ export default function MechanismSetup() {
   return (
     <PageTemplate
       title="Motor Setup & CAN IDs"
-      lede="Now set up each device. Every device needs its own CAN ID and the correct configuration, so the software matches the hardware. You prove it by applying a volt or two and checking that the mechanism moves the correct direction. Get this wrong and tuning in the next lessons is impossible."
+      lede="Give every device a CAN ID and the correct configuration, then prove it under power."
       needs={[
         <>The mechanism assembled and powered.</>,
         <>
@@ -48,6 +48,13 @@ export default function MechanismSetup() {
       ]}
       time="14 minutes"
     >
+      <p>
+        Every device needs its own CAN ID and the correct configuration, so the
+        software matches the hardware. You prove it by applying a volt or two
+        and checking that the mechanism moves the correct direction. Get this
+        wrong and tuning in the next lessons is impossible.
+      </p>
+
       <MechanismSelector />
 
       <LessonSection id="assign-can-ids" title="Assign every CAN ID">
