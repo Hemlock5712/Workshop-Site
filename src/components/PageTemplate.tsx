@@ -229,7 +229,7 @@ export default function PageTemplate({
                     aria-hidden="true"
                     style={{
                       fontSize: "var(--text-meta)",
-                      color: "var(--rule)",
+                      color: "var(--tx3)",
                     }}
                   >
                     ·

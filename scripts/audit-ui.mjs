@@ -13,7 +13,11 @@
  *   5. Zero console errors
  *
  * Writes screenshots to `.playwright-screenshots/` and a summary to stdout.
- * Exit code is 1 if any hard check fails, so this can gate a PR later.
+ * Exit code is 1 if any hard check fails. CI runs it against `next start`.
+ *
+ * Set `AUDIT_CHROMIUM` to a Chromium executable when the build this project's
+ * Playwright pins is not installed, for example
+ * `AUDIT_CHROMIUM=/opt/pw-browsers/chromium` in a cloud session.
  */
 import { chromium } from "playwright";
 import fs from "node:fs";
@@ -225,11 +229,26 @@ const FOCUS_PROBE = () => {
   });
   const unlabelled = els
     .filter((el) => {
+      // A control is also named by a `<label>` (wrapping it or pointing at it
+      // with `for`) and by `aria-labelledby`. Reading only the element's own
+      // attributes and text reported every radio inside a label as unnamed.
+      const labelledBy = (el.getAttribute("aria-labelledby") || "")
+        .split(/\s+/)
+        .map((id) => document.getElementById(id)?.textContent.trim())
+        .filter(Boolean)
+        .join(" ");
+      const fromLabels = [...(el.labels ?? [])]
+        .map((l) => l.textContent.trim())
+        .filter(Boolean)
+        .join(" ");
       const label =
         el.getAttribute("aria-label") ||
+        labelledBy ||
+        fromLabels ||
         el.getAttribute("title") ||
         el.textContent.trim() ||
-        el.querySelector("img[alt]")?.getAttribute("alt");
+        el.querySelector("img[alt]")?.getAttribute("alt") ||
+        el.getAttribute("placeholder");
       return !label;
     })
     .map((el) => ({
@@ -242,7 +261,11 @@ const FOCUS_PROBE = () => {
 const results = [];
 let hardFailures = 0;
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(
+  process.env.AUDIT_CHROMIUM
+    ? { executablePath: process.env.AUDIT_CHROMIUM }
+    : {}
+);
 
 for (const theme of ["dark", "light"]) {
   for (const vp of VIEWPORTS) {
@@ -263,6 +286,11 @@ for (const theme of ["dark", "light"]) {
       const rateLimited = [];
       page.on("console", (m) => {
         if (m.type() !== "error") return;
+        // Vercel Analytics and Speed Insights load `/_vercel/insights/...` and
+        // `/_vercel/speed-insights/...`, which only exist when Vercel hosts
+        // the site. Against `next start` both 404, on every page. The message
+        // text carries no URL, so match on where the failed resource lives.
+        if (m.location().url.includes("/_vercel/")) return;
         const text = m.text().slice(0, 160);
         // Pages with a live GitHub embed hit api.github.com on every load.
         // This script opens each of them four times (two themes × two
@@ -292,7 +320,12 @@ for (const theme of ["dark", "light"]) {
       const shot = path.join(OUT, `${slug}-${theme}-${vp.name}.png`);
       await page.screenshot({ path: shot, fullPage: vp.name === "desktop" });
 
-      if (contrast.length || overflow.pageOverflow || consoleErrors.length)
+      if (
+        contrast.length ||
+        overflow.pageOverflow ||
+        consoleErrors.length ||
+        focus.unlabelled.length
+      )
         hardFailures++;
 
       results.push({

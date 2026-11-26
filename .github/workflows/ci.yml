@@ -56,6 +56,58 @@ jobs:
       - name: Build
         run: pnpm run build
 
+  # Contrast, overflow, console errors and unnamed controls on real rendered
+  # pages, which no type-checker sees. Runs against `next start`, not Vercel,
+  # so the script ignores the `/_vercel/` analytics scripts that 404 there.
+  ui-audit:
+    name: UI audit (contrast, overflow, console)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Start the production server
+        run: |
+          pnpm run start > next-start.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl --silent --fail --output /dev/null http://localhost:3000/ && exit 0
+            sleep 1
+          done
+          cat next-start.log
+          exit 1
+
+      - name: Audit
+        run: node scripts/audit-ui.mjs http://localhost:3000
+
+      - name: Upload screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-audit-screenshots
+          path: .playwright-screenshots
+          retention-days: 7
+
   # Manual only. No lesson embeds a Workshop-Code file today, so a nightly run
   # of this checked nothing. It talks to the GitHub API and can fail on a rate
   # limit, which is why it is a separate job. Put a schedule back when embeds

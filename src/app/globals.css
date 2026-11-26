@@ -206,6 +206,11 @@
      #1e1e1e, which is a shade lighter: 12.4:1 and 6.2:1. */
   --code-tx: oklch(0.9 0.012 260);
   --code-tx2: oklch(0.7 0.018 260);
+  /* The accent as it reads on a code block. Code stays dark in both themes, so
+     this is the dark theme's accent and the light theme does not redefine it:
+     light-mode --accent is tuned for paper and measured 3.68:1 on --code-bg,
+     which failed AA on every highlighted line number. */
+  --code-accent: oklch(0.755 0.155 55);
 
   /* ── Measure ── the two numbers the lesson grid is built from.
      `--measure` is the text column. `--gutter` is what a code block, a table
